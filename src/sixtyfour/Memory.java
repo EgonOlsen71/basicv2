@@ -12,6 +12,18 @@ public class Memory {
 	private Map<String, Variable> ints = new HashMap<String, Variable>();
 	private Map<String, Variable> reals = new HashMap<String, Variable>();
 
+	public void reset() {
+		for (Variable str : strings.values()) {
+			str.setValue("");
+		}
+		for (Variable in : ints.values()) {
+			in.setValue(0);
+		}
+		for (Variable real : reals.values()) {
+			real.setValue(0f);
+		}
+	}
+
 	public Variable add(Variable var) {
 		Variable ret = getVariable(var.getName());
 		if (ret == null) {

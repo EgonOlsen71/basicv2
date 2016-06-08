@@ -27,7 +27,7 @@ public class Parser {
 		throw new RuntimeException("No line number found in: " + line);
 	}
 
-	public static String[] getParts(Line line, Memory memory) {
+	public static String[] getParts(Line line) {
 		return line.getLine().split(":");
 	}
 

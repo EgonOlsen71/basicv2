@@ -28,6 +28,11 @@ public class Interpreter {
 		return memory;
 	}
 
+	public void run() {
+		parse();
+		execute();
+	}
+
 	public void parse() {
 		memory = new Memory();
 		for (String line : code) {
@@ -37,7 +42,7 @@ public class Interpreter {
 			}
 			lines.put(cl.getNumber(), cl);
 			lineNumbers.add(cl.getNumber());
-			String[] parts = Parser.getParts(cl, memory);
+			String[] parts = Parser.getParts(cl);
 
 			for (String part : parts) {
 				Command command = Parser.getCommand(part);
