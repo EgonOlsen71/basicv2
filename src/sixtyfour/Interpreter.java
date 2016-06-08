@@ -31,16 +31,16 @@ public class Interpreter {
 	public void parse() {
 		memory = new Memory();
 		for (String line : code) {
-			Line cl = Lexer.getLine(line);
+			Line cl = Parser.getLine(line);
 			if (lines.containsKey(cl.getNumber())) {
 				throw new RuntimeException("Duplicate line number in: " + line);
 			}
 			lines.put(cl.getNumber(), cl);
 			lineNumbers.add(cl.getNumber());
-			String[] parts = Lexer.getParts(cl, memory);
+			String[] parts = Parser.getParts(cl, memory);
 
 			for (String part : parts) {
-				Command command = Lexer.getCommand(part);
+				Command command = Parser.getCommand(part);
 				command.parse(part, memory);
 				cl.addCommand(command);
 			}

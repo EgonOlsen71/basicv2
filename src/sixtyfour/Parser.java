@@ -16,7 +16,7 @@ import sixtyfour.elements.commands.CommandList;
 import sixtyfour.elements.functions.Function;
 import sixtyfour.elements.functions.FunctionList;
 
-public class Lexer {
+public class Parser {
 	public static Line getLine(String line) {
 		for (int i = 0; i < line.length(); i++) {
 			char c = line.charAt(i);
@@ -89,10 +89,10 @@ public class Lexer {
 					if (termMap == null || pos == -1 || pos2 < pos) {
 						throw new RuntimeException("Invalid function call: " + linePart);
 					} else {
-						fun.setTerm(Lexer.createTerm(linePart.substring(pos, pos2 + 1), termMap, memory));
+						fun.setTerm(Parser.createTerm(linePart.substring(pos, pos2 + 1), termMap, memory));
 					}
 				} else {
-					fun.setTerm(Lexer.getTerm(linePart.substring(pos + 1, pos2), memory));
+					fun.setTerm(Parser.getTerm(linePart.substring(pos + 1, pos2), memory));
 				}
 				break;
 			}
@@ -311,13 +311,13 @@ public class Lexer {
 
 	private static Atom createAtom(String part, Map<String, Term> termMap, Memory memory) {
 		// Identify commands
-		Command command = Lexer.getCommand(part);
+		Command command = Parser.getCommand(part);
 		if (command != null) {
 			return command;
 		}
 
 		// Identify functions
-		Function function = Lexer.getFunction(part, termMap, memory);
+		Function function = Parser.getFunction(part, termMap, memory);
 		if (function != null) {
 			return function;
 		}

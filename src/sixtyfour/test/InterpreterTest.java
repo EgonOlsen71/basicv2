@@ -10,7 +10,7 @@ public class InterpreterTest {
 	}
 
 	private static void testLet() {
-		String code = "10 a=45:b=7\n" + "20 c=67.2:h$=\"test\"\n"+"45 a=(23.22+12.2+b)/c";
+		String code = "10 a=45:b=7\n" + "20 c=67.2:z=a:h$=\"test\"\n"+"45 a=(23.22+12.2+b)/c:h$=h$+\"wurst\":popo$=h$+h$";
 
 		Interpreter inter = new Interpreter(code);
 		inter.parse();
@@ -19,9 +19,11 @@ public class InterpreterTest {
 		Memory mem=inter.getMemory();
 		
 		System.out.println(mem.getVariable("a"));
+		System.out.println(mem.getVariable("z"));
 		System.out.println(mem.getVariable("b"));
 		System.out.println(mem.getVariable("c"));
 		System.out.println(mem.getVariable("h$"));
+		System.out.println(mem.getVariable("po$"));
 	}
 
 }

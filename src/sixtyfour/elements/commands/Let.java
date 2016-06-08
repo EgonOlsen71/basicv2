@@ -1,6 +1,6 @@
 package sixtyfour.elements.commands;
 
-import sixtyfour.Lexer;
+import sixtyfour.Parser;
 import sixtyfour.Memory;
 import sixtyfour.elements.Term;
 import sixtyfour.elements.Type;
@@ -37,9 +37,9 @@ public class Let extends AbstractCommand {
 
 	@Override
 	public void parse(String linePart, Memory memory) {
-		var = Lexer.getVariable(linePart, memory);
-		term = Lexer.getTerm(linePart, memory);
-		if (!var.getType().equals(term.getType()) && !var.getType().equals(Type.REAL) && !term.getType().equals(Type.INTEGER)) {
+		var = Parser.getVariable(linePart, memory);
+		term = Parser.getTerm(linePart, memory);
+		if (!var.getType().equals(term.getType()) && !(var.getType().equals(Type.REAL) && term.getType().equals(Type.INTEGER))) {
 			throw new RuntimeException("Type mismatch error: " + linePart);
 		}
 	}
