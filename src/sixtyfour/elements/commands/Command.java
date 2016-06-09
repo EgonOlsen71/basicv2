@@ -1,26 +1,28 @@
 package sixtyfour.elements.commands;
 
-import sixtyfour.Memory;
 import sixtyfour.elements.Assignment;
 import sixtyfour.elements.Atom;
-import sixtyfour.elements.Term;
 
-public interface Command extends Atom {
-	String getName();
+public interface Command extends Atom
+{
+  String getName();
 
-	boolean isCommand(String command);
 
-	Command clone(String linePart);
+  boolean isCommand(String command);
 
-	Term getTerm();
 
-	void setTerm(Term term);
+  Command clone(String linePart);
 
-	Assignment getAssignment();
 
-	void setAssignment(Assignment assignment);
+  String getTerm();
 
-	void parse(String linePart, Memory memory);
 
-	void execute(Memory memory);
+  void setTerm(String content);
+
+
+  Assignment getAssignment();
+
+
+  void setAssignment(Assignment assignment);
+
 }

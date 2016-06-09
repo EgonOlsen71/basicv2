@@ -2,14 +2,11 @@ package sixtyfour.elements.commands;
 
 import java.util.Locale;
 
-import sixtyfour.Memory;
 import sixtyfour.elements.Assignment;
-import sixtyfour.elements.Term;
-import sixtyfour.elements.Type;
 
-public abstract class AbstractCommand implements Command {
+public class AbstractCommand implements Command {
 	protected String name;
-	protected Term term;
+	protected String term;
 	protected Assignment assignment;
 
 	@SuppressWarnings("unused")
@@ -25,6 +22,7 @@ public abstract class AbstractCommand implements Command {
 		try {
 			AbstractCommand clone = this.getClass().newInstance();
 			clone.name = name;
+			clone.term = linePart.substring(name.length()).trim();
 			return clone;
 		} catch (Exception e) {
 			throw new RuntimeException("Unable to instantiate command: " + name);
@@ -48,13 +46,13 @@ public abstract class AbstractCommand implements Command {
 	}
 
 	@Override
-	public Term getTerm() {
+	public String getTerm() {
 		return term;
 	}
 
 	@Override
-	public void setTerm(Term term) {
-		this.term = term;
+	public void setTerm(String content) {
+		this.term = content;
 	}
 
 	@Override
@@ -65,28 +63,6 @@ public abstract class AbstractCommand implements Command {
 	@Override
 	public String toString() {
 		return this.name;
-	}
-
-	@Override
-	public Type getType() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Object eval() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void parse(String linePart, Memory memory) {
-		// TODO Auto-generated method stub
-	}
-	
-	@Override
-	public void execute(Memory memory) {
-		// TODO Auto-generated method stub
 	}
 
 }
