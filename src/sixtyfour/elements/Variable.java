@@ -17,11 +17,11 @@ public class Variable implements Atom {
 		this(name, values == null ? new ArrayList<Object>(calcSize(dimensions)) : (Object) values);
 		this.dimensions = dimensions;
 		array = true;
-		this.setName(name + "[]");
+		this.setName(name.endsWith("[]") ? name : (name + "[]"));
 	}
 
 	public Variable(String name, Object value) {
-		String woa=name.replace("[]", "");
+		String woa = name.replace("[]", "");
 		char c = woa.charAt(woa.length() - 1);
 		type = null;
 		if (c == '$') {

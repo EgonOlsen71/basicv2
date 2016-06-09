@@ -28,7 +28,7 @@ public abstract class AbstractFunction
   }
 
 
-  public Function clone(String linePart)
+  public Function clone()
   {
     try
     {

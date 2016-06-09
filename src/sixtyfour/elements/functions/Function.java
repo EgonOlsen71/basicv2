@@ -14,7 +14,7 @@ public interface Function
   boolean isFunction(String function);
 
 
-  Function clone(String linePart);
+  Function clone();
 
 
   Term getTerm();

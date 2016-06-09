@@ -10,7 +10,7 @@ public class VariableAndTerms {
 	private List<Atom> terms;
 
 	public VariableAndTerms(String var, List<Atom> terms) {
-		this.varName = var;
+		this.varName = var.endsWith("[]") ? var : (var + "[]");
 		this.terms = terms;
 	}
 

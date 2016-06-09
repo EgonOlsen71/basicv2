@@ -61,7 +61,7 @@ public class Dim extends AbstractCommand {
 				}
 				Variable vary = new Variable(var.getName(), null, pis);
 				if (memory.getVariable(vary.getName()) != null) {
-					throw new RuntimeException("Redim'd array error: " + this);
+					throw new RuntimeException("Redim'd array error: " + var.getName() + "/" + this);
 				}
 				memory.add(vary);
 				vars.set(i, vary);

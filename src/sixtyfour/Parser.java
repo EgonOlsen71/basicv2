@@ -16,6 +16,7 @@ import sixtyfour.elements.Type;
 import sixtyfour.elements.Variable;
 import sixtyfour.elements.commands.Command;
 import sixtyfour.elements.commands.CommandList;
+import sixtyfour.elements.functions.ArrayAccess;
 import sixtyfour.elements.functions.Function;
 import sixtyfour.elements.functions.FunctionList;
 
@@ -139,7 +140,7 @@ public class Parser {
 				}
 			}
 		}
-		if (isArray) {
+		if (isArray && !ret.endsWith("[]")) {
 			ret += "[]";
 		}
 		return ret;
@@ -152,7 +153,7 @@ public class Parser {
 		for (Function function : functions) {
 			// System.out.println(linePart);
 			if (function.isFunction(linePart)) {
-				fun = function.clone(linePart);
+				fun = function.clone();
 				int pos = linePart.indexOf('(');
 				int pos2 = linePart.lastIndexOf(')');
 				if (pos == -1 || pos2 < pos) {
@@ -170,6 +171,25 @@ public class Parser {
 			}
 		}
 
+		return fun;
+	}
+
+	public static Function getArrayAccessFunction(String linePart, Variable var, Map<String, Term> termMap, Memory memory) {
+		ArrayAccess fun = new ArrayAccess();
+		int pos = linePart.indexOf('(');
+		int pos2 = linePart.lastIndexOf(')');
+		if (pos == -1 || pos2 < pos) {
+			pos = linePart.indexOf('{');
+			pos2 = linePart.indexOf('}');
+			if (termMap == null || pos == -1 || pos2 < pos) {
+				throw new RuntimeException("Invalid function call: " + linePart);
+			} else {
+				fun.setTerm(Parser.createTerm(linePart.substring(pos, pos2 + 1), termMap, memory));
+			}
+		} else {
+			fun.parse(linePart.substring(pos + 1, pos2), memory);
+		}
+		fun.setVariable(var);
 		return fun;
 	}
 
@@ -525,6 +545,18 @@ public class Parser {
 				t = build(t, termMap, memory);
 			}
 			return t;
+		}
+
+		// Array variables
+		if (Character.isAlphabetic(part.charAt(0)) && (part.endsWith("}") || part.endsWith(")"))) {
+			String var = part.toUpperCase(Locale.ENGLISH);
+			int pos = var.replace('{', '(').indexOf("(");
+			if (pos == -1) {
+				throw new RuntimeException("Invalid array index: " + part);
+			}
+			String pvar = var.substring(0, pos) + "[]";
+			Variable vary = new Variable(pvar,null); // Placeholder
+			return Parser.getArrayAccessFunction(part, vary, termMap, memory);
 		}
 
 		// Variables

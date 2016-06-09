@@ -46,7 +46,7 @@ public class InterpreterTest {
 	}
 
 	private static void testDim() {
-		String code = "10 a=5:print a:dim a(10, a+1), b, c\n20a(1,1)=123";
+		String code = "10 a=5:print a:dim a(10, a+1), b$, c\n20a(1,1)=123:b$(6)=\"wurst\"\n30printa(1,1)+3:printb$(6)+\"hallo\"\n40printr$(7)";
 		Interpreter inter = new Interpreter(code);
 		inter.parse();
 		inter.run();

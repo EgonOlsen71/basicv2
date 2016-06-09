@@ -48,11 +48,9 @@ public class Let extends AbstractCommand {
 					for (int i = 0; i < pis.length; i++) {
 						pis[i] = 10;
 					}
-					var = memory.add(new Variable(var.getName(), null, pis));
+					var = new Variable(var.getName(), null, pis);
 					var.clear();
-				} else {
-					var = memory.add(new Variable(var.getName(), null));
-				}
+				} 
 				indexTerm = params;
 			} else {
 				throw new RuntimeException("Array index out of bounds error: " + this);
