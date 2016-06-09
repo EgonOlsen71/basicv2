@@ -27,6 +27,7 @@ public class CommandList
       add(new Sys());
       add(new Return());
       add(new Print());
+      add(new Dim());
     }
   });
 

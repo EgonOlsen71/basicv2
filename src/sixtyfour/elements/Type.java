@@ -2,5 +2,5 @@ package sixtyfour.elements;
 
 public enum Type
 {
-  STRING, REAL, INTEGER, ARRAY;
+  STRING, REAL, INTEGER, NONE;
 }

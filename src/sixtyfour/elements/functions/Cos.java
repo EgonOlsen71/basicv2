@@ -16,7 +16,7 @@ public class Cos extends AbstractFunction {
 
 	@Override
 	public Object eval(Memory memory) {
-		if (!getType().equals(Type.STRING) && !getType().equals(Type.ARRAY)) {
+		if (!getType().equals(Type.STRING)) {
 			return Float.valueOf((float) Math.cos(((Number) term.eval(memory)).floatValue()));
 		}
 		throw new RuntimeException("Type mismatch error: " + getType());

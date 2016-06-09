@@ -23,7 +23,7 @@ public class Peek
   @Override
   public Object eval(Memory memory)
   {
-    if (!getType().equals(Type.STRING) && !getType().equals(Type.ARRAY))
+    if (!getType().equals(Type.STRING))
     {
       return Integer.valueOf(memory.getRam()[((Number) term.eval(memory)).intValue()]);
     }
