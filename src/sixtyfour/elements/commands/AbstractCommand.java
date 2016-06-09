@@ -2,67 +2,116 @@ package sixtyfour.elements.commands;
 
 import java.util.Locale;
 
-import sixtyfour.elements.Assignment;
+import sixtyfour.Memory;
+import sixtyfour.elements.ProgramCounter;
+import sixtyfour.elements.Term;
+import sixtyfour.elements.Type;
 
-public class AbstractCommand implements Command {
-	protected String name;
-	protected String term;
-	protected Assignment assignment;
 
-	@SuppressWarnings("unused")
-	private AbstractCommand() {
-		//
-	}
+public abstract class AbstractCommand
+  implements Command
+{
+  protected String name;
+  protected Term term;
+  protected int lineCnt = 0;
+  protected int linePos = 0;
+  protected int lineNumber = 0;
 
-	public AbstractCommand(String name) {
-		this.name = name.toUpperCase(Locale.ENGLISH);
-	}
 
-	public Command clone(String linePart) {
-		try {
-			AbstractCommand clone = this.getClass().newInstance();
-			clone.name = name;
-			clone.term = linePart.substring(name.length()).trim();
-			return clone;
-		} catch (Exception e) {
-			throw new RuntimeException("Unable to instantiate command: " + name);
-		}
+  @SuppressWarnings("unused")
+  private AbstractCommand()
+  {
+    //
+  }
 
-	}
 
-	@Override
-	public Assignment getAssignment() {
-		return assignment;
-	}
+  public AbstractCommand(String name)
+  {
+    this.name = name.toUpperCase(Locale.ENGLISH);
+  }
 
-	@Override
-	public void setAssignment(Assignment assignment) {
-		this.assignment = assignment;
-	}
 
-	@Override
-	public String getName() {
-		return name;
-	}
+  public Command clone(String linePart)
+  {
+    try
+    {
+      AbstractCommand clone = this.getClass().newInstance();
+      clone.name = name;
+      return clone;
+    }
+    catch (Exception e)
+    {
+      throw new RuntimeException("Unable to instantiate command: " + name);
+    }
 
-	@Override
-	public String getTerm() {
-		return term;
-	}
+  }
 
-	@Override
-	public void setTerm(String content) {
-		this.term = content;
-	}
 
-	@Override
-	public boolean isCommand(String command) {
-		return command.trim().toUpperCase(Locale.ENGLISH).startsWith(name);
-	}
+  @Override
+  public String getName()
+  {
+    return name;
+  }
 
-	@Override
-	public String toString() {
-		return this.name;
-	}
+
+  @Override
+  public Term getTerm()
+  {
+    return term;
+  }
+
+
+  @Override
+  public void setTerm(Term term)
+  {
+    this.term = term;
+  }
+
+
+  @Override
+  public boolean isCommand(String command)
+  {
+    return command.trim().toUpperCase(Locale.ENGLISH).startsWith(name);
+  }
+
+
+  @Override
+  public String toString()
+  {
+    return this.name + " @ " + lineNumber;
+  }
+
+
+  @Override
+  public Type getType()
+  {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+
+  @Override
+  public Object eval(Memory memory)
+  {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+
+  @Override
+  public void parse(String linePart, int lineCnt, int lineNumber, int linePos, Memory memory)
+  {
+    this.lineCnt = lineCnt;
+    this.linePos = linePos;
+    this.lineNumber = lineNumber;
+  }
+
+
+  @Override
+  public ProgramCounter execute(Memory memory)
+  {
+    return null;
+    // TODO Auto-generated method stub
+  }
 
 }

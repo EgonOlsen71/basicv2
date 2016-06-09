@@ -1,9 +1,13 @@
 package sixtyfour.elements.commands;
 
-import sixtyfour.elements.Assignment;
+import sixtyfour.Memory;
 import sixtyfour.elements.Atom;
+import sixtyfour.elements.ProgramCounter;
+import sixtyfour.elements.Term;
 
-public interface Command extends Atom
+
+public interface Command
+  extends Atom
 {
   String getName();
 
@@ -14,15 +18,14 @@ public interface Command extends Atom
   Command clone(String linePart);
 
 
-  String getTerm();
+  Term getTerm();
 
 
-  void setTerm(String content);
+  void setTerm(Term term);
 
 
-  Assignment getAssignment();
+  void parse(String linePart, int lineCnt, int lineNumber, int linePos, Memory memory);
 
 
-  void setAssignment(Assignment assignment);
-
+  ProgramCounter execute(Memory memory);
 }

@@ -2,7 +2,7 @@ package sixtyfour.elements;
 
 public class Operator
 {
-  private final static String[] OPS = { "^", "*", "/", "+", "-", "|" };
+  private final static String[] OPS = { "^", "*", "/", "+", "-", "|", "," };
   public final static Operator NOP = new Operator('|');
 
   private int type = -1;
@@ -11,6 +11,42 @@ public class Operator
   public Operator(char c)
   {
     this(Character.toString(c));
+  }
+
+
+  public boolean isPlus()
+  {
+    return type == 3;
+  }
+
+
+  public boolean isPower()
+  {
+    return type == 0;
+  }
+
+
+  public boolean isMinus()
+  {
+    return type == 4;
+  }
+
+
+  public boolean isMultiplication()
+  {
+    return type == 1;
+  }
+
+
+  public boolean isDivision()
+  {
+    return type == 2;
+  }
+
+
+  public boolean isDelimiter()
+  {
+    return type == 6;
   }
 
 

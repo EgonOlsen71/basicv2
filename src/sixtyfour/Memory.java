@@ -1,10 +1,15 @@
 package sixtyfour;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Stack;
 
 import sixtyfour.elements.Type;
 import sixtyfour.elements.Variable;
+import sixtyfour.elements.commands.Command;
 
 
 public class Memory
@@ -12,6 +17,63 @@ public class Memory
   private Map<String, Variable> strings = new HashMap<String, Variable>();
   private Map<String, Variable> ints = new HashMap<String, Variable>();
   private Map<String, Variable> reals = new HashMap<String, Variable>();
+  private int[] ram = new int[65536];
+  private Stack<StackEntry> stack = new Stack<StackEntry>();
+  private List<Command> commandList = new ArrayList<Command>();
+
+
+  public int[] getRam()
+  {
+    return ram;
+  }
+
+
+  public void push(Command command)
+  {
+    if (stack.size() > 1000)
+    {
+      throw new RuntimeException("Out of memory error, stack size exceeds 1000!");
+    }
+    stack.push(new StackEntry(command));
+  }
+
+
+  public StackEntry peek()
+  {
+    return stack.peek();
+  }
+
+
+  public StackEntry pop()
+  {
+    if (stack.isEmpty())
+    {
+      throw new RuntimeException("Out of memory error, stack is empty!");
+    }
+    return stack.pop();
+  }
+
+
+  public void reset()
+  {
+    for (int i = 0; i < ram.length; i++)
+    {
+      ram[i] = 0;
+    }
+    for (Variable var : strings.values())
+    {
+      var.setValue("");
+    }
+    for (Variable var : ints.values())
+    {
+      var.setValue(0);
+    }
+    for (Variable var : reals.values())
+    {
+      var.setValue(0f);
+    }
+    stack.clear();
+  }
 
 
   public Variable add(Variable var)
@@ -47,6 +109,9 @@ public class Memory
     {
       throw new RuntimeException("Null variable found!");
     }
+
+    name = name.toUpperCase(Locale.ENGLISH);
+
     char c = name.charAt(name.length() - 1);
     if (c == '$')
     {
@@ -65,5 +130,23 @@ public class Memory
       throw new RuntimeException("Not supported yet!");
     }
     return null;
+  }
+
+
+  public void addCommand(Command command)
+  {
+    commandList.add(command);
+  }
+
+
+  public List<Command> getCommandList()
+  {
+    return commandList;
+  }
+
+
+  public void setCommandList(List<Command> commandList)
+  {
+    this.commandList = commandList;
   }
 }

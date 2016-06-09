@@ -1,11 +1,13 @@
 package sixtyfour.elements;
 
+import sixtyfour.Memory;
+
+
 public class Variable
   implements Atom
 {
   private String name;
   private Type type;
-  private Term term;
   private Object value;
 
 
@@ -54,6 +56,7 @@ public class Variable
         value = null;
       }
     }
+
     this.setName(name);
     this.setValue(value);
   }
@@ -83,18 +86,6 @@ public class Variable
   }
 
 
-  public Term getTerm()
-  {
-    return term;
-  }
-
-
-  public void setTerm(Term term)
-  {
-    this.term = term;
-  }
-
-
   @Override
   public boolean equals(Object o)
   {
@@ -117,6 +108,20 @@ public class Variable
   }
 
 
+  @Override
+  public String toString()
+  {
+    return name + "{" + value + "}";
+  }
+
+
+  @Override
+  public Object eval(Memory memory)
+  {
+    return value;
+  }
+
+
   public Object getValue()
   {
     return value;
@@ -129,9 +134,15 @@ public class Variable
   }
 
 
-  @Override
-  public String toString()
+  public void inc(float value)
   {
-    return name + "{" + value.toString() + "}";
+    if (type.equals(Type.INTEGER) || type.equals(Type.REAL))
+    {
+      this.value = ((Number) this.value).floatValue() + value;
+    }
+    else
+    {
+      throw new RuntimeException("Type mismatch error: " + this);
+    }
   }
 }

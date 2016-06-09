@@ -24,7 +24,6 @@ public class CommandList
       add(new Read());
       add(new Data());
       add(new Poke());
-      add(new Peek());
       add(new Sys());
       add(new Return());
       add(new Print());
