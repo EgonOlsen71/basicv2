@@ -59,7 +59,12 @@ public class Parser {
 		}
 		linePart = linePart.substring(0, pos);
 		String ret = getVariableName(linePart);
-		return memory.add(new Variable(ret, (Term) null));
+
+		if (!ret.endsWith("[]")) {
+			return memory.add(new Variable(ret, null));
+		} else {
+			return new Variable(ret, null);
+		}
 	}
 
 	public static List<VariableAndTerms> getArrayVariables(String linePart, Memory memory) {
@@ -109,6 +114,12 @@ public class Parser {
 
 	public static String getVariableName(String linePart) {
 		linePart = linePart.trim().toUpperCase(Locale.ENGLISH);
+		int pos = linePart.indexOf('(');
+		boolean isArray = false;
+		if (pos != -1) {
+			linePart = linePart.substring(0, pos);
+			isArray = true;
+		}
 		for (int i = 0; i < linePart.length(); i++) {
 			char c = linePart.charAt(i);
 			if (!Character.isAlphabetic(c) && ((i > 0) && (!Character.isDigit(c) && c != '%' && c != '$'))) {
@@ -127,6 +138,9 @@ public class Parser {
 					ret += c;
 				}
 			}
+		}
+		if (isArray) {
+			ret += "[]";
 		}
 		return ret;
 	}

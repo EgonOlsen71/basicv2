@@ -21,7 +21,8 @@ public class Variable implements Atom {
 	}
 
 	public Variable(String name, Object value) {
-		char c = name.charAt(name.length() - 1);
+		String woa=name.replace("[]", "");
+		char c = woa.charAt(woa.length() - 1);
 		type = null;
 		if (c == '$') {
 			type = Type.STRING;
