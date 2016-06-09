@@ -221,6 +221,10 @@ public class Parser {
 		if (open != 0) {
 			throw new RuntimeException("Invalid term: " + term);
 		}
+		// Wrap every term into brackets no matter what. This makes parsing a lot easier afterwards...
+		if (!term.startsWith("(") || !term.endsWith(")")) {
+			term="("+term+")";
+		}
 		return addBrackets(addBrackets(handleNegations(term), 0), 1);
 	}
 
@@ -555,7 +559,7 @@ public class Parser {
 				throw new RuntimeException("Invalid array index: " + part);
 			}
 			String pvar = var.substring(0, pos) + "[]";
-			Variable vary = new Variable(pvar,null); // Placeholder
+			Variable vary = new Variable(pvar, null); // Placeholder
 			return Parser.getArrayAccessFunction(part, vary, termMap, memory);
 		}
 

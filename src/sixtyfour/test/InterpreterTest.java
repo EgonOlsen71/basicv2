@@ -10,6 +10,7 @@ public class InterpreterTest {
 		testPrint();
 		testFor();
 		testDim();
+		testArray();
 	}
 
 	private static void testLet() {
@@ -47,6 +48,13 @@ public class InterpreterTest {
 
 	private static void testDim() {
 		String code = "10 a=5:print a:dim a(10, a+1), b$, c\n20a(1,1)=123:b$(6)=\"wurst\"\n30printa(1,1)+3:printb$(6)+\"hallo\"\n40printr$(7)";
+		Interpreter inter = new Interpreter(code);
+		inter.parse();
+		inter.run();
+	}
+	
+	private static void testArray() {
+		String code = "5print\"wwwwwwwwwwwwwwwwww\"\n10 dim a(10, 5):fori=0to10:forj=0to5:a(i,j)=i+j:next:next\n20fori=0to10:forj=0to5:b=a(i,j)*2:printb:printa(i,j)*2:next:next";
 		Interpreter inter = new Interpreter(code);
 		inter.parse();
 		inter.run();
