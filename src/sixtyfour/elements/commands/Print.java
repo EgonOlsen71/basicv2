@@ -146,7 +146,6 @@ public class Print
             }
             String part = sb.toString();
             sb.setLength(0);
-            // System.out.println("pp: " + part + "/" + nc);
             PrintPart pp = new PrintPart(part, nc);
             res.add(pp);
 

@@ -83,6 +83,10 @@ public class Interpreter {
 			ProgramCounter pc = command.execute(memory);
 			memory.setCurrentCommand(null);
 			if (pc != null) {
+				if (pc.isStop()) {
+					lineCnt = lines.size();
+					break;
+				}
 				num = lineNumbers.get(pc.getLineCnt());
 				line = lines.get(num);
 				i = pc.getLinePos();

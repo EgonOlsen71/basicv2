@@ -29,6 +29,7 @@ public class CommandList
       add(new Print());
       add(new Dim());
       add(new Rem());
+      add(new End());
     }
   });
 
