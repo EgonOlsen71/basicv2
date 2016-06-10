@@ -129,6 +129,8 @@ public class Term implements Atom {
 					v1 = n1.intValue() | n2.intValue();
 				} else if (operator.isAnd()) {
 					v1 = n1.intValue() & n2.intValue();
+				} else if (operator.isNot()) {
+					v1 = ~n2.intValue();
 				}
 				if (type.equals(Type.INTEGER)) {
 					return (int) v1;

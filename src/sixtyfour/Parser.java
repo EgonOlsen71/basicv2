@@ -199,6 +199,7 @@ public class Parser {
 			term = term.substring(pos + 1);
 		}
 		term = addBrackets(term);
+		//System.out.println(term);
 		return createTerms(term, new HashMap<String, Term>(), memory);
 	}
 
@@ -230,13 +231,17 @@ public class Parser {
 	}
 
 	private static String replaceLogicOperators(String term) {
-		String[] replacers = { "OR", Operator.getOrOperator(), "AND", Operator.getAndOperator() };
+		// Replace logic operators by placeholder chars. NOT is actually hasn't
+		// two operands, but we abuse the current logic by faking it.
+
+		String[] replacers = { "OR", Operator.getOrOperator(), "AND", Operator.getAndOperator(), "NOT", "(0" + Operator.getNotOperator() };
 		term = removeWhiteSpace(term);
 		String uTerm = term.toUpperCase(Locale.ENGLISH);
 		for (int i = 0; i < replacers.length; i += 2) {
 			int pos = -1;
 			do {
-				pos = uTerm.indexOf(replacers[i], pos);
+				String torep = replacers[i];
+				pos = uTerm.indexOf(torep, pos);
 				if (pos != -1) {
 					boolean inString = false;
 					for (int j = 0; j < pos; j++) {
@@ -246,9 +251,18 @@ public class Parser {
 						}
 					}
 					if (!inString) {
-						term = term.substring(0, pos) + replacers[i + 1] + term.substring(pos + replacers[i].length());
-						uTerm = uTerm.substring(0, pos) + replacers[i + 1] + uTerm.substring(pos + replacers[i].length());
+						term = term.substring(0, pos) + replacers[i + 1] + term.substring(pos + torep.length());
+						uTerm = uTerm.substring(0, pos) + replacers[i + 1] + uTerm.substring(pos + torep.length());
+						if (torep.equals("NOT")) {
+							int end = findEnd(uTerm, pos + 2);
+							term = term.substring(0, end) + ")" + term.substring(end);
+							uTerm = uTerm.substring(0, end) + ")" + uTerm.substring(end);
+							// Ausgeben...was da raus kommt...
+						}
+					} else {
+						pos++;
 					}
+
 				}
 			} while (pos != -1);
 		}
@@ -284,6 +298,7 @@ public class Parser {
 		StringBuilder sb = new StringBuilder();
 		boolean inString = false;
 		for (int i = 0; i < term.length(); i++) {
+			//System.out.println(term);
 			char c = term.charAt(i);
 			if (c == '"') {
 				inString = !inString;
@@ -295,13 +310,16 @@ public class Parser {
 			// Wrap parameters into brackets to ease term creation later on
 			if (c == ',') {
 				int end = findNextDelimiter(term, i);
-				sb.append(term.substring(0, i + 1)).append('(').append(term.substring(i + 1, end)).append(')');
-				if (end != term.length()) {
-					sb.append(term.substring(end));
+				String curPar = term.substring(i + 1, end);
+				if (!curPar.startsWith("(") || !curPar.endsWith(")")) {
+					sb.append(term.substring(0, i + 1)).append('(').append(curPar).append(')');
+					if (end != term.length()) {
+						sb.append(term.substring(end));
+					}
+					i++;
+					term = sb.toString();
+					sb.setLength(0);
 				}
-				i++;
-				term = sb.toString();
-				sb.setLength(0);
 			}
 
 			if ((level == 1 && (c == '*' || c == '/')) || (level == 0 && c == '^')) {
@@ -398,10 +416,17 @@ public class Parser {
 		int brackets = 0;
 		for (int i = pos - 1; i >= 0; i--) {
 			char c = term.charAt(i);
-			if (c == ',') {
+
+			//System.out.println(c + "/" + brackets);
+
+			if (c == ',' && brackets == 0) {
 				return i + 1;
 			}
-			if (brackets == 0 && (Operator.isOperator(c) && (c != '-' || (i > 0 && !Operator.isOperator(term.charAt(i - 1)) && term.charAt(i - 1) != '('))) || c == '(') {
+			char pc = c;
+			if (i > 0) {
+				pc = term.charAt(i - 1);
+			}
+			if (brackets == 0 && ((Operator.isOperator(c) && (c != '-' || (i > 0 && !Operator.isOperator(pc) && pc != '('))) || c == '(')) {
 				return i + 1;
 			}
 			if (c == ')') {
@@ -414,52 +439,56 @@ public class Parser {
 	}
 
 	private static Term createTerms(String term, Map<String, Term> termMap, Memory memory) {
-		int start = 0;
-		boolean open = false;
-		for (int i = 0; i < term.length(); i++) {
-			char c = term.charAt(i);
-			if (c == '(') {
-				open = true;
-				start = i;
-			}
-			if (c == ')') {
-				if (open) {
-					String sub = term.substring(start + 1, i);
-					// System.out.println("Sub: "+sub);
-					Term res = createTerm(sub, termMap, memory);
-					if (res != null) {
-						String termKey = null;
-						int index = termMap.size();
-						if (res.getKey() == null) {
-							termKey = "{t" + index + "}";
-						} else {
-							termKey = res.getKey();
+		try {
+			int start = 0;
+			boolean open = false;
+			for (int i = 0; i < term.length(); i++) {
+				char c = term.charAt(i);
+				if (c == '(') {
+					open = true;
+					start = i;
+				}
+				if (c == ')') {
+					if (open) {
+						String sub = term.substring(start + 1, i);
+						// System.out.println("Sub: "+sub);
+						Term res = createTerm(sub, termMap, memory);
+						if (res != null) {
+							String termKey = null;
+							int index = termMap.size();
+							if (res.getKey() == null) {
+								termKey = "{t" + index + "}";
+							} else {
+								termKey = res.getKey();
+							}
+							res.setKey(termKey);
+							termMap.put(termKey, res);
+							// System.out.println("1: " + term);
+							term = term.substring(0, start) + termKey + term.substring(i + 1);
+							// System.out.println("2: " + term);
+							// System.out.println(res);
 						}
-						res.setKey(termKey);
-						termMap.put(termKey, res);
-						// System.out.println("1: " + term);
-						term = term.substring(0, start) + termKey + term.substring(i + 1);
-						// System.out.println("2: " + term);
-						// System.out.println(res);
+						open = false;
+						i = -1;
+					} else {
+						throw new RuntimeException("Parse error in: " + term + "/" + start + "/" + i);
 					}
-					open = false;
-					i = -1;
-				} else {
-					throw new RuntimeException("Parse error in: " + term + "/" + start + "/" + i);
 				}
 			}
-		}
 
-		// System.out.println("F: " + term);
-		Term finalTerm = new Term(term);
-		termMap.put("final", finalTerm);
-		finalTerm = build(finalTerm, termMap, memory);
-		finalTerm.setKey("final");
-		if (!finalTerm.isComplete()) {
-			finalTerm.setOperator(Operator.NOP);
-			finalTerm.setRight(new Constant<Integer>(0));
+			// System.out.println("F: " + term);
+			Term finalTerm = new Term(term);
+			termMap.put("final", finalTerm);
+			finalTerm = build(finalTerm, termMap, memory);
+			finalTerm.setKey("final");
+			if (!finalTerm.isComplete()) {
+				finalTerm.setOperator(Operator.NOP);
+				finalTerm.setRight(new Constant<Integer>(0));
+			}
+			return finalTerm;
+		} catch (NumberFormatException nfe) {
+			throw new RuntimeException("Syntax error: " + term);
 		}
-		return finalTerm;
 	}
 
 	private static Term createTerm(String term, Map<String, Term> termMap, Memory memory) {

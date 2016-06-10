@@ -10,8 +10,6 @@ public class CommandList
   public static final List<Command> COMMANDS = Collections.unmodifiableList(new ArrayList<Command>()
   {
     private static final long serialVersionUID = 1L;
-
-
     {
       add(new Let());
       add(new For());

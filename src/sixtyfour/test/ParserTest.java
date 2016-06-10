@@ -19,10 +19,11 @@ public class ParserTest {
 	}
 
 	private static void testLogic() {
+		System.out.println("testLogic");
 		Memory memory = new Memory();
 		memory.add(new Variable("A%", 5));
 		memory.add(new Variable("B%", 32));
-		String term = "a% OR (4+b%*6) AND (110+10)";
+		String term = "NOT 1 OR NOT (110+10)";
 		String wbres = Parser.addBrackets(term);
 		System.out.println(wbres);
 
@@ -32,6 +33,7 @@ public class ParserTest {
 	}
 
 	private static void testComplexFunctions() {
+		System.out.println("testComplexFunctions");
 		Memory memory = new Memory();
 		memory.add(new Variable("A$", "abcdefghijklmnopqrstuvwxyz"));
 		memory.add(new Variable("B$", "test"));
@@ -47,6 +49,7 @@ public class ParserTest {
 	}
 
 	private static void testTermCreation() {
+		System.out.println("testTermCreation");
 		Memory memory = new Memory();
 		memory.add(new Variable("A", 5));
 		memory.add(new Variable("B", 5.6f));
@@ -56,7 +59,7 @@ public class ParserTest {
 		memory.add(new Variable("K", -2));
 		memory.add(new Variable("D", 3));
 		memory.add(new Variable("I", 4.1234));
-		String term = "a^z * (b + c / (z+-sin(u+z*k))) * d/cos(i) + cos(-88)";
+		String term = "(a^z * (b + c / (z+-sin(u+z*k))) * d)/cos(i) + cos(-88)";
 		// String term="sin(-1)";
 		Term res = Parser.getTerm(term, memory);
 		System.out.println(res);
@@ -70,6 +73,7 @@ public class ParserTest {
 	}
 
 	private static void testTermCompletion() {
+		System.out.println("testTermCompletion");
 		String term = "a + b * c + d";
 		String res = Parser.addBrackets(term);
 		System.out.println(term + " is actually " + res);
@@ -106,6 +110,7 @@ public class ParserTest {
 	}
 
 	private static void testCommands() {
+		System.out.println("testCommands");
 		String test = getSimpleLine();
 		Command com = Parser.getCommand(Parser.getLine(test).getLine());
 		System.out.println("Command is: " + com);
@@ -113,6 +118,7 @@ public class ParserTest {
 	}
 
 	private static void testLineNumber() {
+		System.out.println("testLineNumber");
 		String test = getSimpleLine();
 		Line line = Parser.getLine(test);
 		System.out.println("Line number is: " + line.getNumber());

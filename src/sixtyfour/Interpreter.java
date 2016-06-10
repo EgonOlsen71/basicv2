@@ -39,6 +39,7 @@ public class Interpreter {
 			}
 
 			int lineCnt = lineNumbers.size();
+			cl.setCount(lineCnt);
 
 			lines.put(cl.getNumber(), cl);
 			lineNumbers.add(cl.getNumber());
@@ -47,17 +48,21 @@ public class Interpreter {
 			int pos = 0;
 			for (String part : parts) {
 				do {
-					Command command = Parser.getCommand(part);
-					if (command == null) {
-						throw new RuntimeException("Syntax error: " + cl.getNumber() + " " + cl.getLine());
-					}
-					part = command.parse(part, lineCnt, cl.getNumber(), pos, memory);
+					if (part.trim().length() > 0) {
+						Command command = Parser.getCommand(part);
+						if (command == null) {
+							throw new RuntimeException("Syntax error: " + cl.getNumber() + " " + cl.getLine());
+						}
+						part = command.parse(part, lineCnt, cl.getNumber(), pos, memory);
 
-					memory.addCommand(command);
-					cl.addCommand(command);
-					pos++;
-					if (Rem.REM_MARKER.equals(part)) {
-						break;
+						memory.addCommand(command);
+						cl.addCommand(command);
+						pos++;
+						if (Rem.REM_MARKER.equals(part)) {
+							break;
+						}
+					} else {
+						part = null;
 					}
 				} while (part != null);
 				if (Rem.REM_MARKER.equals(part)) {
@@ -75,31 +80,43 @@ public class Interpreter {
 	}
 
 	public void execute(int lineCnt, int pos) {
-		Integer num = lineNumbers.get(lineCnt);
-		Line line = lines.get(num);
-		for (int i = pos; i < line.getCommands().size(); i++) {
-			Command command = line.getCommands().get(i);
-			memory.setCurrentCommand(command);
-			ProgramCounter pc = command.execute(memory);
-			memory.setCurrentCommand(null);
-			if (pc != null) {
-				if (pc.isStop()) {
-					lineCnt = lines.size();
-					break;
-				}
-				num = lineNumbers.get(pc.getLineCnt());
-				line = lines.get(num);
-				i = pc.getLinePos();
-				if (i >= line.getCommands().size() - 1) {
-					num = lineNumbers.get(pc.getLineCnt() + 1);
-					i = -1;
+		do {
+			Integer num = lineNumbers.get(lineCnt);
+			Line line = lines.get(num);
+			for (int i = pos; i < line.getCommands().size(); i++) {
+				Command command = line.getCommands().get(i);
+				memory.setCurrentCommand(command);
+				ProgramCounter pc = command.execute(memory);
+				memory.setCurrentCommand(null);
+				if (pc != null) {
+					if (pc.isStop()) {
+						lineCnt = lines.size();
+						break;
+					}
+					if (pc.getLineNumber() == -1) {
+						// Line index is known (FOR...NEXT)
+						lineCnt = pc.getLineCnt();
+						num = lineNumbers.get(lineCnt);
+						line = lines.get(num);
+						i = pc.getLinePos();
+						if (i >= line.getCommands().size() - 1) {
+							num = lineNumbers.get(lineCnt + 1);
+							i = -1;
+						}
+					} else {
+						// Line number is known (GOTO/GOSUB)
+						num = pc.getLineNumber();
+						line = lines.get(num);
+						i = -1;
+						if (line == null) {
+							throw new RuntimeException("Undef'd statement error: " + command);
+						}
+						lineCnt = line.getCount();
+					}
 				}
 			}
-		}
-		if (lineCnt < lines.size() - 1) {
 			lineCnt++;
-			execute(lineCnt, 0);
-		}
+		} while (lineCnt < lines.size());
 	}
 
 }

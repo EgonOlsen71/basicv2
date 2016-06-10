@@ -4,6 +4,7 @@ public class ProgramCounter {
 
 	private int lineCnt;
 	private int linePos;
+	private int lineNumber = -1;
 	private boolean stop = false;
 
 	public ProgramCounter(int cnt, int pos) {
@@ -33,6 +34,14 @@ public class ProgramCounter {
 
 	public void setStop(boolean stop) {
 		this.stop = stop;
+	}
+
+	public int getLineNumber() {
+		return lineNumber;
+	}
+
+	public void setLineNumber(int lineNumber) {
+		this.lineNumber = lineNumber;
 	}
 
 }

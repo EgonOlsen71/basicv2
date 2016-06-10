@@ -1,7 +1,7 @@
 package sixtyfour.elements;
 
 public class Operator {
-	private final static String[] OPS = { "^", "*", "/", "+", "-", "|", ",", "°", "&" };
+	private final static String[] OPS = { "^", "*", "/", "+", "-", "|", ",", "°", "&", "!" };
 	public final static Operator NOP = new Operator('|');
 
 	private int type = -1;
@@ -14,6 +14,10 @@ public class Operator {
 		return OPS[8];
 	}
 
+	public static String getNotOperator() {
+		return OPS[9];
+	}
+
 	public Operator(char c) {
 		this(Character.toString(c));
 	}
@@ -24,6 +28,10 @@ public class Operator {
 
 	public boolean isAnd() {
 		return type == 8;
+	}
+
+	public boolean isNot() {
+		return type == 9;
 	}
 
 	public boolean isPlus() {
