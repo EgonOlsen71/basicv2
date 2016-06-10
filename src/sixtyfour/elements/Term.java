@@ -33,6 +33,12 @@ public class Term
   }
 
 
+  public boolean isEmpty()
+  {
+    return left == null || (left instanceof Term && ((Term) left).isEmpty());
+  }
+
+
   public Atom getLeft()
   {
     return left;
@@ -125,8 +131,8 @@ public class Term
     }
     if (!t1.equals(t2))
     {
-      throw new RuntimeException("Type mismatch error: " + this.toString() + " | " + left + " | " + right + " | " + t1 + "/"
-          + t2 + "/" + operator.getType());
+      throw new RuntimeException("Type mismatch error: " + this.toString() + " | " + left + " | " + right + " | " + t1
+          + "/" + t2 + "/" + operator.getType());
     }
     return t1;
   }
@@ -135,55 +141,62 @@ public class Term
   @Override
   public Object eval(Memory memory)
   {
-    if (operator.isNop())
+    try
     {
-      return left.eval(memory);
-    }
-    Type type = getType();
-    if (type.equals(Type.STRING))
-    {
-      if (operator.isPlus())
+      memory.setCurrentOperator(operator);
+      if (operator.isNop())
       {
-        return left.eval(memory).toString() + right.eval(memory).toString();
+        return left.eval(memory);
       }
-    }
-    else
-    {
-      Number n1 = (Number) left.eval(memory);
-      Number n2 = (Number) right.eval(memory);
-      float v1 = 0;
-      if (operator.isPlus())
+      Type type = getType();
+      if (type.equals(Type.STRING))
       {
-        v1 = n1.floatValue() + n2.floatValue();
-      }
-      else if (operator.isMinus())
-      {
-        v1 = n1.floatValue() - n2.floatValue();
-      }
-      else if (operator.isPower())
-      {
-        v1 = (float) Math.pow(n1.doubleValue(), n2.doubleValue());
-      }
-      else if (operator.isMultiplication())
-      {
-        v1 = n1.floatValue() * n2.floatValue();
-      }
-      else if (operator.isDivision())
-      {
-        if (n2.floatValue() == 0)
+        if (operator.isPlus())
         {
-          throw new RuntimeException("Division by zero error: " + n1 + "/" + n2);
+          return left.eval(memory).toString() + right.eval(memory).toString();
         }
-        v1 = n1.floatValue() / n2.floatValue();
       }
-      if (type.equals(Type.INTEGER))
+      else
       {
-        return (int) v1;
+        Number n1 = (Number) left.eval(memory);
+        Number n2 = (Number) right.eval(memory);
+        float v1 = 0;
+        if (operator.isPlus())
+        {
+          v1 = n1.floatValue() + n2.floatValue();
+        }
+        else if (operator.isMinus())
+        {
+          v1 = n1.floatValue() - n2.floatValue();
+        }
+        else if (operator.isPower())
+        {
+          v1 = (float) Math.pow(n1.doubleValue(), n2.doubleValue());
+        }
+        else if (operator.isMultiplication())
+        {
+          v1 = n1.floatValue() * n2.floatValue();
+        }
+        else if (operator.isDivision())
+        {
+          if (n2.floatValue() == 0)
+          {
+            throw new RuntimeException("Division by zero error: " + n1 + "/" + n2);
+          }
+          v1 = n1.floatValue() / n2.floatValue();
+        }
+        if (type.equals(Type.INTEGER))
+        {
+          return (int) v1;
+        }
+        return v1;
       }
-      return v1;
-
+      throw new RuntimeException("Unable to evaluate term: " + this.toString());
     }
-    throw new RuntimeException("Unable to evaluate term: " + this.toString());
+    finally
+    {
+      memory.setCurrentOperator(null);
+    }
   }
 
 }

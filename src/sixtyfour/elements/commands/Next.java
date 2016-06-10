@@ -13,6 +13,7 @@ public class Next
 {
   private String varName = null;
   private For myFor = null;
+  private ProgramCounter pc = new ProgramCounter(0, 0); // Recycle instance
 
 
   public Next()
@@ -34,10 +35,28 @@ public class Next
 
 
   @Override
-  public void parse(String linePart, int lineCnt, int lineNumber, int linePos, Memory memory)
+  public String parse(String linePart, int lineCnt, int lineNumber, int linePos, Memory memory)
   {
     super.parse(linePart, lineCnt, lineNumber, linePos, memory);
     linePart = linePart.substring(4).toUpperCase(Locale.ENGLISH).trim();
+
+    String ret = null;
+    String[] vars = linePart.split(",");
+
+    // Handle the i,j,k...case by returning an artifical, new command and includes only j,k...
+    if (vars.length > 1)
+    {
+      linePart = vars[0];
+      ret = "NEXT";
+      for (int i = 1; i < vars.length; i++)
+      {
+        if (i > 1)
+        {
+          ret += ",";
+        }
+        ret += vars[i];
+      }
+    }
     varName = Parser.getVariableName(linePart);
 
     List<Command> prevs = memory.getCommandList();
@@ -65,7 +84,7 @@ public class Next
 
           myFor = (For) com;
           myFor.setNext(this);
-          return;
+          return ret;
         }
         else
         {
@@ -83,7 +102,9 @@ public class Next
     boolean iterate = myFor.next(this, memory);
     if (iterate)
     {
-      return new ProgramCounter(myFor.lineCnt, myFor.linePos);
+      pc.setLineCnt(myFor.lineCnt);
+      pc.setLinePos(myFor.linePos);
+      return pc;
     }
     return null;
   }

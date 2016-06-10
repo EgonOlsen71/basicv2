@@ -99,11 +99,12 @@ public abstract class AbstractCommand
 
 
   @Override
-  public void parse(String linePart, int lineCnt, int lineNumber, int linePos, Memory memory)
+  public String parse(String linePart, int lineCnt, int lineNumber, int linePos, Memory memory)
   {
     this.lineCnt = lineCnt;
     this.linePos = linePos;
     this.lineNumber = lineNumber;
+    return null;
   }
 
 

@@ -50,8 +50,8 @@ public class ParserTest
     memory.add(new Variable("K", -2));
     memory.add(new Variable("D", 3));
     memory.add(new Variable("I", 4.1234));
-    String term = "a^z * (b + c / (z+-sin(u+z*k))) * d/cos(i) + cos(88)";
-    // String term="cos(88)";
+    String term = "a^z * (b + c / (z+-sin(u+z*k))) * d/cos(i) + cos(-88)";
+    // String term="sin(-1)";
     Term res = Parser.getTerm(term, memory);
     System.out.println(res);
     System.out.println("Value: " + res.eval(memory));

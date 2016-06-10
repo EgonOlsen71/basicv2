@@ -13,6 +13,9 @@ public class FunctionList {
 			this.add(new Cos());
 			this.add(new Peek());
 			this.add(new Mid());
+			this.add(new Spc());
+			this.add(new Tab());
+			this.add(new Pos());
 		}
 	});
 

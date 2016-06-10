@@ -24,7 +24,7 @@ public interface Command
   void setTerm(Term term);
 
 
-  void parse(String linePart, int lineCnt, int lineNumber, int linePos, Memory memory);
+  String parse(String linePart, int lineCnt, int lineNumber, int linePos, Memory memory);
 
 
   ProgramCounter execute(Memory memory);

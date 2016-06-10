@@ -32,7 +32,7 @@ public class Let extends AbstractCommand {
 	}
 
 	@Override
-	public void parse(String linePart, int lineCnt, int lineNumber, int linePos, Memory memory) {
+	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, Memory memory) {
 		super.parse(linePart, lineCnt, lineNumber, linePos, memory);
 		var = Parser.getVariable(linePart, memory);
 		if (var.getName().endsWith("[]")) {
@@ -60,6 +60,7 @@ public class Let extends AbstractCommand {
 		if (!var.getType().equals(term.getType()) && !(var.getType().equals(Type.REAL) && term.getType().equals(Type.INTEGER))) {
 			throw new RuntimeException("Type mismatch error: " + linePart);
 		}
+		return null;
 	}
 
 	@Override

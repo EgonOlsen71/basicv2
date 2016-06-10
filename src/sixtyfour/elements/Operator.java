@@ -88,6 +88,23 @@ public class Operator
   }
 
 
+  public static boolean isRealOperator(char c)
+  {
+    if (c == ',' || c == '|')
+    {
+      return false;
+    }
+    for (String op : OPS)
+    {
+      if (op.charAt(0) == c)
+      {
+        return true;
+      }
+    }
+    return false;
+  }
+
+
   public int getType()
   {
     return type;

@@ -49,7 +49,7 @@ public class For
 
 
   @Override
-  public void parse(String linePart, int lineCnt,int lineNumber, int linePos, Memory memory)
+  public String parse(String linePart, int lineCnt,int lineNumber, int linePos, Memory memory)
   {
     super.parse(linePart, lineCnt, lineNumber, linePos, memory);
     linePart = Parser.removeWhiteSpace(linePart.substring(this.name.length()));
@@ -104,6 +104,7 @@ public class For
     {
       throw new RuntimeException("Type mismatch error: " + stepTerm);
     }
+    return null;
   }
 
 
