@@ -1,4 +1,4 @@
-package sixtyfour;
+package sixtyfour.parser;
 
 import java.util.List;
 

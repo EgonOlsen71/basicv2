@@ -1,6 +1,6 @@
 package sixtyfour.elements.functions;
 
-import sixtyfour.Memory;
+import sixtyfour.Machine;
 import sixtyfour.elements.Type;
 
 
@@ -21,7 +21,7 @@ public class Peek
 
 
   @Override
-  public Object eval(Memory memory)
+  public Object eval(Machine memory)
   {
     if (!getType().equals(Type.STRING))
     {

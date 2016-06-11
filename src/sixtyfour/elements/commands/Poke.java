@@ -2,11 +2,11 @@ package sixtyfour.elements.commands;
 
 import java.util.List;
 
-import sixtyfour.Memory;
-import sixtyfour.Parser;
+import sixtyfour.Machine;
 import sixtyfour.elements.Atom;
 import sixtyfour.elements.ProgramCounter;
 import sixtyfour.elements.Type;
+import sixtyfour.parser.Parser;
 
 public class Poke extends AbstractCommand {
 
@@ -17,7 +17,7 @@ public class Poke extends AbstractCommand {
 	}
 
 	@Override
-	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, Memory memory) {
+	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, Machine memory) {
 		super.parse(linePart, lineCnt, lineNumber, linePos, memory);
 		term = Parser.getTerm(this, linePart, memory);
 		pars = Parser.getParameters(term);
@@ -30,7 +30,7 @@ public class Poke extends AbstractCommand {
 	}
 
 	@Override
-	public ProgramCounter execute(Memory memory) {
+	public ProgramCounter execute(Machine memory) {
 		Atom addr = pars.get(0);
 		Atom val = pars.get(1);
 		if (addr.getType().equals(Type.STRING) || val.getType().equals(Type.STRING)) {

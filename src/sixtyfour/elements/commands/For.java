@@ -2,13 +2,13 @@ package sixtyfour.elements.commands;
 
 import java.util.Locale;
 
-import sixtyfour.Memory;
-import sixtyfour.Parser;
+import sixtyfour.Machine;
 import sixtyfour.StackEntry;
 import sixtyfour.elements.ProgramCounter;
 import sixtyfour.elements.Term;
 import sixtyfour.elements.Type;
 import sixtyfour.elements.Variable;
+import sixtyfour.parser.Parser;
 
 
 public class For
@@ -49,7 +49,7 @@ public class For
 
 
   @Override
-  public String parse(String linePart, int lineCnt,int lineNumber, int linePos, Memory memory)
+  public String parse(String linePart, int lineCnt,int lineNumber, int linePos, Machine memory)
   {
     super.parse(linePart, lineCnt, lineNumber, linePos, memory);
     linePart = Parser.removeWhiteSpace(linePart.substring(this.name.length()));
@@ -109,7 +109,7 @@ public class For
 
 
   @Override
-  public ProgramCounter execute(Memory memory)
+  public ProgramCounter execute(Machine memory)
   {
     if (next == null)
     {
@@ -125,7 +125,7 @@ public class For
   }
 
 
-  public boolean next(Next next, Memory memory)
+  public boolean next(Next next, Machine memory)
   {
     if (!next.getVarName().equalsIgnoreCase(var.getName()))
     {

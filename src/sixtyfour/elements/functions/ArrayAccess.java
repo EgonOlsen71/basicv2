@@ -2,12 +2,12 @@ package sixtyfour.elements.functions;
 
 import java.util.List;
 
-import sixtyfour.Memory;
-import sixtyfour.Parser;
+import sixtyfour.Machine;
 import sixtyfour.elements.Atom;
 import sixtyfour.elements.Constant;
 import sixtyfour.elements.Type;
 import sixtyfour.elements.Variable;
+import sixtyfour.parser.Parser;
 
 public class ArrayAccess extends AbstractFunction {
 
@@ -25,7 +25,7 @@ public class ArrayAccess extends AbstractFunction {
 	}
 
 	@Override
-	public Object eval(Memory memory) {
+	public Object eval(Machine memory) {
 		List<Atom> pars = Parser.getParameters(term);
 		int[] pis = new int[pars.size()];
 		int cnt = 0;

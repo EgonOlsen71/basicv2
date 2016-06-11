@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import sixtyfour.Memory;
+import sixtyfour.Machine;
 
 public class Variable implements Atom {
 	private String name;
@@ -136,7 +136,7 @@ public class Variable implements Atom {
 	}
 
 	@Override
-	public Object eval(Memory memory) {
+	public Object eval(Machine memory) {
 		return value;
 	}
 

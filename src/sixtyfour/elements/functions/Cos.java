@@ -1,6 +1,6 @@
 package sixtyfour.elements.functions;
 
-import sixtyfour.Memory;
+import sixtyfour.Machine;
 import sixtyfour.elements.Type;
 
 public class Cos extends AbstractFunction {
@@ -15,7 +15,7 @@ public class Cos extends AbstractFunction {
 	}
 
 	@Override
-	public Object eval(Memory memory) {
+	public Object eval(Machine memory) {
 		if (!getType().equals(Type.STRING)) {
 			return Float.valueOf((float) Math.cos(((Number) term.eval(memory)).floatValue()));
 		}

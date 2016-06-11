@@ -3,9 +3,9 @@ package sixtyfour.elements.commands;
 import java.util.List;
 import java.util.Locale;
 
-import sixtyfour.Memory;
-import sixtyfour.Parser;
+import sixtyfour.Machine;
 import sixtyfour.elements.ProgramCounter;
+import sixtyfour.parser.Parser;
 
 
 public class Next
@@ -35,7 +35,7 @@ public class Next
 
 
   @Override
-  public String parse(String linePart, int lineCnt, int lineNumber, int linePos, Memory memory)
+  public String parse(String linePart, int lineCnt, int lineNumber, int linePos, Machine memory)
   {
     super.parse(linePart, lineCnt, lineNumber, linePos, memory);
     linePart = linePart.substring(4).toUpperCase(Locale.ENGLISH).trim();
@@ -97,7 +97,7 @@ public class Next
 
 
   @Override
-  public ProgramCounter execute(Memory memory)
+  public ProgramCounter execute(Machine memory)
   {
     boolean iterate = myFor.next(this, memory);
     if (iterate)

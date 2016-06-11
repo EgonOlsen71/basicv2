@@ -1,7 +1,7 @@
 package sixtyfour.test;
 
 import sixtyfour.Interpreter;
-import sixtyfour.Memory;
+import sixtyfour.Machine;
 
 public class InterpreterTest {
 
@@ -96,7 +96,7 @@ public class InterpreterTest {
 		inter.parse();
 		inter.run();
 
-		Memory mem = inter.getMemory();
+		Machine mem = inter.getMemory();
 
 		System.out.println(mem.getVariable("a"));
 		System.out.println(mem.getVariable("z"));

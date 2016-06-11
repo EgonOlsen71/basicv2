@@ -1,11 +1,11 @@
 package sixtyfour.test;
 
-import sixtyfour.Parser;
-import sixtyfour.Memory;
+import sixtyfour.Machine;
 import sixtyfour.elements.Line;
 import sixtyfour.elements.Term;
 import sixtyfour.elements.Variable;
 import sixtyfour.elements.commands.Command;
+import sixtyfour.parser.Parser;
 
 public class ParserTest {
 
@@ -20,7 +20,7 @@ public class ParserTest {
 
 	private static void testLogic() {
 		System.out.println("testLogic");
-		Memory memory = new Memory();
+		Machine memory = new Machine();
 		memory.add(new Variable("A%", 5));
 		memory.add(new Variable("B%", 32));
 		String term = "NOT 1 OR NOT (110+10)";
@@ -34,7 +34,7 @@ public class ParserTest {
 
 	private static void testComplexFunctions() {
 		System.out.println("testComplexFunctions");
-		Memory memory = new Memory();
+		Machine memory = new Machine();
 		memory.add(new Variable("A$", "abcdefghijklmnopqrstuvwxyz"));
 		memory.add(new Variable("B$", "test"));
 		memory.add(new Variable("A", 1));
@@ -50,7 +50,7 @@ public class ParserTest {
 
 	private static void testTermCreation() {
 		System.out.println("testTermCreation");
-		Memory memory = new Memory();
+		Machine memory = new Machine();
 		memory.add(new Variable("A", 5));
 		memory.add(new Variable("B", 5.6f));
 		memory.add(new Variable("C", 14));

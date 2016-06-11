@@ -1,4 +1,4 @@
-package sixtyfour;
+package sixtyfour.parser;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import sixtyfour.Machine;
 import sixtyfour.elements.Atom;
 import sixtyfour.elements.Constant;
 import sixtyfour.elements.Line;
@@ -31,7 +32,7 @@ public class Parser {
 		throw new RuntimeException("No line number found in: " + line);
 	}
 
-	public static String[] getParts(Line line, Memory memory) {
+	public static String[] getParts(Line line, Machine memory) {
 		return line.getLine().split(":");
 	}
 
@@ -53,7 +54,7 @@ public class Parser {
 		return com;
 	}
 
-	public static Variable getVariable(String linePart, Memory memory) {
+	public static Variable getVariable(String linePart, Machine memory) {
 		int pos = linePart.indexOf('=');
 		if (pos == -1) {
 			throw new RuntimeException("Missing assignment: " + linePart);
@@ -68,7 +69,7 @@ public class Parser {
 		}
 	}
 
-	public static List<VariableAndTerms> getArrayVariables(String linePart, Memory memory) {
+	public static List<VariableAndTerms> getArrayVariables(String linePart, Machine memory) {
 		List<VariableAndTerms> vars = new ArrayList<VariableAndTerms>();
 		linePart = linePart.substring(3).trim();
 		StringBuilder sb = new StringBuilder();
@@ -146,7 +147,7 @@ public class Parser {
 		return ret;
 	}
 
-	public static Function getFunction(String linePart, Map<String, Term> termMap, Memory memory) {
+	public static Function getFunction(String linePart, Map<String, Term> termMap, Machine memory) {
 		List<Function> functions = FunctionList.getFunctions();
 		Function fun = null;
 
@@ -174,7 +175,7 @@ public class Parser {
 		return fun;
 	}
 
-	public static Function getArrayAccessFunction(String linePart, Variable var, Map<String, Term> termMap, Memory memory) {
+	public static Function getArrayAccessFunction(String linePart, Variable var, Map<String, Term> termMap, Machine memory) {
 		ArrayAccess fun = new ArrayAccess();
 		int pos = linePart.indexOf('(');
 		int pos2 = linePart.lastIndexOf(')');
@@ -193,7 +194,7 @@ public class Parser {
 		return fun;
 	}
 
-	public static Term getTerm(String term, Memory memory) {
+	public static Term getTerm(String term, Machine memory) {
 		int pos = term.indexOf('=');
 		if (pos != -1) {
 			term = term.substring(pos + 1);
@@ -203,7 +204,7 @@ public class Parser {
 		return createTerms(term, new HashMap<String, Term>(), memory);
 	}
 
-	public static Term getTerm(Command command, String term, Memory memory) {
+	public static Term getTerm(Command command, String term, Machine memory) {
 		term = removeWhiteSpace(term.substring(command.getName().length()));
 		term = addBrackets(term);
 		return createTerms(term, new HashMap<String, Term>(), memory);
@@ -438,7 +439,7 @@ public class Parser {
 		return 0;
 	}
 
-	private static Term createTerms(String term, Map<String, Term> termMap, Memory memory) {
+	private static Term createTerms(String term, Map<String, Term> termMap, Machine memory) {
 		try {
 			int start = 0;
 			boolean open = false;
@@ -491,7 +492,7 @@ public class Parser {
 		}
 	}
 
-	private static Term createTerm(String term, Map<String, Term> termMap, Memory memory) {
+	private static Term createTerm(String term, Map<String, Term> termMap, Machine memory) {
 		if (!term.contains("(") && !term.contains(")")) {
 			if (isTermPlaceholder(term)) {
 				return termMap.get(term);
@@ -507,7 +508,7 @@ public class Parser {
 		return null;
 	}
 
-	private static Term build(Term t, Map<String, Term> termMap, Memory memory) {
+	private static Term build(Term t, Map<String, Term> termMap, Machine memory) {
 		String exp = t.getExpression();
 
 		// exp = exp.replace("}{", "},{");
@@ -550,7 +551,7 @@ public class Parser {
 		return t;
 	}
 
-	private static Atom createAtom(String part, Map<String, Term> termMap, Memory memory) {
+	private static Atom createAtom(String part, Map<String, Term> termMap, Machine memory) {
 		// Identify commands
 		Command command = Parser.getCommand(part);
 		if (command != null) {

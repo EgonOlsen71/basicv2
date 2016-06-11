@@ -1,6 +1,6 @@
 package sixtyfour.elements.commands;
 
-import sixtyfour.Memory;
+import sixtyfour.Machine;
 import sixtyfour.elements.ProgramCounter;
 
 public class Goto extends AbstractCommand {
@@ -13,7 +13,7 @@ public class Goto extends AbstractCommand {
 	}
 
 	@Override
-	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, Memory memory) {
+	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, Machine memory) {
 		super.parse(linePart, lineCnt, lineNumber, linePos, memory);
 		linePart = linePart.substring(4).trim();
 		try {
@@ -25,7 +25,7 @@ public class Goto extends AbstractCommand {
 	}
 
 	@Override
-	public ProgramCounter execute(Memory memory) {
+	public ProgramCounter execute(Machine memory) {
 		pc.setLineNumber(lineNumber);
 		return pc;
 	}

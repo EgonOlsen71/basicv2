@@ -2,13 +2,13 @@ package sixtyfour.elements.commands;
 
 import java.util.List;
 
-import sixtyfour.Memory;
-import sixtyfour.Parser;
+import sixtyfour.Machine;
 import sixtyfour.elements.Atom;
 import sixtyfour.elements.ProgramCounter;
 import sixtyfour.elements.Term;
 import sixtyfour.elements.Type;
 import sixtyfour.elements.Variable;
+import sixtyfour.parser.Parser;
 
 public class Let extends AbstractCommand {
 	private Variable var;
@@ -32,7 +32,7 @@ public class Let extends AbstractCommand {
 	}
 
 	@Override
-	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, Memory memory) {
+	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, Machine memory) {
 		super.parse(linePart, lineCnt, lineNumber, linePos, memory);
 		var = Parser.getVariable(linePart, memory);
 		if (var.getName().endsWith("[]")) {
@@ -64,7 +64,7 @@ public class Let extends AbstractCommand {
 	}
 
 	@Override
-	public ProgramCounter execute(Memory memory) {
+	public ProgramCounter execute(Machine memory) {
 		var = memory.add(var);
 		if (indexTerm == null) {
 			// no array

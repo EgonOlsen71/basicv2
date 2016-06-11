@@ -1,6 +1,6 @@
 package sixtyfour.elements;
 
-import sixtyfour.Memory;
+import sixtyfour.Machine;
 
 public class Term implements Atom {
 	private Atom left;
@@ -97,7 +97,7 @@ public class Term implements Atom {
 	}
 
 	@Override
-	public Object eval(Memory memory) {
+	public Object eval(Machine memory) {
 		try {
 			memory.setCurrentOperator(operator);
 			if (operator.isNop()) {

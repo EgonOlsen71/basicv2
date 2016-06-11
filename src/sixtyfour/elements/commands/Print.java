@@ -4,13 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import sixtyfour.Memory;
-import sixtyfour.OutputChannel;
-import sixtyfour.Parser;
+import sixtyfour.Machine;
 import sixtyfour.elements.Operator;
 import sixtyfour.elements.ProgramCounter;
 import sixtyfour.elements.Term;
 import sixtyfour.elements.Type;
+import sixtyfour.parser.Parser;
 
 public class Print extends AbstractCommand {
 	private List<PrintPart> parts = new ArrayList<PrintPart>();
@@ -25,7 +24,7 @@ public class Print extends AbstractCommand {
 	}
 
 	@Override
-	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, Memory memory) {
+	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, Machine memory) {
 		super.parse(linePart, lineCnt, lineNumber, linePos, memory);
 
 		List<PrintPart> parts = getParts(linePart.substring(5));
@@ -37,7 +36,7 @@ public class Print extends AbstractCommand {
 	}
 
 	@Override
-	public ProgramCounter execute(Memory memory) {
+	public ProgramCounter execute(Machine memory) {
 		for (int i = 0; i < parts.size(); i++) {
 			PrintPart part = parts.get(i);
 			char del = part.delimiter;
@@ -57,9 +56,9 @@ public class Print extends AbstractCommand {
 			}
 			String toPrint = part.term.eval(memory).toString();
 			if (add.equals("\n")) {
-				OutputChannel.println(toPrint);
+				memory.getOutputChannel().println(toPrint);
 			} else {
-				OutputChannel.print(toPrint + add);
+				memory.getOutputChannel().print(toPrint + add);
 			}
 		}
 

@@ -1,6 +1,6 @@
 package sixtyfour.elements.functions;
 
-import sixtyfour.Memory;
+import sixtyfour.Machine;
 import sixtyfour.elements.Atom;
 import sixtyfour.elements.Term;
 
@@ -23,6 +23,6 @@ public interface Function
   void setTerm(Term term);
 
 
-  void parse(String linePart, Memory memory);
+  void parse(String linePart, Machine memory);
 
 }

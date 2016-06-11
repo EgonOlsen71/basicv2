@@ -2,9 +2,9 @@ package sixtyfour.elements.functions;
 
 import java.util.Locale;
 
-import sixtyfour.Memory;
-import sixtyfour.Parser;
+import sixtyfour.Machine;
 import sixtyfour.elements.Term;
+import sixtyfour.parser.Parser;
 
 
 public abstract class AbstractFunction
@@ -66,7 +66,7 @@ public abstract class AbstractFunction
 
 
   @Override
-  public void parse(String linePart, Memory memory)
+  public void parse(String linePart, Machine memory)
   {
     this.setTerm(Parser.getTerm(linePart, memory));
   }

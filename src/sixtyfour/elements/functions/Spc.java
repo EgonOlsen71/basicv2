@@ -1,6 +1,6 @@
 package sixtyfour.elements.functions;
 
-import sixtyfour.Memory;
+import sixtyfour.Machine;
 import sixtyfour.elements.Type;
 import sixtyfour.elements.commands.Print;
 
@@ -42,7 +42,7 @@ public class Spc
 
 
   @Override
-  public Object eval(Memory memory)
+  public Object eval(Machine memory)
   {
     ensureContext(memory);
     if (term.getType().equals(Type.STRING))
@@ -58,7 +58,7 @@ public class Spc
   }
 
 
-  protected void ensureContext(Memory memory)
+  protected void ensureContext(Machine memory)
   {
     if (!(memory.getCurrentCommand() instanceof Print) || !memory.getCurrentOperator().isNop())
     {

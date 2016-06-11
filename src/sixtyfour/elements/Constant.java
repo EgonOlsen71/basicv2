@@ -1,6 +1,6 @@
 package sixtyfour.elements;
 
-import sixtyfour.Memory;
+import sixtyfour.Machine;
 
 public class Constant<T> implements Atom {
 	private T value;
@@ -61,7 +61,7 @@ public class Constant<T> implements Atom {
 	}
 
 	@Override
-	public Object eval(Memory memory) {
+	public Object eval(Machine memory) {
 		if (value instanceof Integer) {
 			return (Integer) value;
 		}

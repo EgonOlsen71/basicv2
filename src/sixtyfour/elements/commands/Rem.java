@@ -1,6 +1,6 @@
 package sixtyfour.elements.commands;
 
-import sixtyfour.Memory;
+import sixtyfour.Machine;
 import sixtyfour.elements.ProgramCounter;
 
 public class Rem extends AbstractCommand {
@@ -12,13 +12,13 @@ public class Rem extends AbstractCommand {
 	}
 
 	@Override
-	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, Memory memory) {
+	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, Machine memory) {
 		super.parse(linePart, lineCnt, lineNumber, linePos, memory);
 		return REM_MARKER;
 	}
 
 	@Override
-	public ProgramCounter execute(Memory memory) {
+	public ProgramCounter execute(Machine memory) {
 		return null;
 	}
 }

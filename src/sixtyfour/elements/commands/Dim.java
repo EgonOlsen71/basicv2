@@ -5,13 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import sixtyfour.Memory;
-import sixtyfour.Parser;
-import sixtyfour.VariableAndTerms;
+import sixtyfour.Machine;
 import sixtyfour.elements.Atom;
 import sixtyfour.elements.ProgramCounter;
 import sixtyfour.elements.Type;
 import sixtyfour.elements.Variable;
+import sixtyfour.parser.Parser;
+import sixtyfour.parser.VariableAndTerms;
 
 public class Dim extends AbstractCommand {
 
@@ -36,7 +36,7 @@ public class Dim extends AbstractCommand {
 	}
 
 	@Override
-	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, Memory memory) {
+	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, Machine memory) {
 		super.parse(linePart, lineCnt, lineNumber, linePos, memory);
 		List<VariableAndTerms> vars = Parser.getArrayVariables(linePart, memory);
 		terms = new HashMap<String, List<Atom>>();
@@ -50,7 +50,7 @@ public class Dim extends AbstractCommand {
 	}
 
 	@Override
-	public ProgramCounter execute(Memory memory) {
+	public ProgramCounter execute(Machine memory) {
 		for (int i = 0; i < vars.size(); i++) {
 			Variable var = vars.get(i);
 			if (!var.isArray()) {

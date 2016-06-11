@@ -2,7 +2,7 @@ package sixtyfour.elements.commands;
 
 import java.util.Locale;
 
-import sixtyfour.Memory;
+import sixtyfour.Machine;
 import sixtyfour.elements.ProgramCounter;
 import sixtyfour.elements.Term;
 import sixtyfour.elements.Type;
@@ -91,7 +91,7 @@ public abstract class AbstractCommand
 
 
   @Override
-  public Object eval(Memory memory)
+  public Object eval(Machine memory)
   {
     // TODO Auto-generated method stub
     return null;
@@ -99,7 +99,7 @@ public abstract class AbstractCommand
 
 
   @Override
-  public String parse(String linePart, int lineCnt, int lineNumber, int linePos, Memory memory)
+  public String parse(String linePart, int lineCnt, int lineNumber, int linePos, Machine memory)
   {
     this.lineCnt = lineCnt;
     this.linePos = linePos;
@@ -109,7 +109,7 @@ public abstract class AbstractCommand
 
 
   @Override
-  public ProgramCounter execute(Memory memory)
+  public ProgramCounter execute(Machine memory)
   {
     return null;
     // TODO Auto-generated method stub

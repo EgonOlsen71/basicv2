@@ -10,13 +10,14 @@ import sixtyfour.elements.Line;
 import sixtyfour.elements.ProgramCounter;
 import sixtyfour.elements.commands.Command;
 import sixtyfour.elements.commands.Rem;
+import sixtyfour.parser.Parser;
 
 public class Interpreter {
 
 	private String[] code = null;
 	private Map<Integer, Line> lines = new HashMap<Integer, Line>();
 	private List<Integer> lineNumbers = new ArrayList<Integer>();
-	private Memory memory = null;
+	private Machine memory = null;
 
 	public Interpreter(String code) {
 		this(code.split("\n"));
@@ -26,12 +27,12 @@ public class Interpreter {
 		this.code = Arrays.copyOf(code, code.length);
 	}
 
-	public Memory getMemory() {
+	public Machine getMemory() {
 		return memory;
 	}
 
 	public void parse() {
-		memory = new Memory();
+		memory = new Machine();
 		for (String line : code) {
 			Line cl = Parser.getLine(line);
 			if (lines.containsKey(cl.getNumber())) {

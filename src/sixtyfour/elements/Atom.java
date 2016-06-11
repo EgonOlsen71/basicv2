@@ -1,9 +1,9 @@
 package sixtyfour.elements;
 
-import sixtyfour.Memory;
+import sixtyfour.Machine;
 
 public interface Atom extends Element {
 	Type getType();
 	
-	Object eval(Memory memory);
+	Object eval(Machine memory);
 }

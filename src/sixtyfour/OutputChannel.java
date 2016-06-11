@@ -2,9 +2,9 @@ package sixtyfour;
 
 public class OutputChannel
 {
-  private static int cursor = 0;
+  private int cursor = 0;
 
-  public static void print(String txt)
+  public void print(String txt)
   {
     txt = clean(txt);
     setCursor(getCursor() + txt.length());
@@ -12,7 +12,7 @@ public class OutputChannel
   }
 
 
-  public static void println(String txt)
+  public void println(String txt)
   {
     txt = clean(txt);
     System.out.println(txt);
@@ -20,21 +20,21 @@ public class OutputChannel
   }
 
 
-  private static String clean(String txt)
+  private String clean(String txt)
   {
     return txt.replace("\n", "").replace("\r", "");
   }
 
 
-  public static int getCursor()
+  public int getCursor()
   {
     return cursor;
   }
 
 
-  public static void setCursor(int cursor)
+  public void setCursor(int cursor)
   {
-    OutputChannel.cursor = cursor;
+    this.cursor = cursor;
   }
 
 }

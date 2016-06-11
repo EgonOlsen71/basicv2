@@ -1,6 +1,6 @@
 package sixtyfour.elements.commands;
 
-import sixtyfour.Memory;
+import sixtyfour.Machine;
 import sixtyfour.elements.Atom;
 import sixtyfour.elements.ProgramCounter;
 import sixtyfour.elements.Term;
@@ -24,8 +24,8 @@ public interface Command
   void setTerm(Term term);
 
 
-  String parse(String linePart, int lineCnt, int lineNumber, int linePos, Memory memory);
+  String parse(String linePart, int lineCnt, int lineNumber, int linePos, Machine memory);
 
 
-  ProgramCounter execute(Memory memory);
+  ProgramCounter execute(Machine memory);
 }

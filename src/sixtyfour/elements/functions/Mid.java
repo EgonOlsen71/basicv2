@@ -2,10 +2,10 @@ package sixtyfour.elements.functions;
 
 import java.util.List;
 
-import sixtyfour.Memory;
-import sixtyfour.Parser;
+import sixtyfour.Machine;
 import sixtyfour.elements.Atom;
 import sixtyfour.elements.Type;
+import sixtyfour.parser.Parser;
 
 
 public class Mid
@@ -25,7 +25,7 @@ public class Mid
 
 
   @Override
-  public Object eval(Memory memory)
+  public Object eval(Machine memory)
   {
     try
     {

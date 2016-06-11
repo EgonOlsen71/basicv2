@@ -1,7 +1,6 @@
 package sixtyfour.elements.functions;
 
-import sixtyfour.Memory;
-import sixtyfour.OutputChannel;
+import sixtyfour.Machine;
 import sixtyfour.elements.Type;
 
 
@@ -22,11 +21,11 @@ public class Pos
 
 
   @Override
-  public Object eval(Memory memory)
+  public Object eval(Machine memory)
   {
     if (!term.getType().equals(Type.STRING))
     {
-      return OutputChannel.getCursor();
+      return memory.getOutputChannel().getCursor();
     }
     throw new RuntimeException("Formula too complex error: " + this);
   }
