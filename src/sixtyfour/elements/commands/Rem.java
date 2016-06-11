@@ -1,7 +1,7 @@
 package sixtyfour.elements.commands;
 
-import sixtyfour.Machine;
 import sixtyfour.elements.ProgramCounter;
+import sixtyfour.system.Machine;
 
 public class Rem extends AbstractCommand {
 

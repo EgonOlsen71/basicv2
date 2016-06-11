@@ -1,8 +1,8 @@
 package sixtyfour.elements.functions;
 
-import sixtyfour.Machine;
 import sixtyfour.elements.Type;
 import sixtyfour.elements.commands.Print;
+import sixtyfour.system.Machine;
 
 
 public class Spc

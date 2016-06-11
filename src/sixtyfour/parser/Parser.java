@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import sixtyfour.Machine;
 import sixtyfour.elements.Atom;
 import sixtyfour.elements.Constant;
 import sixtyfour.elements.Line;
@@ -20,6 +19,7 @@ import sixtyfour.elements.commands.CommandList;
 import sixtyfour.elements.functions.ArrayAccess;
 import sixtyfour.elements.functions.Function;
 import sixtyfour.elements.functions.FunctionList;
+import sixtyfour.system.Machine;
 
 public class Parser {
 	public static Line getLine(String line) {

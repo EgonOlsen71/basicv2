@@ -1,9 +1,9 @@
 package sixtyfour.elements.commands;
 
-import sixtyfour.Machine;
 import sixtyfour.elements.Atom;
 import sixtyfour.elements.ProgramCounter;
 import sixtyfour.elements.Term;
+import sixtyfour.system.Machine;
 
 
 public interface Command

@@ -1,4 +1,4 @@
-package sixtyfour;
+package sixtyfour.system;
 
 import sixtyfour.elements.commands.Command;
 

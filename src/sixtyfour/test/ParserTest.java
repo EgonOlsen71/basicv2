@@ -1,11 +1,11 @@
 package sixtyfour.test;
 
-import sixtyfour.Machine;
 import sixtyfour.elements.Line;
 import sixtyfour.elements.Term;
 import sixtyfour.elements.Variable;
 import sixtyfour.elements.commands.Command;
 import sixtyfour.parser.Parser;
+import sixtyfour.system.Machine;
 
 public class ParserTest {
 

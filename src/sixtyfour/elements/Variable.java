@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import sixtyfour.Machine;
+import sixtyfour.system.Machine;
 
 public class Variable implements Atom {
 	private String name;

@@ -1,6 +1,6 @@
 package sixtyfour.elements;
 
-import sixtyfour.Machine;
+import sixtyfour.system.Machine;
 
 public class Term implements Atom {
 	private Atom left;

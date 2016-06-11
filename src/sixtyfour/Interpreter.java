@@ -11,6 +11,7 @@ import sixtyfour.elements.ProgramCounter;
 import sixtyfour.elements.commands.Command;
 import sixtyfour.elements.commands.Rem;
 import sixtyfour.parser.Parser;
+import sixtyfour.system.Machine;
 
 public class Interpreter {
 

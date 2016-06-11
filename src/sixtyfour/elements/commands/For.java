@@ -2,13 +2,13 @@ package sixtyfour.elements.commands;
 
 import java.util.Locale;
 
-import sixtyfour.Machine;
-import sixtyfour.StackEntry;
 import sixtyfour.elements.ProgramCounter;
 import sixtyfour.elements.Term;
 import sixtyfour.elements.Type;
 import sixtyfour.elements.Variable;
 import sixtyfour.parser.Parser;
+import sixtyfour.system.Machine;
+import sixtyfour.system.StackEntry;
 
 
 public class For

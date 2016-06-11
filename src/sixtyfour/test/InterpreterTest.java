@@ -1,7 +1,7 @@
 package sixtyfour.test;
 
 import sixtyfour.Interpreter;
-import sixtyfour.Machine;
+import sixtyfour.system.Machine;
 
 public class InterpreterTest {
 

@@ -1,6 +1,6 @@
 package sixtyfour.elements;
 
-import sixtyfour.Machine;
+import sixtyfour.system.Machine;
 
 public interface Atom extends Element {
 	Type getType();

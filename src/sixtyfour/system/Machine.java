@@ -1,4 +1,4 @@
-package sixtyfour;
+package sixtyfour.system;
 
 import java.util.ArrayList;
 import java.util.HashMap;

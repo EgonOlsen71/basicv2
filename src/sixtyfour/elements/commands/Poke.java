@@ -2,11 +2,11 @@ package sixtyfour.elements.commands;
 
 import java.util.List;
 
-import sixtyfour.Machine;
 import sixtyfour.elements.Atom;
 import sixtyfour.elements.ProgramCounter;
 import sixtyfour.elements.Type;
 import sixtyfour.parser.Parser;
+import sixtyfour.system.Machine;
 
 public class Poke extends AbstractCommand {
 

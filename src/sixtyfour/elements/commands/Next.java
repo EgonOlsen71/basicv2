@@ -3,9 +3,9 @@ package sixtyfour.elements.commands;
 import java.util.List;
 import java.util.Locale;
 
-import sixtyfour.Machine;
 import sixtyfour.elements.ProgramCounter;
 import sixtyfour.parser.Parser;
+import sixtyfour.system.Machine;
 
 
 public class Next

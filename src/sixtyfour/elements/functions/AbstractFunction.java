@@ -2,9 +2,9 @@ package sixtyfour.elements.functions;
 
 import java.util.Locale;
 
-import sixtyfour.Machine;
 import sixtyfour.elements.Term;
 import sixtyfour.parser.Parser;
+import sixtyfour.system.Machine;
 
 
 public abstract class AbstractFunction

@@ -2,10 +2,10 @@ package sixtyfour.elements.commands;
 
 import java.util.Locale;
 
-import sixtyfour.Machine;
 import sixtyfour.elements.ProgramCounter;
 import sixtyfour.elements.Term;
 import sixtyfour.elements.Type;
+import sixtyfour.system.Machine;
 
 
 public abstract class AbstractCommand

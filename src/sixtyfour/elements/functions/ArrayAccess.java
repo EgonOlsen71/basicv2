@@ -2,12 +2,12 @@ package sixtyfour.elements.functions;
 
 import java.util.List;
 
-import sixtyfour.Machine;
 import sixtyfour.elements.Atom;
 import sixtyfour.elements.Constant;
 import sixtyfour.elements.Type;
 import sixtyfour.elements.Variable;
 import sixtyfour.parser.Parser;
+import sixtyfour.system.Machine;
 
 public class ArrayAccess extends AbstractFunction {
 

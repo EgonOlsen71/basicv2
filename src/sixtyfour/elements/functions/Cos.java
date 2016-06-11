@@ -1,7 +1,7 @@
 package sixtyfour.elements.functions;
 
-import sixtyfour.Machine;
 import sixtyfour.elements.Type;
+import sixtyfour.system.Machine;
 
 public class Cos extends AbstractFunction {
 
