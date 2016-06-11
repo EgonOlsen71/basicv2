@@ -23,7 +23,7 @@ public class InterpreterTest {
 	}
 
 	private static void test() {
-		String code = "0 dima(10,10):j=5:i=5:a(i,j)=10+5\n10 b=(a(i,j))*2+1:printa(i,j)*2+1;tab(10);b";
+		String code = "10 a=5\n20b=a";
 		Interpreter inter = new Interpreter(code);
 		inter.parse();
 		inter.run();

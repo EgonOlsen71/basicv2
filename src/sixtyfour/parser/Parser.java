@@ -15,6 +15,7 @@ import sixtyfour.elements.functions.FunctionList;
 import sixtyfour.system.Machine;
 
 public class Parser {
+
 	public static Line getLine(String line) {
 		for (int i = 0; i < line.length(); i++) {
 			char c = line.charAt(i);
@@ -193,7 +194,7 @@ public class Parser {
 			term = term.substring(pos + 1);
 		}
 		term = addBrackets(term);
-		//System.out.println(term);
+		// System.out.println(term);
 		return createTerms(term, new HashMap<String, Term>(), memory);
 	}
 
@@ -214,7 +215,7 @@ public class Parser {
 			}
 		}
 		if (open != 0) {
-			throw new RuntimeException("Invalid term: " + term);
+			throw new RuntimeException("Invalid term: " + term + "/" + open);
 		}
 		// Wrap every term into brackets no matter what. This makes parsing a
 		// lot easier afterwards...
@@ -292,7 +293,7 @@ public class Parser {
 		StringBuilder sb = new StringBuilder();
 		boolean inString = false;
 		for (int i = 0; i < term.length(); i++) {
-			//System.out.println(term);
+			// System.out.println(term);
 			char c = term.charAt(i);
 			if (c == '"') {
 				inString = !inString;
@@ -411,7 +412,7 @@ public class Parser {
 		for (int i = pos - 1; i >= 0; i--) {
 			char c = term.charAt(i);
 
-			//System.out.println(c + "/" + brackets);
+			// System.out.println(c + "/" + brackets);
 
 			if (c == ',' && brackets == 0) {
 				return i + 1;
