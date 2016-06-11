@@ -7,13 +7,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import sixtyfour.elements.Atom;
-import sixtyfour.elements.Constant;
-import sixtyfour.elements.Line;
-import sixtyfour.elements.Operator;
-import sixtyfour.elements.Term;
-import sixtyfour.elements.Type;
-import sixtyfour.elements.Variable;
 import sixtyfour.elements.commands.Command;
 import sixtyfour.elements.commands.CommandList;
 import sixtyfour.elements.functions.ArrayAccess;

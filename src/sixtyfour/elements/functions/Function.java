@@ -1,7 +1,7 @@
 package sixtyfour.elements.functions;
 
-import sixtyfour.elements.Atom;
-import sixtyfour.elements.Term;
+import sixtyfour.parser.Atom;
+import sixtyfour.parser.Term;
 import sixtyfour.system.Machine;
 
 

@@ -7,9 +7,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Stack;
 
-import sixtyfour.elements.Operator;
-import sixtyfour.elements.Variable;
 import sixtyfour.elements.commands.Command;
+import sixtyfour.parser.Operator;
+import sixtyfour.parser.Variable;
 
 public class Machine {
 	private Map<String, Variable> vars = new HashMap<String, Variable>();

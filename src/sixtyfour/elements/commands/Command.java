@@ -1,8 +1,8 @@
 package sixtyfour.elements.commands;
 
-import sixtyfour.elements.Atom;
-import sixtyfour.elements.ProgramCounter;
-import sixtyfour.elements.Term;
+import sixtyfour.parser.Atom;
+import sixtyfour.parser.ProgramCounter;
+import sixtyfour.parser.Term;
 import sixtyfour.system.Machine;
 
 

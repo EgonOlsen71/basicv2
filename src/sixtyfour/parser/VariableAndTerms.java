@@ -2,8 +2,6 @@ package sixtyfour.parser;
 
 import java.util.List;
 
-import sixtyfour.elements.Atom;
-
 public class VariableAndTerms {
 
 	private String varName;

@@ -6,11 +6,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import sixtyfour.elements.Line;
-import sixtyfour.elements.ProgramCounter;
 import sixtyfour.elements.commands.Command;
 import sixtyfour.elements.commands.Rem;
+import sixtyfour.parser.Line;
 import sixtyfour.parser.Parser;
+import sixtyfour.parser.ProgramCounter;
 import sixtyfour.system.Machine;
 
 public class Interpreter {

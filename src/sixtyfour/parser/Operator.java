@@ -1,4 +1,4 @@
-package sixtyfour.elements;
+package sixtyfour.parser;
 
 public class Operator {
 	private final static String[] OPS = { "^", "*", "/", "+", "-", "|", ",", "°", "&", "!" };

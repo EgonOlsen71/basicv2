@@ -2,8 +2,8 @@ package sixtyfour.elements.functions;
 
 import java.util.Locale;
 
-import sixtyfour.elements.Term;
 import sixtyfour.parser.Parser;
+import sixtyfour.parser.Term;
 import sixtyfour.system.Machine;
 
 

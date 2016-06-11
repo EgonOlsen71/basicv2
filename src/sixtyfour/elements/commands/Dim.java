@@ -5,11 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import sixtyfour.elements.Atom;
-import sixtyfour.elements.ProgramCounter;
-import sixtyfour.elements.Type;
-import sixtyfour.elements.Variable;
+import sixtyfour.parser.Atom;
 import sixtyfour.parser.Parser;
+import sixtyfour.parser.ProgramCounter;
+import sixtyfour.parser.Type;
+import sixtyfour.parser.Variable;
 import sixtyfour.parser.VariableAndTerms;
 import sixtyfour.system.Machine;
 

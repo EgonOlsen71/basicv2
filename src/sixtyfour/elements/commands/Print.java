@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import sixtyfour.elements.Operator;
-import sixtyfour.elements.ProgramCounter;
-import sixtyfour.elements.Term;
-import sixtyfour.elements.Type;
+import sixtyfour.parser.Operator;
 import sixtyfour.parser.Parser;
+import sixtyfour.parser.ProgramCounter;
+import sixtyfour.parser.Term;
+import sixtyfour.parser.Type;
 import sixtyfour.system.Machine;
 
 public class Print extends AbstractCommand {

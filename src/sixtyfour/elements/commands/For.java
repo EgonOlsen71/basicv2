@@ -2,11 +2,11 @@ package sixtyfour.elements.commands;
 
 import java.util.Locale;
 
-import sixtyfour.elements.ProgramCounter;
-import sixtyfour.elements.Term;
-import sixtyfour.elements.Type;
-import sixtyfour.elements.Variable;
 import sixtyfour.parser.Parser;
+import sixtyfour.parser.ProgramCounter;
+import sixtyfour.parser.Term;
+import sixtyfour.parser.Type;
+import sixtyfour.parser.Variable;
 import sixtyfour.system.Machine;
 import sixtyfour.system.StackEntry;
 

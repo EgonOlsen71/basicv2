@@ -1,4 +1,4 @@
-package sixtyfour.elements;
+package sixtyfour.parser;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -1,6 +1,6 @@
 package sixtyfour.elements.functions;
 
-import sixtyfour.elements.Type;
+import sixtyfour.parser.Type;
 import sixtyfour.system.Machine;
 
 public class Sin extends AbstractFunction {

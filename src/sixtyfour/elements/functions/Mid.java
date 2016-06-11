@@ -2,9 +2,9 @@ package sixtyfour.elements.functions;
 
 import java.util.List;
 
-import sixtyfour.elements.Atom;
-import sixtyfour.elements.Type;
+import sixtyfour.parser.Atom;
 import sixtyfour.parser.Parser;
+import sixtyfour.parser.Type;
 import sixtyfour.system.Machine;
 
 
