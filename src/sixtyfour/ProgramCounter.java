@@ -5,6 +5,7 @@ public class ProgramCounter {
 	private int lineCnt;
 	private int linePos;
 	private int lineNumber = -1;
+	private boolean end = false;
 	private boolean stop = false;
 	private boolean skip = false;
 
@@ -29,12 +30,12 @@ public class ProgramCounter {
 		this.lineCnt = lineCnt;
 	}
 
-	public boolean isStop() {
-		return stop;
+	public boolean isEnd() {
+		return end;
 	}
 
-	public void setStop(boolean stop) {
-		this.stop = stop;
+	public void setEnd(boolean end) {
+		this.end = end;
 	}
 
 	public int getLineNumber() {
@@ -51,6 +52,14 @@ public class ProgramCounter {
 
 	public void setSkip(boolean skip) {
 		this.skip = skip;
+	}
+
+	public boolean isStop() {
+		return stop;
+	}
+
+	public void setStop(boolean stop) {
+		this.stop = stop;
 	}
 
 }

@@ -12,7 +12,7 @@ public class Comparison implements LogicBlock {
 	private boolean not = false;
 
 	@Override
-	public boolean eval(Machine machine) {
+	public boolean evalToBoolean(Machine machine) {
 		Object lo = left.eval(machine);
 		Object ro = right != null ? right.eval(machine) : null;
 		boolean ret = false;
@@ -79,5 +79,16 @@ public class Comparison implements LogicBlock {
 	@Override
 	public String toString() {
 		return (not ? " NOT " : "") + left + " " + comparator + " " + right;
+	}
+
+	@Override
+	public Type getType() {
+		return Type.INTEGER;
+	}
+
+	@Override
+	public Object eval(Machine machine) {
+		boolean ok = evalToBoolean(machine);
+		return ok ? -1 : 0;
 	}
 }

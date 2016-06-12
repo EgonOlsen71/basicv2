@@ -6,12 +6,17 @@ public class LogicAnd implements LogicOp {
 
 	@Override
 	public boolean eval(Machine machine, boolean state, LogicBlock block) {
-		return state && block.eval(machine);
+		return state && block.evalToBoolean(machine);
 	}
 	
 	@Override
 	public String toString() {
 		return "AND";
+	}
+
+	@Override
+	public boolean isAnd() {
+		return true;
 	}
 
 }

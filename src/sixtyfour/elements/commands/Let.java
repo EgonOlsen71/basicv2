@@ -1,6 +1,7 @@
 package sixtyfour.elements.commands;
 
 import java.util.List;
+import java.util.Locale;
 
 import sixtyfour.ProgramCounter;
 import sixtyfour.elements.Type;
@@ -34,13 +35,16 @@ public class Let extends AbstractCommand {
 	@Override
 	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, Machine memory) {
 		super.parse(linePart, lineCnt, lineNumber, linePos, memory);
+		if (linePart.toUpperCase(Locale.ENGLISH).startsWith("LET")) {
+			linePart = linePart.substring(3).trim();
+		}
 		var = Parser.getVariable(linePart, memory);
 		if (var.getName().endsWith("[]")) {
 			// array
 			int pos = linePart.indexOf('(');
 			int pos2 = linePart.lastIndexOf(')');
 			if (pos != -1 && pos2 != -1) {
-				Term params = Parser.getTerm(linePart.substring(pos + 1, pos2), memory);
+				Term params = Parser.getTerm(linePart.substring(pos + 1, pos2), memory, false);
 				List<Atom> pars = Parser.getParameters(params);
 				boolean dimed = memory.getVariable(var.getName()) != null;
 				if (!dimed) {
@@ -50,13 +54,13 @@ public class Let extends AbstractCommand {
 					}
 					var = new Variable(var.getName(), null, pis);
 					var.clear();
-				} 
+				}
 				indexTerm = params;
 			} else {
 				throw new RuntimeException("Array index out of bounds error: " + this);
 			}
 		}
-		term = Parser.getTerm(linePart, memory);
+		term = Parser.getTerm(linePart, memory, true);
 		if (!var.getType().equals(term.getType()) && !(var.getType().equals(Type.REAL) && term.getType().equals(Type.INTEGER))) {
 			throw new RuntimeException("Type mismatch error: " + linePart);
 		}

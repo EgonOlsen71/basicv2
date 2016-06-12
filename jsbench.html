@@ -1,0 +1,32 @@
+<html>
+<head>
+<script type="text/javascript">
+	var start = new Date().getTime();
+	var w = 501;
+	var f = new Array(w);
+	var p = 1;
+	var a = 3;
+	var s = 0;
+	var x = 0;
+	do {
+		console.log(a);
+		f[p] = a;
+		p++;
+		if (p <= w) {
+			a += 2;
+			x = 1;
+			do {
+				s = a / f[x];
+				if (s == parseInt(s,10)) {
+					a += 2;
+					x = 1;
+					continue;
+				}
+				x++;
+			} while (x < p && f[x] * f[x] <= a);
+		}
+	} while (p < w);
+	alert((new Date().getTime()-start)+"ms");
+</script>
+</head>
+</html>

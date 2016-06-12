@@ -3,6 +3,7 @@ package sixtyfour.parser.logic;
 import java.util.ArrayList;
 import java.util.List;
 
+import sixtyfour.elements.Type;
 import sixtyfour.system.Machine;
 
 public class LogicTerm implements LogicBlock {
@@ -24,7 +25,7 @@ public class LogicTerm implements LogicBlock {
 	}
 
 	@Override
-	public boolean eval(Machine machine) {
+	public boolean evalToBoolean(Machine machine) {
 		if (blocks.size() == 0) {
 			return true;
 		}
@@ -32,7 +33,11 @@ public class LogicTerm implements LogicBlock {
 		for (int i = 0; i < blocks.size(); i++) {
 			LogicBlock nextBlock = blocks.get(i);
 			LogicOp nextOp = ops.get(i);
-			res = nextOp.eval(machine, res, nextBlock);
+			if (res || !nextOp.isAnd()) {
+				// Skip unnecessary calculations (res is false AND something
+				// will always be false anyway)
+				res = nextOp.eval(machine, res, nextBlock);
+			}
 		}
 
 		if (not) {
@@ -66,6 +71,17 @@ public class LogicTerm implements LogicBlock {
 			sb.append("(").append(nextBlock).append(" ").append(i != blocks.size() - 1 ? nextOp : "").append(")");
 		}
 		return sb.toString();
+	}
+
+	@Override
+	public Object eval(Machine machine) {
+		boolean ok = evalToBoolean(machine);
+		return ok ? -1 : 0;
+	}
+
+	@Override
+	public Type getType() {
+		return Type.INTEGER;
 	}
 
 }

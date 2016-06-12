@@ -15,6 +15,8 @@ import sixtyfour.elements.commands.CommandList;
 import sixtyfour.elements.functions.ArrayAccess;
 import sixtyfour.elements.functions.Function;
 import sixtyfour.elements.functions.FunctionList;
+import sixtyfour.parser.logic.LogicParser;
+import sixtyfour.parser.logic.LogicTerm;
 import sixtyfour.system.Machine;
 
 public class Parser {
@@ -106,7 +108,7 @@ public class Parser {
 			int pos2 = part.lastIndexOf(')');
 			if (pos != -1 && pos2 != -1) {
 				String var = part.substring(0, pos).trim().toUpperCase(Locale.ENGLISH);
-				Term params = Parser.getTerm(part.substring(pos + 1, pos2), memory);
+				Term params = Parser.getTerm(part.substring(pos + 1, pos2), memory, false);
 				List<Atom> pars = getParameters(params);
 				if (pars.size() == 0) {
 					throw new RuntimeException("No array size specified: " + part + "/" + params);
@@ -200,10 +202,12 @@ public class Parser {
 		return fun;
 	}
 
-	public static Term getTerm(String term, Machine memory) {
-		int pos = term.indexOf('=');
-		if (pos != -1) {
-			term = term.substring(pos + 1);
+	public static Term getTerm(String term, Machine memory, boolean stripAssignment) {
+		if (stripAssignment) {
+			int pos = term.indexOf('=');
+			if (pos != -1) {
+				term = term.substring(pos + 1);
+			}
 		}
 		term = addBrackets(term);
 		// System.out.println(term);
@@ -463,7 +467,13 @@ public class Parser {
 					if (open) {
 						String sub = term.substring(start + 1, i);
 						// System.out.println("Sub: "+sub);
-						Term res = createTerm(sub, termMap, memory);
+						boolean logic = LogicParser.isLogicTerm(sub);
+						Term res = null;
+						if (!logic) {
+							res = createTerm(sub, termMap, memory);
+						} else {
+							res = createLogicTerm(sub, termMap, memory);
+						}
 						if (res != null) {
 							String termKey = null;
 							int index = termMap.size();
@@ -502,13 +512,30 @@ public class Parser {
 		}
 	}
 
-	private static Term createTerm(String term, Map<String, Term> termMap, Machine memory) {
+	private static Term createLogicTerm(String term, Map<String, Term> termMap, Machine machine) {
 		if (!term.contains("(") && !term.contains(")")) {
 			if (isTermPlaceholder(term)) {
 				return termMap.get(term);
 			}
 			Term t = new Term(term);
-			t = build(t, termMap, memory);
+			LogicTerm logicTerm = LogicParser.getTerm(term, machine);
+			t.setLeft(logicTerm);
+			if (!t.isComplete()) {
+				t.setOperator(Operator.NOP);
+				t.setRight(new Constant<Integer>(0));
+			}
+			return t;
+		}
+		return null;
+	}
+
+	private static Term createTerm(String term, Map<String, Term> termMap, Machine machine) {
+		if (!term.contains("(") && !term.contains(")")) {
+			if (isTermPlaceholder(term)) {
+				return termMap.get(term);
+			}
+			Term t = new Term(term);
+			t = build(t, termMap, machine);
 			if (!t.isComplete()) {
 				t.setOperator(Operator.NOP);
 				t.setRight(new Constant<Integer>(0));

@@ -7,4 +7,5 @@ public interface LogicOp {
 
 	boolean eval(Machine machine, boolean state, LogicBlock block);
 
+	boolean isAnd();
 }

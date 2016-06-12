@@ -49,7 +49,7 @@ public class If extends AbstractCommand {
 	@Override
 	public ProgramCounter execute(Machine machine) {
 		pc.setSkip(false);
-		boolean ok = logicTerm.eval(machine);
+		boolean ok = logicTerm.evalToBoolean(machine);
 		if (ok) {
 			return null;
 		}

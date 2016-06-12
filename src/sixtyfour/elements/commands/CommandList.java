@@ -27,6 +27,7 @@ public class CommandList
       add(new Dim());
       add(new Rem());
       add(new End());
+      add(new Stop());
     }
   });
 

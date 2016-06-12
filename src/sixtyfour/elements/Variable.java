@@ -3,7 +3,12 @@ package sixtyfour.elements;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
+import sixtyfour.elements.commands.Command;
+import sixtyfour.elements.commands.CommandList;
+import sixtyfour.elements.functions.Function;
+import sixtyfour.elements.functions.FunctionList;
 import sixtyfour.parser.Atom;
 import sixtyfour.system.Machine;
 
@@ -22,6 +27,22 @@ public class Variable implements Atom {
 	}
 
 	public Variable(String name, Object value) {
+
+		// Check name for validity
+		String un = name.toUpperCase(Locale.ENGLISH);
+		List<Command> commands = CommandList.getCommands();
+		for (Command command : commands) {
+			if (un.contains(command.getName())) {
+				throw new RuntimeException("Syntax error: " + un);
+			}
+		}
+		List<Function> functions = FunctionList.getFunctions();
+		for (Function function : functions) {
+			if (un.contains(function.getName())) {
+				throw new RuntimeException("Syntax error: " + un);
+			}
+		}
+
 		String woa = name.replace("[]", "");
 		char c = woa.charAt(woa.length() - 1);
 		type = null;

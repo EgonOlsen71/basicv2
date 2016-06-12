@@ -29,7 +29,7 @@ public class Print extends AbstractCommand {
 
 		List<PrintPart> parts = getParts(linePart.substring(5));
 		for (PrintPart part : parts) {
-			part.term = Parser.getTerm(part.part, memory);
+			part.term = Parser.getTerm(part.part, memory, false);
 		}
 		this.parts = parts;
 		return null;
@@ -41,7 +41,7 @@ public class Print extends AbstractCommand {
 			PrintPart part = parts.get(i);
 			char del = part.delimiter;
 			// System.out.println("Del: " + del);
-			String add = "";
+			String add = null;
 			// System.out.println(part.term+" - "+part.term.getLeft());
 			Type type = part.term.getType();
 			if (del == ';' || del == ' ') {
@@ -54,11 +54,18 @@ public class Print extends AbstractCommand {
 			} else if (del == ',') {
 				add = "\t";
 			}
-			String toPrint = part.term.eval(memory).toString();
+			Object obj = part.term.eval(memory);
+			if (obj instanceof Float) {
+				float f = (Float) obj;
+				if (f == (int) f) {
+					obj = (int) f;
+				}
+			}
+			String toPrint = obj.toString();
 			if (add.equals("\n")) {
-				memory.getOutputChannel().println(toPrint);
+				memory.getOutputChannel().println(toPrint, obj instanceof String);
 			} else {
-				memory.getOutputChannel().print(toPrint + add);
+				memory.getOutputChannel().print(toPrint + (add != null ? add : ""), obj instanceof String);
 			}
 		}
 

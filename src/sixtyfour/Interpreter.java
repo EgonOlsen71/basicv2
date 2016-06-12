@@ -76,8 +76,8 @@ public class Interpreter {
 			} catch (Throwable t) {
 				String msg = t.getMessage();
 				String err = "Error in line " + (cl != null ? cl.getNumber() : "??") + (msg != null ? (": " + msg) : "");
-				Logger.log(err);
-				t.printStackTrace();
+				memory.getOutputChannel().println(err);
+				throw t;
 			}
 		}
 		parsed = true;
@@ -91,9 +91,9 @@ public class Interpreter {
 			long start = System.nanoTime();
 			execute(0, 0);
 			long end = System.nanoTime();
-			Logger.log("READY. (" + ((end - start) / 1000000L) + "ms)");
+			memory.getOutputChannel().println("READY. (" + ((end - start) / 1000000L) + "ms)");
 		} else {
-			Logger.log("READY.");
+			memory.getOutputChannel().println("READY.");
 		}
 
 	}
@@ -108,8 +108,11 @@ public class Interpreter {
 				ProgramCounter pc = command.execute(memory);
 				memory.setCurrentCommand(null);
 				if (pc != null) {
-					if (pc.isStop()) {
+					if (pc.isEnd() || pc.isStop()) {
 						lineCnt = lines.size();
+						if (pc.isStop()) {
+							this.memory.getOutputChannel().println("Break in " + num);
+						}
 						break;
 					}
 					if (pc.isSkip()) {

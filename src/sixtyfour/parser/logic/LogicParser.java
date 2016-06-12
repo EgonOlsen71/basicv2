@@ -9,6 +9,11 @@ import sixtyfour.system.Machine;
 
 public class LogicParser {
 
+	public static boolean isLogicTerm(String term) {
+		term = replaceStrings(term, ' ');
+		return (term.contains("AND") || term.contains("OR") || term.contains("NOT") || term.contains("=") || term.contains(">") || term.contains("<"));
+	}
+
 	public static LogicTerm getTerm(String term, Machine machine) {
 		Map<String, LogicTerm> blocks = new HashMap<String, LogicTerm>();
 
@@ -33,7 +38,7 @@ public class LogicParser {
 
 					String partS = stripStrings(part);
 
-					System.out.println("Part: " + part + "/" + partS + "/" + lastPart);
+					//System.out.println("Part: " + part + "/" + partS + "/" + lastPart);
 
 					boolean brackets = partS.contains("(");
 					if ((partS.contains("OR") || partS.contains("AND")) && brackets) {
@@ -56,7 +61,7 @@ public class LogicParser {
 					lastPart = term;
 					lastStart = 0;
 
-					System.out.println("TERM: " + term);
+					//System.out.println("TERM: " + term);
 
 					String nbrack = term.replace("(", "").replace(")", "");
 					if (blocks.containsKey(nbrack)) {
@@ -68,9 +73,29 @@ public class LogicParser {
 		throw new RuntimeException("Syntax error: " + term);
 	}
 
+	public static String replaceStrings(String term, char toReplaceWith) {
+		StringBuilder sb = new StringBuilder();
+		boolean inString = false;
+		for (int i = 0; i < term.length(); i++) {
+			char c = term.charAt(i);
+			if (c == '"') {
+				inString = !inString;
+				if (inString) {
+					sb.append('"');
+				}
+			}
+			if (!inString) {
+				sb.append(c);
+			} else {
+				sb.append(toReplaceWith);
+			}
+		}
+		return sb.toString().toUpperCase(Locale.ENGLISH);
+	}
+
 	private static String createLogicBlock(String toProcess, Map<String, LogicTerm> blocks, Machine machine) {
 
-		System.out.println("To process: " + toProcess);
+		//System.out.println("To process: " + toProcess);
 
 		String[] delims = { "OR", "AND" };
 		String utp = toProcess.toUpperCase(Locale.ENGLISH);
@@ -88,7 +113,7 @@ public class LogicParser {
 				}
 			}
 
-			System.out.println(minPos + "/" + minOp + "/" + curPos);
+			//System.out.println(minPos + "/" + minOp + "/" + curPos);
 
 			String part = toProcess.substring(curPos);
 			LogicOp op = new LogicAnd();
@@ -167,7 +192,7 @@ public class LogicParser {
 				}
 			}
 
-			System.out.println("Terms:" + left + " " + comp + " " + right + "/" + not);
+			//System.out.println("Terms:" + left + " " + comp + " " + right + "/" + not);
 
 			if (left != null) {
 				Comparison compy = new Comparison();
@@ -180,19 +205,19 @@ public class LogicParser {
 					// anyway...
 					left = left.substring(bl);
 				}
-				compy.setLeft(Parser.getTerm(left, machine));
+				compy.setLeft(Parser.getTerm(left, machine, false));
 				if (right != null) {
 					int br = getBracketDelta(right);
 					if (br < 0) {
 						right = right.substring(0, right.length() + br);
 					}
-					compy.setRight(Parser.getTerm(right, machine));
+					compy.setRight(Parser.getTerm(right, machine, false));
 				}
 				if (not) {
 					compy.not();
 				}
 
-				System.out.println("Setted: " + left + " - " + right + "/" + not);
+				//System.out.println("Setted: " + left + " - " + right + "/" + not);
 				block.add(compy, op);
 			}
 
@@ -218,26 +243,6 @@ public class LogicParser {
 			}
 		}
 		return brackets;
-	}
-	
-	public static String replaceStrings(String term, char toReplaceWith) {
-		StringBuilder sb = new StringBuilder();
-		boolean inString = false;
-		for (int i = 0; i < term.length(); i++) {
-			char c = term.charAt(i);
-			if (c == '"') {
-				inString = !inString;
-				if (inString) {
-					sb.append('"');
-				}
-			}
-			if (!inString) {
-				sb.append(c);
-			} else {
-				sb.append(toReplaceWith);
-			}
-		}
-		return sb.toString().toUpperCase(Locale.ENGLISH);
 	}
 
 	private static String stripStrings(String term) {

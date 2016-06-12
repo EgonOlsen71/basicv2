@@ -16,6 +16,7 @@ public class FunctionList {
 			this.add(new Spc());
 			this.add(new Tab());
 			this.add(new Pos());
+			this.add(new Int());
 		}
 	});
 
