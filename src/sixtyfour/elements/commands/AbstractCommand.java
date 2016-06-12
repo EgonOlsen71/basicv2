@@ -2,9 +2,9 @@ package sixtyfour.elements.commands;
 
 import java.util.Locale;
 
-import sixtyfour.parser.ProgramCounter;
+import sixtyfour.ProgramCounter;
+import sixtyfour.elements.Type;
 import sixtyfour.parser.Term;
-import sixtyfour.parser.Type;
 import sixtyfour.system.Machine;
 
 

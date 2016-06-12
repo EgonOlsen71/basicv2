@@ -10,7 +10,6 @@ import sixtyfour.elements.commands.Command;
 import sixtyfour.elements.commands.Rem;
 import sixtyfour.parser.Line;
 import sixtyfour.parser.Parser;
-import sixtyfour.parser.ProgramCounter;
 import sixtyfour.system.Machine;
 
 public class Interpreter {
@@ -19,6 +18,7 @@ public class Interpreter {
 	private Map<Integer, Line> lines = new HashMap<Integer, Line>();
 	private List<Integer> lineNumbers = new ArrayList<Integer>();
 	private Machine memory = null;
+	private boolean parsed = false;
 
 	public Interpreter(String code) {
 		this(code.split("\n"));
@@ -34,51 +34,68 @@ public class Interpreter {
 
 	public void parse() {
 		memory = new Machine();
+		Line cl = null;
 		for (String line : code) {
-			Line cl = Parser.getLine(line);
-			if (lines.containsKey(cl.getNumber())) {
-				throw new RuntimeException("Duplicate line number in: " + line);
-			}
-
-			int lineCnt = lineNumbers.size();
-			cl.setCount(lineCnt);
-
-			lines.put(cl.getNumber(), cl);
-			lineNumbers.add(cl.getNumber());
-			String[] parts = Parser.getParts(cl, memory);
-
-			int pos = 0;
-			for (String part : parts) {
-				do {
-					if (part.trim().length() > 0) {
-						Command command = Parser.getCommand(part);
-						if (command == null) {
-							throw new RuntimeException("Syntax error: " + cl.getNumber() + " " + cl.getLine());
-						}
-						part = command.parse(part, lineCnt, cl.getNumber(), pos, memory);
-
-						memory.addCommand(command);
-						cl.addCommand(command);
-						pos++;
-						if (Rem.REM_MARKER.equals(part)) {
-							break;
-						}
-					} else {
-						part = null;
-					}
-				} while (part != null);
-				if (Rem.REM_MARKER.equals(part)) {
-					break;
+			try {
+				cl = Parser.getLine(line);
+				if (lines.containsKey(cl.getNumber())) {
+					throw new RuntimeException("Duplicate line number in: " + line);
 				}
+
+				int lineCnt = lineNumbers.size();
+				cl.setCount(lineCnt);
+
+				lines.put(cl.getNumber(), cl);
+				lineNumbers.add(cl.getNumber());
+				String[] parts = Parser.getParts(cl, memory);
+
+				int pos = 0;
+				for (String part : parts) {
+					do {
+						if (part.trim().length() > 0) {
+							Command command = Parser.getCommand(part);
+							if (command == null) {
+								throw new RuntimeException("Syntax error: " + cl.getNumber() + " " + cl.getLine());
+							}
+							part = command.parse(part, lineCnt, cl.getNumber(), pos, memory);
+
+							memory.addCommand(command);
+							cl.addCommand(command);
+							pos++;
+							if (Rem.REM_MARKER.equals(part)) {
+								break;
+							}
+						} else {
+							part = null;
+						}
+					} while (part != null);
+					if (Rem.REM_MARKER.equals(part)) {
+						break;
+					}
+				}
+			} catch (Throwable t) {
+				String msg = t.getMessage();
+				String err = "Error in line " + (cl != null ? cl.getNumber() : "??") + (msg != null ? (": " + msg) : "");
+				Logger.log(err);
+				t.printStackTrace();
 			}
 		}
+		parsed = true;
 	}
 
 	public void run() {
-		long start = System.nanoTime();
-		execute(0, 0);
-		long end = System.nanoTime();
-		Logger.log("READY. (" + ((end - start) / 1000000L) + "ms)");
+		if (!parsed) {
+			parse();
+		}
+		if (parsed) {
+			long start = System.nanoTime();
+			execute(0, 0);
+			long end = System.nanoTime();
+			Logger.log("READY. (" + ((end - start) / 1000000L) + "ms)");
+		} else {
+			Logger.log("READY.");
+		}
+
 	}
 
 	public void execute(int lineCnt, int pos) {
@@ -93,6 +110,9 @@ public class Interpreter {
 				if (pc != null) {
 					if (pc.isStop()) {
 						lineCnt = lines.size();
+						break;
+					}
+					if (pc.isSkip()) {
 						break;
 					}
 					if (pc.getLineNumber() == -1) {

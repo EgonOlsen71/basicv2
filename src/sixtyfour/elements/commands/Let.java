@@ -2,12 +2,12 @@ package sixtyfour.elements.commands;
 
 import java.util.List;
 
+import sixtyfour.ProgramCounter;
+import sixtyfour.elements.Type;
+import sixtyfour.elements.Variable;
 import sixtyfour.parser.Atom;
 import sixtyfour.parser.Parser;
-import sixtyfour.parser.ProgramCounter;
 import sixtyfour.parser.Term;
-import sixtyfour.parser.Type;
-import sixtyfour.parser.Variable;
 import sixtyfour.system.Machine;
 
 public class Let extends AbstractCommand {

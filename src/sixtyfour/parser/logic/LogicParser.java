@@ -10,11 +10,11 @@ import sixtyfour.system.Machine;
 public class LogicParser {
 
 	public static LogicTerm getTerm(String term, Machine machine) {
-
 		Map<String, LogicTerm> blocks = new HashMap<String, LogicTerm>();
 
 		boolean inString = false;
 		term = "(" + Parser.removeWhiteSpace(term) + ")";
+		Parser.checkBrackets(term);
 		String lastPart = term;
 		int lastStart = 0;
 
@@ -129,21 +129,32 @@ public class LogicParser {
 					throw new RuntimeException("Syntax error: " + part);
 				}
 				right = right.substring(comp.getTermLength());
-				not = left.toUpperCase(Locale.ENGLISH).startsWith("NOT");
-				if (not) {
-					left = left.substring(3);
-				}
+
+				boolean nt = false;
+				do {
+					nt = left.toUpperCase(Locale.ENGLISH).startsWith("NOT");
+					if (nt) {
+						left = left.substring(3);
+						not = !not;
+					}
+				} while (nt);
+
 			} else {
 				if (part.contains("}")) {
-					part = part.replace("(", "").replace(")", "}");
-					not = part.toUpperCase(Locale.ENGLISH).startsWith("NOT");
-					if (not) {
-						part = part.substring(3);
-					}
+					part = part.replace("(", "").replace(")", "");
+
+					boolean nt = false;
+					do {
+						nt = part.toUpperCase(Locale.ENGLISH).startsWith("NOT");
+						if (nt) {
+							part = part.substring(3);
+							not = !not;
+						}
+					} while (nt);
 					if (!part.startsWith("{")) {
 						throw new RuntimeException("Syntax error: " + part);
 					}
-					
+
 					LogicTerm lt = blocks.get(part);
 					if (not) {
 						lt.not();
@@ -208,6 +219,26 @@ public class LogicParser {
 		}
 		return brackets;
 	}
+	
+	public static String replaceStrings(String term, char toReplaceWith) {
+		StringBuilder sb = new StringBuilder();
+		boolean inString = false;
+		for (int i = 0; i < term.length(); i++) {
+			char c = term.charAt(i);
+			if (c == '"') {
+				inString = !inString;
+				if (inString) {
+					sb.append('"');
+				}
+			}
+			if (!inString) {
+				sb.append(c);
+			} else {
+				sb.append(toReplaceWith);
+			}
+		}
+		return sb.toString().toUpperCase(Locale.ENGLISH);
+	}
 
 	private static String stripStrings(String term) {
 		StringBuilder sb = new StringBuilder();
@@ -216,6 +247,9 @@ public class LogicParser {
 			char c = term.charAt(i);
 			if (c == '"') {
 				inString = !inString;
+				if (inString) {
+					sb.append('"');
+				}
 			}
 			if (!inString) {
 				sb.append(c);

@@ -1,7 +1,7 @@
 package sixtyfour.elements.commands;
 
+import sixtyfour.ProgramCounter;
 import sixtyfour.parser.Atom;
-import sixtyfour.parser.ProgramCounter;
 import sixtyfour.parser.Term;
 import sixtyfour.system.Machine;
 

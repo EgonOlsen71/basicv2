@@ -19,13 +19,12 @@ public class InterpreterTest {
 		testPoke();
 		testGoto();
 		testSpeed();
-		test();
+		testIf();
 	}
 
-	private static void test() {
-		String code = "10 a=5\n20b=a";
+	private static void testIf() {
+		String code = "10 a=5\n20ifa=5thenprint\"a is 5\"\n30ifa<>5thenprint\"a is not 5\"\n40if(a>2+1*1)goto100:print\"Should not be here!\"\n50print\"Should not print this\"\n100print\"We are here...\"\n110if((a<>10))then print\"1.print\":print\"2.print\":b=34+a:printb";
 		Interpreter inter = new Interpreter(code);
-		inter.parse();
 		inter.run();
 	}
 

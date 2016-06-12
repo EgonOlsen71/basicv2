@@ -1,6 +1,6 @@
 package sixtyfour.test;
 
-import sixtyfour.parser.Variable;
+import sixtyfour.elements.Variable;
 import sixtyfour.parser.logic.LogicParser;
 import sixtyfour.parser.logic.LogicTerm;
 import sixtyfour.system.Machine;
@@ -30,7 +30,15 @@ public class LogicTest {
 		System.out.println("Result: " + res.eval(machine));
 		System.out.println("Parsed: " + res);
 		
-		res = LogicParser.getTerm("(A<B) AND (C+D <> (D+E)/A OR A<(E+D))", machine);
+		res = LogicParser.getTerm("(A<B) AND ((NOT(((C+D <> (D+E)/A OR A>(E+D))))))", machine);
+		System.out.println("Result: " + res.eval(machine));
+		System.out.println("Parsed: " + res);
+		
+		res = LogicParser.getTerm("(A<B) AND (C+D > (D+E)/A OR A<(E+D))", machine);
+		System.out.println("Result: " + res.eval(machine));
+		System.out.println("Parsed: " + res);
+		
+		res = LogicParser.getTerm("NOTNOTNOT (A<B) AND (C+D > (D+E)/A OR A<(E+D))", machine);
 		System.out.println("Result: " + res.eval(machine));
 		System.out.println("Parsed: " + res);
 	}

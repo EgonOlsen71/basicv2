@@ -14,7 +14,6 @@ public class CommandList
       add(new Let());
       add(new For());
       add(new If());
-      add(new Then());
       add(new Goto());
       add(new Gosub());
       add(new For());

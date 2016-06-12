@@ -1,4 +1,4 @@
-package sixtyfour.parser;
+package sixtyfour;
 
 public class ProgramCounter {
 
@@ -6,6 +6,7 @@ public class ProgramCounter {
 	private int linePos;
 	private int lineNumber = -1;
 	private boolean stop = false;
+	private boolean skip = false;
 
 	public ProgramCounter(int cnt, int pos) {
 		this.lineCnt = cnt;
@@ -42,6 +43,14 @@ public class ProgramCounter {
 
 	public void setLineNumber(int lineNumber) {
 		this.lineNumber = lineNumber;
+	}
+
+	public boolean isSkip() {
+		return skip;
+	}
+
+	public void setSkip(boolean skip) {
+		this.skip = skip;
 	}
 
 }

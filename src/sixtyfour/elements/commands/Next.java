@@ -3,8 +3,8 @@ package sixtyfour.elements.commands;
 import java.util.List;
 import java.util.Locale;
 
+import sixtyfour.ProgramCounter;
 import sixtyfour.parser.Parser;
-import sixtyfour.parser.ProgramCounter;
 import sixtyfour.system.Machine;
 
 

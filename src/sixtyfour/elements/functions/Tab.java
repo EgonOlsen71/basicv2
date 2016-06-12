@@ -1,6 +1,6 @@
 package sixtyfour.elements.functions;
 
-import sixtyfour.parser.Type;
+import sixtyfour.elements.Type;
 import sixtyfour.system.Machine;
 
 

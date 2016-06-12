@@ -1,5 +1,6 @@
-package sixtyfour.parser;
+package sixtyfour.elements;
 
+import sixtyfour.parser.Atom;
 import sixtyfour.system.Machine;
 
 public class Constant<T> implements Atom {

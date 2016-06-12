@@ -1,7 +1,7 @@
 package sixtyfour.elements.functions;
 
+import sixtyfour.elements.Type;
 import sixtyfour.elements.commands.Print;
-import sixtyfour.parser.Type;
 import sixtyfour.system.Machine;
 
 

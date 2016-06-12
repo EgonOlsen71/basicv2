@@ -1,7 +1,7 @@
 package sixtyfour.parser.logic;
 
+import sixtyfour.elements.Type;
 import sixtyfour.parser.Term;
-import sixtyfour.parser.Type;
 import sixtyfour.system.Machine;
 
 public class Comparison implements LogicBlock {

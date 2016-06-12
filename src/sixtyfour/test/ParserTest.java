@@ -1,10 +1,10 @@
 package sixtyfour.test;
 
+import sixtyfour.elements.Variable;
 import sixtyfour.elements.commands.Command;
 import sixtyfour.parser.Line;
 import sixtyfour.parser.Parser;
 import sixtyfour.parser.Term;
-import sixtyfour.parser.Variable;
 import sixtyfour.system.Machine;
 
 public class ParserTest {

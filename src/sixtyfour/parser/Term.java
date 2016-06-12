@@ -1,5 +1,7 @@
 package sixtyfour.parser;
 
+import sixtyfour.elements.Constant;
+import sixtyfour.elements.Type;
 import sixtyfour.system.Machine;
 
 public class Term implements Atom {

@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import sixtyfour.elements.Constant;
+import sixtyfour.elements.Type;
+import sixtyfour.elements.Variable;
 import sixtyfour.elements.commands.Command;
 import sixtyfour.elements.commands.CommandList;
 import sixtyfour.elements.functions.ArrayAccess;
@@ -28,6 +31,15 @@ public class Parser {
 
 	public static String[] getParts(Line line, Machine memory) {
 		return line.getLine().split(":");
+	}
+
+	public static boolean isInteger(String txt) {
+		try {
+			Integer.parseInt(txt);
+		} catch (NumberFormatException nfe) {
+			return false;
+		}
+		return true;
 	}
 
 	public static Command getCommand(String linePart) {
@@ -205,6 +217,16 @@ public class Parser {
 	}
 
 	public static String addBrackets(String term) {
+		checkBrackets(term);
+		// Wrap every term into brackets no matter what. This makes parsing a
+		// lot easier afterwards...
+		if (!term.startsWith("(") || !term.endsWith(")")) {
+			term = "(" + term + ")";
+		}
+		return addBrackets(addBrackets(handleNegations(replaceLogicOperators(term)), 0), 1);
+	}
+
+	public static void checkBrackets(String term) {
 		int open = 0;
 		for (int i = 0; i < term.length(); i++) {
 			char c = term.charAt(i);
@@ -217,12 +239,6 @@ public class Parser {
 		if (open != 0) {
 			throw new RuntimeException("Invalid term: " + term + "/" + open);
 		}
-		// Wrap every term into brackets no matter what. This makes parsing a
-		// lot easier afterwards...
-		if (!term.startsWith("(") || !term.endsWith(")")) {
-			term = "(" + term + ")";
-		}
-		return addBrackets(addBrackets(handleNegations(replaceLogicOperators(term)), 0), 1);
 	}
 
 	private static String replaceLogicOperators(String term) {
