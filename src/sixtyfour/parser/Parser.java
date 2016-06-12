@@ -108,7 +108,7 @@ public class Parser {
 			int pos2 = part.lastIndexOf(')');
 			if (pos != -1 && pos2 != -1) {
 				String var = part.substring(0, pos).trim().toUpperCase(Locale.ENGLISH);
-				Term params = Parser.getTerm(part.substring(pos + 1, pos2), memory, false);
+				Term params = Parser.getTerm(part.substring(pos + 1, pos2), memory, false, true);
 				List<Atom> pars = getParameters(params);
 				if (pars.size() == 0) {
 					throw new RuntimeException("No array size specified: " + part + "/" + params);
@@ -183,6 +183,26 @@ public class Parser {
 		return fun;
 	}
 
+	public static String replaceStrings(String term, char toReplaceWith) {
+		StringBuilder sb = new StringBuilder();
+		boolean inString = false;
+		for (int i = 0; i < term.length(); i++) {
+			char c = term.charAt(i);
+			if (c == '"') {
+				inString = !inString;
+				if (inString) {
+					sb.append('"');
+				}
+			}
+			if (!inString) {
+				sb.append(c);
+			} else {
+				sb.append(toReplaceWith);
+			}
+		}
+		return sb.toString().toUpperCase(Locale.ENGLISH);
+	}
+
 	public static Function getArrayAccessFunction(String linePart, Variable var, Map<String, Term> termMap, Machine memory) {
 		ArrayAccess fun = new ArrayAccess();
 		int pos = linePart.indexOf('(');
@@ -202,7 +222,7 @@ public class Parser {
 		return fun;
 	}
 
-	public static Term getTerm(String term, Machine memory, boolean stripAssignment) {
+	public static Term getTerm(String term, Machine memory, boolean stripAssignment, boolean checkForLogicTerm) {
 		if (stripAssignment) {
 			int pos = term.indexOf('=');
 			if (pos != -1) {
@@ -211,13 +231,13 @@ public class Parser {
 		}
 		term = addBrackets(term);
 		// System.out.println(term);
-		return createTerms(term, new HashMap<String, Term>(), memory);
+		return createTerms(term, new HashMap<String, Term>(), memory, checkForLogicTerm);
 	}
 
-	public static Term getTerm(Command command, String term, Machine memory) {
+	public static Term getTerm(Command command, String term, Machine memory, boolean checkForLogicTerm) {
 		term = removeWhiteSpace(term.substring(command.getName().length()));
 		term = addBrackets(term);
-		return createTerms(term, new HashMap<String, Term>(), memory);
+		return createTerms(term, new HashMap<String, Term>(), memory, checkForLogicTerm);
 	}
 
 	public static String addBrackets(String term) {
@@ -245,7 +265,7 @@ public class Parser {
 		}
 	}
 
-	private static String replaceLogicOperators(String term) {
+	public static String replaceLogicOperators(String term) {
 		// Replace logic operators by placeholder chars. NOT is actually hasn't
 		// two operands, but we abuse the current logic by faking it.
 
@@ -453,7 +473,7 @@ public class Parser {
 		return 0;
 	}
 
-	private static Term createTerms(String term, Map<String, Term> termMap, Machine memory) {
+	private static Term createTerms(String term, Map<String, Term> termMap, Machine memory, boolean checkForLogicTerm) {
 		try {
 			int start = 0;
 			boolean open = false;
@@ -467,7 +487,7 @@ public class Parser {
 					if (open) {
 						String sub = term.substring(start + 1, i);
 						// System.out.println("Sub: "+sub);
-						boolean logic = LogicParser.isLogicTerm(sub);
+						boolean logic = checkForLogicTerm && LogicParser.isLogicTerm(sub);
 						Term res = null;
 						if (!logic) {
 							res = createTerm(sub, termMap, memory);
@@ -488,6 +508,9 @@ public class Parser {
 							term = term.substring(0, start) + termKey + term.substring(i + 1);
 							// System.out.println("2: " + term);
 							// System.out.println(res);
+							if (term.equals(termKey)) {
+								break;
+							}
 						}
 						open = false;
 						i = -1;
@@ -590,9 +613,10 @@ public class Parser {
 
 	private static Atom createAtom(String part, Map<String, Term> termMap, Machine memory) {
 		// Identify commands
-		Command command = Parser.getCommand(part);
+		String strippedPart = Parser.replaceStrings(part, ' ');
+		Command command = Parser.getCommand(strippedPart);
 		if (command != null) {
-			throw new RuntimeException("Syntax error: " + part);
+			throw new RuntimeException("Syntax error: " + part + "/" + command.getName());
 		}
 
 		// Identify functions

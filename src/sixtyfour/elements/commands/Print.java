@@ -29,7 +29,7 @@ public class Print extends AbstractCommand {
 
 		List<PrintPart> parts = getParts(linePart.substring(5));
 		for (PrintPart part : parts) {
-			part.term = Parser.getTerm(part.part, memory, false);
+			part.term = Parser.getTerm(part.part, memory, false, true);
 		}
 		this.parts = parts;
 		return null;
@@ -62,7 +62,7 @@ public class Print extends AbstractCommand {
 				}
 			}
 			String toPrint = obj.toString();
-			if (add.equals("\n")) {
+			if (("\n").equals(add)) {
 				memory.getOutputChannel().println(toPrint, obj instanceof String);
 			} else {
 				memory.getOutputChannel().print(toPrint + (add != null ? add : ""), obj instanceof String);

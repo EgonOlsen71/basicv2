@@ -44,7 +44,7 @@ public class Let extends AbstractCommand {
 			int pos = linePart.indexOf('(');
 			int pos2 = linePart.lastIndexOf(')');
 			if (pos != -1 && pos2 != -1) {
-				Term params = Parser.getTerm(linePart.substring(pos + 1, pos2), memory, false);
+				Term params = Parser.getTerm(linePart.substring(pos + 1, pos2), memory, false, true);
 				List<Atom> pars = Parser.getParameters(params);
 				boolean dimed = memory.getVariable(var.getName()) != null;
 				if (!dimed) {
@@ -60,7 +60,7 @@ public class Let extends AbstractCommand {
 				throw new RuntimeException("Array index out of bounds error: " + this);
 			}
 		}
-		term = Parser.getTerm(linePart, memory, true);
+		term = Parser.getTerm(linePart, memory, true, true);
 		if (!var.getType().equals(term.getType()) && !(var.getType().equals(Type.REAL) && term.getType().equals(Type.INTEGER))) {
 			throw new RuntimeException("Type mismatch error: " + linePart);
 		}

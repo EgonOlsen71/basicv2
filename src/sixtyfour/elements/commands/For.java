@@ -65,7 +65,7 @@ public class For
 
     String assignment = linePart.substring(0, posTo);
     var = Parser.getVariable(assignment, memory);
-    term = Parser.getTerm(assignment, memory, true);
+    term = Parser.getTerm(assignment, memory, true, true);
     if (!var.getType().equals(term.getType())
         && !(var.getType().equals(Type.REAL) && term.getType().equals(Type.INTEGER)))
     {
@@ -83,7 +83,7 @@ public class For
     {
       toTxt = linePart.substring(posTo + 2, posStep);
     }
-    endTerm = Parser.getTerm(toTxt, memory, false);
+    endTerm = Parser.getTerm(toTxt, memory, false, true);
 
     if (posStep != -1)
     {
@@ -93,7 +93,7 @@ public class For
     {
       stepTxt = "1";
     }
-    stepTerm = Parser.getTerm(stepTxt, memory, false);
+    stepTerm = Parser.getTerm(stepTxt, memory, false, true);
 
     if (!Parser.isNumberType(endTerm))
     {

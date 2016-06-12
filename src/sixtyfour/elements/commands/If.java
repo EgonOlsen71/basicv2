@@ -18,7 +18,8 @@ public class If extends AbstractCommand {
 	@Override
 	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, Machine machine) {
 		linePart = Parser.removeWhiteSpace(linePart);
-		String uPart = LogicParser.replaceStrings(linePart, '.');
+
+		String uPart = Parser.replaceStrings(linePart, '.');
 		int tp = uPart.indexOf("THEN");
 		int gp = uPart.indexOf("GOTO");
 		if (tp == -1 && gp == -1) {
@@ -34,7 +35,8 @@ public class If extends AbstractCommand {
 			isGoto = true;
 		}
 		String firstTerm = linePart.substring(2, termEnd);
-		System.out.println(firstTerm+"/"+linePart+"/"+uPart);
+
+		// System.out.println(firstTerm+"/"+linePart+"/"+uPart);
 		logicTerm = LogicParser.getTerm(firstTerm, machine);
 		if (isGoto) {
 			return linePart.substring(termEnd);

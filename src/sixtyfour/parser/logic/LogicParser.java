@@ -10,13 +10,13 @@ import sixtyfour.system.Machine;
 public class LogicParser {
 
 	public static boolean isLogicTerm(String term) {
-		term = replaceStrings(term, ' ');
+		term = Parser.replaceStrings(term, ' ');
 		return (term.contains("AND") || term.contains("OR") || term.contains("NOT") || term.contains("=") || term.contains(">") || term.contains("<"));
 	}
 
 	public static LogicTerm getTerm(String term, Machine machine) {
 		Map<String, LogicTerm> blocks = new HashMap<String, LogicTerm>();
-
+		term = processLogicOperations(term);
 		boolean inString = false;
 		term = "(" + Parser.removeWhiteSpace(term) + ")";
 		Parser.checkBrackets(term);
@@ -38,7 +38,8 @@ public class LogicParser {
 
 					String partS = stripStrings(part);
 
-					//System.out.println("Part: " + part + "/" + partS + "/" + lastPart);
+					// System.out.println("Part: " + part + "/" + partS + "/" +
+					// lastPart);
 
 					boolean brackets = partS.contains("(");
 					if ((partS.contains("OR") || partS.contains("AND")) && brackets) {
@@ -61,7 +62,7 @@ public class LogicParser {
 					lastPart = term;
 					lastStart = 0;
 
-					//System.out.println("TERM: " + term);
+					// System.out.println("TERM: " + term);
 
 					String nbrack = term.replace("(", "").replace(")", "");
 					if (blocks.containsKey(nbrack)) {
@@ -73,29 +74,47 @@ public class LogicParser {
 		throw new RuntimeException("Syntax error: " + term);
 	}
 
-	public static String replaceStrings(String term, char toReplaceWith) {
-		StringBuilder sb = new StringBuilder();
-		boolean inString = false;
-		for (int i = 0; i < term.length(); i++) {
-			char c = term.charAt(i);
-			if (c == '"') {
-				inString = !inString;
-				if (inString) {
-					sb.append('"');
+	private static String processLogicOperations(String term) {
+		// Try to replace logic operations in brackets by placeholders to avoid
+		// parser confusion...
+		String[] reps = { ")=", ")>", ")<" };
+		for (String rep : reps) {
+			int pos = 0;
+			do {
+				pos = term.indexOf(rep, pos);
+				if (pos != -1) {
+					boolean inString = false;
+					int brackets = 0;
+					for (int i = pos; i >= 0; i--) {
+						char c = term.charAt(i);
+						if (c == '"') {
+							inString = !inString;
+						}
+						if (!inString) {
+							if (c == ')') {
+								brackets--;
+							} else if (c == '(') {
+								brackets++;
+								if (brackets == 0) {
+									String part = term.substring(i, pos + 1);
+									String partn = Parser.replaceLogicOperators(part);
+									term = term.substring(0, i) + partn + term.substring(pos + 1);
+									pos = pos - (part.length() - partn.length());
+									break;
+								}
+							}
+						}
+					}
+					pos += 2;
 				}
-			}
-			if (!inString) {
-				sb.append(c);
-			} else {
-				sb.append(toReplaceWith);
-			}
+			} while (pos != -1);
 		}
-		return sb.toString().toUpperCase(Locale.ENGLISH);
+		return term;
 	}
 
 	private static String createLogicBlock(String toProcess, Map<String, LogicTerm> blocks, Machine machine) {
 
-		//System.out.println("To process: " + toProcess);
+		// System.out.println("To process: " + toProcess);
 
 		String[] delims = { "OR", "AND" };
 		String utp = toProcess.toUpperCase(Locale.ENGLISH);
@@ -113,7 +132,7 @@ public class LogicParser {
 				}
 			}
 
-			//System.out.println(minPos + "/" + minOp + "/" + curPos);
+			// System.out.println(minPos + "/" + minOp + "/" + curPos);
 
 			String part = toProcess.substring(curPos);
 			LogicOp op = new LogicAnd();
@@ -192,7 +211,8 @@ public class LogicParser {
 				}
 			}
 
-			//System.out.println("Terms:" + left + " " + comp + " " + right + "/" + not);
+			// System.out.println("Terms:" + left + " " + comp + " " + right +
+			// "/" + not);
 
 			if (left != null) {
 				Comparison compy = new Comparison();
@@ -205,19 +225,20 @@ public class LogicParser {
 					// anyway...
 					left = left.substring(bl);
 				}
-				compy.setLeft(Parser.getTerm(left, machine, false));
+				compy.setLeft(Parser.getTerm(left, machine, false, false));
 				if (right != null) {
 					int br = getBracketDelta(right);
 					if (br < 0) {
 						right = right.substring(0, right.length() + br);
 					}
-					compy.setRight(Parser.getTerm(right, machine, false));
+					compy.setRight(Parser.getTerm(right, machine, false, false));
 				}
 				if (not) {
 					compy.not();
 				}
 
-				//System.out.println("Setted: " + left + " - " + right + "/" + not);
+				// System.out.println("Setted: " + left + " - " + right + "/" +
+				// not);
 				block.add(compy, op);
 			}
 

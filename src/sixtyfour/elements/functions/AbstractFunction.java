@@ -68,7 +68,7 @@ public abstract class AbstractFunction
   @Override
   public void parse(String linePart, Machine memory)
   {
-    this.setTerm(Parser.getTerm(linePart, memory, false));
+    this.setTerm(Parser.getTerm(linePart, memory, false, true));
   }
 
 

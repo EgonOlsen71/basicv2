@@ -27,7 +27,7 @@ public class ParserTest {
 		String wbres = Parser.addBrackets(term);
 		System.out.println(wbres);
 
-		Term res = Parser.getTerm(term, memory, false);
+		Term res = Parser.getTerm(term, memory, false, true);
 		System.out.println(res);
 		System.out.println("Value: " + res.eval(memory));
 	}
@@ -43,7 +43,7 @@ public class ParserTest {
 		String wbres = Parser.addBrackets(term);
 		System.out.println(wbres);
 
-		Term res = Parser.getTerm(term, memory, false);
+		Term res = Parser.getTerm(term, memory, false, true);
 		System.out.println(res);
 		System.out.println("Value: " + res.eval(memory));
 	}
@@ -61,7 +61,7 @@ public class ParserTest {
 		memory.add(new Variable("I", 4.1234));
 		String term = "(a^z * (b + c / (z+-sin(u+z*k))) * d)/cos(i) + cos(-88)";
 		// String term="sin(-1)";
-		Term res = Parser.getTerm(term, memory, false);
+		Term res = Parser.getTerm(term, memory, false, true);
 		System.out.println(res);
 		System.out.println("Value: " + res.eval(memory));
 		System.out.println(((5f * ((5.6f + (14f / (12f + (-1f * Math.sin((1.4f + (12f * -2f))))))) * 3f)) / (Math.cos((4.1234f)) + Math.cos(88f))));
