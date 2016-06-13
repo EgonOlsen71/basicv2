@@ -1,7 +1,7 @@
 package sixtyfour.elements.commands;
 
-import sixtyfour.ProgramCounter;
 import sixtyfour.system.Machine;
+import sixtyfour.system.ProgramCounter;
 
 public class End extends AbstractCommand {
 

@@ -32,7 +32,29 @@ public class Parser {
 	}
 
 	public static String[] getParts(Line line, Machine memory) {
-		return line.getLine().split(":");
+		List<String> parts = new ArrayList<String>();
+		StringBuilder sb = new StringBuilder();
+		boolean inString = false;
+		String term = line.getLine();
+		for (int i = 0; i < term.length(); i++) {
+			char c = term.charAt(i);
+			if (c == '"') {
+				inString = !inString;
+			}
+			if (inString || c != ':') {
+				sb.append(c);
+			}
+			if (!inString) {
+				if (c == ':') {
+					parts.add(sb.toString());
+					sb.setLength(0);
+				}
+			}
+		}
+		if (sb.length() > 0) {
+			parts.add(sb.toString());
+		}
+		return parts.toArray(new String[parts.size()]);
 	}
 
 	public static boolean isInteger(String txt) {
@@ -223,6 +245,13 @@ public class Parser {
 	}
 
 	public static Term getTerm(String term, Machine memory, boolean stripAssignment, boolean checkForLogicTerm) {
+		return getTerm(term, memory, stripAssignment, checkForLogicTerm, null);
+	}
+
+	public static Term getTerm(String term, Machine memory, boolean stripAssignment, boolean checkForLogicTerm, Map<String, Term> termMap) {
+		if (termMap == null) {
+			termMap = new HashMap<String, Term>();
+		}
 		if (stripAssignment) {
 			int pos = term.indexOf('=');
 			if (pos != -1) {
@@ -231,7 +260,7 @@ public class Parser {
 		}
 		term = addBrackets(term);
 		// System.out.println(term);
-		return createTerms(term, new HashMap<String, Term>(), memory, checkForLogicTerm);
+		return createTerms(term, termMap, memory, checkForLogicTerm);
 	}
 
 	public static Term getTerm(Command command, String term, Machine memory, boolean checkForLogicTerm) {
@@ -247,6 +276,8 @@ public class Parser {
 		if (!term.startsWith("(") || !term.endsWith(")")) {
 			term = "(" + term + ")";
 		}
+		term.replace('↑', '^');
+		// System.out.println("Termi: "+term);
 		return addBrackets(addBrackets(handleNegations(replaceLogicOperators(term)), 0), 1);
 	}
 
@@ -268,7 +299,7 @@ public class Parser {
 	public static String replaceLogicOperators(String term) {
 		// Replace logic operators by placeholder chars. NOT is actually hasn't
 		// two operands, but we abuse the current logic by faking it.
-
+		// System.out.println("In: "+term);
 		String[] replacers = { "OR", Operator.getOrOperator(), "AND", Operator.getAndOperator(), "NOT", "(0" + Operator.getNotOperator() };
 		term = removeWhiteSpace(term);
 		String uTerm = term.toUpperCase(Locale.ENGLISH);
@@ -301,6 +332,7 @@ public class Parser {
 				}
 			} while (pos != -1);
 		}
+		// System.out.println("Out: "+term);
 		return term;
 	}
 
@@ -486,7 +518,6 @@ public class Parser {
 				if (c == ')') {
 					if (open) {
 						String sub = term.substring(start + 1, i);
-						// System.out.println("Sub: "+sub);
 						boolean logic = checkForLogicTerm && LogicParser.isLogicTerm(sub);
 						Term res = null;
 						if (!logic) {
@@ -504,7 +535,8 @@ public class Parser {
 							}
 							res.setKey(termKey);
 							termMap.put(termKey, res);
-							// System.out.println("1: " + term);
+							// System.out.println("1: " + term + "/" +
+							// System.identityHashCode(termMap));
 							term = term.substring(0, start) + termKey + term.substring(i + 1);
 							// System.out.println("2: " + term);
 							// System.out.println(res);
@@ -536,12 +568,13 @@ public class Parser {
 	}
 
 	private static Term createLogicTerm(String term, Map<String, Term> termMap, Machine machine) {
+		String termWoBrackets = term.replace("(", "").replace(")", "");
+		if (isTermPlaceholder(termWoBrackets)) {
+			return termMap.get(termWoBrackets);
+		}
 		if (!term.contains("(") && !term.contains(")")) {
-			if (isTermPlaceholder(term)) {
-				return termMap.get(term);
-			}
 			Term t = new Term(term);
-			LogicTerm logicTerm = LogicParser.getTerm(term, machine);
+			LogicTerm logicTerm = LogicParser.getTerm(term, machine, termMap);
 			t.setLeft(logicTerm);
 			if (!t.isComplete()) {
 				t.setOperator(Operator.NOP);
@@ -553,10 +586,11 @@ public class Parser {
 	}
 
 	private static Term createTerm(String term, Map<String, Term> termMap, Machine machine) {
+		String termWoBrackets = term.replace("(", "").replace(")", "");
+		if (isTermPlaceholder(termWoBrackets)) {
+			return termMap.get(termWoBrackets);
+		}
 		if (!term.contains("(") && !term.contains(")")) {
-			if (isTermPlaceholder(term)) {
-				return termMap.get(term);
-			}
 			Term t = new Term(term);
 			t = build(t, termMap, machine);
 			if (!t.isComplete()) {

@@ -11,15 +11,15 @@ public class Cos extends AbstractFunction {
 
 	@Override
 	public Type getType() {
-		return term.getType();
+		return Type.REAL;
 	}
 
 	@Override
 	public Object eval(Machine memory) {
-		if (!getType().equals(Type.STRING)) {
+		if (!term.getType().equals(Type.STRING)) {
 			return Float.valueOf((float) Math.cos(((Number) term.eval(memory)).floatValue()));
 		}
-		throw new RuntimeException("Type mismatch error: " + getType());
+		throw new RuntimeException("Type mismatch error: " + term.getType());
 	}
 
 }

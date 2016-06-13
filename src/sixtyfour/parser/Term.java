@@ -99,20 +99,23 @@ public class Term implements Atom {
 	}
 
 	@Override
-	public Object eval(Machine memory) {
+	public Object eval(Machine machine) {
 		try {
-			memory.setCurrentOperator(operator);
+			machine.setCurrentOperator(operator);
 			if (operator.isNop()) {
-				return left.eval(memory);
+				if (left == null) {
+					throw new RuntimeException("Syntax error!");
+				}
+				return left.eval(machine);
 			}
 			Type type = getType();
 			if (type.equals(Type.STRING)) {
 				if (operator.isPlus()) {
-					return left.eval(memory).toString() + right.eval(memory).toString();
+					return left.eval(machine).toString() + right.eval(machine).toString();
 				}
 			} else {
-				Number n1 = (Number) left.eval(memory);
-				Number n2 = (Number) right.eval(memory);
+				Number n1 = (Number) left.eval(machine);
+				Number n2 = (Number) right.eval(machine);
 				float v1 = 0;
 				if (operator.isPlus()) {
 					v1 = n1.floatValue() + n2.floatValue();
@@ -141,7 +144,7 @@ public class Term implements Atom {
 			}
 			throw new RuntimeException("Unable to evaluate term: " + this.toString());
 		} finally {
-			memory.setCurrentOperator(null);
+			machine.setCurrentOperator(null);
 		}
 	}
 

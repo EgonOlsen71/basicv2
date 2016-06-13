@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import sixtyfour.elements.commands.Command;
@@ -11,13 +12,14 @@ import sixtyfour.elements.commands.Rem;
 import sixtyfour.parser.Line;
 import sixtyfour.parser.Parser;
 import sixtyfour.system.Machine;
+import sixtyfour.system.ProgramCounter;
 
 public class Interpreter {
 
 	private String[] code = null;
 	private Map<Integer, Line> lines = new HashMap<Integer, Line>();
 	private List<Integer> lineNumbers = new ArrayList<Integer>();
-	private Machine memory = null;
+	private Machine machine = null;
 	private boolean parsed = false;
 
 	public Interpreter(String code) {
@@ -28,12 +30,49 @@ public class Interpreter {
 		this.code = Arrays.copyOf(code, code.length);
 	}
 
-	public Machine getMemory() {
-		return memory;
+	public Machine getMachine() {
+		return machine;
+	}
+
+	public String getStringVariable(String name) {
+		Object obj = machine.getVariable(name.toUpperCase(Locale.ENGLISH)).getValue();
+		if (obj instanceof String) {
+			return (String) obj;
+		}
+		return null;
+	}
+
+	public Integer getIntegerVariable(String name) {
+		Object obj = machine.getVariable(name.toUpperCase(Locale.ENGLISH)).getValue();
+		if (obj instanceof Integer) {
+			return (Integer) obj;
+		}
+		return null;
+	}
+
+	public Float getFloatVariable(String name) {
+		Object obj = machine.getVariable(name.toUpperCase(Locale.ENGLISH)).getValue();
+		if (obj instanceof String) {
+			return (Float) obj;
+		}
+		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	public Object[] getArrayVariable(String name) {
+		if (!name.endsWith("[]")) {
+			name = name + "[]";
+		}
+		Object obj = machine.getVariable(name.toUpperCase(Locale.ENGLISH)).getValue();
+		if (obj.getClass().isArray()) {
+			return ((ArrayList<Object>) obj).toArray();
+		}
+		return null;
 	}
 
 	public void parse() {
-		memory = new Machine();
+		long start = System.nanoTime();
+		machine = new Machine();
 		Line cl = null;
 		for (String line : code) {
 			try {
@@ -47,7 +86,7 @@ public class Interpreter {
 
 				lines.put(cl.getNumber(), cl);
 				lineNumbers.add(cl.getNumber());
-				String[] parts = Parser.getParts(cl, memory);
+				String[] parts = Parser.getParts(cl, machine);
 
 				int pos = 0;
 				for (String part : parts) {
@@ -57,9 +96,9 @@ public class Interpreter {
 							if (command == null) {
 								throw new RuntimeException("Syntax error: " + cl.getNumber() + " " + cl.getLine());
 							}
-							part = command.parse(part, lineCnt, cl.getNumber(), pos, memory);
+							part = command.parse(part, lineCnt, cl.getNumber(), pos, machine);
 
-							memory.addCommand(command);
+							machine.addCommand(command);
 							cl.addCommand(command);
 							pos++;
 							if (Rem.REM_MARKER.equals(part)) {
@@ -76,11 +115,12 @@ public class Interpreter {
 			} catch (Throwable t) {
 				String msg = t.getMessage();
 				String err = "Error in line " + (cl != null ? cl.getNumber() : "??") + (msg != null ? (": " + msg) : "");
-				memory.getOutputChannel().println(err);
+				machine.getOutputChannel().println(err);
 				throw t;
 			}
 		}
 		parsed = true;
+		Logger.log(machine.getCommandList().size() + " commands parsed in: " + (System.nanoTime() - start) / 1000000L + "ms");
 	}
 
 	public void run() {
@@ -91,57 +131,69 @@ public class Interpreter {
 			long start = System.nanoTime();
 			execute(0, 0);
 			long end = System.nanoTime();
-			memory.getOutputChannel().println("READY. (" + ((end - start) / 1000000L) + "ms)");
+			machine.getOutputChannel().println("READY. (" + ((end - start) / 1000000L) + "ms)");
 		} else {
-			memory.getOutputChannel().println("READY.");
+			machine.getOutputChannel().println("READY.");
 		}
 
 	}
 
 	public void execute(int lineCnt, int pos) {
-		do {
-			Integer num = lineNumbers.get(lineCnt);
-			Line line = lines.get(num);
-			for (int i = pos; i < line.getCommands().size(); i++) {
-				Command command = line.getCommands().get(i);
-				memory.setCurrentCommand(command);
-				ProgramCounter pc = command.execute(memory);
-				memory.setCurrentCommand(null);
-				if (pc != null) {
-					if (pc.isEnd() || pc.isStop()) {
-						lineCnt = lines.size();
-						if (pc.isStop()) {
-							this.memory.getOutputChannel().println("Break in " + num);
+		if (lineNumbers.size() == 0) {
+			return;
+		}
+		Integer num = null;
+		try {
+			do {
+				num = lineNumbers.get(lineCnt);
+				Line line = lines.get(num);
+				for (int i = pos; i < line.getCommands().size(); i++) {
+					Command command = line.getCommands().get(i);
+					machine.setCurrentCommand(command);
+					ProgramCounter pc = command.execute(machine);
+					machine.setCurrentCommand(null);
+					if (pc != null) {
+						if (pc.isEnd() || pc.isStop()) {
+							lineCnt = lines.size();
+							if (pc.isStop()) {
+								this.machine.getOutputChannel().println("Break in " + num);
+							}
+							break;
 						}
-						break;
-					}
-					if (pc.isSkip()) {
-						break;
-					}
-					if (pc.getLineNumber() == -1) {
-						// Line index is known (FOR...NEXT)
-						lineCnt = pc.getLineCnt();
-						num = lineNumbers.get(lineCnt);
-						line = lines.get(num);
-						i = pc.getLinePos();
-						if (i >= line.getCommands().size() - 1) {
-							num = lineNumbers.get(lineCnt + 1);
+						if (pc.isSkip()) {
+							break;
+						}
+						if (pc.getLineNumber() == -1) {
+							// Line index is known (FOR...NEXT)
+							lineCnt = pc.getLineCnt();
+							num = lineNumbers.get(lineCnt);
+							line = lines.get(num);
+							i = pc.getLinePos();
+							if (i >= line.getCommands().size() - 1) {
+								lineCnt++;
+								num = lineNumbers.get(lineCnt);
+								line = lines.get(num);
+								i = -1;
+							}
+						} else {
+							// Line number is unknown (GOTO/GOSUB)
+							num = pc.getLineNumber();
+							line = lines.get(num);
 							i = -1;
+							if (line == null) {
+								throw new RuntimeException("Undef'd statement error: " + command);
+							}
+							lineCnt = line.getCount();
 						}
-					} else {
-						// Line number is known (GOTO/GOSUB)
-						num = pc.getLineNumber();
-						line = lines.get(num);
-						i = -1;
-						if (line == null) {
-							throw new RuntimeException("Undef'd statement error: " + command);
-						}
-						lineCnt = line.getCount();
 					}
 				}
-			}
-			lineCnt++;
-		} while (lineCnt < lines.size());
+				lineCnt++;
+			} while (lineCnt < lines.size());
+		} catch (Throwable t) {
+			String msg = t.getMessage();
+			String err = "Error in line " + (num != null ? num : "??") + (msg != null ? (": " + msg) : "");
+			machine.getOutputChannel().println(err);
+			throw t;
+		}
 	}
-
 }

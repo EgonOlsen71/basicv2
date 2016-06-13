@@ -5,13 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import sixtyfour.ProgramCounter;
 import sixtyfour.elements.Type;
 import sixtyfour.elements.Variable;
 import sixtyfour.parser.Atom;
 import sixtyfour.parser.Parser;
 import sixtyfour.parser.VariableAndTerms;
 import sixtyfour.system.Machine;
+import sixtyfour.system.ProgramCounter;
 
 public class Dim extends AbstractCommand {
 

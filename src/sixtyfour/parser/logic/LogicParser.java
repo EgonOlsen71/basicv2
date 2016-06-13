@@ -5,309 +5,452 @@ import java.util.Locale;
 import java.util.Map;
 
 import sixtyfour.parser.Parser;
+import sixtyfour.parser.Term;
 import sixtyfour.system.Machine;
 
-public class LogicParser {
 
-	public static boolean isLogicTerm(String term) {
-		term = Parser.replaceStrings(term, ' ');
-		return (term.contains("AND") || term.contains("OR") || term.contains("NOT") || term.contains("=") || term.contains(">") || term.contains("<"));
-	}
+public class LogicParser
+{
 
-	public static LogicTerm getTerm(String term, Machine machine) {
-		Map<String, LogicTerm> blocks = new HashMap<String, LogicTerm>();
-		term = processLogicOperations(term);
-		boolean inString = false;
-		term = "(" + Parser.removeWhiteSpace(term) + ")";
-		Parser.checkBrackets(term);
-		String lastPart = term;
-		int lastStart = 0;
+  public static boolean isLogicTerm(String term)
+  {
+    term = Parser.replaceStrings(term, ' ');
+    return term.contains("=") || term.contains(">") || term.contains("<");
+  }
 
-		for (int i = 0; i < term.length(); i++) {
-			char c = term.charAt(i);
-			if (c == '"') {
-				inString = !inString;
-			}
-			if (!inString) {
-				if (c == '(') {
-					int end = findEndBracket(term, i);
-					if (end <= i + 1) {
-						throw new RuntimeException("Syntax error: " + term);
-					}
-					String part = term.substring(i, end + 1);
 
-					String partS = stripStrings(part);
+  public static LogicTerm getTerm(String term, Machine machine)
+  {
+    return getTerm(term, machine, null);
+  }
 
-					// System.out.println("Part: " + part + "/" + partS + "/" +
-					// lastPart);
 
-					boolean brackets = partS.contains("(");
-					if ((partS.contains("OR") || partS.contains("AND")) && brackets) {
-						lastPart = part;
-						lastStart = i;
-						continue;
-					}
+  public static LogicTerm getTerm(String term, Machine machine, Map<String, Term> termMap)
+  {
+    //System.out.println("LogicTerm: "+term);
+    Map<String, LogicTerm> blocks = new HashMap<String, LogicTerm>();
+    term = processLogicOperations(term);
+    boolean inString = false;
+    term = "(" + Parser.removeWhiteSpace(term) + ")";
+    Parser.checkBrackets(term);
+    String lastPart = term;
+    int lastStart = 0;
 
-					if (!brackets && !(partS.contains("OR") || partS.contains("AND"))) {
-						continue;
-					}
-				} else if (i == term.length() - 1) {
-					String toProcess = lastPart;
-					int startPos = lastStart;
-					String blockName = createLogicBlock(toProcess.substring(1, toProcess.length() - 1), blocks, machine);
-					int endy = Math.min(startPos + toProcess.length(), term.length());
-					term = term.substring(0, startPos) + blockName + (endy != term.length() ? term.substring(endy, term.length()) : "");
-					i = -1;
-					inString = false;
-					lastPart = term;
-					lastStart = 0;
+    for (int i = 0; i < term.length(); i++)
+    {
+      char c = term.charAt(i);
+      if (c == '"')
+      {
+        inString = !inString;
+      }
+      if (!inString)
+      {
+        if (c == '(')
+        {
+          int end = findEndBracket(term, i);
+          if (end <= i + 1)
+          {
+            throw new RuntimeException("Syntax error: " + term);
+          }
+          String part = term.substring(i, end + 1);
 
-					// System.out.println("TERM: " + term);
+          String partS = stripStrings(part);
 
-					String nbrack = term.replace("(", "").replace(")", "");
-					if (blocks.containsKey(nbrack)) {
-						return blocks.get(nbrack);
-					}
-				}
-			}
-		}
-		throw new RuntimeException("Syntax error: " + term);
-	}
+          // System.out.println("Part: " + part + "/" + partS + "/" +
+          // lastPart);
 
-	private static String processLogicOperations(String term) {
-		// Try to replace logic operations in brackets by placeholders to avoid
-		// parser confusion...
-		String[] reps = { ")=", ")>", ")<" };
-		for (String rep : reps) {
-			int pos = 0;
-			do {
-				pos = term.indexOf(rep, pos);
-				if (pos != -1) {
-					boolean inString = false;
-					int brackets = 0;
-					for (int i = pos; i >= 0; i--) {
-						char c = term.charAt(i);
-						if (c == '"') {
-							inString = !inString;
-						}
-						if (!inString) {
-							if (c == ')') {
-								brackets--;
-							} else if (c == '(') {
-								brackets++;
-								if (brackets == 0) {
-									String part = term.substring(i, pos + 1);
-									String partn = Parser.replaceLogicOperators(part);
-									term = term.substring(0, i) + partn + term.substring(pos + 1);
-									pos = pos - (part.length() - partn.length());
-									break;
-								}
-							}
-						}
-					}
-					pos += 2;
-				}
-			} while (pos != -1);
-		}
-		return term;
-	}
+          boolean brackets = partS.contains("(");
+          if ((partS.contains("OR") || partS.contains("AND")) && brackets)
+          {
+            lastPart = part;
+            lastStart = i;
+            continue;
+          }
 
-	private static String createLogicBlock(String toProcess, Map<String, LogicTerm> blocks, Machine machine) {
+          if (!brackets && !(partS.contains("OR") || partS.contains("AND")))
+          {
+            continue;
+          }
+        }
+        else if (i == term.length() - 1)
+        {
+          String toProcess = lastPart;
+          int startPos = lastStart;
+          String blockName = createLogicBlock(toProcess.substring(1, toProcess.length() - 1), blocks, machine, termMap);
+          int endy = Math.min(startPos + toProcess.length(), term.length());
+          term = term.substring(0, startPos) + blockName
+              + (endy != term.length() ? term.substring(endy, term.length()) : "");
+          i = -1;
+          inString = false;
+          lastPart = term;
+          lastStart = 0;
 
-		// System.out.println("To process: " + toProcess);
+          // System.out.println("TERM: " + term);
 
-		String[] delims = { "OR", "AND" };
-		String utp = toProcess.toUpperCase(Locale.ENGLISH);
-		int curPos = 0;
-		String minOp = null;
-		LogicTerm block = new LogicTerm("{l" + blocks.size() + "}");
-		do {
-			int minPos = 999999999;
-			minOp = null;
-			for (String delim : delims) {
-				int pos = utp.indexOf(delim, curPos);
-				if (pos != -1 && pos < minPos) {
-					minPos = pos;
-					minOp = delim;
-				}
-			}
+          String nbrack = term.replace("(", "").replace(")", "");
+          if (blocks.containsKey(nbrack))
+          {
+            return blocks.get(nbrack);
+          }
+        }
+      }
+    }
+    throw new RuntimeException("Syntax error: " + term);
+  }
 
-			// System.out.println(minPos + "/" + minOp + "/" + curPos);
 
-			String part = toProcess.substring(curPos);
-			LogicOp op = new LogicAnd();
-			if (minOp != null) {
+  private static String processLogicOperations(String term)
+  {
+    // Try to replace logic operations in brackets by placeholders to avoid
+    // parser confusion...
 
-				if (minOp.equals("OR")) {
-					op = new LogicOr();
-				}
-				part = toProcess.substring(curPos, minPos);
-				curPos = minPos + minOp.length();
-			}
+    // TODO Replace by something more sophisticated...
+    // To the left...
+    String[] reps = { ")=", ")>", ")<" };
+    for (String rep : reps)
+    {
+      int pos = 0;
+      do
+      {
+        pos = term.indexOf(rep, pos);
+        if (pos != -1)
+        {
+          boolean inString = false;
+          int brackets = 0;
+          for (int i = pos; i >= 0; i--)
+          {
+            char c = term.charAt(i);
+            if (c == '"')
+            {
+              inString = !inString;
+            }
+            if (!inString)
+            {
+              if (c == ')')
+              {
+                brackets--;
+              }
+              else if (c == '(')
+              {
+                brackets++;
+                if (brackets == 0)
+                {
+                  String part = term.substring(i, pos + 1);
+                  String partn = Parser.replaceLogicOperators(part);
+                  term = term.substring(0, i) + partn + term.substring(pos + 1);
+                  pos = pos - (part.length() - partn.length());
+                  break;
+                }
+              }
+            }
+          }
+          pos += 2;
+        }
+      }
+      while (pos != -1);
+    }
 
-			boolean inString = false;
-			int closest = -1;
-			for (int i = 0; i < part.length(); i++) {
-				char c = part.charAt(i);
-				if (c == '"') {
-					inString = !inString;
-				}
-				if (!inString) {
-					if (c == '<' || c == '>' || c == '=') {
-						closest = i;
-						break;
-					}
-				}
-			}
+    // And to the right...
+    reps = new String[] { "=(", ">(", "<(" };
+    for (String rep : reps)
+    {
+      int pos = 0;
+      do
+      {
+        pos = term.indexOf(rep, pos);
+        if (pos != -1)
+        {
+          boolean inString = false;
+          int brackets = 0;
+          for (int i = pos; i < term.length(); i++)
+          {
+            char c = term.charAt(i);
+            if (c == '"')
+            {
+              inString = !inString;
+            }
+            if (!inString)
+            {
+              if (c == ')')
+              {
+                brackets--;
+                if (brackets == 0)
+                {
+                  String part = term.substring(pos, i + 1);
+                  String partn = Parser.replaceLogicOperators(part);
+                  term = term.substring(0, pos) + partn + term.substring(i + 1);
+                  pos = pos - (part.length() - partn.length());
+                  break;
+                }
+              }
+              else if (c == '(')
+              {
+                brackets++;
+              }
+            }
+          }
+          pos += 2;
+        }
+      }
+      while (pos != -1);
+    }
 
-			String left = null;
-			String right = null;
-			Comparator comp = null;
-			boolean not = false;
+    return term;
+  }
 
-			if (closest != -1) {
-				left = part.substring(0, closest);
-				right = part.substring(closest);
-				comp = Comparator.getComparator(right);
-				if (comp == null) {
-					throw new RuntimeException("Syntax error: " + part);
-				}
-				right = right.substring(comp.getTermLength());
 
-				boolean nt = false;
-				do {
-					nt = left.toUpperCase(Locale.ENGLISH).startsWith("NOT");
-					if (nt) {
-						left = left.substring(3);
-						not = !not;
-					}
-				} while (nt);
+  private static String createLogicBlock(String toProcess, Map<String, LogicTerm> blocks, Machine machine,
+      Map<String, Term> termMap)
+  {
 
-			} else {
-				if (part.contains("}")) {
-					part = part.replace("(", "").replace(")", "");
+    // System.out.println("To process: " + toProcess);
 
-					boolean nt = false;
-					do {
-						nt = part.toUpperCase(Locale.ENGLISH).startsWith("NOT");
-						if (nt) {
-							part = part.substring(3);
-							not = !not;
-						}
-					} while (nt);
-					if (!part.startsWith("{")) {
-						throw new RuntimeException("Syntax error: " + part);
-					}
+    String[] delims = { "OR", "AND" };
+    String utp = toProcess.toUpperCase(Locale.ENGLISH);
+    int curPos = 0;
+    String minOp = null;
+    LogicTerm block = new LogicTerm("{l" + blocks.size() + "}");
+    do
+    {
+      int minPos = 999999999;
+      minOp = null;
+      for (String delim : delims)
+      {
+        int pos = utp.indexOf(delim, curPos);
+        if (pos != -1 && pos < minPos)
+        {
+          minPos = pos;
+          minOp = delim;
+        }
+      }
 
-					LogicTerm lt = blocks.get(part);
-					if (not) {
-						lt.not();
-					}
-					block.add(lt, op);
-				} else {
-					left = part;
-					right = null;
-					comp = Comparator.EQUAL;
-				}
-			}
+      // System.out.println(minPos + "/" + minOp + "/" + curPos);
 
-			// System.out.println("Terms:" + left + " " + comp + " " + right +
-			// "/" + not);
+      String part = toProcess.substring(curPos);
+      LogicOp op = new LogicAnd();
+      if (minOp != null)
+      {
 
-			if (left != null) {
-				Comparison compy = new Comparison();
-				compy.setComparator(comp);
+        if (minOp.equals("OR"))
+        {
+          op = new LogicOr();
+        }
+        part = toProcess.substring(curPos, minPos);
+        curPos = minPos + minOp.length();
+      }
 
-				int bl = getBracketDelta(left);
-				if (bl > 0) {
-					// This will destroy the term if the brackets are not at the
-					// beginning. But then again, the term is wrong that way
-					// anyway...
-					left = left.substring(bl);
-				}
-				compy.setLeft(Parser.getTerm(left, machine, false, false));
-				if (right != null) {
-					int br = getBracketDelta(right);
-					if (br < 0) {
-						right = right.substring(0, right.length() + br);
-					}
-					compy.setRight(Parser.getTerm(right, machine, false, false));
-				}
-				if (not) {
-					compy.not();
-				}
+      boolean inString = false;
+      int closest = -1;
+      for (int i = 0; i < part.length(); i++)
+      {
+        char c = part.charAt(i);
+        if (c == '"')
+        {
+          inString = !inString;
+        }
+        if (!inString)
+        {
+          if (c == '<' || c == '>' || c == '=')
+          {
+            closest = i;
+            break;
+          }
+        }
+      }
 
-				// System.out.println("Setted: " + left + " - " + right + "/" +
-				// not);
-				block.add(compy, op);
-			}
+      String left = null;
+      String right = null;
+      Comparator comp = null;
+      boolean not = false;
 
-		} while (minOp != null);
-		blocks.put(block.getName(), block);
-		return block.getName();
-	}
+      if (closest != -1)
+      {
+        left = part.substring(0, closest);
+        right = part.substring(closest);
+        comp = Comparator.getComparator(right);
+        if (comp == null)
+        {
+          throw new RuntimeException("Syntax error: " + part);
+        }
+        right = right.substring(comp.getTermLength());
 
-	private static int getBracketDelta(String term) {
-		int brackets = 0;
-		boolean inString = false;
-		for (int i = 0; i < term.length(); i++) {
-			char c = term.charAt(i);
-			if (c == '"') {
-				inString = !inString;
-			}
-			if (!inString) {
-				if (c == '(') {
-					brackets++;
-				} else if (c == ')') {
-					brackets--;
-				}
-			}
-		}
-		return brackets;
-	}
+        boolean nt = false;
+        do
+        {
+          nt = left.toUpperCase(Locale.ENGLISH).startsWith("NOT");
+          if (nt)
+          {
+            left = left.substring(3);
+            not = !not;
+          }
+        }
+        while (nt);
 
-	private static String stripStrings(String term) {
-		StringBuilder sb = new StringBuilder();
-		boolean inString = false;
-		for (int i = 1; i < term.length() - 1; i++) {
-			char c = term.charAt(i);
-			if (c == '"') {
-				inString = !inString;
-				if (inString) {
-					sb.append('"');
-				}
-			}
-			if (!inString) {
-				sb.append(c);
-			}
-		}
-		return sb.toString().toUpperCase(Locale.ENGLISH);
-	}
+      }
+      else
+      {
+        if (part.contains("}"))
+        {
+          part = part.replace("(", "").replace(")", "");
 
-	private static int findEndBracket(String term, int pos) {
-		int brackets = 0;
-		boolean inString = false;
-		for (int i = pos; i < term.length(); i++) {
-			char c = term.charAt(i);
-			if (c == '"') {
-				inString = !inString;
-			}
-			if (!inString) {
-				if (c == '(') {
-					brackets++;
-				} else if (c == ')') {
-					brackets--;
-					if (brackets == 0) {
-						return i;
-					}
-				}
-			}
-		}
-		if (brackets == 0) {
-			return term.length();
-		}
-		throw new RuntimeException("Syntax error: " + term);
+          boolean nt = false;
+          do
+          {
+            nt = part.toUpperCase(Locale.ENGLISH).startsWith("NOT");
+            if (nt)
+            {
+              part = part.substring(3);
+              not = !not;
+            }
+          }
+          while (nt);
+          if (!part.startsWith("{"))
+          {
+            throw new RuntimeException("Syntax error: " + part);
+          }
 
-	}
+          LogicTerm lt = blocks.get(part);
+          if (not)
+          {
+            lt.not();
+          }
+          block.add(lt, op);
+        }
+        else
+        {
+          left = part;
+          right = null;
+          comp = Comparator.EQUAL;
+        }
+      }
+
+      // System.out.println("Terms:" + left + " " + comp + " " + right +
+      // "/" + not);
+
+      if (left != null)
+      {
+        Comparison compy = new Comparison();
+        compy.setComparator(comp);
+
+        int bl = getBracketDelta(left);
+        if (bl > 0)
+        {
+          // This will destroy the term if the brackets are not at the
+          // beginning. But then again, the term is wrong that way
+          // anyway...
+          left = left.substring(bl);
+        }
+        compy.setLeft(Parser.getTerm(left, machine, false, true, termMap));
+        if (right != null)
+        {
+          int br = getBracketDelta(right);
+          if (br < 0)
+          {
+            right = right.substring(0, right.length() + br);
+          }
+          compy.setRight(Parser.getTerm(right, machine, false, true, termMap));
+        }
+        if (not)
+        {
+          compy.not();
+        }
+
+        // System.out.println("Setted: " + left + " - " + right + "/" +
+        // not);
+        block.add(compy, op);
+      }
+
+    }
+    while (minOp != null);
+    blocks.put(block.getName(), block);
+    return block.getName();
+  }
+
+
+  private static int getBracketDelta(String term)
+  {
+    int brackets = 0;
+    boolean inString = false;
+    for (int i = 0; i < term.length(); i++)
+    {
+      char c = term.charAt(i);
+      if (c == '"')
+      {
+        inString = !inString;
+      }
+      if (!inString)
+      {
+        if (c == '(')
+        {
+          brackets++;
+        }
+        else if (c == ')')
+        {
+          brackets--;
+        }
+      }
+    }
+    return brackets;
+  }
+
+
+  private static String stripStrings(String term)
+  {
+    StringBuilder sb = new StringBuilder();
+    boolean inString = false;
+    for (int i = 1; i < term.length() - 1; i++)
+    {
+      char c = term.charAt(i);
+      if (c == '"')
+      {
+        inString = !inString;
+        if (inString)
+        {
+          sb.append('"');
+        }
+      }
+      if (!inString)
+      {
+        sb.append(c);
+      }
+    }
+    return sb.toString().toUpperCase(Locale.ENGLISH);
+  }
+
+
+  private static int findEndBracket(String term, int pos)
+  {
+    int brackets = 0;
+    boolean inString = false;
+    for (int i = pos; i < term.length(); i++)
+    {
+      char c = term.charAt(i);
+      if (c == '"')
+      {
+        inString = !inString;
+      }
+      if (!inString)
+      {
+        if (c == '(')
+        {
+          brackets++;
+        }
+        else if (c == ')')
+        {
+          brackets--;
+          if (brackets == 0)
+          {
+            return i;
+          }
+        }
+      }
+    }
+    if (brackets == 0)
+    {
+      return term.length();
+    }
+    throw new RuntimeException("Syntax error: " + term);
+
+  }
 
 }

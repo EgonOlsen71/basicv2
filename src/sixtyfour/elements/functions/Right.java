@@ -7,9 +7,9 @@ import sixtyfour.parser.Atom;
 import sixtyfour.parser.Parser;
 import sixtyfour.system.Machine;
 
-public class Mid extends AbstractFunction {
-	public Mid() {
-		super("MID$");
+public class Right extends AbstractFunction {
+	public Right() {
+		super("RIGHT$");
 	}
 
 	@Override
@@ -21,29 +21,24 @@ public class Mid extends AbstractFunction {
 	public Object eval(Machine memory) {
 		try {
 			List<Atom> pars = Parser.getParameters(term);
-			if (pars.size() != 2 && pars.size() != 3) {
+			if (pars.size() != 2) {
 				throw new RuntimeException("Wrong number of parameters: " + term);
 			}
 			Atom var = pars.get(0);
-			int start = ((Number) pars.get(1).eval(memory)).intValue();
-			int end = -999;
-			if (pars.size() > 2) {
-				end = ((Number) pars.get(2).eval(memory)).intValue() + start;
-			}
-
+			int count = ((Number) pars.get(1).eval(memory)).intValue();
 			String txt = var.eval(memory).toString();
-			if (end == -999) {
-				end = txt.length();
-			}
 
 			try {
-				return txt.substring(start, end);
+				int pos = txt.length() - count;
+				if (pos < 0) {
+					pos = 0;
+				}
+				return txt.substring(pos, txt.length());
 			} catch (Exception e) {
-				throw new RuntimeException("Illegal quantity error: " + txt + "/" + start);
+				throw new RuntimeException("Illegal quantity error: " + txt + "/" + count);
 			}
 		} catch (Throwable t) {
 			throw new RuntimeException("Syntax error: " + term);
 		}
 	}
-
 }

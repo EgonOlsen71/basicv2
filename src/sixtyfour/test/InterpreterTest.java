@@ -103,7 +103,7 @@ public class InterpreterTest {
 		inter.parse();
 		inter.run();
 
-		Machine mem = inter.getMemory();
+		Machine mem = inter.getMachine();
 
 		System.out.println(mem.getVariable("a"));
 		System.out.println(mem.getVariable("z"));

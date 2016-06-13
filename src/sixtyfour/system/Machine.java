@@ -9,6 +9,9 @@ import java.util.Stack;
 
 import sixtyfour.elements.Variable;
 import sixtyfour.elements.commands.Command;
+import sixtyfour.elements.systemvars.Status;
+import sixtyfour.elements.systemvars.Time;
+import sixtyfour.elements.systemvars.TimeDate;
 import sixtyfour.parser.Operator;
 
 public class Machine {
@@ -22,6 +25,7 @@ public class Machine {
 
 	public Machine() {
 		outputChannel = new OutputChannel();
+		addDefaults();
 	}
 
 	public int[] getRam() {
@@ -53,6 +57,7 @@ public class Machine {
 		for (Variable var : vars.values()) {
 			var.clear();
 		}
+		addDefaults();
 		stack.clear();
 	}
 
@@ -107,5 +112,12 @@ public class Machine {
 
 	public void setOutputChannel(OutputChannel outputChannel) {
 		this.outputChannel = outputChannel;
+	}
+
+	private void addDefaults() {
+		add(new Variable("Π", (float) Math.PI));
+		add(new Time());
+		add(new TimeDate());
+		add(new Status());
 	}
 }

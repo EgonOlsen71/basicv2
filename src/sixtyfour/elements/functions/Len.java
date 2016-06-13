@@ -3,23 +3,26 @@ package sixtyfour.elements.functions;
 import sixtyfour.elements.Type;
 import sixtyfour.system.Machine;
 
-public class Sin extends AbstractFunction {
+public class Len extends AbstractFunction {
 
-	public Sin() {
-		super("SIN");
+	public Len() {
+		super("Len");
 	}
 
 	@Override
 	public Type getType() {
-		return Type.REAL;
+		return Type.INTEGER;
 	}
 
 	@Override
 	public Object eval(Machine memory) {
-		if (!term.getType().equals(Type.STRING)) {
-			return Float.valueOf((float) Math.sin(((Number) term.eval(memory)).floatValue()));
+		if (term.getType().equals(Type.STRING)) {
+			String str = (String) term.eval(memory);
+			if (str == null) {
+				return 0;
+			}
+			return str.length();
 		}
 		throw new RuntimeException("Type mismatch error: " + term.getType());
 	}
-
 }

@@ -70,6 +70,22 @@ public class Variable implements Atom {
 			}
 		}
 
+		// Limit to the first 2 chars
+		StringBuilder sb = new StringBuilder();
+		int alphaCount = 0;
+		for (int i = 0; i < name.length(); i++) {
+			char cc = name.charAt(i);
+			if (Character.isAlphabetic(cc) || Character.isDigit(cc)) {
+				alphaCount++;
+				if (alphaCount <= 2) {
+					sb.append(cc);
+				}
+			} else {
+				sb.append(cc);
+			}
+		}
+		name = sb.toString();
+
 		this.setName(name);
 		this.setValue(value);
 	}

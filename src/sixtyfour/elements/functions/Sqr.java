@@ -3,10 +3,10 @@ package sixtyfour.elements.functions;
 import sixtyfour.elements.Type;
 import sixtyfour.system.Machine;
 
-public class Sin extends AbstractFunction {
+public class Sqr extends AbstractFunction {
 
-	public Sin() {
-		super("SIN");
+	public Sqr() {
+		super("SQR");
 	}
 
 	@Override
@@ -17,7 +17,11 @@ public class Sin extends AbstractFunction {
 	@Override
 	public Object eval(Machine memory) {
 		if (!term.getType().equals(Type.STRING)) {
-			return Float.valueOf((float) Math.sin(((Number) term.eval(memory)).floatValue()));
+			float val=((Number) term.eval(memory)).floatValue();
+			if (val<0) {
+				throw new RuntimeException("Illegal quantity error: "+val);
+			}
+			return Float.valueOf((float) Math.sqrt(val));
 		}
 		throw new RuntimeException("Type mismatch error: " + term.getType());
 	}

@@ -3,13 +3,13 @@ package sixtyfour.elements.commands;
 import java.util.List;
 import java.util.Locale;
 
-import sixtyfour.ProgramCounter;
 import sixtyfour.elements.Type;
 import sixtyfour.elements.Variable;
 import sixtyfour.parser.Atom;
 import sixtyfour.parser.Parser;
 import sixtyfour.parser.Term;
 import sixtyfour.system.Machine;
+import sixtyfour.system.ProgramCounter;
 
 public class Let extends AbstractCommand {
 	private Variable var;

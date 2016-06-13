@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import sixtyfour.ProgramCounter;
 import sixtyfour.elements.Type;
 import sixtyfour.parser.Operator;
 import sixtyfour.parser.Parser;
 import sixtyfour.parser.Term;
 import sixtyfour.system.Machine;
+import sixtyfour.system.ProgramCounter;
 
 public class Print extends AbstractCommand {
 	private List<PrintPart> parts = new ArrayList<PrintPart>();
@@ -28,6 +28,10 @@ public class Print extends AbstractCommand {
 		super.parse(linePart, lineCnt, lineNumber, linePos, memory);
 
 		List<PrintPart> parts = getParts(linePart.substring(5));
+		if (parts.size()==0) {
+			PrintPart newLine=new PrintPart("\"\"", ' ');
+			parts.add(newLine);
+		}
 		for (PrintPart part : parts) {
 			part.term = Parser.getTerm(part.part, memory, false, true);
 		}
@@ -97,7 +101,7 @@ public class Print extends AbstractCommand {
 
 				boolean end = i == line.length() - 1;
 
-				if (end || (brackets == 0 && (c == '"' || c == ')' || c == ',' || c == ';' || (c == '$' && nc != '(') || c == '%'))) {
+				if (end || (brackets == 0 && (c == '"' || (c == ')' && nc!='=' && nc!='<' && nc!='>') || c == ',' || c == ';' || (c == '$' && nc != '(') || c == '%'))) {
 					if (end || !Operator.isRealOperator(nc)) {
 						if (end || c == '"' || c == ')' || c == '%' || c == '$') {
 							if (end) {

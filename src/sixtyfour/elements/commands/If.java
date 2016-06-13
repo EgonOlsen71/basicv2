@@ -1,10 +1,10 @@
 package sixtyfour.elements.commands;
 
-import sixtyfour.ProgramCounter;
 import sixtyfour.parser.Parser;
 import sixtyfour.parser.logic.LogicParser;
 import sixtyfour.parser.logic.LogicTerm;
 import sixtyfour.system.Machine;
+import sixtyfour.system.ProgramCounter;
 
 public class If extends AbstractCommand {
 

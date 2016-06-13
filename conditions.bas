@@ -11,6 +11,13 @@
 
 110 J = 26
 120 IF (J AND 2)>0 AND (J AND 8)>0 THEN PRINT "RECHTS UNTEN" 
+122 IF 0<(J AND 2) AND 0<(J AND 8) THEN PRINT "AUCH RECHTS UNTEN" 
 
-130 remg=(J AND 8)>2
-140 remprint g
+123 print "1: wurst",j-42
+124 print "2:",j-42>2
+127 print "2.5:",(j-42)
+128 print "3:",(j-42)>-92
+130 print "4:",(J AND 8)>2
+135 g=(J AND 8)<2
+140 print g;(J AND 8)
+150 print (j>2)<0
