@@ -28,6 +28,8 @@ public class CommandList
       add(new Rem());
       add(new End());
       add(new Stop());
+      add(new New());
+      add(new Lst());
     }
   });
 

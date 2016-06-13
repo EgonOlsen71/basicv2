@@ -5,6 +5,10 @@ import sixtyfour.system.ProgramCounter;
 
 public class End extends AbstractCommand {
 
+	protected End(String name) {
+		super(name);
+	}
+
 	public End() {
 		super("END");
 	}
