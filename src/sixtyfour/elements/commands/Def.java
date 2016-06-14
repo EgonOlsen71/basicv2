@@ -94,7 +94,7 @@ public class Def
     }
 
     varName = "_" + varName + fnName;
-    System.out.println("New DEF-Term: " + term + " - " + fnName + " - " + varName);
+    //System.out.println("New DEF-Term: " + term + " - " + fnName + " - " + varName);
     this.term = Parser.getTerm(term, machine, false, true, null);
     machine.add(new Variable(varName, 0f));
     return null;

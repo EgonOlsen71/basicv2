@@ -11,17 +11,24 @@ public class ProgramTest {
 		testPrime2();
 		testConditions();
 		testVarious();
-		//testGosubReturn();
-		testGosub();
+		// testGosubReturn();
+		// testGosub();
+		testMenu();
 	}
 
+	private static void testMenu() {
+		String[] vary = Loader.loadProgram("menu.bas");
+		Interpreter inty = new Interpreter(vary);
+		inty.run();
+	}
+
+	@SuppressWarnings("unused")
 	private static void testGosub() {
 		String[] vary = Loader.loadProgram("fac.bas");
 		Interpreter inty = new Interpreter(vary);
 		inty.run();
 	}
 
-	
 	@SuppressWarnings("unused")
 	private static void testGosubReturn() {
 		String[] vary = Loader.loadProgram("subroutines.bas");
@@ -41,13 +48,12 @@ public class ProgramTest {
 		inty.run();
 	}
 
-
 	private static void testPrime() {
 		String[] prime = Loader.loadProgram("prime.bas");
 		Interpreter inty = new Interpreter(prime);
 		inty.run();
 	}
-	
+
 	private static void testPrime2() {
 		String[] prime = Loader.loadProgram("prime2.bas");
 		Interpreter inty = new Interpreter(prime);

@@ -284,12 +284,18 @@ public class Parser {
 
 	public static void checkBrackets(String term) {
 		int open = 0;
+		boolean inString = false;
 		for (int i = 0; i < term.length(); i++) {
 			char c = term.charAt(i);
-			if (c == '(') {
-				open++;
-			} else if (c == ')') {
-				open--;
+			if (c == '"') {
+				inString = !inString;
+			}
+			if (!inString) {
+				if (c == '(') {
+					open++;
+				} else if (c == ')') {
+					open--;
+				}
 			}
 		}
 		if (open != 0) {
@@ -510,45 +516,51 @@ public class Parser {
 		try {
 			int start = 0;
 			boolean open = false;
+			boolean inString = false;
 			for (int i = 0; i < term.length(); i++) {
 				char c = term.charAt(i);
-				if (c == '(') {
-					open = true;
-					start = i;
+				if (c == '"') {
+					inString = !inString;
 				}
-				if (c == ')') {
-					if (open) {
-						String sub = term.substring(start + 1, i);
-						boolean logic = checkForLogicTerm && LogicParser.isLogicTerm(sub);
-						Term res = null;
-						if (!logic) {
-							res = createTerm(sub, termMap, memory);
-						} else {
-							res = createLogicTerm(sub, termMap, memory);
-						}
-						if (res != null) {
-							String termKey = null;
-							int index = termMap.size();
-							if (res.getKey() == null) {
-								termKey = "{t" + index + "}";
+				if (!inString) {
+					if (c == '(') {
+						open = true;
+						start = i;
+					}
+					if (c == ')') {
+						if (open) {
+							String sub = term.substring(start + 1, i);
+							boolean logic = checkForLogicTerm && LogicParser.isLogicTerm(sub);
+							Term res = null;
+							if (!logic) {
+								res = createTerm(sub, termMap, memory);
 							} else {
-								termKey = res.getKey();
+								res = createLogicTerm(sub, termMap, memory);
 							}
-							res.setKey(termKey);
-							termMap.put(termKey, res);
-							// System.out.println("1: " + term + "/" +
-							// System.identityHashCode(termMap));
-							term = term.substring(0, start) + termKey + term.substring(i + 1);
-							// System.out.println("2: " + term);
-							// System.out.println(res);
-							if (term.equals(termKey)) {
-								break;
+							if (res != null) {
+								String termKey = null;
+								int index = termMap.size();
+								if (res.getKey() == null) {
+									termKey = "{t" + index + "}";
+								} else {
+									termKey = res.getKey();
+								}
+								res.setKey(termKey);
+								termMap.put(termKey, res);
+								// System.out.println("1: " + term + "/" +
+								// System.identityHashCode(termMap));
+								term = term.substring(0, start) + termKey + term.substring(i + 1);
+								// System.out.println("2: " + term);
+								// System.out.println(res);
+								if (term.equals(termKey)) {
+									break;
+								}
 							}
+							open = false;
+							i = -1;
+						} else {
+							throw new RuntimeException("Parse error in: " + term + "/" + start + "/" + i);
 						}
-						open = false;
-						i = -1;
-					} else {
-						throw new RuntimeException("Parse error in: " + term + "/" + start + "/" + i);
 					}
 				}
 			}
@@ -591,7 +603,8 @@ public class Parser {
 		if (isTermPlaceholder(termWoBrackets)) {
 			return termMap.get(termWoBrackets);
 		}
-		if (!term.contains("(") && !term.contains(")")) {
+		String mTerm=Parser.replaceStrings(term, '.');
+		if (!mTerm.contains("(") && !mTerm.contains(")")) {
 			Term t = new Term(term);
 			t = build(t, termMap, machine);
 			if (!t.isComplete()) {
