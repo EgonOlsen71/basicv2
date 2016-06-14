@@ -12,7 +12,7 @@ public class Stop extends AbstractCommand {
 	@Override
 	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, Machine memory) {
 		super.parse(linePart, lineCnt, lineNumber, linePos, memory);
-		if (linePart.trim().length() > 4) {
+		if (linePart.length() > 4) {
 			throw new RuntimeException("Syntax error: " + this);
 		}
 		return null;

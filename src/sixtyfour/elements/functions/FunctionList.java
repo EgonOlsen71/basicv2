@@ -34,6 +34,7 @@ public class FunctionList {
 			this.add(new Str());
 			this.add(new Left());
 			this.add(new Right());
+			this.add(new Fn());
 		}
 	});
 

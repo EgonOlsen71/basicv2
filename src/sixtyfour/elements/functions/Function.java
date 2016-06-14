@@ -4,25 +4,21 @@ import sixtyfour.parser.Atom;
 import sixtyfour.parser.Term;
 import sixtyfour.system.Machine;
 
+public interface Function extends Atom {
+	String getName();
 
-public interface Function
-  extends Atom
-{
-  String getName();
+	boolean isFunction(String function);
 
+	Function clone();
 
-  boolean isFunction(String function);
+	Term getTerm();
 
+	void setTerm(Term term);
 
-  Function clone();
+	void parse(String linePart, Machine machine);
 
+	boolean hasPostfix();
 
-  Term getTerm();
-
-
-  void setTerm(Term term);
-
-
-  void parse(String linePart, Machine memory);
+	void setFunctionName(String functionName);
 
 }

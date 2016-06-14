@@ -22,10 +22,19 @@ public class Machine {
 	private Command currentCommand = null;
 	private Operator currentOperator = null;
 	private OutputChannel outputChannel = null;
+	private Map<String, Command> functions = new HashMap<String, Command>();
 
 	public Machine() {
 		outputChannel = new OutputChannel();
 		addDefaults();
+	}
+
+	public void setFunction(String name, Command function) {
+		functions.put(name, function);
+	}
+
+	public Command getFunction(String name) {
+		return functions.get(name);
 	}
 
 	public int[] getRam() {

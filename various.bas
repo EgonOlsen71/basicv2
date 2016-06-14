@@ -28,3 +28,8 @@
 250 PRINT RIGHT$(A$,X): NEXT X
 
 260 print "Status:",status
+
+310 A=10: B=11
+315 DEF FN F(X)=2*X
+320 DEF FN C(X) = 3+(A*B)/2+FNF(20)
+330 D = FN C(2):PRINT D

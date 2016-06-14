@@ -52,7 +52,7 @@ public class Parser {
 			}
 		}
 		if (sb.length() > 0) {
-			parts.add(sb.toString());
+			parts.add(sb.toString().trim());
 		}
 		return parts.toArray(new String[parts.size()]);
 	}
@@ -177,7 +177,7 @@ public class Parser {
 		return ret;
 	}
 
-	public static Function getFunction(String linePart, Map<String, Term> termMap, Machine memory) {
+	public static Function getFunction(String linePart, Map<String, Term> termMap, Machine machine) {
 		List<Function> functions = FunctionList.getFunctions();
 		Function fun = null;
 
@@ -193,10 +193,12 @@ public class Parser {
 					if (termMap == null || pos == -1 || pos2 < pos) {
 						throw new RuntimeException("Invalid function call: " + linePart);
 					} else {
-						fun.setTerm(Parser.createTerm(linePart.substring(pos, pos2 + 1), termMap, memory));
+						setPostfix(linePart, fun, pos);
+						fun.setTerm(Parser.createTerm(linePart.substring(pos, pos2 + 1), termMap, machine));
 					}
 				} else {
-					fun.parse(linePart.substring(pos + 1, pos2), memory);
+					setPostfix(linePart, fun, pos);
+					fun.parse(linePart.substring(pos + 1, pos2), machine);
 				}
 				break;
 			}
@@ -755,5 +757,16 @@ public class Parser {
 
 	private static boolean isTermPlaceholder(String txt) {
 		return txt.startsWith("{") && txt.indexOf('}') == (txt.length() - 1);
+	}
+
+	private static void setPostfix(String linePart, Function fun, int pos) {
+		if (fun.hasPostfix()) {
+			String funcName = linePart.substring(fun.getName().length(), pos).toUpperCase(Locale.ENGLISH);
+			fun.setFunctionName(funcName);
+		} else {
+			if (pos != fun.getName().length()) {
+				throw new RuntimeException("Syntax error: " + linePart);
+			}
+		}
 	}
 }

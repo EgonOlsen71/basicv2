@@ -30,6 +30,7 @@ public class CommandList
       add(new Stop());
       add(new New());
       add(new Lst());
+      add(new Def());
     }
   });
 

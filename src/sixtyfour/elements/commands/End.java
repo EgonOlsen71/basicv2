@@ -16,7 +16,7 @@ public class End extends AbstractCommand {
 	@Override
 	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, Machine memory) {
 		super.parse(linePart, lineCnt, lineNumber, linePos, memory);
-		if (linePart.trim().length() > 3) {
+		if (linePart.length() > 3) {
 			throw new RuntimeException("Syntax error: " + this);
 		}
 		return null;

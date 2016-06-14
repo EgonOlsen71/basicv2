@@ -26,7 +26,6 @@ public class Next extends AbstractCommand {
 
 	@Override
 	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, Machine memory) {
-		linePart = linePart.trim();
 		super.parse(linePart, lineCnt, lineNumber, linePos, memory);
 		linePart = linePart.substring(4).toUpperCase(Locale.ENGLISH).trim();
 
