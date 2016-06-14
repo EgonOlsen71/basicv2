@@ -13,9 +13,17 @@ public class ProgramTest {
 		testVarious();
 		// testGosubReturn();
 		// testGosub();
-		testMenu();
+		// testMenu();
+		testBeer();
 	}
 
+	private static void testBeer() {
+		String[] vary = Loader.loadProgram("beer.bas");
+		Interpreter inty = new Interpreter(vary);
+		inty.run();
+	}
+	
+	@SuppressWarnings("unused")
 	private static void testMenu() {
 		String[] vary = Loader.loadProgram("menu.bas");
 		Interpreter inty = new Interpreter(vary);

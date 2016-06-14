@@ -51,8 +51,12 @@ public class On extends AbstractCommand {
 		String[] parts = lines.substring(numPos).split(",");
 		for (String part : parts) {
 			try {
-				Integer li = Integer.valueOf(part);
-				lineNumbers.add(li);
+				if (part.length() == 0) {
+					lineNumbers.add(0);
+				} else {
+					Integer li = Integer.valueOf(part);
+					lineNumbers.add(li);
+				}
 			} catch (Exception e) {
 				throw new RuntimeException("Syntax error: " + this);
 			}

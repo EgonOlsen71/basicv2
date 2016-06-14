@@ -599,11 +599,13 @@ public class Parser {
 	}
 
 	private static Term createTerm(String term, Map<String, Term> termMap, Machine machine) {
+		// Check if it's only a wrapped placeholder. In this case, brackets in
+		// Strings will be replaced as well, but that doesn't matter here.
 		String termWoBrackets = term.replace("(", "").replace(")", "");
 		if (isTermPlaceholder(termWoBrackets)) {
 			return termMap.get(termWoBrackets);
 		}
-		String mTerm=Parser.replaceStrings(term, '.');
+		String mTerm = Parser.replaceStrings(term, '.');
 		if (!mTerm.contains("(") && !mTerm.contains(")")) {
 			Term t = new Term(term);
 			t = build(t, termMap, machine);
