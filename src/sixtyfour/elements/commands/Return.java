@@ -1,12 +1,37 @@
 package sixtyfour.elements.commands;
 
-public class Return
-extends AbstractCommand
-{
+import sixtyfour.system.Machine;
+import sixtyfour.system.ProgramCounter;
+import sixtyfour.system.StackEntry;
 
-  public Return()
-  {
-    super("RETURN");
-  }
+public class Return extends AbstractCommand {
+
+	private ProgramCounter pc = new ProgramCounter(0, 0);
+
+	public Return() {
+		super("RETURN");
+	}
+
+	@Override
+	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, Machine machine) {
+		super.parse(linePart, lineCnt, lineNumber, linePos, machine);
+		linePart = linePart.substring(6).trim();
+		if (linePart.trim().length() > 0) {
+			throw new RuntimeException("Syntax error: " + this);
+		}
+		return null;
+	}
+
+	@Override
+	public ProgramCounter execute(Machine machine) {
+		StackEntry caller = machine.getCaller();
+		if (caller == null) {
+			throw new RuntimeException("RETURN without GOSUB error!");
+		}
+		Gosub gosub = (Gosub) caller.getCommand();
+		pc.setLineCnt(gosub.lineCnt);
+		pc.setLinePos(gosub.linePos);
+		return pc;
+	}
 
 }

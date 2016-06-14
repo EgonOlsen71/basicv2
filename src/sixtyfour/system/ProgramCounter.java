@@ -61,5 +61,4 @@ public class ProgramCounter {
 	public void setStop(boolean stop) {
 		this.stop = stop;
 	}
-
 }

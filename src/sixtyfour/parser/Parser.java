@@ -46,7 +46,7 @@ public class Parser {
 			}
 			if (!inString) {
 				if (c == ':') {
-					parts.add(sb.toString());
+					parts.add(sb.toString().trim());
 					sb.setLength(0);
 				}
 			}
@@ -214,9 +214,8 @@ public class Parser {
 			char c = term.charAt(i);
 			if (c == '"') {
 				inString = !inString;
-				if (inString) {
-					sb.append('"');
-				}
+				sb.append('"');
+				continue;
 			}
 			if (!inString) {
 				sb.append(c);

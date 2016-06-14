@@ -11,6 +11,22 @@ public class ProgramTest {
 		testPrime2();
 		testConditions();
 		testVarious();
+		//testGosubReturn();
+		testGosub();
+	}
+
+	private static void testGosub() {
+		String[] vary = Loader.loadProgram("fac.bas");
+		Interpreter inty = new Interpreter(vary);
+		inty.run();
+	}
+
+	
+	@SuppressWarnings("unused")
+	private static void testGosubReturn() {
+		String[] vary = Loader.loadProgram("subroutines.bas");
+		Interpreter inty = new Interpreter(vary);
+		inty.run();
 	}
 
 	private static void testVarious() {

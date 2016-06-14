@@ -13,6 +13,8 @@ import sixtyfour.elements.systemvars.Status;
 import sixtyfour.elements.systemvars.Time;
 import sixtyfour.elements.systemvars.TimeDate;
 import sixtyfour.parser.Operator;
+import sixtyfour.plugins.ConsoleInputProvider;
+import sixtyfour.plugins.InputProvider;
 
 public class Machine {
 	private Map<String, Variable> vars = new HashMap<String, Variable>();
@@ -23,7 +25,8 @@ public class Machine {
 	private Operator currentOperator = null;
 	private OutputChannel outputChannel = null;
 	private Map<String, Command> functions = new HashMap<String, Command>();
-
+	private InputProvider inputProvider = new ConsoleInputProvider();
+	
 	public Machine() {
 		outputChannel = new OutputChannel();
 		addDefaults();
@@ -42,10 +45,23 @@ public class Machine {
 	}
 
 	public void push(Command command) {
-		if (stack.size() > 1000) {
-			throw new RuntimeException("Out of memory error, stack size exceeds 1000!");
+		if (stack.size() > 10000) {
+			throw new RuntimeException("Out of memory error, stack size exceeds 10000!");
 		}
 		stack.push(new StackEntry(command));
+	}
+
+	public StackEntry getCaller() {
+		for (int i = stack.size() - 1; i >= 0; i--) {
+			StackEntry entry = stack.get(i);
+			if (entry.isSubroutineCall()) {
+				for (int p = 0; p < stack.size() - i; p++) {
+					stack.pop();
+				}
+				return entry;
+			}
+		}
+		return null;
 	}
 
 	public StackEntry peek() {
@@ -128,5 +144,13 @@ public class Machine {
 		add(new Time());
 		add(new TimeDate());
 		add(new Status());
+	}
+
+	public InputProvider getInputProvider() {
+		return inputProvider;
+	}
+
+	public void setInputProvider(InputProvider inputProvider) {
+		this.inputProvider = inputProvider;
 	}
 }

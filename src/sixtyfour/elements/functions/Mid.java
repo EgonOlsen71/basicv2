@@ -25,7 +25,7 @@ public class Mid extends AbstractFunction {
 				throw new RuntimeException("Wrong number of parameters: " + term);
 			}
 			Atom var = pars.get(0);
-			int start = ((Number) pars.get(1).eval(memory)).intValue();
+			int start = ((Number) pars.get(1).eval(memory)).intValue()-1;
 			int end = -999;
 			if (pars.size() > 2) {
 				end = ((Number) pars.get(2).eval(memory)).intValue() + start;
@@ -35,12 +35,18 @@ public class Mid extends AbstractFunction {
 			if (end == -999) {
 				end = txt.length();
 			}
+			end = Math.min(end, txt.length());
 
 			try {
+				if (start >= txt.length()) {
+					return "";
+				}
 				return txt.substring(start, end);
 			} catch (Exception e) {
 				throw new RuntimeException("Illegal quantity error: " + txt + "/" + start);
 			}
+		} catch (RuntimeException e) {
+			throw e;
 		} catch (Throwable t) {
 			throw new RuntimeException("Syntax error: " + term);
 		}

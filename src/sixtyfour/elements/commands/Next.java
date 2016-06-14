@@ -59,7 +59,7 @@ public class Next extends AbstractCommand {
 					if (varName.length() == 0) {
 						varName = forVar;
 					} else if (!varName.equalsIgnoreCase(forVar)) {
-						throw new RuntimeException("Next without for error: " + this + " " + varName);
+						throw new RuntimeException("NEXT without FOR error: " + this + " " + varName);
 					}
 
 					myFor = (For) com;
@@ -70,7 +70,7 @@ public class Next extends AbstractCommand {
 				}
 			}
 		}
-		throw new RuntimeException("Next without for error: " + this);
+		throw new RuntimeException("NEXT without FOR error: " + this);
 	}
 
 	@Override

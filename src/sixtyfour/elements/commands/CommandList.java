@@ -31,6 +31,7 @@ public class CommandList
       add(new New());
       add(new Lst());
       add(new Def());
+      add(new Get());
     }
   });
 

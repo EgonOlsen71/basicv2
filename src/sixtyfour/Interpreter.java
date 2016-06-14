@@ -11,6 +11,7 @@ import sixtyfour.elements.commands.Command;
 import sixtyfour.elements.commands.Rem;
 import sixtyfour.parser.Line;
 import sixtyfour.parser.Parser;
+import sixtyfour.plugins.InputProvider;
 import sixtyfour.system.Machine;
 import sixtyfour.system.ProgramCounter;
 
@@ -74,13 +75,17 @@ public class Interpreter {
 		long start = System.nanoTime();
 		machine = new Machine();
 		Line cl = null;
+		int lastLineNumber = -1;
 		for (String line : code) {
 			try {
 				cl = Parser.getLine(line);
 				if (lines.containsKey(cl.getNumber())) {
 					throw new RuntimeException("Duplicate line number in: " + line);
 				}
-
+				if (cl.getNumber() < 0 || cl.getNumber() < lastLineNumber) {
+					throw new RuntimeException("Faulty line number in: " + line);
+				}
+				lastLineNumber = cl.getNumber();
 				int lineCnt = lineNumbers.size();
 				cl.setCount(lineCnt);
 
@@ -131,14 +136,21 @@ public class Interpreter {
 			long start = System.nanoTime();
 			execute(0, 0);
 			long end = System.nanoTime();
-			machine.getOutputChannel().println("READY. (" + ((end - start) / 1000000L) + "ms)");
+			machine.getOutputChannel().println("\nREADY. (" + ((end - start) / 1000000L) + "ms)", false);
 		} else {
-			machine.getOutputChannel().println("READY.");
+			machine.getOutputChannel().println("\nREADY.", false);
 		}
-
 	}
 
-	public void execute(int lineCnt, int pos) {
+	public InputProvider getInputProvider() {
+		return machine.getInputProvider();
+	}
+
+	public void setInputProvider(InputProvider inputProvider) {
+		machine.setInputProvider(inputProvider);
+	}
+
+	private void execute(int lineCnt, int pos) {
 		if (lineNumbers.size() == 0) {
 			return;
 		}
@@ -164,7 +176,7 @@ public class Interpreter {
 							break;
 						}
 						if (pc.getLineNumber() == -1) {
-							// Line index is known (FOR...NEXT)
+							// Line index is known (FOR...NEXT/RETURN)
 							lineCnt = pc.getLineCnt();
 							num = lineNumbers.get(lineCnt);
 							line = lines.get(num);
@@ -176,7 +188,7 @@ public class Interpreter {
 								i = -1;
 							}
 						} else {
-							// Line number is unknown (GOTO/GOSUB)
+							// Line number is known (GOTO/GOSUB)
 							num = pc.getLineNumber();
 							line = lines.get(num);
 							i = -1;
