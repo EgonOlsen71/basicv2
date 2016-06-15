@@ -3,20 +3,16 @@ package sixtyfour.elements.commands;
 import sixtyfour.system.Machine;
 import sixtyfour.system.ProgramCounter;
 
-public class End extends AbstractCommand {
+public class Cont extends AbstractCommand {
 
-	protected End(String name) {
-		super(name);
-	}
-
-	public End() {
-		super("END");
+	public Cont() {
+		super("CONT");
 	}
 
 	@Override
 	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, Machine memory) {
 		super.parse(linePart, lineCnt, lineNumber, linePos, memory);
-		if (linePart.trim().length() > 3) {
+		if (linePart.trim().length() > 4) {
 			throw new RuntimeException("Syntax error: " + this);
 		}
 		return null;
@@ -24,9 +20,6 @@ public class End extends AbstractCommand {
 
 	@Override
 	public ProgramCounter execute(Machine memory) {
-		ProgramCounter pc = new ProgramCounter(this.lineCnt, this.linePos);
-		pc.setEnd(true);
-		return pc;
+		throw new RuntimeException("Can't continue error: " + this);
 	}
-
 }
