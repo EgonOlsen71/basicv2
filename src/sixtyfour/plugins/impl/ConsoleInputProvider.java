@@ -1,6 +1,8 @@
-package sixtyfour.plugins;
+package sixtyfour.plugins.impl;
 
 import java.util.Scanner;
+
+import sixtyfour.plugins.InputProvider;
 
 public class ConsoleInputProvider implements InputProvider {
 

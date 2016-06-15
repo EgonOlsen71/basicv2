@@ -114,5 +114,10 @@ public abstract class AbstractCommand
     return null;
     // TODO Auto-generated method stub
   }
+  
+  @Override
+  public void stopExecution() {
+	  //
+  }
 
 }

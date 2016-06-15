@@ -15,6 +15,13 @@ public class ProgramTest {
 		// testGosub();
 		// testMenu();
 		testBeer();
+		testRun();
+	}
+
+	private static void testRun() {
+		String[] vary = Loader.loadProgram("run.bas");
+		Interpreter inty = new Interpreter(vary);
+		inty.run();
 	}
 
 	private static void testBeer() {

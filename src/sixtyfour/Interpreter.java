@@ -12,6 +12,8 @@ import sixtyfour.elements.commands.Rem;
 import sixtyfour.parser.Line;
 import sixtyfour.parser.Parser;
 import sixtyfour.plugins.InputProvider;
+import sixtyfour.plugins.MemoryListener;
+import sixtyfour.plugins.OutputChannel;
 import sixtyfour.system.Machine;
 import sixtyfour.system.ProgramCounter;
 
@@ -22,6 +24,7 @@ public class Interpreter {
 	private List<Integer> lineNumbers = new ArrayList<Integer>();
 	private Machine machine = null;
 	private boolean parsed = false;
+	private boolean stop = false;
 
 	public Interpreter(String code) {
 		this(code.split("\n"));
@@ -76,6 +79,8 @@ public class Interpreter {
 		machine = new Machine();
 		Line cl = null;
 		int lastLineNumber = -1;
+		lines.clear();
+		lineNumbers.clear();
 		for (String line : code) {
 			try {
 				cl = Parser.getLine(line);
@@ -129,6 +134,7 @@ public class Interpreter {
 	}
 
 	public void run() {
+		stop = false;
 		if (!parsed) {
 			parse();
 		}
@@ -137,9 +143,18 @@ public class Interpreter {
 			execute(0, 0);
 			long end = System.nanoTime();
 			machine.getOutputChannel().println("\nREADY. (" + ((end - start) / 1000000L) + "ms)", false);
+			parsed = false;
 		} else {
 			machine.getOutputChannel().println("\nREADY.", false);
 		}
+	}
+
+	public void runStop() {
+		stop = true;
+	}
+
+	public int[] getRam() {
+		return machine.getRam();
 	}
 
 	public InputProvider getInputProvider() {
@@ -150,6 +165,22 @@ public class Interpreter {
 		machine.setInputProvider(inputProvider);
 	}
 
+	public OutputChannel getOutputChannel() {
+		return machine.getOutputChannel();
+	}
+
+	public void setOutputChannel(OutputChannel outputChannel) {
+		machine.setOutputChannel(outputChannel);
+	}
+
+	public MemoryListener getMemoryListener() {
+		return machine.getMemoryListener();
+	}
+
+	public void setMemoryListener(MemoryListener memoryListener) {
+		machine.setMemoryListener(memoryListener);
+	}
+
 	private void execute(int lineCnt, int pos) {
 		if (lineNumbers.size() == 0) {
 			return;
@@ -158,6 +189,9 @@ public class Interpreter {
 		try {
 			do {
 				num = lineNumbers.get(lineCnt);
+				if (stop) {
+					machine.getOutputChannel().println("\nBREAK IN " + num, false);
+				}
 				Line line = lines.get(num);
 				for (int i = pos; i < line.getCommands().size(); i++) {
 					Command command = line.getCommands().get(i);
@@ -176,7 +210,7 @@ public class Interpreter {
 							break;
 						}
 						if (pc.getLineNumber() == -1) {
-							// Line index is known (FOR...NEXT/RETURN)
+							// Line index is known (FOR...NEXT/RETURN/RUN w/o line)
 							lineCnt = pc.getLineCnt();
 							num = lineNumbers.get(lineCnt);
 							line = lines.get(num);
@@ -188,7 +222,7 @@ public class Interpreter {
 								i = -1;
 							}
 						} else {
-							// Line number is known (GOTO/GOSUB)
+							// Line number is known (GOTO/GOSUB/RUN w/ line)
 							num = pc.getLineNumber();
 							line = lines.get(num);
 							i = -1;

@@ -5,27 +5,20 @@ import sixtyfour.parser.Term;
 import sixtyfour.system.Machine;
 import sixtyfour.system.ProgramCounter;
 
+public interface Command extends Atom {
+	String getName();
 
-public interface Command
-  extends Atom
-{
-  String getName();
+	boolean isCommand(String command);
 
+	Command clone(String linePart);
 
-  boolean isCommand(String command);
+	Term getTerm();
 
+	void setTerm(Term term);
 
-  Command clone(String linePart);
+	String parse(String linePart, int lineCnt, int lineNumber, int linePos, Machine memory);
 
+	ProgramCounter execute(Machine memory);
 
-  Term getTerm();
-
-
-  void setTerm(Term term);
-
-
-  String parse(String linePart, int lineCnt, int lineNumber, int linePos, Machine memory);
-
-
-  ProgramCounter execute(Machine memory);
+	void stopExecution();
 }

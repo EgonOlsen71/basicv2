@@ -33,3 +33,6 @@
 315 DEF FN F(X)=2*X
 320 DEF FN C(X) = 3+(A*B)/2+FNF(20)
 330 D = FN C(2):PRINT D
+
+1000 wait 464,8
+1010 wait 6502,1

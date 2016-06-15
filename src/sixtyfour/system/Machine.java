@@ -9,12 +9,17 @@ import java.util.Stack;
 
 import sixtyfour.elements.Variable;
 import sixtyfour.elements.commands.Command;
+import sixtyfour.elements.systemvars.Pie;
 import sixtyfour.elements.systemvars.Status;
 import sixtyfour.elements.systemvars.Time;
 import sixtyfour.elements.systemvars.TimeDate;
 import sixtyfour.parser.Operator;
-import sixtyfour.plugins.ConsoleInputProvider;
 import sixtyfour.plugins.InputProvider;
+import sixtyfour.plugins.MemoryListener;
+import sixtyfour.plugins.OutputChannel;
+import sixtyfour.plugins.impl.ConsoleInputProvider;
+import sixtyfour.plugins.impl.ConsoleOutputChannel;
+import sixtyfour.plugins.impl.NullMemoryListener;
 
 public class Machine {
 	private Map<String, Variable> vars = new HashMap<String, Variable>();
@@ -23,12 +28,16 @@ public class Machine {
 	private List<Command> commandList = new ArrayList<Command>();
 	private Command currentCommand = null;
 	private Operator currentOperator = null;
-	private OutputChannel outputChannel = null;
 	private Map<String, Command> functions = new HashMap<String, Command>();
-	private InputProvider inputProvider = new ConsoleInputProvider();
-	
+
+	private OutputChannel outputChannel = null;
+	private InputProvider inputProvider = null;
+	private MemoryListener memoryListener = null;
+
 	public Machine() {
-		outputChannel = new OutputChannel();
+		inputProvider = new ConsoleInputProvider();
+		outputChannel = new ConsoleOutputChannel();
+		memoryListener = new NullMemoryListener();
 		addDefaults();
 	}
 
@@ -75,7 +84,7 @@ public class Machine {
 		return stack.pop();
 	}
 
-	public void reset() {
+	public void resetMemory() {
 		for (int i = 0; i < ram.length; i++) {
 			ram[i] = 0;
 		}
@@ -139,8 +148,16 @@ public class Machine {
 		this.outputChannel = outputChannel;
 	}
 
+	public MemoryListener getMemoryListener() {
+		return memoryListener;
+	}
+
+	public void setMemoryListener(MemoryListener memoryListener) {
+		this.memoryListener = memoryListener;
+	}
+
 	private void addDefaults() {
-		add(new Variable("Π", (float) Math.PI));
+		add(new Pie());
 		add(new Time());
 		add(new TimeDate());
 		add(new Status());

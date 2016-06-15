@@ -17,9 +17,9 @@ public class Poke extends AbstractCommand {
 	}
 
 	@Override
-	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, Machine memory) {
-		super.parse(linePart, lineCnt, lineNumber, linePos, memory);
-		term = Parser.getTerm(this, linePart, memory, true);
+	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, Machine machine) {
+		super.parse(linePart, lineCnt, lineNumber, linePos, machine);
+		term = Parser.getTerm(this, linePart, machine, true);
 		pars = Parser.getParameters(term);
 
 		if (pars.size() != 2) {
@@ -30,19 +30,20 @@ public class Poke extends AbstractCommand {
 	}
 
 	@Override
-	public ProgramCounter execute(Machine memory) {
+	public ProgramCounter execute(Machine machine) {
 		Atom addr = pars.get(0);
 		Atom val = pars.get(1);
 		if (addr.getType().equals(Type.STRING) || val.getType().equals(Type.STRING)) {
 			throw new RuntimeException("Type mismatch error: " + this);
 		}
-		int memAddr = ((Number) addr.eval(memory)).intValue();
-		int vally = ((Number) val.eval(memory)).intValue();
+		int memAddr = ((Number) addr.eval(machine)).intValue();
+		int vally = ((Number) val.eval(machine)).intValue();
 		if (vally < 0 || vally > 255 || memAddr < 0 || memAddr > 65535) {
 			throw new RuntimeException("Illegal quantity error: " + this);
 		}
 
-		memory.getRam()[memAddr] = vally;
+		machine.getRam()[memAddr] = vally;
+		machine.getMemoryListener().poke(memAddr, vally);
 		return null;
 
 	}
