@@ -15,14 +15,6 @@ public class Get extends AbstractCommand {
 		super("GET");
 	}
 
-	public Variable getVar() {
-		return var;
-	}
-
-	public void setVar(Variable var) {
-		this.var = var;
-	}
-
 	@Override
 	public Type getType() {
 		return var.getType();

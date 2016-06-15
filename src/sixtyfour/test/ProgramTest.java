@@ -16,6 +16,13 @@ public class ProgramTest {
 		// testMenu();
 		testBeer();
 		testRun();
+		testInput();
+	}
+
+	private static void testInput() {
+		String[] vary = Loader.loadProgram("input.bas");
+		Interpreter inty = new Interpreter(vary);
+		inty.run();
 	}
 
 	private static void testRun() {
@@ -29,7 +36,7 @@ public class ProgramTest {
 		Interpreter inty = new Interpreter(vary);
 		inty.run();
 	}
-	
+
 	@SuppressWarnings("unused")
 	private static void testMenu() {
 		String[] vary = Loader.loadProgram("menu.bas");

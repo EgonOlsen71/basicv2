@@ -33,6 +33,7 @@ public class CommandList {
 			add(new Wait());
 			add(new Run());
 			add(new Cont());
+			add(new Input());
 		}
 	});
 

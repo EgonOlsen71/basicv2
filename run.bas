@@ -1,4 +1,4 @@
-10 a$="2": rem input "welches spiel wollen sie starten (1 oder 2)? ";a$
+10 input "welches spiel wollen sie starten (1 oder 2)? ";a$
 20 a = val(a$)
 25 print"hello!"
 30 if a<1 or a>2 then run: rem falsche auswahl dann neustart 

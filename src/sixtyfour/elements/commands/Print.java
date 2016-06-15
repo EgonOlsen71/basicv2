@@ -24,22 +24,22 @@ public class Print extends AbstractCommand {
 	}
 
 	@Override
-	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, Machine memory) {
-		super.parse(linePart, lineCnt, lineNumber, linePos, memory);
+	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, Machine machine) {
+		super.parse(linePart, lineCnt, lineNumber, linePos, machine);
 		List<PrintPart> parts = getParts(linePart.substring(5));
 		if (parts.size()==0) {
 			PrintPart newLine=new PrintPart("\"\"", ' ');
 			parts.add(newLine);
 		}
 		for (PrintPart part : parts) {
-			part.term = Parser.getTerm(part.part, memory, false, true);
+			part.term = Parser.getTerm(part.part, machine, false, true);
 		}
 		this.parts = parts;
 		return null;
 	}
 
 	@Override
-	public ProgramCounter execute(Machine memory) {
+	public ProgramCounter execute(Machine machine) {
 		for (int i = 0; i < parts.size(); i++) {
 			PrintPart part = parts.get(i);
 			char del = part.delimiter;
@@ -57,7 +57,7 @@ public class Print extends AbstractCommand {
 			} else if (del == ',') {
 				add = "\t";
 			}
-			Object obj = part.term.eval(memory);
+			Object obj = part.term.eval(machine);
 			if (obj instanceof Float) {
 				float f = (Float) obj;
 				if (f == (int) f) {
@@ -66,9 +66,9 @@ public class Print extends AbstractCommand {
 			}
 			String toPrint = obj.toString();
 			if (("\n").equals(add)) {
-				memory.getOutputChannel().println(toPrint, obj instanceof String);
+				machine.getOutputChannel().println(toPrint, obj instanceof String);
 			} else {
-				memory.getOutputChannel().print(toPrint + (add != null ? add : ""), obj instanceof String);
+				machine.getOutputChannel().print(toPrint + (add != null ? add : ""), obj instanceof String);
 			}
 		}
 
