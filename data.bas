@@ -17,3 +17,5 @@
 500 print c$, len(c$)
 600 print d$, len(d$)
 700 print e$, len(e$)
+1000 restore
+2000 read a$,b$,c$,d$,e$
