@@ -8,6 +8,7 @@ import sixtyfour.elements.Variable;
 import sixtyfour.parser.Atom;
 import sixtyfour.parser.Parser;
 import sixtyfour.parser.Term;
+import sixtyfour.parser.VariableAndIndex;
 import sixtyfour.system.Machine;
 import sixtyfour.system.ProgramCounter;
 
@@ -32,56 +33,40 @@ public class Let extends AbstractCommand {
 		return var.getType();
 	}
 
+	// rm$(lb)=rm$(lb)+CHR$(13)+"A sign here says:  LIMBO, find right    exit "
+
 	@Override
-	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine memory) {
-		super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, memory);
+	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
+		super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine);
 		if (linePart.toUpperCase(Locale.ENGLISH).startsWith("LET")) {
 			linePart = linePart.substring(3).trim();
 		}
-		var = Parser.getVariable(linePart, memory);
-		if (var.getName().endsWith("[]")) {
-			// array
-			int pos = linePart.indexOf('(');
-			int pos2 = linePart.lastIndexOf(')');
-			if (pos != -1 && pos2 != -1) {
-				Term params = Parser.getTerm(linePart.substring(pos + 1, pos2), memory, false, true);
-				List<Atom> pars = Parser.getParameters(params);
-				boolean dimed = memory.getVariable(var.getName()) != null;
-				if (!dimed) {
-					int[] pis = new int[pars.size()];
-					for (int i = 0; i < pis.length; i++) {
-						pis[i] = 10;
-					}
-					var = new Variable(var.getName(), null, pis);
-					var.clear();
-				}
-				indexTerm = params;
-			} else {
-				throw new RuntimeException("Array index out of bounds error: " + this);
-			}
-		}
-		term = Parser.getTerm(linePart, memory, true, true);
-		if (!var.getType().equals(term.getType()) && !(var.getType().equals(Type.REAL) && term.getType().equals(Type.INTEGER))) {
+		var = Parser.getVariable(linePart, machine);
+		VariableAndIndex vai = Parser.getIndexTerm(var, linePart, machine, true);
+		indexTerm=vai.getIndexTerm();
+		var=vai.getVariable();
+		term = Parser.getTerm(linePart, machine, true, true);
+		if (!var.getType().equals(term.getType()) && (var.getType().equals(Type.STRING) || term.getType().equals(Type.STRING))) {
 			throw new RuntimeException("Type mismatch error: " + linePart);
 		}
 		return null;
 	}
 
 	@Override
-	public ProgramCounter execute(Machine memory) {
-		var = memory.add(var);
+	public ProgramCounter execute(Machine machine) {
+		var = machine.add(var);
 		if (indexTerm == null) {
 			// no array
-			var.setValue(term.eval(memory));
+			var.setValue(term.eval(machine));
 		} else {
 			// array
 			List<Atom> pars = Parser.getParameters(indexTerm);
 			int[] pis = new int[pars.size()];
 			int cnt = 0;
 			for (Atom par : pars) {
-				pis[cnt++] = ((Number) par.eval(memory)).intValue();
+				pis[cnt++] = ((Number) par.eval(machine)).intValue();
 			}
-			var.setValue(term.eval(memory), pis);
+			var.setValue(term.eval(machine), pis);
 		}
 		return null;
 	}

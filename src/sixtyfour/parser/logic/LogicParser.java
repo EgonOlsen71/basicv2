@@ -206,7 +206,7 @@ public class LogicParser
     // System.out.println("To process: " + toProcess);
 
     String[] delims = { "OR", "AND" };
-    String utp = toProcess.toUpperCase(Locale.ENGLISH);
+    String utp = Parser.replaceStrings(toProcess, '.');
     int curPos = 0;
     String minOp = null;
     LogicTerm block = new LogicTerm("{l" + blocks.size() + "}");
@@ -224,13 +224,10 @@ public class LogicParser
         }
       }
 
-      // System.out.println(minPos + "/" + minOp + "/" + curPos);
-
       String part = toProcess.substring(curPos);
       LogicOp op = new LogicAnd();
       if (minOp != null)
       {
-
         if (minOp.equals("OR"))
         {
           op = new LogicOr();
@@ -346,7 +343,7 @@ public class LogicParser
           int br = getBracketDelta(right);
           if (br < 0)
           {
-            right = right.substring(0, right.length() + br);
+        	  right = right.substring(0, right.length() + br);
           }
           compy.setRight(Parser.getTerm(right, machine, false, true, termMap));
         }
@@ -355,8 +352,6 @@ public class LogicParser
           compy.not();
         }
 
-        // System.out.println("Setted: " + left + " - " + right + "/" +
-        // not);
         block.add(compy, op);
       }
 

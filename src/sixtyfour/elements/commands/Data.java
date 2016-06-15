@@ -61,9 +61,6 @@ public class Data extends AbstractCommand {
 				}
 			}
 			if (i == line.length() - 1) {
-				if (inString) {
-					throw new RuntimeException("Syntax error: " + this);
-				}
 				inString = false;
 				String txt = getText(sb);
 				if (lastPos && !hasQuotes) {

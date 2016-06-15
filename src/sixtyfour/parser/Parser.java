@@ -235,6 +235,37 @@ public class Parser {
 		return sb.toString().toUpperCase(Locale.ENGLISH);
 	}
 
+	public static VariableAndIndex getIndexTerm(Variable var, String linePart, Machine machine, boolean checkForAssignment) {
+		if (var.getName().endsWith("[]")) {
+			// array
+			if (checkForAssignment) {
+				int pos = linePart.indexOf('=');
+				if (pos != -1) {
+					linePart = linePart.substring(0, pos);
+				}
+			}
+			int pos = linePart.indexOf('(');
+			int pos2 = linePart.lastIndexOf(')');
+			if (pos != -1 && pos2 != -1) {
+				Term params = Parser.getTerm(linePart.substring(pos + 1, pos2), machine, false, true);
+				List<Atom> pars = Parser.getParameters(params);
+				boolean dimed = machine.getVariable(var.getName()) != null;
+				if (!dimed) {
+					int[] pis = new int[pars.size()];
+					for (int i = 0; i < pis.length; i++) {
+						pis[i] = 10;
+					}
+					var = new Variable(var.getName(), null, pis);
+					var.clear();
+				}
+				return new VariableAndIndex(var, params);
+			} else {
+				throw new RuntimeException("Array index out of bounds error: " + linePart);
+			}
+		}
+		return new VariableAndIndex(var, null);
+	}
+
 	public static Function getArrayAccessFunction(String linePart, Variable var, Map<String, Term> termMap, Machine memory) {
 		ArrayAccess fun = new ArrayAccess();
 		int pos = linePart.indexOf('(');

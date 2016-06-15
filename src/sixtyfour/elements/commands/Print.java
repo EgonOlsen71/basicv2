@@ -27,8 +27,8 @@ public class Print extends AbstractCommand {
 	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
 		super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine);
 		List<PrintPart> parts = getParts(linePart.substring(5));
-		if (parts.size()==0) {
-			PrintPart newLine=new PrintPart("\"\"", ' ');
+		if (parts.size() == 0) {
+			PrintPart newLine = new PrintPart("\"\"", ' ');
 			parts.add(newLine);
 		}
 		for (PrintPart part : parts) {
@@ -85,6 +85,16 @@ public class Print extends AbstractCommand {
 			char c = line.charAt(i);
 			if (c == '"') {
 				inString = !inString;
+				if (inString && sb.length() > 0) {
+					// Some other term is cludged onto a string (like "blah"a"blah")...and that's not
+					// some function call
+					String part = sb.toString();
+					if (!part.endsWith("(")) {
+						sb.setLength(0);
+						PrintPart pp = new PrintPart(part, ' ');
+						res.add(pp);
+					}
+				}
 			}
 			if (!inString) {
 				char nc = ' ';
@@ -100,7 +110,7 @@ public class Print extends AbstractCommand {
 
 				boolean end = i == line.length() - 1;
 
-				if (end || (brackets == 0 && (c == '"' || (c == ')' && nc!='=' && nc!='<' && nc!='>') || c == ',' || c == ';' || (c == '$' && nc != '(') || c == '%'))) {
+				if (end || (brackets == 0 && (c == '"' || (c == ')' && nc != '=' && nc != '<' && nc != '>') || c == ',' || c == ';' || (c == '$' && nc != '(') || c == '%'))) {
 					if (end || !Operator.isRealOperator(nc)) {
 						if (end || c == '"' || c == ')' || c == '%' || c == '$') {
 							if (end) {

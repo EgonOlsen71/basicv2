@@ -73,7 +73,7 @@ public class Term implements Atom {
 
 	@Override
 	public String toString() {
-		return "([" + key + "]" + left + this.operator + right + ")";
+		return "([" + key + "]\\l:" + left + this.operator + "\\r:" + right + ")";
 	}
 
 	@Override

@@ -18,8 +18,15 @@ public class ProgramTest {
 		// testRun();
 		// testInput();
 		testData();
+		testAdventure();
 	}
 
+	private static void testAdventure() {
+		String[] vary = Loader.loadProgram("OHARES3.BAS");
+		Interpreter inty = new Interpreter(vary);
+		inty.run();
+	}
+	
 	private static void testData() {
 		String[] vary = Loader.loadProgram("data.bas");
 		Interpreter inty = new Interpreter(vary);
