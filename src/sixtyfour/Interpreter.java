@@ -96,6 +96,11 @@ public class Interpreter {
 
 				lines.put(cl.getNumber(), cl);
 				lineNumbers.add(cl.getNumber());
+				
+				boolean looseEnding = cl.getLine().trim().endsWith(":");
+				if (looseEnding) {
+					cl.addDummyRemark();
+				}
 				String[] parts = Parser.getParts(cl, machine);
 
 				int pos = 0;

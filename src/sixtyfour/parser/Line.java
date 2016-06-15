@@ -16,6 +16,12 @@ public class Line {
 		this.number = number;
 	}
 
+	public void addDummyRemark() {
+		// Just to ease parsing of data commands (because that the only command
+		// where spaces at the end might matter)
+		line += "REM";
+	}
+
 	public String getLine() {
 		return line;
 	}

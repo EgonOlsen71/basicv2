@@ -15,16 +15,25 @@ public class ProgramTest {
 		// testGosub();
 		// testMenu();
 		testBeer();
-		testRun();
-		testInput();
+		// testRun();
+		// testInput();
+		testData();
 	}
 
+	private static void testData() {
+		String[] vary = Loader.loadProgram("data.bas");
+		Interpreter inty = new Interpreter(vary);
+		inty.run();
+	}
+	
+	@SuppressWarnings("unused")
 	private static void testInput() {
 		String[] vary = Loader.loadProgram("input.bas");
 		Interpreter inty = new Interpreter(vary);
 		inty.run();
 	}
 
+	@SuppressWarnings("unused")
 	private static void testRun() {
 		String[] vary = Loader.loadProgram("run.bas");
 		Interpreter inty = new Interpreter(vary);

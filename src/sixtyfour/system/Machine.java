@@ -172,11 +172,11 @@ public class Machine {
 		this.inputProvider = inputProvider;
 	}
 
-	public DataStore getData() {
+	public DataStore getDataStore() {
 		return data;
 	}
 
-	public void setData(DataStore data) {
+	public void setDataStore(DataStore data) {
 		this.data = data;
 	}
 }

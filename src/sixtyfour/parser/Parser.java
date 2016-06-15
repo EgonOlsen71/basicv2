@@ -46,15 +46,24 @@ public class Parser {
 			}
 			if (!inString) {
 				if (c == ':') {
-					parts.add(sb.toString().trim());
+					parts.add(cleanPart(sb));
 					sb.setLength(0);
 				}
 			}
 		}
 		if (sb.length() > 0) {
-			parts.add(sb.toString().trim());
+			parts.add(cleanPart(sb));
 		}
 		return parts.toArray(new String[parts.size()]);
+	}
+
+	private static String cleanPart(StringBuilder sb) {
+		String ret = sb.toString();
+		if (ret.toUpperCase(Locale.ENGLISH).trim().startsWith("DATA")) {
+			// Don't rtrim data lines
+			return ret.replaceAll("^\\s*", "");
+		}
+		return ret.trim();
 	}
 
 	public static boolean isInteger(String txt) {

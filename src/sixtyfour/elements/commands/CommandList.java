@@ -34,6 +34,9 @@ public class CommandList {
 			add(new Run());
 			add(new Cont());
 			add(new Input());
+			add(new Data());
+			add(new Read());
+			add(new Restore());
 		}
 	});
 

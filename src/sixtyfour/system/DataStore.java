@@ -27,6 +27,7 @@ public class DataStore {
 
 	public Object read() {
 		if (position >= datas.size()) {
+			System.out.println(position);
 			return null;
 		}
 		return datas.get(position++);
