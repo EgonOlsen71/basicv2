@@ -24,8 +24,8 @@ public class Print extends AbstractCommand {
 	}
 
 	@Override
-	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, Machine machine) {
-		super.parse(linePart, lineCnt, lineNumber, linePos, machine);
+	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
+		super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine);
 		List<PrintPart> parts = getParts(linePart.substring(5));
 		if (parts.size()==0) {
 			PrintPart newLine=new PrintPart("\"\"", ' ');

@@ -26,8 +26,8 @@ public class Input extends AbstractCommand {
 	}
 
 	@Override
-	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, Machine machine) {
-		super.parse(linePart, lineCnt, lineNumber, linePos, machine);
+	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
+		super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine);
 		linePart = Parser.removeWhiteSpace(linePart);
 		linePart = linePart.substring(5).trim();
 		if (linePart.length() == 0) {

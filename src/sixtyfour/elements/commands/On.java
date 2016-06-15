@@ -20,8 +20,8 @@ public class On extends AbstractCommand {
 	}
 
 	@Override
-	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, Machine machine) {
-		super.parse(linePart, lineCnt, lineNumber, linePos, machine);
+	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
+		super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine);
 		linePart = linePart.substring(2).trim();
 		String uPart = linePart.toUpperCase(Locale.ENGLISH);
 		int pos = uPart.lastIndexOf("GO");

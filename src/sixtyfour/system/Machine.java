@@ -29,6 +29,7 @@ public class Machine {
 	private Command currentCommand = null;
 	private Operator currentOperator = null;
 	private Map<String, Command> functions = new HashMap<String, Command>();
+	private DataStore data = new DataStore();
 
 	private OutputChannel outputChannel = null;
 	private InputProvider inputProvider = null;
@@ -169,5 +170,13 @@ public class Machine {
 
 	public void setInputProvider(InputProvider inputProvider) {
 		this.inputProvider = inputProvider;
+	}
+
+	public DataStore getData() {
+		return data;
+	}
+
+	public void setData(DataStore data) {
+		this.data = data;
 	}
 }

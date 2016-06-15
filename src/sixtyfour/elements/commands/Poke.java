@@ -17,8 +17,8 @@ public class Poke extends AbstractCommand {
 	}
 
 	@Override
-	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, Machine machine) {
-		super.parse(linePart, lineCnt, lineNumber, linePos, machine);
+	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
+		super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine);
 		term = Parser.getTerm(this, linePart, machine, true);
 		pars = Parser.getParameters(term);
 

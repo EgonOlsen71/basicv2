@@ -99,7 +99,7 @@ public abstract class AbstractCommand
 
 
   @Override
-  public String parse(String linePart, int lineCnt, int lineNumber, int linePos, Machine memory)
+  public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine memory)
   {
     this.lineCnt = lineCnt;
     this.linePos = linePos;

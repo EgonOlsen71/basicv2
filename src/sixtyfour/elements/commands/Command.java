@@ -16,7 +16,7 @@ public interface Command extends Atom {
 
 	void setTerm(Term term);
 
-	String parse(String linePart, int lineCnt, int lineNumber, int linePos, Machine memory);
+	String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine memory);
 
 	ProgramCounter execute(Machine memory);
 

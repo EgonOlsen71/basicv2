@@ -106,7 +106,7 @@ public class Interpreter {
 							if (command == null) {
 								throw new RuntimeException("Syntax error: " + cl.getNumber() + " " + cl.getLine());
 							}
-							part = command.parse(part, lineCnt, cl.getNumber(), pos, machine);
+							part = command.parse(part, lineCnt, cl.getNumber(), pos, (pos == parts.length - 1), machine);
 
 							machine.addCommand(command);
 							cl.addCommand(command);
@@ -210,7 +210,8 @@ public class Interpreter {
 							break;
 						}
 						if (pc.getLineNumber() == -1) {
-							// Line index is known (FOR...NEXT/RETURN/RUN w/o line)
+							// Line index is known (FOR...NEXT/RETURN/RUN w/o
+							// line)
 							lineCnt = pc.getLineCnt();
 							num = lineNumbers.get(lineCnt);
 							line = lines.get(num);

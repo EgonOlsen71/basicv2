@@ -36,8 +36,8 @@ public class Dim extends AbstractCommand {
 	}
 
 	@Override
-	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, Machine memory) {
-		super.parse(linePart, lineCnt, lineNumber, linePos, memory);
+	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine memory) {
+		super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, memory);
 		List<VariableAndTerms> vars = Parser.getArrayVariables(linePart, memory);
 		terms = new HashMap<String, List<Atom>>();
 		this.vars = new ArrayList<Variable>();

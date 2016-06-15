@@ -33,8 +33,8 @@ public class Let extends AbstractCommand {
 	}
 
 	@Override
-	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, Machine memory) {
-		super.parse(linePart, lineCnt, lineNumber, linePos, memory);
+	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine memory) {
+		super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, memory);
 		if (linePart.toUpperCase(Locale.ENGLISH).startsWith("LET")) {
 			linePart = linePart.substring(3).trim();
 		}

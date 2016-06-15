@@ -13,8 +13,8 @@ public class Return extends AbstractCommand {
 	}
 
 	@Override
-	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, Machine machine) {
-		super.parse(linePart, lineCnt, lineNumber, linePos, machine);
+	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
+		super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine);
 		linePart = linePart.substring(6).trim();
 		if (linePart.trim().length() > 0) {
 			throw new RuntimeException("Syntax error: " + this);

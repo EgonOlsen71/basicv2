@@ -30,9 +30,9 @@ public class Def
 
 
   @Override
-  public String parse(String linePart, int lineCnt, int lineNumber, int linePos, Machine machine)
+  public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine)
   {
-    super.parse(linePart, lineCnt, lineNumber, linePos, machine);
+    super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine);
     linePart = Parser.removeWhiteSpace(linePart);
     int pos = linePart.indexOf('(');
     int pos2 = linePart.indexOf(')');
