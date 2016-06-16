@@ -69,23 +69,28 @@ public class Machine {
 		stack.push(new StackEntry(fory));
 	}
 
-	public For popFor() {
+	public For popFor(For fory) {
+		List<StackEntry> toRemove = new ArrayList<StackEntry>();
 		for (int i = stack.size() - 1; i >= 0; i--) {
 			StackEntry entry = stack.get(i);
-			if (entry.isFor()) {
-				for (int p = 0; p < stack.size() - i; p++) {
-					stack.pop();
+			if (entry.getCommand() == fory) {
+				for (int p = stack.size() - 1; p >= i; p--) {
+					entry = stack.get(i);
+					if (entry.isFor()) {
+						toRemove.add(entry);
+					}
 				}
+				stack.removeAll(toRemove);
 				return (For) entry.getCommand();
 			}
 		}
 		return null;
 	}
 
-	public For peekFor() {
+	public For peekFor(String varName) {
 		for (int i = stack.size() - 1; i >= 0; i--) {
 			StackEntry entry = stack.get(i);
-			if (entry.isFor()) {
+			if (entry.isFor() && (varName == null || varName.equalsIgnoreCase(((For) entry.getCommand()).getVar().getName()))) {
 				return (For) entry.getCommand();
 			}
 		}

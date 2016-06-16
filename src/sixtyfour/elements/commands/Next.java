@@ -51,7 +51,7 @@ public class Next extends AbstractCommand {
 
 	@Override
 	public ProgramCounter execute(Machine machine) {
-		For myFor = machine.peekFor();
+		For myFor = machine.peekFor(this.varName);
 		if (myFor == null) {
 			throw new RuntimeException("NEXT without FOR error: " + this);
 		}

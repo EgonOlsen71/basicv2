@@ -107,8 +107,8 @@ public class For extends AbstractCommand {
 			return true;
 		} else {
 			if (running) {
-				For se = memory.popFor();
-				if (se != this) {
+				For these = memory.popFor(this);
+				if (these == null) {
 					throw new RuntimeException("Out of memory error: " + this);
 				}
 				running = false;
