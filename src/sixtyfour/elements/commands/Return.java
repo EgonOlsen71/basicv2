@@ -28,7 +28,7 @@ public class Return extends AbstractCommand {
 		if (caller == null) {
 			throw new RuntimeException("RETURN without GOSUB error!");
 		}
-		Gosub gosub = (Gosub) caller.getCommand();
+		AbstractCommand gosub = (AbstractCommand) caller.getCommand();
 		pc.setLineCnt(gosub.lineCnt);
 		pc.setLinePos(gosub.linePos);
 		return pc;

@@ -18,9 +18,18 @@ public class ProgramTest {
 		// testRun();
 		// testInput();
 		testData();
-		testAdventure();
+		//testAdventure();
+		//testCalc();
 	}
 
+	@SuppressWarnings("unused")
+	private static void testCalc() {
+		String[] vary = Loader.loadProgram("calctest.bas");
+		Interpreter inty = new Interpreter(vary);
+		inty.run();
+	}
+	
+	@SuppressWarnings("unused")
 	private static void testAdventure() {
 		String[] vary = Loader.loadProgram("OHARES3.BAS");
 		Interpreter inty = new Interpreter(vary);

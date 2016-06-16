@@ -36,3 +36,6 @@
 
 1000 wait 464,8
 1010 wait 6502,1
+
+1020 a=67
+1030 print a:clr:printa

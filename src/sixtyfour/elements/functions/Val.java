@@ -52,7 +52,6 @@ public class Val extends AbstractFunction {
 		try {
 			return Float.valueOf(sb.toString());
 		} catch (Exception e) {
-			e.printStackTrace();
 			return 0f;
 		}
 

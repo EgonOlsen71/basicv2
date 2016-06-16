@@ -89,6 +89,10 @@ public class Machine {
 		for (int i = 0; i < ram.length; i++) {
 			ram[i] = 0;
 		}
+		clearVars();
+	}
+
+	public void clearVars() {
 		for (Variable var : vars.values()) {
 			var.clear();
 		}

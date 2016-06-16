@@ -37,6 +37,7 @@ public class CommandList {
 			add(new Data());
 			add(new Read());
 			add(new Restore());
+			add(new Clr());
 		}
 	});
 

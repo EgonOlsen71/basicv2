@@ -21,7 +21,12 @@ public class ConsoleInputProvider implements InputProvider {
 
 	@Override
 	public String readString() {
-		String val = scanner.nextLine();
+		String val = null;
+		if (scanner.hasNext()) {
+			val = scanner.next();
+		} else {
+			val = scanner.nextLine();
+		}
 		if (val != null && val.length() == 0) {
 			val = null;
 		}
