@@ -11,15 +11,24 @@ public class ProgramTest {
 		testPrime2();
 		testConditions();
 		testVarious();
-		// testGosubReturn();
-		// testGosub();
-		// testMenu();
+		//testGosubReturn();
+		//testGosub();
+		testMenu();
 		testBeer();
 		// testRun();
 		// testInput();
 		testData();
-		//testAdventure();
-		//testCalc();
+		// testAdventure();
+		// testCalc();
+		// testStuff();
+	}
+
+	@SuppressWarnings("unused")
+	private static void testStuff() {
+		String[] vary = Loader.loadProgram("test.bas");
+		Interpreter inty = new Interpreter(vary);
+		inty.setPrintLineNumbers(true);
+		inty.run();
 	}
 
 	@SuppressWarnings("unused")
@@ -28,20 +37,20 @@ public class ProgramTest {
 		Interpreter inty = new Interpreter(vary);
 		inty.run();
 	}
-	
+
 	@SuppressWarnings("unused")
 	private static void testAdventure() {
 		String[] vary = Loader.loadProgram("OHARES3.BAS");
 		Interpreter inty = new Interpreter(vary);
 		inty.run();
 	}
-	
+
 	private static void testData() {
 		String[] vary = Loader.loadProgram("data.bas");
 		Interpreter inty = new Interpreter(vary);
 		inty.run();
 	}
-	
+
 	@SuppressWarnings("unused")
 	private static void testInput() {
 		String[] vary = Loader.loadProgram("input.bas");
@@ -62,7 +71,6 @@ public class ProgramTest {
 		inty.run();
 	}
 
-	@SuppressWarnings("unused")
 	private static void testMenu() {
 		String[] vary = Loader.loadProgram("menu.bas");
 		Interpreter inty = new Interpreter(vary);

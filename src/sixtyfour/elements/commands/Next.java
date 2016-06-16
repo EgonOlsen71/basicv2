@@ -1,6 +1,5 @@
 package sixtyfour.elements.commands;
 
-import java.util.List;
 import java.util.Locale;
 
 import sixtyfour.parser.Parser;
@@ -9,7 +8,6 @@ import sixtyfour.system.ProgramCounter;
 
 public class Next extends AbstractCommand {
 	private String varName = null;
-	private For myFor = null;
 	private ProgramCounter pc = new ProgramCounter(0, 0); // Recycle instance
 
 	public Next() {
@@ -45,36 +43,18 @@ public class Next extends AbstractCommand {
 			}
 		}
 		varName = Parser.getVariableName(linePart);
-
-		List<Command> prevs = memory.getCommandList();
-		int nextCnt = 0;
-		for (int i = prevs.size() - 1; i >= 0; i--) {
-			Command com = prevs.get(i);
-			if (com.isCommand("NEXT")) {
-				nextCnt++;
-			}
-			if (com.isCommand("FOR")) {
-				if (nextCnt == 0) {
-					String forVar = ((For) com).getVar().getName();
-					if (varName.length() == 0) {
-						varName = forVar;
-					} else if (!varName.equalsIgnoreCase(forVar)) {
-						throw new RuntimeException("NEXT without FOR error: " + this + " " + varName);
-					}
-
-					myFor = (For) com;
-					myFor.setNext(this);
-					return ret;
-				} else {
-					nextCnt--;
-				}
-			}
+		if (varName != null && varName.length() == 0) {
+			varName = null;
 		}
-		throw new RuntimeException("NEXT without FOR error: " + this);
+		return ret;
 	}
 
 	@Override
 	public ProgramCounter execute(Machine machine) {
+		For myFor = machine.peekFor();
+		if (myFor == null) {
+			throw new RuntimeException("NEXT without FOR error: " + this);
+		}
 		boolean iterate = myFor.next(this, machine);
 		if (iterate) {
 			pc.setLineCnt(myFor.lineCnt);

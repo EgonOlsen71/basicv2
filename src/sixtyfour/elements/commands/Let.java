@@ -43,8 +43,8 @@ public class Let extends AbstractCommand {
 		}
 		var = Parser.getVariable(linePart, machine);
 		VariableAndIndex vai = Parser.getIndexTerm(var, linePart, machine, true);
-		indexTerm=vai.getIndexTerm();
-		var=vai.getVariable();
+		indexTerm = vai.getIndexTerm();
+		var = vai.getVariable();
 		term = Parser.getTerm(linePart, machine, true, true);
 		if (!var.getType().equals(term.getType()) && (var.getType().equals(Type.STRING) || term.getType().equals(Type.STRING))) {
 			throw new RuntimeException("Type mismatch error: " + linePart);

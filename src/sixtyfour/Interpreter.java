@@ -25,6 +25,7 @@ public class Interpreter {
 	private Machine machine = null;
 	private boolean parsed = false;
 	private boolean stop = false;
+	private boolean printLineNumbers = false;
 
 	public Interpreter(String code) {
 		this(code.split("\n"));
@@ -96,7 +97,7 @@ public class Interpreter {
 
 				lines.put(cl.getNumber(), cl);
 				lineNumbers.add(cl.getNumber());
-				
+
 				boolean looseEnding = cl.getLine().trim().endsWith(":");
 				if (looseEnding) {
 					cl.addDummyRemark();
@@ -186,6 +187,14 @@ public class Interpreter {
 		machine.setMemoryListener(memoryListener);
 	}
 
+	public boolean isPrintLineNumbers() {
+		return printLineNumbers;
+	}
+
+	public void setPrintLineNumbers(boolean printLineNumbers) {
+		this.printLineNumbers = printLineNumbers;
+	}
+
 	private void execute(int lineCnt, int pos) {
 		if (lineNumbers.size() == 0) {
 			return;
@@ -194,6 +203,9 @@ public class Interpreter {
 		try {
 			do {
 				num = lineNumbers.get(lineCnt);
+				if (printLineNumbers) {
+					Logger.log("[" + num + "]");
+				}
 				if (stop) {
 					machine.getOutputChannel().println("\nBREAK IN " + num, false);
 				}

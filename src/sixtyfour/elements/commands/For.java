@@ -8,7 +8,6 @@ import sixtyfour.parser.Parser;
 import sixtyfour.parser.Term;
 import sixtyfour.system.Machine;
 import sixtyfour.system.ProgramCounter;
-import sixtyfour.system.StackEntry;
 
 public class For extends AbstractCommand {
 	private Variable var;
@@ -17,7 +16,6 @@ public class For extends AbstractCommand {
 	private float end;
 	private float step = 1f;
 	private boolean running = false;
-	private Next next;
 
 	public For() {
 		super("FOR");
@@ -85,22 +83,19 @@ public class For extends AbstractCommand {
 
 	@Override
 	public ProgramCounter execute(Machine machine) {
-		if (next == null) {
-			throw new RuntimeException("For without next error: " + this);
-		}
 		var = machine.add(var);
 		var.setValue(term.eval(machine));
 		end = ((Number) endTerm.eval(machine)).floatValue();
 		step = ((Number) stepTerm.eval(machine)).floatValue();
 
-		machine.push(this);
+		machine.pushFor(this);
 		running = true;
 		return null;
 	}
 
 	public boolean next(Next next, Machine memory) {
-		if (!next.getVarName().equalsIgnoreCase(var.getName())) {
-			throw new RuntimeException("Next without for: " + next);
+		if (next.getVarName() != null && !next.getVarName().equalsIgnoreCase(var.getName())) {
+			throw new RuntimeException("NEXT without FOR: " + next);
 		}
 
 		if (!running) {
@@ -112,23 +107,13 @@ public class For extends AbstractCommand {
 			return true;
 		} else {
 			if (running) {
-				StackEntry se = memory.pop();
-				if (se.getCommand() != this) {
+				For se = memory.popFor();
+				if (se != this) {
 					throw new RuntimeException("Out of memory error: " + this);
 				}
 				running = false;
 			}
-
 			return false;
 		}
 	}
-
-	public Next getNext() {
-		return next;
-	}
-
-	public void setNext(Next next) {
-		this.next = next;
-	}
-
 }

@@ -562,12 +562,23 @@ public class Parser {
 				if (c == '"') {
 					inString = !inString;
 				}
-				if (!inString) {
+				if (!inString || i == term.length() - 1) {
 					if (c == '(') {
 						open = true;
 						start = i;
 					}
 					if (c == ')') {
+
+						// Sadly, it's allowed that Strings aren't terminated
+						// properly. This deals with this by adding an artifical
+						// quote to where it belongs.
+						if (inString) {
+							c = '"';
+							term = term.substring(0, i) + c + term.substring(i);
+							inString = false;
+							continue;
+						}
+
 						if (open) {
 							String sub = term.substring(start + 1, i);
 							boolean logic = checkForLogicTerm && LogicParser.isLogicTerm(sub);
@@ -588,7 +599,6 @@ public class Parser {
 								res.setKey(termKey);
 								termMap.put(termKey, res);
 								// System.out.println("1: " + term + "/" +
-								// System.identityHashCode(termMap));
 								term = term.substring(0, start) + termKey + term.substring(i + 1);
 								// System.out.println("2: " + term);
 								// System.out.println(res);
@@ -605,7 +615,6 @@ public class Parser {
 				}
 			}
 
-			// System.out.println("F: " + term);
 			Term finalTerm = new Term(term);
 			termMap.put("final", finalTerm);
 			finalTerm = build(finalTerm, termMap, memory);

@@ -1,6 +1,7 @@
 package sixtyfour.system;
 
 import sixtyfour.elements.commands.Command;
+import sixtyfour.elements.commands.For;
 import sixtyfour.elements.commands.Gosub;
 import sixtyfour.elements.commands.On;
 
@@ -13,6 +14,10 @@ public class StackEntry {
 
 	public Command getCommand() {
 		return command;
+	}
+
+	public boolean isFor() {
+		return command instanceof For;
 	}
 
 	public boolean isSubroutineCall() {

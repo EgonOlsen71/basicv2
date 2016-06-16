@@ -9,6 +9,7 @@ import java.util.Stack;
 
 import sixtyfour.elements.Variable;
 import sixtyfour.elements.commands.Command;
+import sixtyfour.elements.commands.For;
 import sixtyfour.elements.systemvars.Pie;
 import sixtyfour.elements.systemvars.Status;
 import sixtyfour.elements.systemvars.Time;
@@ -59,6 +60,36 @@ public class Machine {
 			throw new RuntimeException("Out of memory error, stack size exceeds 10000!");
 		}
 		stack.push(new StackEntry(command));
+	}
+
+	public void pushFor(For fory) {
+		if (stack.size() > 10000) {
+			throw new RuntimeException("Out of memory error, stack size exceeds 10000!");
+		}
+		stack.push(new StackEntry(fory));
+	}
+
+	public For popFor() {
+		for (int i = stack.size() - 1; i >= 0; i--) {
+			StackEntry entry = stack.get(i);
+			if (entry.isFor()) {
+				for (int p = 0; p < stack.size() - i; p++) {
+					stack.pop();
+				}
+				return (For) entry.getCommand();
+			}
+		}
+		return null;
+	}
+
+	public For peekFor() {
+		for (int i = stack.size() - 1; i >= 0; i--) {
+			StackEntry entry = stack.get(i);
+			if (entry.isFor()) {
+				return (For) entry.getCommand();
+			}
+		}
+		return null;
 	}
 
 	public StackEntry getCaller() {
