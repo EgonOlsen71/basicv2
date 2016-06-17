@@ -137,9 +137,6 @@ public class Term implements Atom {
 				} else if (operator.isNot()) {
 					v1 = ~n2.intValue();
 				}
-				if (type.equals(Type.INTEGER)) {
-					return (int) v1;
-				}
 				return v1;
 			}
 			throw new RuntimeException("Unable to evaluate term: " + this.toString());

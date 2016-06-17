@@ -191,6 +191,12 @@ public class Variable implements Atom {
 		if (array) {
 			throw new RuntimeException("Not a simple type: " + this);
 		}
+		// Convert into proper format
+		if (value instanceof Float && type.equals(Type.INTEGER)) {
+			value = ((Number) value).intValue();
+		} else if (value instanceof Integer && type.equals(Type.REAL)) {
+			value = ((Number) value).floatValue();
+		}
 		this.value = value;
 	}
 
@@ -233,6 +239,13 @@ public class Variable implements Atom {
 			m *= (dimensions[cnt] + 1);
 			cnt++;
 		}
+
+		if (val instanceof Float && type.equals(Type.INTEGER)) {
+			val = ((Number) val).intValue();
+		} else if (val instanceof Integer && type.equals(Type.REAL)) {
+			val = ((Number) val).floatValue();
+		}
+
 		return ((List<Object>) value).set(ap, val);
 	}
 

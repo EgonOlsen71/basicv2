@@ -3,6 +3,7 @@ package sixtyfour.test;
 import sixtyfour.Interpreter;
 import sixtyfour.Loader;
 
+@SuppressWarnings("unused")
 public class ProgramTest {
 	public static void main(String[] args) {
 		testPrime();
@@ -13,32 +14,29 @@ public class ProgramTest {
 		testVarious();
 		//testGosubReturn();
 		//testGosub();
-		testMenu();
+		//testMenu();
 		testBeer();
 		// testRun();
 		// testInput();
-		testData();
+		//testData();
 		// testAdventure();
 		// testCalc();
-		// testStuff();
+		//testStuff();
 	}
 
-	@SuppressWarnings("unused")
 	private static void testStuff() {
 		String[] vary = Loader.loadProgram("test.bas");
 		Interpreter inty = new Interpreter(vary);
-		inty.setPrintLineNumbers(true);
+		//inty.setPrintLineNumbers(true);
 		inty.run();
 	}
 
-	@SuppressWarnings("unused")
 	private static void testCalc() {
 		String[] vary = Loader.loadProgram("calctest.bas");
 		Interpreter inty = new Interpreter(vary);
 		inty.run();
 	}
 
-	@SuppressWarnings("unused")
 	private static void testAdventure() {
 		String[] vary = Loader.loadProgram("OHARES3.BAS");
 		Interpreter inty = new Interpreter(vary);
@@ -51,14 +49,12 @@ public class ProgramTest {
 		inty.run();
 	}
 
-	@SuppressWarnings("unused")
 	private static void testInput() {
 		String[] vary = Loader.loadProgram("input.bas");
 		Interpreter inty = new Interpreter(vary);
 		inty.run();
 	}
 
-	@SuppressWarnings("unused")
 	private static void testRun() {
 		String[] vary = Loader.loadProgram("run.bas");
 		Interpreter inty = new Interpreter(vary);
@@ -77,14 +73,12 @@ public class ProgramTest {
 		inty.run();
 	}
 
-	@SuppressWarnings("unused")
 	private static void testGosub() {
 		String[] vary = Loader.loadProgram("fac.bas");
 		Interpreter inty = new Interpreter(vary);
 		inty.run();
 	}
 
-	@SuppressWarnings("unused")
 	private static void testGosubReturn() {
 		String[] vary = Loader.loadProgram("subroutines.bas");
 		Interpreter inty = new Interpreter(vary);

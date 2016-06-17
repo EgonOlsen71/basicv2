@@ -16,6 +16,28 @@ public class ParserTest {
 		testTermCreation();
 		testComplexFunctions();
 		testLogic();
+		testPowerOf();
+	}
+
+	private static void testPowerOf() {
+		
+		System.out.println("testPowerOf");
+		Machine memory = new Machine();
+		memory.add(new Variable("X1", 122));
+		memory.add(new Variable("X", 100));
+		memory.add(new Variable("Y", 113));
+		memory.add(new Variable("X1", 110));
+		memory.add(new Variable("Y", 214));
+		memory.add(new Variable("Y1", 210));
+		//String term="((x1-x)^2+(y1-y)^2+(z1-z)^2)";
+		String term = "((x1-x)^2+(y1-y)^2+(z1-z)^2)^(1/2)";
+
+		String wbres = Parser.addBrackets(term);
+		System.out.println(wbres);
+
+		Term res = Parser.getTerm(term, memory, false, true);
+		System.out.println(res);
+		System.out.println("Value: " + res.eval(memory));
 	}
 
 	private static void testLogic() {

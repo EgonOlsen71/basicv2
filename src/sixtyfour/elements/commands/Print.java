@@ -117,7 +117,7 @@ public class Print extends AbstractCommand {
 				boolean end = i == line.length() - 1;
 
 				if (end || (brackets == 0 && (c == '"' || (c == ')' && nc != '=' && nc != '<' && nc != '>') || c == ',' || c == ';' || (c == '$' && nc != '(') || c == '%'))) {
-					if (end || !Operator.isRealOperator(nc)) {
+					if (end || !Operator.isRealOperator(nc) || c == ';' || c == ',') {
 						if (end || c == '"' || c == ')' || c == '%' || c == '$') {
 							if (end) {
 								nc = ' ';
@@ -143,11 +143,13 @@ public class Print extends AbstractCommand {
 							// like a ;
 							line += ";";
 						}
+						//System.out.println("State: " + i + "/" + c + "/" + nc);
 
 						continue;
 					}
 				}
 			}
+			//System.out.print(c);
 			sb.append(c);
 		}
 		return res;

@@ -10,7 +10,6 @@ public class ConsoleInputProvider implements InputProvider {
 
 	@Override
 	public Character readKey() {
-		scanner.useDelimiter("");
 		if (scanner.hasNext()) {
 			String val = scanner.next();
 			if (val.length() > 0) {
@@ -22,7 +21,6 @@ public class ConsoleInputProvider implements InputProvider {
 
 	@Override
 	public String readString() {
-		scanner.useDelimiter("");
 		String val = null;
 		if (scanner.hasNext()) {
 			val = scanner.next();
