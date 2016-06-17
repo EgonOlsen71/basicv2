@@ -65,6 +65,11 @@ public class Print extends AbstractCommand {
 				}
 			}
 			String toPrint = obj.toString();
+			if (obj instanceof Float || obj instanceof Integer) {
+				if (((Number) obj).floatValue() >= 0) {
+					toPrint = " " + toPrint;
+				}
+			}
 			if (("\n").equals(add)) {
 				machine.getOutputChannel().println(toPrint, obj instanceof String);
 			} else {
@@ -86,7 +91,8 @@ public class Print extends AbstractCommand {
 			if (c == '"') {
 				inString = !inString;
 				if (inString && sb.length() > 0) {
-					// Some other term is cludged onto a string (like "blah"a"blah")...and that's not
+					// Some other term is cludged onto a string (like
+					// "blah"a"blah")...and that's not
 					// some function call
 					String part = sb.toString();
 					if (!part.endsWith("(")) {

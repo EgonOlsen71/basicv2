@@ -623,9 +623,29 @@ public class Parser {
 				finalTerm.setOperator(Operator.NOP);
 				finalTerm.setRight(new Constant<Integer>(0));
 			}
+			finalTerm = optimizeTermTree(finalTerm);
 			return finalTerm;
 		} catch (NumberFormatException nfe) {
 			throw new RuntimeException("Syntax error: " + term);
+		}
+	}
+
+	private static Term optimizeTermTree(Term finalTerm) {
+		Atom left = finalTerm.getLeft();
+		if (!(left instanceof Term)) {
+			return finalTerm;
+		}
+
+		Atom right = finalTerm.getRight();
+		if (!finalTerm.getOperator().isNop()) {
+			finalTerm.setLeft(optimizeTermTree((Term) left));
+			if ((right instanceof Term)) {
+				finalTerm.setRight(optimizeTermTree((Term) right));
+			}
+			return finalTerm;
+		} else {
+			//System.out.println("removed from tree: " + finalTerm + ", replaced by " + left);
+			return (Term) left;
 		}
 	}
 

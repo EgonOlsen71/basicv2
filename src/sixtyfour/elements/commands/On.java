@@ -54,7 +54,7 @@ public class On extends AbstractCommand {
 				if (part.length() == 0) {
 					lineNumbers.add(0);
 				} else {
-					Integer li = Integer.valueOf(part);
+					Integer li = Integer.valueOf(part.trim());
 					lineNumbers.add(li);
 				}
 			} catch (Exception e) {
