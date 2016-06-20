@@ -38,7 +38,7 @@ public class ParserTest {
 		memory.add(new Variable("U", 22));
 		memory.add(new Variable("O", 45));
 		memory.add(new Variable("I", 67));
-		String term="a * b * (-c*f+(t*r+-f*(g-z)-f*g/z^4)) + -(d*u)*(p+(o*i*z))*z+u";
+		String term="a * b * (-c*f+(t*r+-f*(g-z)-f*g/z^4)) + abs(-(d*u))*(p+(o*i*z))*z+u";
 		String wbres = Parser.addBrackets(term);
 		System.out.println(wbres);
 
