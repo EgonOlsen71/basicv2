@@ -18,7 +18,36 @@ public class ParserTest {
 		testLogic();
 		testPowerOf();
 		testAbs();
+		testStuff();
 	}
+
+	
+	
+	private static void testStuff() {
+		System.out.println("testStuff");
+		Machine memory = new Machine();
+		memory.add(new Variable("A", 23));
+		memory.add(new Variable("B", 41));
+		memory.add(new Variable("D", 123));
+		memory.add(new Variable("F", 141));
+		memory.add(new Variable("G", 3));
+		memory.add(new Variable("Z", 1));
+		memory.add(new Variable("T", 11));
+		memory.add(new Variable("R", 21));
+		memory.add(new Variable("P", 55));
+		memory.add(new Variable("U", 22));
+		memory.add(new Variable("O", 45));
+		memory.add(new Variable("I", 67));
+		String term="a * b * (-c*f+(t*r+-f*(g-z)-f*g/z^4)) + -(d*u)*(p+(o*i*z))*z+u";
+		String wbres = Parser.addBrackets(term);
+		System.out.println(wbres);
+
+		Term res = Parser.getTerm(term, memory, false, true);
+		System.out.println(res);
+		System.out.println("Value: " + res.eval(memory));
+	}
+
+
 
 	private static void testAbs() {
 		System.out.println("testAbs");
