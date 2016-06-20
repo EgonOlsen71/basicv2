@@ -442,6 +442,7 @@ public class Parser {
 				if (start > 0 && term.charAt(start - 1) == '(' && end < term.length() && term.charAt(end) == ')') {
 					sb.append(term.substring(0, start)).append(term.substring(start, end));
 				} else {
+					System.out.println("Subterm: " + term.substring(start, end));
 					sb.append(term.substring(0, start)).append('(').append(term.substring(start, end)).append(')');
 					i++;
 				}
@@ -513,8 +514,8 @@ public class Parser {
 			if (c == ',') {
 				return i;
 			}
-			// End reached if there's no bracket open and an operator that's not just a minus indicating a negative number...or a bracket closes
-			if (brackets == 0 && ((Operator.isOperator(c) && (c != '-' || (i < term.length() - 1 && Operator.isOperator(term.charAt(i + 1))))) || c == ')')) {
+
+			if (brackets == 0 && (Operator.isOperator(c) || c == ')')) {
 				return i;
 			}
 			if (c == '(') {
@@ -531,8 +532,6 @@ public class Parser {
 		for (int i = pos - 1; i >= 0; i--) {
 			char c = term.charAt(i);
 
-			// System.out.println(c + "/" + brackets);
-
 			if (c == ',' && brackets == 0) {
 				return i + 1;
 			}
@@ -540,6 +539,10 @@ public class Parser {
 			if (i > 0) {
 				pc = term.charAt(i - 1);
 			}
+
+			// This handles negative numbers as well, like *-10. However, the
+			// parser doesn't allow for such numbers here, because they get
+			// resolved much earlier...anyway...
 			if (brackets == 0 && ((Operator.isOperator(c) && (c != '-' || (i > 0 && !Operator.isOperator(pc) && pc != '('))) || c == '(')) {
 				return i + 1;
 			}

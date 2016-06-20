@@ -119,7 +119,7 @@ public class ParserTest {
 		term = "a * b + c * d * -2";
 		res = Parser.addBrackets(term);
 		System.out.println(term + " is actually " + res);
-		term = "a * b * c + d";
+		term = "f-18*a * b * -c + d";
 		res = Parser.addBrackets(term);
 		System.out.println(term + " is actually " + res);
 		term = "a * b * c * d";
