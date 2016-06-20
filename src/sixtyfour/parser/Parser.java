@@ -513,8 +513,8 @@ public class Parser {
 			if (c == ',') {
 				return i;
 			}
-			if (brackets == 0 && Operator.isOperator(c) && (c != '-' || (i < term.length() - 1 && Operator.isOperator(term.charAt(i + 1)) && term.charAt(i + 1) != ')'))
-					|| c == ')') {
+			// End reached if there's no bracket open and an operator that's not just a minus indicating a negative number...or a bracket closes
+			if (brackets == 0 && ((Operator.isOperator(c) && (c != '-' || (i < term.length() - 1 && Operator.isOperator(term.charAt(i + 1))))) || c == ')')) {
 				return i;
 			}
 			if (c == '(') {
@@ -644,7 +644,8 @@ public class Parser {
 			}
 			return finalTerm;
 		} else {
-			//System.out.println("removed from tree: " + finalTerm + ", replaced by " + left);
+			// System.out.println("removed from tree: " + finalTerm +
+			// ", replaced by " + left);
 			return (Term) left;
 		}
 	}

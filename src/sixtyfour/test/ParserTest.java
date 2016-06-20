@@ -17,6 +17,23 @@ public class ParserTest {
 		testComplexFunctions();
 		testLogic();
 		testPowerOf();
+		testAbs();
+	}
+
+	private static void testAbs() {
+		System.out.println("testAbs");
+		Machine memory = new Machine();
+		memory.add(new Variable("Z", 23));
+		memory.add(new Variable("P", 41));
+		String term = "(ABS(Z-P)-2)*(ABS(Z-P)-18)";
+
+		String wbres = Parser.addBrackets(term);
+		System.out.println(wbres);
+
+		Term res = Parser.getTerm(term, memory, false, true);
+		System.out.println(res);
+		System.out.println("Value: " + res.eval(memory));
+		
 	}
 
 	private static void testPowerOf() {
@@ -123,7 +140,7 @@ public class ParserTest {
 		term = "a * (b + c / (z+-u))";
 		res = Parser.addBrackets(term);
 		System.out.println(term + " is actually " + res);
-		term = "a * (b + c / (z+-sin(u+z*k))) * d/cos(i) + cos(88)";
+		term = "a * (b + c / (z+-sin(u+z*k))) * d/cos(i) + (cos(88)+(a*(-b)))";
 		res = Parser.addBrackets(term);
 		System.out.println(term + " is actually " + res);
 		term = "\"ha a*b*c+d llo \"+\"welt!\"";

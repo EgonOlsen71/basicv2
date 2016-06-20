@@ -21,7 +21,7 @@ public class ProgramTest {
 		//testData();
 		// testAdventure();
 		// testCalc();
-		//testStuff();
+		testStuff();
 	}
 
 	private static void testStuff() {
