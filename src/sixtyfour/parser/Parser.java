@@ -442,7 +442,7 @@ public class Parser {
 				if (start > 0 && term.charAt(start - 1) == '(' && end < term.length() && term.charAt(end) == ')') {
 					sb.append(term.substring(0, start)).append(term.substring(start, end));
 				} else {
-					System.out.println("Subterm: " + term.substring(start, end));
+					//System.out.println("Subterm: " + term.substring(start, end));
 					sb.append(term.substring(0, start)).append('(').append(term.substring(start, end)).append(')');
 					i++;
 				}
