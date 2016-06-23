@@ -63,7 +63,7 @@ public class For extends AbstractCommand {
 			toTxt = linePart.substring(posTo + 2, posStep);
 		}
 		endTerm = Parser.getTerm(toTxt, memory, false, true);
-
+		
 		if (posStep != -1) {
 			stepTxt = linePart.substring(posStep + 4);
 		} else {
@@ -85,6 +85,7 @@ public class For extends AbstractCommand {
 	public ProgramCounter execute(Machine machine) {
 		var = machine.add(var);
 		var.setValue(term.eval(machine));
+		//System.out.println(this.lineNumber+"/"+endTerm+"/"+endTerm.getType()+"/"+endTerm.eval(machine).getClass()+"/"+endTerm.eval(machine));
 		end = ((Number) endTerm.eval(machine)).floatValue();
 		step = ((Number) stepTerm.eval(machine)).floatValue();
 
