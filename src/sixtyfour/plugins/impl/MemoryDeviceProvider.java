@@ -35,12 +35,6 @@ public class MemoryDeviceProvider implements DeviceProvider {
 		if (!file.getFileMode().equals(FileMode.READ) && !file.getFileMode().equals(FileMode.STATUS)) {
 			closedFiles.add(file);
 		}
-
-		// debug output
-		// for (String line : file.getContent())
-		// {
-		// System.out.print(line);
-		// }
 	}
 
 	@Override
@@ -52,6 +46,9 @@ public class MemoryDeviceProvider implements DeviceProvider {
 	public char getChar(int fileNumber) {
 		FileWrapper file = number2File.get(fileNumber);
 		checkReadMode(fileNumber, file);
+		if (file.getDeviceNumber() == 3) {
+			return ' ';
+		}
 		if (file.getPointer() >= file.getContentAsString().length()) {
 			throw new RuntimeException("File length exceeded: " + fileNumber);
 		}
@@ -63,6 +60,9 @@ public class MemoryDeviceProvider implements DeviceProvider {
 	@Override
 	public Float inputNumber(int fileNumber) {
 		String val = getFilePart(fileNumber);
+		if (val.length() == 0) {
+			val = "0";
+		}
 		try {
 			return Float.valueOf(val);
 		} catch (Exception e) {
@@ -96,7 +96,7 @@ public class MemoryDeviceProvider implements DeviceProvider {
 	}
 
 	public void open(int fileNumber, int device, int secondaryAddress) {
-		open(fileNumber, device, secondaryAddress, "");
+		open(fileNumber, device, secondaryAddress, "tmp_" + System.nanoTime());
 	}
 
 	public boolean isOpen(int fileNumber) {
@@ -213,6 +213,10 @@ public class MemoryDeviceProvider implements DeviceProvider {
 	private String getFilePart(int fileNumber) {
 		FileWrapper file = number2File.get(fileNumber);
 		checkReadMode(fileNumber, file);
+		if (file.getDeviceNumber() == 3) {
+			return "";
+		}
+
 		String data = file.getContentAsString();
 		int pos = file.getPosition();
 		int cnt = 0;
