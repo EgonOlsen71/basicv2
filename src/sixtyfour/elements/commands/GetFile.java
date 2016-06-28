@@ -10,29 +10,31 @@ import sixtyfour.parser.Term;
 import sixtyfour.system.Machine;
 import sixtyfour.system.ProgramCounter;
 
-public class Get extends MultiVariableCommand {
-	public Get() {
-		super("GET");
-	}
+public class GetFile extends Get {
+	private Atom fileNumber = null;
 
-	protected Get(String name) {
-		super(name);
-	}
-
-	@Override
-	public Type getType() {
-		return Type.NONE;
+	public GetFile() {
+		super("GET#");
 	}
 
 	@Override
 	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
-		super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine);
-		linePart = Parser.removeWhiteSpace(linePart);
-		linePart = linePart.substring(3).trim();
-		if (linePart.length() == 0) {
+		linePart = linePart.substring(this.name.length());
+		int pos = linePart.indexOf(',');
+		if (pos == -1) {
+			pos = linePart.length();
+		}
+		term = Parser.getTerm(linePart.substring(0, pos), machine, false, true);
+		linePart = pos != linePart.length() ? linePart.substring(pos + 1) : "";
+		List<Atom> pars = Parser.getParameters(term);
+		if (pars.size() != 1) {
 			throw new RuntimeException("Syntax error: " + this);
 		}
-		this.fillVariables(linePart, machine);
+		fileNumber = pars.get(0);
+		if (fileNumber.getType().equals(Type.STRING)) {
+			throw new RuntimeException("Type mismatch error: " + this);
+		}
+		super.parse("GET" + linePart, lineCnt, lineNumber, linePos, lastPos, machine);
 		return null;
 	}
 
@@ -41,7 +43,10 @@ public class Get extends MultiVariableCommand {
 		for (int i = 0; i < vars.size(); i++) {
 			Term indexTerm = indexTerms.get(i);
 			Variable var = this.getVariable(machine, i);
-			Character input = machine.getInputProvider().readKey();
+			Character input = machine.getDeviceProvider().getChar(((Number) fileNumber.eval(machine)).intValue());
+			if (input == 0) {
+				input = ' ';
+			}
 			if (indexTerm != null) {
 				List<Atom> pars = Parser.getParameters(indexTerm);
 				int[] pis = new int[pars.size()];
@@ -59,7 +64,7 @@ public class Get extends MultiVariableCommand {
 					if (input == null) {
 						var.setValue(0, pis);
 					} else {
-						input = ensureNumberKey(machine, input, true);
+						input = ensureNumberKey(machine, input, false);
 						var.setValue(input.toString(), pis);
 					}
 				}
@@ -74,7 +79,7 @@ public class Get extends MultiVariableCommand {
 					if (input == null) {
 						var.setValue(0);
 					} else {
-						input = ensureNumberKey(machine, input, true);
+						input = ensureNumberKey(machine, input, false);
 						var.setValue(input.toString());
 					}
 				}

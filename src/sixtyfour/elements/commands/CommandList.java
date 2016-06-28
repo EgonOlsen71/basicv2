@@ -34,11 +34,13 @@ public class CommandList
       add(new New());
       add(new Lst());
       add(new Def());
+      add(new GetFile());
       add(new Get());
       add(new On());
       add(new Wait());
       add(new Run());
       add(new Cont());
+      add(new InputFile());
       add(new Input());
       add(new Data());
       add(new Read());

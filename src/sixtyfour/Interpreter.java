@@ -107,7 +107,7 @@ public class Interpreter {
 				int pos = 0;
 				for (String part : parts) {
 					do {
-					  part=Parser.removeWhiteSpace(part);
+						part = Parser.removeWhiteSpace(part);
 						if (part.trim().length() > 0) {
 							Command command = Parser.getCommand(part);
 							if (command == null) {
@@ -224,31 +224,38 @@ public class Interpreter {
 							}
 							break;
 						}
-						if (pc.isSkip()) {
-							break;
-						}
-						if (pc.getLineNumber() == -1) {
-							// Line index is known (FOR...NEXT/RETURN/RUN w/o
-							// line)
-							lineCnt = pc.getLineCnt();
-							num = lineNumbers.get(lineCnt);
-							line = lines.get(num);
-							i = pc.getLinePos();
-							if (i >= line.getCommands().size() - 1) {
-								lineCnt++;
-								num = lineNumbers.get(lineCnt);
-								line = lines.get(num);
-								i = -1;
+						if (pc.isList()) {
+							for (String cl : code) {
+								this.machine.getOutputChannel().println(0, cl);
 							}
 						} else {
-							// Line number is known (GOTO/GOSUB/RUN w/ line)
-							num = pc.getLineNumber();
-							line = lines.get(num);
-							i = -1;
-							if (line == null) {
-								throw new RuntimeException("Undef'd statement error: " + command);
+							if (pc.isSkip()) {
+								break;
 							}
-							lineCnt = line.getCount();
+							if (pc.getLineNumber() == -1) {
+								// Line index is known (FOR...NEXT/RETURN/RUN
+								// w/o
+								// line)
+								lineCnt = pc.getLineCnt();
+								num = lineNumbers.get(lineCnt);
+								line = lines.get(num);
+								i = pc.getLinePos();
+								if (i >= line.getCommands().size() - 1) {
+									lineCnt++;
+									num = lineNumbers.get(lineCnt);
+									line = lines.get(num);
+									i = -1;
+								}
+							} else {
+								// Line number is known (GOTO/GOSUB/RUN w/ line)
+								num = pc.getLineNumber();
+								line = lines.get(num);
+								i = -1;
+								if (line == null) {
+									throw new RuntimeException("Undef'd statement error: " + command);
+								}
+								lineCnt = line.getCount();
+							}
 						}
 					}
 				}

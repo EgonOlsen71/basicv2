@@ -8,6 +8,7 @@ public class ProgramCounter {
 	private boolean end = false;
 	private boolean stop = false;
 	private boolean skip = false;
+	private boolean list = false;
 
 	public ProgramCounter(int cnt, int pos) {
 		this.lineCnt = cnt;
@@ -60,5 +61,13 @@ public class ProgramCounter {
 
 	public void setStop(boolean stop) {
 		this.stop = stop;
+	}
+
+	public boolean isList() {
+		return list;
+	}
+
+	public void setList(boolean list) {
+		this.list = list;
 	}
 }
