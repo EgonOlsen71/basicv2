@@ -25,7 +25,7 @@ public class Peek
   {
     if (!getType().equals(Type.STRING))
     {
-      return Integer.valueOf(memory.getRam()[((Number) term.eval(memory)).intValue()]);
+      return Integer.valueOf(memory.getRam()[((Number) term.eval(memory)).intValue() & 0xff]);
     }
     throw new RuntimeException("Type mismatch error: " + getType());
   }

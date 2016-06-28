@@ -9,15 +9,15 @@ import sixtyfour.system.Machine;
 import sixtyfour.system.ProgramCounter;
 
 
-public class Sys
+public class Close
   extends AbstractCommand
 {
   private List<Atom> pars;
 
 
-  public Sys()
+  public Close()
   {
-    super("SYS");
+    super("CLOSE");
   }
 
 
@@ -28,7 +28,7 @@ public class Sys
     term = Parser.getTerm(this, linePart, machine, true);
     pars = Parser.getParameters(term);
 
-    if (pars.isEmpty())
+    if (pars.size() != 1)
     {
       throw new RuntimeException("Syntax error: " + this);
     }
@@ -40,31 +40,23 @@ public class Sys
   @Override
   public ProgramCounter execute(Machine machine)
   {
-    Atom addr = pars.get(0);
-    List<Atom> vals = pars.subList(1, pars.size());
-    if (addr.getType().equals(Type.STRING))
+    Atom fileNumber = pars.get(0);
+    if (fileNumber.getType().equals(Type.STRING))
     {
       throw new RuntimeException("Type mismatch error: " + this);
     }
-    int memAddr = ((Number) addr.eval(machine)).intValue();
-    if (memAddr < 0 || memAddr > 65535)
+    int fn = ((Number) fileNumber.eval(machine)).intValue();
+
+    if (machine.getOutputChannel().getPrintConsumer() != null)
     {
-      throw new RuntimeException("Illegal quantity error: " + this);
-    }
-    Object[] params = null;
-    if (!vals.isEmpty())
-    {
-      params = new Object[vals.size()];
-      int cnt = 0;
-      for (Atom val : vals)
+      if (machine.getOutputChannel().getChannel() == fn)
       {
-        params[cnt++] = val.eval(machine);
+        machine.getOutputChannel().setPrintConsumer(null, 0);
       }
     }
-    machine.getSystemCallListener().sys(memAddr, params);
 
+    machine.getDeviceProvider().close(fn);
     return null;
-
   }
 
 }

@@ -25,7 +25,7 @@ public class ProgramTest {
 	}
 
 	private static void testStuff() {
-		String[] vary = Loader.loadProgram("test.bas");
+		String[] vary = Loader.loadProgram("files.bas");
 		Interpreter inty = new Interpreter(vary);
 		//inty.setPrintLineNumbers(true);
 		inty.run();

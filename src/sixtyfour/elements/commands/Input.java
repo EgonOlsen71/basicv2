@@ -79,15 +79,15 @@ public class Input
       {
         if (comment != null)
         {
-          out.print(comment);
+          out.print(0, comment);
         }
-        out.print("?");
+        out.print(0, "?");
       }
       else
       {
         if (queue.isEmpty())
         {
-          out.print("??");
+          out.print(0, "??");
         }
       }
       Variable var = vars.get(i);
@@ -135,7 +135,7 @@ public class Input
             }
             catch (NumberFormatException nfe)
             {
-              out.println("?Redo from start");
+              out.println(0, "?Redo from start");
               queue.clear();
               i = -1;
             }
@@ -149,7 +149,7 @@ public class Input
             }
             catch (NumberFormatException nfe)
             {
-              out.println("?Redo from start");
+              out.println(0, "?Redo from start");
               queue.clear();
               i = -1;
             }

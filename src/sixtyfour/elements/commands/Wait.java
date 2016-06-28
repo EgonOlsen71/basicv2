@@ -63,7 +63,7 @@ public class Wait extends AbstractCommand {
 		}
 
 		if (!invertFound && memAddr == 6502 && vally == 1) {
-			machine.getOutputChannel().println("EgonOlsen!");
+			machine.getOutputChannel().println(0, "EgonOlsen!");
 		}
 
 		while (machine.getMemoryListener().wait(memAddr, vally, invert) && !stop) {

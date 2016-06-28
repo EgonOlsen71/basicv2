@@ -1,68 +1,108 @@
 package sixtyfour.plugins.impl;
 
 import sixtyfour.plugins.OutputChannel;
+import sixtyfour.plugins.PrintConsumer;
 
-public class ConsoleOutputChannel implements OutputChannel {
-	private int cursor = 0;
 
-	/* (non-Javadoc)
-	 * @see sixtyfour.system.OutputChannel#print(java.lang.String)
-	 */
-	@Override
-	public void print(String txt) {
-		print(txt, true);
-	}
+public class ConsoleOutputChannel
+  implements OutputChannel
+{
+  private int cursor = 0;
+  private int channel = 0;
+  private PrintConsumer otherConsumer = null;
 
-	/* (non-Javadoc)
-	 * @see sixtyfour.system.OutputChannel#print(java.lang.String, boolean)
-	 */
-	@Override
-	public void print(String txt, boolean clean) {
-		if (clean) {
-			txt = clean(txt);
-		}
-		setCursor(getCursor() + txt.length());
-		System.out.print(txt);
-	}
 
-	/* (non-Javadoc)
-	 * @see sixtyfour.system.OutputChannel#println(java.lang.String)
-	 */
-	@Override
-	public void println(String txt) {
-		println(txt, true);
-	}
+  /*
+   * (non-Javadoc)
+   * @see sixtyfour.plugins.PrintConsumer#print(int, java.lang.String)
+   */
+  @Override
+  public void print(int id, String txt)
+  {
+    if (otherConsumer != null)
+    {
+      otherConsumer.print(channel, txt);
+    }
+    else
+    {
+      setCursor(getCursor() + txt.length());
+      System.out.print(txt);
+    }
+  }
 
-	/* (non-Javadoc)
-	 * @see sixtyfour.system.OutputChannel#println(java.lang.String, boolean)
-	 */
-	@Override
-	public void println(String txt, boolean clean) {
-		if (clean) {
-			txt = clean(txt);
-		}
-		System.out.println(txt);
-		setCursor(0);
-	}
 
-	private String clean(String txt) {
-		return txt.replace("\n", "").replace("\r", "");
-	}
+  /*
+   * (non-Javadoc)
+   * @see sixtyfour.plugins.PrintConsumer#println(int, java.lang.String)
+   */
+  @Override
+  public void println(int id, String txt)
+  {
+    if (otherConsumer != null)
+    {
+      otherConsumer.println(channel, txt);
+    }
+    else
+    {
+      System.out.println(txt);
+      setCursor(0);
+    }
+  }
 
-	/* (non-Javadoc)
-	 * @see sixtyfour.system.OutputChannel#getCursor()
-	 */
-	@Override
-	public int getCursor() {
-		return cursor;
-	}
 
-	/* (non-Javadoc)
-	 * @see sixtyfour.system.OutputChannel#setCursor(int)
-	 */
-	@Override
-	public void setCursor(int cursor) {
-		this.cursor = cursor;
-	}
+  /*
+   * (non-Javadoc)
+   * @see sixtyfour.system.OutputChannel#getCursor()
+   */
+  @Override
+  public int getCursor()
+  {
+    return cursor;
+  }
+
+
+  /*
+   * (non-Javadoc)
+   * @see sixtyfour.system.OutputChannel#setCursor(int)
+   */
+  @Override
+  public void setCursor(int cursor)
+  {
+    this.cursor = cursor;
+  }
+
+
+  /*
+   * (non-Javadoc)
+   * @see sixtyfour.plugins.OutputChannel#setPrintConsumer(sixtyfour.plugins.PrintConsumer, int)
+   */
+  @Override
+  public void setPrintConsumer(PrintConsumer otherConsumer, int channel)
+  {
+    this.otherConsumer = otherConsumer;
+    this.channel = channel;
+  }
+
+
+  /*
+   * (non-Javadoc)
+   * @see sixtyfour.plugins.OutputChannel#getPrintConsumer()
+   */
+  @Override
+  public PrintConsumer getPrintConsumer()
+  {
+    return otherConsumer;
+  }
+
+
+  /*
+   * (non-Javadoc)
+   * @see sixtyfour.plugins.OutputChannel#getChannel()
+   */
+  @Override
+  public int getChannel()
+  {
+    return channel;
+  }
 
 }

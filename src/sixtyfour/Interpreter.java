@@ -107,6 +107,7 @@ public class Interpreter {
 				int pos = 0;
 				for (String part : parts) {
 					do {
+					  part=Parser.removeWhiteSpace(part);
 						if (part.trim().length() > 0) {
 							Command command = Parser.getCommand(part);
 							if (command == null) {
@@ -131,7 +132,7 @@ public class Interpreter {
 			} catch (Throwable t) {
 				String msg = t.getMessage();
 				String err = "Error in line " + (cl != null ? cl.getNumber() : "??") + (msg != null ? (": " + msg) : "");
-				machine.getOutputChannel().println(err);
+				machine.getOutputChannel().println(0, err);
 				throw t;
 			}
 		}
@@ -148,10 +149,10 @@ public class Interpreter {
 			long start = System.nanoTime();
 			execute(0, 0);
 			long end = System.nanoTime();
-			machine.getOutputChannel().println("\nREADY. (" + ((end - start) / 1000000L) + "ms)", false);
+			machine.getOutputChannel().println(0, "\nREADY. (" + ((end - start) / 1000000L) + "ms)");
 			parsed = false;
 		} else {
-			machine.getOutputChannel().println("\nREADY.", false);
+			machine.getOutputChannel().println(0, "\nREADY.");
 		}
 	}
 
@@ -207,7 +208,7 @@ public class Interpreter {
 					Logger.log("[" + num + "]");
 				}
 				if (stop) {
-					machine.getOutputChannel().println("\nBREAK IN " + num, false);
+					machine.getOutputChannel().println(0, "\nBREAK IN " + num);
 				}
 				Line line = lines.get(num);
 				for (int i = pos; i < line.getCommands().size(); i++) {
@@ -219,7 +220,7 @@ public class Interpreter {
 						if (pc.isEnd() || pc.isStop()) {
 							lineCnt = lines.size();
 							if (pc.isStop()) {
-								this.machine.getOutputChannel().println("Break in " + num);
+								this.machine.getOutputChannel().println(0, "Break in " + num);
 							}
 							break;
 						}
@@ -256,7 +257,7 @@ public class Interpreter {
 		} catch (Throwable t) {
 			String msg = t.getMessage();
 			String err = "Error in line " + (num != null ? num : "??") + (msg != null ? (": " + msg) : "");
-			machine.getOutputChannel().println(err);
+			machine.getOutputChannel().println(0, err);
 			throw t;
 		}
 	}
