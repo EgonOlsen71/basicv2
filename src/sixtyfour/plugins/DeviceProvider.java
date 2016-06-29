@@ -1,24 +1,44 @@
 package sixtyfour.plugins;
 
-public interface DeviceProvider extends PrintConsumer {
-	void close(int fileNumber);
+public interface DeviceProvider
+  extends PrintConsumer
+{
+  void close(int fileNumber);
 
-	void open(int fileNumber);
 
-	void open(int fileNumber, int device);
+  void open(int fileNumber);
 
-	void open(int fileNumber, int device, int secondaryAddress);
 
-	void open(int fileNumber, int device, int secondaryAddress, String fileName);
+  void open(int fileNumber, int device);
 
-	boolean isOpen(int fileNumber);
 
-	void dump(PrintConsumer pc, FileWrapper file, int fileNumber);
+  void open(int fileNumber, int device, int secondaryAddress);
 
-	String inputString(int fileNumber);
 
-	Float inputNumber(int fileNumber);
+  void open(int fileNumber, int device, int secondaryAddress, String fileName);
 
-	char getChar(int fileNumber);
+
+  boolean isOpen(int fileNumber);
+
+
+  void dump(PrintConsumer pc, FileWrapper file, int fileNumber);
+
+
+  String inputString(int fileNumber);
+
+
+  Float inputNumber(int fileNumber);
+
+
+  char getChar(int fileNumber);
+
+
+  void save(String fileName, int device, int secondary);
+
+
+  void load(String fileName, int device, int secondary);
+
+
+  void verify(String fileName, int device, int secondary);
 
 }

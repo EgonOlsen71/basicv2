@@ -60,6 +60,8 @@ public class Open
           device.open(((Number) pars.get(0).eval(machine)).intValue(), ((Number) pars.get(1).eval(machine)).intValue(),
               ((Number) pars.get(2).eval(machine)).intValue(), (String) pars.get(3).eval(machine));
           break;
+        default:
+          throw new RuntimeException("Syntax error: " + this);
       }
     }
     catch (ClassCastException e)

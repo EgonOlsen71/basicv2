@@ -49,6 +49,9 @@ public class CommandList
       add(new Open());
       add(new Close());
       add(new Cmd());
+      add(new Load());
+      add(new Save());
+      add(new Verify());
     }
   });
 

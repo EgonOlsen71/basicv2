@@ -85,7 +85,6 @@ public abstract class AbstractCommand
   @Override
   public Type getType()
   {
-    // TODO Auto-generated method stub
     return null;
   }
 
@@ -93,7 +92,6 @@ public abstract class AbstractCommand
   @Override
   public Object eval(Machine memory)
   {
-    // TODO Auto-generated method stub
     return null;
   }
 
@@ -112,7 +110,6 @@ public abstract class AbstractCommand
   public ProgramCounter execute(Machine memory)
   {
     return null;
-    // TODO Auto-generated method stub
   }
   
   @Override
