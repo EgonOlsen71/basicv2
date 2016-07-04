@@ -2,13 +2,13 @@ package sixtyfour.elements.commands;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import sixtyfour.elements.Variable;
 import sixtyfour.parser.Parser;
 import sixtyfour.parser.Term;
 import sixtyfour.parser.VariableAndIndex;
 import sixtyfour.system.Machine;
+import sixtyfour.util.VarUtils;
 
 /**
  * The Class MultiVariableCommand.
@@ -110,7 +110,7 @@ public abstract class MultiVariableCommand extends AbstractCommand {
 		}
 		int cnt = 0;
 		for (String part : parts) {
-			Variable var = new Variable(varNames.get(cnt++).trim().toUpperCase(Locale.ENGLISH), null);
+			Variable var = new Variable(VarUtils.toUpper(varNames.get(cnt++).trim()), null);
 			VariableAndIndex vai = Parser.getIndexTerm(var, part, machine, false);
 			var = vai.getVariable();
 			indexTerms.add(vai.getIndexTerm());

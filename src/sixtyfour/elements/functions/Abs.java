@@ -2,12 +2,13 @@ package sixtyfour.elements.functions;
 
 import sixtyfour.elements.Type;
 import sixtyfour.system.Machine;
+import sixtyfour.util.VarUtils;
 
 /**
  * The Class Abs.
  */
 public class Abs extends AbstractFunction {
-	
+
 	/**
 	 * Instantiates a new abs.
 	 */
@@ -15,7 +16,9 @@ public class Abs extends AbstractFunction {
 		super("ABS");
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.parser.Atom#getType()
 	 */
 	@Override
@@ -23,13 +26,15 @@ public class Abs extends AbstractFunction {
 		return term.getType();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.parser.Atom#eval(sixtyfour.system.Machine)
 	 */
 	@Override
-	public Object eval(Machine memory) {
+	public Object eval(Machine machine) {
 		if (!term.getType().equals(Type.STRING)) {
-			float val = Math.abs(((Number) term.eval(memory)).floatValue());
+			float val = Math.abs(VarUtils.getFloat(term.eval(machine)));
 			if (term.getType().equals(Type.REAL)) {
 				return val;
 			} else {

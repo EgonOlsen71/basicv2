@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import sixtyfour.elements.commands.Command;
@@ -25,22 +24,22 @@ public class Interpreter {
 
 	/** The code. */
 	private String[] code = null;
-	
+
 	/** The lines. */
 	private Map<Integer, Line> lines = new HashMap<Integer, Line>();
-	
+
 	/** The line numbers. */
 	private List<Integer> lineNumbers = new ArrayList<Integer>();
-	
+
 	/** The machine. */
 	private Machine machine = null;
-	
+
 	/** The parsed. */
 	private boolean parsed = false;
-	
+
 	/** The stop. */
 	private boolean stop = false;
-	
+
 	/** The print line numbers. */
 	private boolean printLineNumbers = false;
 
@@ -81,7 +80,7 @@ public class Interpreter {
 	 * @return the string variable
 	 */
 	public String getStringVariable(String name) {
-		Object obj = machine.getVariable(name.toUpperCase(Locale.ENGLISH)).getValue();
+		Object obj = machine.getVariable(VarUtils.toUpper(name)).getValue();
 		if (VarUtils.isString(obj)) {
 			return (String) obj;
 		}
@@ -96,7 +95,7 @@ public class Interpreter {
 	 * @return the integer variable
 	 */
 	public Integer getIntegerVariable(String name) {
-		Object obj = machine.getVariable(name.toUpperCase(Locale.ENGLISH)).getValue();
+		Object obj = machine.getVariable(VarUtils.toUpper(name)).getValue();
 		if (VarUtils.isInteger(obj)) {
 			return (Integer) obj;
 		}
@@ -111,7 +110,7 @@ public class Interpreter {
 	 * @return the float variable
 	 */
 	public Float getFloatVariable(String name) {
-		Object obj = machine.getVariable(name.toUpperCase(Locale.ENGLISH)).getValue();
+		Object obj = machine.getVariable(VarUtils.toUpper(name)).getValue();
 		if (VarUtils.isFloat(obj)) {
 			return (Float) obj;
 		}
@@ -130,7 +129,7 @@ public class Interpreter {
 		if (!name.endsWith("[]")) {
 			name = name + "[]";
 		}
-		Object obj = machine.getVariable(name.toUpperCase(Locale.ENGLISH)).getValue();
+		Object obj = machine.getVariable(VarUtils.toUpper(name)).getValue();
 		if (obj.getClass().isArray()) {
 			return ((ArrayList<Object>) obj).toArray();
 		}

@@ -3,7 +3,6 @@ package sixtyfour.elements;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 
 import sixtyfour.elements.commands.Command;
 import sixtyfour.elements.commands.CommandList;
@@ -17,19 +16,19 @@ import sixtyfour.util.VarUtils;
  * The Class Variable.
  */
 public class Variable implements Atom {
-	
+
 	/** The name. */
 	private String name;
-	
+
 	/** The type. */
 	private Type type;
-	
+
 	/** The array. */
 	private boolean array = false;
-	
+
 	/** The value. */
 	private Object value;
-	
+
 	/** The dimensions. */
 	private int[] dimensions;
 
@@ -59,9 +58,8 @@ public class Variable implements Atom {
 	 *            the value
 	 */
 	public Variable(String name, Object value) {
-
 		// Check name for validity
-		String un = name.toUpperCase(Locale.ENGLISH);
+		String un = VarUtils.toUpper(name);
 		List<Command> commands = CommandList.getCommands();
 		for (Command command : commands) {
 			if (un.contains(command.getName())) {
@@ -165,7 +163,9 @@ public class Variable implements Atom {
 		return array;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.parser.Atom#getType()
 	 */
 	public Type getType() {
@@ -201,7 +201,9 @@ public class Variable implements Atom {
 		this.name = name;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -215,7 +217,9 @@ public class Variable implements Atom {
 		return false;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -223,7 +227,9 @@ public class Variable implements Atom {
 		return name.hashCode();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@SuppressWarnings("unchecked")
@@ -249,11 +255,13 @@ public class Variable implements Atom {
 		return ((List<Object>) value).size();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.parser.Atom#eval(sixtyfour.system.Machine)
 	 */
 	@Override
-	public Object eval(Machine memory) {
+	public Object eval(Machine machine) {
 		return value;
 	}
 
@@ -281,9 +289,9 @@ public class Variable implements Atom {
 		}
 		// Convert into proper format
 		if (VarUtils.isFloat(value) && type.equals(Type.INTEGER)) {
-			value = ((Number) value).intValue();
+			value = VarUtils.getInt(value);
 		} else if (VarUtils.isInteger(value) && type.equals(Type.REAL)) {
-			value = ((Number) value).floatValue();
+			value = VarUtils.getFloat(value);
 		}
 		this.value = value;
 	}
@@ -345,9 +353,9 @@ public class Variable implements Atom {
 		}
 
 		if (VarUtils.isFloat(val) && type.equals(Type.INTEGER)) {
-			val = ((Number) val).intValue();
+			val = VarUtils.getInt(val);
 		} else if (VarUtils.isInteger(val) && type.equals(Type.REAL)) {
-			val = ((Number) val).floatValue();
+			val = VarUtils.getFloat(val);
 		}
 
 		return ((List<Object>) value).set(ap, val);
@@ -361,13 +369,15 @@ public class Variable implements Atom {
 	 */
 	public void inc(float value) {
 		if (type.equals(Type.INTEGER) || type.equals(Type.REAL)) {
-			this.value = ((Number) this.value).floatValue() + value;
+			this.value = VarUtils.getFloat(this.value) + value;
 		} else {
 			throw new RuntimeException("Type mismatch error: " + this);
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.parser.Atom#isTerm()
 	 */
 	@Override

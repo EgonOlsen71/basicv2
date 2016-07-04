@@ -5,6 +5,7 @@ package sixtyfour.elements.functions;
 
 import sixtyfour.elements.Type;
 import sixtyfour.system.Machine;
+import sixtyfour.util.VarUtils;
 
 /**
  * The Class Int.
@@ -18,7 +19,9 @@ public class Int extends AbstractFunction {
 		super("INT");
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.parser.Atom#getType()
 	 */
 	@Override
@@ -26,15 +29,17 @@ public class Int extends AbstractFunction {
 		return Type.INTEGER;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.parser.Atom#eval(sixtyfour.system.Machine)
 	 */
 	@Override
-	public Object eval(Machine memory) {
+	public Object eval(Machine machine) {
 		if (term.getType().equals(Type.STRING)) {
 			throw new RuntimeException("Type mismatch error: " + term.getType());
 		}
-		return ((Number) term.eval(memory)).intValue();
+		return VarUtils.getInt(term.eval(machine));
 	}
 
 }

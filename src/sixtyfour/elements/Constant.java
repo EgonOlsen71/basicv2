@@ -49,7 +49,7 @@ public class Constant<T> implements Atom {
 	 * @see sixtyfour.parser.Atom#eval(sixtyfour.system.Machine)
 	 */
 	@Override
-	public T eval(Machine memory) {
+	public T eval(Machine machine) {
 		return value;
 	}
 

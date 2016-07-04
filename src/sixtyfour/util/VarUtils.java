@@ -1,11 +1,13 @@
 package sixtyfour.util;
 
+import java.util.Locale;
+
 /**
  * The Class VarUtils.
  * 
  * @author EgonOlsen
  */
-public class VarUtils {
+public final class VarUtils {
 
 	/**
 	 * Checks if is number.
@@ -71,6 +73,14 @@ public class VarUtils {
 	 */
 	public static int getInt(Object obj) {
 		return ((Number) obj).intValue();
+	}
+
+	/**
+	 * @param txt
+	 * @return
+	 */
+	public static String toUpper(String txt) {
+		return txt.toUpperCase(Locale.ENGLISH);
 	}
 
 }

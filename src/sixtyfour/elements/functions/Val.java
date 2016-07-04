@@ -30,11 +30,11 @@ public class Val extends AbstractFunction {
 	 * @see sixtyfour.parser.Atom#eval(sixtyfour.system.Machine)
 	 */
 	@Override
-	public Object eval(Machine memory) {
+	public Object eval(Machine machine) {
 		if (!term.getType().equals(Type.STRING)) {
 			throw new RuntimeException("Type mismatch error: " + term.getType());
 		}
-		String str = (String) term.eval(memory);
+		String str = (String) term.eval(machine);
 		if (str == null) {
 			return 0;
 		}

@@ -1,10 +1,9 @@
 package sixtyfour.elements.functions;
 
-import java.util.Locale;
-
 import sixtyfour.parser.Parser;
 import sixtyfour.parser.Term;
 import sixtyfour.system.Machine;
+import sixtyfour.util.VarUtils;
 
 /**
  * The Class AbstractFunction.
@@ -35,7 +34,7 @@ public abstract class AbstractFunction implements Function {
 	 *            the name
 	 */
 	public AbstractFunction(String name) {
-		this.name = name.toUpperCase(Locale.ENGLISH);
+		this.name = VarUtils.toUpper(name);
 	}
 
 	/* (non-Javadoc)
@@ -80,8 +79,8 @@ public abstract class AbstractFunction implements Function {
 	 * @see sixtyfour.elements.functions.Function#parse(java.lang.String, sixtyfour.system.Machine)
 	 */
 	@Override
-	public void parse(String linePart, Machine memory) {
-		this.setTerm(Parser.getTerm(linePart, memory, false, true));
+	public void parse(String linePart, Machine machine) {
+		this.setTerm(Parser.getTerm(linePart, machine, false, true));
 	}
 
 	/* (non-Javadoc)
@@ -89,7 +88,7 @@ public abstract class AbstractFunction implements Function {
 	 */
 	@Override
 	public boolean isFunction(String function) {
-		return function.trim().toUpperCase(Locale.ENGLISH).startsWith(name);
+		return VarUtils.toUpper(function.trim()).startsWith(name);
 	}
 
 	/* (non-Javadoc)

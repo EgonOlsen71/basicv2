@@ -3,11 +3,10 @@
  */
 package sixtyfour.elements.commands;
 
-import java.util.Locale;
-
 import sixtyfour.parser.Parser;
 import sixtyfour.system.Machine;
 import sixtyfour.system.ProgramCounter;
+import sixtyfour.util.VarUtils;
 
 /**
  * The Class Next.
@@ -50,9 +49,9 @@ public class Next extends AbstractCommand {
 	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String, int, int, int, boolean, sixtyfour.system.Machine)
 	 */
 	@Override
-	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine memory) {
-		super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, memory);
-		linePart = linePart.substring(4).toUpperCase(Locale.ENGLISH).trim();
+	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
+		super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine);
+		linePart = VarUtils.toUpper(linePart.substring(4)).trim();
 
 		String ret = null;
 		String[] vars = linePart.split(",");

@@ -67,7 +67,7 @@ public class Read extends MultiVariableCommand {
 				int[] pis = new int[pars.size()];
 				int cnt = 0;
 				for (Atom par : pars) {
-					pis[cnt++] = ((Number) par.eval(machine)).intValue();
+					pis[cnt++] = VarUtils.getInt(par.eval(machine));
 				}
 				if (varType.equals(Type.STRING)) {
 					var.setValue(obj.toString(), pis);

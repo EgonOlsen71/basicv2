@@ -10,6 +10,7 @@ import sixtyfour.parser.Term;
 import sixtyfour.plugins.DeviceProvider;
 import sixtyfour.system.Machine;
 import sixtyfour.system.ProgramCounter;
+import sixtyfour.util.VarUtils;
 
 /**
  * The Class InputFile.
@@ -58,7 +59,7 @@ public class InputFile extends Input {
 	 */
 	@Override
 	public ProgramCounter execute(Machine machine) {
-		int fn = ((Number) fileNumber.eval(machine)).intValue();
+		int fn = VarUtils.getInt(fileNumber.eval(machine));
 		DeviceProvider device = machine.getDeviceProvider();
 		for (int i = 0; i < vars.size(); i++) {
 			Term indexTerm = indexTerms.get(i);
@@ -71,7 +72,7 @@ public class InputFile extends Input {
 				int[] pis = new int[pars.size()];
 				int cnt = 0;
 				for (Atom par : pars) {
-					pis[cnt++] = ((Number) par.eval(machine)).intValue();
+					pis[cnt++] = VarUtils.getInt(par.eval(machine));
 				}
 				try {
 					if (varType.equals(Type.STRING)) {

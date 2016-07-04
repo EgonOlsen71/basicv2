@@ -30,7 +30,7 @@ public class Usr extends AbstractFunction {
 	 * @see sixtyfour.parser.Atom#eval(sixtyfour.system.Machine)
 	 */
 	@Override
-	public Object eval(Machine memory) {
+	public Object eval(Machine machine) {
 		return 0f;
 	}
 }

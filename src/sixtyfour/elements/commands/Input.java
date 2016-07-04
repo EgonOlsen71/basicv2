@@ -11,6 +11,7 @@ import sixtyfour.parser.Term;
 import sixtyfour.plugins.OutputChannel;
 import sixtyfour.system.Machine;
 import sixtyfour.system.ProgramCounter;
+import sixtyfour.util.VarUtils;
 
 /**
  * The Class Input.
@@ -118,7 +119,7 @@ public class Input extends MultiVariableCommand {
 				int[] pis = new int[pars.size()];
 				int cnt = 0;
 				for (Atom par : pars) {
-					pis[cnt++] = ((Number) par.eval(machine)).intValue();
+					pis[cnt++] = VarUtils.getInt(par.eval(machine));
 				}
 				try {
 					if (varType.equals(Type.STRING)) {

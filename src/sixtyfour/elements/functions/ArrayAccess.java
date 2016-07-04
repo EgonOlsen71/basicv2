@@ -7,6 +7,7 @@ import sixtyfour.elements.Variable;
 import sixtyfour.parser.Atom;
 import sixtyfour.parser.Parser;
 import sixtyfour.system.Machine;
+import sixtyfour.util.VarUtils;
 
 /**
  * The Class ArrayAccess.
@@ -38,14 +39,14 @@ public class ArrayAccess extends AbstractFunction {
 	 * @see sixtyfour.parser.Atom#eval(sixtyfour.system.Machine)
 	 */
 	@Override
-	public Object eval(Machine memory) {
+	public Object eval(Machine machine) {
 		List<Atom> pars = Parser.getParameters(term);
 		int[] pis = new int[pars.size()];
 		int cnt = 0;
 		for (Atom par : pars) {
-			pis[cnt++] = ((Number) par.eval(memory)).intValue();
+			pis[cnt++] = VarUtils.getInt(par.eval(machine));
 		}
-		Variable vary = memory.getVariable(variableName);
+		Variable vary = machine.getVariable(variableName);
 		if (vary == null) {
 			// No such array...revert to a constant
 			if (variableType.equals(Type.REAL)) {

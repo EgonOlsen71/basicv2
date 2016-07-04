@@ -1,29 +1,28 @@
 package sixtyfour.elements.commands;
 
-import java.util.Locale;
-
 import sixtyfour.elements.Type;
 import sixtyfour.parser.Term;
 import sixtyfour.system.Machine;
 import sixtyfour.system.ProgramCounter;
+import sixtyfour.util.VarUtils;
 
 /**
  * The Class AbstractCommand.
  */
 public abstract class AbstractCommand implements Command {
-	
+
 	/** The name. */
 	protected String name;
-	
+
 	/** The term. */
 	protected Term term;
-	
+
 	/** The line cnt. */
 	protected int lineCnt = 0;
-	
+
 	/** The line pos. */
 	protected int linePos = 0;
-	
+
 	/** The line number. */
 	protected int lineNumber = 0;
 
@@ -42,10 +41,12 @@ public abstract class AbstractCommand implements Command {
 	 *            the name
 	 */
 	public AbstractCommand(String name) {
-		this.name = name.toUpperCase(Locale.ENGLISH);
+		this.name = VarUtils.toUpper(name);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.elements.commands.Command#clone(java.lang.String)
 	 */
 	public Command clone(String linePart) {
@@ -59,7 +60,9 @@ public abstract class AbstractCommand implements Command {
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.elements.commands.Command#getName()
 	 */
 	@Override
@@ -67,7 +70,9 @@ public abstract class AbstractCommand implements Command {
 		return name;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.elements.commands.Command#getTerm()
 	 */
 	@Override
@@ -75,7 +80,9 @@ public abstract class AbstractCommand implements Command {
 		return term;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.elements.commands.Command#setTerm(sixtyfour.parser.Term)
 	 */
 	@Override
@@ -83,15 +90,19 @@ public abstract class AbstractCommand implements Command {
 		this.term = term;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.elements.commands.Command#isCommand(java.lang.String)
 	 */
 	@Override
 	public boolean isCommand(String command) {
-		return command.trim().toUpperCase(Locale.ENGLISH).startsWith(name);
+		return VarUtils.toUpper(command.trim()).startsWith(name);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
@@ -99,7 +110,9 @@ public abstract class AbstractCommand implements Command {
 		return this.name + " @ " + lineNumber;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.parser.Atom#getType()
 	 */
 	@Override
@@ -107,34 +120,44 @@ public abstract class AbstractCommand implements Command {
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.parser.Atom#eval(sixtyfour.system.Machine)
 	 */
 	@Override
-	public Object eval(Machine memory) {
+	public Object eval(Machine machine) {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see sixtyfour.elements.commands.Command#parse(java.lang.String, int, int, int, boolean, sixtyfour.system.Machine)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see sixtyfour.elements.commands.Command#parse(java.lang.String, int,
+	 * int, int, boolean, sixtyfour.system.Machine)
 	 */
 	@Override
-	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine memory) {
+	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
 		this.lineCnt = lineCnt;
 		this.linePos = linePos;
 		this.lineNumber = lineNumber;
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see sixtyfour.elements.commands.Command#execute(sixtyfour.system.Machine)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * sixtyfour.elements.commands.Command#execute(sixtyfour.system.Machine)
 	 */
 	@Override
-	public ProgramCounter execute(Machine memory) {
+	public ProgramCounter execute(Machine machine) {
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.elements.commands.Command#stopExecution()
 	 */
 	@Override
@@ -142,7 +165,9 @@ public abstract class AbstractCommand implements Command {
 		//
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.parser.Atom#isTerm()
 	 */
 	@Override

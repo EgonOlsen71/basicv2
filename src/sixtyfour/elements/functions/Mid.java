@@ -9,12 +9,13 @@ import sixtyfour.elements.Type;
 import sixtyfour.parser.Atom;
 import sixtyfour.parser.Parser;
 import sixtyfour.system.Machine;
+import sixtyfour.util.VarUtils;
 
 /**
  * The Class Mid.
  */
 public class Mid extends AbstractFunction {
-	
+
 	/**
 	 * Instantiates a new mid.
 	 */
@@ -22,7 +23,9 @@ public class Mid extends AbstractFunction {
 		super("MID$");
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.parser.Atom#getType()
 	 */
 	@Override
@@ -30,24 +33,26 @@ public class Mid extends AbstractFunction {
 		return Type.STRING;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.parser.Atom#eval(sixtyfour.system.Machine)
 	 */
 	@Override
-	public Object eval(Machine memory) {
+	public Object eval(Machine machine) {
 		try {
 			List<Atom> pars = Parser.getParameters(term);
 			if (pars.size() != 2 && pars.size() != 3) {
 				throw new RuntimeException("Wrong number of parameters: " + term);
 			}
 			Atom var = pars.get(0);
-			int start = ((Number) pars.get(1).eval(memory)).intValue()-1;
+			int start = VarUtils.getInt(pars.get(1).eval(machine)) - 1;
 			int end = -999;
 			if (pars.size() > 2) {
-				end = ((Number) pars.get(2).eval(memory)).intValue() + start;
+				end = VarUtils.getInt(pars.get(2).eval(machine)) + start;
 			}
 
-			String txt = var.eval(memory).toString();
+			String txt = var.eval(machine).toString();
 			if (end == -999) {
 				end = txt.length();
 			}

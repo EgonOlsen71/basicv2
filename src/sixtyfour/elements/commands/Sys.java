@@ -10,6 +10,7 @@ import sixtyfour.parser.Atom;
 import sixtyfour.parser.Parser;
 import sixtyfour.system.Machine;
 import sixtyfour.system.ProgramCounter;
+import sixtyfour.util.VarUtils;
 
 
 /**
@@ -63,7 +64,7 @@ public class Sys
     {
       throw new RuntimeException("Type mismatch error: " + this);
     }
-    int memAddr = ((Number) addr.eval(machine)).intValue();
+    int memAddr = VarUtils.getInt(addr.eval(machine));
     if (memAddr < 0 || memAddr > 65535)
     {
       throw new RuntimeException("Illegal quantity error: " + this);

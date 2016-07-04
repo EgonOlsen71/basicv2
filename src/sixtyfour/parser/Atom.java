@@ -22,7 +22,7 @@ public interface Atom {
 	 *            the memory
 	 * @return the object
 	 */
-	Object eval(Machine memory);
+	Object eval(Machine machine);
 
 	/**
 	 * Checks if is term.

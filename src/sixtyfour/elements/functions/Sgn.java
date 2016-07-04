@@ -5,6 +5,7 @@ package sixtyfour.elements.functions;
 
 import sixtyfour.elements.Type;
 import sixtyfour.system.Machine;
+import sixtyfour.util.VarUtils;
 
 /**
  * The Class Sgn.
@@ -30,9 +31,9 @@ public class Sgn extends AbstractFunction {
 	 * @see sixtyfour.parser.Atom#eval(sixtyfour.system.Machine)
 	 */
 	@Override
-	public Object eval(Machine memory) {
+	public Object eval(Machine machine) {
 		if (!getType().equals(Type.STRING)) {
-			return Float.valueOf((float) Math.signum(((Number) term.eval(memory)).floatValue()));
+			return Float.valueOf((float) Math.signum(VarUtils.getFloat(term.eval(machine))));
 		}
 		throw new RuntimeException("Type mismatch error: " + getType());
 	}

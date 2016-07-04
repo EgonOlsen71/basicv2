@@ -10,6 +10,7 @@ import sixtyfour.parser.Atom;
 import sixtyfour.parser.Parser;
 import sixtyfour.system.Machine;
 import sixtyfour.system.ProgramCounter;
+import sixtyfour.util.VarUtils;
 
 /**
  * The Class Poke.
@@ -26,8 +27,11 @@ public class Poke extends AbstractCommand {
 		super("POKE");
 	}
 
-	/* (non-Javadoc)
-	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String, int, int, int, boolean, sixtyfour.system.Machine)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String,
+	 * int, int, int, boolean, sixtyfour.system.Machine)
 	 */
 	@Override
 	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
@@ -42,8 +46,12 @@ public class Poke extends AbstractCommand {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.Machine)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.
+	 * Machine)
 	 */
 	@Override
 	public ProgramCounter execute(Machine machine) {
@@ -52,8 +60,8 @@ public class Poke extends AbstractCommand {
 		if (addr.getType().equals(Type.STRING) || val.getType().equals(Type.STRING)) {
 			throw new RuntimeException("Type mismatch error: " + this);
 		}
-		int memAddr = ((Number) addr.eval(machine)).intValue();
-		int vally = ((Number) val.eval(machine)).intValue();
+		int memAddr = VarUtils.getInt(addr.eval(machine));
+		int vally = VarUtils.getInt(val.eval(machine));
 		if (vally < 0 || vally > 255 || memAddr < 0 || memAddr > 65535) {
 			throw new RuntimeException("Illegal quantity error: " + this);
 		}

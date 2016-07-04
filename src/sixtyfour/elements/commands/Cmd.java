@@ -10,6 +10,7 @@ import sixtyfour.parser.Atom;
 import sixtyfour.parser.Parser;
 import sixtyfour.system.Machine;
 import sixtyfour.system.ProgramCounter;
+import sixtyfour.util.VarUtils;
 
 
 /**
@@ -66,7 +67,7 @@ public class Cmd
   @Override
   public ProgramCounter execute(Machine machine)
   {
-    int fn = ((Number) fileNumber.eval(machine)).intValue();
+    int fn = VarUtils.getInt(fileNumber.eval(machine));
     if (!machine.getDeviceProvider().isOpen(fn))
     {
       throw new RuntimeException("File not open error: " + this);

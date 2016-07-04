@@ -10,6 +10,7 @@ import sixtyfour.parser.Atom;
 import sixtyfour.parser.Parser;
 import sixtyfour.system.Machine;
 import sixtyfour.system.ProgramCounter;
+import sixtyfour.util.VarUtils;
 
 /**
  * The Class Wait.
@@ -18,7 +19,7 @@ public class Wait extends AbstractCommand {
 
 	/** The pars. */
 	private List<Atom> pars;
-	
+
 	/** The stop. */
 	private boolean stop = false;
 
@@ -29,8 +30,11 @@ public class Wait extends AbstractCommand {
 		super("Wait");
 	}
 
-	/* (non-Javadoc)
-	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String, int, int, int, boolean, sixtyfour.system.Machine)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String,
+	 * int, int, int, boolean, sixtyfour.system.Machine)
 	 */
 	@Override
 	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
@@ -45,7 +49,9 @@ public class Wait extends AbstractCommand {
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.elements.commands.AbstractCommand#stopExecution()
 	 */
 	@Override
@@ -53,8 +59,12 @@ public class Wait extends AbstractCommand {
 		stop = true;
 	}
 
-	/* (non-Javadoc)
-	 * @see sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.Machine)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.
+	 * Machine)
 	 */
 	@Override
 	public ProgramCounter execute(Machine machine) {
@@ -63,8 +73,8 @@ public class Wait extends AbstractCommand {
 		if (addr.getType().equals(Type.STRING) || waitFor.getType().equals(Type.STRING)) {
 			throw new RuntimeException("Type mismatch error: " + this);
 		}
-		int memAddr = ((Number) addr.eval(machine)).intValue();
-		int vally = ((Number) waitFor.eval(machine)).intValue();
+		int memAddr = VarUtils.getInt(addr.eval(machine));
+		int vally = VarUtils.getInt(waitFor.eval(machine));
 		if (vally < 0 || vally > 255 || memAddr < 0 || memAddr > 65535) {
 			throw new RuntimeException("Illegal quantity error: " + this);
 		}
@@ -77,7 +87,7 @@ public class Wait extends AbstractCommand {
 			if (inverted.getType().equals(Type.STRING) || inverted.getType().equals(Type.STRING)) {
 				throw new RuntimeException("Type mismatch error: " + this);
 			}
-			invert = ((Number) waitFor.eval(machine)).intValue();
+			invert = VarUtils.getInt(inverted.eval(machine));
 			if (invert < 0 || invert > 255) {
 				throw new RuntimeException("Illegal quantity error: " + this);
 			}

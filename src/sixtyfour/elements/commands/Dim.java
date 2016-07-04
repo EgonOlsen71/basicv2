@@ -15,6 +15,7 @@ import sixtyfour.parser.Parser;
 import sixtyfour.parser.VariableAndTerms;
 import sixtyfour.system.Machine;
 import sixtyfour.system.ProgramCounter;
+import sixtyfour.util.VarUtils;
 
 /**
  * The Class Dim.
@@ -65,9 +66,9 @@ public class Dim extends AbstractCommand {
 	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String, int, int, int, boolean, sixtyfour.system.Machine)
 	 */
 	@Override
-	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine memory) {
-		super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, memory);
-		List<VariableAndTerms> vars = Parser.getArrayVariables(linePart, memory);
+	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
+		super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine);
+		List<VariableAndTerms> vars = Parser.getArrayVariables(linePart, machine);
 		terms = new HashMap<String, List<Atom>>();
 		this.vars = new ArrayList<Variable>();
 		for (VariableAndTerms var : vars) {
@@ -82,7 +83,7 @@ public class Dim extends AbstractCommand {
 	 * @see sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.Machine)
 	 */
 	@Override
-	public ProgramCounter execute(Machine memory) {
+	public ProgramCounter execute(Machine machine) {
 		for (int i = 0; i < vars.size(); i++) {
 			Variable var = vars.get(i);
 			if (!var.isArray()) {
@@ -90,13 +91,13 @@ public class Dim extends AbstractCommand {
 				int[] pis = new int[pars.size()];
 				int cnt = 0;
 				for (Atom par : pars) {
-					pis[cnt++] = ((Number) par.eval(memory)).intValue();
+					pis[cnt++] = VarUtils.getInt(par.eval(machine));
 				}
 				Variable vary = new Variable(var.getName(), null, pis);
-				if (memory.getVariable(vary.getName()) != null) {
+				if (machine.getVariable(vary.getName()) != null) {
 					throw new RuntimeException("Redim'd array error: " + var.getName() + "/" + this);
 				}
-				memory.add(vary);
+				machine.add(vary);
 				vars.set(i, vary);
 				var = vary;
 			}

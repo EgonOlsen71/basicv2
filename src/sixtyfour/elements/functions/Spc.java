@@ -6,6 +6,7 @@ package sixtyfour.elements.functions;
 import sixtyfour.elements.Type;
 import sixtyfour.elements.commands.Print;
 import sixtyfour.system.Machine;
+import sixtyfour.util.VarUtils;
 
 
 /**
@@ -65,14 +66,14 @@ public class Spc
    * @see sixtyfour.parser.Atom#eval(sixtyfour.system.Machine)
    */
   @Override
-  public Object eval(Machine memory)
+  public Object eval(Machine machine)
   {
-    ensureContext(memory);
+    ensureContext(machine);
     if (term.getType().equals(Type.STRING))
     {
       throw new RuntimeException("Type mismatch error: " + this);
     }
-    int num = ((Number) term.eval(memory)).intValue();
+    int num = VarUtils.getInt(term.eval(machine));
     if (num < 0 || num > 255)
     {
       throw new RuntimeException("Illegal quantity error: " + this);
@@ -87,9 +88,9 @@ public class Spc
 	 * @param memory
 	 *            the memory
 	 */
-  protected void ensureContext(Machine memory)
+  protected void ensureContext(Machine machine)
   {
-    if (!(memory.getCurrentCommand() instanceof Print) || !memory.getCurrentOperator().isNop())
+    if (!(machine.getCurrentCommand() instanceof Print) || !machine.getCurrentOperator().isNop())
     {
       throw new RuntimeException("Systax error: " + this);
     }

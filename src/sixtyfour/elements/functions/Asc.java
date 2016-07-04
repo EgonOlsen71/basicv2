@@ -30,9 +30,9 @@ public class Asc extends AbstractFunction {
 	 * @see sixtyfour.parser.Atom#eval(sixtyfour.system.Machine)
 	 */
 	@Override
-	public Object eval(Machine memory) {
+	public Object eval(Machine machine) {
 		if (term.getType().equals(Type.STRING)) {
-			String str = (String) term.eval(memory);
+			String str = (String) term.eval(machine);
 			if (str == null || str.length()==0) {
 				throw new RuntimeException("Illegal quantity error: "+this);
 			}

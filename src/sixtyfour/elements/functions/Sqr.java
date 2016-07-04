@@ -5,6 +5,7 @@ package sixtyfour.elements.functions;
 
 import sixtyfour.elements.Type;
 import sixtyfour.system.Machine;
+import sixtyfour.util.VarUtils;
 
 /**
  * The Class Sqr.
@@ -18,7 +19,9 @@ public class Sqr extends AbstractFunction {
 		super("SQR");
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.parser.Atom#getType()
 	 */
 	@Override
@@ -26,15 +29,17 @@ public class Sqr extends AbstractFunction {
 		return Type.REAL;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.parser.Atom#eval(sixtyfour.system.Machine)
 	 */
 	@Override
-	public Object eval(Machine memory) {
+	public Object eval(Machine machine) {
 		if (!term.getType().equals(Type.STRING)) {
-			float val=((Number) term.eval(memory)).floatValue();
-			if (val<0) {
-				throw new RuntimeException("Illegal quantity error: "+val);
+			float val = VarUtils.getFloat(term.eval(machine));
+			if (val < 0) {
+				throw new RuntimeException("Illegal quantity error: " + val);
 			}
 			return Float.valueOf((float) Math.sqrt(val));
 		}

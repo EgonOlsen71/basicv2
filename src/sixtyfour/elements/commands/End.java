@@ -29,8 +29,8 @@ public class End extends AbstractCommand {
 	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String, int, int, int, boolean, sixtyfour.system.Machine)
 	 */
 	@Override
-	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine memory) {
-		super.parse(linePart, lineCnt, lineNumber, linePos,  lastPos, memory);
+	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
+		super.parse(linePart, lineCnt, lineNumber, linePos,  lastPos, machine);
 		if (linePart.trim().length() > 3) {
 			throw new RuntimeException("Syntax error: " + this);
 		}
@@ -41,7 +41,7 @@ public class End extends AbstractCommand {
 	 * @see sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.Machine)
 	 */
 	@Override
-	public ProgramCounter execute(Machine memory) {
+	public ProgramCounter execute(Machine machine) {
 		ProgramCounter pc = new ProgramCounter(this.lineCnt, this.linePos);
 		pc.setEnd(true);
 		return pc;

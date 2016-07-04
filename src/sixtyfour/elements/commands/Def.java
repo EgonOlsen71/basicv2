@@ -3,13 +3,12 @@
  */
 package sixtyfour.elements.commands;
 
-import java.util.Locale;
-
 import sixtyfour.elements.Type;
 import sixtyfour.elements.Variable;
 import sixtyfour.parser.Parser;
 import sixtyfour.system.Machine;
 import sixtyfour.system.ProgramCounter;
+import sixtyfour.util.VarUtils;
 
 
 /**
@@ -59,7 +58,7 @@ public class Def
     {
       throw new RuntimeException("Syntax error: " + this);
     }
-    fnName = linePart.substring(3, pos).toUpperCase(Locale.ENGLISH);
+    fnName = VarUtils.toUpper(linePart.substring(3, pos));
     if (!fnName.startsWith("FN"))
     {
       throw new RuntimeException("Syntax error: " + this);
@@ -69,7 +68,7 @@ public class Def
     {
       fnName = fnName.substring(0, 2);
     }
-    varName = linePart.substring(pos + 1, pos2).toUpperCase(Locale.ENGLISH);
+    varName = VarUtils.toUpper(linePart.substring(pos + 1, pos2));
     if (varName.length() == 0)
     {
       throw new RuntimeException("Syntax error: " + this);
@@ -83,7 +82,7 @@ public class Def
     StringBuilder sb = new StringBuilder();
     boolean inString = false;
     term = term + " ";
-    String modTerm = term.toUpperCase(Locale.ENGLISH).replace("OR", "##").replace("AND", "###").replace("NOT", "###");
+    String modTerm = VarUtils.toUpper(term).replace("OR", "##").replace("AND", "###").replace("NOT", "###");
     for (int i = 0; i < modTerm.length(); i++)
     {
       char c = modTerm.charAt(i);
@@ -99,7 +98,7 @@ public class Def
         }
         else
         {
-          String tmp = sb.toString().toUpperCase(Locale.ENGLISH);
+          String tmp = VarUtils.toUpper(sb.toString());
           if (tmp.equals(varName))
           {
             String add="_"+varName + fnName;

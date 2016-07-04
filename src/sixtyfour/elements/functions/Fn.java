@@ -7,6 +7,7 @@ import sixtyfour.elements.Type;
 import sixtyfour.elements.Variable;
 import sixtyfour.elements.commands.Def;
 import sixtyfour.system.Machine;
+import sixtyfour.util.VarUtils;
 
 
 /**
@@ -52,7 +53,7 @@ public class Fn
     }
     Object val = term.eval(machine);
     Variable placeHolder = machine.getVariable(def.getVarName());
-    placeHolder.setValue(((Number) val).floatValue());
+    placeHolder.setValue(VarUtils.getFloat(val));
     return def.eval(machine);
   }
 

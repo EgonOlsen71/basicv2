@@ -5,12 +5,12 @@ package sixtyfour.elements.commands;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import sixtyfour.elements.Type;
 import sixtyfour.parser.Parser;
 import sixtyfour.system.Machine;
 import sixtyfour.system.ProgramCounter;
+import sixtyfour.util.VarUtils;
 
 /**
  * The Class On.
@@ -19,10 +19,10 @@ public class On extends AbstractCommand {
 
 	/** The pc. */
 	private ProgramCounter pc = new ProgramCounter(0, 0); // Recycle instance
-	
+
 	/** The line numbers. */
 	private List<Integer> lineNumbers = new ArrayList<Integer>();
-	
+
 	/** The gosub. */
 	private boolean gosub = false;
 
@@ -33,14 +33,17 @@ public class On extends AbstractCommand {
 		super("ON");
 	}
 
-	/* (non-Javadoc)
-	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String, int, int, int, boolean, sixtyfour.system.Machine)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String,
+	 * int, int, int, boolean, sixtyfour.system.Machine)
 	 */
 	@Override
 	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
 		super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine);
 		linePart = linePart.substring(2).trim();
-		String uPart = linePart.toUpperCase(Locale.ENGLISH);
+		String uPart = VarUtils.toUpper(linePart);
 		int pos = uPart.lastIndexOf("GO");
 		if (pos == -1) {
 			throw new RuntimeException("Syntax error: " + this);
@@ -81,12 +84,16 @@ public class On extends AbstractCommand {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.Machine)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.
+	 * Machine)
 	 */
 	@Override
 	public ProgramCounter execute(Machine machine) {
-		int index = ((Number) term.eval(machine)).intValue();
+		int index = VarUtils.getInt(term.eval(machine));
 		if (index <= 0 || index > lineNumbers.size()) {
 			return null;
 		}

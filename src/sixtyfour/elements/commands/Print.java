@@ -2,7 +2,6 @@ package sixtyfour.elements.commands;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import sixtyfour.elements.Type;
 import sixtyfour.parser.Operator;
@@ -193,7 +192,7 @@ public class Print extends AbstractCommand {
 						}
 						PrintPart pp = new PrintPart(part, nc);
 						res.add(pp);
-						if (end && part.toUpperCase(Locale.ENGLISH).contains("SPC(") && part.endsWith(")")) {
+						if (end && VarUtils.toUpper(part).contains("SPC(") && part.endsWith(")")) {
 							// Special case: SPC(...) at the end of the line act
 							// like a ;
 							line += ";";

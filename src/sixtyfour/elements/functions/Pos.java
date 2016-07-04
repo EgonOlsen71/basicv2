@@ -37,11 +37,11 @@ public class Pos
    * @see sixtyfour.parser.Atom#eval(sixtyfour.system.Machine)
    */
   @Override
-  public Object eval(Machine memory)
+  public Object eval(Machine machine)
   {
     if (!term.getType().equals(Type.STRING))
     {
-      return memory.getOutputChannel().getCursor();
+      return machine.getOutputChannel().getCursor();
     }
     throw new RuntimeException("Formula too complex error: " + this);
   }

@@ -10,6 +10,7 @@ import sixtyfour.parser.Atom;
 import sixtyfour.parser.Parser;
 import sixtyfour.system.Machine;
 import sixtyfour.system.ProgramCounter;
+import sixtyfour.util.VarUtils;
 
 
 /**
@@ -62,7 +63,7 @@ public class Close
     {
       throw new RuntimeException("Type mismatch error: " + this);
     }
-    int fn = ((Number) fileNumber.eval(machine)).intValue();
+    int fn = VarUtils.getInt(fileNumber.eval(machine));
 
     if (machine.getOutputChannel().getPrintConsumer() != null)
     {

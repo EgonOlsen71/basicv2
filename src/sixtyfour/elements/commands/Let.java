@@ -4,7 +4,6 @@
 package sixtyfour.elements.commands;
 
 import java.util.List;
-import java.util.Locale;
 
 import sixtyfour.elements.Type;
 import sixtyfour.elements.Variable;
@@ -14,6 +13,7 @@ import sixtyfour.parser.Term;
 import sixtyfour.parser.VariableAndIndex;
 import sixtyfour.system.Machine;
 import sixtyfour.system.ProgramCounter;
+import sixtyfour.util.VarUtils;
 
 /**
  * The Class Let.
@@ -68,7 +68,7 @@ public class Let extends AbstractCommand {
 	@Override
 	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
 		super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine);
-		if (linePart.toUpperCase(Locale.ENGLISH).startsWith("LET")) {
+		if (VarUtils.toUpper(linePart).startsWith("LET")) {
 			linePart = linePart.substring(3).trim();
 		}
 		var = Parser.getVariable(linePart, machine);
@@ -97,7 +97,7 @@ public class Let extends AbstractCommand {
 			int[] pis = new int[pars.size()];
 			int cnt = 0;
 			for (Atom par : pars) {
-				pis[cnt++] = ((Number) par.eval(machine)).intValue();
+				pis[cnt++] = VarUtils.getInt(par.eval(machine));
 			}
 			var.setValue(term.eval(machine), pis);
 		}

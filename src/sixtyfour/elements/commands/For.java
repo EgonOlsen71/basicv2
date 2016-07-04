@@ -1,34 +1,33 @@
 package sixtyfour.elements.commands;
 
-import java.util.Locale;
-
 import sixtyfour.elements.Type;
 import sixtyfour.elements.Variable;
 import sixtyfour.parser.Parser;
 import sixtyfour.parser.Term;
 import sixtyfour.system.Machine;
 import sixtyfour.system.ProgramCounter;
+import sixtyfour.util.VarUtils;
 
 /**
  * The Class For.
  */
 public class For extends AbstractCommand {
-	
+
 	/** The var. */
 	private Variable var;
-	
+
 	/** The end term. */
 	private Term endTerm;
-	
+
 	/** The step term. */
 	private Term stepTerm;
-	
+
 	/** The end. */
 	private float end;
-	
+
 	/** The step. */
 	private float step = 1f;
-	
+
 	/** The running. */
 	private boolean running = false;
 
@@ -58,7 +57,9 @@ public class For extends AbstractCommand {
 		this.var = var;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.elements.commands.AbstractCommand#getType()
 	 */
 	@Override
@@ -66,14 +67,17 @@ public class For extends AbstractCommand {
 		return var.getType();
 	}
 
-	/* (non-Javadoc)
-	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String, int, int, int, boolean, sixtyfour.system.Machine)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String,
+	 * int, int, int, boolean, sixtyfour.system.Machine)
 	 */
 	@Override
-	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine memory) {
-		super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, memory);
+	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
+		super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine);
 		linePart = Parser.removeWhiteSpace(linePart.substring(this.name.length()));
-		String uLinePart = linePart.toUpperCase(Locale.ENGLISH);
+		String uLinePart = VarUtils.toUpper(linePart);
 
 		int posTo = uLinePart.indexOf("TO");
 		int posStep = uLinePart.indexOf("STEP");
@@ -83,8 +87,8 @@ public class For extends AbstractCommand {
 		}
 
 		String assignment = linePart.substring(0, posTo);
-		var = Parser.getVariable(assignment, memory);
-		term = Parser.getTerm(assignment, memory, true, true);
+		var = Parser.getVariable(assignment, machine);
+		term = Parser.getTerm(assignment, machine, true, true);
 		if (!var.getType().equals(term.getType()) && !(var.getType().equals(Type.REAL) && term.getType().equals(Type.INTEGER))) {
 			throw new RuntimeException("Type mismatch error: " + linePart);
 		}
@@ -97,14 +101,14 @@ public class For extends AbstractCommand {
 		} else {
 			toTxt = linePart.substring(posTo + 2, posStep);
 		}
-		endTerm = Parser.getTerm(toTxt, memory, false, true);
-		
+		endTerm = Parser.getTerm(toTxt, machine, false, true);
+
 		if (posStep != -1) {
 			stepTxt = linePart.substring(posStep + 4);
 		} else {
 			stepTxt = "1";
 		}
-		stepTerm = Parser.getTerm(stepTxt, memory, false, true);
+		stepTerm = Parser.getTerm(stepTxt, machine, false, true);
 
 		if (!Parser.isNumberType(endTerm)) {
 			throw new RuntimeException("Type mismatch error: " + endTerm);
@@ -116,16 +120,19 @@ public class For extends AbstractCommand {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.Machine)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.
+	 * Machine)
 	 */
 	@Override
 	public ProgramCounter execute(Machine machine) {
 		var = machine.add(var);
 		var.setValue(term.eval(machine));
-		//System.out.println(this.lineNumber+"/"+endTerm+"/"+endTerm.getType()+"/"+endTerm.eval(machine).getClass()+"/"+endTerm.eval(machine));
-		end = ((Number) endTerm.eval(machine)).floatValue();
-		step = ((Number) stepTerm.eval(machine)).floatValue();
+		end = VarUtils.getFloat(endTerm.eval(machine));
+		step = VarUtils.getFloat(stepTerm.eval(machine));
 
 		machine.pushFor(this);
 		running = true;
@@ -141,7 +148,7 @@ public class For extends AbstractCommand {
 	 *            the memory
 	 * @return true, if successful
 	 */
-	public boolean next(Next next, Machine memory) {
+	public boolean next(Next next, Machine machine) {
 		if (next.getVarName() != null && !next.getVarName().equalsIgnoreCase(var.getName())) {
 			throw new RuntimeException("NEXT without FOR: " + next);
 		}
@@ -150,12 +157,12 @@ public class For extends AbstractCommand {
 			return false;
 		}
 		var.inc(step);
-		float cur = ((Number) var.getValue()).floatValue();
+		float cur = VarUtils.getFloat(var.getValue());
 		if ((step < 0 && cur >= end) || (step > 0 && cur <= end)) {
 			return true;
 		} else {
 			if (running) {
-				For these = memory.popFor(this);
+				For these = machine.popFor(this);
 				if (these == null) {
 					throw new RuntimeException("Out of memory error: " + this);
 				}

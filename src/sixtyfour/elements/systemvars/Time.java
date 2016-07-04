@@ -33,7 +33,7 @@ public class Time extends Variable {
 	 * @see sixtyfour.elements.Variable#eval(sixtyfour.system.Machine)
 	 */
 	@Override
-	public Object eval(Machine memory) {
+	public Object eval(Machine machine) {
 		return getValue();
 	}
 }

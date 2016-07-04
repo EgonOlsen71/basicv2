@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import sixtyfour.elements.Constant;
@@ -51,7 +50,7 @@ public class Parser {
 	 *            the memory
 	 * @return the parts
 	 */
-	public static String[] getParts(Line line, Machine memory) {
+	public static String[] getParts(Line line, Machine machine) {
 		List<String> parts = new ArrayList<String>();
 		StringBuilder sb = new StringBuilder();
 		boolean inString = false;
@@ -86,7 +85,7 @@ public class Parser {
 	 */
 	private static String cleanPart(StringBuilder sb) {
 		String ret = sb.toString();
-		if (ret.toUpperCase(Locale.ENGLISH).trim().startsWith("DATA")) {
+		if (VarUtils.toUpper(ret).trim().startsWith("DATA")) {
 			// Don't rtrim data lines
 			return ret.replaceAll("^\\s*", "");
 		}
@@ -143,8 +142,8 @@ public class Parser {
 	 *            the memory
 	 * @return the variable
 	 */
-	public static Variable getVariable(String linePart, Machine memory) {
-		return getVariable(linePart, memory, true);
+	public static Variable getVariable(String linePart, Machine machine) {
+		return getVariable(linePart, machine, true);
 	}
 
 	/**
@@ -158,7 +157,7 @@ public class Parser {
 	 *            the including assignment
 	 * @return the variable
 	 */
-	public static Variable getVariable(String linePart, Machine memory, boolean includingAssignment) {
+	public static Variable getVariable(String linePart, Machine machine, boolean includingAssignment) {
 		if (includingAssignment) {
 			int pos = linePart.indexOf('=');
 			if (pos == -1) {
@@ -169,7 +168,7 @@ public class Parser {
 		String ret = getVariableName(linePart);
 
 		if (!ret.endsWith("[]")) {
-			return memory.add(new Variable(ret, null));
+			return machine.add(new Variable(ret, null));
 		} else {
 			return new Variable(ret, null);
 		}
@@ -184,7 +183,7 @@ public class Parser {
 	 *            the memory
 	 * @return the array variables
 	 */
-	public static List<VariableAndTerms> getArrayVariables(String linePart, Machine memory) {
+	public static List<VariableAndTerms> getArrayVariables(String linePart, Machine machine) {
 		List<VariableAndTerms> vars = new ArrayList<VariableAndTerms>();
 		linePart = linePart.substring(3).trim();
 		StringBuilder sb = new StringBuilder();
@@ -214,8 +213,8 @@ public class Parser {
 			int pos = part.indexOf('(');
 			int pos2 = part.lastIndexOf(')');
 			if (pos != -1 && pos2 != -1) {
-				String var = part.substring(0, pos).trim().toUpperCase(Locale.ENGLISH);
-				Term params = Parser.getTerm(part.substring(pos + 1, pos2), memory, false, true);
+				String var = VarUtils.toUpper(part.substring(0, pos).trim());
+				Term params = Parser.getTerm(part.substring(pos + 1, pos2), machine, false, true);
 				List<Atom> pars = getParameters(params);
 				if (pars.size() == 0) {
 					throw new RuntimeException("No array size specified: " + part + "/" + params);
@@ -237,7 +236,7 @@ public class Parser {
 	 * @return the variable name
 	 */
 	public static String getVariableName(String linePart) {
-		linePart = linePart.trim().toUpperCase(Locale.ENGLISH);
+		linePart = VarUtils.toUpper(linePart.trim());
 		int pos = linePart.indexOf('(');
 		boolean isArray = false;
 		if (pos != -1) {
@@ -335,7 +334,7 @@ public class Parser {
 				sb.append(toReplaceWith);
 			}
 		}
-		return sb.toString().toUpperCase(Locale.ENGLISH);
+		return VarUtils.toUpper(sb.toString());
 	}
 
 	/**
@@ -395,7 +394,7 @@ public class Parser {
 	 *            the memory
 	 * @return the array access function
 	 */
-	public static Function getArrayAccessFunction(String linePart, Variable var, Map<String, Term> termMap, Machine memory) {
+	public static Function getArrayAccessFunction(String linePart, Variable var, Map<String, Term> termMap, Machine machine) {
 		ArrayAccess fun = new ArrayAccess();
 		int pos = linePart.indexOf('(');
 		int pos2 = linePart.lastIndexOf(')');
@@ -405,10 +404,10 @@ public class Parser {
 			if (termMap == null || pos == -1 || pos2 < pos) {
 				throw new RuntimeException("Invalid function call: " + linePart);
 			} else {
-				fun.setTerm(Parser.createTerm(linePart.substring(pos, pos2 + 1), termMap, memory));
+				fun.setTerm(Parser.createTerm(linePart.substring(pos, pos2 + 1), termMap, machine));
 			}
 		} else {
-			fun.parse(linePart.substring(pos + 1, pos2), memory);
+			fun.parse(linePart.substring(pos + 1, pos2), machine);
 		}
 		fun.setVariable(var);
 		return fun;
@@ -427,8 +426,8 @@ public class Parser {
 	 *            the check for logic term
 	 * @return the term
 	 */
-	public static Term getTerm(String term, Machine memory, boolean stripAssignment, boolean checkForLogicTerm) {
-		return getTerm(term, memory, stripAssignment, checkForLogicTerm, null);
+	public static Term getTerm(String term, Machine machine, boolean stripAssignment, boolean checkForLogicTerm) {
+		return getTerm(term, machine, stripAssignment, checkForLogicTerm, null);
 	}
 
 	/**
@@ -446,7 +445,7 @@ public class Parser {
 	 *            the term map
 	 * @return the term
 	 */
-	public static Term getTerm(String term, Machine memory, boolean stripAssignment, boolean checkForLogicTerm, Map<String, Term> termMap) {
+	public static Term getTerm(String term, Machine machine, boolean stripAssignment, boolean checkForLogicTerm, Map<String, Term> termMap) {
 		if (termMap == null) {
 			termMap = new HashMap<String, Term>();
 		}
@@ -457,8 +456,7 @@ public class Parser {
 			}
 		}
 		term = addBrackets(term);
-		// System.out.println(term);
-		return createTerms(term, termMap, memory, checkForLogicTerm);
+		return createTerms(term, termMap, machine, checkForLogicTerm);
 	}
 
 	/**
@@ -474,11 +472,10 @@ public class Parser {
 	 *            the check for logic term
 	 * @return the term
 	 */
-	public static Term getTerm(Command command, String term, Machine memory, boolean checkForLogicTerm) {
+	public static Term getTerm(Command command, String term, Machine machine, boolean checkForLogicTerm) {
 		term = removeWhiteSpace(term.substring(command.getName().length()));
 		term = addBrackets(term);
-		// System.out.println("ab: "+term);
-		return createTerms(term, new HashMap<String, Term>(), memory, checkForLogicTerm);
+		return createTerms(term, new HashMap<String, Term>(), machine, checkForLogicTerm);
 	}
 
 	/**
@@ -538,7 +535,7 @@ public class Parser {
 		// two operands, but we abuse the current logic by faking it.
 		String[] replacers = { "OR", Operator.getOrOperator(), "AND", Operator.getAndOperator(), "NOT", "(0" + Operator.getNotOperator() };
 		term = removeWhiteSpace(term);
-		String uTerm = term.toUpperCase(Locale.ENGLISH);
+		String uTerm = VarUtils.toUpper(term);
 		for (int i = 0; i < replacers.length; i += 2) {
 			int pos = -1;
 			do {
@@ -1046,11 +1043,8 @@ public class Parser {
 	 *            the memory
 	 * @return the term
 	 */
-	private static Term build(Term t, Map<String, Term> termMap, Machine memory) {
+	private static Term build(Term t, Map<String, Term> termMap, Machine machine) {
 		String exp = t.getExpression();
-
-		// exp = exp.replace("}{", "},{");
-		// System.out.println("EX: "+exp);
 		StringBuilder part = new StringBuilder();
 		char lastC = '(';
 		boolean inString = false;
@@ -1066,7 +1060,7 @@ public class Parser {
 				appended = true;
 			}
 			if (!appended || (i >= exp.length() - 1)) {
-				Atom atom = createAtom(part.toString(), termMap, memory);
+				Atom atom = createAtom(part.toString(), termMap, machine);
 				part.setLength(0);
 				if (t.getLeft() == null) {
 					t.setLeft(atom);
@@ -1100,7 +1094,7 @@ public class Parser {
 	 *            the memory
 	 * @return the atom
 	 */
-	private static Atom createAtom(String part, Map<String, Term> termMap, Machine memory) {
+	private static Atom createAtom(String part, Map<String, Term> termMap, Machine machine) {
 		// Identify commands
 		String strippedPart = Parser.replaceStrings(part, ' ');
 		Command command = Parser.getCommand(strippedPart);
@@ -1109,7 +1103,7 @@ public class Parser {
 		}
 
 		// Identify functions
-		Function function = Parser.getFunction(part, termMap, memory);
+		Function function = Parser.getFunction(part, termMap, machine);
 		if (function != null) {
 			return function;
 		}
@@ -1162,29 +1156,29 @@ public class Parser {
 				throw new RuntimeException("Unknown term: " + part);
 			}
 			if (!t.isComplete()) {
-				t = build(t, termMap, memory);
+				t = build(t, termMap, machine);
 			}
 			return t;
 		}
 
 		// Array variables
 		if (Character.isAlphabetic(part.charAt(0)) && (part.endsWith("}") || part.endsWith(")"))) {
-			String var = part.toUpperCase(Locale.ENGLISH);
+			String var = VarUtils.toUpper(part);
 			int pos = var.replace('{', '(').indexOf("(");
 			if (pos == -1) {
 				throw new RuntimeException("Invalid array index: " + part);
 			}
 			String pvar = var.substring(0, pos) + "[]";
 			Variable vary = new Variable(pvar, null); // Placeholder
-			return Parser.getArrayAccessFunction(part, vary, termMap, memory);
+			return Parser.getArrayAccessFunction(part, vary, termMap, machine);
 		}
 
 		// Variables
-		String var = part.toUpperCase(Locale.ENGLISH);
-		Variable vary = memory.getVariable(var);
+		String var = VarUtils.toUpper(part);
+		Variable vary = machine.getVariable(var);
 		if (vary == null) {
 			vary = new Variable(var, (Term) null);
-			vary = memory.add(vary);
+			vary = machine.add(vary);
 		}
 		return vary;
 	}
@@ -1245,7 +1239,7 @@ public class Parser {
 	 */
 	private static void setPostfix(String linePart, Function fun, int pos) {
 		if (fun.hasPostfix()) {
-			String funcName = linePart.substring(fun.getName().length(), pos).toUpperCase(Locale.ENGLISH);
+			String funcName = VarUtils.toUpper(linePart.substring(fun.getName().length(), pos));
 			fun.setFunctionName(funcName);
 		} else {
 			if (pos != fun.getName().length()) {

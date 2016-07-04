@@ -9,6 +9,7 @@ import sixtyfour.parser.Parser;
 import sixtyfour.parser.Term;
 import sixtyfour.system.Machine;
 import sixtyfour.system.ProgramCounter;
+import sixtyfour.util.VarUtils;
 
 
 /**
@@ -70,7 +71,7 @@ public class GetFile
     {
       Term indexTerm = indexTerms.get(i);
       Variable var = this.getVariable(machine, i);
-      Character input = machine.getDeviceProvider().getChar(((Number) fileNumber.eval(machine)).intValue());
+      Character input = machine.getDeviceProvider().getChar(VarUtils.getInt(fileNumber.eval(machine)));
       if (input == 0)
       {
         input = ' ';
@@ -82,7 +83,7 @@ public class GetFile
         int cnt = 0;
         for (Atom par : pars)
         {
-          pis[cnt++] = ((Number) par.eval(machine)).intValue();
+          pis[cnt++] = VarUtils.getInt(par.eval(machine));
         }
         if (var.getType().equals(Type.STRING))
         {

@@ -63,20 +63,20 @@ public interface Command extends Atom {
 	 *            the line pos
 	 * @param lastPos
 	 *            the last pos
-	 * @param memory
-	 *            the memory
+	 * @param machine
+	 *            the machine
 	 * @return the string
 	 */
-	String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine memory);
+	String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine);
 
 	/**
 	 * Execute.
 	 * 
-	 * @param memory
-	 *            the memory
+	 * @param machine
+	 *            the machine
 	 * @return the program counter
 	 */
-	ProgramCounter execute(Machine memory);
+	ProgramCounter execute(Machine machine);
 
 	/**
 	 * Stop execution.

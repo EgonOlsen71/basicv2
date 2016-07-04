@@ -9,6 +9,7 @@ import sixtyfour.parser.Parser;
 import sixtyfour.parser.Term;
 import sixtyfour.system.Machine;
 import sixtyfour.system.ProgramCounter;
+import sixtyfour.util.VarUtils;
 
 /**
  * The Class Get.
@@ -69,7 +70,7 @@ public class Get extends MultiVariableCommand {
 				int[] pis = new int[pars.size()];
 				int cnt = 0;
 				for (Atom par : pars) {
-					pis[cnt++] = ((Number) par.eval(machine)).intValue();
+					pis[cnt++] = VarUtils.getInt(par.eval(machine));
 				}
 				if (var.getType().equals(Type.STRING)) {
 					if (input == null) {
