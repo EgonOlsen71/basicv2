@@ -42,6 +42,7 @@ public class ArrayAccess extends AbstractFunction {
 			if (variableType.equals(Type.STRING)) {
 				return "";
 			}
+			return null;
 		}
 
 		return vary.getValue(pis);

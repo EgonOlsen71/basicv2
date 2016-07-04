@@ -18,7 +18,7 @@ public class Loader
       while (br.ready())
       {
         String line = br.readLine();
-        if (line.trim().length() > 0)
+        if (line!=null && line.trim().length() > 0)
         {
           lines.add(line.trim());
         }

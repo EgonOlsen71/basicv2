@@ -57,7 +57,7 @@ public class Interpreter {
 
 	public Float getFloatVariable(String name) {
 		Object obj = machine.getVariable(name.toUpperCase(Locale.ENGLISH)).getValue();
-		if (obj instanceof String) {
+		if (obj instanceof Float) {
 			return (Float) obj;
 		}
 		return null;
