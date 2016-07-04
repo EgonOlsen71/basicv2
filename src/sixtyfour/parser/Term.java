@@ -4,78 +4,174 @@ import sixtyfour.elements.Constant;
 import sixtyfour.elements.Type;
 import sixtyfour.system.Machine;
 
+/**
+ * The Class Term.
+ */
 public class Term implements Atom {
+	
+	/** The left. */
 	private Atom left;
+	
+	/** The right. */
 	private Atom right;
+	
+	/** The operator. */
 	private Operator operator;
+	
+	/** The expression. */
 	private String expression;
+	
+	/** The key. */
 	private String key;
 
+	/**
+	 * Instantiates a new term.
+	 * 
+	 * @param expression
+	 *            the expression
+	 */
 	public Term(String expression) {
 		this.setExpression(expression);
 	}
 
+	/**
+	 * Instantiates a new term.
+	 * 
+	 * @param left
+	 *            the left
+	 */
 	public Term(Atom left) {
 		this.left = left;
 		this.operator = Operator.NOP;
 		this.right = new Constant<Integer>(0);
 	}
 
+	/**
+	 * Checks if is complete.
+	 * 
+	 * @return true, if is complete
+	 */
 	public boolean isComplete() {
 		return left != null && right != null && operator != null;
 	}
 
+	/**
+	 * Checks if is empty.
+	 * 
+	 * @return true, if is empty
+	 */
 	public boolean isEmpty() {
-		return left == null || (left instanceof Term && ((Term) left).isEmpty());
+		return left == null || (left.isTerm() && ((Term) left).isEmpty());
 	}
 
+	/**
+	 * Gets the left.
+	 * 
+	 * @return the left
+	 */
 	public Atom getLeft() {
 		return left;
 	}
 
+	/**
+	 * Sets the left.
+	 * 
+	 * @param left
+	 *            the new left
+	 */
 	public void setLeft(Atom left) {
 		// System.out.println("Left: "+left);
 		this.left = left;
 	}
 
+	/**
+	 * Gets the right.
+	 * 
+	 * @return the right
+	 */
 	public Atom getRight() {
 		return right;
 	}
 
+	/**
+	 * Sets the right.
+	 * 
+	 * @param right
+	 *            the new right
+	 */
 	public void setRight(Atom right) {
 		// System.out.println("Right: "+right);
 		this.right = right;
 	}
 
+	/**
+	 * Gets the operator.
+	 * 
+	 * @return the operator
+	 */
 	public Operator getOperator() {
 		return operator;
 	}
 
+	/**
+	 * Sets the operator.
+	 * 
+	 * @param operator
+	 *            the new operator
+	 */
 	public void setOperator(Operator operator) {
 		this.operator = operator;
 	}
 
+	/**
+	 * Gets the expression.
+	 * 
+	 * @return the expression
+	 */
 	public String getExpression() {
 		return expression;
 	}
 
+	/**
+	 * Sets the expression.
+	 * 
+	 * @param expression
+	 *            the new expression
+	 */
 	public void setExpression(String expression) {
 		this.expression = expression;
 	}
 
+	/**
+	 * Gets the key.
+	 * 
+	 * @return the key
+	 */
 	public String getKey() {
 		return key;
 	}
 
+	/**
+	 * Sets the key.
+	 * 
+	 * @param key
+	 *            the new key
+	 */
 	public void setKey(String key) {
 		this.key = key;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
 		return "([" + key + "]\\l:" + left + this.operator + "\\r:" + right + ")";
 	}
 
+	/* (non-Javadoc)
+	 * @see sixtyfour.parser.Atom#getType()
+	 */
 	@Override
 	public Type getType() {
 		Type t1 = left.getType();
@@ -98,6 +194,9 @@ public class Term implements Atom {
 		return t1;
 	}
 
+	/* (non-Javadoc)
+	 * @see sixtyfour.parser.Atom#eval(sixtyfour.system.Machine)
+	 */
 	@Override
 	public Object eval(Machine machine) {
 		try {
@@ -143,6 +242,14 @@ public class Term implements Atom {
 		} finally {
 			machine.setCurrentOperator(null);
 		}
+	}
+
+	/* (non-Javadoc)
+	 * @see sixtyfour.parser.Atom#isTerm()
+	 */
+	@Override
+	public boolean isTerm() {
+		return true;
 	}
 
 }

@@ -1,3 +1,6 @@
+/*
+ * 
+ */
 package sixtyfour.test;
 
 import sixtyfour.elements.Variable;
@@ -5,12 +8,24 @@ import sixtyfour.parser.logic.LogicParser;
 import sixtyfour.parser.logic.LogicTerm;
 import sixtyfour.system.Machine;
 
+/**
+ * The Class LogicTest.
+ */
 public class LogicTest {
 
+	/**
+	 * The main method.
+	 * 
+	 * @param args
+	 *            the arguments
+	 */
 	public static void main(String[] args) {
 		testLogicParser();
 	}
 
+	/**
+	 * Test logic parser.
+	 */
 	public static void testLogicParser() {
 		System.out.println("testTermCreation");
 		Machine machine = new Machine();

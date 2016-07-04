@@ -16,53 +16,115 @@ import sixtyfour.plugins.MemoryListener;
 import sixtyfour.plugins.OutputChannel;
 import sixtyfour.system.Machine;
 import sixtyfour.system.ProgramCounter;
+import sixtyfour.util.VarUtils;
 
+/**
+ * The Class Interpreter.
+ */
 public class Interpreter {
 
+	/** The code. */
 	private String[] code = null;
+	
+	/** The lines. */
 	private Map<Integer, Line> lines = new HashMap<Integer, Line>();
+	
+	/** The line numbers. */
 	private List<Integer> lineNumbers = new ArrayList<Integer>();
+	
+	/** The machine. */
 	private Machine machine = null;
+	
+	/** The parsed. */
 	private boolean parsed = false;
+	
+	/** The stop. */
 	private boolean stop = false;
+	
+	/** The print line numbers. */
 	private boolean printLineNumbers = false;
 
+	/**
+	 * Instantiates a new interpreter.
+	 * 
+	 * @param code
+	 *            the code
+	 */
 	public Interpreter(String code) {
 		this(code.split("\n"));
 	}
 
+	/**
+	 * Instantiates a new interpreter.
+	 * 
+	 * @param code
+	 *            the code
+	 */
 	public Interpreter(String[] code) {
 		this.code = Arrays.copyOf(code, code.length);
 	}
 
+	/**
+	 * Gets the machine.
+	 * 
+	 * @return the machine
+	 */
 	public Machine getMachine() {
 		return machine;
 	}
 
+	/**
+	 * Gets the string variable.
+	 * 
+	 * @param name
+	 *            the name
+	 * @return the string variable
+	 */
 	public String getStringVariable(String name) {
 		Object obj = machine.getVariable(name.toUpperCase(Locale.ENGLISH)).getValue();
-		if (obj instanceof String) {
+		if (VarUtils.isString(obj)) {
 			return (String) obj;
 		}
 		return null;
 	}
 
+	/**
+	 * Gets the integer variable.
+	 * 
+	 * @param name
+	 *            the name
+	 * @return the integer variable
+	 */
 	public Integer getIntegerVariable(String name) {
 		Object obj = machine.getVariable(name.toUpperCase(Locale.ENGLISH)).getValue();
-		if (obj instanceof Integer) {
+		if (VarUtils.isInteger(obj)) {
 			return (Integer) obj;
 		}
 		return null;
 	}
 
+	/**
+	 * Gets the float variable.
+	 * 
+	 * @param name
+	 *            the name
+	 * @return the float variable
+	 */
 	public Float getFloatVariable(String name) {
 		Object obj = machine.getVariable(name.toUpperCase(Locale.ENGLISH)).getValue();
-		if (obj instanceof Float) {
+		if (VarUtils.isFloat(obj)) {
 			return (Float) obj;
 		}
 		return null;
 	}
 
+	/**
+	 * Gets the array variable.
+	 * 
+	 * @param name
+	 *            the name
+	 * @return the array variable
+	 */
 	@SuppressWarnings("unchecked")
 	public Object[] getArrayVariable(String name) {
 		if (!name.endsWith("[]")) {
@@ -75,6 +137,9 @@ public class Interpreter {
 		return null;
 	}
 
+	/**
+	 * Parses the.
+	 */
 	public void parse() {
 		long start = System.nanoTime();
 		machine = new Machine();
@@ -140,6 +205,9 @@ public class Interpreter {
 		Logger.log(machine.getCommandList().size() + " commands parsed in: " + (System.nanoTime() - start) / 1000000L + "ms");
 	}
 
+	/**
+	 * Run.
+	 */
 	public void run() {
 		stop = false;
 		if (!parsed) {
@@ -156,46 +224,106 @@ public class Interpreter {
 		}
 	}
 
+	/**
+	 * Run stop.
+	 */
 	public void runStop() {
 		stop = true;
 	}
 
+	/**
+	 * Gets the ram.
+	 * 
+	 * @return the ram
+	 */
 	public int[] getRam() {
 		return machine.getRam();
 	}
 
+	/**
+	 * Gets the input provider.
+	 * 
+	 * @return the input provider
+	 */
 	public InputProvider getInputProvider() {
 		return machine.getInputProvider();
 	}
 
+	/**
+	 * Sets the input provider.
+	 * 
+	 * @param inputProvider
+	 *            the new input provider
+	 */
 	public void setInputProvider(InputProvider inputProvider) {
 		machine.setInputProvider(inputProvider);
 	}
 
+	/**
+	 * Gets the output channel.
+	 * 
+	 * @return the output channel
+	 */
 	public OutputChannel getOutputChannel() {
 		return machine.getOutputChannel();
 	}
 
+	/**
+	 * Sets the output channel.
+	 * 
+	 * @param outputChannel
+	 *            the new output channel
+	 */
 	public void setOutputChannel(OutputChannel outputChannel) {
 		machine.setOutputChannel(outputChannel);
 	}
 
+	/**
+	 * Gets the memory listener.
+	 * 
+	 * @return the memory listener
+	 */
 	public MemoryListener getMemoryListener() {
 		return machine.getMemoryListener();
 	}
 
+	/**
+	 * Sets the memory listener.
+	 * 
+	 * @param memoryListener
+	 *            the new memory listener
+	 */
 	public void setMemoryListener(MemoryListener memoryListener) {
 		machine.setMemoryListener(memoryListener);
 	}
 
+	/**
+	 * Checks if is prints the line numbers.
+	 * 
+	 * @return true, if is prints the line numbers
+	 */
 	public boolean isPrintLineNumbers() {
 		return printLineNumbers;
 	}
 
+	/**
+	 * Sets the prints the line numbers.
+	 * 
+	 * @param printLineNumbers
+	 *            the new prints the line numbers
+	 */
 	public void setPrintLineNumbers(boolean printLineNumbers) {
 		this.printLineNumbers = printLineNumbers;
 	}
 
+	/**
+	 * Execute.
+	 * 
+	 * @param lineCnt
+	 *            the line cnt
+	 * @param pos
+	 *            the pos
+	 */
 	private void execute(int lineCnt, int pos) {
 		if (lineNumbers.size() == 0) {
 			return;

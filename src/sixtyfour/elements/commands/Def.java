@@ -1,3 +1,6 @@
+/*
+ * 
+ */
 package sixtyfour.elements.commands;
 
 import java.util.Locale;
@@ -9,19 +12,32 @@ import sixtyfour.system.Machine;
 import sixtyfour.system.ProgramCounter;
 
 
+/**
+ * The Class Def.
+ */
 public class Def
   extends AbstractCommand
 {
+  
+  /** The var name. */
   private String varName = null;
+  
+  /** The fn name. */
   private String fnName = null;
 
 
+  /**
+	 * Instantiates a new def.
+	 */
   public Def()
   {
     super("DEF");
   }
 
 
+  /* (non-Javadoc)
+   * @see sixtyfour.elements.commands.AbstractCommand#getType()
+   */
   @Override
   public Type getType()
   {
@@ -29,6 +45,9 @@ public class Def
   }
 
 
+  /* (non-Javadoc)
+   * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String, int, int, int, boolean, sixtyfour.system.Machine)
+   */
   @Override
   public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine)
   {
@@ -101,6 +120,9 @@ public class Def
   }
 
 
+  /* (non-Javadoc)
+   * @see sixtyfour.elements.commands.AbstractCommand#eval(sixtyfour.system.Machine)
+   */
   @Override
   public Object eval(Machine machine)
   {
@@ -108,12 +130,20 @@ public class Def
   }
 
 
+  /**
+	 * Gets the var name.
+	 * 
+	 * @return the var name
+	 */
   public String getVarName()
   {
     return varName;
   }
 
 
+  /* (non-Javadoc)
+   * @see sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.Machine)
+   */
   @Override
   public ProgramCounter execute(Machine machine)
   {

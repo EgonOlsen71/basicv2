@@ -1,3 +1,6 @@
+/*
+ * 
+ */
 package sixtyfour.parser.logic;
 
 import java.util.HashMap;
@@ -9,9 +12,19 @@ import sixtyfour.parser.Term;
 import sixtyfour.system.Machine;
 
 
+/**
+ * The Class LogicParser.
+ */
 public class LogicParser
 {
 
+  /**
+	 * Checks if is logic term.
+	 * 
+	 * @param term
+	 *            the term
+	 * @return true, if is logic term
+	 */
   public static boolean isLogicTerm(String term)
   {
     term = Parser.replaceStrings(term, ' ');
@@ -19,15 +32,34 @@ public class LogicParser
   }
 
 
+  /**
+	 * Gets the term.
+	 * 
+	 * @param term
+	 *            the term
+	 * @param machine
+	 *            the machine
+	 * @return the term
+	 */
   public static LogicTerm getTerm(String term, Machine machine)
   {
     return getTerm(term, machine, null);
   }
 
 
+  /**
+	 * Gets the term.
+	 * 
+	 * @param term
+	 *            the term
+	 * @param machine
+	 *            the machine
+	 * @param termMap
+	 *            the term map
+	 * @return the term
+	 */
   public static LogicTerm getTerm(String term, Machine machine, Map<String, Term> termMap)
   {
-    //System.out.println("LogicTerm: "+term);
     Map<String, LogicTerm> blocks = new HashMap<String, LogicTerm>();
     term = processLogicOperations(term);
     boolean inString = false;
@@ -99,6 +131,13 @@ public class LogicParser
   }
 
 
+  /**
+	 * Process logic operations.
+	 * 
+	 * @param term
+	 *            the term
+	 * @return the string
+	 */
   private static String processLogicOperations(String term)
   {
     // Try to replace logic operations in brackets by placeholders to avoid
@@ -199,6 +238,19 @@ public class LogicParser
   }
 
 
+  /**
+	 * Creates the logic block.
+	 * 
+	 * @param toProcess
+	 *            the to process
+	 * @param blocks
+	 *            the blocks
+	 * @param machine
+	 *            the machine
+	 * @param termMap
+	 *            the term map
+	 * @return the string
+	 */
   private static String createLogicBlock(String toProcess, Map<String, LogicTerm> blocks, Machine machine,
       Map<String, Term> termMap)
   {
@@ -362,6 +414,13 @@ public class LogicParser
   }
 
 
+  /**
+	 * Gets the bracket delta.
+	 * 
+	 * @param term
+	 *            the term
+	 * @return the bracket delta
+	 */
   private static int getBracketDelta(String term)
   {
     int brackets = 0;
@@ -389,6 +448,13 @@ public class LogicParser
   }
 
 
+  /**
+	 * Strip strings.
+	 * 
+	 * @param term
+	 *            the term
+	 * @return the string
+	 */
   private static String stripStrings(String term)
   {
     StringBuilder sb = new StringBuilder();
@@ -413,6 +479,15 @@ public class LogicParser
   }
 
 
+  /**
+	 * Find end bracket.
+	 * 
+	 * @param term
+	 *            the term
+	 * @param pos
+	 *            the pos
+	 * @return the int
+	 */
   private static int findEndBracket(String term, int pos)
   {
     int brackets = 0;

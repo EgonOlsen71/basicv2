@@ -5,8 +5,13 @@ import java.util.Collections;
 import java.util.List;
 
 
+/**
+ * The Class CommandList.
+ */
 public class CommandList
 {
+  
+  /** The Constant COMMANDS. */
   public static final List<Command> COMMANDS = Collections.unmodifiableList(new ArrayList<Command>()
   {
     private static final long serialVersionUID = 1L;
@@ -56,12 +61,22 @@ public class CommandList
   });
 
 
+  /**
+	 * Gets the commands.
+	 * 
+	 * @return the commands
+	 */
   public static List<Command> getCommands()
   {
     return COMMANDS;
   }
 
 
+  /**
+	 * Gets the let command.
+	 * 
+	 * @return the let command
+	 */
   public static Command getLetCommand()
   {
     return COMMANDS.get(0);

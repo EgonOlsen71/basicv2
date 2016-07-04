@@ -2,77 +2,71 @@ package sixtyfour.elements;
 
 import sixtyfour.parser.Atom;
 import sixtyfour.system.Machine;
+import sixtyfour.util.VarUtils;
 
+/**
+ * The Class Constant.
+ * 
+ * @param <T>
+ *            the generic type
+ */
 public class Constant<T> implements Atom {
+	
+	/** The value. */
 	private T value;
+	
+	/** The type. */
+	private Type type;
 
+	/**
+	 * Instantiates a new constant.
+	 * 
+	 * @param value
+	 *            the value
+	 */
 	public Constant(T value) {
 		this.value = value;
+		if (VarUtils.isInteger(value)) {
+			type = Type.INTEGER;
+		} else if (VarUtils.isFloat(value)) {
+			type = Type.REAL;
+		} else if (VarUtils.isString(value)) {
+			type = Type.STRING;
+		} else {
+			throw new RuntimeException("Type mismatch error: " + value);
+		}
 	}
 
-	public T getValue() {
+	/* (non-Javadoc)
+	 * @see sixtyfour.parser.Atom#getType()
+	 */
+	@Override
+	public Type getType() {
+		return type;
+	}
+
+	/* (non-Javadoc)
+	 * @see sixtyfour.parser.Atom#eval(sixtyfour.system.Machine)
+	 */
+	@Override
+	public T eval(Machine memory) {
 		return value;
 	}
 
-	public String getStringValue() {
-		return value.toString();
+	/* (non-Javadoc)
+	 * @see sixtyfour.parser.Atom#isTerm()
+	 */
+	@Override
+	public boolean isTerm() {
+		return false;
 	}
 
-	public float getRealValue() {
-		if (value instanceof Float) {
-			return (Float) value;
-		}
-
-		if (value instanceof Integer) {
-			return Float.valueOf((Integer) value);
-		}
-
-		return Float.valueOf(this.getStringValue());
-	}
-
-	public int getIntValue() {
-		if (value instanceof Float) {
-			return ((Float) value).intValue();
-		}
-
-		if (value instanceof Integer) {
-			return (Integer) value;
-		}
-
-		return Integer.valueOf(this.getStringValue());
-	}
-
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
 		return value.toString();
-	}
-
-	@Override
-	public Type getType() {
-		if (value instanceof Integer) {
-			return Type.INTEGER;
-		}
-		if (value instanceof Float) {
-			return Type.REAL;
-		}
-		if (value instanceof String) {
-			return Type.STRING;
-		}
-		throw new RuntimeException("Type mismatch error: " + this.toString());
-	}
-
-	@Override
-	public Object eval(Machine memory) {
-		if (value instanceof Integer) {
-			return (Integer) value;
-		}
-		if (value instanceof Float) {
-			return (Float) value;
-		}
-		if (value instanceof String) {
-			return (String) value;
-		}
-		throw new RuntimeException("Type mismatch error: " + this.toString());
 	}
 
 }

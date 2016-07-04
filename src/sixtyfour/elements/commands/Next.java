@@ -1,3 +1,6 @@
+/*
+ * 
+ */
 package sixtyfour.elements.commands;
 
 import java.util.Locale;
@@ -6,22 +9,46 @@ import sixtyfour.parser.Parser;
 import sixtyfour.system.Machine;
 import sixtyfour.system.ProgramCounter;
 
+/**
+ * The Class Next.
+ */
 public class Next extends AbstractCommand {
+	
+	/** The var name. */
 	private String varName = null;
+	
+	/** The pc. */
 	private ProgramCounter pc = new ProgramCounter(0, 0); // Recycle instance
 
+	/**
+	 * Instantiates a new next.
+	 */
 	public Next() {
 		super("NEXT");
 	}
 
+	/**
+	 * Gets the var name.
+	 * 
+	 * @return the var name
+	 */
 	public String getVarName() {
 		return varName;
 	}
 
+	/**
+	 * Sets the var name.
+	 * 
+	 * @param varName
+	 *            the new var name
+	 */
 	public void setVarName(String varName) {
 		this.varName = varName;
 	}
 
+	/* (non-Javadoc)
+	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String, int, int, int, boolean, sixtyfour.system.Machine)
+	 */
 	@Override
 	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine memory) {
 		super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, memory);
@@ -49,6 +76,9 @@ public class Next extends AbstractCommand {
 		return ret;
 	}
 
+	/* (non-Javadoc)
+	 * @see sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.Machine)
+	 */
 	@Override
 	public ProgramCounter execute(Machine machine) {
 		For myFor = machine.peekFor(this.varName);

@@ -11,13 +11,24 @@ import sixtyfour.plugins.DeviceProvider;
 import sixtyfour.system.Machine;
 import sixtyfour.system.ProgramCounter;
 
+/**
+ * The Class InputFile.
+ */
 public class InputFile extends Input {
+	
+	/** The file number. */
 	private Atom fileNumber = null;
 
+	/**
+	 * Instantiates a new input file.
+	 */
 	public InputFile() {
 		super("INPUT#");
 	}
 
+	/* (non-Javadoc)
+	 * @see sixtyfour.elements.commands.Input#parse(java.lang.String, int, int, int, boolean, sixtyfour.system.Machine)
+	 */
 	@Override
 	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
 		linePart = linePart.substring(this.name.length());
@@ -42,6 +53,9 @@ public class InputFile extends Input {
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see sixtyfour.elements.commands.Input#execute(sixtyfour.system.Machine)
+	 */
 	@Override
 	public ProgramCounter execute(Machine machine) {
 		int fn = ((Number) fileNumber.eval(machine)).intValue();

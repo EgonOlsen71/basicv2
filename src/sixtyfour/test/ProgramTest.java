@@ -3,8 +3,18 @@ package sixtyfour.test;
 import sixtyfour.Interpreter;
 import sixtyfour.Loader;
 
+/**
+ * The Class ProgramTest.
+ */
 @SuppressWarnings("unused")
 public class ProgramTest {
+	
+	/**
+	 * The main method.
+	 * 
+	 * @param args
+	 *            the arguments
+	 */
 	public static void main(String[] args) {
 		testPrime();
 		testJavaPrime();
@@ -24,6 +34,9 @@ public class ProgramTest {
 		testStuff();
 	}
 
+	/**
+	 * Test stuff.
+	 */
 	private static void testStuff() {
 		String[] vary = Loader.loadProgram("files.bas");
 		Interpreter inty = new Interpreter(vary);
@@ -31,84 +44,126 @@ public class ProgramTest {
 		inty.run();
 	}
 
+	/**
+	 * Test calc.
+	 */
 	private static void testCalc() {
 		String[] vary = Loader.loadProgram("calctest.bas");
 		Interpreter inty = new Interpreter(vary);
 		inty.run();
 	}
 
+	/**
+	 * Test adventure.
+	 */
 	private static void testAdventure() {
 		String[] vary = Loader.loadProgram("OHARES3.BAS");
 		Interpreter inty = new Interpreter(vary);
 		inty.run();
 	}
 
+	/**
+	 * Test data.
+	 */
 	private static void testData() {
 		String[] vary = Loader.loadProgram("data.bas");
 		Interpreter inty = new Interpreter(vary);
 		inty.run();
 	}
 
+	/**
+	 * Test input.
+	 */
 	private static void testInput() {
 		String[] vary = Loader.loadProgram("input.bas");
 		Interpreter inty = new Interpreter(vary);
 		inty.run();
 	}
 
+	/**
+	 * Test run.
+	 */
 	private static void testRun() {
 		String[] vary = Loader.loadProgram("run.bas");
 		Interpreter inty = new Interpreter(vary);
 		inty.run();
 	}
 
+	/**
+	 * Test beer.
+	 */
 	private static void testBeer() {
 		String[] vary = Loader.loadProgram("beer.bas");
 		Interpreter inty = new Interpreter(vary);
 		inty.run();
 	}
 
+	/**
+	 * Test menu.
+	 */
 	private static void testMenu() {
 		String[] vary = Loader.loadProgram("menu.bas");
 		Interpreter inty = new Interpreter(vary);
 		inty.run();
 	}
 
+	/**
+	 * Test gosub.
+	 */
 	private static void testGosub() {
 		String[] vary = Loader.loadProgram("fac.bas");
 		Interpreter inty = new Interpreter(vary);
 		inty.run();
 	}
 
+	/**
+	 * Test gosub return.
+	 */
 	private static void testGosubReturn() {
 		String[] vary = Loader.loadProgram("subroutines.bas");
 		Interpreter inty = new Interpreter(vary);
 		inty.run();
 	}
 
+	/**
+	 * Test various.
+	 */
 	private static void testVarious() {
 		String[] vary = Loader.loadProgram("various.bas");
 		Interpreter inty = new Interpreter(vary);
 		inty.run();
 	}
 
+	/**
+	 * Test conditions.
+	 */
 	private static void testConditions() {
 		String[] condy = Loader.loadProgram("conditions.bas");
 		Interpreter inty = new Interpreter(condy);
 		inty.run();
 	}
 
+	/**
+	 * Test prime.
+	 */
 	private static void testPrime() {
 		String[] prime = Loader.loadProgram("prime.bas");
 		Interpreter inty = new Interpreter(prime);
 		inty.run();
 	}
 
+	/**
+	 * Test prime 2.
+	 */
 	private static void testPrime2() {
 		String[] prime = Loader.loadProgram("prime2.bas");
 		Interpreter inty = new Interpreter(prime);
 		inty.run();
 	}
 
+	/**
+	 * Test java prime.
+	 */
 	private static void testJavaPrime() {
 		long start = System.nanoTime();
 		int w = 501;

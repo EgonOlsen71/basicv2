@@ -1,10 +1,18 @@
+/*
+ * 
+ */
 package sixtyfour.elements.functions;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * The Class FunctionList.
+ */
 public class FunctionList {
+	
+	/** The Constant FUNCTIONS. */
 	public static final List<Function> FUNCTIONS = Collections.unmodifiableList(new ArrayList<Function>() {
 		private static final long serialVersionUID = 1L;
 
@@ -38,6 +46,11 @@ public class FunctionList {
 		}
 	});
 
+	/**
+	 * Gets the functions.
+	 * 
+	 * @return the functions
+	 */
 	public static List<Function> getFunctions() {
 		return FUNCTIONS;
 	}

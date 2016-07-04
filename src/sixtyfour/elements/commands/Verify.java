@@ -1,3 +1,6 @@
+/*
+ * 
+ */
 package sixtyfour.elements.commands;
 
 import sixtyfour.plugins.DeviceProvider;
@@ -5,16 +8,25 @@ import sixtyfour.system.Machine;
 import sixtyfour.system.ProgramCounter;
 
 
+/**
+ * The Class Verify.
+ */
 public class Verify
   extends FileOperation
 {
 
+  /**
+	 * Instantiates a new verify.
+	 */
   public Verify()
   {
     super("VERIFY");
   }
 
 
+  /* (non-Javadoc)
+   * @see sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.Machine)
+   */
   @Override
   public ProgramCounter execute(Machine machine)
   {

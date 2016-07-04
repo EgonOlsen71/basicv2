@@ -7,8 +7,17 @@ import sixtyfour.parser.Parser;
 import sixtyfour.parser.Term;
 import sixtyfour.system.Machine;
 
+/**
+ * The Class ParserTest.
+ */
 public class ParserTest {
 
+	/**
+	 * The main method.
+	 * 
+	 * @param args
+	 *            the arguments
+	 */
 	public static void main(String[] args) {
 		testLineNumber();
 		testCommands();
@@ -23,6 +32,9 @@ public class ParserTest {
 
 	
 	
+	/**
+	 * Test stuff.
+	 */
 	private static void testStuff() {
 		System.out.println("testStuff");
 		Machine memory = new Machine();
@@ -49,6 +61,9 @@ public class ParserTest {
 
 
 
+	/**
+	 * Test abs.
+	 */
 	private static void testAbs() {
 		System.out.println("testAbs");
 		Machine memory = new Machine();
@@ -65,6 +80,9 @@ public class ParserTest {
 		
 	}
 
+	/**
+	 * Test power of.
+	 */
 	private static void testPowerOf() {
 		
 		System.out.println("testPowerOf");
@@ -86,6 +104,9 @@ public class ParserTest {
 		System.out.println("Value: " + res.eval(memory));
 	}
 
+	/**
+	 * Test logic.
+	 */
 	private static void testLogic() {
 		System.out.println("testLogic");
 		Machine memory = new Machine();
@@ -100,6 +121,9 @@ public class ParserTest {
 		System.out.println("Value: " + res.eval(memory));
 	}
 
+	/**
+	 * Test complex functions.
+	 */
 	private static void testComplexFunctions() {
 		System.out.println("testComplexFunctions");
 		Machine memory = new Machine();
@@ -116,6 +140,9 @@ public class ParserTest {
 		System.out.println("Value: " + res.eval(memory));
 	}
 
+	/**
+	 * Test term creation.
+	 */
 	private static void testTermCreation() {
 		System.out.println("testTermCreation");
 		Machine memory = new Machine();
@@ -140,6 +167,9 @@ public class ParserTest {
 		// System.out.println(res);
 	}
 
+	/**
+	 * Test term completion.
+	 */
 	private static void testTermCompletion() {
 		System.out.println("testTermCompletion");
 		String term = "a + b * c + d";
@@ -177,6 +207,9 @@ public class ParserTest {
 		System.out.println(term + " is actually " + res);
 	}
 
+	/**
+	 * Test commands.
+	 */
 	private static void testCommands() {
 		System.out.println("testCommands");
 		String test = getSimpleLine();
@@ -185,6 +218,9 @@ public class ParserTest {
 
 	}
 
+	/**
+	 * Test line number.
+	 */
 	private static void testLineNumber() {
 		System.out.println("testLineNumber");
 		String test = getSimpleLine();
@@ -196,6 +232,11 @@ public class ParserTest {
 		System.out.println("Line number is: " + line.getNumber());
 	}
 
+	/**
+	 * Gets the simple line.
+	 * 
+	 * @return the simple line
+	 */
 	private static String getSimpleLine() {
 		return "10 PRINT\"Hello World\"";
 	}

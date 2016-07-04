@@ -8,20 +8,35 @@ import sixtyfour.parser.Atom;
 import sixtyfour.parser.Parser;
 import sixtyfour.system.Machine;
 
+/**
+ * The Class ArrayAccess.
+ */
 public class ArrayAccess extends AbstractFunction {
 
+	/** The variable name. */
 	private String variableName;
+	
+	/** The variable type. */
 	private Type variableType;
 
+	/**
+	 * Instantiates a new array access.
+	 */
 	public ArrayAccess() {
 		super("[]");
 	}
 
+	/* (non-Javadoc)
+	 * @see sixtyfour.parser.Atom#getType()
+	 */
 	@Override
 	public Type getType() {
 		return variableType;
 	}
 
+	/* (non-Javadoc)
+	 * @see sixtyfour.parser.Atom#eval(sixtyfour.system.Machine)
+	 */
 	@Override
 	public Object eval(Machine memory) {
 		List<Atom> pars = Parser.getParameters(term);
@@ -48,6 +63,12 @@ public class ArrayAccess extends AbstractFunction {
 		return vary.getValue(pis);
 	}
 
+	/**
+	 * Sets the variable.
+	 * 
+	 * @param variable
+	 *            the new variable
+	 */
 	public void setVariable(Variable variable) {
 		this.variableType = variable.getType();
 		this.variableName = variable.getName();

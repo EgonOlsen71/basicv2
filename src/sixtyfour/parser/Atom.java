@@ -3,8 +3,32 @@ package sixtyfour.parser;
 import sixtyfour.elements.Type;
 import sixtyfour.system.Machine;
 
+/**
+ * The Interface Atom.
+ */
 public interface Atom {
-	Type getType();
 	
+	/**
+	 * Gets the type.
+	 * 
+	 * @return the type
+	 */
+	Type getType();
+
+	/**
+	 * Eval.
+	 * 
+	 * @param memory
+	 *            the memory
+	 * @return the object
+	 */
 	Object eval(Machine memory);
+
+	/**
+	 * Checks if is term.
+	 * 
+	 * @return true, if is term
+	 */
+	boolean isTerm();
+
 }

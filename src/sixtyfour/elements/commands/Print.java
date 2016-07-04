@@ -11,23 +11,44 @@ import sixtyfour.parser.Term;
 import sixtyfour.plugins.PrintConsumer;
 import sixtyfour.system.Machine;
 import sixtyfour.system.ProgramCounter;
+import sixtyfour.util.VarUtils;
 
+/**
+ * The Class Print.
+ */
 public class Print extends AbstractCommand {
+	
+	/** The parts. */
 	protected List<PrintPart> parts = new ArrayList<PrintPart>();
 
+	/**
+	 * Instantiates a new prints the.
+	 */
 	public Print() {
 		super("PRINT");
 	}
 
+	/**
+	 * Instantiates a new prints the.
+	 * 
+	 * @param name
+	 *            the name
+	 */
 	protected Print(String name) {
 		super(name);
 	}
 
+	/* (non-Javadoc)
+	 * @see sixtyfour.elements.commands.AbstractCommand#getType()
+	 */
 	@Override
 	public Type getType() {
 		return term.getType();
 	}
 
+	/* (non-Javadoc)
+	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String, int, int, int, boolean, sixtyfour.system.Machine)
+	 */
 	@Override
 	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
 		super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine);
@@ -43,11 +64,25 @@ public class Print extends AbstractCommand {
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.Machine)
+	 */
 	@Override
 	public ProgramCounter execute(Machine machine) {
 		return execute(machine, machine.getOutputChannel(), 0);
 	}
 
+	/**
+	 * Execute.
+	 * 
+	 * @param machine
+	 *            the machine
+	 * @param consumer
+	 *            the consumer
+	 * @param printId
+	 *            the print id
+	 * @return the program counter
+	 */
 	protected ProgramCounter execute(Machine machine, PrintConsumer consumer, int printId) {
 		for (int i = 0; i < parts.size(); i++) {
 			PrintPart part = parts.get(i);
@@ -67,7 +102,7 @@ public class Print extends AbstractCommand {
 				add = "\t";
 			}
 			Object obj = part.term.eval(machine);
-			if (obj instanceof Float) {
+			if (VarUtils.isFloat(obj)) {
 				float f = (Float) obj;
 				if (f == (int) f) {
 					obj = (int) f;
@@ -77,8 +112,8 @@ public class Print extends AbstractCommand {
 				obj = "";
 			}
 			String toPrint = obj.toString();
-			if (obj instanceof Float || obj instanceof Integer) {
-				if (((Number) obj).floatValue() >= 0) {
+			if (VarUtils.isNumber(obj)) {
+				if (VarUtils.getFloat(obj) >= 0) {
 					toPrint = " " + toPrint;
 				}
 			}
@@ -93,6 +128,13 @@ public class Print extends AbstractCommand {
 		return null;
 	}
 
+	/**
+	 * Gets the parts.
+	 * 
+	 * @param line
+	 *            the line
+	 * @return the parts
+	 */
 	protected List<PrintPart> getParts(String line) {
 		line = Parser.removeWhiteSpace(line);
 		List<PrintPart> res = new ArrayList<PrintPart>();
@@ -169,22 +211,49 @@ public class Print extends AbstractCommand {
 		return res;
 	}
 
+	/**
+	 * The Class PrintPart.
+	 */
 	protected static class PrintPart {
+		
+		/** The part. */
 		public String part;
+		
+		/** The delimiter. */
 		public char delimiter;
+		
+		/** The term. */
 		public Term term;
 
+		/**
+		 * Instantiates a new prints the part.
+		 * 
+		 * @param part
+		 *            the part
+		 * @param delimiter
+		 *            the delimiter
+		 */
 		public PrintPart(String part, char delimiter) {
 			this.part = part;
 			this.delimiter = delimiter;
 		}
 
+		/* (non-Javadoc)
+		 * @see java.lang.Object#toString()
+		 */
 		@Override
 		public String toString() {
 			return part + "/" + delimiter + "/" + term;
 		}
 	}
 
+	/**
+	 * Clean.
+	 * 
+	 * @param txt
+	 *            the txt
+	 * @return the string
+	 */
 	protected String clean(String txt) {
 		return txt.replace("\n", "").replace("\r", "");
 	}

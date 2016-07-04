@@ -1,3 +1,6 @@
+/*
+ * 
+ */
 package sixtyfour.elements.commands;
 
 import java.util.ArrayList;
@@ -9,16 +12,30 @@ import sixtyfour.parser.Parser;
 import sixtyfour.system.Machine;
 import sixtyfour.system.ProgramCounter;
 
+/**
+ * The Class On.
+ */
 public class On extends AbstractCommand {
 
+	/** The pc. */
 	private ProgramCounter pc = new ProgramCounter(0, 0); // Recycle instance
+	
+	/** The line numbers. */
 	private List<Integer> lineNumbers = new ArrayList<Integer>();
+	
+	/** The gosub. */
 	private boolean gosub = false;
 
+	/**
+	 * Instantiates a new on.
+	 */
 	public On() {
 		super("ON");
 	}
 
+	/* (non-Javadoc)
+	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String, int, int, int, boolean, sixtyfour.system.Machine)
+	 */
 	@Override
 	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
 		super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine);
@@ -64,6 +81,9 @@ public class On extends AbstractCommand {
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.Machine)
+	 */
 	@Override
 	public ProgramCounter execute(Machine machine) {
 		int index = ((Number) term.eval(machine)).intValue();

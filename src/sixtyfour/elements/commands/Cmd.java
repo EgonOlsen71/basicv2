@@ -1,3 +1,6 @@
+/*
+ * 
+ */
 package sixtyfour.elements.commands;
 
 import java.util.List;
@@ -9,18 +12,29 @@ import sixtyfour.system.Machine;
 import sixtyfour.system.ProgramCounter;
 
 
+/**
+ * The Class Cmd.
+ */
 public class Cmd
   extends AbstractCommand
 {
+  
+  /** The file number. */
   private Atom fileNumber = null;
 
 
+  /**
+	 * Instantiates a new cmd.
+	 */
   public Cmd()
   {
     super("CMD");
   }
 
 
+  /* (non-Javadoc)
+   * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String, int, int, int, boolean, sixtyfour.system.Machine)
+   */
   @Override
   public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine)
   {
@@ -46,6 +60,9 @@ public class Cmd
   }
 
 
+  /* (non-Javadoc)
+   * @see sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.Machine)
+   */
   @Override
   public ProgramCounter execute(Machine machine)
   {

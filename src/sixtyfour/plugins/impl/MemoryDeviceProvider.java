@@ -14,20 +14,38 @@ import sixtyfour.plugins.OutputChannel;
 import sixtyfour.plugins.PrintConsumer;
 
 
+/**
+ * The Class MemoryDeviceProvider.
+ */
 public class MemoryDeviceProvider
   implements DeviceProvider
 {
+  
+  /** The number 2 file. */
   private Map<Integer, FileWrapper> number2File = new HashMap<Integer, FileWrapper>();
+  
+  /** The closed files. */
   private List<FileWrapper> closedFiles = new ArrayList<FileWrapper>();
+  
+  /** The console output. */
   private OutputChannel consoleOutput = null;
 
 
+  /**
+	 * Instantiates a new memory device provider.
+	 * 
+	 * @param consoleOutput
+	 *            the console output
+	 */
   public MemoryDeviceProvider(OutputChannel consoleOutput)
   {
     this.consoleOutput = consoleOutput;
   }
 
 
+  /* (non-Javadoc)
+   * @see sixtyfour.plugins.DeviceProvider#close(int)
+   */
   public void close(int fileNumber)
   {
     if (!number2File.containsKey(fileNumber))
@@ -48,6 +66,9 @@ public class MemoryDeviceProvider
   }
 
 
+  /* (non-Javadoc)
+   * @see sixtyfour.plugins.DeviceProvider#inputString(int)
+   */
   @Override
   public String inputString(int fileNumber)
   {
@@ -55,6 +76,9 @@ public class MemoryDeviceProvider
   }
 
 
+  /* (non-Javadoc)
+   * @see sixtyfour.plugins.DeviceProvider#getChar(int)
+   */
   @Override
   public char getChar(int fileNumber)
   {
@@ -74,6 +98,9 @@ public class MemoryDeviceProvider
   }
 
 
+  /* (non-Javadoc)
+   * @see sixtyfour.plugins.DeviceProvider#inputNumber(int)
+   */
   @Override
   public Float inputNumber(int fileNumber)
   {
@@ -93,6 +120,9 @@ public class MemoryDeviceProvider
   }
 
 
+  /* (non-Javadoc)
+   * @see sixtyfour.plugins.PrintConsumer#println(int, java.lang.String)
+   */
   @Override
   public void println(int fileNumber, String content)
   {
@@ -100,6 +130,9 @@ public class MemoryDeviceProvider
   }
 
 
+  /* (non-Javadoc)
+   * @see sixtyfour.plugins.PrintConsumer#print(int, java.lang.String)
+   */
   @Override
   public void print(int fileNumber, String content)
   {
@@ -116,30 +149,45 @@ public class MemoryDeviceProvider
   }
 
 
+  /* (non-Javadoc)
+   * @see sixtyfour.plugins.DeviceProvider#open(int)
+   */
   public void open(int fileNumber)
   {
     open(fileNumber, 1);
   }
 
 
+  /* (non-Javadoc)
+   * @see sixtyfour.plugins.DeviceProvider#open(int, int)
+   */
   public void open(int fileNumber, int device)
   {
     open(fileNumber, device, 0);
   }
 
 
+  /* (non-Javadoc)
+   * @see sixtyfour.plugins.DeviceProvider#open(int, int, int)
+   */
   public void open(int fileNumber, int device, int secondaryAddress)
   {
     open(fileNumber, device, secondaryAddress, "tmp_" + System.nanoTime());
   }
 
 
+  /* (non-Javadoc)
+   * @see sixtyfour.plugins.DeviceProvider#isOpen(int)
+   */
   public boolean isOpen(int fileNumber)
   {
     return number2File.containsKey(fileNumber);
   }
 
 
+  /* (non-Javadoc)
+   * @see sixtyfour.plugins.DeviceProvider#open(int, int, int, java.lang.String)
+   */
   public void open(int fileNumber, int device, int secondaryAddress, String fileName)
   {
     FileWrapper file = new FileWrapper();
@@ -262,6 +310,9 @@ public class MemoryDeviceProvider
   }
 
 
+  /* (non-Javadoc)
+   * @see sixtyfour.plugins.DeviceProvider#dump(sixtyfour.plugins.PrintConsumer, sixtyfour.plugins.FileWrapper, int)
+   */
   @Override
   public void dump(PrintConsumer pc, FileWrapper file, int fileNumber)
   {
@@ -272,6 +323,9 @@ public class MemoryDeviceProvider
   }
 
 
+  /* (non-Javadoc)
+   * @see sixtyfour.plugins.DeviceProvider#save(java.lang.String, int, int)
+   */
   @Override
   public void save(String fileName, int device, int secondary)
   {
@@ -280,6 +334,9 @@ public class MemoryDeviceProvider
   }
 
 
+  /* (non-Javadoc)
+   * @see sixtyfour.plugins.DeviceProvider#load(java.lang.String, int, int)
+   */
   @Override
   public void load(String fileName, int device, int secondary)
   {
@@ -288,6 +345,9 @@ public class MemoryDeviceProvider
   }
 
 
+  /* (non-Javadoc)
+   * @see sixtyfour.plugins.DeviceProvider#verify(java.lang.String, int, int)
+   */
   @Override
   public void verify(String fileName, int device, int secondary)
   {
@@ -296,6 +356,14 @@ public class MemoryDeviceProvider
   }
 
 
+  /**
+	 * Check read mode.
+	 * 
+	 * @param fileNumber
+	 *            the file number
+	 * @param file
+	 *            the file
+	 */
   private void checkReadMode(int fileNumber, FileWrapper file)
   {
     if (file == null)
@@ -309,6 +377,13 @@ public class MemoryDeviceProvider
   }
 
 
+  /**
+	 * Gets the file part.
+	 * 
+	 * @param fileNumber
+	 *            the file number
+	 * @return the file part
+	 */
   private String getFilePart(int fileNumber)
   {
     FileWrapper file = number2File.get(fileNumber);

@@ -1,3 +1,6 @@
+/*
+ * 
+ */
 package sixtyfour.elements.commands;
 
 import java.util.List;
@@ -8,18 +11,32 @@ import sixtyfour.parser.Parser;
 import sixtyfour.system.Machine;
 
 
+/**
+ * The Class FileOperation.
+ */
 public abstract class FileOperation
   extends AbstractCommand
 {
+  
+  /** The pars. */
   protected List<Atom> pars;
 
 
+  /**
+	 * Instantiates a new file operation.
+	 * 
+	 * @param name
+	 *            the name
+	 */
   public FileOperation(String name)
   {
     super(name);
   }
 
 
+  /* (non-Javadoc)
+   * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String, int, int, int, boolean, sixtyfour.system.Machine)
+   */
   @Override
   public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine)
   {

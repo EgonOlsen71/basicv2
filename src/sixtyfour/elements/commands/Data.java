@@ -1,3 +1,6 @@
+/*
+ * 
+ */
 package sixtyfour.elements.commands;
 
 import java.util.ArrayList;
@@ -6,11 +9,21 @@ import java.util.List;
 import sixtyfour.system.DataStore;
 import sixtyfour.system.Machine;
 
+/**
+ * The Class Data.
+ */
 public class Data extends AbstractCommand {
+	
+	/**
+	 * Instantiates a new data.
+	 */
 	public Data() {
 		super("DATA");
 	}
 
+	/* (non-Javadoc)
+	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String, int, int, int, boolean, sixtyfour.system.Machine)
+	 */
 	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
 		super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine);
 		List<String> parts = getParts(linePart.substring(4), lastPos);
@@ -22,6 +35,15 @@ public class Data extends AbstractCommand {
 		return null;
 	}
 
+	/**
+	 * Gets the parts.
+	 * 
+	 * @param line
+	 *            the line
+	 * @param lastPos
+	 *            the last pos
+	 * @return the parts
+	 */
 	private List<String> getParts(String line, boolean lastPos) {
 		List<String> res = new ArrayList<String>();
 		boolean inString = false;
@@ -73,6 +95,13 @@ public class Data extends AbstractCommand {
 		return res;
 	}
 
+	/**
+	 * Gets the text.
+	 * 
+	 * @param sb
+	 *            the sb
+	 * @return the text
+	 */
 	private String getText(StringBuilder sb) {
 		String txt = sb.toString();
 		sb.setLength(0);

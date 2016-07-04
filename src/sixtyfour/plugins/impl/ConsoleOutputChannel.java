@@ -1,14 +1,26 @@
+/*
+ * 
+ */
 package sixtyfour.plugins.impl;
 
 import sixtyfour.plugins.OutputChannel;
 import sixtyfour.plugins.PrintConsumer;
 
 
+/**
+ * The Class ConsoleOutputChannel.
+ */
 public class ConsoleOutputChannel
   implements OutputChannel
 {
+  
+  /** The cursor. */
   private int cursor = 0;
+  
+  /** The channel. */
   private int channel = 0;
+  
+  /** The other consumer. */
   private PrintConsumer otherConsumer = null;
 
 

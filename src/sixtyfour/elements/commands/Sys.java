@@ -1,3 +1,6 @@
+/*
+ * 
+ */
 package sixtyfour.elements.commands;
 
 import java.util.List;
@@ -9,18 +12,29 @@ import sixtyfour.system.Machine;
 import sixtyfour.system.ProgramCounter;
 
 
+/**
+ * The Class Sys.
+ */
 public class Sys
   extends AbstractCommand
 {
+  
+  /** The pars. */
   private List<Atom> pars;
 
 
+  /**
+	 * Instantiates a new sys.
+	 */
   public Sys()
   {
     super("SYS");
   }
 
 
+  /* (non-Javadoc)
+   * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String, int, int, int, boolean, sixtyfour.system.Machine)
+   */
   @Override
   public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine)
   {
@@ -37,6 +51,9 @@ public class Sys
   }
 
 
+  /* (non-Javadoc)
+   * @see sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.Machine)
+   */
   @Override
   public ProgramCounter execute(Machine machine)
   {

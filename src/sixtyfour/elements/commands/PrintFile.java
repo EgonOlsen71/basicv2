@@ -9,18 +9,29 @@ import sixtyfour.system.Machine;
 import sixtyfour.system.ProgramCounter;
 
 
+/**
+ * The Class PrintFile.
+ */
 public class PrintFile
   extends Print
 {
+  
+  /** The file number. */
   private Atom fileNumber = null;
 
 
+  /**
+	 * Instantiates a new prints the file.
+	 */
   public PrintFile()
   {
     super("PRINT#");
   }
 
 
+  /* (non-Javadoc)
+   * @see sixtyfour.elements.commands.Print#parse(java.lang.String, int, int, int, boolean, sixtyfour.system.Machine)
+   */
   @Override
   public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine)
   {
@@ -47,6 +58,9 @@ public class PrintFile
   }
 
 
+  /* (non-Javadoc)
+   * @see sixtyfour.elements.commands.Print#execute(sixtyfour.system.Machine)
+   */
   @Override
   public ProgramCounter execute(Machine machine)
   {

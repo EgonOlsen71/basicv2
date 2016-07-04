@@ -1,7 +1,20 @@
+/*
+ * 
+ */
 package sixtyfour;
 
+/**
+ * The Class Runtime.
+ */
 public class Runtime
 {
+  
+  /**
+	 * The main method.
+	 * 
+	 * @param args
+	 *            the arguments
+	 */
   public static void main(String[] args)
   {
     if (args.length == 0)

@@ -6,15 +6,27 @@ import sixtyfour.parser.logic.LogicTerm;
 import sixtyfour.system.Machine;
 import sixtyfour.system.ProgramCounter;
 
+/**
+ * The Class If.
+ */
 public class If extends AbstractCommand {
 
+	/** The logic term. */
 	private LogicTerm logicTerm = null;
+	
+	/** The pc. */
 	private ProgramCounter pc = new ProgramCounter(0, 0);
 
+	/**
+	 * Instantiates a new if.
+	 */
 	public If() {
 		super("IF");
 	}
 
+	/* (non-Javadoc)
+	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String, int, int, int, boolean, sixtyfour.system.Machine)
+	 */
 	@Override
 	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
 		super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine);
@@ -37,7 +49,6 @@ public class If extends AbstractCommand {
 		}
 		String firstTerm = linePart.substring(2, termEnd);
 
-		// System.out.println(firstTerm+"/"+linePart+"/"+uPart);
 		logicTerm = LogicParser.getTerm(firstTerm, machine);
 		if (isGoto) {
 			return linePart.substring(termEnd);
@@ -49,6 +60,9 @@ public class If extends AbstractCommand {
 		return restTerm;
 	}
 
+	/* (non-Javadoc)
+	 * @see sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.Machine)
+	 */
 	@Override
 	public ProgramCounter execute(Machine machine) {
 		pc.setSkip(false);

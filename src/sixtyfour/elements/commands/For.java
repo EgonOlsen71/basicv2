@@ -9,31 +9,66 @@ import sixtyfour.parser.Term;
 import sixtyfour.system.Machine;
 import sixtyfour.system.ProgramCounter;
 
+/**
+ * The Class For.
+ */
 public class For extends AbstractCommand {
+	
+	/** The var. */
 	private Variable var;
+	
+	/** The end term. */
 	private Term endTerm;
+	
+	/** The step term. */
 	private Term stepTerm;
+	
+	/** The end. */
 	private float end;
+	
+	/** The step. */
 	private float step = 1f;
+	
+	/** The running. */
 	private boolean running = false;
 
+	/**
+	 * Instantiates a new for.
+	 */
 	public For() {
 		super("FOR");
 	}
 
+	/**
+	 * Gets the var.
+	 * 
+	 * @return the var
+	 */
 	public Variable getVar() {
 		return var;
 	}
 
+	/**
+	 * Sets the var.
+	 * 
+	 * @param var
+	 *            the new var
+	 */
 	public void setVar(Variable var) {
 		this.var = var;
 	}
 
+	/* (non-Javadoc)
+	 * @see sixtyfour.elements.commands.AbstractCommand#getType()
+	 */
 	@Override
 	public Type getType() {
 		return var.getType();
 	}
 
+	/* (non-Javadoc)
+	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String, int, int, int, boolean, sixtyfour.system.Machine)
+	 */
 	@Override
 	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine memory) {
 		super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, memory);
@@ -81,6 +116,9 @@ public class For extends AbstractCommand {
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.Machine)
+	 */
 	@Override
 	public ProgramCounter execute(Machine machine) {
 		var = machine.add(var);
@@ -94,6 +132,15 @@ public class For extends AbstractCommand {
 		return null;
 	}
 
+	/**
+	 * Next.
+	 * 
+	 * @param next
+	 *            the next
+	 * @param memory
+	 *            the memory
+	 * @return true, if successful
+	 */
 	public boolean next(Next next, Machine memory) {
 		if (next.getVarName() != null && !next.getVarName().equalsIgnoreCase(var.getName())) {
 			throw new RuntimeException("NEXT without FOR: " + next);

@@ -1,18 +1,46 @@
+/*
+ * 
+ */
 package sixtyfour.plugins;
 
+/**
+ * The Enum FileType.
+ */
 public enum FileType
 {
-  PRG('P'), SEQ('S'), USR('U'), REL('L');
+  
+  /** The prg. */
+  PRG('P'), 
+ /** The seq. */
+ SEQ('S'), 
+ /** The usr. */
+ USR('U'), 
+ /** The rel. */
+ REL('L');
 
+  /** The short cut. */
   private char shortCut;
 
 
+  /**
+	 * Instantiates a new file type.
+	 * 
+	 * @param shortCut
+	 *            the short cut
+	 */
   FileType(char shortCut)
   {
     this.shortCut = shortCut;
   }
 
 
+  /**
+	 * Gets the file type.
+	 * 
+	 * @param type
+	 *            the type
+	 * @return the file type
+	 */
   public static FileType getFileType(String type)
   {
     if (type == null || type.isEmpty())

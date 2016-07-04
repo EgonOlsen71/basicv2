@@ -4,13 +4,26 @@ import sixtyfour.elements.Type;
 import sixtyfour.parser.Term;
 import sixtyfour.system.Machine;
 
+/**
+ * The Class Comparison.
+ */
 public class Comparison implements LogicBlock {
 
+	/** The left. */
 	private Term left;
+	
+	/** The right. */
 	private Term right;
+	
+	/** The comparator. */
 	private Comparator comparator;
+	
+	/** The not. */
 	private boolean not = false;
 
+	/* (non-Javadoc)
+	 * @see sixtyfour.parser.logic.LogicBlock#evalToBoolean(sixtyfour.system.Machine)
+	 */
 	@Override
 	public boolean evalToBoolean(Machine machine) {
 		Object lo = left.eval(machine);
@@ -47,48 +60,101 @@ public class Comparison implements LogicBlock {
 		return ret;
 	}
 
+	/**
+	 * Gets the left.
+	 * 
+	 * @return the left
+	 */
 	public Term getLeft() {
 		return left;
 	}
 
+	/**
+	 * Sets the left.
+	 * 
+	 * @param left
+	 *            the new left
+	 */
 	public void setLeft(Term left) {
 		this.left = left;
 	}
 
+	/**
+	 * Gets the right.
+	 * 
+	 * @return the right
+	 */
 	public Term getRight() {
 		return right;
 	}
 
+	/**
+	 * Sets the right.
+	 * 
+	 * @param right
+	 *            the new right
+	 */
 	public void setRight(Term right) {
 		this.right = right;
 	}
 
+	/**
+	 * Gets the comparator.
+	 * 
+	 * @return the comparator
+	 */
 	public Comparator getComparator() {
 		return comparator;
 	}
 
+	/**
+	 * Sets the comparator.
+	 * 
+	 * @param comparator
+	 *            the new comparator
+	 */
 	public void setComparator(Comparator comparator) {
 		this.comparator = comparator;
 	}
 
+	/* (non-Javadoc)
+	 * @see sixtyfour.parser.logic.LogicBlock#not()
+	 */
 	@Override
 	public void not() {
 		not = !not;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
 		return (not ? " NOT " : "") + left + " " + comparator + " " + right;
 	}
 
+	/* (non-Javadoc)
+	 * @see sixtyfour.parser.Atom#getType()
+	 */
 	@Override
 	public Type getType() {
 		return Type.INTEGER;
 	}
 
+	/* (non-Javadoc)
+	 * @see sixtyfour.parser.Atom#eval(sixtyfour.system.Machine)
+	 */
 	@Override
 	public Object eval(Machine machine) {
 		boolean ok = evalToBoolean(machine);
 		return ok ? -1 : 0;
+	}
+	
+	/* (non-Javadoc)
+	 * @see sixtyfour.parser.Atom#isTerm()
+	 */
+	@Override
+	public boolean isTerm() {
+		return false;
 	}
 }

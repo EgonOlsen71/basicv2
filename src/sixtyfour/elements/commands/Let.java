@@ -1,3 +1,6 @@
+/*
+ * 
+ */
 package sixtyfour.elements.commands;
 
 import java.util.List;
@@ -12,22 +15,46 @@ import sixtyfour.parser.VariableAndIndex;
 import sixtyfour.system.Machine;
 import sixtyfour.system.ProgramCounter;
 
+/**
+ * The Class Let.
+ */
 public class Let extends AbstractCommand {
+	
+	/** The var. */
 	private Variable var;
+	
+	/** The index term. */
 	private Term indexTerm;
 
+	/**
+	 * Instantiates a new let.
+	 */
 	public Let() {
 		super("LET");
 	}
 
+	/**
+	 * Gets the var.
+	 * 
+	 * @return the var
+	 */
 	public Variable getVar() {
 		return var;
 	}
 
+	/**
+	 * Sets the var.
+	 * 
+	 * @param var
+	 *            the new var
+	 */
 	public void setVar(Variable var) {
 		this.var = var;
 	}
 
+	/* (non-Javadoc)
+	 * @see sixtyfour.elements.commands.AbstractCommand#getType()
+	 */
 	@Override
 	public Type getType() {
 		return var.getType();
@@ -35,6 +62,9 @@ public class Let extends AbstractCommand {
 
 	// rm$(lb)=rm$(lb)+CHR$(13)+"A sign here says:  LIMBO, find right    exit "
 
+	/* (non-Javadoc)
+	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String, int, int, int, boolean, sixtyfour.system.Machine)
+	 */
 	@Override
 	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
 		super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine);
@@ -52,6 +82,9 @@ public class Let extends AbstractCommand {
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.Machine)
+	 */
 	@Override
 	public ProgramCounter execute(Machine machine) {
 		var = machine.add(var);

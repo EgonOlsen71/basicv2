@@ -8,8 +8,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+/**
+ * The Class Loader.
+ */
 public class Loader
 {
+  
+  /**
+	 * Load program.
+	 * 
+	 * @param file
+	 *            the file
+	 * @return the string[]
+	 */
   public static String[] loadProgram(String file)
   {
     List<String> lines = new ArrayList<String>();

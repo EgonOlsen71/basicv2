@@ -18,9 +18,20 @@ import sixtyfour.elements.functions.FunctionList;
 import sixtyfour.parser.logic.LogicParser;
 import sixtyfour.parser.logic.LogicTerm;
 import sixtyfour.system.Machine;
+import sixtyfour.util.VarUtils;
 
+/**
+ * The Class Parser.
+ */
 public class Parser {
 
+	/**
+	 * Gets the line.
+	 * 
+	 * @param line
+	 *            the line
+	 * @return the line
+	 */
 	public static Line getLine(String line) {
 		for (int i = 0; i < line.length(); i++) {
 			char c = line.charAt(i);
@@ -31,6 +42,15 @@ public class Parser {
 		throw new RuntimeException("No line number found in: " + line);
 	}
 
+	/**
+	 * Gets the parts.
+	 * 
+	 * @param line
+	 *            the line
+	 * @param memory
+	 *            the memory
+	 * @return the parts
+	 */
 	public static String[] getParts(Line line, Machine memory) {
 		List<String> parts = new ArrayList<String>();
 		StringBuilder sb = new StringBuilder();
@@ -57,6 +77,13 @@ public class Parser {
 		return parts.toArray(new String[parts.size()]);
 	}
 
+	/**
+	 * Clean part.
+	 * 
+	 * @param sb
+	 *            the sb
+	 * @return the string
+	 */
 	private static String cleanPart(StringBuilder sb) {
 		String ret = sb.toString();
 		if (ret.toUpperCase(Locale.ENGLISH).trim().startsWith("DATA")) {
@@ -66,6 +93,13 @@ public class Parser {
 		return ret.trim();
 	}
 
+	/**
+	 * Checks if is integer.
+	 * 
+	 * @param txt
+	 *            the txt
+	 * @return true, if is integer
+	 */
 	public static boolean isInteger(String txt) {
 		try {
 			Integer.parseInt(txt);
@@ -75,6 +109,13 @@ public class Parser {
 		return true;
 	}
 
+	/**
+	 * Gets the command.
+	 * 
+	 * @param linePart
+	 *            the line part
+	 * @return the command
+	 */
 	public static Command getCommand(String linePart) {
 		List<Command> commands = CommandList.getCommands();
 		Command com = null;
@@ -93,10 +134,30 @@ public class Parser {
 		return com;
 	}
 
+	/**
+	 * Gets the variable.
+	 * 
+	 * @param linePart
+	 *            the line part
+	 * @param memory
+	 *            the memory
+	 * @return the variable
+	 */
 	public static Variable getVariable(String linePart, Machine memory) {
 		return getVariable(linePart, memory, true);
 	}
 
+	/**
+	 * Gets the variable.
+	 * 
+	 * @param linePart
+	 *            the line part
+	 * @param memory
+	 *            the memory
+	 * @param includingAssignment
+	 *            the including assignment
+	 * @return the variable
+	 */
 	public static Variable getVariable(String linePart, Machine memory, boolean includingAssignment) {
 		if (includingAssignment) {
 			int pos = linePart.indexOf('=');
@@ -114,6 +175,15 @@ public class Parser {
 		}
 	}
 
+	/**
+	 * Gets the array variables.
+	 * 
+	 * @param linePart
+	 *            the line part
+	 * @param memory
+	 *            the memory
+	 * @return the array variables
+	 */
 	public static List<VariableAndTerms> getArrayVariables(String linePart, Machine memory) {
 		List<VariableAndTerms> vars = new ArrayList<VariableAndTerms>();
 		linePart = linePart.substring(3).trim();
@@ -159,6 +229,13 @@ public class Parser {
 		return vars;
 	}
 
+	/**
+	 * Gets the variable name.
+	 * 
+	 * @param linePart
+	 *            the line part
+	 * @return the variable name
+	 */
 	public static String getVariableName(String linePart) {
 		linePart = linePart.trim().toUpperCase(Locale.ENGLISH);
 		int pos = linePart.indexOf('(');
@@ -192,6 +269,17 @@ public class Parser {
 		return ret;
 	}
 
+	/**
+	 * Gets the function.
+	 * 
+	 * @param linePart
+	 *            the line part
+	 * @param termMap
+	 *            the term map
+	 * @param machine
+	 *            the machine
+	 * @return the function
+	 */
 	public static Function getFunction(String linePart, Map<String, Term> termMap, Machine machine) {
 		List<Function> functions = FunctionList.getFunctions();
 		Function fun = null;
@@ -222,6 +310,15 @@ public class Parser {
 		return fun;
 	}
 
+	/**
+	 * Replace strings.
+	 * 
+	 * @param term
+	 *            the term
+	 * @param toReplaceWith
+	 *            the to replace with
+	 * @return the string
+	 */
 	public static String replaceStrings(String term, char toReplaceWith) {
 		StringBuilder sb = new StringBuilder();
 		boolean inString = false;
@@ -241,6 +338,19 @@ public class Parser {
 		return sb.toString().toUpperCase(Locale.ENGLISH);
 	}
 
+	/**
+	 * Gets the index term.
+	 * 
+	 * @param var
+	 *            the var
+	 * @param linePart
+	 *            the line part
+	 * @param machine
+	 *            the machine
+	 * @param checkForAssignment
+	 *            the check for assignment
+	 * @return the index term
+	 */
 	public static VariableAndIndex getIndexTerm(Variable var, String linePart, Machine machine, boolean checkForAssignment) {
 		if (var.getName().endsWith("[]")) {
 			// array
@@ -272,6 +382,19 @@ public class Parser {
 		return new VariableAndIndex(var, null);
 	}
 
+	/**
+	 * Gets the array access function.
+	 * 
+	 * @param linePart
+	 *            the line part
+	 * @param var
+	 *            the var
+	 * @param termMap
+	 *            the term map
+	 * @param memory
+	 *            the memory
+	 * @return the array access function
+	 */
 	public static Function getArrayAccessFunction(String linePart, Variable var, Map<String, Term> termMap, Machine memory) {
 		ArrayAccess fun = new ArrayAccess();
 		int pos = linePart.indexOf('(');
@@ -291,10 +414,38 @@ public class Parser {
 		return fun;
 	}
 
+	/**
+	 * Gets the term.
+	 * 
+	 * @param term
+	 *            the term
+	 * @param memory
+	 *            the memory
+	 * @param stripAssignment
+	 *            the strip assignment
+	 * @param checkForLogicTerm
+	 *            the check for logic term
+	 * @return the term
+	 */
 	public static Term getTerm(String term, Machine memory, boolean stripAssignment, boolean checkForLogicTerm) {
 		return getTerm(term, memory, stripAssignment, checkForLogicTerm, null);
 	}
 
+	/**
+	 * Gets the term.
+	 * 
+	 * @param term
+	 *            the term
+	 * @param memory
+	 *            the memory
+	 * @param stripAssignment
+	 *            the strip assignment
+	 * @param checkForLogicTerm
+	 *            the check for logic term
+	 * @param termMap
+	 *            the term map
+	 * @return the term
+	 */
 	public static Term getTerm(String term, Machine memory, boolean stripAssignment, boolean checkForLogicTerm, Map<String, Term> termMap) {
 		if (termMap == null) {
 			termMap = new HashMap<String, Term>();
@@ -310,6 +461,19 @@ public class Parser {
 		return createTerms(term, termMap, memory, checkForLogicTerm);
 	}
 
+	/**
+	 * Gets the term.
+	 * 
+	 * @param command
+	 *            the command
+	 * @param term
+	 *            the term
+	 * @param memory
+	 *            the memory
+	 * @param checkForLogicTerm
+	 *            the check for logic term
+	 * @return the term
+	 */
 	public static Term getTerm(Command command, String term, Machine memory, boolean checkForLogicTerm) {
 		term = removeWhiteSpace(term.substring(command.getName().length()));
 		term = addBrackets(term);
@@ -317,6 +481,13 @@ public class Parser {
 		return createTerms(term, new HashMap<String, Term>(), memory, checkForLogicTerm);
 	}
 
+	/**
+	 * Adds the brackets.
+	 * 
+	 * @param term
+	 *            the term
+	 * @return the string
+	 */
 	public static String addBrackets(String term) {
 		checkBrackets(term);
 		// Wrap every term into brackets no matter what. This makes parsing a
@@ -325,10 +496,15 @@ public class Parser {
 			term = "(" + term + ")";
 		}
 		term = term.replace('↑', '^');
-		// System.out.println("Termi: "+term);
 		return addBrackets(addBrackets(handleNegations(replaceLogicOperators(term)), 0), 1);
 	}
 
+	/**
+	 * Check brackets.
+	 * 
+	 * @param term
+	 *            the term
+	 */
 	public static void checkBrackets(String term) {
 		int open = 0;
 		boolean inString = false;
@@ -350,10 +526,16 @@ public class Parser {
 		}
 	}
 
+	/**
+	 * Replace logic operators.
+	 * 
+	 * @param term
+	 *            the term
+	 * @return the string
+	 */
 	public static String replaceLogicOperators(String term) {
 		// Replace logic operators by placeholder chars. NOT actually hasn't
 		// two operands, but we abuse the current logic by faking it.
-		// System.out.println("In: "+term);
 		String[] replacers = { "OR", Operator.getOrOperator(), "AND", Operator.getAndOperator(), "NOT", "(0" + Operator.getNotOperator() };
 		term = removeWhiteSpace(term);
 		String uTerm = term.toUpperCase(Locale.ENGLISH);
@@ -385,10 +567,16 @@ public class Parser {
 				}
 			} while (pos != -1);
 		}
-		// System.out.println("Out: "+term);
 		return term;
 	}
 
+	/**
+	 * Handle negations.
+	 * 
+	 * @param term
+	 *            the term
+	 * @return the string
+	 */
 	private static String handleNegations(String term) {
 		term = removeWhiteSpace(term);
 		StringBuilder sb = new StringBuilder();
@@ -413,6 +601,15 @@ public class Parser {
 		return term;
 	}
 
+	/**
+	 * Adds the brackets.
+	 * 
+	 * @param term
+	 *            the term
+	 * @param level
+	 *            the level
+	 * @return the string
+	 */
 	public static String addBrackets(String term, int level) {
 		term = removeWhiteSpace(term);
 		StringBuilder sb = new StringBuilder();
@@ -448,8 +645,6 @@ public class Parser {
 				if (start > 0 && term.charAt(start - 1) == '(' && end < term.length() && term.charAt(end) == ')') {
 					sb.append(term.substring(0, start)).append(term.substring(start, end));
 				} else {
-					// System.out.println("Subterm: " + term.substring(start,
-					// end));
 					sb.append(term.substring(0, start)).append('(').append(term.substring(start, end)).append(')');
 					i++;
 				}
@@ -463,6 +658,13 @@ public class Parser {
 		return term;
 	}
 
+	/**
+	 * Gets the parameters.
+	 * 
+	 * @param term
+	 *            the term
+	 * @return the parameters
+	 */
 	public static List<Atom> getParameters(Term term) {
 		List<Atom> results = new ArrayList<Atom>();
 		if (term.getLeft() != null) {
@@ -475,8 +677,17 @@ public class Parser {
 		return results;
 	}
 
+	/**
+	 * Gets the parameters.
+	 * 
+	 * @param atom
+	 *            the atom
+	 * @param results
+	 *            the results
+	 * @return the parameters
+	 */
 	private static void getParameters(Atom atom, List<Atom> results) {
-		if (atom instanceof Term) {
+		if (atom.isTerm()) {
 			Term term = (Term) atom;
 			boolean addLeft = toAdd(term.getLeft());
 			boolean addRight = toAdd(term.getRight());
@@ -494,10 +705,26 @@ public class Parser {
 		}
 	}
 
+	/**
+	 * To add.
+	 * 
+	 * @param atom
+	 *            the atom
+	 * @return true, if successful
+	 */
 	private static boolean toAdd(Atom atom) {
-		return (!(atom instanceof Term) || !((Term) atom).getOperator().isDelimiter());
+		return (!atom.isTerm() || !((Term) atom).getOperator().isDelimiter());
 	}
 
+	/**
+	 * Find next delimiter.
+	 * 
+	 * @param term
+	 *            the term
+	 * @param pos
+	 *            the pos
+	 * @return the int
+	 */
 	private static int findNextDelimiter(String term, int pos) {
 		int brackets = 1;
 		term = term + ",";
@@ -522,6 +749,15 @@ public class Parser {
 		throw new RuntimeException("Syntax error: " + term);
 	}
 
+	/**
+	 * Find end.
+	 * 
+	 * @param term
+	 *            the term
+	 * @param pos
+	 *            the pos
+	 * @return the int
+	 */
 	private static int findEnd(String term, int pos) {
 		int brackets = 0;
 		for (int i = pos + 1; i < term.length(); i++) {
@@ -542,6 +778,15 @@ public class Parser {
 		return term.length();
 	}
 
+	/**
+	 * Find start.
+	 * 
+	 * @param term
+	 *            the term
+	 * @param pos
+	 *            the pos
+	 * @return the int
+	 */
 	private static int findStart(String term, int pos) {
 		int brackets = 0;
 		for (int i = pos - 1; i >= 0; i--) {
@@ -570,6 +815,19 @@ public class Parser {
 		return 0;
 	}
 
+	/**
+	 * Creates the terms.
+	 * 
+	 * @param term
+	 *            the term
+	 * @param termMap
+	 *            the term map
+	 * @param machine
+	 *            the machine
+	 * @param checkForLogicTerm
+	 *            the check for logic term
+	 * @return the term
+	 */
 	private static Term createTerms(String term, Map<String, Term> termMap, Machine machine, boolean checkForLogicTerm) {
 		try {
 			int start = 0;
@@ -586,8 +844,8 @@ public class Parser {
 						start = i;
 					}
 					if (c == ')') {
-
-						// Sadly, it's allowed that Strings aren't terminated
+						// Sadly, it's allowed in CBM Basic that Strings aren't
+						// terminated
 						// properly. This deals with this by adding an artifical
 						// quote to where it belongs.
 						if (inString) {
@@ -616,10 +874,7 @@ public class Parser {
 								}
 								res.setKey(termKey);
 								termMap.put(termKey, res);
-								// System.out.println("1: " + term + "/" +
 								term = term.substring(0, start) + termKey + term.substring(i + 1);
-								// System.out.println("2: " + term);
-								// System.out.println(res);
 								if (term.equals(termKey)) {
 									break;
 								}
@@ -648,6 +903,15 @@ public class Parser {
 		}
 	}
 
+	/**
+	 * Optimize constants.
+	 * 
+	 * @param finalTerm
+	 *            the final term
+	 * @param machine
+	 *            the machine
+	 * @return the term
+	 */
 	private static Term optimizeConstants(Term finalTerm, Machine machine) {
 		Atom left = finalTerm.getLeft();
 		Atom right = finalTerm.getRight();
@@ -661,23 +925,21 @@ public class Parser {
 			Object val = finalTerm.eval(machine);
 			if (left.getType().equals(Type.STRING)) {
 				conty = new Constant<String>(val.toString());
-			} else if (val instanceof Float) {
+			} else if (VarUtils.isFloat(val)) {
 				conty = new Constant<Float>((Float) val);
-			} else if (val instanceof Integer) {
+			} else if (VarUtils.isInteger(val)) {
 				conty = new Constant<Integer>((Integer) val);
 			}
 			if (conty != null) {
-				// System.out.println("Replaced " + left +
-				// finalTerm.getOperator() + right + " by " + conty);
 				finalTerm.setOperator(Operator.NOP);
 				finalTerm.setLeft(conty);
 				finalTerm.setRight(new Constant<Integer>(0));
 			}
 		} else {
-			if ((left instanceof Term)) {
+			if ((left.isTerm())) {
 				finalTerm.setLeft(optimizeConstants((Term) left, machine));
 			}
-			if ((right instanceof Term)) {
+			if ((right.isTerm())) {
 				finalTerm.setRight(optimizeConstants((Term) right, machine));
 			}
 		}
@@ -685,27 +947,45 @@ public class Parser {
 		return finalTerm;
 	}
 
+	/**
+	 * Optimize term tree.
+	 * 
+	 * @param finalTerm
+	 *            the final term
+	 * @param machine
+	 *            the machine
+	 * @return the term
+	 */
 	private static Term optimizeTermTree(Term finalTerm, Machine machine) {
 		Atom left = finalTerm.getLeft();
 		Atom right = finalTerm.getRight();
 
-		if (!(left instanceof Term)) {
+		if (!(left.isTerm())) {
 			return finalTerm;
 		}
 
 		if (!finalTerm.getOperator().isNop()) {
 			finalTerm.setLeft(optimizeTermTree((Term) left, machine));
-			if ((right instanceof Term)) {
+			if ((right.isTerm())) {
 				finalTerm.setRight(optimizeTermTree((Term) right, machine));
 			}
 			return finalTerm;
 		} else {
-			// System.out.println("removed from tree: " + finalTerm +
-			// ", replaced by " + left);
 			return (Term) left;
 		}
 	}
 
+	/**
+	 * Creates the logic term.
+	 * 
+	 * @param term
+	 *            the term
+	 * @param termMap
+	 *            the term map
+	 * @param machine
+	 *            the machine
+	 * @return the term
+	 */
 	private static Term createLogicTerm(String term, Map<String, Term> termMap, Machine machine) {
 		String termWoBrackets = term.replace("(", "").replace(")", "");
 		if (isTermPlaceholder(termWoBrackets)) {
@@ -724,6 +1004,17 @@ public class Parser {
 		return null;
 	}
 
+	/**
+	 * Creates the term.
+	 * 
+	 * @param term
+	 *            the term
+	 * @param termMap
+	 *            the term map
+	 * @param machine
+	 *            the machine
+	 * @return the term
+	 */
 	private static Term createTerm(String term, Map<String, Term> termMap, Machine machine) {
 		// Check if it's only a wrapped placeholder. In this case, brackets in
 		// Strings will be replaced as well, but that doesn't matter here.
@@ -744,6 +1035,17 @@ public class Parser {
 		return null;
 	}
 
+	/**
+	 * Builds the.
+	 * 
+	 * @param t
+	 *            the t
+	 * @param termMap
+	 *            the term map
+	 * @param memory
+	 *            the memory
+	 * @return the term
+	 */
 	private static Term build(Term t, Map<String, Term> termMap, Machine memory) {
 		String exp = t.getExpression();
 
@@ -787,6 +1089,17 @@ public class Parser {
 		return t;
 	}
 
+	/**
+	 * Creates the atom.
+	 * 
+	 * @param part
+	 *            the part
+	 * @param termMap
+	 *            the term map
+	 * @param memory
+	 *            the memory
+	 * @return the atom
+	 */
 	private static Atom createAtom(String part, Map<String, Term> termMap, Machine memory) {
 		// Identify commands
 		String strippedPart = Parser.replaceStrings(part, ' ');
@@ -876,6 +1189,13 @@ public class Parser {
 		return vary;
 	}
 
+	/**
+	 * Removes the white space.
+	 * 
+	 * @param txt
+	 *            the txt
+	 * @return the string
+	 */
 	public static String removeWhiteSpace(String txt) {
 		StringBuilder sb = new StringBuilder();
 		boolean inString = false;
@@ -891,14 +1211,38 @@ public class Parser {
 		return sb.toString();
 	}
 
+	/**
+	 * Checks if is number type.
+	 * 
+	 * @param atom
+	 *            the atom
+	 * @return true, if is number type
+	 */
 	public static boolean isNumberType(Atom atom) {
 		return atom.getType().equals(Type.INTEGER) || atom.getType().equals(Type.REAL);
 	}
 
+	/**
+	 * Checks if is term placeholder.
+	 * 
+	 * @param txt
+	 *            the txt
+	 * @return true, if is term placeholder
+	 */
 	private static boolean isTermPlaceholder(String txt) {
 		return txt.startsWith("{") && txt.indexOf('}') == (txt.length() - 1);
 	}
 
+	/**
+	 * Sets the postfix.
+	 * 
+	 * @param linePart
+	 *            the line part
+	 * @param fun
+	 *            the fun
+	 * @param pos
+	 *            the pos
+	 */
 	private static void setPostfix(String linePart, Function fun, int pos) {
 		if (fun.hasPostfix()) {
 			String funcName = linePart.substring(fun.getName().length(), pos).toUpperCase(Locale.ENGLISH);

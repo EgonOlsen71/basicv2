@@ -1,3 +1,6 @@
+/*
+ * 
+ */
 package sixtyfour.elements.commands;
 
 import java.util.List;
@@ -8,15 +11,27 @@ import sixtyfour.parser.Parser;
 import sixtyfour.system.Machine;
 import sixtyfour.system.ProgramCounter;
 
+/**
+ * The Class Wait.
+ */
 public class Wait extends AbstractCommand {
 
+	/** The pars. */
 	private List<Atom> pars;
+	
+	/** The stop. */
 	private boolean stop = false;
 
+	/**
+	 * Instantiates a new wait.
+	 */
 	public Wait() {
 		super("Wait");
 	}
 
+	/* (non-Javadoc)
+	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String, int, int, int, boolean, sixtyfour.system.Machine)
+	 */
 	@Override
 	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
 		super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine);
@@ -30,11 +45,17 @@ public class Wait extends AbstractCommand {
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see sixtyfour.elements.commands.AbstractCommand#stopExecution()
+	 */
 	@Override
 	public void stopExecution() {
 		stop = true;
 	}
 
+	/* (non-Javadoc)
+	 * @see sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.Machine)
+	 */
 	@Override
 	public ProgramCounter execute(Machine machine) {
 		Atom addr = pars.get(0);

@@ -10,17 +10,31 @@ import sixtyfour.parser.Term;
 import sixtyfour.system.DataStore;
 import sixtyfour.system.Machine;
 import sixtyfour.system.ProgramCounter;
+import sixtyfour.util.VarUtils;
 
+/**
+ * The Class Read.
+ */
 public class Read extends MultiVariableCommand {
+	
+	/**
+	 * Instantiates a new read.
+	 */
 	public Read() {
 		super("READ");
 	}
 
+	/* (non-Javadoc)
+	 * @see sixtyfour.elements.commands.AbstractCommand#getType()
+	 */
 	@Override
 	public Type getType() {
 		return Type.NONE;
 	}
 
+	/* (non-Javadoc)
+	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String, int, int, int, boolean, sixtyfour.system.Machine)
+	 */
 	@Override
 	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
 		super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine);
@@ -33,6 +47,9 @@ public class Read extends MultiVariableCommand {
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.Machine)
+	 */
 	@Override
 	public ProgramCounter execute(Machine machine) {
 		DataStore data = machine.getDataStore();
@@ -55,14 +72,14 @@ public class Read extends MultiVariableCommand {
 				if (varType.equals(Type.STRING)) {
 					var.setValue(obj.toString(), pis);
 				} else if (varType.equals(Type.REAL)) {
-					if (obj instanceof Float || obj instanceof Integer) {
-						var.setValue(((Number) obj).floatValue(), pis);
+					if (VarUtils.isNumber(obj)) {
+						var.setValue(VarUtils.getFloat(obj), pis);
 					} else {
 						throw new RuntimeException("Type mismatch error: " + this);
 					}
 				} else if (varType.equals(Type.INTEGER)) {
-					if (obj instanceof Integer) {
-						var.setValue(((Integer) obj).intValue(), pis);
+					if (VarUtils.isInteger(obj)) {
+						var.setValue(VarUtils.getInt(obj), pis);
 					} else {
 						throw new RuntimeException("Type mismatch error: " + this);
 					}
@@ -72,14 +89,14 @@ public class Read extends MultiVariableCommand {
 				if (varType.equals(Type.STRING)) {
 					var.setValue(obj.toString());
 				} else if (varType.equals(Type.REAL)) {
-					if (obj instanceof Float || obj instanceof Integer) {
-						var.setValue(((Number) obj).floatValue());
+					if (VarUtils.isNumber(obj)) {
+						var.setValue(VarUtils.getFloat(obj));
 					} else {
 						throw new RuntimeException("Type mismatch error: " + this);
 					}
 				} else if (varType.equals(Type.INTEGER)) {
-					if (obj instanceof Integer) {
-						var.setValue(((Integer) obj).intValue());
+					if (VarUtils.isInteger(obj)) {
+						var.setValue(VarUtils.getInt(obj));
 					} else {
 						throw new RuntimeException("Type mismatch error: " + this);
 					}

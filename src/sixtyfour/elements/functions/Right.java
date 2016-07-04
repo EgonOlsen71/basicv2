@@ -1,3 +1,6 @@
+/*
+ * 
+ */
 package sixtyfour.elements.functions;
 
 import java.util.List;
@@ -7,16 +10,29 @@ import sixtyfour.parser.Atom;
 import sixtyfour.parser.Parser;
 import sixtyfour.system.Machine;
 
+/**
+ * The Class Right.
+ */
 public class Right extends AbstractFunction {
+	
+	/**
+	 * Instantiates a new right.
+	 */
 	public Right() {
 		super("RIGHT$");
 	}
 
+	/* (non-Javadoc)
+	 * @see sixtyfour.parser.Atom#getType()
+	 */
 	@Override
 	public Type getType() {
 		return Type.STRING;
 	}
 
+	/* (non-Javadoc)
+	 * @see sixtyfour.parser.Atom#eval(sixtyfour.system.Machine)
+	 */
 	@Override
 	public Object eval(Machine memory) {
 		try {

@@ -1,3 +1,6 @@
+/*
+ * 
+ */
 package sixtyfour.elements.commands;
 
 import sixtyfour.plugins.DeviceProvider;
@@ -5,16 +8,25 @@ import sixtyfour.system.Machine;
 import sixtyfour.system.ProgramCounter;
 
 
+/**
+ * The Class Save.
+ */
 public class Save
   extends FileOperation
 {
 
+  /**
+	 * Instantiates a new save.
+	 */
   public Save()
   {
     super("SAVE");
   }
 
 
+  /* (non-Javadoc)
+   * @see sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.Machine)
+   */
   @Override
   public ProgramCounter execute(Machine machine)
   {

@@ -11,14 +11,38 @@ import sixtyfour.elements.functions.Function;
 import sixtyfour.elements.functions.FunctionList;
 import sixtyfour.parser.Atom;
 import sixtyfour.system.Machine;
+import sixtyfour.util.VarUtils;
 
+/**
+ * The Class Variable.
+ */
 public class Variable implements Atom {
+	
+	/** The name. */
 	private String name;
+	
+	/** The type. */
 	private Type type;
+	
+	/** The array. */
 	private boolean array = false;
+	
+	/** The value. */
 	private Object value;
+	
+	/** The dimensions. */
 	private int[] dimensions;
 
+	/**
+	 * Instantiates a new variable.
+	 * 
+	 * @param name
+	 *            the name
+	 * @param values
+	 *            the values
+	 * @param dimensions
+	 *            the dimensions
+	 */
 	public Variable(String name, List<Object> values, int... dimensions) {
 		this(name, values == null ? new ArrayList<Object>(calcSize(dimensions)) : (Object) values);
 		this.dimensions = dimensions;
@@ -26,6 +50,14 @@ public class Variable implements Atom {
 		this.setName(name.endsWith("[]") ? name : (name + "[]"));
 	}
 
+	/**
+	 * Instantiates a new variable.
+	 * 
+	 * @param name
+	 *            the name
+	 * @param value
+	 *            the value
+	 */
 	public Variable(String name, Object value) {
 
 		// Check name for validity
@@ -92,6 +124,9 @@ public class Variable implements Atom {
 		this.setValue(value);
 	}
 
+	/**
+	 * Clear.
+	 */
 	@SuppressWarnings("unchecked")
 	public void clear() {
 		if (array) {
@@ -121,26 +156,54 @@ public class Variable implements Atom {
 		}
 	}
 
+	/**
+	 * Checks if is array.
+	 * 
+	 * @return true, if is array
+	 */
 	public boolean isArray() {
 		return array;
 	}
 
+	/* (non-Javadoc)
+	 * @see sixtyfour.parser.Atom#getType()
+	 */
 	public Type getType() {
 		return type;
 	}
 
+	/**
+	 * Sets the type.
+	 * 
+	 * @param type
+	 *            the new type
+	 */
 	public void setType(Type type) {
 		this.type = type;
 	}
 
+	/**
+	 * Gets the name.
+	 * 
+	 * @return the name
+	 */
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * Sets the name.
+	 * 
+	 * @param name
+	 *            the new name
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
 	@Override
 	public boolean equals(Object o) {
 		if (o == null) {
@@ -152,11 +215,17 @@ public class Variable implements Atom {
 		return false;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
 	@Override
 	public int hashCode() {
 		return name.hashCode();
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public String toString() {
@@ -167,6 +236,11 @@ public class Variable implements Atom {
 		}
 	}
 
+	/**
+	 * Elements.
+	 * 
+	 * @return the int
+	 */
 	@SuppressWarnings("unchecked")
 	public int elements() {
 		if (!array) {
@@ -175,11 +249,19 @@ public class Variable implements Atom {
 		return ((List<Object>) value).size();
 	}
 
+	/* (non-Javadoc)
+	 * @see sixtyfour.parser.Atom#eval(sixtyfour.system.Machine)
+	 */
 	@Override
 	public Object eval(Machine memory) {
 		return value;
 	}
 
+	/**
+	 * Gets the value.
+	 * 
+	 * @return the value
+	 */
 	public Object getValue() {
 		if (array) {
 			throw new RuntimeException("Not a simple type: " + this);
@@ -187,19 +269,32 @@ public class Variable implements Atom {
 		return value;
 	}
 
+	/**
+	 * Sets the value.
+	 * 
+	 * @param value
+	 *            the new value
+	 */
 	public void setValue(Object value) {
 		if (array) {
 			throw new RuntimeException("Not a simple type: " + this);
 		}
 		// Convert into proper format
-		if (value instanceof Float && type.equals(Type.INTEGER)) {
+		if (VarUtils.isFloat(value) && type.equals(Type.INTEGER)) {
 			value = ((Number) value).intValue();
-		} else if (value instanceof Integer && type.equals(Type.REAL)) {
+		} else if (VarUtils.isInteger(value) && type.equals(Type.REAL)) {
 			value = ((Number) value).floatValue();
 		}
 		this.value = value;
 	}
 
+	/**
+	 * Gets the value.
+	 * 
+	 * @param pos
+	 *            the pos
+	 * @return the value
+	 */
 	@SuppressWarnings("unchecked")
 	public Object getValue(int... pos) {
 		if (!array) {
@@ -221,6 +316,15 @@ public class Variable implements Atom {
 		return ((List<Object>) value).get(ap);
 	}
 
+	/**
+	 * Sets the value.
+	 * 
+	 * @param val
+	 *            the val
+	 * @param pos
+	 *            the pos
+	 * @return the object
+	 */
 	@SuppressWarnings("unchecked")
 	public Object setValue(Object val, int... pos) {
 		if (!array) {
@@ -240,15 +344,21 @@ public class Variable implements Atom {
 			cnt++;
 		}
 
-		if (val instanceof Float && type.equals(Type.INTEGER)) {
+		if (VarUtils.isFloat(val) && type.equals(Type.INTEGER)) {
 			val = ((Number) val).intValue();
-		} else if (val instanceof Integer && type.equals(Type.REAL)) {
+		} else if (VarUtils.isInteger(val) && type.equals(Type.REAL)) {
 			val = ((Number) val).floatValue();
 		}
 
 		return ((List<Object>) value).set(ap, val);
 	}
 
+	/**
+	 * Inc.
+	 * 
+	 * @param value
+	 *            the value
+	 */
 	public void inc(float value) {
 		if (type.equals(Type.INTEGER) || type.equals(Type.REAL)) {
 			this.value = ((Number) this.value).floatValue() + value;
@@ -257,6 +367,21 @@ public class Variable implements Atom {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see sixtyfour.parser.Atom#isTerm()
+	 */
+	@Override
+	public boolean isTerm() {
+		return false;
+	}
+
+	/**
+	 * Calc size.
+	 * 
+	 * @param dimensions
+	 *            the dimensions
+	 * @return the int
+	 */
 	private static int calcSize(int[] dimensions) {
 		int size = 1;
 		for (int i : dimensions) {

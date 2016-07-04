@@ -1,13 +1,23 @@
+/*
+ * 
+ */
 package sixtyfour.plugins.impl;
 
 import java.util.Scanner;
 
 import sixtyfour.plugins.InputProvider;
 
+/**
+ * The Class ConsoleInputProvider.
+ */
 public class ConsoleInputProvider implements InputProvider {
 
+	/** The scanner. */
 	private Scanner scanner = new Scanner(System.in);
 
+	/* (non-Javadoc)
+	 * @see sixtyfour.plugins.InputProvider#readKey()
+	 */
 	@Override
 	public Character readKey() {
 		if (scanner.hasNext()) {
@@ -19,6 +29,9 @@ public class ConsoleInputProvider implements InputProvider {
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see sixtyfour.plugins.InputProvider#readString()
+	 */
 	@Override
 	public String readString() {
 		String val = null;

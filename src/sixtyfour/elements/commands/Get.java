@@ -10,20 +10,39 @@ import sixtyfour.parser.Term;
 import sixtyfour.system.Machine;
 import sixtyfour.system.ProgramCounter;
 
+/**
+ * The Class Get.
+ */
 public class Get extends MultiVariableCommand {
+	
+	/**
+	 * Instantiates a new gets the.
+	 */
 	public Get() {
 		super("GET");
 	}
 
+	/**
+	 * Instantiates a new gets the.
+	 * 
+	 * @param name
+	 *            the name
+	 */
 	protected Get(String name) {
 		super(name);
 	}
 
+	/* (non-Javadoc)
+	 * @see sixtyfour.elements.commands.AbstractCommand#getType()
+	 */
 	@Override
 	public Type getType() {
 		return Type.NONE;
 	}
 
+	/* (non-Javadoc)
+	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String, int, int, int, boolean, sixtyfour.system.Machine)
+	 */
 	@Override
 	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
 		super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine);
@@ -36,6 +55,9 @@ public class Get extends MultiVariableCommand {
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.Machine)
+	 */
 	@Override
 	public ProgramCounter execute(Machine machine) {
 		for (int i = 0; i < vars.size(); i++) {

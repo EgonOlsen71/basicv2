@@ -10,14 +10,38 @@ import sixtyfour.parser.Term;
 import sixtyfour.parser.VariableAndIndex;
 import sixtyfour.system.Machine;
 
+/**
+ * The Class MultiVariableCommand.
+ * 
+ * @author EgonOlsen
+ */
 public abstract class MultiVariableCommand extends AbstractCommand {
+	
+	/** The vars. */
 	protected List<Variable> vars = new ArrayList<Variable>();
+	
+	/** The index terms. */
 	protected List<Term> indexTerms = new ArrayList<Term>();
 
+	/**
+	 * Instantiates a new multi variable command.
+	 * 
+	 * @param name
+	 *            the name
+	 */
 	public MultiVariableCommand(String name) {
 		super(name);
 	}
 
+	/**
+	 * Gets the variable.
+	 * 
+	 * @param machine
+	 *            the machine
+	 * @param i
+	 *            the i
+	 * @return the variable
+	 */
 	final protected Variable getVariable(Machine machine, int i) {
 		Variable var = vars.get(i);
 		Variable oldVar = var;
@@ -28,6 +52,17 @@ public abstract class MultiVariableCommand extends AbstractCommand {
 		return var;
 	}
 
+	/**
+	 * Ensure number key.
+	 * 
+	 * @param machine
+	 *            the machine
+	 * @param input
+	 *            the input
+	 * @param checkColon
+	 *            the check colon
+	 * @return the character
+	 */
 	final protected Character ensureNumberKey(Machine machine, Character input, boolean checkColon) {
 		if (input == '+' || input == '-' || input == '.' || input == ',' || input == 'e') {
 			input = '0';
@@ -42,6 +77,14 @@ public abstract class MultiVariableCommand extends AbstractCommand {
 		return input;
 	}
 
+	/**
+	 * Fill variables.
+	 * 
+	 * @param linePart
+	 *            the line part
+	 * @param machine
+	 *            the machine
+	 */
 	final protected void fillVariables(String linePart, Machine machine) {
 		int brackets = 0;
 		StringBuilder sb = new StringBuilder();

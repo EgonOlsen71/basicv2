@@ -11,18 +11,29 @@ import sixtyfour.system.Machine;
 import sixtyfour.system.ProgramCounter;
 
 
+/**
+ * The Class GetFile.
+ */
 public class GetFile
   extends Get
 {
+  
+  /** The file number. */
   private Atom fileNumber = null;
 
 
+  /**
+	 * Instantiates a new gets the file.
+	 */
   public GetFile()
   {
     super("GET#");
   }
 
 
+  /* (non-Javadoc)
+   * @see sixtyfour.elements.commands.Get#parse(java.lang.String, int, int, int, boolean, sixtyfour.system.Machine)
+   */
   @Override
   public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine)
   {
@@ -49,6 +60,9 @@ public class GetFile
   }
 
 
+  /* (non-Javadoc)
+   * @see sixtyfour.elements.commands.Get#execute(sixtyfour.system.Machine)
+   */
   @Override
   public ProgramCounter execute(Machine machine)
   {

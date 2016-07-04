@@ -1,3 +1,6 @@
+/*
+ * 
+ */
 package sixtyfour.elements.functions;
 
 import sixtyfour.elements.Type;
@@ -5,9 +8,14 @@ import sixtyfour.elements.commands.Print;
 import sixtyfour.system.Machine;
 
 
+/**
+ * The Class Spc.
+ */
 public class Spc
   extends AbstractFunction
 {
+  
+  /** The Constant SPACES. */
   protected final static String SPACES;
 
 
@@ -22,18 +30,30 @@ public class Spc
   }
 
 
+  /**
+	 * Instantiates a new spc.
+	 * 
+	 * @param name
+	 *            the name
+	 */
   protected Spc(String name)
   {
     super(name);
   }
 
 
+  /**
+	 * Instantiates a new spc.
+	 */
   public Spc()
   {
     super("SPC");
   }
 
 
+  /* (non-Javadoc)
+   * @see sixtyfour.parser.Atom#getType()
+   */
   @Override
   public Type getType()
   {
@@ -41,6 +61,9 @@ public class Spc
   }
 
 
+  /* (non-Javadoc)
+   * @see sixtyfour.parser.Atom#eval(sixtyfour.system.Machine)
+   */
   @Override
   public Object eval(Machine memory)
   {
@@ -58,6 +81,12 @@ public class Spc
   }
 
 
+  /**
+	 * Ensure context.
+	 * 
+	 * @param memory
+	 *            the memory
+	 */
   protected void ensureContext(Machine memory)
   {
     if (!(memory.getCurrentCommand() instanceof Print) || !memory.getCurrentOperator().isNop())
