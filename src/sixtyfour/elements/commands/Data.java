@@ -13,7 +13,7 @@ import sixtyfour.system.Machine;
  * The Class Data.
  */
 public class Data extends AbstractCommand {
-	
+
 	/**
 	 * Instantiates a new data.
 	 */
@@ -21,8 +21,11 @@ public class Data extends AbstractCommand {
 		super("DATA");
 	}
 
-	/* (non-Javadoc)
-	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String, int, int, int, boolean, sixtyfour.system.Machine)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String,
+	 * int, int, int, boolean, sixtyfour.system.Machine)
 	 */
 	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
 		super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine);
@@ -33,6 +36,15 @@ public class Data extends AbstractCommand {
 			dataStore.add(part);
 		}
 		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see sixtyfour.elements.commands.Command#keepSpaces()
+	 */
+	public boolean keepSpaces() {
+		return true;
 	}
 
 	/**

@@ -10,6 +10,8 @@ import sixtyfour.system.ProgramCounter;
  */
 public interface Command extends Atom {
 	
+	boolean keepSpaces();
+	
 	/**
 	 * Gets the name.
 	 * 

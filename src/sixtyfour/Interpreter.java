@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import sixtyfour.elements.commands.Command;
+import sixtyfour.elements.commands.Data;
 import sixtyfour.elements.commands.Rem;
 import sixtyfour.parser.Line;
 import sixtyfour.parser.Parser;
@@ -171,11 +172,13 @@ public class Interpreter {
 				int pos = 0;
 				for (String part : parts) {
 					do {
-						part = Parser.removeWhiteSpace(part);
 						if (part.trim().length() > 0) {
 							Command command = Parser.getCommand(part);
 							if (command == null) {
 								throw new RuntimeException("Syntax error: " + cl.getNumber() + " " + cl.getLine());
+							}
+							if (!command.keepSpaces()) {
+								part = Parser.removeWhiteSpace(part);
 							}
 							part = command.parse(part, lineCnt, cl.getNumber(), pos, (pos == parts.length - 1), machine);
 
