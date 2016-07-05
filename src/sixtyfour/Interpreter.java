@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import sixtyfour.elements.commands.Command;
-import sixtyfour.elements.commands.Data;
 import sixtyfour.elements.commands.Rem;
 import sixtyfour.parser.Line;
 import sixtyfour.parser.Parser;
