@@ -8,21 +8,23 @@ import sixtyfour.system.Machine;
  * The Class Term.
  */
 public class Term implements Atom {
-	
+
 	/** The left. */
 	private Atom left;
-	
+
 	/** The right. */
 	private Atom right;
-	
+
 	/** The operator. */
 	private Operator operator;
-	
+
 	/** The expression. */
 	private String expression;
-	
+
 	/** The key. */
 	private String key;
+
+	private Type type;
 
 	/**
 	 * Instantiates a new term.
@@ -161,7 +163,9 @@ public class Term implements Atom {
 		this.key = key;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
@@ -169,11 +173,16 @@ public class Term implements Atom {
 		return "([" + key + "]\\l:" + left + this.operator + "\\r:" + right + ")";
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.parser.Atom#getType()
 	 */
 	@Override
 	public Type getType() {
+		if (type != null) {
+			return type;
+		}
 		Type t1 = left.getType();
 		Type t2 = t1;
 		if (operator != Operator.NOP) {
@@ -191,10 +200,13 @@ public class Term implements Atom {
 		if (!t1.equals(t2)) {
 			throw new RuntimeException("Type mismatch error: " + this.toString() + " | " + left + " | " + right + " | " + t1 + "/" + t2 + "/" + operator.getType());
 		}
+		type = t1;
 		return t1;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.parser.Atom#eval(sixtyfour.system.Machine)
 	 */
 	@Override
@@ -244,7 +256,9 @@ public class Term implements Atom {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.parser.Atom#isTerm()
 	 */
 	@Override

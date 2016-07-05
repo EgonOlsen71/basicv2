@@ -8,7 +8,7 @@ import sixtyfour.Loader;
  */
 @SuppressWarnings("unused")
 public class ProgramTest {
-	
+
 	/**
 	 * The main method.
 	 * 
@@ -19,19 +19,21 @@ public class ProgramTest {
 		testPrime();
 		testJavaPrime();
 		testPrime();
-		testPrime2();
-		testConditions();
-		testVarious();
-		//testGosubReturn();
-		//testGosub();
-		//testMenu();
-		testBeer();
+		for (int i = 0; i < 10; i++) {
+			testPrime2();
+		}
+		 testConditions();
+		// testVarious();
+		// testGosubReturn();
+		 //testGosub();
+		// testMenu();
+		 testBeer();
 		// testRun();
 		// testInput();
-		//testData();
+		 testData();
 		// testAdventure();
-		// testCalc();
-		testStuff();
+		 //testCalc();
+		 testStuff();
 	}
 
 	/**
@@ -40,7 +42,7 @@ public class ProgramTest {
 	private static void testStuff() {
 		String[] vary = Loader.loadProgram("files.bas");
 		Interpreter inty = new Interpreter(vary);
-		//inty.setPrintLineNumbers(true);
+		// inty.setPrintLineNumbers(true);
 		inty.run();
 	}
 

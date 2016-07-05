@@ -16,9 +16,11 @@ public class ArrayAccess extends AbstractFunction {
 
 	/** The variable name. */
 	private String variableName;
-	
+
 	/** The variable type. */
 	private Type variableType;
+
+	private int[] pis;
 
 	/**
 	 * Instantiates a new array access.
@@ -27,7 +29,9 @@ public class ArrayAccess extends AbstractFunction {
 		super("[]");
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.parser.Atom#getType()
 	 */
 	@Override
@@ -35,13 +39,17 @@ public class ArrayAccess extends AbstractFunction {
 		return variableType;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.parser.Atom#eval(sixtyfour.system.Machine)
 	 */
 	@Override
 	public Object eval(Machine machine) {
 		List<Atom> pars = Parser.getParameters(term);
-		int[] pis = new int[pars.size()];
+		if (pis == null) {
+			pis = new int[pars.size()];
+		}
 		int cnt = 0;
 		for (Atom par : pars) {
 			pis[cnt++] = VarUtils.getInt(par.eval(machine));
