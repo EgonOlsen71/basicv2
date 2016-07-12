@@ -85,8 +85,8 @@ public class Spc
   /**
 	 * Ensure context.
 	 * 
-	 * @param memory
-	 *            the memory
+	 * @param machine
+	 *            the machine
 	 */
   protected void ensureContext(Machine machine)
   {

@@ -257,6 +257,28 @@ public class Machine {
 		}
 		return ret;
 	}
+	
+	/**
+	 * Adds the or set.
+	 * 
+	 * @param var
+	 *            the var
+	 * @return the variable
+	 */
+	public Variable addOrSet(Variable var)
+	  {
+	    Variable ret = getVariable(var.getName());
+	    if (ret == null)
+	    {
+	      vars.put(var.getName(), var);
+	      ret = var;
+	    }
+	    else
+	    {
+	      ret.setValue(var.getValue());
+	    }
+	    return ret;
+	  }
 
 	/**
 	 * Gets the variable.

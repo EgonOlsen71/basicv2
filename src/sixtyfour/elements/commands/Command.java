@@ -10,6 +10,11 @@ import sixtyfour.system.ProgramCounter;
  */
 public interface Command extends Atom {
 	
+	/**
+	 * Keep spaces.
+	 * 
+	 * @return true, if successful
+	 */
 	boolean keepSpaces();
 	
 	/**

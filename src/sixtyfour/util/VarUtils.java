@@ -76,8 +76,11 @@ public final class VarUtils {
 	}
 
 	/**
+	 * To upper.
+	 * 
 	 * @param txt
-	 * @return
+	 *            the txt
+	 * @return the string
 	 */
 	public static String toUpper(String txt) {
 		return txt.toUpperCase(Locale.ENGLISH);

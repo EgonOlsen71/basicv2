@@ -18,8 +18,8 @@ public interface Atom {
 	/**
 	 * Eval.
 	 * 
-	 * @param memory
-	 *            the memory
+	 * @param machine
+	 *            the machine
 	 * @return the object
 	 */
 	Object eval(Machine machine);

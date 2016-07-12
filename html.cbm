@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title><?cbm 10 PRINT "Page: ";TT$?></title>
+</head>
+<body>
+	Watch this:
+	<ul>
+	<?cbm
+		20 FOR I=1 TO CN
+	?>
+	<li><?cbm 25 PRINT NA$;":";I;?></li>
+	<?cbm
+		30 IF I=5 THEN GOSUB 100
+	?>
+	<?cbm
+		40 NEXT I
+		50 GOTO 200
+		99 REM SUBROUTINE
+		100 PRINT"<li>Five is a nice number</li>":RETURN
+		200 REM ---
+	?>
+	</ul>
+</body>
+</html>

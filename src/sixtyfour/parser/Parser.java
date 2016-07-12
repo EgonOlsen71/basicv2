@@ -46,8 +46,8 @@ public class Parser {
 	 * 
 	 * @param line
 	 *            the line
-	 * @param memory
-	 *            the memory
+	 * @param machine
+	 *            the machine
 	 * @return the parts
 	 */
 	public static String[] getParts(Line line, Machine machine) {
@@ -138,8 +138,8 @@ public class Parser {
 	 * 
 	 * @param linePart
 	 *            the line part
-	 * @param memory
-	 *            the memory
+	 * @param machine
+	 *            the machine
 	 * @return the variable
 	 */
 	public static Variable getVariable(String linePart, Machine machine) {
@@ -151,8 +151,8 @@ public class Parser {
 	 * 
 	 * @param linePart
 	 *            the line part
-	 * @param memory
-	 *            the memory
+	 * @param machine
+	 *            the machine
 	 * @param includingAssignment
 	 *            the including assignment
 	 * @return the variable
@@ -179,8 +179,8 @@ public class Parser {
 	 * 
 	 * @param linePart
 	 *            the line part
-	 * @param memory
-	 *            the memory
+	 * @param machine
+	 *            the machine
 	 * @return the array variables
 	 */
 	public static List<VariableAndTerms> getArrayVariables(String linePart, Machine machine) {
@@ -390,8 +390,8 @@ public class Parser {
 	 *            the var
 	 * @param termMap
 	 *            the term map
-	 * @param memory
-	 *            the memory
+	 * @param machine
+	 *            the machine
 	 * @return the array access function
 	 */
 	public static Function getArrayAccessFunction(String linePart, Variable var, Map<String, Term> termMap, Machine machine) {
@@ -418,8 +418,8 @@ public class Parser {
 	 * 
 	 * @param term
 	 *            the term
-	 * @param memory
-	 *            the memory
+	 * @param machine
+	 *            the machine
 	 * @param stripAssignment
 	 *            the strip assignment
 	 * @param checkForLogicTerm
@@ -435,8 +435,8 @@ public class Parser {
 	 * 
 	 * @param term
 	 *            the term
-	 * @param memory
-	 *            the memory
+	 * @param machine
+	 *            the machine
 	 * @param stripAssignment
 	 *            the strip assignment
 	 * @param checkForLogicTerm
@@ -466,8 +466,8 @@ public class Parser {
 	 *            the command
 	 * @param term
 	 *            the term
-	 * @param memory
-	 *            the memory
+	 * @param machine
+	 *            the machine
 	 * @param checkForLogicTerm
 	 *            the check for logic term
 	 * @return the term
@@ -1039,8 +1039,8 @@ public class Parser {
 	 *            the t
 	 * @param termMap
 	 *            the term map
-	 * @param memory
-	 *            the memory
+	 * @param machine
+	 *            the machine
 	 * @return the term
 	 */
 	private static Term build(Term t, Map<String, Term> termMap, Machine machine) {
@@ -1090,8 +1090,8 @@ public class Parser {
 	 *            the part
 	 * @param termMap
 	 *            the term map
-	 * @param memory
-	 *            the memory
+	 * @param machine
+	 *            the machine
 	 * @return the atom
 	 */
 	private static Atom createAtom(String part, Map<String, Term> termMap, Machine machine) {

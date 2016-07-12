@@ -20,6 +20,7 @@ public class ArrayAccess extends AbstractFunction {
 	/** The variable type. */
 	private Type variableType;
 
+	/** The pis. */
 	private int[] pis;
 
 	/**

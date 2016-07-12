@@ -144,8 +144,8 @@ public class For extends AbstractCommand {
 	 * 
 	 * @param next
 	 *            the next
-	 * @param memory
-	 *            the memory
+	 * @param machine
+	 *            the machine
 	 * @return true, if successful
 	 */
 	public boolean next(Next next, Machine machine) {

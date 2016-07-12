@@ -61,6 +61,7 @@ public class Interpreter {
 	 */
 	public Interpreter(String[] code) {
 		this.code = Arrays.copyOf(code, code.length);
+		machine = new Machine();
 	}
 
 	/**
@@ -141,13 +142,17 @@ public class Interpreter {
 	 */
 	public void parse() {
 		long start = System.nanoTime();
-		machine = new Machine();
+		machine.resetMemory();
 		Line cl = null;
 		int lastLineNumber = -1;
 		lines.clear();
 		lineNumbers.clear();
 		for (String line : code) {
 			try {
+				line = line.replaceFirst("\\s+", "");
+				if (line.isEmpty()) {
+					continue;
+				}
 				cl = Parser.getLine(line);
 				if (lines.containsKey(cl.getNumber())) {
 					throw new RuntimeException("Duplicate line number in: " + line);
@@ -207,6 +212,17 @@ public class Interpreter {
 	}
 
 	/**
+	 * Start.
+	 */
+	public void start() {
+		stop = false;
+		if (!parsed) {
+			throw new RuntimeException("Code not parsed! Either call parse();start(); or run()!");
+		}
+		runInternal();
+	}
+
+	/**
 	 * Run.
 	 */
 	public void run() {
@@ -215,10 +231,7 @@ public class Interpreter {
 			parse();
 		}
 		if (parsed) {
-			long start = System.nanoTime();
-			execute(0, 0);
-			long end = System.nanoTime();
-			machine.getOutputChannel().println(0, "\nREADY. (" + ((end - start) / 1000000L) + "ms)");
+			runInternal();
 			parsed = false;
 		} else {
 			machine.getOutputChannel().println(0, "\nREADY.");
@@ -315,6 +328,16 @@ public class Interpreter {
 	 */
 	public void setPrintLineNumbers(boolean printLineNumbers) {
 		this.printLineNumbers = printLineNumbers;
+	}
+
+	/**
+	 * Run internal.
+	 */
+	private void runInternal() {
+		long start = System.nanoTime();
+		execute(0, 0);
+		long end = System.nanoTime();
+		machine.getOutputChannel().println(0, "\nREADY. (" + ((end - start) / 1000000L) + "ms)");
 	}
 
 	/**

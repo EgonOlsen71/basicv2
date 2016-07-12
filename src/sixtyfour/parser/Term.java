@@ -24,6 +24,7 @@ public class Term implements Atom {
 	/** The key. */
 	private String key;
 
+	/** The type. */
 	private Type type;
 
 	/**
