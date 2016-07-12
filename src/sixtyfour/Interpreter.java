@@ -13,6 +13,7 @@ import sixtyfour.parser.Parser;
 import sixtyfour.plugins.InputProvider;
 import sixtyfour.plugins.MemoryListener;
 import sixtyfour.plugins.OutputChannel;
+import sixtyfour.plugins.SystemCallListener;
 import sixtyfour.system.Machine;
 import sixtyfour.system.ProgramCounter;
 import sixtyfour.util.VarUtils;
@@ -280,6 +281,25 @@ public class Interpreter {
 	 */
 	public OutputChannel getOutputChannel() {
 		return machine.getOutputChannel();
+	}
+
+	/**
+	 * Gets the system call listener.
+	 * 
+	 * @return the system call listener
+	 */
+	public SystemCallListener getSystemCallListener() {
+		return machine.getSystemCallListener();
+	}
+
+	/**
+	 * Sets the system call listener.
+	 * 
+	 * @param scl
+	 *            the new system call listener
+	 */
+	public void setSystemCallListener(SystemCallListener scl) {
+		machine.setSystemCallListener(scl);
 	}
 
 	/**

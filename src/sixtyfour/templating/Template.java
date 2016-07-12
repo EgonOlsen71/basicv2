@@ -155,10 +155,6 @@ public class Template {
 					code.append(lastLine).append(" SYS49152,").append(lastLine).append('\n');
 					staticParts.put(lastLine, tp);
 				}
-
-				TemplatePart cp = new TemplatePart();
-				cp.setFirstLine(firstLine);
-				cp.setLastLine(endLine);
 				code.append(codePart).append('\n');
 
 				lastLine = endLine;

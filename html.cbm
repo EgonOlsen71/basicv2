@@ -7,15 +7,23 @@
 	Watch this:
 	<ul>
 	<?cbm
-		20 FOR I=1 TO CN
+		15 W=5000:DIMF(W)
+		20 FORI=1TOCN
+		21 P=1:A=3
+		22 F(P)=A:P=P+1:IFP>WTHENGOTO58
+		23 A=A+2:X=1
+		30 S=A/F(X):IFS=INT(S)GOTO23
+		40 X=X+1:IFX<PANDF(X)*F(X)<=AGOTO30
+		50 GOTO22
+		58 PRINT"<li>Last prime: "A"</li>"
 	?>
-	<li><?cbm 25 PRINT NA$;":";I;?></li>
+	<li><?cbm 60 PRINT NA$;":";I;?></li>
 	<?cbm
-		30 IF I=5 THEN GOSUB 100
+		70 IF I=5 THEN GOSUB 100
 	?>
 	<?cbm
-		40 NEXT I
-		50 GOTO 200
+		80 NEXTI
+		90 GOTO200
 		99 REM SUBROUTINE
 		100 PRINT"<li>Five is a nice number</li>":RETURN
 		200 REM ---
