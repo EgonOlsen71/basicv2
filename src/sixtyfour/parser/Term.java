@@ -221,7 +221,7 @@ public class Term implements Atom {
 				return left.eval(machine);
 			}
 			Type type = getType();
-			if (type.equals(Type.STRING)) {
+			if (type==Type.STRING) {
 				if (operator.isPlus()) {
 					return left.eval(machine).toString() + right.eval(machine).toString();
 				}
