@@ -15,7 +15,7 @@ public class TemplateOutputChannel implements OutputChannel {
 
 	/** The channel. */
 	private int channel = 0;
-
+ 
 	/** The other consumer. */
 	private PrintConsumer otherConsumer = null;
 
