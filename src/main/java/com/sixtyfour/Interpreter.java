@@ -260,6 +260,14 @@ public class Interpreter {
 	}
 
 	/**
+	 * Resets the memory. This will clean the 64KB of main memory as well as all
+	 * variables.
+	 */
+	public void resetMemory() {
+		machine.resetMemory();
+	}
+
+	/**
 	 * Stops a currently running program after the next commands has been
 	 * executed.
 	 */

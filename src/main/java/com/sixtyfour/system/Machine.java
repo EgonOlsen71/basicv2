@@ -27,47 +27,50 @@ import com.sixtyfour.plugins.impl.NullSystemCallListener;
 import com.sixtyfour.util.VarUtils;
 
 /**
- * The Class Machine.
+ * The machine. In the context of this application, Machine is the closest that
+ * you'll get to a real hardware device. Machine wraps the 64KB of memory, the
+ * variable memory (which is, unlike in a real machine, decoupled from the 64KB
+ * of memory), input and output "devices" and such...
  */
 public class Machine {
 
-	/** The vars. */
+	/** The variables */
 	private Map<String, Variable> vars = new HashMap<String, Variable>();
 
-	/** The ram. */
+	/** The RAM */
 	private int[] ram = new int[65536];
 
-	/** The stack. */
+	/** The Stack */
 	private Stack<StackEntry> stack = new Stack<StackEntry>();
 
-	/** The command list. */
+	/** The command list */
 	private List<Command> commandList = new ArrayList<Command>();
 
-	/** The current command. */
+	/** The current command */
 	private Command currentCommand = null;
 
-	/** The current operator. */
+	/** The current operator */
 	private Operator currentOperator = null;
 
-	/** The functions. */
+	/** The functions */
 	private Map<String, Command> functions = new HashMap<String, Command>();
 
-	/** The data. */
+	/** The data storage */
 	private DataStore data = new DataStore();
 
-	/** The output channel. */
+	/** The output channel */
 	private OutputChannel outputChannel = null;
 
-	/** The input provider. */
+	/** The input provider */
 	private InputProvider inputProvider = null;
 
-	/** The memory listener. */
+	/** The memory listener */
 	private MemoryListener memoryListener = null;
 
-	/** The system call listener. */
+	/** The system call listener */
 	private SystemCallListener systemCallListener = null;
 
-	/** The device provider. */
+	/** The device provider */
 	private DeviceProvider deviceProvider = null;
 
 	/**
@@ -83,10 +86,11 @@ public class Machine {
 	}
 
 	/**
-	 * Sets the function.
+	 * Sets/adds a function. A function is defined in the BASIC program by the
+	 * DEF FN command.
 	 * 
 	 * @param name
-	 *            the name
+	 *            the name of the function
 	 * @param function
 	 *            the function
 	 */
@@ -95,10 +99,10 @@ public class Machine {
 	}
 
 	/**
-	 * Gets the function.
+	 * Returns a function.
 	 * 
 	 * @param name
-	 *            the name
+	 *            the name of the function
 	 * @return the function
 	 */
 	public Command getFunction(String name) {
@@ -106,16 +110,18 @@ public class Machine {
 	}
 
 	/**
-	 * Gets the ram.
+	 * Returns the RAM's content. The RAM is a representation of 64KB of 8bit
+	 * wide memory. However, the returned array is of type int[]. It will
+	 * contains values in the range of[0..255] only though.
 	 * 
-	 * @return the ram
+	 * @return the RAM
 	 */
 	public int[] getRam() {
 		return ram;
 	}
 
 	/**
-	 * Push.
+	 * Pushes a command onto the stack.
 	 * 
 	 * @param command
 	 *            the command
@@ -128,10 +134,10 @@ public class Machine {
 	}
 
 	/**
-	 * Push for.
+	 * Pushes a FOR command onto the stack.
 	 * 
 	 * @param fory
-	 *            the fory
+	 *            the FOR command
 	 */
 	public void pushFor(For fory) {
 		if (stack.size() > 10000) {
@@ -141,11 +147,12 @@ public class Machine {
 	}
 
 	/**
-	 * Pop for.
+	 * Pop a FOR command from the stack. All later FOR commands will be popped
+	 * as well.
 	 * 
 	 * @param fory
-	 *            the fory
-	 * @return the for
+	 *            the FOR command
+	 * @return the popped command
 	 */
 	public For popFor(For fory) {
 		List<StackEntry> toRemove = new ArrayList<StackEntry>();
@@ -166,11 +173,12 @@ public class Machine {
 	}
 
 	/**
-	 * Peek for.
+	 * Peeks on the stack for variable of a certain name and returns the
+	 * macthing FOR command if any.
 	 * 
 	 * @param varName
-	 *            the var name
-	 * @return the for
+	 *            the variable name
+	 * @return the corresponding FOR
 	 */
 	public For peekFor(String varName) {
 		for (int i = stack.size() - 1; i >= 0; i--) {
@@ -183,9 +191,9 @@ public class Machine {
 	}
 
 	/**
-	 * Gets the caller.
+	 * Gets the stack entry of the last GOSUB, if there was any.
 	 * 
-	 * @return the caller
+	 * @return the calling GOSUB
 	 */
 	public StackEntry getCaller() {
 		for (int i = stack.size() - 1; i >= 0; i--) {
@@ -201,18 +209,18 @@ public class Machine {
 	}
 
 	/**
-	 * Peek.
+	 * Peeks on the last element of the stack.
 	 * 
-	 * @return the stack entry
+	 * @return the most current stack entry
 	 */
 	public StackEntry peek() {
 		return stack.peek();
 	}
 
 	/**
-	 * Pop.
+	 * Pops the stack
 	 * 
-	 * @return the stack entry
+	 * @return the popped stack entry
 	 */
 	public StackEntry pop() {
 		if (stack.isEmpty()) {
@@ -222,7 +230,8 @@ public class Machine {
 	}
 
 	/**
-	 * Reset memory.
+	 * Resets the memory. This will clean the 64KB of main memory as well as all
+	 * variables.
 	 */
 	public void resetMemory() {
 		for (int i = 0; i < ram.length; i++) {
@@ -232,7 +241,7 @@ public class Machine {
 	}
 
 	/**
-	 * Clear vars.
+	 * Clears all variables.
 	 */
 	public void clearVars() {
 		for (Variable var : vars.values()) {
@@ -243,11 +252,13 @@ public class Machine {
 	}
 
 	/**
-	 * Adds the.
+	 * Adds a variable and returns it. If a variable of that name already
+	 * exists, nothing will be added and the old variable will be returned
+	 * instead.
 	 * 
 	 * @param var
-	 *            the var
-	 * @return the variable
+	 *            the variable
+	 * @return either the newly added variable or the old one with the same name
 	 */
 	public Variable add(Variable var) {
 		Variable ret = getVariableUpperCase(var.getUpperCaseName());
@@ -259,11 +270,12 @@ public class Machine {
 	}
 
 	/**
-	 * Adds the or set.
+	 * The same as add, this in addition, it will set the value of the new
+	 * variable to the old one, if it finds it.
 	 * 
 	 * @param var
-	 *            the var
-	 * @return the variable
+	 *            the variable
+	 * @return either the newly added variable or the old one with the same name
 	 */
 	public Variable addOrSet(Variable var) {
 		Variable ret = getVariableUpperCase(var.getUpperCaseName());
@@ -277,11 +289,11 @@ public class Machine {
 	}
 
 	/**
-	 * Gets the variable.
+	 * Returns the variable with the given name. Case doesn't matter.
 	 * 
 	 * @param name
-	 *            the name
-	 * @return the variable
+	 *            the name of the variable
+	 * @return the variable or null, if it doesn't exist
 	 */
 	public Variable getVariable(String name) {
 		if (name == null) {
@@ -292,15 +304,19 @@ public class Machine {
 	}
 
 	/**
+	 * Returns the variable with the given name in upper case.
+	 * 
 	 * @param name
-	 * @return
+	 *            in upper case
+	 * @return the variable or null, if it doesn't exist
 	 */
 	public Variable getVariableUpperCase(String name) {
 		return vars.get(name);
 	}
 
 	/**
-	 * Adds the command.
+	 * Adds a command to the internal command list. This list is more kept for
+	 * reference reasons rather than for actual runtime reasons.
 	 * 
 	 * @param command
 	 *            the command
@@ -310,7 +326,8 @@ public class Machine {
 	}
 
 	/**
-	 * Gets the command list.
+	 * Returns the command list. This list contains all the commands of the
+	 * BASIC program in order or parsing.
 	 * 
 	 * @return the command list
 	 */
@@ -329,7 +346,8 @@ public class Machine {
 	}
 
 	/**
-	 * Gets the current command.
+	 * Returns the current command. This is the command that the runtime
+	 * currently executes.
 	 * 
 	 * @return the current command
 	 */
@@ -338,7 +356,8 @@ public class Machine {
 	}
 
 	/**
-	 * Sets the current command.
+	 * Sets the current command. This is the command that the runtime currently
+	 * executes.
 	 * 
 	 * @param currentCommand
 	 *            the new current command
@@ -348,7 +367,8 @@ public class Machine {
 	}
 
 	/**
-	 * Gets the current operator.
+	 * Returns the current operator. This is the operator that the runtime
+	 * currently works on.
 	 * 
 	 * @return the current operator
 	 */
@@ -357,7 +377,8 @@ public class Machine {
 	}
 
 	/**
-	 * Sets the current operator.
+	 * Sets the current operator. This is the operator that the runtime
+	 * currently works on.
 	 * 
 	 * @param currentOperator
 	 *            the new current operator
@@ -367,7 +388,7 @@ public class Machine {
 	}
 
 	/**
-	 * Gets the output channel.
+	 * Returns the output channel. By default, this is the console.
 	 * 
 	 * @return the output channel
 	 */
@@ -376,7 +397,7 @@ public class Machine {
 	}
 
 	/**
-	 * Sets the output channel.
+	 * Sets the output channel. By default, this is the console.
 	 * 
 	 * @param outputChannel
 	 *            the new output channel
@@ -386,7 +407,10 @@ public class Machine {
 	}
 
 	/**
-	 * Gets the memory listener.
+	 * Returns the memory listener. The memory listener listens for PEEKs and
+	 * POKEs. In addition to reading from/writing to the RAM, which happens
+	 * anyway, the listener method get called for each PEEK or POKE. The default
+	 * implementation does nothing.
 	 * 
 	 * @return the memory listener
 	 */
@@ -395,7 +419,10 @@ public class Machine {
 	}
 
 	/**
-	 * Sets the memory listener.
+	 * Sets the memory listener. The memory listener listens for PEEKs and
+	 * POKEs. In addition to reading from/writing to the RAM, which happens
+	 * anyway, the listener method get called for each PEEK or POKE. The default
+	 * implementation does nothing.
 	 * 
 	 * @param memoryListener
 	 *            the new memory listener
@@ -405,17 +432,9 @@ public class Machine {
 	}
 
 	/**
-	 * Adds the defaults.
-	 */
-	private void addDefaults() {
-		add(new Pie());
-		add(new Time());
-		add(new TimeDate());
-		add(new Status());
-	}
-
-	/**
-	 * Gets the input provider.
+	 * Returns the input provider. The input provider implements the methods for
+	 * reading keyboard input. The default implementation is based on the Java
+	 * console, which has only limited support for reading single key strokes.
 	 * 
 	 * @return the input provider
 	 */
@@ -424,7 +443,9 @@ public class Machine {
 	}
 
 	/**
-	 * Sets the input provider.
+	 * Returns the input provider. The input provider implements the methods for
+	 * reading keyboard input. The default implementation is based on the Java
+	 * console, which has only limited support for reading single key strokes.
 	 * 
 	 * @param inputProvider
 	 *            the new input provider
@@ -434,7 +455,8 @@ public class Machine {
 	}
 
 	/**
-	 * Gets the data store.
+	 * Returns the data store. The data store contains the data stored in the
+	 * program's DATA lines.
 	 * 
 	 * @return the data store
 	 */
@@ -443,7 +465,8 @@ public class Machine {
 	}
 
 	/**
-	 * Sets the data store.
+	 * Sets the data store. The data store contains the data stored in the
+	 * program's DATA lines.
 	 * 
 	 * @param data
 	 *            the new data store
@@ -453,7 +476,9 @@ public class Machine {
 	}
 
 	/**
-	 * Gets the system call listener.
+	 * Returns the system call listener. The system call listener listens for
+	 * SYS calls of the program. The default implementation just ignores these
+	 * calls.
 	 * 
 	 * @return the system call listener
 	 */
@@ -462,9 +487,11 @@ public class Machine {
 	}
 
 	/**
-	 * Sets the system call listener.
+	 * Sets the system call listener. The system call listener listens for SYS
+	 * calls of the program. The default implementation just ignores these
+	 * calls.
 	 * 
-	 * @param systemCallListener
+	 * @param scl
 	 *            the new system call listener
 	 */
 	public void setSystemCallListener(SystemCallListener systemCallListener) {
@@ -472,7 +499,9 @@ public class Machine {
 	}
 
 	/**
-	 * Gets the device provider.
+	 * Returns the device provider. This is used to mimic the functionality of
+	 * disc and tape drives and such. The default implementation provides basic
+	 * support for disc and tape operation in memory.
 	 * 
 	 * @return the device provider
 	 */
@@ -481,12 +510,24 @@ public class Machine {
 	}
 
 	/**
-	 * Sets the device provider.
+	 * Sets the device provider. This is used to mimic the functionality of disc
+	 * and tape drives and such. The default implementation provides basic
+	 * support for disc and tape operation in memory.
 	 * 
 	 * @param deviceProvider
 	 *            the new device provider
 	 */
 	public void setDeviceProvider(DeviceProvider deviceProvider) {
 		this.deviceProvider = deviceProvider;
+	}
+
+	/**
+	 * Adds the default variables
+	 */
+	private void addDefaults() {
+		add(new Pie());
+		add(new Time());
+		add(new TimeDate());
+		add(new Status());
 	}
 }

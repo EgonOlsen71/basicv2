@@ -6,11 +6,12 @@ import com.sixtyfour.elements.commands.Gosub;
 import com.sixtyfour.elements.commands.On;
 
 /**
- * The Class StackEntry.
+ * A StackEntry can either be a reference to a FOR or to a GOSUB/ON...GOSUB
+ * command.
  */
 public class StackEntry {
 
-	/** The command. */
+	/** The command */
 	private Command command;
 
 	/**
@@ -24,7 +25,7 @@ public class StackEntry {
 	}
 
 	/**
-	 * Gets the command.
+	 * Returns the command.
 	 * 
 	 * @return the command
 	 */
@@ -33,18 +34,18 @@ public class StackEntry {
 	}
 
 	/**
-	 * Checks if is for.
+	 * Checks if it an entry for a FOR command.
 	 * 
-	 * @return true, if is for
+	 * @return true, if it is
 	 */
 	public boolean isFor() {
 		return command instanceof For;
 	}
 
 	/**
-	 * Checks if is subroutine call.
+	 * Checks if it is an entry for a GOSUB or ON...GOSUB command.
 	 * 
-	 * @return true, if is subroutine call
+	 * @return true, if it is
 	 */
 	public boolean isSubroutineCall() {
 		return command instanceof Gosub || command instanceof On;

@@ -4,25 +4,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The Class DataStore.
+ * This class contains a programs data stored in DATA lines as well as a pointer
+ * to the currently active date.
  */
 public class DataStore {
 
-	/** The position. */
+	/** The position */
 	private int position = 0;
 
-	/** The datas. */
+	/** The datas */
 	private List<Object> datas = new ArrayList<Object>();
 
 	/**
-	 * Restore.
+	 * Restores the data pointer, i.e. sets it to the first date.
 	 */
 	public void restore() {
 		position = 0;
 	}
 
 	/**
-	 * Adds the.
+	 * Adds a date. Internally, this will be converted to either an Integer or a
+	 * Float or it will remain a String.
 	 * 
 	 * @param data
 	 *            the data
@@ -42,13 +44,12 @@ public class DataStore {
 	}
 
 	/**
-	 * Read.
+	 * Reads the next date and increases the position pointer by one.
 	 * 
-	 * @return the object
+	 * @return the data (can either be of type String, Integer, or Float)
 	 */
 	public Object read() {
 		if (position >= datas.size()) {
-			System.out.println(position);
 			return null;
 		}
 		return datas.get(position++);
