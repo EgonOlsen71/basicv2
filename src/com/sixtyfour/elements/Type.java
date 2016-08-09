@@ -7,15 +7,15 @@ package com.sixtyfour.elements;
  * The Enum Type.
  */
 public enum Type {
-	
+
 	/** The string. */
-	STRING, 
- /** The real. */
- REAL, 
- /** The integer. */
- INTEGER, 
- /** The none. */
- NONE;
+	STRING,
+	/** The real. */
+	REAL,
+	/** The integer. */
+	INTEGER,
+	/** The none. */
+	NONE;
 
 	/**
 	 * Checks if is assignable.

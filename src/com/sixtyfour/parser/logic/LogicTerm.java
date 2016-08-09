@@ -16,10 +16,10 @@ public class LogicTerm implements LogicBlock {
 
 	/** The blocks. */
 	private List<LogicBlock> blocks = new ArrayList<LogicBlock>();
-	
+
 	/** The ops. */
 	private List<LogicOp> ops = new ArrayList<LogicOp>();
-	
+
 	/** The name. */
 	private String name;
 
@@ -47,8 +47,11 @@ public class LogicTerm implements LogicBlock {
 		ops.add(op);
 	}
 
-	/* (non-Javadoc)
-	 * @see sixtyfour.parser.logic.LogicBlock#evalToBoolean(sixtyfour.system.Machine)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * sixtyfour.parser.logic.LogicBlock#evalToBoolean(sixtyfour.system.Machine)
 	 */
 	@Override
 	public boolean evalToBoolean(Machine machine) {
@@ -72,7 +75,9 @@ public class LogicTerm implements LogicBlock {
 		return res;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.parser.logic.LogicBlock#not()
 	 */
 	@Override
@@ -99,7 +104,9 @@ public class LogicTerm implements LogicBlock {
 		this.name = name;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
@@ -116,7 +123,9 @@ public class LogicTerm implements LogicBlock {
 		return sb.toString();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.parser.Atom#eval(sixtyfour.system.Machine)
 	 */
 	@Override
@@ -125,7 +134,9 @@ public class LogicTerm implements LogicBlock {
 		return ok ? -1 : 0;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.parser.Atom#getType()
 	 */
 	@Override
@@ -133,7 +144,9 @@ public class LogicTerm implements LogicBlock {
 		return Type.INTEGER;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.parser.Atom#isTerm()
 	 */
 	@Override

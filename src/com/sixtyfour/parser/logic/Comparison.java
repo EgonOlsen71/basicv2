@@ -11,18 +11,21 @@ public class Comparison implements LogicBlock {
 
 	/** The left. */
 	private Term left;
-	
+
 	/** The right. */
 	private Term right;
-	
+
 	/** The comparator. */
 	private Comparator comparator;
-	
+
 	/** The not. */
 	private boolean not = false;
 
-	/* (non-Javadoc)
-	 * @see sixtyfour.parser.logic.LogicBlock#evalToBoolean(sixtyfour.system.Machine)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * sixtyfour.parser.logic.LogicBlock#evalToBoolean(sixtyfour.system.Machine)
 	 */
 	@Override
 	public boolean evalToBoolean(Machine machine) {
@@ -117,7 +120,9 @@ public class Comparison implements LogicBlock {
 		this.comparator = comparator;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.parser.logic.LogicBlock#not()
 	 */
 	@Override
@@ -125,7 +130,9 @@ public class Comparison implements LogicBlock {
 		not = !not;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
@@ -133,7 +140,9 @@ public class Comparison implements LogicBlock {
 		return (not ? " NOT " : "") + left + " " + comparator + " " + right;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.parser.Atom#getType()
 	 */
 	@Override
@@ -141,7 +150,9 @@ public class Comparison implements LogicBlock {
 		return Type.INTEGER;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.parser.Atom#eval(sixtyfour.system.Machine)
 	 */
 	@Override
@@ -149,8 +160,10 @@ public class Comparison implements LogicBlock {
 		boolean ok = evalToBoolean(machine);
 		return ok ? -1 : 0;
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.parser.Atom#isTerm()
 	 */
 	@Override

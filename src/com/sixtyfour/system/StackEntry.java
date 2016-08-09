@@ -9,7 +9,7 @@ import com.sixtyfour.elements.commands.On;
  * The Class StackEntry.
  */
 public class StackEntry {
-	
+
 	/** The command. */
 	private Command command;
 

@@ -12,7 +12,7 @@ import com.sixtyfour.Loader;
  * @author Foerster-H
  */
 public class TemplateFactory {
-	
+
 	/**
 	 * Gets the template.
 	 * 

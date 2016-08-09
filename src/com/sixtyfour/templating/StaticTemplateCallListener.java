@@ -16,10 +16,10 @@ import com.sixtyfour.plugins.SystemCallListener;
  * @see StaticTemplateCallEvent
  */
 public class StaticTemplateCallListener implements SystemCallListener {
-	
+
 	/** The parts. */
 	private Map<Integer, TemplatePart> parts;
-	
+
 	/** The out. */
 	private TemplateOutputChannel out;
 
@@ -36,7 +36,9 @@ public class StaticTemplateCallListener implements SystemCallListener {
 		this.out = out;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.plugins.SystemCallListener#sys(int, java.lang.Object[])
 	 */
 	@Override

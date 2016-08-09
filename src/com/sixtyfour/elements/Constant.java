@@ -11,10 +11,10 @@ import com.sixtyfour.util.VarUtils;
  *            the generic type
  */
 public class Constant<T> implements Atom {
-	
+
 	/** The value. */
 	private T value;
-	
+
 	/** The type. */
 	private Type type;
 
@@ -37,7 +37,9 @@ public class Constant<T> implements Atom {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.parser.Atom#getType()
 	 */
 	@Override
@@ -45,7 +47,9 @@ public class Constant<T> implements Atom {
 		return type;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.parser.Atom#eval(sixtyfour.system.Machine)
 	 */
 	@Override
@@ -53,7 +57,9 @@ public class Constant<T> implements Atom {
 		return value;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.parser.Atom#isTerm()
 	 */
 	@Override
@@ -61,7 +67,9 @@ public class Constant<T> implements Atom {
 		return false;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override

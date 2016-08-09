@@ -9,14 +9,14 @@ import com.sixtyfour.system.ProgramCounter;
  * The Interface Command.
  */
 public interface Command extends Atom {
-	
+
 	/**
 	 * Keep spaces.
 	 * 
 	 * @return true, if successful
 	 */
 	boolean keepSpaces();
-	
+
 	/**
 	 * Gets the name.
 	 * 

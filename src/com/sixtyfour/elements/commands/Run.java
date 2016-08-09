@@ -13,7 +13,7 @@ public class Run extends AbstractCommand {
 
 	/** The pc. */
 	private ProgramCounter pc = new ProgramCounter(0, 0); // Recycle instance
-	
+
 	/** The line number. */
 	private int lineNumber = -1;
 
@@ -24,8 +24,11 @@ public class Run extends AbstractCommand {
 		super("RUN");
 	}
 
-	/* (non-Javadoc)
-	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String, int, int, int, boolean, sixtyfour.system.Machine)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String,
+	 * int, int, int, boolean, sixtyfour.system.Machine)
 	 */
 	@Override
 	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
@@ -41,8 +44,12 @@ public class Run extends AbstractCommand {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.Machine)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.
+	 * Machine)
 	 */
 	@Override
 	public ProgramCounter execute(Machine machine) {

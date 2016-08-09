@@ -12,13 +12,13 @@ public class TemplateOutputChannel implements OutputChannel {
 
 	/** The cursor. */
 	private int cursor = 0;
-	
+
 	/** The channel. */
 	private int channel = 0;
-	
+
 	/** The other consumer. */
 	private PrintConsumer otherConsumer = null;
-	
+
 	/** The result. */
 	private StringBuilder result = new StringBuilder();
 

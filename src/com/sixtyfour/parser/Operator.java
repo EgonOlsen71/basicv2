@@ -7,10 +7,10 @@ package com.sixtyfour.parser;
  * The Class Operator.
  */
 public class Operator {
-	
+
 	/** The Constant OPS. */
 	private final static String[] OPS = { "^", "*", "/", "+", "-", "|", ",", "°", "&", "!" };
-	
+
 	/** The Constant NOP. */
 	public final static Operator NOP = new Operator('|');
 
@@ -218,7 +218,9 @@ public class Operator {
 		this.type = type;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override

@@ -40,19 +40,19 @@ public class LogicTest {
 		LogicTerm res = LogicParser.getTerm("A<B AND C+D <> (D+E)/A", machine);
 		System.out.println("Result: " + res.evalToBoolean(machine));
 		System.out.println("Parsed: " + res);
-		
+
 		res = LogicParser.getTerm("(A<B) AND NOT C+D <> (D+E)/A", machine);
 		System.out.println("Result: " + res.evalToBoolean(machine));
 		System.out.println("Parsed: " + res);
-		
+
 		res = LogicParser.getTerm("(A<B) AND ((NOT(((C+D <> (D+E)/A OR A>(E+D))))))", machine);
 		System.out.println("Result: " + res.evalToBoolean(machine));
 		System.out.println("Parsed: " + res);
-		
+
 		res = LogicParser.getTerm("(A<B) AND (C+D > (D+E)/A OR A<(E+D))", machine);
 		System.out.println("Result: " + res.evalToBoolean(machine));
 		System.out.println("Parsed: " + res);
-		
+
 		res = LogicParser.getTerm("NOTNOTNOT (A<B) AND (C+D > (D+E)/A OR A<(E+D))", machine);
 		System.out.println("Result: " + res.evalToBoolean(machine));
 		System.out.println("Parsed: " + res);

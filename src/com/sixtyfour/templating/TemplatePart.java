@@ -4,16 +4,16 @@ package com.sixtyfour.templating;
  * The Class TemplatePart.
  */
 public class TemplatePart {
-	
+
 	/** The first line. */
 	private int firstLine = -1;
-	
+
 	/** The last line. */
 	private int lastLine = -1;
-	
+
 	/** The content. */
 	private StringBuilder content = new StringBuilder();
-	
+
 	/** The dynamic. */
 	private boolean dynamic;
 

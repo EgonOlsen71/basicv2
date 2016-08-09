@@ -18,8 +18,11 @@ public class Rem extends AbstractCommand {
 		super("REM");
 	}
 
-	/* (non-Javadoc)
-	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String, int, int, int, boolean, sixtyfour.system.Machine)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String,
+	 * int, int, int, boolean, sixtyfour.system.Machine)
 	 */
 	@Override
 	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
@@ -27,8 +30,12 @@ public class Rem extends AbstractCommand {
 		return REM_MARKER;
 	}
 
-	/* (non-Javadoc)
-	 * @see sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.Machine)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.
+	 * Machine)
 	 */
 	@Override
 	public ProgramCounter execute(Machine machine) {

@@ -10,12 +10,12 @@ public enum Comparator {
 
 	/** The equal. */
 	EQUAL("="), /** The not equal. */
- NOT_EQUAL("<>"), /** The larger or equal. */
- LARGER_OR_EQUAL(">=", "=>"), /** The smaller or equal. */
- SMALLER_OR_EQUAL("<=", "=<"), /** The larger. */
- LARGER(">"), /** The smaller. */
- SMALLER("<"), /** The exists. */
- EXISTS();
+	NOT_EQUAL("<>"), /** The larger or equal. */
+	LARGER_OR_EQUAL(">=", "=>"), /** The smaller or equal. */
+	SMALLER_OR_EQUAL("<=", "=<"), /** The larger. */
+	LARGER(">"), /** The smaller. */
+	SMALLER("<"), /** The exists. */
+	EXISTS();
 
 	/** The term. */
 	private String[] term;

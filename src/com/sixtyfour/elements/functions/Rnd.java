@@ -10,7 +10,7 @@ import com.sixtyfour.system.Machine;
  * The Class Rnd.
  */
 public class Rnd extends AbstractFunction {
-	
+
 	/**
 	 * Instantiates a new rnd.
 	 */
@@ -18,7 +18,9 @@ public class Rnd extends AbstractFunction {
 		super("RND");
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.parser.Atom#getType()
 	 */
 	@Override
@@ -26,7 +28,9 @@ public class Rnd extends AbstractFunction {
 		return Type.REAL;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.parser.Atom#eval(sixtyfour.system.Machine)
 	 */
 	@Override

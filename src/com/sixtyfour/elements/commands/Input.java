@@ -17,7 +17,7 @@ import com.sixtyfour.util.VarUtils;
  * The Class Input.
  */
 public class Input extends MultiVariableCommand {
-	
+
 	/** The comment. */
 	protected String comment = "";
 
@@ -38,7 +38,9 @@ public class Input extends MultiVariableCommand {
 		super(name);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.elements.commands.AbstractCommand#getType()
 	 */
 	@Override
@@ -46,8 +48,11 @@ public class Input extends MultiVariableCommand {
 		return Type.NONE;
 	}
 
-	/* (non-Javadoc)
-	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String, int, int, int, boolean, sixtyfour.system.Machine)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String,
+	 * int, int, int, boolean, sixtyfour.system.Machine)
 	 */
 	@Override
 	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
@@ -73,8 +78,12 @@ public class Input extends MultiVariableCommand {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.Machine)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.
+	 * Machine)
 	 */
 	@Override
 	public ProgramCounter execute(Machine machine) {

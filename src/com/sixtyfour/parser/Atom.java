@@ -7,7 +7,7 @@ import com.sixtyfour.system.Machine;
  * The Interface Atom.
  */
 public interface Atom {
-	
+
 	/**
 	 * Gets the type.
 	 * 

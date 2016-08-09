@@ -7,22 +7,22 @@ public class ProgramCounter {
 
 	/** The line cnt. */
 	private int lineCnt;
-	
+
 	/** The line pos. */
 	private int linePos;
-	
+
 	/** The line number. */
 	private int lineNumber = -1;
-	
+
 	/** The end. */
 	private boolean end = false;
-	
+
 	/** The stop. */
 	private boolean stop = false;
-	
+
 	/** The skip. */
 	private boolean skip = false;
-	
+
 	/** The list. */
 	private boolean list = false;
 

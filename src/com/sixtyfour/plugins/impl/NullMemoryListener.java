@@ -17,7 +17,9 @@ import com.sixtyfour.plugins.MemoryListener;
  */
 public class NullMemoryListener implements MemoryListener {
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.plugins.MemoryListener#poke(int, int)
 	 */
 	@Override
@@ -25,7 +27,9 @@ public class NullMemoryListener implements MemoryListener {
 		// No nothing
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.plugins.MemoryListener#wait(int, int, int)
 	 */
 	@Override

@@ -12,7 +12,7 @@ public class VariableAndTerms {
 
 	/** The var name. */
 	private String varName;
-	
+
 	/** The terms. */
 	private List<Atom> terms;
 

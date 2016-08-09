@@ -13,10 +13,9 @@ package com.sixtyfour.plugins;
  * 
  * @see SystemCallEvent
  */
-public interface SystemCallListener
-{
-  
-  /**
+public interface SystemCallListener {
+
+	/**
 	 * Sys.
 	 * 
 	 * @param addr
@@ -24,5 +23,5 @@ public interface SystemCallListener
 	 * @param params
 	 *            the params
 	 */
-  void sys(int addr, Object... params);
+	void sys(int addr, Object... params);
 }

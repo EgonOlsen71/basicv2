@@ -13,7 +13,7 @@ public class If extends AbstractCommand {
 
 	/** The logic term. */
 	private LogicTerm logicTerm = null;
-	
+
 	/** The pc. */
 	private ProgramCounter pc = new ProgramCounter(0, 0);
 
@@ -24,8 +24,11 @@ public class If extends AbstractCommand {
 		super("IF");
 	}
 
-	/* (non-Javadoc)
-	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String, int, int, int, boolean, sixtyfour.system.Machine)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String,
+	 * int, int, int, boolean, sixtyfour.system.Machine)
 	 */
 	@Override
 	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
@@ -60,8 +63,12 @@ public class If extends AbstractCommand {
 		return restTerm;
 	}
 
-	/* (non-Javadoc)
-	 * @see sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.Machine)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.
+	 * Machine)
 	 */
 	@Override
 	public ProgramCounter execute(Machine machine) {

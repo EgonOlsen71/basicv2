@@ -15,51 +15,50 @@ public class InterpreterTest {
 	 *            the arguments
 	 */
 	public static void main(String[] args) {
-    testLet();
-    testPrint();
-    testFor();
-    testDim();
-    testArray();
-    testFunctionsInFunctions();
-    testComplexPrint();
-    testTabbebPrint();
-    testRem();
-    testEnd();
-    testPoke();
-    testGoto();
-    testSpeed();
-    testIf();
-    testLogic();
-    testSys();
+		testLet();
+		testPrint();
+		testFor();
+		testDim();
+		testArray();
+		testFunctionsInFunctions();
+		testComplexPrint();
+		testTabbebPrint();
+		testRem();
+		testEnd();
+		testPoke();
+		testGoto();
+		testSpeed();
+		testIf();
+		testLogic();
+		testSys();
 	}
 
 	/**
 	 * Test sys.
 	 */
-	private static void testSys()
-  {
-	  System.out.println("testSys");
-    String code = "10 a=64738\n20 sys 64738:sysa:sysa,12,\"hallo\", 4.4, a";
-    Interpreter inter = new Interpreter(code);
-    inter.run();
-    
-  }
+	private static void testSys() {
+		System.out.println("testSys");
+		String code = "10 a=64738\n20 sys 64738:sysa:sysa,12,\"hallo\", 4.4, a";
+		Interpreter inter = new Interpreter(code);
+		inter.run();
 
-  /**
+	}
+
+	/**
 	 * Test logic.
 	 */
-  private static void testLogic() {
-    System.out.println("testLogic");
+	private static void testLogic() {
+		System.out.println("testLogic");
 		String code = "10 a=5\n20if notnota then print\"hello\"\n30printa=5\n40b=a=5\n50printb\n60if b then print\"hello again!\"";
 		Interpreter inter = new Interpreter(code);
 		inter.run();
 	}
-	
+
 	/**
 	 * Test if.
 	 */
 	private static void testIf() {
-	  System.out.println("testIf");
+		System.out.println("testIf");
 		String code = "10 a=5\n20ifa=5thenprint\"a is 5\"\n30ifa<>5thenprint\"a is not 5\"\n40if(a>2+1*1)goto100:print\"Should not be here!\"\n50print\"Should not print this\"\n100print\"We are here...\"\n110if((a<>10))then print\"1.print\":print\"2.print\":b=34+a:printb";
 		Interpreter inter = new Interpreter(code);
 		inter.run();
@@ -150,7 +149,7 @@ public class InterpreterTest {
 	 */
 	private static void testLet() {
 		System.out.println("testLet");
-		
+
 		String code = "10 let z=25:a=45:b=7\n" + "20 c=67.2:z=a:h$=\"te r*t/u st\"\n" + "45 a=(23.22+12.2+b)/c:h$=h$+\"wu{t0}rst\":popo$=h$+h$\n100 i=88:u%=14+20:i=peek(u%)";
 
 		Interpreter inter = new Interpreter(code);

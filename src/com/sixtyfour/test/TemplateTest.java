@@ -20,9 +20,9 @@ public class TemplateTest {
 		Template templ = TemplateFactory.getTemplate(new FileInputStream("html.cbm"), vars);
 		String res = templ.process();
 		System.out.println(res);
-		for (int i=0; i<15; i++) {
-		res = templ.process();
-		System.out.println(i);
+		for (int i = 0; i < 15; i++) {
+			res = templ.process();
+			System.out.println(i);
 		}
 		System.out.println(res);
 	}

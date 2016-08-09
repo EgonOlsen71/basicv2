@@ -16,10 +16,10 @@ import com.sixtyfour.util.VarUtils;
  * @author EgonOlsen
  */
 public abstract class MultiVariableCommand extends AbstractCommand {
-	
+
 	/** The vars. */
 	protected List<Variable> vars = new ArrayList<Variable>();
-	
+
 	/** The index terms. */
 	protected List<Term> indexTerms = new ArrayList<Term>();
 

@@ -18,8 +18,11 @@ public class Clr extends AbstractCommand {
 		super("CLR");
 	}
 
-	/* (non-Javadoc)
-	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String, int, int, int, boolean, sixtyfour.system.Machine)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String,
+	 * int, int, int, boolean, sixtyfour.system.Machine)
 	 */
 	@Override
 	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
@@ -30,8 +33,12 @@ public class Clr extends AbstractCommand {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.Machine)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.
+	 * Machine)
 	 */
 	@Override
 	public ProgramCounter execute(Machine machine) {

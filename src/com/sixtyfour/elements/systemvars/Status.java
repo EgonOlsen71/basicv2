@@ -17,8 +17,10 @@ public class Status extends Variable {
 	public Status() {
 		super("ST", 0);
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.elements.Variable#getValue()
 	 */
 	@Override
@@ -26,7 +28,9 @@ public class Status extends Variable {
 		return 128;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.elements.Variable#eval(sixtyfour.system.Machine)
 	 */
 	@Override

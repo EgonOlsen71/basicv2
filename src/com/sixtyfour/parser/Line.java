@@ -12,16 +12,16 @@ import com.sixtyfour.elements.commands.Command;
  * The Class Line.
  */
 public class Line {
-	
+
 	/** The line. */
 	private String line;
-	
+
 	/** The number. */
 	private int number;
-	
+
 	/** The count. */
 	private int count;
-	
+
 	/** The commands. */
 	private List<Command> commands = new ArrayList<Command>();
 
@@ -42,7 +42,7 @@ public class Line {
 	 * Adds the dummy remark.
 	 */
 	public void addDummyRemark() {
-		// Just to ease parsing of data commands (because that the only command
+		// Just to ease parsing of data commands (because that's the only command
 		// where spaces at the end might matter)
 		line += "REM";
 	}
@@ -94,7 +94,9 @@ public class Line {
 		this.commands = commands;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override

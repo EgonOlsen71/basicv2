@@ -16,7 +16,7 @@ import com.sixtyfour.util.VarUtils;
  * The Class InputFile.
  */
 public class InputFile extends Input {
-	
+
 	/** The file number. */
 	private Atom fileNumber = null;
 
@@ -27,8 +27,11 @@ public class InputFile extends Input {
 		super("INPUT#");
 	}
 
-	/* (non-Javadoc)
-	 * @see sixtyfour.elements.commands.Input#parse(java.lang.String, int, int, int, boolean, sixtyfour.system.Machine)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see sixtyfour.elements.commands.Input#parse(java.lang.String, int, int,
+	 * int, boolean, sixtyfour.system.Machine)
 	 */
 	@Override
 	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
@@ -54,7 +57,9 @@ public class InputFile extends Input {
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.elements.commands.Input#execute(sixtyfour.system.Machine)
 	 */
 	@Override

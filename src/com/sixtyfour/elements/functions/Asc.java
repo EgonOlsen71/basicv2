@@ -18,7 +18,9 @@ public class Asc extends AbstractFunction {
 		super("ASC");
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.parser.Atom#getType()
 	 */
 	@Override
@@ -26,15 +28,17 @@ public class Asc extends AbstractFunction {
 		return Type.INTEGER;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.parser.Atom#eval(sixtyfour.system.Machine)
 	 */
 	@Override
 	public Object eval(Machine machine) {
 		if (term.getType().equals(Type.STRING)) {
 			String str = (String) term.eval(machine);
-			if (str == null || str.length()==0) {
-				throw new RuntimeException("Illegal quantity error: "+this);
+			if (str == null || str.length() == 0) {
+				throw new RuntimeException("Illegal quantity error: " + this);
 			}
 			return (int) str.charAt(0);
 		}

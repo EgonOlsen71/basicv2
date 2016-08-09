@@ -10,7 +10,7 @@ import com.sixtyfour.system.Machine;
  * The Class Fre.
  */
 public class Fre extends AbstractFunction {
-	
+
 	/**
 	 * Instantiates a new fre.
 	 */
@@ -18,7 +18,9 @@ public class Fre extends AbstractFunction {
 		super("FRE");
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.parser.Atom#getType()
 	 */
 	@Override
@@ -26,7 +28,9 @@ public class Fre extends AbstractFunction {
 		return Type.INTEGER;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.parser.Atom#eval(sixtyfour.system.Machine)
 	 */
 	@Override

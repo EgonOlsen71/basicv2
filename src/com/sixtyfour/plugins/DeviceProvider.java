@@ -3,29 +3,25 @@ package com.sixtyfour.plugins;
 /**
  * The Interface DeviceProvider.
  */
-public interface DeviceProvider
-  extends PrintConsumer
-{
-  
-  /**
+public interface DeviceProvider extends PrintConsumer {
+
+	/**
 	 * Close.
 	 * 
 	 * @param fileNumber
 	 *            the file number
 	 */
-  void close(int fileNumber);
+	void close(int fileNumber);
 
-
-  /**
+	/**
 	 * Open.
 	 * 
 	 * @param fileNumber
 	 *            the file number
 	 */
-  void open(int fileNumber);
+	void open(int fileNumber);
 
-
-  /**
+	/**
 	 * Open.
 	 * 
 	 * @param fileNumber
@@ -33,10 +29,9 @@ public interface DeviceProvider
 	 * @param device
 	 *            the device
 	 */
-  void open(int fileNumber, int device);
+	void open(int fileNumber, int device);
 
-
-  /**
+	/**
 	 * Open.
 	 * 
 	 * @param fileNumber
@@ -46,10 +41,9 @@ public interface DeviceProvider
 	 * @param secondaryAddress
 	 *            the secondary address
 	 */
-  void open(int fileNumber, int device, int secondaryAddress);
+	void open(int fileNumber, int device, int secondaryAddress);
 
-
-  /**
+	/**
 	 * Open.
 	 * 
 	 * @param fileNumber
@@ -61,20 +55,18 @@ public interface DeviceProvider
 	 * @param fileName
 	 *            the file name
 	 */
-  void open(int fileNumber, int device, int secondaryAddress, String fileName);
+	void open(int fileNumber, int device, int secondaryAddress, String fileName);
 
-
-  /**
+	/**
 	 * Checks if is open.
 	 * 
 	 * @param fileNumber
 	 *            the file number
 	 * @return true, if is open
 	 */
-  boolean isOpen(int fileNumber);
+	boolean isOpen(int fileNumber);
 
-
-  /**
+	/**
 	 * Dump.
 	 * 
 	 * @param pc
@@ -84,40 +76,36 @@ public interface DeviceProvider
 	 * @param fileNumber
 	 *            the file number
 	 */
-  void dump(PrintConsumer pc, FileWrapper file, int fileNumber);
+	void dump(PrintConsumer pc, FileWrapper file, int fileNumber);
 
-
-  /**
+	/**
 	 * Input string.
 	 * 
 	 * @param fileNumber
 	 *            the file number
 	 * @return the string
 	 */
-  String inputString(int fileNumber);
+	String inputString(int fileNumber);
 
-
-  /**
+	/**
 	 * Input number.
 	 * 
 	 * @param fileNumber
 	 *            the file number
 	 * @return the float
 	 */
-  Float inputNumber(int fileNumber);
+	Float inputNumber(int fileNumber);
 
-
-  /**
+	/**
 	 * Gets the char.
 	 * 
 	 * @param fileNumber
 	 *            the file number
 	 * @return the char
 	 */
-  char getChar(int fileNumber);
+	char getChar(int fileNumber);
 
-
-  /**
+	/**
 	 * Save.
 	 * 
 	 * @param fileName
@@ -127,10 +115,9 @@ public interface DeviceProvider
 	 * @param secondary
 	 *            the secondary
 	 */
-  void save(String fileName, int device, int secondary);
+	void save(String fileName, int device, int secondary);
 
-
-  /**
+	/**
 	 * Load.
 	 * 
 	 * @param fileName
@@ -140,10 +127,9 @@ public interface DeviceProvider
 	 * @param secondary
 	 *            the secondary
 	 */
-  void load(String fileName, int device, int secondary);
+	void load(String fileName, int device, int secondary);
 
-
-  /**
+	/**
 	 * Verify.
 	 * 
 	 * @param fileName
@@ -153,6 +139,6 @@ public interface DeviceProvider
 	 * @param secondary
 	 *            the secondary
 	 */
-  void verify(String fileName, int device, int secondary);
+	void verify(String fileName, int device, int secondary);
 
 }

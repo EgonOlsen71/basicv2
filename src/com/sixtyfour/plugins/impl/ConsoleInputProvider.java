@@ -15,7 +15,9 @@ public class ConsoleInputProvider implements InputProvider {
 	/** The scanner. */
 	private Scanner scanner = new Scanner(System.in);
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.plugins.InputProvider#readKey()
 	 */
 	@Override
@@ -29,7 +31,9 @@ public class ConsoleInputProvider implements InputProvider {
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.plugins.InputProvider#readString()
 	 */
 	@Override

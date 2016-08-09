@@ -10,15 +10,20 @@ import com.sixtyfour.system.Machine;
  */
 public class LogicAnd implements LogicOp {
 
-	/* (non-Javadoc)
-	 * @see sixtyfour.parser.logic.LogicOp#eval(sixtyfour.system.Machine, boolean, sixtyfour.parser.logic.LogicBlock)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see sixtyfour.parser.logic.LogicOp#eval(sixtyfour.system.Machine,
+	 * boolean, sixtyfour.parser.logic.LogicBlock)
 	 */
 	@Override
 	public boolean eval(Machine machine, boolean state, LogicBlock block) {
 		return state && block.evalToBoolean(machine);
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
@@ -26,7 +31,9 @@ public class LogicAnd implements LogicOp {
 		return "AND";
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.parser.logic.LogicOp#isAnd()
 	 */
 	@Override

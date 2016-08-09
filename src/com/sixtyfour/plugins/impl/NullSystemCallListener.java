@@ -5,7 +5,6 @@ package com.sixtyfour.plugins.impl;
 
 import com.sixtyfour.plugins.SystemCallListener;
 
-
 /**
  * The listener interface for receiving nullSystemCall events. The class that is
  * interested in processing a nullSystemCall event implements this interface,
@@ -16,17 +15,16 @@ import com.sixtyfour.plugins.SystemCallListener;
  * 
  * @see NullSystemCallEvent
  */
-public class NullSystemCallListener
-  implements SystemCallListener
-{
+public class NullSystemCallListener implements SystemCallListener {
 
-  /* (non-Javadoc)
-   * @see sixtyfour.plugins.SystemCallListener#sys(int, java.lang.Object[])
-   */
-  @Override
-  public void sys(int addr, Object... params)
-  {
-    //
-  }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see sixtyfour.plugins.SystemCallListener#sys(int, java.lang.Object[])
+	 */
+	@Override
+	public void sys(int addr, Object... params) {
+		//
+	}
 
 }

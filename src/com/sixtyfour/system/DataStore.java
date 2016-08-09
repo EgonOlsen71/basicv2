@@ -7,10 +7,10 @@ import java.util.List;
  * The Class DataStore.
  */
 public class DataStore {
-	
+
 	/** The position. */
 	private int position = 0;
-	
+
 	/** The datas. */
 	private List<Object> datas = new ArrayList<Object>();
 

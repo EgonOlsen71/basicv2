@@ -24,7 +24,7 @@ public class Dim extends AbstractCommand {
 
 	/** The vars. */
 	private List<Variable> vars;
-	
+
 	/** The terms. */
 	private Map<String, List<Atom>> terms;
 
@@ -54,7 +54,9 @@ public class Dim extends AbstractCommand {
 		this.vars = vars;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.elements.commands.AbstractCommand#getType()
 	 */
 	@Override
@@ -62,8 +64,11 @@ public class Dim extends AbstractCommand {
 		return Type.NONE;
 	}
 
-	/* (non-Javadoc)
-	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String, int, int, int, boolean, sixtyfour.system.Machine)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String,
+	 * int, int, int, boolean, sixtyfour.system.Machine)
 	 */
 	@Override
 	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
@@ -79,8 +84,12 @@ public class Dim extends AbstractCommand {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.Machine)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.
+	 * Machine)
 	 */
 	@Override
 	public ProgramCounter execute(Machine machine) {

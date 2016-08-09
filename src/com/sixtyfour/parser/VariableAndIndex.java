@@ -12,7 +12,7 @@ public class VariableAndIndex {
 
 	/** The variable. */
 	private Variable variable;
-	
+
 	/** The index term. */
 	private Term indexTerm;
 

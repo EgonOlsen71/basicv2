@@ -6,10 +6,9 @@ package com.sixtyfour.plugins;
 /**
  * The Interface PrintConsumer.
  */
-public interface PrintConsumer
-{
-  
-  /**
+public interface PrintConsumer {
+
+	/**
 	 * Prints the.
 	 * 
 	 * @param id
@@ -17,9 +16,9 @@ public interface PrintConsumer
 	 * @param txt
 	 *            the txt
 	 */
-  void print(int id, String txt);
+	void print(int id, String txt);
 
-  /**
+	/**
 	 * Println.
 	 * 
 	 * @param id
@@ -27,6 +26,6 @@ public interface PrintConsumer
 	 * @param txt
 	 *            the txt
 	 */
-  void println(int id, String txt);
-  
+	void println(int id, String txt);
+
 }

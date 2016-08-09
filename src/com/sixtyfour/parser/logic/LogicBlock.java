@@ -16,7 +16,7 @@ public interface LogicBlock extends Atom {
 	 * @return true, if successful
 	 */
 	boolean evalToBoolean(Machine machine);
-	
+
 	/**
 	 * Not.
 	 */

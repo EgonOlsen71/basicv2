@@ -11,7 +11,7 @@ import com.sixtyfour.system.Machine;
  * The Interface Function.
  */
 public interface Function extends Atom {
-	
+
 	/**
 	 * Gets the name.
 	 * 

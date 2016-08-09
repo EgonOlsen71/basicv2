@@ -22,18 +22,18 @@ public class ProgramTest {
 		for (int i = 0; i < 10; i++) {
 			testPrime2();
 		}
-		 testConditions();
+		testConditions();
 		// testVarious();
 		// testGosubReturn();
-		 //testGosub();
+		// testGosub();
 		// testMenu();
-		 testBeer();
+		testBeer();
 		// testRun();
 		// testInput();
-		 testData();
+		testData();
 		// testAdventure();
-		 //testCalc();
-		 testStuff();
+		// testCalc();
+		testStuff();
 	}
 
 	/**

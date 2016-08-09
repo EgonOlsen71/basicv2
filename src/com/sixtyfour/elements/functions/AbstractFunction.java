@@ -12,7 +12,7 @@ public abstract class AbstractFunction implements Function {
 
 	/** The name. */
 	protected String name;
-	
+
 	/** The term. */
 	protected Term term;
 
@@ -37,7 +37,9 @@ public abstract class AbstractFunction implements Function {
 		this.name = VarUtils.toUpper(name);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#clone()
 	 */
 	public Function clone() {
@@ -51,7 +53,9 @@ public abstract class AbstractFunction implements Function {
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.elements.functions.Function#getName()
 	 */
 	@Override
@@ -59,7 +63,9 @@ public abstract class AbstractFunction implements Function {
 		return name;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.elements.functions.Function#getTerm()
 	 */
 	@Override
@@ -67,7 +73,9 @@ public abstract class AbstractFunction implements Function {
 		return term;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.elements.functions.Function#setTerm(sixtyfour.parser.Term)
 	 */
 	@Override
@@ -75,15 +83,20 @@ public abstract class AbstractFunction implements Function {
 		this.term = term;
 	}
 
-	/* (non-Javadoc)
-	 * @see sixtyfour.elements.functions.Function#parse(java.lang.String, sixtyfour.system.Machine)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see sixtyfour.elements.functions.Function#parse(java.lang.String,
+	 * sixtyfour.system.Machine)
 	 */
 	@Override
 	public void parse(String linePart, Machine machine) {
 		this.setTerm(Parser.getTerm(linePart, machine, false, true));
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.elements.functions.Function#isFunction(java.lang.String)
 	 */
 	@Override
@@ -91,7 +104,9 @@ public abstract class AbstractFunction implements Function {
 		return VarUtils.toUpper(function.trim()).startsWith(name);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.elements.functions.Function#hasPostfix()
 	 */
 	@Override
@@ -99,15 +114,20 @@ public abstract class AbstractFunction implements Function {
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see sixtyfour.elements.functions.Function#setFunctionName(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * sixtyfour.elements.functions.Function#setFunctionName(java.lang.String)
 	 */
 	@Override
 	public void setFunctionName(String functionName) {
 		this.functionName = functionName;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
@@ -115,7 +135,9 @@ public abstract class AbstractFunction implements Function {
 		return this.name + "(" + term + ")";
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.parser.Atom#isTerm()
 	 */
 	@Override

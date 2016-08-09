@@ -7,34 +7,34 @@ import java.util.List;
  * The Class FileWrapper.
  */
 public class FileWrapper {
-	
+
 	/** The device number. */
 	private int deviceNumber;
-	
+
 	/** The secondary address. */
 	private int secondaryAddress;
-	
+
 	/** The file type. */
 	private FileType fileType;
-	
+
 	/** The file name. */
 	private String fileName;
-	
+
 	/** The mode. */
 	private FileMode mode;
-	
+
 	/** The record length. */
 	private int recordLength;
-	
+
 	/** The content. */
 	private List<String> content;
-	
+
 	/** The position. */
 	private int position = 0;
-	
+
 	/** The pointer. */
 	private int pointer = 0;
-	
+
 	/** The content as string. */
 	private String contentAsString;
 

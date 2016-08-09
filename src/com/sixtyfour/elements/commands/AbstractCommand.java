@@ -70,7 +70,9 @@ public abstract class AbstractCommand implements Command {
 		return name;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.elements.commands.Command#keepSpaces()
 	 */
 	public boolean keepSpaces() {

@@ -16,16 +16,16 @@ import com.sixtyfour.util.VarUtils;
  * @author Foerster-H
  */
 public class Template {
-	
+
 	/** The vars. */
 	private Map<String, Object> vars = new HashMap<String, Object>();
-	
+
 	/** The interpreter. */
 	private Interpreter interpreter = null;
-	
+
 	/** The static parts. */
 	private Map<Integer, TemplatePart> staticParts = new HashMap<Integer, TemplatePart>();
-	
+
 	/** The out. */
 	private TemplateOutputChannel out;
 

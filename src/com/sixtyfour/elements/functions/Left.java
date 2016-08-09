@@ -15,7 +15,7 @@ import com.sixtyfour.util.VarUtils;
  * The Class Left.
  */
 public class Left extends AbstractFunction {
-	
+
 	/**
 	 * Instantiates a new left.
 	 */
@@ -23,7 +23,9 @@ public class Left extends AbstractFunction {
 		super("LEFT$");
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.parser.Atom#getType()
 	 */
 	@Override
@@ -31,7 +33,9 @@ public class Left extends AbstractFunction {
 		return Type.STRING;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.parser.Atom#eval(sixtyfour.system.Machine)
 	 */
 	@Override

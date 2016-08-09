@@ -16,7 +16,7 @@ import com.sixtyfour.util.VarUtils;
  * The Class Print.
  */
 public class Print extends AbstractCommand {
-	
+
 	/** The parts. */
 	protected List<PrintPart> parts = new ArrayList<PrintPart>();
 
@@ -37,7 +37,9 @@ public class Print extends AbstractCommand {
 		super(name);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.elements.commands.AbstractCommand#getType()
 	 */
 	@Override
@@ -45,8 +47,11 @@ public class Print extends AbstractCommand {
 		return term.getType();
 	}
 
-	/* (non-Javadoc)
-	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String, int, int, int, boolean, sixtyfour.system.Machine)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String,
+	 * int, int, int, boolean, sixtyfour.system.Machine)
 	 */
 	@Override
 	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
@@ -63,8 +68,12 @@ public class Print extends AbstractCommand {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.Machine)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.
+	 * Machine)
 	 */
 	@Override
 	public ProgramCounter execute(Machine machine) {
@@ -214,13 +223,13 @@ public class Print extends AbstractCommand {
 	 * The Class PrintPart.
 	 */
 	protected static class PrintPart {
-		
+
 		/** The part. */
 		public String part;
-		
+
 		/** The delimiter. */
 		public char delimiter;
-		
+
 		/** The term. */
 		public Term term;
 
@@ -237,7 +246,9 @@ public class Print extends AbstractCommand {
 			this.delimiter = delimiter;
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see java.lang.Object#toString()
 		 */
 		@Override

@@ -30,8 +30,6 @@ public class ParserTest {
 		testStuff();
 	}
 
-	
-	
 	/**
 	 * Test stuff.
 	 */
@@ -50,7 +48,7 @@ public class ParserTest {
 		machine.add(new Variable("U", 22));
 		machine.add(new Variable("O", 45));
 		machine.add(new Variable("I", 67));
-		String term="a * b * (-c*f+(t*r+-f*(g-z)-f*g/z^4)) + abs(-(d*u))*(p+(o*i*z))*z+u";
+		String term = "a * b * (-c*f+(t*r+-f*(g-z)-f*g/z^4)) + abs(-(d*u))*(p+(o*i*z))*z+u";
 		String wbres = Parser.addBrackets(term);
 		System.out.println(wbres);
 
@@ -58,8 +56,6 @@ public class ParserTest {
 		System.out.println(res);
 		System.out.println("Value: " + res.eval(machine));
 	}
-
-
 
 	/**
 	 * Test abs.
@@ -77,14 +73,14 @@ public class ParserTest {
 		Term res = Parser.getTerm(term, machine, false, true);
 		System.out.println(res);
 		System.out.println("Value: " + res.eval(machine));
-		
+
 	}
 
 	/**
 	 * Test power of.
 	 */
 	private static void testPowerOf() {
-		
+
 		System.out.println("testPowerOf");
 		Machine machine = new Machine();
 		machine.add(new Variable("X1", 122));
@@ -93,7 +89,7 @@ public class ParserTest {
 		machine.add(new Variable("X1", 110));
 		machine.add(new Variable("Y", 214));
 		machine.add(new Variable("Y1", 210));
-		//String term="((x1-x)^2+(y1-y)^2+(z1-z)^2)";
+		// String term="((x1-x)^2+(y1-y)^2+(z1-z)^2)";
 		String term = "((x1-x)^2+(y1-y)^2+(z1-z)^2)^(1/2)";
 
 		String wbres = Parser.addBrackets(term);

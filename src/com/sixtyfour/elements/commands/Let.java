@@ -19,10 +19,10 @@ import com.sixtyfour.util.VarUtils;
  * The Class Let.
  */
 public class Let extends AbstractCommand {
-	
+
 	/** The var. */
 	private Variable var;
-	
+
 	/** The index term. */
 	private Term indexTerm;
 
@@ -52,7 +52,9 @@ public class Let extends AbstractCommand {
 		this.var = var;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.elements.commands.AbstractCommand#getType()
 	 */
 	@Override
@@ -62,8 +64,11 @@ public class Let extends AbstractCommand {
 
 	// rm$(lb)=rm$(lb)+CHR$(13)+"A sign here says:  LIMBO, find right    exit "
 
-	/* (non-Javadoc)
-	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String, int, int, int, boolean, sixtyfour.system.Machine)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String,
+	 * int, int, int, boolean, sixtyfour.system.Machine)
 	 */
 	@Override
 	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
@@ -82,8 +87,12 @@ public class Let extends AbstractCommand {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.Machine)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.
+	 * Machine)
 	 */
 	@Override
 	public ProgramCounter execute(Machine machine) {

@@ -5,7 +5,6 @@ package com.sixtyfour.parser.logic;
 
 import com.sixtyfour.system.Machine;
 
-
 /**
  * The Interface LogicOp.
  */
