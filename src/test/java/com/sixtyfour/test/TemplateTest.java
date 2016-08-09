@@ -17,13 +17,8 @@ public class TemplateTest {
 		vars.put("CN", 10);
 		vars.put("NA$", "Test");
 		vars.put("TT$", "At least better than PHP!");
-		Template templ = TemplateFactory.getTemplate(new FileInputStream("html.cbm"), vars);
+		Template templ = TemplateFactory.getTemplate(new FileInputStream("src/test/resources/templates/html.cbm"), vars);
 		String res = templ.process();
-		System.out.println(res);
-		for (int i = 0; i < 15; i++) {
-			res = templ.process();
-			System.out.println(i);
-		}
 		System.out.println(res);
 	}
 }

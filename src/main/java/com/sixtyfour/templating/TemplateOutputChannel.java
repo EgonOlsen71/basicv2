@@ -3,7 +3,7 @@ package com.sixtyfour.templating;
 import com.sixtyfour.plugins.OutputChannel;
 import com.sixtyfour.plugins.PrintConsumer;
 
-/**
+/** 
  * The Class TemplateOutputChannel.
  * 
  * @author Foerster-H

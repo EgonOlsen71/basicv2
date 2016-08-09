@@ -163,8 +163,7 @@ public class Template {
 			}
 		} while (pos != -1);
 
-		System.out.println(code);
-
+		// System.out.println(code);
 		interpreter = new Interpreter(code.toString());
 		interpreter.parse();
 		out = new TemplateOutputChannel();

@@ -40,7 +40,7 @@ public class ProgramTest {
 	 * Test stuff.
 	 */
 	private static void testStuff() {
-		String[] vary = Loader.loadProgram("files.bas");
+		String[] vary = Loader.loadProgram("src/test/resources/basic/files.bas");
 		Interpreter inty = new Interpreter(vary);
 		// inty.setPrintLineNumbers(true);
 		inty.run();
@@ -50,7 +50,7 @@ public class ProgramTest {
 	 * Test calc.
 	 */
 	private static void testCalc() {
-		String[] vary = Loader.loadProgram("calctest.bas");
+		String[] vary = Loader.loadProgram("src/test/resources/basic/calctest.bas");
 		Interpreter inty = new Interpreter(vary);
 		inty.run();
 	}
@@ -59,7 +59,7 @@ public class ProgramTest {
 	 * Test adventure.
 	 */
 	private static void testAdventure() {
-		String[] vary = Loader.loadProgram("OHARES3.BAS");
+		String[] vary = Loader.loadProgram("src/test/resources/basic/OHARES3.BAS");
 		Interpreter inty = new Interpreter(vary);
 		inty.run();
 	}
@@ -68,7 +68,7 @@ public class ProgramTest {
 	 * Test data.
 	 */
 	private static void testData() {
-		String[] vary = Loader.loadProgram("data.bas");
+		String[] vary = Loader.loadProgram("src/test/resources/basic/data.bas");
 		Interpreter inty = new Interpreter(vary);
 		inty.run();
 	}
@@ -77,7 +77,7 @@ public class ProgramTest {
 	 * Test input.
 	 */
 	private static void testInput() {
-		String[] vary = Loader.loadProgram("input.bas");
+		String[] vary = Loader.loadProgram("src/test/resources/basic/input.bas");
 		Interpreter inty = new Interpreter(vary);
 		inty.run();
 	}
@@ -86,7 +86,7 @@ public class ProgramTest {
 	 * Test run.
 	 */
 	private static void testRun() {
-		String[] vary = Loader.loadProgram("run.bas");
+		String[] vary = Loader.loadProgram("src/test/resources/basic/run.bas");
 		Interpreter inty = new Interpreter(vary);
 		inty.run();
 	}
@@ -95,7 +95,7 @@ public class ProgramTest {
 	 * Test beer.
 	 */
 	private static void testBeer() {
-		String[] vary = Loader.loadProgram("beer.bas");
+		String[] vary = Loader.loadProgram("src/test/resources/basic/beer.bas");
 		Interpreter inty = new Interpreter(vary);
 		inty.run();
 	}
@@ -104,7 +104,7 @@ public class ProgramTest {
 	 * Test menu.
 	 */
 	private static void testMenu() {
-		String[] vary = Loader.loadProgram("menu.bas");
+		String[] vary = Loader.loadProgram("src/test/resources/basic/menu.bas");
 		Interpreter inty = new Interpreter(vary);
 		inty.run();
 	}
@@ -113,7 +113,7 @@ public class ProgramTest {
 	 * Test gosub.
 	 */
 	private static void testGosub() {
-		String[] vary = Loader.loadProgram("fac.bas");
+		String[] vary = Loader.loadProgram("src/test/resources/basic/fac.bas");
 		Interpreter inty = new Interpreter(vary);
 		inty.run();
 	}
@@ -122,7 +122,7 @@ public class ProgramTest {
 	 * Test gosub return.
 	 */
 	private static void testGosubReturn() {
-		String[] vary = Loader.loadProgram("subroutines.bas");
+		String[] vary = Loader.loadProgram("src/test/resources/basic/subroutines.bas");
 		Interpreter inty = new Interpreter(vary);
 		inty.run();
 	}
@@ -131,7 +131,7 @@ public class ProgramTest {
 	 * Test various.
 	 */
 	private static void testVarious() {
-		String[] vary = Loader.loadProgram("various.bas");
+		String[] vary = Loader.loadProgram("src/test/resources/basic/various.bas");
 		Interpreter inty = new Interpreter(vary);
 		inty.run();
 	}
@@ -140,7 +140,7 @@ public class ProgramTest {
 	 * Test conditions.
 	 */
 	private static void testConditions() {
-		String[] condy = Loader.loadProgram("conditions.bas");
+		String[] condy = Loader.loadProgram("src/test/resources/basic/conditions.bas");
 		Interpreter inty = new Interpreter(condy);
 		inty.run();
 	}
@@ -149,7 +149,7 @@ public class ProgramTest {
 	 * Test prime.
 	 */
 	private static void testPrime() {
-		String[] prime = Loader.loadProgram("prime.bas");
+		String[] prime = Loader.loadProgram("src/test/resources/basic/prime.bas");
 		Interpreter inty = new Interpreter(prime);
 		inty.run();
 	}
@@ -158,7 +158,7 @@ public class ProgramTest {
 	 * Test prime 2.
 	 */
 	private static void testPrime2() {
-		String[] prime = Loader.loadProgram("prime2.bas");
+		String[] prime = Loader.loadProgram("src/test/resources/basic/prime2.bas");
 		Interpreter inty = new Interpreter(prime);
 		inty.run();
 	}
