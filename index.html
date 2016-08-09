@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>BasicV2 by EgonOlsen71</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">BasicV2</h1>
+      <h2 class="project-tagline">A BASIC interpreter/compiler that&#39;s compatible with the BASIC V2 dialect used on older Commodore computers</h2>
+      <a href="https://github.com/EgonOlsen71/basicv2" class="btn">View on GitHub</a>
+      <a href="https://github.com/EgonOlsen71/basicv2/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/EgonOlsen71/basicv2/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h3>
+<a id="what-it-is" class="anchor" href="#what-it-is" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>What it is</h3>
+
+<p>BasicV2 is an attempt to write a BASIC interpreter/compiler in Java that is compatible with the BASIC dialect that older Commodore home computers (<a href="https://en.wikipedia.org/wiki/Commodore_International">Commodore on WikiPedia</a>) were using. It can run BASIC programs written in BASIC V2 or ANSI BASIC.<br>
+It doesn't use any parts of the implementation of the original Commodore BASIC like similar projects do. It's a complete reimplementation in Java.</p>
+
+<h3>
+<a id="what-it-isnt" class="anchor" href="#what-it-isnt" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>What it isn't</h3>
+
+<p>It's not an emulator! It doesn't provide any of the graphics or sound capabilities of a C64 or a VIC20. It just runs the programs and outputs the results onto the console.</p>
+
+<h3>
+<a id="how-is-works" class="anchor" href="#how-is-works" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>How is works</h3>
+
+<p>It compiles the BASIC code into a kind of instance tree structure that it then "executes" to run the BASIC program. It outputs the results onto the console. </p>
+
+<h3>
+<a id="compatibility" class="anchor" href="#compatibility" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Compatibility</h3>
+
+<p>All Basic V2 commands are implemented and all should behave in the way in which they would on a real machine. But because the actual hardware isn't emulated, no PEEKs or POKES will do anything useful and no SYS calls will execute anything.<br>
+However, the implementation supports 64KB of memory from which programs can read and in which they can write by using PEEKs and POKEs.<br>
+File I/O is supported to a certain degree, i.e. you can read and write files to virtual, in-memory discs and tapes, but disc commands and such aren't supported.</p>
+
+<h3>
+<a id="limitations" class="anchor" href="#limitations" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Limitations</h3>
+
+<p>As mentioned, it doesn't really support any of the hardware features of Commodore's machines, so any program that manipulates memory addresses or uses control characters or PETSCII characters will not run as intended. It will most likely run without crashing but the visual or oral output that the program intends to generate simply won't be there.
+Error messages differ from the ones of the original interpreter. Some are better and more detailed while others might be not as good.</p>
+
+<h3>
+<a id="enhancements" class="anchor" href="#enhancements" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Enhancements</h3>
+
+<p>Compared to the original BASIC V2 interpreter, this one features some enhancements:</p>
+
+<ol>
+<li>No memory limitation of 38911 bytes. BASIC programs can be as large as the JVM's memory settings allow them to be.</li>
+<li>Virtually no line number limitations. Line numbers can exceed 63999 without a problem.</li>
+<li>Lower and upper case and both be used an even mixed in a BASIC program.</li>
+<li>Integer numbers aren't limited to 16bit anymore, but to 32bit. Real numbers are mapped to Java's floats, which provides higher a accuracy and range.</li>
+<li>It's much faster.</li>
+</ol>
+
+<h3>
+<a id="speed" class="anchor" href="#speed" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Speed</h3>
+
+<p>It's not as fast as plain Java, of course. But it's actually pretty fast. On a 4Ghz Core i7, it's approx. 19,000 times faster than a C64 when it comes to number crunching.<br>
+Compared to PHP and tested with a simple prime number calculation ( you can find an example in /src/test/resources/prime2.bas) it was 6 times faster than PHP 5.6 and 3.5 times faster than PHP 7 on the same machine.</p>
+
+<h3>
+<a id="how-to-use" class="anchor" href="#how-to-use" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>How to use</h3>
+
+<p>You can find basic usage examples in the test directory. Running a BASIC program is quite simple:</p>
+
+<pre><code>String[] code= Loader.loadProgram("src/test/resources/basic/example.bas");
+Interpreter inty = new Interpreter(code);
+inty.run();`
+</code></pre>
+
+<p>There are some more options, but that's basically it.<br>
+In addition, you can use it as a templating engine. You can find an example for this in the TemplateTest.java file.</p>
+
+<h3>
+<a id="why-justwhy" class="anchor" href="#why-justwhy" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Why? Just...why?</h3>
+
+<p>Because I could.</p>
+
+<h3>
+<a id="support-or-contact" class="anchor" href="#support-or-contact" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Support or Contact</h3>
+
+<p>Having trouble? Send me an <a href="mailto:basic@jpct.net">email</a>.</p>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/EgonOlsen71/basicv2">BasicV2</a> is maintained by <a href="https://github.com/EgonOlsen71">EgonOlsen71</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
