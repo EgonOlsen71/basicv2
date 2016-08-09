@@ -9,16 +9,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The Class Loader.
+ * A simple helper class for loading BASIC programs (or any kind of text file).
  */
 public class Loader {
 
 	/**
-	 * Load text.
+	 * Loads a text into a String. It assumes that the text is UTF-8 encoded.
 	 * 
 	 * @param is
-	 *            the is
-	 * @return the string
+	 *            the input stream
+	 * @return the text
 	 */
 	public static String loadText(InputStream is) {
 		StringBuilder sb = new StringBuilder();
@@ -33,11 +33,12 @@ public class Loader {
 	}
 
 	/**
-	 * Load program.
+	 * Load a program from a text file into a String[] array. It assumes that
+	 * the text is UTF-8 encoded. Line separator is \n.
 	 * 
 	 * @param prg
-	 *            the prg
-	 * @return the string[]
+	 *            the program's input stream
+	 * @return the string[] the program splitted into it's lines
 	 */
 	public static String[] loadProgram(InputStream prg) {
 		List<String> lines = new ArrayList<String>();
@@ -55,11 +56,12 @@ public class Loader {
 	}
 
 	/**
-	 * Load program.
+	 * Load a program from a text file into a String[] array. It assumes that
+	 * the text is UTF-8 encoded. Line separator is \n.
 	 * 
 	 * @param file
-	 *            the file
-	 * @return the string[]
+	 *            the program file
+	 * @return the string[] the program splitted into it's lines
 	 */
 	public static String[] loadProgram(String file) {
 		try (InputStream is = new FileInputStream(new File(file))) {

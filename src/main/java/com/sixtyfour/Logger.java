@@ -4,27 +4,29 @@
 package com.sixtyfour;
 
 /**
- * The Class Logger.
+ * A very basic Logger that outputs logging messages onto the console. If you
+ * actually want have some reasonable logging, modify this implementation. The
+ * interpreter/compiler/runtime doesn't log very much anyway.
  */
 public class Logger {
 
 	/**
-	 * Log.
+	 * Logs a message.
 	 * 
 	 * @param msg
-	 *            the msg
+	 *            the message
 	 */
 	public static void log(String msg) {
 		System.out.println(msg);
 	}
 
 	/**
-	 * Log.
+	 * Logs a message and a Throwable.
 	 * 
 	 * @param msg
-	 *            the msg
+	 *            the message
 	 * @param t
-	 *            the t
+	 *            the throwable
 	 */
 	public static void log(String msg, Throwable t) {
 		System.out.println(msg);
@@ -32,10 +34,10 @@ public class Logger {
 	}
 
 	/**
-	 * Log.
+	 * Logs a Throwable.
 	 * 
 	 * @param t
-	 *            the t
+	 *            the Throwable
 	 */
 	public static void log(Throwable t) {
 		t.printStackTrace();

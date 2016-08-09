@@ -19,7 +19,9 @@ import com.sixtyfour.system.ProgramCounter;
 import com.sixtyfour.util.VarUtils;
 
 /**
- * The Class Interpreter.
+ * 
+ * @author EgonOlsen
+ * 
  */
 public class Interpreter {
 
@@ -35,30 +37,34 @@ public class Interpreter {
 	/** The machine. */
 	private Machine machine = null;
 
-	/** The parsed. */
+	/** Has it been parsed already? */
 	private boolean parsed = false;
 
-	/** The stop. */
+	/** Should it stop? */
 	private boolean stop = false;
 
 	/** The print line numbers. */
 	private boolean printLineNumbers = false;
 
 	/**
-	 * Instantiates a new interpreter.
+	 * Instantiates a new interpreter for a BASIC program. No
+	 * interpretation/compilation will take place at this stage.
 	 * 
 	 * @param code
-	 *            the code
+	 *            the basic code
 	 */
 	public Interpreter(String code) {
 		this(code.split("\n"));
 	}
 
 	/**
-	 * Instantiates a new interpreter.
+	 * Instantiates a new interpreter for a BASIC program. No
+	 * interpretation/compilation will take place at this stage. This
+	 * constructor takes an array of code lines as input. Each code line should
+	 * represent a line in the BASIC program.
 	 * 
 	 * @param code
-	 *            the code
+	 *            the basic code
 	 */
 	public Interpreter(String[] code) {
 		this.code = Arrays.copyOf(code, code.length);
@@ -75,11 +81,13 @@ public class Interpreter {
 	}
 
 	/**
-	 * Gets the string variable.
+	 * Gets the value of a string variable.
 	 * 
 	 * @param name
-	 *            the name
-	 * @return the string variable
+	 *            the name of the variable including the "$" postfix, case
+	 *            doesn't matter
+	 * @return the variable's value or null, if the variable doesn't exist
+	 *         (yet).
 	 */
 	public String getStringVariable(String name) {
 		Object obj = machine.getVariable(VarUtils.toUpper(name)).getValue();
@@ -90,11 +98,13 @@ public class Interpreter {
 	}
 
 	/**
-	 * Gets the integer variable.
+	 * Gets the value of an integer variable.
 	 * 
 	 * @param name
-	 *            the name
-	 * @return the integer variable
+	 *            the name of the variable including the "%" postfix, case
+	 *            doesn't matter
+	 * @return the variable's value or null, if the variable doesn't exist
+	 *         (yet).
 	 */
 	public Integer getIntegerVariable(String name) {
 		Object obj = machine.getVariable(VarUtils.toUpper(name)).getValue();
@@ -105,11 +115,12 @@ public class Interpreter {
 	}
 
 	/**
-	 * Gets the float variable.
+	 * Gets the value of a floating point variable.
 	 * 
 	 * @param name
-	 *            the name
-	 * @return the float variable
+	 *            the name of the variable, case doesn't matter
+	 * @return the variable's value or null, if the variable doesn't exist
+	 *         (yet).
 	 */
 	public Float getFloatVariable(String name) {
 		Object obj = machine.getVariable(VarUtils.toUpper(name)).getValue();
@@ -120,11 +131,14 @@ public class Interpreter {
 	}
 
 	/**
-	 * Gets the array variable.
+	 * Gets the value of an array variable. The actual datatype depends on the
+	 * type of the variable and is either String, Integer or Float.
 	 * 
 	 * @param name
-	 *            the name
-	 * @return the array variable
+	 *            the name of the variable, [] postfix is optional, case doesn't
+	 *            matter
+	 * @return the variable's value or null, if the variable doesn't exist
+	 *         (yet).
 	 */
 	@SuppressWarnings("unchecked")
 	public Object[] getArrayVariable(String name) {
@@ -139,7 +153,9 @@ public class Interpreter {
 	}
 
 	/**
-	 * Parses the.
+	 * Parses the code. This can be called before calling the actual run method
+	 * to precompile the code. It doesn't have to though, because run() will
+	 * call it on its own if needed.
 	 */
 	public void parse() {
 		long start = System.nanoTime();
@@ -213,7 +229,11 @@ public class Interpreter {
 	}
 
 	/**
-	 * Start.
+	 * Starts a previously parsed BASIC program. This method is similar to run()
+	 * with the exception that it requires the code to be parsed already. If it
+	 * isn't, it will exit with a RuntimeException. This can be useful, it you
+	 * want to re-run the same program multiple times without parsing it over
+	 * and over again.
 	 */
 	public void start() {
 		stop = false;
@@ -224,7 +244,7 @@ public class Interpreter {
 	}
 
 	/**
-	 * Run.
+	 * Runs the program. If needed, this will call parse() as well.
 	 */
 	public void run() {
 		stop = false;
@@ -240,23 +260,28 @@ public class Interpreter {
 	}
 
 	/**
-	 * Run stop.
+	 * Stops a currently running program after the next commands has been
+	 * executed.
 	 */
 	public void runStop() {
 		stop = true;
 	}
 
 	/**
-	 * Gets the ram.
+	 * Returns the RAM's content. The RAM is a representation of 64KB of 8bit
+	 * wide memory. However, the returned array is of type int[]. It will
+	 * contains values in the range of[0..255] only though.
 	 * 
-	 * @return the ram
+	 * @return the RAM
 	 */
 	public int[] getRam() {
 		return machine.getRam();
 	}
 
 	/**
-	 * Gets the input provider.
+	 * Returns the input provider. The input provider implements the methods for
+	 * reading keyboard input. The default implementation is based on the Java
+	 * console, which has only limited support for reading single key strokes.
 	 * 
 	 * @return the input provider
 	 */
@@ -265,7 +290,9 @@ public class Interpreter {
 	}
 
 	/**
-	 * Sets the input provider.
+	 * Returns the input provider. The input provider implements the methods for
+	 * reading keyboard input. The default implementation is based on the Java
+	 * console, which has only limited support for reading single key strokes.
 	 * 
 	 * @param inputProvider
 	 *            the new input provider
@@ -275,7 +302,7 @@ public class Interpreter {
 	}
 
 	/**
-	 * Gets the output channel.
+	 * Returns the output channel. By default, this is the console.
 	 * 
 	 * @return the output channel
 	 */
@@ -284,26 +311,7 @@ public class Interpreter {
 	}
 
 	/**
-	 * Gets the system call listener.
-	 * 
-	 * @return the system call listener
-	 */
-	public SystemCallListener getSystemCallListener() {
-		return machine.getSystemCallListener();
-	}
-
-	/**
-	 * Sets the system call listener.
-	 * 
-	 * @param scl
-	 *            the new system call listener
-	 */
-	public void setSystemCallListener(SystemCallListener scl) {
-		machine.setSystemCallListener(scl);
-	}
-
-	/**
-	 * Sets the output channel.
+	 * Sets the output channel. By default, this is the console.
 	 * 
 	 * @param outputChannel
 	 *            the new output channel
@@ -313,7 +321,33 @@ public class Interpreter {
 	}
 
 	/**
-	 * Gets the memory listener.
+	 * Returns the system call listener. The system call listener listens for
+	 * SYS calls of the program. The default implementation just ignores these
+	 * calls.
+	 * 
+	 * @return the system call listener
+	 */
+	public SystemCallListener getSystemCallListener() {
+		return machine.getSystemCallListener();
+	}
+
+	/**
+	 * Sets the system call listener. The system call listener listens for SYS
+	 * calls of the program. The default implementation just ignores these
+	 * calls.
+	 * 
+	 * @param scl
+	 *            the new system call listener
+	 */
+	public void setSystemCallListener(SystemCallListener scl) {
+		machine.setSystemCallListener(scl);
+	}
+
+	/**
+	 * Returns the memory listener. The memory listener listens for PEEKs and
+	 * POKEs. In addition to reading from/writing to the RAM, which happens
+	 * anyway, the listener method get called for each PEEK or POKE. The default
+	 * implementation does nothing.
 	 * 
 	 * @return the memory listener
 	 */
@@ -322,7 +356,10 @@ public class Interpreter {
 	}
 
 	/**
-	 * Sets the memory listener.
+	 * Sets the memory listener. The memory listener listens for PEEKs and
+	 * POKEs. In addition to reading from/writing to the RAM, which happens
+	 * anyway, the listener method get called for each PEEK or POKE. The default
+	 * implementation does nothing.
 	 * 
 	 * @param memoryListener
 	 *            the new memory listener
@@ -332,26 +369,25 @@ public class Interpreter {
 	}
 
 	/**
-	 * Checks if is prints the line numbers.
+	 * Returns true, if line numbers should be printed out at runtime.
 	 * 
-	 * @return true, if is prints the line numbers
+	 * @return true, if yes. Default is false.
 	 */
 	public boolean isPrintLineNumbers() {
 		return printLineNumbers;
 	}
 
 	/**
-	 * Sets the prints the line numbers.
+	 * If set to true, the current line number will be printed out at runtime.
 	 * 
 	 * @param printLineNumbers
-	 *            the new prints the line numbers
+	 *            Should line numbers be printed out?
 	 */
 	public void setPrintLineNumbers(boolean printLineNumbers) {
 		this.printLineNumbers = printLineNumbers;
 	}
 
 	/**
-	 * Run internal.
 	 */
 	private void runInternal() {
 		long start = System.nanoTime();
@@ -361,8 +397,6 @@ public class Interpreter {
 	}
 
 	/**
-	 * Execute.
-	 * 
 	 * @param lineCnt
 	 *            the line cnt
 	 * @param pos

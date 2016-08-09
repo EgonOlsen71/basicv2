@@ -168,12 +168,12 @@ public class ProgramTest {
 	 */
 	private static void testJavaPrime() {
 		long start = System.nanoTime();
-		int w = 501;
+		int w = 5001;
 		float[] f = new float[w];
 		int p = 1;
 		int a = 3;
 		do {
-			System.out.println(a);
+			// System.out.println(a);
 			f[p] = a;
 			p++;
 			float s = 0;
@@ -193,6 +193,6 @@ public class ProgramTest {
 				} while (x < p && f[x] * f[x] <= a);
 			}
 		} while (p < w);
-		System.out.println(((System.nanoTime() - start) / 1000000) + "ms");
+		System.out.println("Prime in Java: " + ((System.nanoTime() - start) / 1000000) + "ms");
 	}
 }
