@@ -1,6 +1,3 @@
-/*
- * 
- */
 package com.sixtyfour.parser;
 
 import java.util.ArrayList;
@@ -9,29 +6,29 @@ import java.util.List;
 import com.sixtyfour.elements.commands.Command;
 
 /**
- * The Class Line.
+ * A line in BASIC program.
  */
 public class Line {
 
-	/** The line. */
+	/** The text content of the line */
 	private String line;
 
-	/** The number. */
+	/** The line number */
 	private int number;
 
-	/** The count. */
+	/** The line's position */
 	private int count;
 
-	/** The commands. */
+	/** The commands in this line in order of appearance */
 	private List<Command> commands = new ArrayList<Command>();
 
 	/**
 	 * Instantiates a new line.
 	 * 
 	 * @param number
-	 *            the number
+	 *            the line number
 	 * @param line
-	 *            the line
+	 *            the line's content
 	 */
 	public Line(int number, String line) {
 		this.line = line;
@@ -39,44 +36,64 @@ public class Line {
 	}
 
 	/**
-	 * Adds the dummy remark.
+	 * Creates a new Line instance based on a line of the BASIC program,
+	 * 
+	 * @param line
+	 *            the line as text
+	 * @return the line instance
+	 */
+	public static Line getLine(String line) {
+		for (int i = 0; i < line.length(); i++) {
+			char c = line.charAt(i);
+			if (!Character.isDigit(c)) {
+				return new Line(Integer.parseInt(line.substring(0, i)), line.substring(i).trim());
+			}
+		}
+		throw new RuntimeException("No line number found in: " + line);
+	}
+
+	/**
+	 * Adds the dummy remark to lines that end with a : only. This eases parsing
+	 * the line later.
 	 */
 	public void addDummyRemark() {
-		// Just to ease parsing of data commands (because that's the only command
+		// Just to ease parsing of data commands (because that's the only
+		// command
 		// where spaces at the end might matter)
 		line += "REM";
 	}
 
 	/**
-	 * Gets the line.
+	 * Returns the line's text content.
 	 * 
-	 * @return the line
+	 * @return the text
 	 */
 	public String getLine() {
 		return line;
 	}
 
 	/**
-	 * Gets the number.
+	 * Returns the line number.
 	 * 
-	 * @return the number
+	 * @return the line number
 	 */
 	public int getNumber() {
 		return number;
 	}
 
 	/**
-	 * Adds the command.
+	 * Adds the command to the list of commands of this line.
 	 * 
 	 * @param command
-	 *            the command
+	 *            the command to add
 	 */
 	public void addCommand(Command command) {
 		commands.add(command);
 	}
 
 	/**
-	 * Gets the commands.
+	 * Return all the commands in this line in the order in which they have been
+	 * added. This returns a direct reference to the internal list.
 	 * 
 	 * @return the commands
 	 */
@@ -85,13 +102,22 @@ public class Line {
 	}
 
 	/**
-	 * Sets the commands.
+	 * Returns the count/position of this line in the BASIC program.
 	 * 
-	 * @param commands
-	 *            the new commands
+	 * @return the count
 	 */
-	public void setCommands(List<Command> commands) {
-		this.commands = commands;
+	public int getCount() {
+		return count;
+	}
+
+	/**
+	 * Sets the count of this line in the BASIC program.
+	 * 
+	 * @param count
+	 *            the count
+	 */
+	public void setCount(int count) {
+		this.count = count;
 	}
 
 	/*
@@ -102,25 +128,6 @@ public class Line {
 	@Override
 	public String toString() {
 		return number + " " + line;
-	}
-
-	/**
-	 * Gets the count.
-	 * 
-	 * @return the count
-	 */
-	public int getCount() {
-		return count;
-	}
-
-	/**
-	 * Sets the count.
-	 * 
-	 * @param count
-	 *            the new count
-	 */
-	public void setCount(int count) {
-		this.count = count;
 	}
 
 }

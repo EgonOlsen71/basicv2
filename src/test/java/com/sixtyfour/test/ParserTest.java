@@ -209,7 +209,7 @@ public class ParserTest {
 	private static void testCommands() {
 		System.out.println("testCommands");
 		String test = getSimpleLine();
-		Command com = Parser.getCommand(Parser.getLine(test).getLine());
+		Command com = Parser.getCommand(Line.getLine(test).getLine());
 		System.out.println("Command is: " + com);
 
 	}
@@ -220,11 +220,11 @@ public class ParserTest {
 	private static void testLineNumber() {
 		System.out.println("testLineNumber");
 		String test = getSimpleLine();
-		Line line = Parser.getLine(test);
+		Line line = Line.getLine(test);
 		System.out.println("Line number is: " + line.getNumber());
 
 		test = test.replace(" ", "").replace("10", "65500");
-		line = Parser.getLine(test);
+		line = Line.getLine(test);
 		System.out.println("Line number is: " + line.getNumber());
 	}
 

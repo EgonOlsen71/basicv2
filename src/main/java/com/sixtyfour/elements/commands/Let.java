@@ -62,8 +62,6 @@ public class Let extends AbstractCommand {
 		return var.getType();
 	}
 
-	// rm$(lb)=rm$(lb)+CHR$(13)+"A sign here says:  LIMBO, find right    exit "
-
 	/*
 	 * (non-Javadoc)
 	 * 

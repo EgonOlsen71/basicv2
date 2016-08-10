@@ -4,30 +4,33 @@ import com.sixtyfour.elements.Type;
 import com.sixtyfour.system.Machine;
 
 /**
- * The Interface Atom.
+ * Interface for atoms. An Atom is anything that's not a command, i.e. terms,
+ * variables, constants...are all Atoms.
  */
 public interface Atom {
 
 	/**
-	 * Gets the type.
+	 * Returns the Type that this Atom is supposed to return when calling the
+	 * eval() method.
 	 * 
 	 * @return the type
 	 */
 	Type getType();
 
 	/**
-	 * Eval.
+	 * Evaluates this Atom in the context of the current machine state.
 	 * 
 	 * @param machine
 	 *            the machine
-	 * @return the object
+	 * @return the result of the evaluation. This will be either null, an
+	 *         Integer, a Float or a String.
 	 */
 	Object eval(Machine machine);
 
 	/**
-	 * Checks if is term.
+	 * Returns true, if the Atom represents a Term and false otherwise.
 	 * 
-	 * @return true, if is term
+	 * @return true, if it's a term
 	 */
 	boolean isTerm();
 

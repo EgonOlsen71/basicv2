@@ -170,7 +170,7 @@ public class Interpreter {
 				if (line.isEmpty()) {
 					continue;
 				}
-				cl = Parser.getLine(line);
+				cl = Line.getLine(line);
 				if (lines.containsKey(cl.getNumber())) {
 					throw new RuntimeException("Duplicate line number in: " + line);
 				}

@@ -1,23 +1,21 @@
-/*
- * 
- */
 package com.sixtyfour.parser;
 
 import com.sixtyfour.elements.Variable;
 
 /**
- * The Class VariableAndIndex.
+ * VariableAndIndex holds an array variable and its corresponding index terms to
+ * access a specific element.
  */
 public class VariableAndIndex {
 
-	/** The variable. */
+	/** The variable */
 	private Variable variable;
 
-	/** The index term. */
+	/** The index term */
 	private Term indexTerm;
 
 	/**
-	 * Instantiates a new variable and index.
+	 * Instantiates a new variable and index term
 	 * 
 	 * @param variable
 	 *            the variable
@@ -30,7 +28,7 @@ public class VariableAndIndex {
 	}
 
 	/**
-	 * Gets the index term.
+	 * Returns the index term.
 	 * 
 	 * @return the index term
 	 */
@@ -49,7 +47,7 @@ public class VariableAndIndex {
 	}
 
 	/**
-	 * Gets the variable.
+	 * Returns the variable.
 	 * 
 	 * @return the variable
 	 */

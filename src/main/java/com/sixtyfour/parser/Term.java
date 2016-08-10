@@ -5,30 +5,31 @@ import com.sixtyfour.elements.Type;
 import com.sixtyfour.system.Machine;
 
 /**
- * The Class Term.
+ * A Term is a (part of a) calculation or a logical operation. Terms have two
+ * children (left and right) and an operator that connects the two.
  */
 public class Term implements Atom {
 
-	/** The left. */
+	/** The left child */
 	private Atom left;
 
-	/** The right. */
+	/** The right child */
 	private Atom right;
 
-	/** The operator. */
+	/** The operator that connects the two children */
 	private Operator operator;
 
-	/** The expression. */
+	/** The expression that created this Term */
 	private String expression;
 
-	/** The key. */
+	/** The key for term replacement while parsing */
 	private String key;
 
-	/** The type. */
+	/** The type that the Term returns */
 	private Type type;
 
 	/**
-	 * Instantiates a new term.
+	 * Instantiates a new term based on the given expression.
 	 * 
 	 * @param expression
 	 *            the expression
@@ -38,10 +39,11 @@ public class Term implements Atom {
 	}
 
 	/**
-	 * Instantiates a new term.
+	 * Instantiates a new term with an Atom as left child and a 0 as the right.
+	 * The operator is a NOP. child.
 	 * 
 	 * @param left
-	 *            the left
+	 *            the left child
 	 */
 	public Term(Atom left) {
 		this.left = left;
@@ -50,65 +52,64 @@ public class Term implements Atom {
 	}
 
 	/**
-	 * Checks if is complete.
+	 * Checks if the Term is complete. A complete term has two children and an
+	 * operator.
 	 * 
-	 * @return true, if is complete
+	 * @return true, if it's complete
 	 */
 	public boolean isComplete() {
 		return left != null && right != null && operator != null;
 	}
 
 	/**
-	 * Checks if is empty.
+	 * Checks if the term is empty.
 	 * 
-	 * @return true, if is empty
+	 * @return true, if it's empty
 	 */
 	public boolean isEmpty() {
 		return left == null || (left.isTerm() && ((Term) left).isEmpty());
 	}
 
 	/**
-	 * Gets the left.
+	 * Returns the left child.
 	 * 
-	 * @return the left
+	 * @return the left child
 	 */
 	public Atom getLeft() {
 		return left;
 	}
 
 	/**
-	 * Sets the left.
+	 * Sets the left child.
 	 * 
 	 * @param left
-	 *            the new left
+	 *            the new left child
 	 */
 	public void setLeft(Atom left) {
-		// System.out.println("Left: "+left);
 		this.left = left;
 	}
 
 	/**
-	 * Gets the right.
+	 * Returns the right child.
 	 * 
-	 * @return the right
+	 * @return the right child
 	 */
 	public Atom getRight() {
 		return right;
 	}
 
 	/**
-	 * Sets the right.
+	 * Sets the right child.
 	 * 
 	 * @param right
-	 *            the new right
+	 *            the new right child
 	 */
 	public void setRight(Atom right) {
-		// System.out.println("Right: "+right);
 		this.right = right;
 	}
 
 	/**
-	 * Gets the operator.
+	 * Returns the operator.
 	 * 
 	 * @return the operator
 	 */
@@ -127,7 +128,7 @@ public class Term implements Atom {
 	}
 
 	/**
-	 * Gets the expression.
+	 * Returns the expression.
 	 * 
 	 * @return the expression
 	 */
@@ -146,7 +147,8 @@ public class Term implements Atom {
 	}
 
 	/**
-	 * Gets the key.
+	 * Returns the key. The key is used for internal replacement of parts of a
+	 * term (as text) by placeholders.
 	 * 
 	 * @return the key
 	 */
@@ -155,7 +157,8 @@ public class Term implements Atom {
 	}
 
 	/**
-	 * Sets the key.
+	 * Sets the key. The key is used for internal replacement of parts of a term
+	 * (as text) by placeholders.
 	 * 
 	 * @param key
 	 *            the new key

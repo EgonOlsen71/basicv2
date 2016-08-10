@@ -6,21 +6,22 @@ package com.sixtyfour.parser;
 import java.util.List;
 
 /**
- * The Class VariableAndTerms.
+ * VariableAndTerms holds an array variable's name and terms used to determine
+ * it's dimensions.
  */
 public class VariableAndTerms {
 
-	/** The var name. */
+	/** The variable's name */
 	private String varName;
 
-	/** The terms. */
+	/** The terms */
 	private List<Atom> terms;
 
 	/**
 	 * Instantiates a new variable and terms.
 	 * 
 	 * @param var
-	 *            the var
+	 *            the variable's name
 	 * @param terms
 	 *            the terms
 	 */
@@ -30,26 +31,26 @@ public class VariableAndTerms {
 	}
 
 	/**
-	 * Gets the var name.
+	 * Returns the variable's name.
 	 * 
-	 * @return the var name
+	 * @return the variable's name
 	 */
 	public String getVarName() {
 		return varName;
 	}
 
 	/**
-	 * Sets the var name.
+	 * Sets the variable's name.
 	 * 
 	 * @param varName
-	 *            the new var name
+	 *            the new variable's name
 	 */
 	public void setVarName(String varName) {
 		this.varName = varName;
 	}
 
 	/**
-	 * Gets the terms.
+	 * Returns the terms.
 	 * 
 	 * @return the terms
 	 */

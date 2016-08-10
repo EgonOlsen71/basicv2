@@ -4,151 +4,21 @@
 package com.sixtyfour.parser;
 
 /**
- * The Class Operator.
+ * An operator is either a mathematical operator like "+" or "*" or a logical
+ * like "AND" or "NOT". For internal reasons, there's also a NOP operator that
+ * does nothing and a delimiter operator.
  */
 public class Operator {
-
-	/** The Constant OPS. */
-	private final static String[] OPS = { "^", "*", "/", "+", "-", "|", ",", "°", "&", "!" };
-
-	/** The Constant NOP. */
 	public final static Operator NOP = new Operator('|');
 
-	/** The type. */
+	private final static String[] OPS = { "^", "*", "/", "+", "-", "|", ",", "°", "&", "!" };
 	private int type = -1;
-
-	/**
-	 * Gets the or operator.
-	 * 
-	 * @return the or operator
-	 */
-	public static String getOrOperator() {
-		return OPS[7];
-	}
-
-	/**
-	 * Gets the and operator.
-	 * 
-	 * @return the and operator
-	 */
-	public static String getAndOperator() {
-		return OPS[8];
-	}
-
-	/**
-	 * Gets the not operator.
-	 * 
-	 * @return the not operator
-	 */
-	public static String getNotOperator() {
-		return OPS[9];
-	}
-
-	/**
-	 * Instantiates a new operator.
-	 * 
-	 * @param c
-	 *            the c
-	 */
-	public Operator(char c) {
-		this(Character.toString(c));
-	}
-
-	/**
-	 * Checks if is or.
-	 * 
-	 * @return true, if is or
-	 */
-	public boolean isOr() {
-		return type == 7;
-	}
-
-	/**
-	 * Checks if is and.
-	 * 
-	 * @return true, if is and
-	 */
-	public boolean isAnd() {
-		return type == 8;
-	}
-
-	/**
-	 * Checks if is not.
-	 * 
-	 * @return true, if is not
-	 */
-	public boolean isNot() {
-		return type == 9;
-	}
-
-	/**
-	 * Checks if is plus.
-	 * 
-	 * @return true, if is plus
-	 */
-	public boolean isPlus() {
-		return type == 3;
-	}
-
-	/**
-	 * Checks if is power.
-	 * 
-	 * @return true, if is power
-	 */
-	public boolean isPower() {
-		return type == 0;
-	}
-
-	/**
-	 * Checks if is minus.
-	 * 
-	 * @return true, if is minus
-	 */
-	public boolean isMinus() {
-		return type == 4;
-	}
-
-	/**
-	 * Checks if is multiplication.
-	 * 
-	 * @return true, if is multiplication
-	 */
-	public boolean isMultiplication() {
-		return type == 1;
-	}
-
-	/**
-	 * Checks if is division.
-	 * 
-	 * @return true, if is division
-	 */
-	public boolean isDivision() {
-		return type == 2;
-	}
-
-	/**
-	 * Checks if is delimiter.
-	 * 
-	 * @return true, if is delimiter
-	 */
-	public boolean isDelimiter() {
-		return type == 6;
-	}
-
-	/**
-	 * Checks if is nop.
-	 * 
-	 * @return true, if is nop
-	 */
-	public boolean isNop() {
-		return type == 5;
-	}
 
 	/**
 	 * Instantiates a new operator.
 	 * 
 	 * @param op
-	 *            the op
+	 *            the string the represents the operator
 	 */
 	public Operator(String op) {
 		op = op.trim();
@@ -165,11 +35,138 @@ public class Operator {
 	}
 
 	/**
-	 * Checks if is operator.
+	 * Instantiates a new operator.
 	 * 
 	 * @param c
-	 *            the c
-	 * @return true, if is operator
+	 *            the char the represents the operator
+	 */
+	public Operator(char c) {
+		this(Character.toString(c));
+	}
+
+	/**
+	 * Returns the string that represents an OR operator.
+	 * 
+	 * @return the string
+	 */
+	public static String getOrOperator() {
+		return OPS[7];
+	}
+
+	/**
+	 * Returns the string that represents an AND operator.
+	 * 
+	 * @return the string
+	 */
+	public static String getAndOperator() {
+		return OPS[8];
+	}
+
+	/**
+	 * Returns the string that represents a NOT operator.
+	 * 
+	 * @return the string
+	 */
+	public static String getNotOperator() {
+		return OPS[9];
+	}
+
+	/**
+	 * Returns true, if this is an OR operator
+	 * 
+	 * @return is it?
+	 */
+	public boolean isOr() {
+		return type == 7;
+	}
+
+	/**
+	 * Returns true, if this is an AND operator
+	 * 
+	 * @return is it?
+	 */
+	public boolean isAnd() {
+		return type == 8;
+	}
+
+	/**
+	 * Returns true, if this is a NOT operator
+	 * 
+	 * @return is it?
+	 */
+	public boolean isNot() {
+		return type == 9;
+	}
+
+	/**
+	 * Returns true, if this is a plus operator
+	 * 
+	 * @return is it?
+	 */
+	public boolean isPlus() {
+		return type == 3;
+	}
+
+	/**
+	 * Returns true, if this is a power operator
+	 * 
+	 * @return is it?
+	 */
+	public boolean isPower() {
+		return type == 0;
+	}
+
+	/**
+	 * Returns true, if this is a minus operator
+	 * 
+	 * @return is it?
+	 */
+	public boolean isMinus() {
+		return type == 4;
+	}
+
+	/**
+	 * Returns true, if this is a multiplication operator
+	 * 
+	 * @return is it?
+	 */
+	public boolean isMultiplication() {
+		return type == 1;
+	}
+
+	/**
+	 * Returns true, if this is a division operator
+	 * 
+	 * @return is it?
+	 */
+	public boolean isDivision() {
+		return type == 2;
+	}
+
+	/**
+	 * Returns true, if this is a delimiter (a ",")
+	 * 
+	 * @return is it?
+	 */
+	public boolean isDelimiter() {
+		return type == 6;
+	}
+
+	/**
+	 * Returns true, if this is a NOP operator
+	 * 
+	 * @return is it?
+	 */
+	public boolean isNop() {
+		return type == 5;
+	}
+
+	/**
+	 * Checks if a char is an actual operator.
+	 * 
+	 * @param c
+	 *            the char
+	 * @return true, if it's an operator
 	 */
 	public static boolean isOperator(char c) {
 		for (String op : OPS) {
@@ -181,11 +178,11 @@ public class Operator {
 	}
 
 	/**
-	 * Checks if is real operator.
+	 * Checks if a char is a real operator, i.e. not NOP and not a delimiter.
 	 * 
 	 * @param c
-	 *            the c
-	 * @return true, if is real operator
+	 *            the char
+	 * @return true, if it's a real operator
 	 */
 	public static boolean isRealOperator(char c) {
 		if (c == ',' || c == '|') {
@@ -200,7 +197,7 @@ public class Operator {
 	}
 
 	/**
-	 * Gets the type.
+	 * Returns the type that this operator will "produce".
 	 * 
 	 * @return the type
 	 */
@@ -209,7 +206,7 @@ public class Operator {
 	}
 
 	/**
-	 * Sets the type.
+	 * Sets the type that this operator will "produce".
 	 * 
 	 * @param type
 	 *            the new type

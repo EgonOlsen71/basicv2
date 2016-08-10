@@ -6,7 +6,6 @@ import java.util.Map;
 import com.sixtyfour.Interpreter;
 import com.sixtyfour.elements.Variable;
 import com.sixtyfour.parser.Line;
-import com.sixtyfour.parser.Parser;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
@@ -127,7 +126,7 @@ public class Template {
 				for (String line : lines) {
 					line = line.replace("\t", "").trim();
 					if (!line.isEmpty()) {
-						Line lo = Parser.getLine(line);
+						Line lo = Line.getLine(line);
 						firstLine = lo.getNumber();
 						break;
 					}
@@ -137,7 +136,7 @@ public class Template {
 					String line = lines[i];
 					line = line.replace("\t", "").trim();
 					if (!line.isEmpty()) {
-						Line lo = Parser.getLine(line);
+						Line lo = Line.getLine(line);
 						endLine = lo.getNumber();
 						break;
 					}
