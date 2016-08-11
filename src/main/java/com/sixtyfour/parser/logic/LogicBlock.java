@@ -4,16 +4,16 @@ import com.sixtyfour.parser.Atom;
 import com.sixtyfour.system.Machine;
 
 /**
- * The Interface LogicBlock.
+ * An interface for logic atoms.
  */
 public interface LogicBlock extends Atom {
 
 	/**
-	 * Eval to boolean.
+	 * Evaluates the block to boolean.
 	 * 
 	 * @param machine
 	 *            the machine
-	 * @return true, if successful
+	 * @return the result
 	 */
 	boolean evalToBoolean(Machine machine);
 

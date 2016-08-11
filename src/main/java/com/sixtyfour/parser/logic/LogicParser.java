@@ -12,16 +12,16 @@ import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
 /**
- * The Class LogicParser.
+ * A parser for logic terms.
  */
 public class LogicParser {
 
 	/**
-	 * Checks if is logic term.
+	 * Checks if a term is a logic term.
 	 * 
 	 * @param term
 	 *            the term
-	 * @return true, if is logic term
+	 * @return true, if it's a logic term
 	 */
 	public static boolean isLogicTerm(String term) {
 		term = Parser.replaceStrings(term, ' ');
@@ -29,28 +29,28 @@ public class LogicParser {
 	}
 
 	/**
-	 * Gets the term.
+	 * Returns the logic term that represents the term in the text.
 	 * 
 	 * @param term
-	 *            the term
+	 *            the term as text
 	 * @param machine
 	 *            the machine
-	 * @return the term
+	 * @return the logic term
 	 */
 	public static LogicTerm getTerm(String term, Machine machine) {
 		return getTerm(term, machine, null);
 	}
 
 	/**
-	 * Gets the term.
+	 * Returns the logic term that represents the term in the text.
 	 * 
 	 * @param term
-	 *            the term
+	 *            the term as text
 	 * @param machine
 	 *            the machine
 	 * @param termMap
 	 *            the term map
-	 * @return the term
+	 * @return the logic term
 	 */
 	public static LogicTerm getTerm(String term, Machine machine, Map<String, Term> termMap) {
 		Map<String, LogicTerm> blocks = new HashMap<String, LogicTerm>();
@@ -76,9 +76,6 @@ public class LogicParser {
 
 					String partS = stripStrings(part);
 
-					// System.out.println("Part: " + part + "/" + partS + "/" +
-					// lastPart);
-
 					boolean brackets = partS.contains("(");
 					if ((partS.contains("OR") || partS.contains("AND")) && brackets) {
 						lastPart = part;
@@ -100,8 +97,6 @@ public class LogicParser {
 					lastPart = term;
 					lastStart = 0;
 
-					// System.out.println("TERM: " + term);
-
 					String nbrack = term.replace("(", "").replace(")", "");
 					if (blocks.containsKey(nbrack)) {
 						return blocks.get(nbrack);
@@ -113,7 +108,7 @@ public class LogicParser {
 	}
 
 	/**
-	 * Process logic operations.
+	 * Processes logic operations.
 	 * 
 	 * @param term
 	 *            the term
@@ -196,22 +191,20 @@ public class LogicParser {
 	}
 
 	/**
-	 * Creates the logic block.
+	 * Creates a logic block. A logic block is similar to a Term but for logic
+	 * operations.
 	 * 
 	 * @param toProcess
-	 *            the to process
+	 *            the text to process
 	 * @param blocks
-	 *            the blocks
+	 *            the current blocks
 	 * @param machine
 	 *            the machine
 	 * @param termMap
 	 *            the term map
-	 * @return the string
+	 * @return the name of the block
 	 */
 	private static String createLogicBlock(String toProcess, Map<String, LogicTerm> blocks, Machine machine, Map<String, Term> termMap) {
-
-		// System.out.println("To process: " + toProcess);
-
 		String[] delims = { "OR", "AND" };
 		String utp = Parser.replaceStrings(toProcess, '.');
 		int curPos = 0;
@@ -304,9 +297,6 @@ public class LogicParser {
 				}
 			}
 
-			// System.out.println("Terms:" + left + " " + comp + " " + right +
-			// "/" + not);
-
 			if (left != null) {
 				Comparison compy = new Comparison();
 				compy.setComparator(comp);
@@ -339,11 +329,11 @@ public class LogicParser {
 	}
 
 	/**
-	 * Gets the bracket delta.
+	 * Calculates the difference in the number of opening and closing brackets.
 	 * 
 	 * @param term
 	 *            the term
-	 * @return the bracket delta
+	 * @return the difference
 	 */
 	private static int getBracketDelta(String term) {
 		int brackets = 0;
@@ -365,11 +355,11 @@ public class LogicParser {
 	}
 
 	/**
-	 * Strip strings.
+	 * Strip strings from a term.
 	 * 
 	 * @param term
 	 *            the term
-	 * @return the string
+	 * @return the term with the strings
 	 */
 	private static String stripStrings(String term) {
 		StringBuilder sb = new StringBuilder();
@@ -390,13 +380,13 @@ public class LogicParser {
 	}
 
 	/**
-	 * Find end bracket.
+	 * Finds the end bracket starting at the current position.
 	 * 
 	 * @param term
 	 *            the term
 	 * @param pos
-	 *            the pos
-	 * @return the int
+	 *            the current position
+	 * @return the position of the end bracket
 	 */
 	private static int findEndBracket(String term, int pos) {
 		int brackets = 0;

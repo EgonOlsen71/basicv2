@@ -9,10 +9,10 @@ package com.sixtyfour.parser;
  * does nothing and a delimiter operator.
  */
 public class Operator {
-	public final static Operator NOP = new Operator('|');
-
 	private final static String[] OPS = { "^", "*", "/", "+", "-", "|", ",", "°", "&", "!" };
 	private int type = -1;
+	
+	public final static Operator NOP = new Operator('|');
 
 	/**
 	 * Instantiates a new operator.

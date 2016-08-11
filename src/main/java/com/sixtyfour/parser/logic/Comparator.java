@@ -4,20 +4,14 @@
 package com.sixtyfour.parser.logic;
 
 /**
- * The Enum Comparator.
+ * Comparator is an enum that contains all possible comparators that a BASIC
+ * program can contain, as there are =, <>, >=, =>, <=, =<, > and <
  */
 public enum Comparator {
 
-	/** The equal. */
-	EQUAL("="), /** The not equal. */
-	NOT_EQUAL("<>"), /** The larger or equal. */
-	LARGER_OR_EQUAL(">=", "=>"), /** The smaller or equal. */
-	SMALLER_OR_EQUAL("<=", "=<"), /** The larger. */
-	LARGER(">"), /** The smaller. */
-	SMALLER("<"), /** The exists. */
-	EXISTS();
+	EQUAL("="), NOT_EQUAL("<>"), LARGER_OR_EQUAL(">=", "=>"), SMALLER_OR_EQUAL("<=", "=<"), LARGER(">"), SMALLER("<"), EXISTS();
 
-	/** The term. */
+	/** The term */
 	private String[] term;
 
 	/**
@@ -31,11 +25,11 @@ public enum Comparator {
 	}
 
 	/**
-	 * Gets the comparator.
+	 * Return the comparator that matches a given term.
 	 * 
 	 * @param term
 	 *            the term
-	 * @return the comparator
+	 * @return the matching comparator or null, if none matches
 	 */
 	public static Comparator getComparator(String term) {
 		if (term != null && term.length() > 0) {
@@ -53,9 +47,9 @@ public enum Comparator {
 	}
 
 	/**
-	 * Gets the term length.
+	 * Returns the term's length.
 	 * 
-	 * @return the term length
+	 * @return the term's length
 	 */
 	public int getTermLength() {
 		return term[0].length();
