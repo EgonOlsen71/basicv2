@@ -39,8 +39,8 @@ public class Term implements Atom {
 	}
 
 	/**
-	 * Instantiates a new term with an Atom as left child and a 0 as the right.
-	 * The operator is a NOP. child.
+	 * Instantiates a new term with an Atom as left child and a 0 as the right child.
+	 * The operator is a NOP.
 	 * 
 	 * @param left
 	 *            the left child
