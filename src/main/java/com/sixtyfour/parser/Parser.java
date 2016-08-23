@@ -470,7 +470,7 @@ public class Parser {
 
 	/**
 	 * Replaces logic BASIC operators in a term by a one-char representation.
-	 * The resulting isn't valid BASIC anymore but it's easier to parse.
+	 * The resulting term isn't valid BASIC anymore but it's easier to parse.
 	 * 
 	 * @param term
 	 *            the term
