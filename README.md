@@ -3,7 +3,7 @@
 A Commodore BASIC V2 interpreter/compiler written in Java.
 
 BasicV2 is an attempt to write a BASIC interpreter/compiler in Java that is compatible with the BASIC dialect that older 
-Commodore home computers  were using. It can run BASIC programs written in BASIC V2 or ANSI BASIC.
+Commodore home computers like the C64 or VIC 20 were using. It can run BASIC programs written in BASIC V2 or ANSI BASIC.
 It doesn't use any parts of the implementation of the original Commodore BASIC like similar projects do. 
 It's a complete reimplementation in Java.
 
