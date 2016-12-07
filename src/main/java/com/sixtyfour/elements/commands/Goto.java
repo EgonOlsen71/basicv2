@@ -7,7 +7,7 @@ import com.sixtyfour.system.Machine;
 import com.sixtyfour.system.ProgramCounter;
 
 /**
- * The Class Goto.
+ * The GOTO command.
  */
 public class Goto extends AbstractCommand {
 

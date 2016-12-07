@@ -13,7 +13,7 @@ import com.sixtyfour.system.ProgramCounter;
 import com.sixtyfour.util.VarUtils;
 
 /**
- * The Class Print.
+ * The PRINT command.
  */
 public class Print extends AbstractCommand {
 

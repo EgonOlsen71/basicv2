@@ -5,7 +5,7 @@ import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
 /**
- * The Class Constant.
+ * A constant of some type.
  * 
  * @param <T>
  *            the generic type

@@ -17,7 +17,7 @@ public class TemplateFactory {
 	 * Gets the template.
 	 * 
 	 * @param input
-	 *            the input
+	 *            the inputstream of the template file
 	 * @return the template
 	 */
 	public static Template getTemplate(InputStream input) {
@@ -28,9 +28,9 @@ public class TemplateFactory {
 	 * Gets the template.
 	 * 
 	 * @param input
-	 *            the input
+	 *            the inputstream of the template file
 	 * @param variables
-	 *            the variables
+	 *            the variables to prefill the template with
 	 * @return the template
 	 */
 	public static Template getTemplate(InputStream input, Map<String, Object> variables) {

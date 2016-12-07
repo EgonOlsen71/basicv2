@@ -1,6 +1,3 @@
-/*
- * 
- */
 package com.sixtyfour.elements.functions;
 
 import com.sixtyfour.elements.Type;
@@ -8,7 +5,7 @@ import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
 /**
- * The Class Atn.
+ * The ATN function.
  */
 public class Atn extends AbstractFunction {
 

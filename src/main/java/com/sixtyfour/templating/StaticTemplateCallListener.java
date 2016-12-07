@@ -5,15 +5,8 @@ import java.util.Map;
 import com.sixtyfour.plugins.SystemCallListener;
 
 /**
- * The listener interface for receiving staticTemplateCall events. The class
- * that is interested in processing a staticTemplateCall event implements this
- * interface, and the object created with that class is registered with a
- * component using the component's
- * <code>addStaticTemplateCallListener<code> method. When
- * the staticTemplateCall event occurs, that object's appropriate
- * method is invoked.
- * 
- * @see StaticTemplateCallEvent
+ * A listener used to process templates. Template parsing inserts SYS49152 calls into the program, which will
+ * output the template's static content. This is done here.
  */
 public class StaticTemplateCallListener implements SystemCallListener {
 

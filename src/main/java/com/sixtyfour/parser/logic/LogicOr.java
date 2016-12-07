@@ -6,7 +6,7 @@ package com.sixtyfour.parser.logic;
 import com.sixtyfour.system.Machine;
 
 /**
- * The Class LogicOr.
+ * The logic operation of OR.
  */
 public class LogicOr implements LogicOp {
 

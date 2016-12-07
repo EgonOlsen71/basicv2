@@ -1,6 +1,3 @@
-/*
- * 
- */
 package com.sixtyfour.elements.commands;
 
 import java.util.ArrayList;
@@ -10,7 +7,7 @@ import com.sixtyfour.system.DataStore;
 import com.sixtyfour.system.Machine;
 
 /**
- * The Class Data.
+ * The DATA command.
  */
 public class Data extends AbstractCommand {
 

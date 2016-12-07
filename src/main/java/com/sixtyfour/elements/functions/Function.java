@@ -8,19 +8,19 @@ import com.sixtyfour.parser.Term;
 import com.sixtyfour.system.Machine;
 
 /**
- * The Interface Function.
+ * The interface for functions.
  */
 public interface Function extends Atom {
 
 	/**
-	 * Gets the name.
+	 * Gets the name of the function.
 	 * 
 	 * @return the name
 	 */
 	String getName();
 
 	/**
-	 * Checks if is function.
+	 * Checks if some string matches this function's name.
 	 * 
 	 * @param function
 	 *            the function
@@ -29,21 +29,21 @@ public interface Function extends Atom {
 	boolean isFunction(String function);
 
 	/**
-	 * Clone.
+	 * Clones the function.
 	 * 
-	 * @return the function
+	 * @return the cloned function
 	 */
 	Function clone();
 
 	/**
-	 * Gets the term.
+	 * Gets the term to which the function should be applied to.
 	 * 
 	 * @return the term
 	 */
 	Term getTerm();
 
 	/**
-	 * Sets the term.
+	 * Sets the term to which the function should be applied to.
 	 * 
 	 * @param term
 	 *            the new term
@@ -51,27 +51,28 @@ public interface Function extends Atom {
 	void setTerm(Term term);
 
 	/**
-	 * Parses the.
+	 * Parses a string as this function. If successful, 
+	 * it sets this instances' term to the parsed result.
 	 * 
 	 * @param linePart
-	 *            the line part
+	 *            the input string
 	 * @param machine
-	 *            the machine
+	 *            the current machine
 	 */
 	void parse(String linePart, Machine machine);
 
 	/**
-	 * Checks for postfix.
+	 * Returns true, if this function has a postfix.
 	 * 
-	 * @return true, if successful
+	 * @return true, if it has.
 	 */
 	boolean hasPostfix();
 
 	/**
-	 * Sets the function name.
+	 * Sets the function's name. This is used for user defined functions only. 
 	 * 
 	 * @param functionName
-	 *            the new function name
+	 *            the function's name
 	 */
 	void setFunctionName(String functionName);
 

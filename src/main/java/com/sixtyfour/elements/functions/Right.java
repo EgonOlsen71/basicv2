@@ -1,6 +1,3 @@
-/*
- * 
- */
 package com.sixtyfour.elements.functions;
 
 import java.util.List;
@@ -12,7 +9,7 @@ import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
 /**
- * The Class Right.
+ * The RIGHT function.
  */
 public class Right extends AbstractFunction {
 

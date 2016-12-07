@@ -7,7 +7,7 @@ import com.sixtyfour.system.Machine;
 import com.sixtyfour.system.ProgramCounter;
 
 /**
- * The Class Gosub.
+ * The GOSUB command.
  */
 public class Gosub extends AbstractCommand {
 

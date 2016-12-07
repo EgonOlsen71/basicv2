@@ -1,10 +1,7 @@
-/*
- * 
- */
 package com.sixtyfour.plugins;
 
 /**
- * The Enum FileType.
+ * An enum for file types.
  */
 public enum FileType {
 

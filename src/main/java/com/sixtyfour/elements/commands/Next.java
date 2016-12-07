@@ -9,7 +9,7 @@ import com.sixtyfour.system.ProgramCounter;
 import com.sixtyfour.util.VarUtils;
 
 /**
- * The Class Next.
+ * The NEXT command.
  */
 public class Next extends AbstractCommand {
 
@@ -27,19 +27,19 @@ public class Next extends AbstractCommand {
 	}
 
 	/**
-	 * Gets the var name.
+	 * Gets the variables name.
 	 * 
-	 * @return the var name
+	 * @return the variables name
 	 */
 	public String getVarName() {
 		return varName;
 	}
 
 	/**
-	 * Sets the var name.
+	 * Sets the variables name.
 	 * 
 	 * @param varName
-	 *            the new var name
+	 *            the new variables name
 	 */
 	public void setVarName(String varName) {
 		this.varName = varName;

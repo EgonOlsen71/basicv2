@@ -5,7 +5,7 @@ import com.sixtyfour.parser.Term;
 import com.sixtyfour.system.Machine;
 
 /**
- * The Class Comparison.
+ * A comparison between two logic blocks.
  */
 public class Comparison implements LogicBlock {
 
@@ -64,38 +64,38 @@ public class Comparison implements LogicBlock {
 	}
 
 	/**
-	 * Gets the left.
+	 * Gets the left term.
 	 * 
-	 * @return the left
+	 * @return the left term
 	 */
 	public Term getLeft() {
 		return left;
 	}
 
 	/**
-	 * Sets the left.
+	 * Sets the left term.
 	 * 
 	 * @param left
-	 *            the new left
+	 *            the new left term
 	 */
 	public void setLeft(Term left) {
 		this.left = left;
 	}
 
 	/**
-	 * Gets the right.
+	 * Gets the right term.
 	 * 
-	 * @return the right
+	 * @return the right term
 	 */
 	public Term getRight() {
 		return right;
 	}
 
 	/**
-	 * Sets the right.
+	 * Sets the right term.
 	 * 
 	 * @param right
-	 *            the new right
+	 *            the new right term
 	 */
 	public void setRight(Term right) {
 		this.right = right;

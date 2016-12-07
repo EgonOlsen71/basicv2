@@ -10,7 +10,7 @@ import com.sixtyfour.system.ProgramCounter;
 import com.sixtyfour.util.VarUtils;
 
 /**
- * The Class PrintFile.
+ * The PRINT# command.
  */
 public class PrintFile extends Print {
 

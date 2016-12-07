@@ -1,6 +1,3 @@
-/*
- * 
- */
 package com.sixtyfour.elements.functions;
 
 import com.sixtyfour.elements.Type;
@@ -10,7 +7,7 @@ import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
 /**
- * The Class Fn.
+ * The FN function. These functions can be defined in the basic code by DEF FN...
  */
 public class Fn extends AbstractFunction {
 

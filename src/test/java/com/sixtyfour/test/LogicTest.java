@@ -1,6 +1,3 @@
-/*
- * 
- */
 package com.sixtyfour.test;
 
 import com.sixtyfour.elements.Variable;
@@ -9,7 +6,7 @@ import com.sixtyfour.parser.logic.LogicTerm;
 import com.sixtyfour.system.Machine;
 
 /**
- * The Class LogicTest.
+ * Basic tests for the logic parser.
  */
 public class LogicTest {
 

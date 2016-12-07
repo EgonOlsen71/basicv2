@@ -1,13 +1,10 @@
-/*
- * 
- */
 package com.sixtyfour.elements.functions;
 
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.system.Machine;
 
 /**
- * The Class Val.
+ * The VAL function.
  */
 public class Val extends AbstractFunction {
 

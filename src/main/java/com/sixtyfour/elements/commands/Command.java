@@ -6,51 +6,52 @@ import com.sixtyfour.system.Machine;
 import com.sixtyfour.system.ProgramCounter;
 
 /**
- * The Interface Command.
+ * The interface for commands.
  */
 public interface Command extends Atom {
 
 	/**
-	 * Keep spaces.
+	 * Must return true, if spaces are important for the command's parameter
+	 * and false otherwise. For most commands, this will be false.
 	 * 
-	 * @return true, if successful
+	 * @return keep or don't keep
 	 */
 	boolean keepSpaces();
 
 	/**
-	 * Gets the name.
+	 * Gets the name of the command.
 	 * 
 	 * @return the name
 	 */
 	String getName();
 
 	/**
-	 * Checks if is command.
+	 * Checks if some string matches this command's name.
 	 * 
 	 * @param command
-	 *            the command
-	 * @return true, if is command
+	 *            the command string
+	 * @return true, if it is this command
 	 */
 	boolean isCommand(String command);
 
 	/**
-	 * Clone.
+	 * Clones a command with a given parameter string.
 	 * 
 	 * @param linePart
-	 *            the line part
+	 *            the  parameter string
 	 * @return the command
 	 */
 	Command clone(String linePart);
 
 	/**
-	 * Gets the term.
+	 * Gets the term that represents this command's parameters.
 	 * 
 	 * @return the term
 	 */
 	Term getTerm();
 
 	/**
-	 * Sets the term.
+	 * Sets the term that represents this command's parameters.
 	 * 
 	 * @param term
 	 *            the new term
@@ -58,35 +59,36 @@ public interface Command extends Atom {
 	void setTerm(Term term);
 
 	/**
-	 * Parses the.
+	 * Parses a string as this command. If successful, 
+   * it sets this instances' term to the parsed result.
 	 * 
 	 * @param linePart
-	 *            the line part
+	 *            the parameter string
 	 * @param lineCnt
-	 *            the line cnt
+	 *            the line counter
 	 * @param lineNumber
 	 *            the line number
 	 * @param linePos
-	 *            the line pos
+	 *            the position in the current line
 	 * @param lastPos
-	 *            the last pos
+	 *            true, if it's the last command in the line
 	 * @param machine
-	 *            the machine
-	 * @return the string
+	 *            the current machine
+	 * @return an optional string that be used by the parser. Only very few commands make use of this, most return null.
 	 */
 	String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine);
 
 	/**
-	 * Execute.
+	 * Executes the command in the current machine's context.
 	 * 
 	 * @param machine
-	 *            the machine
-	 * @return the program counter
+	 *            the current machine
+	 * @return a program counter instance that contains the current state after execution
 	 */
 	ProgramCounter execute(Machine machine);
 
 	/**
-	 * Stop execution.
+	 * Stops the execution of a command. Only application to commands like WAIT.
 	 */
 	void stopExecution();
 }

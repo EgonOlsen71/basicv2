@@ -1,6 +1,3 @@
-/*
- * 
- */
 package com.sixtyfour.plugins.impl;
 
 import java.util.Scanner;
@@ -8,7 +5,7 @@ import java.util.Scanner;
 import com.sixtyfour.plugins.InputProvider;
 
 /**
- * The Class ConsoleInputProvider.
+ * A default implementation of an input provider that reads from the console.
  */
 public class ConsoleInputProvider implements InputProvider {
 

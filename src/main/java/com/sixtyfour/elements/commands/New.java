@@ -4,7 +4,7 @@
 package com.sixtyfour.elements.commands;
 
 /**
- * The Class New.
+ * The NEW command.
  */
 public class New extends End {
 

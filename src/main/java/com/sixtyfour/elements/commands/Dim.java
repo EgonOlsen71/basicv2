@@ -1,6 +1,3 @@
-/*
- * 
- */
 package com.sixtyfour.elements.commands;
 
 import java.util.ArrayList;
@@ -18,7 +15,7 @@ import com.sixtyfour.system.ProgramCounter;
 import com.sixtyfour.util.VarUtils;
 
 /**
- * The Class Dim.
+ * The DIM command.
  */
 public class Dim extends AbstractCommand {
 

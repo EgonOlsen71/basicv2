@@ -12,7 +12,7 @@ import com.sixtyfour.system.ProgramCounter;
 import com.sixtyfour.util.VarUtils;
 
 /**
- * The Class Get.
+ * The GET command.
  */
 public class Get extends MultiVariableCommand {
 

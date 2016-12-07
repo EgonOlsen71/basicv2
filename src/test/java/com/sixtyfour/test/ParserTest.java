@@ -8,7 +8,7 @@ import com.sixtyfour.parser.Term;
 import com.sixtyfour.system.Machine;
 
 /**
- * The Class ParserTest.
+ * Basic tests for the parser.
  */
 public class ParserTest {
 

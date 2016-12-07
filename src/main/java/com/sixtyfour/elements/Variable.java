@@ -13,7 +13,7 @@ import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
 /**
- * The Class Variable.
+ * A variable. This can either be a simple variable or an array.
  */
 public class Variable implements Atom {
 
@@ -38,14 +38,15 @@ public class Variable implements Atom {
 	private int[] dimensions;
 
 	/**
-	 * Instantiates a new variable.
+	 * Instantiates a new array variable.
 	 * 
 	 * @param name
-	 *            the name
+	 *            the name of the variable
 	 * @param values
-	 *            the values
+	 *            the values in form of a list.
 	 * @param dimensions
-	 *            the dimensions
+	 *            the dimensions. If this variable is a multi-dimensional array, 
+	 *            the list of values will be mapped according to these dimensions.
 	 */
 	public Variable(String name, List<Object> values, int... dimensions) {
 		this(name, values == null ? new ArrayList<Object>(calcSize(dimensions)) : (Object) values);
@@ -55,12 +56,13 @@ public class Variable implements Atom {
 	}
 
 	/**
-	 * Instantiates a new variable.
+	 * Instantiates a new variable with a simple value.
 	 * 
 	 * @param name
-	 *            the name
+	 *            the name of the variable
 	 * @param value
-	 *            the value
+	 *            the value. Depending on the type (determined by the name), this value will be parsed into the actual
+	 *            instance type. If value is null, a default value will be created instead.
 	 */
 	public Variable(String name, Object value) {
 		// Check name for validity
@@ -128,7 +130,7 @@ public class Variable implements Atom {
 	}
 
 	/**
-	 * Clear.
+	 * Clears the variable by setting it back to its default.
 	 */
 	@SuppressWarnings("unchecked")
 	public void clear() {
@@ -160,9 +162,9 @@ public class Variable implements Atom {
 	}
 
 	/**
-	 * Checks if is array.
+	 * Checks if the variable is an array.
 	 * 
-	 * @return true, if is array
+	 * @return true, if it is an array
 	 */
 	public boolean isArray() {
 		return array;
@@ -208,6 +210,8 @@ public class Variable implements Atom {
 	}
 
 	/**
+	 * Gets the name in upper case.
+	 * 
 	 * @return
 	 */
 	public String getUpperCaseName() {
@@ -256,9 +260,9 @@ public class Variable implements Atom {
 	}
 
 	/**
-	 * Elements.
+	 * Returns number of elements. If the variable isn't an array, 1 will be returned.
 	 * 
-	 * @return the int
+	 * @return the number of elements
 	 */
 	@SuppressWarnings("unchecked")
 	public int elements() {
@@ -279,7 +283,7 @@ public class Variable implements Atom {
 	}
 
 	/**
-	 * Gets the value.
+	 * Gets the value of a non-array variable.
 	 * 
 	 * @return the value
 	 */
@@ -291,7 +295,7 @@ public class Variable implements Atom {
 	}
 
 	/**
-	 * Sets the value.
+	 * Sets the value of a non-array variable.
 	 * 
 	 * @param value
 	 *            the new value
@@ -310,10 +314,10 @@ public class Variable implements Atom {
 	}
 
 	/**
-	 * Gets the value.
+	 * Gets the value of an array element.
 	 * 
 	 * @param pos
-	 *            the pos
+	 *            the position in the array
 	 * @return the value
 	 */
 	@SuppressWarnings("unchecked")
@@ -343,13 +347,13 @@ public class Variable implements Atom {
 	}
 
 	/**
-	 * Sets the value.
+	 * Sets the value of an array element.
 	 * 
 	 * @param val
-	 *            the val
+	 *            the value
 	 * @param pos
-	 *            the pos
-	 * @return the object
+	 *            the position in the array
+	 * @return the value
 	 */
 	@SuppressWarnings("unchecked")
 	public Object setValue(Object val, int... pos) {
@@ -385,10 +389,10 @@ public class Variable implements Atom {
 	}
 
 	/**
-	 * Inc.
+	 * Increments the variable's value by the given value.
 	 * 
 	 * @param value
-	 *            the value
+	 *            the value to add
 	 */
 	public void inc(float value) {
 		if (type.equals(Type.INTEGER) || type.equals(Type.REAL)) {

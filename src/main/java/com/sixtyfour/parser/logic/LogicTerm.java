@@ -7,7 +7,7 @@ import com.sixtyfour.elements.Type;
 import com.sixtyfour.system.Machine;
 
 /**
- * The Class LogicTerm.
+ * A logic term.
  */
 public class LogicTerm implements LogicBlock {
 
@@ -27,7 +27,7 @@ public class LogicTerm implements LogicBlock {
 	 * Instantiates a new logic term.
 	 * 
 	 * @param name
-	 *            the name
+	 *            the name, which is an internal marker for this block used at parse time.
 	 */
 	public LogicTerm(String name) {
 		ops.add(new LogicAnd());
@@ -35,12 +35,12 @@ public class LogicTerm implements LogicBlock {
 	}
 
 	/**
-	 * Adds the.
+	 * Adds a new logic block to the term.
 	 * 
 	 * @param block
-	 *            the block
+	 *            the new block
 	 * @param op
-	 *            the op
+	 *            the operation used between the two
 	 */
 	public void add(LogicBlock block, LogicOp op) {
 		blocks.add(block);

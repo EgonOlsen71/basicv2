@@ -16,7 +16,7 @@ import com.sixtyfour.system.ProgramCounter;
 import com.sixtyfour.util.VarUtils;
 
 /**
- * The Class Let.
+ * The LET command.
  */
 public class Let extends AbstractCommand {
 

@@ -4,7 +4,7 @@
 package com.sixtyfour.elements;
 
 /**
- * The Enum Type.
+ * An enum of types. Types can either be String, Real or Integer.
  */
 public enum Type {
 
@@ -18,13 +18,15 @@ public enum Type {
 	NONE;
 
 	/**
-	 * Checks if is assignable.
+	 * Checks if one type is assignable to another. 
+	 * This is the case if the types are equal or either real or integer. 
+	 * Being assignable doesn't mean that there's no accuracy loss when doing so.
 	 * 
 	 * @param type1
-	 *            the type 1
+	 *            one type
 	 * @param type2
-	 *            the type 2
-	 * @return true, if is assignable
+	 *            another type
+	 * @return true, if these types can be assigned to each other
 	 */
 	public static boolean isAssignable(Type type1, Type type2) {
 		if (type1.equals(type2)) {

@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * The Class CommandList.
+ * A list that contains all the commands.
  */
 public class CommandList {
 
@@ -57,7 +57,7 @@ public class CommandList {
 	});
 
 	/**
-	 * Gets the commands.
+	 * Gets all commands.
 	 * 
 	 * @return the commands
 	 */
@@ -66,7 +66,7 @@ public class CommandList {
 	}
 
 	/**
-	 * Gets the let command.
+	 * Gets the LET command.
 	 * 
 	 * @return the let command
 	 */

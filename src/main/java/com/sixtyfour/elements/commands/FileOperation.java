@@ -1,6 +1,3 @@
-/*
- * 
- */
 package com.sixtyfour.elements.commands;
 
 import java.util.List;
@@ -11,7 +8,7 @@ import com.sixtyfour.parser.Parser;
 import com.sixtyfour.system.Machine;
 
 /**
- * The Class FileOperation.
+ * A virtual command for file operations.
  */
 public abstract class FileOperation extends AbstractCommand {
 

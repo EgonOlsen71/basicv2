@@ -9,7 +9,7 @@ import com.sixtyfour.system.ProgramCounter;
 import com.sixtyfour.util.VarUtils;
 
 /**
- * The Class Load.
+ * The LOAD command.
  */
 public class Load extends FileOperation {
 

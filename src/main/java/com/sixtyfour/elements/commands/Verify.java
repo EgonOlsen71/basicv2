@@ -1,6 +1,3 @@
-/*
- * 
- */
 package com.sixtyfour.elements.commands;
 
 import com.sixtyfour.plugins.DeviceProvider;
@@ -9,7 +6,7 @@ import com.sixtyfour.system.ProgramCounter;
 import com.sixtyfour.util.VarUtils;
 
 /**
- * The Class Verify.
+ * The VERIFY command.
  */
 public class Verify extends FileOperation {
 

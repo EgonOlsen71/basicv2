@@ -6,7 +6,7 @@ import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
 /**
- * The Class AbstractFunction.
+ * An abstract base class for functions that provides some common code base.
  */
 public abstract class AbstractFunction implements Function {
 

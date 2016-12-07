@@ -1,7 +1,7 @@
 package com.sixtyfour.plugins;
 
 /**
- * The Interface DeviceProvider.
+ * An interface for devices like virtual disk drives.
  */
 public interface DeviceProvider extends PrintConsumer {
 

@@ -13,7 +13,7 @@ import com.sixtyfour.system.ProgramCounter;
 import com.sixtyfour.util.VarUtils;
 
 /**
- * The Class InputFile.
+ * The INPUT# command.
  */
 public class InputFile extends Input {
 

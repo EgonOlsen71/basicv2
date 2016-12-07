@@ -10,7 +10,8 @@ import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
 /**
- * The Class ArrayAccess.
+ * A virtual function (i.e. not part of the BASIC V2 specs) that is used internally
+ * to access array elements.
  */
 public class ArrayAccess extends AbstractFunction {
 
@@ -76,7 +77,7 @@ public class ArrayAccess extends AbstractFunction {
 	}
 
 	/**
-	 * Sets the variable.
+	 * Sets the array variable that this function should access.
 	 * 
 	 * @param variable
 	 *            the new variable

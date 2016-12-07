@@ -4,7 +4,7 @@ import com.sixtyfour.system.Machine;
 import com.sixtyfour.system.ProgramCounter;
 
 /**
- * The Class End.
+ * The END command.
  */
 public class End extends AbstractCommand {
 

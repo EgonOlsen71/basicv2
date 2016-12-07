@@ -14,7 +14,7 @@ import com.sixtyfour.plugins.OutputChannel;
 import com.sixtyfour.plugins.PrintConsumer;
 
 /**
- * The Class MemoryDeviceProvider.
+ * A simple implementation of a device provider that provides a virtual, volatile disk in memory.
  */
 public class MemoryDeviceProvider implements DeviceProvider {
 

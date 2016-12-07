@@ -14,7 +14,7 @@ import com.sixtyfour.system.ProgramCounter;
 import com.sixtyfour.util.VarUtils;
 
 /**
- * The Class Input.
+ * The INPUT command.
  */
 public class Input extends MultiVariableCommand {
 

@@ -6,7 +6,7 @@ import java.util.List;
 import com.sixtyfour.elements.commands.Command;
 
 /**
- * A line in BASIC program.
+ * A line in a BASIC program.
  */
 public class Line {
 

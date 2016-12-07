@@ -11,7 +11,7 @@ import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
 /**
- * The Class MultiVariableCommand.
+ * An abstract base class for commands that can have multiple variables like READ.
  * 
  * @author EgonOlsen
  */
@@ -34,12 +34,12 @@ public abstract class MultiVariableCommand extends AbstractCommand {
 	}
 
 	/**
-	 * Gets the variable.
+	 * Gets the variable at a position.
 	 * 
 	 * @param machine
 	 *            the machine
 	 * @param i
-	 *            the i
+	 *            the position
 	 * @return the variable
 	 */
 	final protected Variable getVariable(Machine machine, int i) {
@@ -53,14 +53,14 @@ public abstract class MultiVariableCommand extends AbstractCommand {
 	}
 
 	/**
-	 * Ensure number key.
+	 * Only lets characters pass that can be part of numbers.
 	 * 
 	 * @param machine
 	 *            the machine
 	 * @param input
-	 *            the input
+	 *            the input character
 	 * @param checkColon
-	 *            the check colon
+	 *            if true, : will cause an ?Extra ignored message. Otherwise, it will cause an exception.
 	 * @return the character
 	 */
 	final protected Character ensureNumberKey(Machine machine, Character input, boolean checkColon) {
@@ -78,10 +78,10 @@ public abstract class MultiVariableCommand extends AbstractCommand {
 	}
 
 	/**
-	 * Fill variables.
+	 * Creates the variables needed based on the input string.
 	 * 
 	 * @param linePart
-	 *            the line part
+	 *            the string that defines the variables
 	 * @param machine
 	 *            the machine
 	 */

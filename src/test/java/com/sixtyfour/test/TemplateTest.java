@@ -7,6 +7,9 @@ import java.util.Map;
 import com.sixtyfour.templating.Template;
 import com.sixtyfour.templating.TemplateFactory;
 
+/**
+ * A basic template example/test.
+ */
 public class TemplateTest {
 	public static void main(String[] args) throws Exception {
 		testTemplate();

@@ -4,7 +4,7 @@ import com.sixtyfour.Interpreter;
 import com.sixtyfour.system.Machine;
 
 /**
- * The Class InterpreterTest.
+ * Basic interpreter tests.
  */
 public class InterpreterTest {
 

@@ -5,7 +5,7 @@ import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
 /**
- * The Class Abs.
+ * The ABS function.
  */
 public class Abs extends AbstractFunction {
 

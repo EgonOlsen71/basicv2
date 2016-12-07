@@ -1,13 +1,10 @@
-/*
- * 
- */
 package com.sixtyfour.plugins.impl;
 
 import com.sixtyfour.plugins.OutputChannel;
 import com.sixtyfour.plugins.PrintConsumer;
 
 /**
- * The Class ConsoleOutputChannel.
+ * An output channel implementation that outputs into the console.
  */
 public class ConsoleOutputChannel implements OutputChannel {
 

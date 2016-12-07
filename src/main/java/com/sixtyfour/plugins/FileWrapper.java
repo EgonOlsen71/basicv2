@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The Class FileWrapper.
+ * A simple wrapper class that represents a file's content.
  */
 public class FileWrapper {
 

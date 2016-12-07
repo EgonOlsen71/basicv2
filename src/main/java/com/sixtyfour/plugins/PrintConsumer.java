@@ -4,27 +4,27 @@
 package com.sixtyfour.plugins;
 
 /**
- * The Interface PrintConsumer.
+ * A print consumer takes strings and consumes them somehow.
  */
 public interface PrintConsumer {
 
 	/**
-	 * Prints the.
+	 * Prints a text without a line break.
 	 * 
 	 * @param id
-	 *            the id
+	 *            a channel id
 	 * @param txt
-	 *            the txt
+	 *            the text
 	 */
 	void print(int id, String txt);
 
 	/**
-	 * Println.
+	 * Prints a text followed by a line break.
 	 * 
 	 * @param id
-	 *            the id
+	 *            a channel id
 	 * @param txt
-	 *            the txt
+	 *            the text
 	 */
 	void println(int id, String txt);
 

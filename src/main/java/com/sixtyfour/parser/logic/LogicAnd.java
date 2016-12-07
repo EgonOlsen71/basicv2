@@ -6,7 +6,7 @@ package com.sixtyfour.parser.logic;
 import com.sixtyfour.system.Machine;
 
 /**
- * The Class LogicAnd.
+ * The logic operation of AND.
  */
 public class LogicAnd implements LogicOp {
 

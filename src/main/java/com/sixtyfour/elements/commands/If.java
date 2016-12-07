@@ -7,7 +7,7 @@ import com.sixtyfour.system.Machine;
 import com.sixtyfour.system.ProgramCounter;
 
 /**
- * The Class If.
+ * The IF command.
  */
 public class If extends AbstractCommand {
 

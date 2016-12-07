@@ -1,13 +1,10 @@
-/*
- * 
- */
 package com.sixtyfour.elements.functions;
 
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.system.Machine;
 
 /**
- * The Class Len.
+ * The LEN function.
  */
 public class Len extends AbstractFunction {
 

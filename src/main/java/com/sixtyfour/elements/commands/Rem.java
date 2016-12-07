@@ -4,7 +4,7 @@ import com.sixtyfour.system.Machine;
 import com.sixtyfour.system.ProgramCounter;
 
 /**
- * The Class Rem.
+ * The REM command.
  */
 public class Rem extends AbstractCommand {
 

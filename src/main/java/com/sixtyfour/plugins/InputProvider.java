@@ -1,24 +1,21 @@
-/*
- * 
- */
 package com.sixtyfour.plugins;
 
 /**
- * The Interface InputProvider.
+ * An interface for providing input
  * 
  * @author EgonOlsen
  */
 public interface InputProvider {
 
 	/**
-	 * Read key.
+	 * Reads a key.
 	 * 
 	 * @return the character
 	 */
 	Character readKey();
 
 	/**
-	 * Read string.
+	 * Reads a string.
 	 * 
 	 * @return the string
 	 */

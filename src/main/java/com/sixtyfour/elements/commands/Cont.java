@@ -1,13 +1,10 @@
-/*
- * 
- */
 package com.sixtyfour.elements.commands;
 
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.system.ProgramCounter;
 
 /**
- * The Class Cont.
+ * The CONT command.
  */
 public class Cont extends AbstractCommand {
 

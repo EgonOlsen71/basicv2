@@ -1,6 +1,3 @@
-/*
- * 
- */
 package com.sixtyfour.elements.commands;
 
 import java.util.List;
@@ -13,7 +10,7 @@ import com.sixtyfour.system.ProgramCounter;
 import com.sixtyfour.util.VarUtils;
 
 /**
- * The Class Cmd.
+ * The CMD command.
  */
 public class Cmd extends AbstractCommand {
 

@@ -13,7 +13,7 @@ import com.sixtyfour.system.ProgramCounter;
 import com.sixtyfour.util.VarUtils;
 
 /**
- * The Class Read.
+ * The READ command.
  */
 public class Read extends MultiVariableCommand {
 

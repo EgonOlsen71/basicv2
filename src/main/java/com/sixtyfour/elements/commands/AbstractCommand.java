@@ -7,7 +7,7 @@ import com.sixtyfour.system.ProgramCounter;
 import com.sixtyfour.util.VarUtils;
 
 /**
- * The Class AbstractCommand.
+ * An abstract, common base class for commands.
  */
 public abstract class AbstractCommand implements Command {
 

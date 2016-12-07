@@ -4,7 +4,7 @@ import com.sixtyfour.Interpreter;
 import com.sixtyfour.Loader;
 
 /**
- * The Class ProgramTest.
+ * Basic tests for executing complete BASIC programs.
  */
 @SuppressWarnings("unused")
 public class ProgramTest {

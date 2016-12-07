@@ -1,13 +1,10 @@
-/*
- * 
- */
 package com.sixtyfour.elements.commands;
 
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.system.ProgramCounter;
 
 /**
- * The Class Stop.
+ * The STOP command.
  */
 public class Stop extends AbstractCommand {
 

@@ -1,27 +1,17 @@
-/*
- * 
- */
 package com.sixtyfour.plugins;
 
 /**
- * The listener interface for receiving systemCall events. The class that is
- * interested in processing a systemCall event implements this interface, and
- * the object created with that class is registered with a component using the
- * component's <code>addSystemCallListener<code> method. When
- * the systemCall event occurs, that object's appropriate
- * method is invoked.
- * 
- * @see SystemCallEvent
+ * A listener for calls of the SYS command.
  */
 public interface SystemCallListener {
 
 	/**
-	 * Sys.
+	 * SYS has been called.
 	 * 
 	 * @param addr
-	 *            the addr
+	 *            the address for which SYS has been called
 	 * @param params
-	 *            the params
+	 *            optional parameters
 	 */
 	void sys(int addr, Object... params);
 }

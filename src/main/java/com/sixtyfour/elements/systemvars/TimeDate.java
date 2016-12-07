@@ -7,7 +7,7 @@ import com.sixtyfour.elements.Variable;
 import com.sixtyfour.system.Machine;
 
 /**
- * The Class TimeDate.
+ * A system variable that represents the current time and date.
  * 
  * @author EgonOlsen
  */
@@ -23,7 +23,7 @@ public class TimeDate extends Variable {
 	private long setTime = 0;
 
 	/**
-	 * Instantiates a new time date.
+	 * Instantiates a new time and date.
 	 */
 	public TimeDate() {
 		super("TI$", "000000");

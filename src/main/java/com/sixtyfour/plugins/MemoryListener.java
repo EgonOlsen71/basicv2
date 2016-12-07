@@ -1,40 +1,30 @@
-/*
- * 
- */
 package com.sixtyfour.plugins;
 
 /**
- * The listener interface for receiving memory events. The class that is
- * interested in processing a memory event implements this interface, and the
- * object created with that class is registered with a component using the
- * component's <code>addMemoryListener<code> method. When
- * the memory event occurs, that object's appropriate
- * method is invoked.
- * 
- * @see MemoryEvent
+ * A listener for memory releated command calls like POKE and WAIT.
  */
 public interface MemoryListener {
 
 	/**
-	 * Poke.
+	 * POKE has been called.
 	 * 
-	 * @param addr
-	 *            the addr
+	 * @param address
+	 *            the address to poke into
 	 * @param value
-	 *            the value
+	 *            the value to be poked
 	 */
 	void poke(int addr, int value);
 
 	/**
-	 * Wait.
+	 * WAIT has been called.
 	 * 
-	 * @param addr
-	 *            the addr
+	 * @param address
+	 *            the address to wait for
 	 * @param value
-	 *            the value
+	 *            the value with which the memory's content will be ANDed
 	 * @param inverse
-	 *            the inverse
-	 * @return true, if successful
+	 *             the value with which the memory's content will be EORed
+	 * @return true, if the conditions are met. False otherwise.
 	 */
 	boolean wait(int addr, int value, int inverse);
 }

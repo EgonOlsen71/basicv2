@@ -7,7 +7,7 @@ import com.sixtyfour.elements.Variable;
 import com.sixtyfour.system.Machine;
 
 /**
- * The Class Time.
+ * A system variable that represents the current time.
  * 
  * @author EgonOlsen
  */

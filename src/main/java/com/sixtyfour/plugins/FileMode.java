@@ -1,10 +1,7 @@
-/*
- * 
- */
 package com.sixtyfour.plugins;
 
 /**
- * The Enum FileMode.
+ * An enum for file access modes.
  */
 public enum FileMode {
 

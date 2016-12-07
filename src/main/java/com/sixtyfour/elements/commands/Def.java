@@ -1,6 +1,3 @@
-/*
- * 
- */
 package com.sixtyfour.elements.commands;
 
 import com.sixtyfour.elements.Type;
@@ -11,7 +8,7 @@ import com.sixtyfour.system.ProgramCounter;
 import com.sixtyfour.util.VarUtils;
 
 /**
- * The Class Def.
+ * The DEF command.
  */
 public class Def extends AbstractCommand {
 

@@ -5,7 +5,7 @@ import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
 /**
- * The Class Tan.
+ * The TAN function.
  */
 public class Tan extends AbstractFunction {
 

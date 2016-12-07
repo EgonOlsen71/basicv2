@@ -1,6 +1,3 @@
-/*
- * 
- */
 package com.sixtyfour.elements.commands;
 
 import com.sixtyfour.system.Machine;
@@ -8,7 +5,7 @@ import com.sixtyfour.system.ProgramCounter;
 import com.sixtyfour.system.StackEntry;
 
 /**
- * The Class Return.
+ * The RETURN command.
  */
 public class Return extends AbstractCommand {
 

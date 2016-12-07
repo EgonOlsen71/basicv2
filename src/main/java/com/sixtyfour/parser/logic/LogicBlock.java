@@ -18,7 +18,7 @@ public interface LogicBlock extends Atom {
 	boolean evalToBoolean(Machine machine);
 
 	/**
-	 * Not.
+	 * Not. Negates the block's state.
 	 */
 	void not();
 

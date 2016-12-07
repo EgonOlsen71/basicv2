@@ -1,19 +1,9 @@
-/*
- * 
- */
 package com.sixtyfour.plugins.impl;
 
 import com.sixtyfour.plugins.MemoryListener;
 
 /**
- * The listener interface for receiving nullMemory events. The class that is
- * interested in processing a nullMemory event implements this interface, and
- * the object created with that class is registered with a component using the
- * component's <code>addNullMemoryListener<code> method. When
- * the nullMemory event occurs, that object's appropriate
- * method is invoked.
- * 
- * @see NullMemoryEvent
+ * Default implementation that does nothing.
  */
 public class NullMemoryListener implements MemoryListener {
 

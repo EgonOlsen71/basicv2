@@ -1,6 +1,3 @@
-/*
- * 
- */
 package com.sixtyfour.elements.commands;
 
 import com.sixtyfour.system.Machine;
@@ -12,7 +9,7 @@ import com.sixtyfour.system.ProgramCounter;
 public class Restore extends AbstractCommand {
 
 	/**
-	 * Instantiates a new restore.
+	 * The RESTORE command.
 	 */
 	public Restore() {
 		super("RESTORE");

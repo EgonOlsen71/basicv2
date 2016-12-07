@@ -12,7 +12,7 @@ import com.sixtyfour.system.ProgramCounter;
 import com.sixtyfour.util.VarUtils;
 
 /**
- * The Class GetFile.
+ * The GET# command.
  */
 public class GetFile extends Get {
 

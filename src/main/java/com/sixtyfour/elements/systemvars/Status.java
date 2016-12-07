@@ -7,7 +7,8 @@ import com.sixtyfour.elements.Variable;
 import com.sixtyfour.system.Machine;
 
 /**
- * The Class Status.
+ * A system variable that represents the current status. 
+ * The current implementation always returns 128 for this.
  */
 public class Status extends Variable {
 

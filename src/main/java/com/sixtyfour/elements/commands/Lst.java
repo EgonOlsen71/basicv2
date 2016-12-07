@@ -4,7 +4,7 @@ import com.sixtyfour.system.Machine;
 import com.sixtyfour.system.ProgramCounter;
 
 /**
- * The Class Lst.
+ * The LIST command.
  */
 public class Lst extends AbstractCommand {
 

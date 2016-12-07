@@ -5,28 +5,32 @@ package com.sixtyfour.parser.logic;
 
 import com.sixtyfour.system.Machine;
 
+
 /**
- * The Interface LogicOp.
+ * An interface for logic operations, which will be implemented by the or and and operations.
  */
-public interface LogicOp {
+public interface LogicOp
+{
 
-	/**
-	 * Eval.
-	 * 
-	 * @param machine
-	 *            the machine
-	 * @param state
-	 *            the state
-	 * @param block
-	 *            the block
-	 * @return true, if successful
-	 */
-	boolean eval(Machine machine, boolean state, LogicBlock block);
+  /**
+   * Evaluates "state" LogicOp LogicBlock, for example "true AND block.eval(machine)" if state is true and the operation
+   * is AND.
+   * 
+   * @param machine
+   *          the machine
+   * @param state
+   *          the current state to apply the operation to
+   * @param block
+   *          the logic block to apply the operation to
+   * @return the result of the evaluation
+   */
+  boolean eval(Machine machine, boolean state, LogicBlock block);
 
-	/**
-	 * Checks if is and.
-	 * 
-	 * @return true, if is and
-	 */
-	boolean isAnd();
+
+  /**
+   * Checks if this operation is the and-operation. This can be used for lazy evaluation optimizations.
+   * 
+   * @return true, if it is the and-operation
+   */
+  boolean isAnd();
 }

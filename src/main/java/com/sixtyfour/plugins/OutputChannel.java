@@ -1,25 +1,22 @@
-/*
- * 
- */
 package com.sixtyfour.plugins;
 
 /**
- * The Interface OutputChannel.
+ * A channel for outputting text.
  */
 public interface OutputChannel extends PrintConsumer {
 
 	/**
-	 * Gets the cursor.
+	 * Gets the cursor position.
 	 * 
-	 * @return the cursor
+	 * @return the cursor position
 	 */
 	int getCursor();
 
 	/**
-	 * Sets the cursor.
+	 * Sets the cursor position.
 	 * 
 	 * @param cursor
-	 *            the new cursor
+	 *            the new cursor position
 	 */
 	void setCursor(int cursor);
 
@@ -27,16 +24,16 @@ public interface OutputChannel extends PrintConsumer {
 	 * Sets the print consumer.
 	 * 
 	 * @param otherConsumer
-	 *            the other consumer
+	 *            the print consumer
 	 * @param channel
 	 *            the channel
 	 */
 	void setPrintConsumer(PrintConsumer otherConsumer, int channel);
 
 	/**
-	 * Gets the prints the consumer.
+	 * Gets the print consumer.
 	 * 
-	 * @return the prints the consumer
+	 * @return the print consumer
 	 */
 	PrintConsumer getPrintConsumer();
 

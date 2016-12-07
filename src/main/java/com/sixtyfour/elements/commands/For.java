@@ -9,7 +9,7 @@ import com.sixtyfour.system.ProgramCounter;
 import com.sixtyfour.util.VarUtils;
 
 /**
- * The Class For.
+ * The FOR command.
  */
 public class For extends AbstractCommand {
 
@@ -39,19 +39,19 @@ public class For extends AbstractCommand {
 	}
 
 	/**
-	 * Gets the var.
+	 * Gets the variable used for looping.
 	 * 
-	 * @return the var
+	 * @return the variable
 	 */
 	public Variable getVar() {
 		return var;
 	}
 
 	/**
-	 * Sets the var.
+	 * Sets the variable used for looping.
 	 * 
 	 * @param var
-	 *            the new var
+	 *            the new variable
 	 */
 	public void setVar(Variable var) {
 		this.var = var;
@@ -140,13 +140,13 @@ public class For extends AbstractCommand {
 	}
 
 	/**
-	 * Next.
+	 * Executes a next call for this for.
 	 * 
 	 * @param next
-	 *            the next
+	 *            the command that is associated with this for
 	 * @param machine
-	 *            the machine
-	 * @return true, if successful
+	 *            the current machine
+	 * @return true, if there will be a another iteration. false otherwise.
 	 */
 	public boolean next(Next next, Machine machine) {
 		if (next.getVarName() != null && !next.getVarName().equalsIgnoreCase(var.getName())) {

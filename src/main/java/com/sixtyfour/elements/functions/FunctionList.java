@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * The Class FunctionList.
+ * A list of all known functions.
  */
 public class FunctionList {
 
@@ -47,9 +47,9 @@ public class FunctionList {
 	});
 
 	/**
-	 * Gets the functions.
+	 * Gets the function list.
 	 * 
-	 * @return the functions
+	 * @return all functions
 	 */
 	public static List<Function> getFunctions() {
 		return FUNCTIONS;

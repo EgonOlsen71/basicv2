@@ -10,9 +10,10 @@ import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
 /**
- * The Class Template.
- * 
- * @author Foerster-H
+ * A template. A template can be HTML (but doesn't have to) with BASIC V2 code in it.
+ * When parsed the template will be converted into a BASIC program. This requires to add some
+ * additional line numbers, so make sure that there's enough number space left between lines.
+ * See the test package for an example template.
  */
 public class Template {
 
@@ -32,9 +33,9 @@ public class Template {
 	 * Instantiates a new template.
 	 * 
 	 * @param template
-	 *            the template
+	 *            the template's content
 	 * @param variables
-	 *            the variables
+	 *            the variables to prefill the template with
 	 */
 	public Template(String template, Map<String, Object> variables) {
 		vars.putAll(variables);
@@ -42,22 +43,22 @@ public class Template {
 	}
 
 	/**
-	 * Sets the variable.
+	 * Sets a variable to a new value.
 	 * 
 	 * @param name
-	 *            the name
+	 *            the name of the variable in the template's basic code
 	 * @param value
-	 *            the value
+	 *            the new value
 	 */
 	public void setVariable(String name, Object value) {
 		vars.put(name, value);
 	}
 
 	/**
-	 * Gets the variable.
+	 * Gets a variable's value.
 	 * 
 	 * @param name
-	 *            the name
+	 *            the name of the variable in the template's basic code
 	 * @return the variable
 	 */
 	public Object getVariable(String name) {
@@ -69,9 +70,9 @@ public class Template {
 	}
 
 	/**
-	 * Process.
+	 * Processes the templates. This resets the underlying machine instance.
 	 * 
-	 * @return the string
+	 * @return the processed template, i.e. the generated output.
 	 */
 	public String process() {
 		out.reset();

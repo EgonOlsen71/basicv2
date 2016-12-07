@@ -1,13 +1,10 @@
-/*
- * 
- */
 package com.sixtyfour.elements.commands;
 
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.system.ProgramCounter;
 
 /**
- * The Class Clr.
+ * The CLR command.
  */
 public class Clr extends AbstractCommand {
 

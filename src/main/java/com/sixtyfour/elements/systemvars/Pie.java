@@ -6,7 +6,7 @@ package com.sixtyfour.elements.systemvars;
 import com.sixtyfour.elements.Variable;
 
 /**
- * The Class Pie.
+ * A system variable that represents PI.
  */
 public class Pie extends Variable {
 
