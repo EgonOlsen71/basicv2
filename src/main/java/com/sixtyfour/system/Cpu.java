@@ -1,152 +1,117 @@
 package com.sixtyfour.system;
 
-import java.util.Stack;
+public class Cpu {
+	private int acc;
+	private int x;
+	private int y;
+	private int stackPointer = 0xff;
+	private int carryFlag;
+	private int negFlag;
+	private int zeroFlag;
+	private int decimalFlag;
+	private int breakFlag;
+	private int overflowFlag;
+	private int interruptFlag;
 
+	public int getAcc() {
+		return acc;
+	}
 
-public class Cpu
-{
-  private int acc;
-  private int x;
-  private int y;
-  private int carryFlag;
-  private int negFlag;
-  private int zeroFlag;
-  private int decimalFlag;
-  private int breakFlag;
-  private int overflowFlag;
-  private int interruptFlag;
-  private Stack<Integer> stack;
+	public void setAcc(int acc) {
+		this.acc = acc;
+	}
 
+	public int getX() {
+		return x;
+	}
 
-  public int getAcc()
-  {
-    return acc;
-  }
+	public void setX(int x) {
+		this.x = x;
+	}
 
+	public int getY() {
+		return y;
+	}
 
-  public void setAcc(int acc)
-  {
-    this.acc = acc;
-  }
+	public void setY(int y) {
+		this.y = y;
+	}
 
+	public int getCarryFlag() {
+		return carryFlag;
+	}
 
-  public int getX()
-  {
-    return x;
-  }
+	public void setCarryFlag(int carryFlag) {
+		this.carryFlag = carryFlag;
+	}
 
+	public int getNegFlag() {
+		return negFlag;
+	}
 
-  public void setX(int x)
-  {
-    this.x = x;
-  }
+	public void setNegFlag(int negFlag) {
+		this.negFlag = negFlag;
+	}
 
+	public int getZeroFlag() {
+		return zeroFlag;
+	}
 
-  public int getY()
-  {
-    return y;
-  }
+	public void setZeroFlag(int zeroFlag) {
+		this.zeroFlag = zeroFlag;
+	}
 
+	public int getDecimalFlag() {
+		return decimalFlag;
+	}
 
-  public void setY(int y)
-  {
-    this.y = y;
-  }
+	public void setDecimalFlag(int decimalFlag) {
+		this.decimalFlag = decimalFlag;
+	}
 
+	public int getBreakFlag() {
+		return breakFlag;
+	}
 
-  public int getCarryFlag()
-  {
-    return carryFlag;
-  }
+	public void setBreakFlag(int breakFlag) {
+		this.breakFlag = breakFlag;
+	}
 
+	public int getOverflowFlag() {
+		return overflowFlag;
+	}
 
-  public void setCarryFlag(int carryFlag)
-  {
-    this.carryFlag = carryFlag;
-  }
+	public void setOverflowFlag(int overflowFlag) {
+		this.overflowFlag = overflowFlag;
+	}
 
+	public int getInterruptFlag() {
+		return interruptFlag;
+	}
 
-  public int getNegFlag()
-  {
-    return negFlag;
-  }
+	public void setInterruptFlag(int interruptFlag) {
+		this.interruptFlag = interruptFlag;
+	}
 
+	public int pop(Machine machine) {
+		int[] ram = machine.getRam();
+		int val = ram[0x100 + stackPointer];
+		stackPointer++;
+		return val;
+	}
 
-  public void setNegFlag(int negFlag)
-  {
-    this.negFlag = negFlag;
-  }
+	public void push(Machine machine, int value) {
+		int[] ram = machine.getRam();
+		ram[0x100 + stackPointer] = value;
+		stackPointer--;
+	}
 
+	public int getStackPointer() {
+		return stackPointer;
+	}
 
-  public int getZeroFlag()
-  {
-    return zeroFlag;
-  }
-
-
-  public void setZeroFlag(int zeroFlag)
-  {
-    this.zeroFlag = zeroFlag;
-  }
-
-
-  public int getDecimalFlag()
-  {
-    return decimalFlag;
-  }
-
-
-  public void setDecimalFlag(int decimalFlag)
-  {
-    this.decimalFlag = decimalFlag;
-  }
-
-
-  public int getBreakFlag()
-  {
-    return breakFlag;
-  }
-
-
-  public void setBreakFlag(int breakFlag)
-  {
-    this.breakFlag = breakFlag;
-  }
-
-
-  public int getOverflowFlag()
-  {
-    return overflowFlag;
-  }
-
-
-  public void setOverflowFlag(int overflowFlag)
-  {
-    this.overflowFlag = overflowFlag;
-  }
-
-
-  public int getInterruptFlag()
-  {
-    return interruptFlag;
-  }
-
-
-  public void setInterruptFlag(int interruptFlag)
-  {
-    this.interruptFlag = interruptFlag;
-  }
-
-
-  public int pop()
-  {
-    return stack.pop();
-  }
-
-
-  public void push(int value)
-  {
-    stack.push(value);
-  }
+	public void setStackPointer(int stackPointer) {
+		this.stackPointer = stackPointer;
+	}
 
 }
