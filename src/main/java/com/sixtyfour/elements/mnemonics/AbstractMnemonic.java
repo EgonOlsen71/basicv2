@@ -23,7 +23,7 @@ public abstract class AbstractMnemonic implements Mnemonic {
 	@Override
 	public int parse(String linePart, int addr, Machine machine, ConstantsContainer ccon, LabelsContainer lcon) {
 		linePart = linePart.trim().substring(3);
-		Parameters pars = this.parseParameters(linePart, ccon);
+		Parameters pars = this.parseParameters(linePart, addr, ccon, lcon);
 		if (opcodes[0] == 0 && pars == null) {
 			raiseSyntaxError(linePart);
 		}
@@ -40,12 +40,12 @@ public abstract class AbstractMnemonic implements Mnemonic {
 
 		if (pars.getValue() != null) {
 			// Value
-			addr = store(ram, opcodes[1], pars.getValue(), addr);
+			addr = storeByte(ram, opcodes[1], pars.getValue(), addr);
 		} else {
 			if (!pars.isIndirect()) {
 				if (pars.isX()) {
 					// ,X
-					if (pars.isZeropage()) {
+					if (pars.isZeropage() && opcodes[6] != 0) {
 						// Direct/Zeropage
 						addr = storeByte(ram, opcodes[6], pars.getAddr(), addr);
 					} else {
@@ -54,7 +54,7 @@ public abstract class AbstractMnemonic implements Mnemonic {
 					}
 				} else if (pars.isY()) {
 					// ,Y
-					if (pars.isZeropage()) {
+					if (pars.isZeropage() && opcodes[7] != 0) {
 						addr = storeByte(ram, opcodes[7], pars.getAddr(), addr);
 					} else {
 						// Direct/Memory
@@ -62,7 +62,7 @@ public abstract class AbstractMnemonic implements Mnemonic {
 					}
 				} else {
 					// Direct
-					if (pars.isZeropage()) {
+					if (pars.isZeropage() && opcodes[5] != 0) {
 						// Direct/Zeropage
 						addr = storeByte(ram, opcodes[5], pars.getAddr(), addr);
 					} else {
@@ -70,18 +70,18 @@ public abstract class AbstractMnemonic implements Mnemonic {
 						if (!this.isRelative()) {
 							addr = store(ram, opcodes[2], pars.getAddr(), addr);
 						} else {
-							int offset = addr - pars.getAddr();
-							if (offset <= 127 || offset >= -128) {
-								addr = store(ram, opcodes[11], offset, addr);
+							int offset = pars.getAddr() - (addr + 2);
+							if (offset <= 127 && offset >= -128) {
+								addr = storeByte(ram, opcodes[11], offset, addr);
 							} else {
-								throw new RuntimeException("Destination address out of range: " + pars.getAddr() + "/" + offset);
+								throw new RuntimeException("Destination address out of range: " + pars.getAddr() + "/" + addr + "/" + offset);
 							}
 						}
 					}
 				}
 			} else {
 				// Indirect
-				if (!pars.isZeropage()) {
+				if (!pars.isZeropage() && (pars.isX() || pars.isY())) {
 					raiseAddrError(linePart);
 				}
 				if (pars.isX()) {
@@ -102,7 +102,14 @@ public abstract class AbstractMnemonic implements Mnemonic {
 
 	@Override
 	public boolean isMnemonic(String linePart) {
-		return VarUtils.toUpper(linePart.trim()).startsWith(name);
+		boolean mne = VarUtils.toUpper(linePart.trim()).startsWith(name);
+		if (mne && linePart.length() > name.length()) {
+			char c = linePart.charAt(name.length());
+			if (Character.isLetter(c)) {
+				return false;
+			}
+		}
+		return mne;
 	}
 
 	@Override
@@ -127,6 +134,11 @@ public abstract class AbstractMnemonic implements Mnemonic {
 	}
 
 	@Override
+	public boolean isJump() {
+		return false;
+	}
+
+	@Override
 	public String toString() {
 		return name;
 	}
@@ -141,14 +153,18 @@ public abstract class AbstractMnemonic implements Mnemonic {
 
 	protected int storeByte(int[] ram, int opcode, int value, int addr) {
 		checkOpcode(opcode);
-		ram[addr++] = opcode;
+		ram[addr++] = opcode(opcode);
 		ram[addr++] = AssemblyParser.getLowByte(value);
 		return addr;
 	}
 
+	private int opcode(int opcode) {
+		return opcode == -9999 ? 0 : opcode;
+	}
+
 	protected int store(int[] ram, int opcode, int value, int addr) {
 		checkOpcode(opcode);
-		ram[addr++] = opcode;
+		ram[addr++] = opcode(opcode);
 		ram[addr++] = AssemblyParser.getLowByte(value);
 		ram[addr++] = AssemblyParser.getHighByte(value);
 		return addr;
@@ -156,11 +172,11 @@ public abstract class AbstractMnemonic implements Mnemonic {
 
 	protected int store(int[] ram, int opcode, int addr) {
 		checkOpcode(opcode);
-		ram[addr++] = opcode;
+		ram[addr++] = opcode(opcode);
 		return addr;
 	}
 
-	protected Parameters parseParameters(String pars, ConstantsContainer ccon) {
+	protected Parameters parseParameters(String pars, int addr, ConstantsContainer ccon, LabelsContainer lcon) {
 		pars = Parser.removeWhiteSpace(pars);
 
 		if (pars.isEmpty()) {
@@ -176,7 +192,7 @@ public abstract class AbstractMnemonic implements Mnemonic {
 		String part1 = indexed ? pars.substring(0, indexedPos) : pars;
 		String part2 = indexed ? VarUtils.toUpper(pars.substring(indexedPos + 1)) : "";
 
-		if (isIndirect && !((part2.endsWith(")") && part2.startsWith("X")) || (part1.endsWith(")") && part2.startsWith("Y")))) {
+		if (isIndirect && !((part2.isEmpty() && part1.endsWith(")")) || (part2.endsWith(")") && part2.startsWith("X")) || (part1.endsWith(")") && part2.startsWith("Y")))) {
 			throw new RuntimeException("Invalid indirect addressing: " + pars);
 		}
 
@@ -189,9 +205,9 @@ public abstract class AbstractMnemonic implements Mnemonic {
 		par.setIndirect(isIndirect);
 
 		if (isValue) {
-			par.setValue(AssemblyParser.getValue(part1, ccon));
+			par.setValue(AssemblyParser.getValue(part1, addr, ccon, lcon));
 		} else {
-			int val = AssemblyParser.getValue(part1, ccon);
+			int val = AssemblyParser.getValue(part1, addr, ccon, lcon);
 			par.setAddr(val);
 			if (val < 256) {
 				par.setZeropage(true);
@@ -202,7 +218,7 @@ public abstract class AbstractMnemonic implements Mnemonic {
 	}
 
 	protected void raiseOpcodeError(int opcode) {
-		throw new RuntimeException("Illegal opcode: " + opcode);
+		throw new RuntimeException("Address mode not supported: " + opcode);
 
 	}
 

@@ -15,5 +15,7 @@ public interface Mnemonic {
 	boolean isRelative();
 
 	boolean isSingle();
+	
+	boolean isJump();
 
 }

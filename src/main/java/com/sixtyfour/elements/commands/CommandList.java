@@ -10,7 +10,7 @@ import java.util.List;
 public class CommandList {
 
 	/** The Constant COMMANDS. */
-	public static final List<Command> COMMANDS = Collections.unmodifiableList(new ArrayList<Command>() {
+	private static final List<Command> COMMANDS = Collections.unmodifiableList(new ArrayList<Command>() {
 		private static final long serialVersionUID = 1L;
 
 		{

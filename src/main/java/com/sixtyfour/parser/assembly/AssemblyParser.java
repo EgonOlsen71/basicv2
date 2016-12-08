@@ -49,39 +49,25 @@ public class AssemblyParser {
 		return null;
 	}
 
-	public static int getValue(String number, ConstantsContainer ccon) {
+	public static int getValue(String number, int addr, ConstantsContainer ccon, LabelsContainer lcon) {
 		number = number.trim();
 		if (!number.startsWith("$") && !number.startsWith("%") && !Character.isDigit(number.charAt(0))) {
 			ConstantValue cv = ccon.get(number);
 			if (cv != null) {
 				return cv.getValue();
 			}
+
+			Integer labelAddr = lcon.get(number);
+			if (labelAddr != null) {
+				return labelAddr;
+			}
+
+			// No constant and no label found...might be a delayed label...
+			lcon.addDelayedLabelRef(addr, number);
+			return addr;
+
 		}
 		return getValue(number);
-	}
-
-	public static int getValue(String number) {
-		number = number.trim();
-		int val = 0;
-		try {
-			if (number.startsWith("$")) {
-				val = Integer.parseInt(number.substring(1), 16);
-			} else {
-				if (number.startsWith("%")) {
-					val = Integer.parseInt(number.substring(1), 2);
-				} else {
-					val = Integer.parseInt(number);
-				}
-			}
-
-			if (val < -32768 || val > 65535) {
-				throw new RuntimeException("Value out of range: " + val);
-			}
-
-			return val;
-		} catch (Exception e) {
-			throw new RuntimeException("Invalid number: " + number);
-		}
 	}
 
 	public static int getLowByte(int val) {
@@ -107,5 +93,29 @@ public class AssemblyParser {
 			return new ConstantInt(left, val);
 		}
 		return null;
+	}
+
+	private static int getValue(String number) {
+		number = number.trim();
+		int val = 0;
+		try {
+			if (number.startsWith("$")) {
+				val = Integer.parseInt(number.substring(1), 16);
+			} else {
+				if (number.startsWith("%")) {
+					val = Integer.parseInt(number.substring(1), 2);
+				} else {
+					val = Integer.parseInt(number);
+				}
+			}
+
+			if (val < -32768 || val > 65535) {
+				throw new RuntimeException("Value out of range: " + val);
+			}
+
+			return val;
+		} catch (Exception e) {
+			throw new RuntimeException("Invalid number: " + number);
+		}
 	}
 }

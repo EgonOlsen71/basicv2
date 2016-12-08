@@ -1,26 +1,23 @@
-; Dieses Programm löscht den Bildschirm und gibt einen Text an einer definierten Position aus.
+; Dieses Programm lï¿½scht den Bildschirm und gibt einen Text an einer definierten Position aus.
 ; Programmstart mit SYS 49152
 
 *=$c000   ; Startadresse des Programms
 
 BSOUT = $ffd2
 
-start        lda #147          ; Steuerzeichen für Bildschirm löschen
-             jsr BSOUT         ; Löschen durchführen
+start        lda #147          ; Steuerzeichen fï¿½r Bildschirm lï¿½schen
+             jsr BSOUT         ; Lï¿½schen durchfï¿½hren
 
              ldx #03           ; Zeile 3
              ldy #10           ; Spalte 10
              clc               ; Carry-Flag = 0 Cursorposition setzen, = 1 Cursorposition lesen
              jsr $fff0         ; Cursor setzen
 
-             ldx #$00          ; Index für Textbuchstaben in X-Register
-schleife     lda TEXT,X        ; Zeichen holen
+             ldx #$00          ; Index fï¿½r Textbuchstaben in X-Register
+schleife     lda $c01c,X        ; Zeichen holen
              beq ende          ; Endmarkierung? (wenn 0)
              jsr BSOUT         ; Zeichen am Bildschirm ausgeben
-             inx               ; nächstes Zeichen der Zeichenkette
+             inx               ; nï¿½chstes Zeichen der Zeichenkette
              jmp schleife
 
-ende         rts               ; Rücksprung ins Basic
-
-TEXT         .text "C64-WIKI"  ; Zeichenkette
-             .byte $00         ; Endemarkierung
+ende         rts               ; Rï¿½cksprung ins Basic

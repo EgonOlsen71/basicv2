@@ -13,7 +13,7 @@ import java.util.List;
 public class FunctionList {
 
 	/** The Constant FUNCTIONS. */
-	public static final List<Function> FUNCTIONS = Collections.unmodifiableList(new ArrayList<Function>() {
+	private static final List<Function> FUNCTIONS = Collections.unmodifiableList(new ArrayList<Function>() {
 		private static final long serialVersionUID = 1L;
 
 		{

@@ -1,84 +1,62 @@
 package com.sixtyfour.elements.mnemonics;
 
-public class Parameters
-{
-  private Integer value;
-  private Integer addr;
-  private boolean x;
-  private boolean y;
-  private boolean indirect;
-  private boolean zeropage;
+public class Parameters {
+	private Integer value;
+	private Integer addr;
+	private boolean x;
+	private boolean y;
+	private boolean indirect;
+	private boolean zeropage;
 
+	public Integer getValue() {
+		return value;
+	}
 
-  public Integer getValue()
-  {
-    return value;
-  }
+	public void setValue(Integer value) {
+		if (value < -128 || value > 255) {
+			throw new RuntimeException("Value too large: " + value);
+		}
+		this.value = value;
+	}
 
+	public Integer getAddr() {
+		return addr;
+	}
 
-  public void setValue(Integer value)
-  {
-    this.value = value;
-  }
+	public void setAddr(Integer addr) {
+		this.addr = addr;
+	}
 
+	public boolean isX() {
+		return x;
+	}
 
-  public Integer getAddr()
-  {
-    return addr;
-  }
+	public void setX(boolean x) {
+		this.x = x;
+	}
 
+	public boolean isY() {
+		return y;
+	}
 
-  public void setAddr(Integer addr)
-  {
-    this.addr = addr;
-  }
+	public void setY(boolean y) {
+		this.y = y;
+	}
 
+	public boolean isIndirect() {
+		return indirect;
+	}
 
-  public boolean isX()
-  {
-    return x;
-  }
+	public void setIndirect(boolean indirect) {
+		this.indirect = indirect;
+	}
 
+	public boolean isZeropage() {
+		return zeropage;
+	}
 
-  public void setX(boolean x)
-  {
-    this.x = x;
-  }
-
-
-  public boolean isY()
-  {
-    return y;
-  }
-
-
-  public void setY(boolean y)
-  {
-    this.y = y;
-  }
-
-
-  public boolean isIndirect()
-  {
-    return indirect;
-  }
-
-
-  public void setIndirect(boolean indirect)
-  {
-    this.indirect = indirect;
-  }
-
-
-  public boolean isZeropage()
-  {
-    return zeropage;
-  }
-
-
-  public void setZeropage(boolean zeropage)
-  {
-    this.zeropage = zeropage;
-  }
+	public void setZeropage(boolean zeropage) {
+		this.zeropage = zeropage;
+	}
 
 }
