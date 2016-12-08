@@ -14,7 +14,4 @@ public interface Mnemonic
 
 
   boolean isMnemonic(String linePart);
-
-
-  Mnemonic clone();
 }

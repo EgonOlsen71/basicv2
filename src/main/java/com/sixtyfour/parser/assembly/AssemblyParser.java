@@ -21,7 +21,7 @@ public class AssemblyParser
     {
       if (mnee.isMnemonic(linePart))
       {
-        mne = mnee.clone();
+        mne = mnee;
         break;
       }
     }
