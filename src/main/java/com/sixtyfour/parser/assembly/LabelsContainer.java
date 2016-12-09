@@ -55,6 +55,13 @@ public class LabelsContainer {
 		return !delayed.isEmpty();
 	}
 
+	public String getFirstDelayedLabel() {
+		if (!delayed.isEmpty()) {
+			return delayed.get(0);
+		}
+		return null;
+	}
+
 	public Integer get(String name) {
 		return labels2Addr.get(name);
 	}
