@@ -18,7 +18,7 @@ schleife     lda TEXT,X        ; Zeichen holen
              beq ende          ; Endmarkierung? (wenn 0)
              jsr BSOUT         ; Zeichen am Bildschirm ausgeben
              inx               ; nächstes Zeichen der Zeichenkette
-             beq schleife
+             jmp schleife
 
 ende         rts               ; Rücksprung ins Basic
 
