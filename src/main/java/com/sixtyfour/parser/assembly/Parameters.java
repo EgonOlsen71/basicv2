@@ -1,4 +1,4 @@
-package com.sixtyfour.elements.mnemonics;
+package com.sixtyfour.parser.assembly;
 
 public class Parameters {
 	private Integer value;
