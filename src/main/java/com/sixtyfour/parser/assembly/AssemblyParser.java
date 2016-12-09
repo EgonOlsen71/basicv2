@@ -141,7 +141,7 @@ public class AssemblyParser
     }
     else if (datupper.startsWith(".BYTE"))
     {
-      String[] parts = data.substring(5).trim().split(" ,");
+      String[] parts = data.substring(5).trim().split(" ");
       for (String part : parts)
       {
         int val = getLowByte(getValue(part));
