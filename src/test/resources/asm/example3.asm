@@ -1,7 +1,7 @@
 ;Highly sophisticated assembler program that does important things!
 
 *=1064		; Write some stuff into text mode memory (line 2)...because we can!
-.text "somewhere, over the rainbow..."
+.text "somewhere over the rainbow..."
 
 *=$c000   	; Define start address
 

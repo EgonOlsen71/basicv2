@@ -337,7 +337,7 @@ public class AssemblerTest {
 			System.out.print((char) ram[i]);
 		}
 		System.out.println();
-		for (int i = 1064; i < 1094; i++) {
+		for (int i = 1064; i < 1093; i++) {
 			System.out.print((char) ram[i]);
 		}
 
