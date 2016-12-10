@@ -1,12 +1,27 @@
 package com.sixtyfour.system;
 
 public class Cpu {
+	private static final int STACK = 0x100;
+
 	private int acc;
 	private int x;
 	private int y;
-	private int status = 0;
+	private int status = 0b00110000;
 	private int stackPointer = 0xff;
 	private boolean exitOnBreak = true;
+	private Machine machine;
+
+	public Cpu(Machine machine) {
+		this.machine = machine;
+	}
+
+	public Machine getMachine() {
+		return machine;
+	}
+
+	public void setMachine(Machine machine) {
+		this.machine = machine;
+	}
 
 	public int getAcc() {
 		return acc;
@@ -40,6 +55,43 @@ public class Cpu {
 		this.status = status;
 	}
 
+	public boolean isCarryFlagSet() {
+		return (status & 0b00000001) != 0;
+	}
+
+	public boolean isZeroFlagSet() {
+		return (status & 0b00000010) != 0;
+	}
+
+	public boolean isInterruptFlagSet() {
+		return (status & 0b00000100) != 0;
+	}
+
+	public boolean isDecimalFlagSet() {
+		return (status & 0b00001000) != 0;
+	}
+
+	public boolean isBreakFlagSet() {
+		return (status & 0b00010000) != 0;
+	}
+
+	public boolean isOverflowFlagSet() {
+		return (status & 0b01000000) != 0;
+	}
+
+	public boolean isNegativeFlagSet() {
+		return (status & 0b10000000) != 0;
+	}
+
+	public int[] dumpStack() {
+		int[] res = new int[0Xff - stackPointer];
+		if (res.length == 0) {
+			return res;
+		}
+		System.arraycopy(machine.getRam(), STACK + stackPointer + 1, res, 0, res.length);
+		return res;
+	}
+
 	public int getStackPointer() {
 		return stackPointer;
 	}
@@ -48,19 +100,28 @@ public class Cpu {
 		this.stackPointer = stackPointer;
 	}
 
-	public void execute(Machine machine, Program prg) {
-		execute(machine, prg, null);
+	public boolean isExitOnBreak() {
+		return exitOnBreak;
 	}
 
-	public void execute(Machine machine, Program prg, CommandListener commandListener) {
+	public void setExitOnBreak(boolean exitOnBreak) {
+		this.exitOnBreak = exitOnBreak;
+	}
+
+	public void execute(Program prg) {
+		execute(prg, null);
+	}
+
+	public void execute(Program prg, CpuTracer cpuTracer) {
 		machine.loadProgram(prg);
 		int[] ram = machine.getRam();
-		int pc = prg.getAddress();
+		int pc = prg.getCodeStart();
 		boolean brk = false;
-		push(machine, 0);
-		push(machine, 0);
+		push(ram, 0);
+		push(ram, 0);
 
 		do {
+			int lastPc = pc;
 			int cmd = ram[pc++];
 			int xb = x & 0xff;
 			int yb = y & 0xff;
@@ -72,13 +133,13 @@ public class Cpu {
 			int lo = 0;
 			int hi = 0;
 
-			boolean decimal = (status & 0b00001000) > 0;
+			boolean decimal = (status & 0b00001000) != 0;
 
 			switch (cmd) {
 
 			case 0x60:
 				// RTS
-				int addr = getWord(pop(machine), pop(machine));
+				int addr = getWord(pop(ram), pop(ram));
 				if (addr == 0) {
 					brk = true;
 				} else {
@@ -88,15 +149,15 @@ public class Cpu {
 			case 0x00:
 				// BRK
 				pc++;
-				push(machine, getHigh(pc));
-				push(machine, getLow(pc));
-				push(machine, status);
+				push(ram, getHigh(pc));
+				push(ram, getLow(pc));
+				push(ram, status | 0b00010000);
 				pc = getWord(ram[0xFFFE], ram[0xFFFF]);
 				brk = exitOnBreak;
 				break;
 			case 0xA9:
 				// LDA #$nn
-				acc = getWord(ram[pc++], ram[pc++]);
+				acc = ram[pc++];
 				setFlags(acc, true, true);
 				break;
 			case 0xAD:
@@ -136,7 +197,7 @@ public class Cpu {
 				break;
 			case 0xA2:
 				// LDX #$nn
-				x = getWord(ram[pc++], ram[pc++]);
+				x = ram[pc++];
 				setFlags(x, true, true);
 				break;
 			case 0xAE:
@@ -161,7 +222,7 @@ public class Cpu {
 				break;
 			case 0xA0:
 				// LDY #$nn
-				y = getWord(ram[pc++], ram[pc++]);
+				y = ram[pc++];
 				setFlags(y, true, true);
 				break;
 			case 0xAC:
@@ -201,7 +262,7 @@ public class Cpu {
 				ram[ram[pc++] & 0xff] = accb;
 				break;
 			case 0x95:
-				// LDA $ll,X
+				// STA $ll,X
 				ram[((ram[pc++] & 0xff) + xb) & 0xff] = accb;
 				break;
 			case 0x81:
@@ -267,7 +328,7 @@ public class Cpu {
 				break;
 			case 0x29:
 				// AND #$nn
-				acc &= getWord(ram[pc++], ram[pc++]);
+				acc &= ram[pc++];
 				setFlags(acc, true, true);
 				break;
 			case 0x2D:
@@ -307,7 +368,7 @@ public class Cpu {
 				break;
 			case 0x09:
 				// OR #$nn
-				acc |= getWord(ram[pc++], ram[pc++]);
+				acc |= ram[pc++];
 				setFlags(acc, true, true);
 				break;
 			case 0x0D:
@@ -347,7 +408,7 @@ public class Cpu {
 				break;
 			case 0x49:
 				// EOR #$nn
-				acc ^= getWord(ram[pc++], ram[pc++]);
+				acc ^= ram[pc++];
 				setFlags(acc, true, true);
 				break;
 			case 0x4D:
@@ -389,9 +450,9 @@ public class Cpu {
 				// ADC #$nn
 				ac = status & 1;
 				if (!decimal) {
-					acc += getWord(ram[pc++], ram[pc++]) + ac;
+					acc += ram[pc++] + ac;
 				} else {
-					acc = addBCD(addBCD(accb, ac), getWord(ram[pc++], ram[pc++]));
+					acc = addBCD(addBCD(accb, ac), ram[pc++]);
 				}
 				setFlags(acc, accb, true, true, true, true);
 				acc &= 0xff;
@@ -477,9 +538,9 @@ public class Cpu {
 				// SBC #$nn
 				ac = (~(status & 1)) & 1;
 				if (!decimal) {
-					acc -= getWord(ram[pc++], ram[pc++]) + ac;
+					acc -= ram[pc++] + ac;
 				} else {
-					acc = subBCD(subBCD(accb, ac), getWord(ram[pc++], ram[pc++]));
+					acc = subBCD(subBCD(accb, ac), ram[pc++]);
 				}
 				setFlags(acc, accb, true, true, true, true);
 				acc &= 0xff;
@@ -727,7 +788,7 @@ public class Cpu {
 				break;
 			case 0xC9:
 				// CMP #$nn
-				tmp = accb - getWord(ram[pc++], ram[pc++]);
+				tmp = accb - ram[pc++];
 				setFlags(tmp, accb, true, true, false, true);
 				break;
 			case 0xCD:
@@ -767,7 +828,7 @@ public class Cpu {
 				break;
 			case 0xE0:
 				// CPX #$nn
-				tmp = xb - getWord(ram[pc++], ram[pc++]);
+				tmp = xb - ram[pc++];
 				setFlags(tmp, xb, true, true, false, true);
 				break;
 			case 0xEC:
@@ -782,7 +843,7 @@ public class Cpu {
 				break;
 			case 0xC0:
 				// CPY #$nn
-				tmp = yb - getWord(ram[pc++], ram[pc++]);
+				tmp = yb - ram[pc++];
 				setFlags(tmp, yb, true, true, false, true);
 				break;
 			case 0xCC:
@@ -811,7 +872,7 @@ public class Cpu {
 				break;
 			case 0x4C:
 				// JMP $hhll
-				pc = ram[getWord(ram[pc++], ram[pc++])];
+				pc = getWord(ram[pc++], ram[pc++]);
 				break;
 			case 0x6C:
 				// JMP ($hhll)
@@ -823,21 +884,137 @@ public class Cpu {
 				break;
 			case 0x20:
 				// JSR $hhll
-				tmp = ram[getWord(ram[pc], ram[++pc])];
-				push(machine, getHigh(pc));
-				push(machine, getLow(pc));
+				tmp = getWord(ram[pc], ram[++pc]);
+				push(ram, getHigh(pc));
+				push(ram, getLow(pc));
 				pc = tmp;
 				break;
-
+			case 0x40:
+				// RTI
+				status = this.pop(ram);
+				pc = getWord(pop(ram), pop(ram));
+				break;
+			case 0x90:
+				// BCC $hhll
+				if ((status & 0b00000001) == 0) {
+					pc += ram[pc] + 1;
+				} else {
+					pc++;
+				}
+				break;
+			case 0xB0:
+				// BCS $hhll
+				if ((status & 0b00000001) != 0) {
+					pc += ram[pc] + 1;
+				} else {
+					pc++;
+				}
+				break;
+			case 0xF0:
+				// BEQ $hhll
+				if ((status & 0b00000010) != 0) {
+					pc += ram[pc] + 1;
+				} else {
+					pc++;
+				}
+				break;
+			case 0xD0:
+				// BNE $hhll
+				if ((status & 0b00000010) == 0) {
+					pc += ram[pc++];
+				} else {
+					pc++;
+				}
+				break;
+			case 0x10:
+				// BPL $hhll
+				if ((status & 0b10000000) == 0) {
+					pc += ram[pc] + 1;
+				} else {
+					pc++;
+				}
+				break;
+			case 0x30:
+				// BMI $hhll
+				if ((status & 0b10000000) != 0) {
+					pc += ram[pc] + 1;
+				} else {
+					pc++;
+				}
+				break;
+			case 0x50:
+				// BVC $hhll
+				if ((status & 0b01000000) == 0) {
+					pc += ram[pc] + 1;
+				} else {
+					pc++;
+				}
+				break;
+			case 0x70:
+				// BVS $hhll
+				if ((status & 0b01000000) != 0) {
+					pc += ram[pc] + 1;
+				} else {
+					pc++;
+				}
+				break;
+			case 0x38:
+				// SEC
+				status |= 0b00000001;
+				break;
+			case 0x18:
+				// CLC
+				status &= 0b11111110;
+				break;
+			case 0x78:
+				// SEI
+				status |= 0b00000100;
+				break;
+			case 0x58:
+				// CLI
+				status &= 0b11111011;
+				break;
+			case 0xB8:
+				// CLV
+				status &= 0b10111111;
+				break;
+			case 0xF8:
+				// SED
+				status |= 0b00001000;
+				break;
+			case 0xD8:
+				// CLD
+				status &= 0b11110111;
+				break;
+			case 0x48:
+				// PHA
+				push(ram, accb);
+				break;
+			case 0x08:
+				// PHP
+				push(ram, status);
+				break;
+			case 0x68:
+				// PLA
+				acc = pop(ram);
+				setFlags(acc, true, true);
+				break;
+			case 0x28:
+				// PLP
+				status = pop(ram);
+				break;
+			case 0xEA:
+				// NOP
+				break;
 			default:
-				throw new RuntimeException("Illegal opcode: " + cmd);
+				throw new RuntimeException("Illegal opcode: $" + Integer.toHexString(cmd));
+			}
+
+			if (cpuTracer != null) {
+				cpuTracer.commandExecuted(this, cmd, lastPc, pc);
 			}
 
 		} while (!brk);
-
-		if (commandListener != null) {
-			commandListener.commandExecuted(pc);
-		}
 	}
 
 	private int asl(int a) {
@@ -909,8 +1086,8 @@ public class Cpu {
 			status = (status & 0b01111111) | (a & 0b10000000);
 		}
 		if (zero) {
-			int zeroFlag = (a & 0xff) == 0 ? 0 : 0b10;
-			status = (status & 0b01111111) | zeroFlag;
+			int zeroFlag = (a & 0xff) == 0 ? 0b10 : 0;
+			status = (status & 0b11111101) | zeroFlag;
 		}
 		if (overflow) {
 			int ov = (oldA >= -128 && a < 127) || (oldA <= 127 && a > 127) ? 0b01000000 : 0;
@@ -940,24 +1117,14 @@ public class Cpu {
 		return (hi & 0xff) << 8 | (lo & 0xff);
 	}
 
-	private int pop(Machine machine) {
-		int[] ram = machine.getRam();
-		int val = ram[0x100 + stackPointer];
+	private int pop(int[] ram) {
 		stackPointer++;
+		int val = ram[STACK + stackPointer];
 		return val;
 	}
 
-	private void push(Machine machine, int value) {
-		int[] ram = machine.getRam();
+	private void push(int[] ram, int value) {
 		ram[0x100 + stackPointer] = value & 0xff;
 		stackPointer--;
-	}
-
-	public boolean isExitOnBreak() {
-		return exitOnBreak;
-	}
-
-	public void setExitOnBreak(boolean exitOnBreak) {
-		this.exitOnBreak = exitOnBreak;
 	}
 }

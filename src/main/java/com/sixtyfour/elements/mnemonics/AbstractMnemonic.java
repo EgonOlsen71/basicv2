@@ -288,7 +288,7 @@ public abstract class AbstractMnemonic
     par.setY(part2.startsWith("Y"));
     par.setIndirect(isIndirect);
 
-    int val = AssemblyParser.getValue(part1, addr, ccon, lcon);
+    int val = AssemblyParser.getValue(part1, addr, ccon, lcon, lowByte, highByte);
     if (lowByte)
     {
       val = AssemblyParser.getLowByte(val);

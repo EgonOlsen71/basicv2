@@ -19,6 +19,7 @@ import com.sixtyfour.system.Program;
 public class Assembler {
 	private String[] code = null;
 	private Machine machine;
+	private int codeStart = -1;
 	private int start = 0;
 	private int end = 0;
 
@@ -39,8 +40,9 @@ public class Assembler {
 		List<Integer> lineBreaks = new ArrayList<Integer>();
 
 		for (String line : code) {
+			String oLine = line;
 			cnt++;
-			line = line.trim();
+			line = line.replace('\t', ' ').trim();
 			if (line.startsWith(";")) {
 				// Ignore comment lines
 				continue;
@@ -57,10 +59,8 @@ public class Assembler {
 				ccon.put(cv);
 				if (cv.getName().equals("*")) {
 					addr = cv.getValue();
-					if (start == 0) {
+					if (start == 0 || addr < start) {
 						start = addr;
-					} else {
-						throw new RuntimeException("Multiple program start definitions given!");
 					}
 				}
 				continue;
@@ -81,20 +81,23 @@ public class Assembler {
 						lcon.put(lac.getLabel(), addr);
 						line = lac.getCode();
 					} else {
-						throw new RuntimeException("Syntax error at: " + line + "/" + addr);
+						raiseError("Syntax error at: " + oLine + "/" + addr, addr, cnt);
 					}
 				}
 				if (!isData) {
 					if (mne != null) {
+						if (codeStart == -1) {
+							codeStart = addr;
+						}
 						try {
 							lineBreaks.add(addr);
 							addr = mne.parse(line, addr, machine, ccon, lcon);
 						} catch (RuntimeException re) {
-							throw new RuntimeException("Error at line " + cnt + ": " + line, re);
+							raiseError("Error at line: " + oLine, re, addr, cnt);
 						}
 					} else {
 						if (!line.trim().isEmpty()) {
-							throw new RuntimeException("Unknown mnemonic in: " + line);
+							raiseError("Unknown mnemonic in: " + oLine, addr, cnt);
 						}
 					}
 				}
@@ -109,7 +112,7 @@ public class Assembler {
 		}
 
 		if (lcon.hasDelayedLabels()) {
-			throw new RuntimeException("Jump to undefined label: " + lcon.getFirstDelayedLabel());
+			raiseError("Jump to undefined label: " + lcon.getFirstDelayedLabel(), addr, cnt);
 		}
 
 		end = addr;
@@ -120,12 +123,12 @@ public class Assembler {
 			opas[c++] = i;
 		}
 
-		return new Program(start, Arrays.copyOfRange(machine.getRam(), start, end), opas);
+		return new Program(start, codeStart == -1 ? start : codeStart, Arrays.copyOfRange(machine.getRam(), start, end), opas);
 	}
 
 	public static String toString(Program prg) {
 		StringBuilder sb = new StringBuilder();
-		int start = prg.getAddress();
+		int start = prg.getStartAddress();
 		int lineIndex = 0;
 		for (int i = start; i < start + prg.getCode().length; i++) {
 			if (i == prg.getOpcodeAddresses()[lineIndex]) {
@@ -145,5 +148,13 @@ public class Assembler {
 			sb.append(num).append(" ");
 		}
 		return sb.toString();
+	}
+
+	private void raiseError(String txt, Throwable t, int addr, int cnt) {
+		throw new RuntimeException("Line " + cnt + "\t." + Integer.toHexString(addr) + "\t" + txt, t);
+	}
+
+	private void raiseError(String txt, int addr, int cnt) {
+		throw new RuntimeException("Line " + cnt + "\t." + Integer.toHexString(addr) + "\t" + txt);
 	}
 }

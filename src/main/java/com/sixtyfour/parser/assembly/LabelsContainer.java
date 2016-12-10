@@ -11,7 +11,7 @@ import com.sixtyfour.system.Machine;
 
 public class LabelsContainer {
 	private Map<String, Integer> labels2Addr = new HashMap<String, Integer>();
-	private Map<Integer, String> delayed = new HashMap<Integer, String>();
+	private Map<Integer, DelayedLabel> delayed = new HashMap<Integer, DelayedLabel>();
 	private Machine machine = null;
 
 	public LabelsContainer(Machine machine) {
@@ -23,15 +23,16 @@ public class LabelsContainer {
 
 		// Apply forward-labels
 		List<Integer> toRemove = new ArrayList<Integer>();
-		for (Entry<Integer, String> entry : delayed.entrySet()) {
-			if (label.equals(entry.getValue())) {
+		for (Entry<Integer, DelayedLabel> entry : delayed.entrySet()) {
+			DelayedLabel dl = entry.getValue();
+			if (label.equals(dl.getLabel())) {
 				toRemove.add(entry.getKey());
 				int targetAddr = entry.getKey();
 				int[] ram = machine.getRam();
 
 				int opcode = ram[targetAddr];
 				if (MnemonicList.getConditonalBranches().contains(opcode)) {
-					// System.out.println("Applied conditional delayed Label!");
+					// System.out.println("Applied conditional delayed Label: "+entry.getValue());
 					int offset = value - (targetAddr + 2);
 					if (offset <= 127 && offset >= -128) {
 						ram[++targetAddr] = AssemblyParser.getLowByte(offset);
@@ -39,9 +40,15 @@ public class LabelsContainer {
 						throw new RuntimeException("Destination address out of range: " + value + "/" + targetAddr + "/" + offset);
 					}
 				} else {
-					// System.out.println("Applied delayed Label!");
-					ram[++targetAddr] = AssemblyParser.getLowByte(value);
-					ram[++targetAddr] = AssemblyParser.getHighByte(value);
+					// System.out.println("Applied delayed Label: "+entry.getValue());
+					if (dl.isLow()) {
+						ram[++targetAddr] = AssemblyParser.getLowByte(value);
+					} else if (dl.isHigh()) {
+						ram[++targetAddr] = AssemblyParser.getHighByte(value);
+					} else {
+						ram[++targetAddr] = AssemblyParser.getLowByte(value);
+						ram[++targetAddr] = AssemblyParser.getHighByte(value);
+					}
 				}
 			}
 		}
@@ -57,7 +64,7 @@ public class LabelsContainer {
 
 	public String getFirstDelayedLabel() {
 		if (!delayed.isEmpty()) {
-			return delayed.get(0);
+			return delayed.entrySet().iterator().next().getValue().getLabel();
 		}
 		return null;
 	}
@@ -66,8 +73,9 @@ public class LabelsContainer {
 		return labels2Addr.get(name);
 	}
 
-	public void addDelayedLabelRef(int addr, String label) {
-		delayed.put(addr, label);
+	public void addDelayedLabelRef(int addr, String label, boolean low, boolean high) {
+		// System.out.println("Adding delayed Label: "+label+" @"+addr);
+		delayed.put(addr, new DelayedLabel(label, low, high));
 	}
 
 }

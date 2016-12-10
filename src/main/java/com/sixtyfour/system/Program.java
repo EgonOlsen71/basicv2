@@ -3,6 +3,7 @@ package com.sixtyfour.system;
 public class Program {
 
 	private int address;
+	private int codeStart;
 	private int[] code;
 	private int[] opcodeAddresses;
 
@@ -10,17 +11,18 @@ public class Program {
 		//
 	}
 
-	public Program(int address, int[] code, int[] opcodeAddresses) {
+	public Program(int address, int codeStart, int[] code, int[] opcodeAddresses) {
 		this.address = address;
 		this.code = code;
+		this.codeStart = codeStart;
 		this.opcodeAddresses = opcodeAddresses;
 	}
 
-	public int getAddress() {
+	public int getStartAddress() {
 		return address;
 	}
 
-	public void setAddress(int address) {
+	public void setStartAddress(int address) {
 		this.address = address;
 	}
 
@@ -38,6 +40,14 @@ public class Program {
 
 	public void setOpcodeAddresses(int[] opcodeAddresses) {
 		this.opcodeAddresses = opcodeAddresses;
+	}
+
+	public int getCodeStart() {
+		return codeStart;
+	}
+
+	public void setCodeStart(int codeStart) {
+		this.codeStart = codeStart;
 	}
 
 }

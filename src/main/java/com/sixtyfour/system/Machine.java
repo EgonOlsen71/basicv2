@@ -526,7 +526,7 @@ public class Machine {
 	 */
 	public void loadProgram(Program prg) {
 		int[] bin = prg.getCode();
-		System.arraycopy(bin, 0, this.getRam(), prg.getAddress(), bin.length);
+		System.arraycopy(bin, 0, this.getRam(), prg.getStartAddress(), bin.length);
 	}
 
 	/**

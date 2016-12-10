@@ -79,7 +79,7 @@ public class AssemblyParser
   }
 
 
-  public static int getValue(String number, int addr, ConstantsContainer ccon, LabelsContainer lcon)
+  public static int getValue(String number, int addr, ConstantsContainer ccon, LabelsContainer lcon, boolean low, boolean high)
   {
     number = number.trim();
     if (!number.startsWith("$") && !number.startsWith("%") && !Character.isDigit(number.charAt(0)))
@@ -97,7 +97,7 @@ public class AssemblyParser
       }
 
       // No constant and no label found...might be a delayed label...
-      lcon.addDelayedLabelRef(addr, number);
+      lcon.addDelayedLabelRef(addr, number, low, high);
       return addr;
 
     }
