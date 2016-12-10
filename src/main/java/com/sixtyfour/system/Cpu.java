@@ -121,17 +121,17 @@ public class Cpu {
 				break;
 			case 0xB5:
 				// LDA $ll,X
-				acc = ram[(ram[pc++] & 0xff) + xb];
+				acc = ram[((ram[pc++] & 0xff) + xb) & 0xff];
 				setFlags(acc, true, true);
 				break;
 			case 0xA1:
 				// LDA ($ll, X)
-				acc = ram[ram[getWord(ram[pc++] + xb, ram[pc] + xb + 1)]];
+				acc = ram[getWord(ram[(ram[pc++] + x) & 0xFF], ram[(ram[pc] + x + 1) & 0xFF])];
 				setFlags(acc, true, true);
 				break;
 			case 0xB1:
 				// LDA ($ll), Y
-				acc = ram[ram[(getWord(ram[pc++], ram[pc] + 1)) + y]];
+				acc = ram[getWord(ram[ram[pc++]], ram[(ram[pc] + 1) & 0xFF]) + y];
 				setFlags(acc, true, true);
 				break;
 			case 0xA2:
@@ -156,7 +156,7 @@ public class Cpu {
 				break;
 			case 0xB6:
 				// LDX $ll,Y
-				x = ram[(ram[pc++] & 0xff) + yb];
+				x = ram[((ram[pc++] & 0xff) + yb) & 0xff];
 				setFlags(x, true, true);
 				break;
 			case 0xA0:
@@ -181,7 +181,7 @@ public class Cpu {
 				break;
 			case 0xB4:
 				// LDY $ll,X
-				y = ram[(ram[pc++] & 0xff) + xb];
+				y = ram[((ram[pc++] & 0xff) + xb) & 0xff];
 				setFlags(y, true, true);
 				break;
 			case 0x8D:
@@ -202,15 +202,15 @@ public class Cpu {
 				break;
 			case 0x95:
 				// LDA $ll,X
-				ram[(ram[pc++] & 0xff) + xb] = accb;
+				ram[((ram[pc++] & 0xff) + xb) & 0xff] = accb;
 				break;
 			case 0x81:
 				// STA ($ll, X)
-				ram[ram[getWord(ram[pc++] + xb, ram[pc] + xb + 1)]] = accb;
+				ram[getWord(ram[(ram[pc++] + x) & 0xFF], ram[(ram[pc] + x + 1) & 0xFF])] = accb;
 				break;
 			case 0x91:
 				// STA ($ll), Y
-				ram[ram[(getWord(ram[pc++], ram[pc] + 1)) + y]] = accb;
+				ram[getWord(ram[ram[pc++]], ram[(ram[pc] + 1) & 0xFF]) + y] = accb;
 				break;
 			case 0x8E:
 				// STX $hhll
@@ -222,7 +222,7 @@ public class Cpu {
 				break;
 			case 0x96:
 				// STX $ll,Y
-				ram[(ram[pc++] & 0xff) + yb] = xb;
+				ram[((ram[pc++] & 0xff) + yb) & 0xff] = xb;
 				break;
 			case 0x8C:
 				// STY $hhll
@@ -234,7 +234,7 @@ public class Cpu {
 				break;
 			case 0x94:
 				// STY $ll,X
-				ram[(ram[pc++] & 0xff) + xb] = yb;
+				ram[((ram[pc++] & 0xff) + xb) & 0xff] = yb;
 				break;
 			case 0xAA:
 				// TAX
@@ -292,17 +292,17 @@ public class Cpu {
 				break;
 			case 0x35:
 				// AND $ll,X
-				acc &= ram[(ram[pc++] & 0xff) + xb];
+				acc &= ram[((ram[pc++] & 0xff) + xb) & 0xff];
 				setFlags(acc, true, true);
 				break;
 			case 0x21:
 				// AND ($ll, X)
-				acc &= ram[ram[getWord(ram[pc++] + xb, ram[pc] + xb + 1)]];
+				acc &= ram[getWord(ram[(ram[pc++] + x) & 0xFF], ram[(ram[pc] + x + 1) & 0xFF])];
 				setFlags(acc, true, true);
 				break;
 			case 0x31:
 				// AND ($ll), Y
-				acc &= ram[ram[(getWord(ram[pc++], ram[pc] + 1)) + y]];
+				acc &= ram[getWord(ram[ram[pc++]], ram[(ram[pc] + 1) & 0xFF]) + y];
 				setFlags(acc, true, true);
 				break;
 			case 0x09:
@@ -332,17 +332,17 @@ public class Cpu {
 				break;
 			case 0x15:
 				// OR $ll,X
-				acc |= ram[(ram[pc++] & 0xff) + xb];
+				acc |= ram[((ram[pc++] & 0xff) + xb) & 0xff];
 				setFlags(acc, true, true);
 				break;
 			case 0x01:
 				// OR ($ll, X)
-				acc |= ram[ram[getWord(ram[pc++] + xb, ram[pc] + xb + 1)]];
+				acc |= ram[getWord(ram[(ram[pc++] + x) & 0xFF], ram[(ram[pc] + x + 1) & 0xFF])];
 				setFlags(acc, true, true);
 				break;
 			case 0x11:
 				// OR ($ll), Y
-				acc |= ram[ram[(getWord(ram[pc++], ram[pc] + 1)) + y]];
+				acc |= ram[getWord(ram[ram[pc++]], ram[(ram[pc] + 1) & 0xFF]) + y];
 				setFlags(acc, true, true);
 				break;
 			case 0x49:
@@ -372,17 +372,17 @@ public class Cpu {
 				break;
 			case 0x55:
 				// EOR $ll,X
-				acc ^= ram[(ram[pc++] & 0xff) + xb];
+				acc ^= ram[((ram[pc++] & 0xff) + xb) & 0xff];
 				setFlags(acc, true, true);
 				break;
 			case 0x41:
 				// EOR ($ll, X)
-				acc ^= ram[ram[getWord(ram[pc++] + xb, ram[pc] + xb + 1)]];
+				acc ^= ram[getWord(ram[(ram[pc++] + x) & 0xFF], ram[(ram[pc] + x + 1) & 0xFF])];
 				setFlags(acc, true, true);
 				break;
 			case 0x51:
 				// EOR ($ll), Y
-				acc ^= ram[ram[(getWord(ram[pc++], ram[pc] + 1)) + y]];
+				acc ^= ram[getWord(ram[ram[pc++]], ram[(ram[pc] + 1) & 0xFF]) + y];
 				setFlags(acc, true, true);
 				break;
 			case 0x69:
@@ -444,7 +444,7 @@ public class Cpu {
 				// ADC $ll,X
 				ac = status & 1;
 				if (!decimal) {
-					acc += ram[(ram[pc++] & 0xff) + xb] + ac;
+					acc += ram[((ram[pc++] & 0xff) + xb) & 0xff] + ac;
 				} else {
 					acc = addBCD(addBCD(accb, ac), ram[(ram[pc++] & 0xff) + xb]);
 				}
@@ -455,9 +455,9 @@ public class Cpu {
 				// ADC ($ll, X)
 				ac = status & 1;
 				if (!decimal) {
-					acc += ram[ram[getWord(ram[pc++] + xb, ram[pc] + xb + 1)]] + ac;
+					acc += ram[getWord(ram[(ram[pc++] + x) & 0xFF], ram[(ram[pc] + x + 1) & 0xFF])] + ac;
 				} else {
-					acc = addBCD(addBCD(accb, ac), ram[ram[getWord(ram[pc++] + xb, ram[pc] + xb + 1)]]);
+					acc = addBCD(addBCD(accb, ac), ram[getWord(ram[(ram[pc++] + x) & 0xFF], ram[(ram[pc] + x + 1) & 0xFF])]);
 				}
 				setFlags(acc, accb, true, true, true, true);
 				acc &= 0xff;
@@ -466,9 +466,9 @@ public class Cpu {
 				// ADC ($ll), Y
 				ac = status & 1;
 				if (!decimal) {
-					acc += ram[ram[(getWord(ram[pc++], ram[pc] + 1)) + y]] + ac;
+					acc += ram[getWord(ram[ram[pc++]], ram[(ram[pc] + 1) & 0xFF]) + y] + ac;
 				} else {
-					acc = addBCD(addBCD(accb, ac), ram[ram[(getWord(ram[pc++], ram[pc] + 1)) + y]]);
+					acc = addBCD(addBCD(accb, ac), ram[getWord(ram[ram[pc++]], ram[(ram[pc] + 1) & 0xFF]) + y]);
 				}
 				setFlags(acc, accb, true, true, true, true);
 				acc &= 0xff;
@@ -532,7 +532,7 @@ public class Cpu {
 				// SBC $ll,X
 				ac = (~(status & 1)) & 1;
 				if (!decimal) {
-					acc -= ram[(ram[pc++] & 0xff) + xb] + ac;
+					acc -= ram[((ram[pc++] & 0xff) + xb) & 0xff] + ac;
 				} else {
 					acc = subBCD(subBCD(accb, ac), ram[(ram[pc++] & 0xff) + xb]);
 				}
@@ -543,9 +543,9 @@ public class Cpu {
 				// SBC ($ll, X)
 				ac = (~(status & 1)) & 1;
 				if (!decimal) {
-					acc -= ram[ram[getWord(ram[pc++] + xb, ram[pc] + xb + 1)]] + ac;
+					acc -= ram[getWord(ram[(ram[pc++] + x) & 0xFF], ram[(ram[pc] + x + 1) & 0xFF])] + ac;
 				} else {
-					acc = subBCD(subBCD(accb, ac), ram[ram[getWord(ram[pc++] + xb, ram[pc] + xb + 1)]]);
+					acc = subBCD(subBCD(accb, ac), ram[getWord(ram[(ram[pc++] + x) & 0xFF], ram[(ram[pc] + x + 1) & 0xFF])]);
 				}
 				setFlags(acc, accb, true, true, true, true);
 				acc &= 0xff;
@@ -554,9 +554,9 @@ public class Cpu {
 				// SBC ($ll), Y
 				ac = (~(status & 1)) & 1;
 				if (!decimal) {
-					acc -= ram[ram[(getWord(ram[pc++], ram[pc] + 1)) + y]] + ac;
+					acc -= ram[getWord(ram[ram[pc++]], ram[(ram[pc] + 1) & 0xFF]) + y] + ac;
 				} else {
-					acc = subBCD(subBCD(accb, ac), ram[ram[(getWord(ram[pc++], ram[pc] + 1)) + y]]);
+					acc = subBCD(subBCD(accb, ac), ram[getWord(ram[ram[pc++]], ram[(ram[pc] + 1) & 0xFF]) + y]);
 				}
 				setFlags(acc, accb, true, true, true, true);
 				acc &= 0xff;
@@ -581,7 +581,7 @@ public class Cpu {
 				break;
 			case 0xF6:
 				// INC $ll,X
-				index = (ram[pc++] & 0xff) + xb;
+				index = ((ram[pc++] & 0xff) + xb) & 0xff;
 				ram[index] = (ram[index] + 1) & 0xff;
 				setFlags(ram[index], true, true);
 				break;
@@ -605,7 +605,7 @@ public class Cpu {
 				break;
 			case 0xD6:
 				// DEC $ll,X
-				index = (ram[pc++] & 0xff) + xb;
+				index = ((ram[pc++] & 0xff) + xb) & 0xff;
 				ram[index] = (ram[index] - 1) & 0xff;
 				setFlags(ram[index], true, true);
 				break;
@@ -650,7 +650,7 @@ public class Cpu {
 				break;
 			case 0x16:
 				// ASL $ll,X
-				index = (ram[pc++] & 0xff) + xb;
+				index = ((ram[pc++] & 0xff) + xb) & 0xff;
 				ram[index] = asl(ram[index]);
 				break;
 			case 0x4A:
@@ -674,7 +674,7 @@ public class Cpu {
 				break;
 			case 0x56:
 				// LSR $ll,X
-				index = (ram[pc++] & 0xff) + xb;
+				index = ((ram[pc++] & 0xff) + xb) & 0xff;
 				ram[index] = lsr(ram[index]);
 				break;
 			case 0x2A:
@@ -698,7 +698,7 @@ public class Cpu {
 				break;
 			case 0x36:
 				// ROL $ll,X
-				index = (ram[pc++] & 0xff) + xb;
+				index = ((ram[pc++] & 0xff) + xb) & 0xff;
 				ram[index] = rol(ram[index]);
 				break;
 			case 0x6A:
@@ -722,7 +722,7 @@ public class Cpu {
 				break;
 			case 0x76:
 				// ROR $ll,X
-				index = (ram[pc++] & 0xff) + xb;
+				index = ((ram[pc++] & 0xff) + xb) & 0xff;
 				ram[index] = ror(ram[index]);
 				break;
 			case 0xC9:
@@ -752,17 +752,17 @@ public class Cpu {
 				break;
 			case 0xD5:
 				// CMP $ll,X
-				tmp = accb - ram[(ram[pc++] & 0xff) + xb];
+				tmp = accb - ram[((ram[pc++] & 0xff) + xb) & 0xff];
 				setFlags(tmp, accb, true, true, false, true);
 				break;
 			case 0xC1:
 				// CMP ($ll, X)
-				tmp = accb - ram[ram[getWord(ram[pc++] + xb, ram[pc] + xb + 1)]];
+				tmp = accb - ram[getWord(ram[(ram[pc++] + x) & 0xFF], ram[(ram[pc] + x + 1) & 0xFF])];
 				setFlags(tmp, accb, true, true, false, true);
 				break;
 			case 0xD1:
 				// CMP ($ll), Y
-				tmp = accb - ram[ram[(getWord(ram[pc++], ram[pc] + 1)) + y]];
+				tmp = accb - ram[getWord(ram[ram[pc++]], ram[(ram[pc] + 1) & 0xFF]) + y];
 				setFlags(tmp, accb, true, true, false, true);
 				break;
 			case 0xE0:
