@@ -214,8 +214,8 @@ public class Cpu {
 				}
 			}
 
-			//System.out.println("cmd: "+Integer.toHexString(cmd)+"/"+pc);
-			
+			// System.out.println("cmd: "+Integer.toHexString(cmd)+"/"+pc);
+
 			switch (cmd) {
 
 			case 0x60:
@@ -1490,5 +1490,8 @@ public class Cpu {
 	private void push(int[] ram, int value) {
 		ram[0x100 + stackPointer] = value & 0xff;
 		stackPointer--;
+		if (stackPointer < 0) {
+			stackPointer = 0xFF;
+		}
 	}
 }

@@ -1,27 +1,34 @@
 package com.sixtyfour.templating;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
+import com.sixtyfour.Assembler;
 import com.sixtyfour.Basic;
 import com.sixtyfour.elements.Variable;
 import com.sixtyfour.parser.Line;
 import com.sixtyfour.system.Machine;
+import com.sixtyfour.system.Program;
 import com.sixtyfour.util.VarUtils;
 
 /**
- * A template. A template can be HTML (but doesn't have to) with BASIC V2 code in it.
- * When parsed the template will be converted into a BASIC program. This requires to add some
- * additional line numbers, so make sure that there's enough number space left between lines.
- * See the test package for an example template.
+ * A template. A template can be HTML (but doesn't have to) with BASIC V2 code
+ * in it. When parsed the template will be converted into a BASIC program. This
+ * requires to add some additional line numbers, so make sure that there's
+ * enough number space left between lines. See the test package for an example
+ * template.
  */
 public class Template {
 
 	/** The vars. */
 	private Map<String, Object> vars = new HashMap<String, Object>();
 
-	/** The interpreter. */
-	private Basic interpreter = null;
+	private Basic basic = null;
+	
+	private List<Program> prgs = new ArrayList<Program>();
 
 	/** The static parts. */
 	private Map<Integer, TemplatePart> staticParts = new HashMap<Integer, TemplatePart>();
@@ -62,7 +69,7 @@ public class Template {
 	 * @return the variable
 	 */
 	public Object getVariable(String name) {
-		Variable var = interpreter.getMachine().getVariable(VarUtils.toUpper(name));
+		Variable var = basic.getMachine().getVariable(VarUtils.toUpper(name));
 		if (var == null) {
 			return null;
 		}
@@ -76,13 +83,17 @@ public class Template {
 	 */
 	public String process() {
 		out.reset();
-		Machine machine = interpreter.getMachine();
+		Machine machine = basic.getMachine();
 		machine.resetMemory();
+		machine.getCpu().reset();
+		for (Program prg : prgs) {
+			machine.putProgram(prg);
+		}
 		for (Map.Entry<String, Object> var : vars.entrySet()) {
 			Variable vary = new Variable(VarUtils.toUpper(var.getKey()), var.getValue());
 			machine.addOrSet(vary);
 		}
-		interpreter.start();
+		basic.start();
 		return out.getResult();
 	}
 
@@ -99,8 +110,11 @@ public class Template {
 		int last = 0;
 		int lastLine = 0;
 		StringBuilder code = new StringBuilder();
+
 		do {
-			pos = utemp.indexOf("<?CBM", pos);
+			int opos = pos;
+			pos = utemp.indexOf("<?CBM", opos);
+
 			if (pos != -1) {
 				int pos2 = -1;
 				boolean inString = false;
@@ -123,52 +137,63 @@ public class Template {
 				int firstLine = -1;
 				int endLine = -1;
 
+				boolean asm = codePart.toLowerCase(Locale.ENGLISH).startsWith(":asm");
+				if (asm) {
+					codePart = codePart.substring(4);
+				}
+
 				String[] lines = codePart.split("\n");
-				for (String line : lines) {
-					line = line.replace("\t", "").trim();
-					if (!line.isEmpty()) {
-						Line lo = Line.getLine(line);
-						firstLine = lo.getNumber();
-						break;
+
+				if (!asm) {
+					for (String line : lines) {
+						line = line.replace("\t", "").trim();
+						if (!line.isEmpty()) {
+							Line lo = Line.getLine(line);
+							firstLine = lo.getNumber();
+							break;
+						}
 					}
-				}
 
-				for (int i = lines.length - 1; i >= 0; i--) {
-					String line = lines[i];
-					line = line.replace("\t", "").trim();
-					if (!line.isEmpty()) {
-						Line lo = Line.getLine(line);
-						endLine = lo.getNumber();
-						break;
+					for (int i = lines.length - 1; i >= 0; i--) {
+						String line = lines[i];
+						line = line.replace("\t", "").trim();
+						if (!line.isEmpty()) {
+							Line lo = Line.getLine(line);
+							endLine = lo.getNumber();
+							break;
+						}
 					}
-				}
 
-				if (firstLine <= lastLine) {
-					throw new RuntimeException("Line numbers (" + firstLine + "/" + lastLine + ") too close, can't insert static content into template!");
-				}
+					if (firstLine <= lastLine) {
+						throw new RuntimeException("Line numbers (" + firstLine + "/" + lastLine + ") too close, can't insert static content into template!");
+					}
 
-				if (!prior.isEmpty()) {
-					TemplatePart tp = new TemplatePart(prior);
-					tp.setFirstLine(lastLine);
-					tp.setLastLine(firstLine - 1);
-					lastLine++;
-					code.append(lastLine).append(" SYS1000,").append(lastLine).append('\n');
-					staticParts.put(lastLine, tp);
+					if (!prior.isEmpty()) {
+						TemplatePart tp = new TemplatePart(prior);
+						tp.setFirstLine(lastLine);
+						tp.setLastLine(firstLine - 1);
+						lastLine++;
+						code.append(lastLine).append(" SYS1000,").append(lastLine).append('\n');
+						staticParts.put(lastLine, tp);
+					}
+					code.append(codePart).append('\n');
+					lastLine = endLine;
+				} else {
+					Assembler assem = new Assembler(lines);
+					assem.compile();
+					prgs.add(assem.getProgram());
 				}
-				code.append(codePart).append('\n');
-
-				lastLine = endLine;
 				last = pos2;
 				pos = pos2;
 			}
 		} while (pos != -1);
 
 		// System.out.println(code);
-		interpreter = new Basic(code.toString());
-		interpreter.compile();
+		basic = new Basic(code.toString());
+		basic.compile();
 		out = new TemplateOutputChannel();
-		interpreter.setOutputChannel(out);
-		interpreter.getMachine().setSystemCallListener(new StaticTemplateCallListener(staticParts, out));
+		basic.setOutputChannel(out);
+		basic.getMachine().setSystemCallListener(new StaticTemplateCallListener(staticParts, out, basic.getMachine()));
 	}
 
 }

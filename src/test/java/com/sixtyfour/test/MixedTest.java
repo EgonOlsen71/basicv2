@@ -1,10 +1,16 @@
 package com.sixtyfour.test;
 
+import java.io.FileInputStream;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.sixtyfour.Assembler;
 import com.sixtyfour.Basic;
 import com.sixtyfour.Loader;
 import com.sixtyfour.plugins.impl.RamSystemCallListener;
 import com.sixtyfour.system.Machine;
+import com.sixtyfour.templating.Template;
+import com.sixtyfour.templating.TemplateFactory;
 
 /**
  * @author EgonOlsen
@@ -12,16 +18,27 @@ import com.sixtyfour.system.Machine;
  */
 public class MixedTest {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		testMixed();
+		testMixedTemplate();
+	}
+
+	private static void testMixedTemplate() throws Exception {
+		Map<String, Object> vars = new HashMap<String, Object>();
+		vars.put("CN", 10);
+		vars.put("NA$", "Test");
+		vars.put("TT$", "At least better than PHP!");
+		Template templ = TemplateFactory.getTemplate(new FileInputStream("src/test/resources/mixed/mixedhtml.cbm"), vars);
+		String res = templ.process();
+		System.out.println(res);
 	}
 
 	private static void testMixed() {
 		String[] basicCode = Loader.loadProgram("src/test/resources/mixed/basicasm.bas");
 		String[] asmCode = Loader.loadProgram("src/test/resources/asm/example3.asm");
 		Basic basic = new Basic(basicCode);
-		Machine machine=basic.getMachine();
-		
+		Machine machine = basic.getMachine();
+
 		Assembler asm = new Assembler(asmCode, machine);
 		asm.compile();
 
