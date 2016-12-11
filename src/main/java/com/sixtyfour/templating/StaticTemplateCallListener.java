@@ -5,7 +5,7 @@ import java.util.Map;
 import com.sixtyfour.plugins.SystemCallListener;
 
 /**
- * A listener used to process templates. Template parsing inserts SYS49152 calls into the program, which will
+ * A listener used to process templates. Template parsing inserts SYS1000 calls into the program, which will
  * output the template's static content. This is done here.
  */
 public class StaticTemplateCallListener implements SystemCallListener {
@@ -36,7 +36,7 @@ public class StaticTemplateCallListener implements SystemCallListener {
 	 */
 	@Override
 	public void sys(int addr, Object... params) {
-		if (addr == 49152 && params != null && params.length == 1) {
+		if (addr == 1000 && params != null && params.length == 1) {
 			out.print(0, parts.get(params[0]).getContent());
 		}
 	}

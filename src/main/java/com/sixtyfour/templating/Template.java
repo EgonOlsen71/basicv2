@@ -152,7 +152,7 @@ public class Template {
 					tp.setFirstLine(lastLine);
 					tp.setLastLine(firstLine - 1);
 					lastLine++;
-					code.append(lastLine).append(" SYS49152,").append(lastLine).append('\n');
+					code.append(lastLine).append(" SYS1000,").append(lastLine).append('\n');
 					staticParts.put(lastLine, tp);
 				}
 				code.append(codePart).append('\n');
