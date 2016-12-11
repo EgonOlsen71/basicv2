@@ -4,7 +4,7 @@
 package com.sixtyfour.elements.commands;
 
 import com.sixtyfour.system.Machine;
-import com.sixtyfour.system.ProgramCounter;
+import com.sixtyfour.system.BasicProgramCounter;
 
 /**
  * The GOTO command.
@@ -12,7 +12,7 @@ import com.sixtyfour.system.ProgramCounter;
 public class Goto extends AbstractCommand {
 
 	/** The pc. */
-	private ProgramCounter pc = new ProgramCounter(0, 0); // Recycle instance
+	private BasicProgramCounter pc = new BasicProgramCounter(0, 0); // Recycle instance
 
 	/** The line number. */
 	private int lineNumber = 0;
@@ -50,7 +50,7 @@ public class Goto extends AbstractCommand {
 	 * Machine)
 	 */
 	@Override
-	public ProgramCounter execute(Machine machine) {
+	public BasicProgramCounter execute(Machine machine) {
 		pc.setLineNumber(lineNumber);
 		return pc;
 	}

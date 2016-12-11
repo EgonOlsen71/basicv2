@@ -4,7 +4,7 @@ import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.logic.LogicParser;
 import com.sixtyfour.parser.logic.LogicTerm;
 import com.sixtyfour.system.Machine;
-import com.sixtyfour.system.ProgramCounter;
+import com.sixtyfour.system.BasicProgramCounter;
 
 /**
  * The IF command.
@@ -15,7 +15,7 @@ public class If extends AbstractCommand {
 	private LogicTerm logicTerm = null;
 
 	/** The pc. */
-	private ProgramCounter pc = new ProgramCounter(0, 0);
+	private BasicProgramCounter pc = new BasicProgramCounter(0, 0);
 
 	/**
 	 * Instantiates a new if.
@@ -71,7 +71,7 @@ public class If extends AbstractCommand {
 	 * Machine)
 	 */
 	@Override
-	public ProgramCounter execute(Machine machine) {
+	public BasicProgramCounter execute(Machine machine) {
 		pc.setSkip(false);
 		boolean ok = logicTerm.evalToBoolean(machine);
 		if (ok) {

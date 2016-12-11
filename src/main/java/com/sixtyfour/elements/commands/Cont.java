@@ -1,7 +1,7 @@
 package com.sixtyfour.elements.commands;
 
 import com.sixtyfour.system.Machine;
-import com.sixtyfour.system.ProgramCounter;
+import com.sixtyfour.system.BasicProgramCounter;
 
 /**
  * The CONT command.
@@ -38,7 +38,7 @@ public class Cont extends AbstractCommand {
 	 * Machine)
 	 */
 	@Override
-	public ProgramCounter execute(Machine machine) {
+	public BasicProgramCounter execute(Machine machine) {
 		throw new RuntimeException("Can't continue error: " + this);
 	}
 }

@@ -6,7 +6,7 @@ import com.sixtyfour.elements.Type;
 import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.system.Machine;
-import com.sixtyfour.system.ProgramCounter;
+import com.sixtyfour.system.BasicProgramCounter;
 import com.sixtyfour.util.VarUtils;
 
 /**
@@ -51,7 +51,7 @@ public class Poke extends AbstractCommand {
 	 * Machine)
 	 */
 	@Override
-	public ProgramCounter execute(Machine machine) {
+	public BasicProgramCounter execute(Machine machine) {
 		Atom addr = pars.get(0);
 		Atom val = pars.get(1);
 		if (addr.getType().equals(Type.STRING) || val.getType().equals(Type.STRING)) {

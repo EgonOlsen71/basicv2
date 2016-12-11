@@ -9,7 +9,7 @@ import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.Term;
 import com.sixtyfour.plugins.PrintConsumer;
 import com.sixtyfour.system.Machine;
-import com.sixtyfour.system.ProgramCounter;
+import com.sixtyfour.system.BasicProgramCounter;
 import com.sixtyfour.util.VarUtils;
 
 /**
@@ -76,7 +76,7 @@ public class Print extends AbstractCommand {
 	 * Machine)
 	 */
 	@Override
-	public ProgramCounter execute(Machine machine) {
+	public BasicProgramCounter execute(Machine machine) {
 		return execute(machine, machine.getOutputChannel(), 0);
 	}
 
@@ -91,7 +91,7 @@ public class Print extends AbstractCommand {
 	 *            the print id
 	 * @return the program counter
 	 */
-	protected ProgramCounter execute(Machine machine, PrintConsumer consumer, int printId) {
+	protected BasicProgramCounter execute(Machine machine, PrintConsumer consumer, int printId) {
 		for (int i = 0; i < parts.size(); i++) {
 			PrintPart part = parts.get(i);
 			char del = part.delimiter;

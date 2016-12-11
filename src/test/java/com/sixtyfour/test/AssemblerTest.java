@@ -238,7 +238,9 @@ public class AssemblerTest {
 	}
 
 	private static void execute(String line) {
-		int[] bin = new Assembler(line).compile().getCode();
+		Assembler asm = new Assembler(line);
+		asm.compile();
+		int[] bin = asm.getProgram().getParts().get(0).getBytes();
 		System.out.println(Arrays.toString(bin));
 	}
 
@@ -315,23 +317,31 @@ public class AssemblerTest {
 	private static void testCpuRun() {
 		String[] code = Loader.loadProgram("src/test/resources/asm/example3.asm");
 		Assembler asm = new Assembler(code);
-		Program prg = asm.compile();
-		Machine machine = new Machine();
-		Cpu cpu = new Cpu(machine);
+		asm.compile();
+		Cpu cpu = asm.getCpu();
 		cpu.setExitOnBreak(false);
-		System.out.println(Assembler.toString(prg));
+		System.out.println(asm.toString());
 		System.out.println("---------------------------------");
 		System.out.println("Running program...");
-		cpu.execute(prg, new CpuTracer() {
-
+		cpu.setCpuTracer(new CpuTracer() {
 			@Override
 			public void commandExecuted(Cpu cpu, int opcode, int lastPc, int pc) {
-				System.out.println("@ ." + Integer.toHexString(lastPc) + "\t" + Integer.toHexString(opcode)+"/"+Integer.toBinaryString(cpu.getStatus()));
+				System.out.println("@ ." + Integer.toHexString(lastPc) + "\t" + Integer.toHexString(opcode) + "/" + Integer.toBinaryString(cpu.getStatus()));
 
 			}
-
 		});
-		System.out.println("Done: " + cpu.getY() + "/" + machine.getRam()[1500]);
+		asm.run();
+		outputRunResults(asm.getMachine(), cpu);
+
+		cpu.setCpuTracer(null);
+		cpu.reset();
+		cpu.setClockTicks(0);
+		cpu.execute(49152);
+		outputRunResults(asm.getMachine(), cpu);
+	}
+
+	private static void outputRunResults(Machine machine, Cpu cpu) {
+		System.out.println("Done: " + cpu.getY() + "/" + machine.getRam()[1500] + " in " + cpu.getClockTicks() + " clock ticks!");
 		int[] ram = machine.getRam();
 		for (int i = 1024; i < 1035; i++) {
 			System.out.print((char) ram[i]);
@@ -340,17 +350,17 @@ public class AssemblerTest {
 		for (int i = 1064; i < 1093; i++) {
 			System.out.print((char) ram[i]);
 		}
-
 		System.out.println();
 	}
 
 	private static void runAssembler(String[] code) {
 		Assembler asm = new Assembler(code);
-		Program prg = asm.compile();
-		int[] bin = prg.getCode();
+		asm.compile();
+		Program prg = asm.getProgram();
+		int[] bin = prg.getParts().get(0).getBytes();
 		System.out.println(Arrays.toString(bin));
 		System.out.println("-----------------------------");
-		System.out.println(Assembler.toString(prg));
+		System.out.println(asm.toString());
 		System.out.println("-----------------------------");
 	}
 

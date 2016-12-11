@@ -2,7 +2,7 @@ package com.sixtyfour.elements.commands;
 
 import com.sixtyfour.plugins.DeviceProvider;
 import com.sixtyfour.system.Machine;
-import com.sixtyfour.system.ProgramCounter;
+import com.sixtyfour.system.BasicProgramCounter;
 import com.sixtyfour.util.VarUtils;
 
 /**
@@ -25,7 +25,7 @@ public class Verify extends FileOperation {
 	 * Machine)
 	 */
 	@Override
-	public ProgramCounter execute(Machine machine) {
+	public BasicProgramCounter execute(Machine machine) {
 		DeviceProvider device = machine.getDeviceProvider();
 
 		try {

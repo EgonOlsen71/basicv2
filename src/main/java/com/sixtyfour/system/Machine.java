@@ -73,6 +73,8 @@ public class Machine {
 	/** The device provider */
 	private DeviceProvider deviceProvider = null;
 
+	private Cpu cpu = null;
+
 	/**
 	 * Instantiates a new machine.
 	 */
@@ -83,6 +85,7 @@ public class Machine {
 		deviceProvider = new MemoryDeviceProvider(outputChannel);
 		setSystemCallListener(new NullSystemCallListener());
 		addDefaults();
+		this.cpu = new Cpu(this);
 	}
 
 	/**
@@ -231,7 +234,7 @@ public class Machine {
 
 	/**
 	 * Resets the memory. This will clean the 64KB of main memory as well as all
-	 * variables.
+	 * variables. It will not reset the cpu.
 	 */
 	public void resetMemory() {
 		for (int i = 0; i < ram.length; i++) {
@@ -521,12 +524,19 @@ public class Machine {
 		this.deviceProvider = deviceProvider;
 	}
 
+	public Cpu getCpu() {
+		return cpu;
+	}
+
 	/**
 	 * @param prg
 	 */
-	public void loadProgram(Program prg) {
-		int[] bin = prg.getCode();
-		System.arraycopy(bin, 0, this.getRam(), prg.getStartAddress(), bin.length);
+	public void putProgram(Program prg) {
+		List<ProgramPart> parts = prg.getParts();
+		for (ProgramPart part : parts) {
+			int[] bin = part.getBytes();
+			System.arraycopy(bin, 0, this.getRam(), part.getAddress(), bin.length);
+		}
 	}
 
 	/**

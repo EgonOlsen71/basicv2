@@ -1,6 +1,6 @@
 package com.sixtyfour.test;
 
-import com.sixtyfour.Interpreter;
+import com.sixtyfour.Basic;
 import com.sixtyfour.Loader;
 
 /**
@@ -41,7 +41,7 @@ public class ProgramTest {
 	 */
 	private static void testStuff() {
 		String[] vary = Loader.loadProgram("src/test/resources/basic/files.bas");
-		Interpreter inty = new Interpreter(vary);
+		Basic inty = new Basic(vary);
 		// inty.setPrintLineNumbers(true);
 		inty.run();
 	}
@@ -51,7 +51,7 @@ public class ProgramTest {
 	 */
 	private static void testCalc() {
 		String[] vary = Loader.loadProgram("src/test/resources/basic/calctest.bas");
-		Interpreter inty = new Interpreter(vary);
+		Basic inty = new Basic(vary);
 		inty.run();
 	}
 
@@ -60,7 +60,7 @@ public class ProgramTest {
 	 */
 	private static void testAdventure() {
 		String[] vary = Loader.loadProgram("src/test/resources/basic/OHARES3.BAS");
-		Interpreter inty = new Interpreter(vary);
+		Basic inty = new Basic(vary);
 		inty.run();
 	}
 
@@ -69,7 +69,7 @@ public class ProgramTest {
 	 */
 	private static void testData() {
 		String[] vary = Loader.loadProgram("src/test/resources/basic/data.bas");
-		Interpreter inty = new Interpreter(vary);
+		Basic inty = new Basic(vary);
 		inty.run();
 	}
 
@@ -78,7 +78,7 @@ public class ProgramTest {
 	 */
 	private static void testInput() {
 		String[] vary = Loader.loadProgram("src/test/resources/basic/input.bas");
-		Interpreter inty = new Interpreter(vary);
+		Basic inty = new Basic(vary);
 		inty.run();
 	}
 
@@ -87,7 +87,7 @@ public class ProgramTest {
 	 */
 	private static void testRun() {
 		String[] vary = Loader.loadProgram("src/test/resources/basic/run.bas");
-		Interpreter inty = new Interpreter(vary);
+		Basic inty = new Basic(vary);
 		inty.run();
 	}
 
@@ -96,7 +96,7 @@ public class ProgramTest {
 	 */
 	private static void testBeer() {
 		String[] vary = Loader.loadProgram("src/test/resources/basic/beer.bas");
-		Interpreter inty = new Interpreter(vary);
+		Basic inty = new Basic(vary);
 		inty.run();
 	}
 
@@ -105,7 +105,7 @@ public class ProgramTest {
 	 */
 	private static void testMenu() {
 		String[] vary = Loader.loadProgram("src/test/resources/basic/menu.bas");
-		Interpreter inty = new Interpreter(vary);
+		Basic inty = new Basic(vary);
 		inty.run();
 	}
 
@@ -114,7 +114,7 @@ public class ProgramTest {
 	 */
 	private static void testGosub() {
 		String[] vary = Loader.loadProgram("src/test/resources/basic/fac.bas");
-		Interpreter inty = new Interpreter(vary);
+		Basic inty = new Basic(vary);
 		inty.run();
 	}
 
@@ -123,7 +123,7 @@ public class ProgramTest {
 	 */
 	private static void testGosubReturn() {
 		String[] vary = Loader.loadProgram("src/test/resources/basic/subroutines.bas");
-		Interpreter inty = new Interpreter(vary);
+		Basic inty = new Basic(vary);
 		inty.run();
 	}
 
@@ -132,7 +132,7 @@ public class ProgramTest {
 	 */
 	private static void testVarious() {
 		String[] vary = Loader.loadProgram("src/test/resources/basic/various.bas");
-		Interpreter inty = new Interpreter(vary);
+		Basic inty = new Basic(vary);
 		inty.run();
 	}
 
@@ -141,7 +141,7 @@ public class ProgramTest {
 	 */
 	private static void testConditions() {
 		String[] condy = Loader.loadProgram("src/test/resources/basic/conditions.bas");
-		Interpreter inty = new Interpreter(condy);
+		Basic inty = new Basic(condy);
 		inty.run();
 	}
 
@@ -150,7 +150,7 @@ public class ProgramTest {
 	 */
 	private static void testPrime() {
 		String[] prime = Loader.loadProgram("src/test/resources/basic/prime.bas");
-		Interpreter inty = new Interpreter(prime);
+		Basic inty = new Basic(prime);
 		inty.run();
 	}
 
@@ -159,7 +159,7 @@ public class ProgramTest {
 	 */
 	private static void testPrime2() {
 		String[] prime = Loader.loadProgram("src/test/resources/basic/prime2.bas");
-		Interpreter inty = new Interpreter(prime);
+		Basic inty = new Basic(prime);
 		inty.run();
 	}
 

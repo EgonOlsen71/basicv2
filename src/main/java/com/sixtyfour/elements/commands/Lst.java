@@ -1,7 +1,7 @@
 package com.sixtyfour.elements.commands;
 
 import com.sixtyfour.system.Machine;
-import com.sixtyfour.system.ProgramCounter;
+import com.sixtyfour.system.BasicProgramCounter;
 
 /**
  * The LIST command.
@@ -38,8 +38,8 @@ public class Lst extends AbstractCommand {
 	 * Machine)
 	 */
 	@Override
-	public ProgramCounter execute(Machine machine) {
-		ProgramCounter pc = new ProgramCounter(0, 0);
+	public BasicProgramCounter execute(Machine machine) {
+		BasicProgramCounter pc = new BasicProgramCounter(0, 0);
 		pc.setList(true);
 		return pc;
 	}

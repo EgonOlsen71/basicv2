@@ -8,7 +8,7 @@ import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.Term;
 import com.sixtyfour.system.Machine;
-import com.sixtyfour.system.ProgramCounter;
+import com.sixtyfour.system.BasicProgramCounter;
 import com.sixtyfour.util.VarUtils;
 
 /**
@@ -59,7 +59,7 @@ public class GetFile extends Get {
 	 * @see sixtyfour.elements.commands.Get#execute(sixtyfour.system.Machine)
 	 */
 	@Override
-	public ProgramCounter execute(Machine machine) {
+	public BasicProgramCounter execute(Machine machine) {
 		for (int i = 0; i < vars.size(); i++) {
 			Term indexTerm = indexTerms.get(i);
 			Variable var = this.getVariable(machine, i);

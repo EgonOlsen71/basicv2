@@ -34,7 +34,7 @@ public class Peek extends AbstractFunction {
 	@Override
 	public Object eval(Machine machine) {
 		if (!getType().equals(Type.STRING)) {
-			return Integer.valueOf(machine.getRam()[VarUtils.getInt(term.eval(machine)) & 0xff]);
+			return Integer.valueOf(machine.getRam()[VarUtils.getInt(term.eval(machine))]) & 0xff;
 		}
 		throw new RuntimeException("Type mismatch error: " + getType());
 	}

@@ -10,7 +10,7 @@ import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.Term;
 import com.sixtyfour.plugins.OutputChannel;
 import com.sixtyfour.system.Machine;
-import com.sixtyfour.system.ProgramCounter;
+import com.sixtyfour.system.BasicProgramCounter;
 import com.sixtyfour.util.VarUtils;
 
 /**
@@ -86,7 +86,7 @@ public class Input extends MultiVariableCommand {
 	 * Machine)
 	 */
 	@Override
-	public ProgramCounter execute(Machine machine) {
+	public BasicProgramCounter execute(Machine machine) {
 		List<String> queue = new ArrayList<String>();
 		OutputChannel out = machine.getOutputChannel();
 		for (int i = 0; i < vars.size(); i++) {

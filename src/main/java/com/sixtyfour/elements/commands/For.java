@@ -5,7 +5,7 @@ import com.sixtyfour.elements.Variable;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.Term;
 import com.sixtyfour.system.Machine;
-import com.sixtyfour.system.ProgramCounter;
+import com.sixtyfour.system.BasicProgramCounter;
 import com.sixtyfour.util.VarUtils;
 
 /**
@@ -128,7 +128,7 @@ public class For extends AbstractCommand {
 	 * Machine)
 	 */
 	@Override
-	public ProgramCounter execute(Machine machine) {
+	public BasicProgramCounter execute(Machine machine) {
 		var = machine.add(var);
 		var.setValue(term.eval(machine));
 		end = VarUtils.getFloat(endTerm.eval(machine));

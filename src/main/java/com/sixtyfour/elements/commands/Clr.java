@@ -1,7 +1,7 @@
 package com.sixtyfour.elements.commands;
 
 import com.sixtyfour.system.Machine;
-import com.sixtyfour.system.ProgramCounter;
+import com.sixtyfour.system.BasicProgramCounter;
 
 /**
  * The CLR command.
@@ -38,7 +38,7 @@ public class Clr extends AbstractCommand {
 	 * Machine)
 	 */
 	@Override
-	public ProgramCounter execute(Machine machine) {
+	public BasicProgramCounter execute(Machine machine) {
 		machine.clearVars();
 		return null;
 	}

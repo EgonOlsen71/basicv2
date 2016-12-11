@@ -4,7 +4,7 @@ import com.sixtyfour.elements.Type;
 import com.sixtyfour.elements.Variable;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.system.Machine;
-import com.sixtyfour.system.ProgramCounter;
+import com.sixtyfour.system.BasicProgramCounter;
 import com.sixtyfour.util.VarUtils;
 
 /**
@@ -129,7 +129,7 @@ public class Def extends AbstractCommand {
 	 * Machine)
 	 */
 	@Override
-	public ProgramCounter execute(Machine machine) {
+	public BasicProgramCounter execute(Machine machine) {
 		machine.setFunction(fnName, this);
 		return null;
 	}

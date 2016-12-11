@@ -1,7 +1,7 @@
 package com.sixtyfour.elements.commands;
 
 import com.sixtyfour.system.Machine;
-import com.sixtyfour.system.ProgramCounter;
+import com.sixtyfour.system.BasicProgramCounter;
 
 /**
  * The STOP command.
@@ -38,8 +38,8 @@ public class Stop extends AbstractCommand {
 	 * Machine)
 	 */
 	@Override
-	public ProgramCounter execute(Machine machine) {
-		ProgramCounter pc = new ProgramCounter(this.lineCnt, this.linePos);
+	public BasicProgramCounter execute(Machine machine) {
+		BasicProgramCounter pc = new BasicProgramCounter(this.lineCnt, this.linePos);
 		pc.setStop(true);
 		return pc;
 	}

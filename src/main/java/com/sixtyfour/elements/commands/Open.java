@@ -6,7 +6,7 @@ import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.plugins.DeviceProvider;
 import com.sixtyfour.system.Machine;
-import com.sixtyfour.system.ProgramCounter;
+import com.sixtyfour.system.BasicProgramCounter;
 import com.sixtyfour.util.VarUtils;
 
 /**
@@ -51,7 +51,7 @@ public class Open extends AbstractCommand {
 	 * Machine)
 	 */
 	@Override
-	public ProgramCounter execute(Machine machine) {
+	public BasicProgramCounter execute(Machine machine) {
 		DeviceProvider device = machine.getDeviceProvider();
 
 		try {

@@ -1,7 +1,7 @@
 package com.sixtyfour.elements.commands;
 
 import com.sixtyfour.system.Machine;
-import com.sixtyfour.system.ProgramCounter;
+import com.sixtyfour.system.BasicProgramCounter;
 import com.sixtyfour.system.StackEntry;
 
 /**
@@ -10,7 +10,7 @@ import com.sixtyfour.system.StackEntry;
 public class Return extends AbstractCommand {
 
 	/** The pc. */
-	private ProgramCounter pc = new ProgramCounter(0, 0);
+	private BasicProgramCounter pc = new BasicProgramCounter(0, 0);
 
 	/**
 	 * Instantiates a new return.
@@ -43,7 +43,7 @@ public class Return extends AbstractCommand {
 	 * Machine)
 	 */
 	@Override
-	public ProgramCounter execute(Machine machine) {
+	public BasicProgramCounter execute(Machine machine) {
 		StackEntry caller = machine.getCaller();
 		if (caller == null) {
 			throw new RuntimeException("RETURN without GOSUB error!");

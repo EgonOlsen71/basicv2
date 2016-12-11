@@ -3,7 +3,7 @@ package com.sixtyfour.templating;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.sixtyfour.Interpreter;
+import com.sixtyfour.Basic;
 import com.sixtyfour.elements.Variable;
 import com.sixtyfour.parser.Line;
 import com.sixtyfour.system.Machine;
@@ -21,7 +21,7 @@ public class Template {
 	private Map<String, Object> vars = new HashMap<String, Object>();
 
 	/** The interpreter. */
-	private Interpreter interpreter = null;
+	private Basic interpreter = null;
 
 	/** The static parts. */
 	private Map<Integer, TemplatePart> staticParts = new HashMap<Integer, TemplatePart>();
@@ -164,8 +164,8 @@ public class Template {
 		} while (pos != -1);
 
 		// System.out.println(code);
-		interpreter = new Interpreter(code.toString());
-		interpreter.parse();
+		interpreter = new Basic(code.toString());
+		interpreter.compile();
 		out = new TemplateOutputChannel();
 		interpreter.setOutputChannel(out);
 		interpreter.getMachine().setSystemCallListener(new StaticTemplateCallListener(staticParts, out));

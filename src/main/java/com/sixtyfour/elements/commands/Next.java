@@ -5,7 +5,7 @@ package com.sixtyfour.elements.commands;
 
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.system.Machine;
-import com.sixtyfour.system.ProgramCounter;
+import com.sixtyfour.system.BasicProgramCounter;
 import com.sixtyfour.util.VarUtils;
 
 /**
@@ -17,7 +17,7 @@ public class Next extends AbstractCommand {
 	private String varName = null;
 
 	/** The pc. */
-	private ProgramCounter pc = new ProgramCounter(0, 0); // Recycle instance
+	private BasicProgramCounter pc = new BasicProgramCounter(0, 0); // Recycle instance
 
 	/**
 	 * Instantiates a new next.
@@ -86,7 +86,7 @@ public class Next extends AbstractCommand {
 	 * Machine)
 	 */
 	@Override
-	public ProgramCounter execute(Machine machine) {
+	public BasicProgramCounter execute(Machine machine) {
 		For myFor = machine.peekFor(this.varName);
 		if (myFor == null) {
 			throw new RuntimeException("NEXT without FOR error: " + this);

@@ -3,7 +3,7 @@ package com.sixtyfour.elements.commands;
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.parser.Term;
 import com.sixtyfour.system.Machine;
-import com.sixtyfour.system.ProgramCounter;
+import com.sixtyfour.system.BasicProgramCounter;
 import com.sixtyfour.util.VarUtils;
 
 /**
@@ -160,7 +160,7 @@ public abstract class AbstractCommand implements Command {
 	 * sixtyfour.elements.commands.Command#execute(sixtyfour.system.Machine)
 	 */
 	@Override
-	public ProgramCounter execute(Machine machine) {
+	public BasicProgramCounter execute(Machine machine) {
 		return null;
 	}
 

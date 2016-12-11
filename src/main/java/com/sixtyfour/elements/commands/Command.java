@@ -3,7 +3,7 @@ package com.sixtyfour.elements.commands;
 import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Term;
 import com.sixtyfour.system.Machine;
-import com.sixtyfour.system.ProgramCounter;
+import com.sixtyfour.system.BasicProgramCounter;
 
 /**
  * The interface for commands.
@@ -85,7 +85,7 @@ public interface Command extends Atom {
 	 *            the current machine
 	 * @return a program counter instance that contains the current state after execution
 	 */
-	ProgramCounter execute(Machine machine);
+	BasicProgramCounter execute(Machine machine);
 
 	/**
 	 * Stops the execution of a command. Only application to commands like WAIT.

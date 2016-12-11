@@ -23,7 +23,7 @@ public class Runtime {
 		}
 		String file = args[0];
 		String[] code = Loader.loadProgram(file);
-		Interpreter parser = new Interpreter(code);
+		Basic parser = new Basic(code);
 		parser.run();
 	}
 

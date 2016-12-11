@@ -6,7 +6,7 @@ import java.util.List;
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.system.Machine;
-import com.sixtyfour.system.ProgramCounter;
+import com.sixtyfour.system.BasicProgramCounter;
 import com.sixtyfour.util.VarUtils;
 
 /**
@@ -15,7 +15,7 @@ import com.sixtyfour.util.VarUtils;
 public class On extends AbstractCommand {
 
 	/** The pc. */
-	private ProgramCounter pc = new ProgramCounter(0, 0); // Recycle instance
+	private BasicProgramCounter pc = new BasicProgramCounter(0, 0); // Recycle instance
 
 	/** The line numbers. */
 	private List<Integer> lineNumbers = new ArrayList<Integer>();
@@ -89,7 +89,7 @@ public class On extends AbstractCommand {
 	 * Machine)
 	 */
 	@Override
-	public ProgramCounter execute(Machine machine) {
+	public BasicProgramCounter execute(Machine machine) {
 		int index = VarUtils.getInt(term.eval(machine));
 		if (index <= 0 || index > lineNumbers.size()) {
 			return null;

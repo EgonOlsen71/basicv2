@@ -2,6 +2,7 @@
 
 *=1064		; Write some stuff into text mode memory (line 2)...because we can!
 .text "somewhere over the rainbow..."
+.byte 0
 
 *=$c000   	; Define start address
 

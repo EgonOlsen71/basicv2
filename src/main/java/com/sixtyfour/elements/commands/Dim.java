@@ -11,7 +11,7 @@ import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.VariableAndTerms;
 import com.sixtyfour.system.Machine;
-import com.sixtyfour.system.ProgramCounter;
+import com.sixtyfour.system.BasicProgramCounter;
 import com.sixtyfour.util.VarUtils;
 
 /**
@@ -89,7 +89,7 @@ public class Dim extends AbstractCommand {
 	 * Machine)
 	 */
 	@Override
-	public ProgramCounter execute(Machine machine) {
+	public BasicProgramCounter execute(Machine machine) {
 		for (int i = 0; i < vars.size(); i++) {
 			Variable var = vars.get(i);
 			if (!var.isArray()) {

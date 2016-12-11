@@ -1,10 +1,10 @@
 package com.sixtyfour.system;
 
 /**
- * A ProgramCounter indicates a position inside a program. In addition, it can
- * signal the runtime to stop or end a program.
+ * A BasicProgramCounter indicates a position inside a basic program. In
+ * addition, it can signal the interpreter to stop or end a program.
  */
-public class ProgramCounter {
+public class BasicProgramCounter {
 
 	/** The line count */
 	private int lineCnt;
@@ -35,7 +35,7 @@ public class ProgramCounter {
 	 * @param pos
 	 *            the position in the line
 	 */
-	public ProgramCounter(int cnt, int pos) {
+	public BasicProgramCounter(int cnt, int pos) {
 		this.lineCnt = cnt;
 		this.linePos = pos;
 	}

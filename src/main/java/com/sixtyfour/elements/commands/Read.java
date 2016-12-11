@@ -9,7 +9,7 @@ import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.Term;
 import com.sixtyfour.system.DataStore;
 import com.sixtyfour.system.Machine;
-import com.sixtyfour.system.ProgramCounter;
+import com.sixtyfour.system.BasicProgramCounter;
 import com.sixtyfour.util.VarUtils;
 
 /**
@@ -60,7 +60,7 @@ public class Read extends MultiVariableCommand {
 	 * Machine)
 	 */
 	@Override
-	public ProgramCounter execute(Machine machine) {
+	public BasicProgramCounter execute(Machine machine) {
 		DataStore data = machine.getDataStore();
 		for (int i = 0; i < vars.size(); i++) {
 			Term indexTerm = indexTerms.get(i);
