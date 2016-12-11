@@ -37,7 +37,7 @@
 		99 REM SUBROUTINE
 		100 PRINT"<li>Five is a nice number</li>":RETURN
 		200 REM ---
-		210 REM prints out the result of the assembler code above
+		210 REM run assembler code and print out the result
 		300 SYS 49152
 		310 FOR I=8192 TO 8210:PRINTCHR$(PEEK(I));:NEXT
 		320 RETURN
