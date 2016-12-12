@@ -9,7 +9,8 @@ import com.sixtyfour.system.Machine;
 /**
  * A listener used to process templates. Template parsing inserts SYS1000 calls
  * into the program, which will output the template's static content. This is
- * done here.
+ * done here. All other SYS-calls will be redirect to an internal instance of
+ * RamSystemCallListener.
  */
 public class StaticTemplateCallListener implements SystemCallListener {
 

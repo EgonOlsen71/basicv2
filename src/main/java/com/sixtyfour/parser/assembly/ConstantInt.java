@@ -4,6 +4,9 @@ import com.sixtyfour.system.Machine;
 
 
 /**
+ * An integer constant (i.e. a 16bit value)
+ * 
+ * @author EgonOlsen
  *
  */
 public class ConstantInt

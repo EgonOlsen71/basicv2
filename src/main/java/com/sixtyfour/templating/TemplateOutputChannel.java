@@ -7,7 +7,7 @@ import com.sixtyfour.plugins.PrintConsumer;
  * An output channel for the templates. Template content shouldn't be printed onto the console, so
  * it will be redirected into here instead.
  * 
- * @author Foerster-H
+ * @author EgonOlsen
  */
 public class TemplateOutputChannel implements OutputChannel {
 

@@ -20,6 +20,9 @@ import com.sixtyfour.util.VarUtils;
  * requires to add some additional line numbers, so make sure that there's
  * enough number space left between lines. See the test package for an example
  * template.
+ * A template isn't thread-safe, i.e. 
+ * if you want to serve multiple clients at a time with the same template, you
+ * have to create multiple template instances and manage them in a ThreadLocal for example.
  */
 public class Template {
 

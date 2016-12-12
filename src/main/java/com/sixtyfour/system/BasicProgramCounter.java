@@ -1,7 +1,7 @@
 package com.sixtyfour.system;
 
 /**
- * A BasicProgramCounter indicates a position inside a basic program. In
+ * A BasicProgramCounter points to a position inside a basic program. In
  * addition, it can signal the interpreter to stop or end a program.
  */
 public class BasicProgramCounter {

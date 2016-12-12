@@ -4,6 +4,10 @@ import com.sixtyfour.system.Machine;
 
 
 /**
+ * An byte constant (i.e. an 8bit value). Bytes will be stored as ints as well, 
+ * but their value never exceeds 255 and applying them only writes one byte into memory.
+ * 
+ * @author EgonOlsen
  *
  */
 public class ConstantByte

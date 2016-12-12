@@ -9,6 +9,12 @@ import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
 
+/**
+ * Abstract implementation for mnemonics. 
+ * 
+ * @author EgonOlsen
+ *
+ */
 public abstract class AbstractMnemonic
   implements Mnemonic
 {
@@ -17,6 +23,14 @@ public abstract class AbstractMnemonic
   protected int[] opcodes = null;
 
 
+  /**
+   * Creates a new instance for a mnemonic of the given name. The list of opcodes has to have a 
+   * length of 12 and has to contain opcodes for all the possible addressing modes that the mnemonic
+   * can use. Those that it can't use have to be 0.
+   * 
+   * @param name the name
+   * @param opcodes the list of opcodes
+   */
   public AbstractMnemonic(String name, int[] opcodes)
   {
     this.name = name;
