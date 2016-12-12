@@ -224,7 +224,7 @@ public class Assembler
 
     if (lcon.hasDelayedLabels())
     {
-      raiseError("Jump to undefined label: " + lcon.getFirstDelayedLabel(), addr, cnt);
+      raiseError("Undefined label: " + lcon.getFirstDelayedLabel(), addr, cnt);
     }
 
     if (addr != start)
