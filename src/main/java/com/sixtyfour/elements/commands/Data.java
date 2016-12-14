@@ -115,7 +115,7 @@ public class Data extends AbstractCommand {
 		String txt = sb.toString();
 		sb.setLength(0);
 		if (txt.isEmpty() || txt.equals(".")) {
-			txt = "0";
+			txt = "\\0";
 		}
 		return txt;
 	}
