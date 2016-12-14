@@ -45,8 +45,9 @@ public class Variable implements Atom {
 	 * @param values
 	 *            the values in form of a list.
 	 * @param dimensions
-	 *            the dimensions. If this variable is a multi-dimensional array, 
-	 *            the list of values will be mapped according to these dimensions.
+	 *            the dimensions. If this variable is a multi-dimensional array,
+	 *            the list of values will be mapped according to these
+	 *            dimensions.
 	 */
 	public Variable(String name, List<Object> values, int... dimensions) {
 		this(name, values == null ? new ArrayList<Object>(calcSize(dimensions)) : (Object) values);
@@ -61,8 +62,9 @@ public class Variable implements Atom {
 	 * @param name
 	 *            the name of the variable
 	 * @param value
-	 *            the value. Depending on the type (determined by the name), this value will be parsed into the actual
-	 *            instance type. If value is null, a default value will be created instead.
+	 *            the value. Depending on the type (determined by the name),
+	 *            this value will be parsed into the actual instance type. If
+	 *            value is null, a default value will be created instead.
 	 */
 	public Variable(String name, Object value) {
 		// Check name for validity
@@ -260,7 +262,8 @@ public class Variable implements Atom {
 	}
 
 	/**
-	 * Returns number of elements. If the variable isn't an array, 1 will be returned.
+	 * Returns number of elements. If the variable isn't an array, 1 will be
+	 * returned.
 	 * 
 	 * @return the number of elements
 	 */
@@ -385,7 +388,12 @@ public class Variable implements Atom {
 			val = VarUtils.getFloat(val);
 		}
 
-		return ((List<Object>) value).set(ap, val);
+		List<Object> ovalue = (List<Object>) value;
+
+		if (ap >= ovalue.size() || ap < 0) {
+			throw new RuntimeException("Array index out of range: " + name + "(" + val + "/" + ovalue.size() + ")");
+		}
+		return ovalue.set(ap, val);
 	}
 
 	/**
