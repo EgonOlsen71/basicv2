@@ -1,0 +1,9 @@
+100 printchr$(147):fori=0to6:readw$(i):next
+110 input"tt.mm.jjjj";a$
+130 t=val(mid$(a$,1,2)):m=val(mid$(a$,4,2)):j=val(mid$(a$,7,4))
+160 x=t+m*31-31-int(m*.43)+(m>2)*2+(j-1)*365+int((j+(m<3))/4)
+170 x=x+(((j+4)/400=int((j+4)/400))and(m>2))-int((j+104)/100)+int((j+4)/400)
+180 y=x-int(x/7)*7
+190 print:printw$(y):print:print
+210 goto110
+300 datamontag,dienstag,mittwoch,donnerstag,freitag,samstag,sonntag

@@ -7,9 +7,9 @@ import com.sixtyfour.elements.Variable;
 import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.Term;
+import com.sixtyfour.system.BasicProgramCounter;
 import com.sixtyfour.system.DataStore;
 import com.sixtyfour.system.Machine;
-import com.sixtyfour.system.BasicProgramCounter;
 import com.sixtyfour.util.VarUtils;
 
 /**
@@ -70,7 +70,15 @@ public class Read extends MultiVariableCommand {
 			if (obj == null) {
 				throw new RuntimeException("Out of data error: " + this);
 			}
-			boolean empty=obj.toString().equals("\\0");
+			if (obj.toString().equals("\\0")) {
+				if (varType.equals(Type.STRING)) {
+					obj = "";
+				} else if (varType.equals(Type.REAL)) {
+					obj = 0.0f;
+				} else {
+					obj = 0;
+				}
+			}
 			if (indexTerm != null) {
 				// array
 				List<Atom> pars = Parser.getParameters(indexTerm);
@@ -80,40 +88,44 @@ public class Read extends MultiVariableCommand {
 					pis[cnt++] = VarUtils.getInt(par.eval(machine));
 				}
 				if (varType.equals(Type.STRING)) {
-					var.setValue(empty?"":obj.toString(), pis);
+					var.setValue(obj.toString(), pis);
 				} else if (varType.equals(Type.REAL)) {
 					if (VarUtils.isNumber(obj)) {
-						var.setValue(empty?0.0f:VarUtils.getFloat(obj), pis);
+						var.setValue(VarUtils.getFloat(obj), pis);
 					} else {
-						throw new RuntimeException("Type mismatch error: " + this);
+						typeMismatch(obj);
 					}
 				} else if (varType.equals(Type.INTEGER)) {
 					if (VarUtils.isInteger(obj)) {
-						var.setValue(empty?0:VarUtils.getInt(obj), pis);
+						var.setValue(VarUtils.getInt(obj), pis);
 					} else {
-						throw new RuntimeException("Type mismatch error: " + this);
+						typeMismatch(obj);
 					}
 				}
 			} else {
 				// no array
 				if (varType.equals(Type.STRING)) {
-					var.setValue(empty?"":obj.toString());
+					var.setValue(obj.toString());
 				} else if (varType.equals(Type.REAL)) {
 					if (VarUtils.isNumber(obj)) {
-						var.setValue(empty?0.0:VarUtils.getFloat(obj));
+						var.setValue(VarUtils.getFloat(obj));
 					} else {
-						throw new RuntimeException("Type mismatch error: " + this);
+						typeMismatch(obj);
 					}
 				} else if (varType.equals(Type.INTEGER)) {
 					if (VarUtils.isInteger(obj)) {
-						var.setValue(empty?0:VarUtils.getInt(obj));
+						var.setValue(VarUtils.getInt(obj));
 					} else {
-						throw new RuntimeException("Type mismatch error: " + this);
+						typeMismatch(obj);
 					}
 				}
 			}
 		}
 		return null;
+	}
+
+	private void typeMismatch(Object obj) {
+		throw new RuntimeException("Type mismatch error: " + this + "/" + obj);
 	}
 
 }

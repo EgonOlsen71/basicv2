@@ -34,6 +34,13 @@ public class ProgramTest {
 		// testAdventure();
 		// testCalc();
 		testStuff();
+		//testCalendar();
+	}
+
+	private static void testCalendar() {
+		String[] vary = Loader.loadProgram("src/test/resources/basic/kalender.bas");
+		Basic inty = new Basic(vary);
+		inty.run();
 	}
 
 	/**
