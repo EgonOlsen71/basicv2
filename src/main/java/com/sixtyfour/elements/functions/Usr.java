@@ -32,6 +32,9 @@ public class Usr extends AbstractFunction {
 	 */
 	@Override
 	public Object eval(Machine machine) {
+		// TODO: Support this. However, doing so would require to do a proper
+		// conversion between the C64 float format and Java's.
+		// I'm not sure, if this is really worth it...
 		return 0f;
 	}
 }
