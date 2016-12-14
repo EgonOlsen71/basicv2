@@ -35,7 +35,22 @@ public class ProgramTest {
 		// testCalc();
 		testStuff();
 		//testCalendar();
+		//testOtherPrime();
+		//testBio();
 	}
+	
+	private static void testBio() {
+		String[] vary = Loader.loadProgram("src/test/resources/basic/bio64.bas");
+		Basic inty = new Basic(vary);
+		inty.run();
+	}
+	
+	private static void testOtherPrime() {
+		String[] vary = Loader.loadProgram("src/test/resources/basic/primzahlen.bas");
+		Basic inty = new Basic(vary);
+		inty.run();
+	}
+	
 
 	private static void testCalendar() {
 		String[] vary = Loader.loadProgram("src/test/resources/basic/kalender.bas");

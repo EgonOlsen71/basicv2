@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.sixtyfour.elements.Type;
+import com.sixtyfour.elements.functions.Function;
+import com.sixtyfour.elements.functions.FunctionList;
 import com.sixtyfour.parser.Operator;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.Term;
 import com.sixtyfour.plugins.PrintConsumer;
-import com.sixtyfour.system.Machine;
 import com.sixtyfour.system.BasicProgramCounter;
+import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
 /**
@@ -149,6 +151,29 @@ public class Print extends AbstractCommand {
 		boolean inString = false;
 		int brackets = 0;
 		StringBuilder sb = new StringBuilder();
+
+		// Crude fix for functions that directly follow vars or constants...
+		// Like for example PRINT 1TAB(10)ACHR$(161)B2TAB(23)123TAB(5)..
+		// This is quite inefficient and a real crudge, but...anyway...
+		List<Function> funs = FunctionList.getFunctions();
+		for (int i = 1; i < line.length() - 5; i++) {
+			char c = line.charAt(i - 1);
+			if (c == '"') {
+				inString = !inString;
+			}
+			if (!inString && Character.isLetterOrDigit(c)) {
+				String sub = line.substring(i);
+				for (Function fun : funs) {
+					if (fun.isFunction(sub)) {
+						line = line.substring(0, i) + ";" + line.substring(i);
+						i++;
+						break;
+					}
+				}
+			}
+		}
+
+		inString = false;
 		for (int i = 0; i < line.length(); i++) {
 			char c = line.charAt(i);
 			if (c == '"') {
