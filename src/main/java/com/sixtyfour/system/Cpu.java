@@ -1,5 +1,10 @@
 package com.sixtyfour.system;
 
+import java.util.List;
+
+import com.sixtyfour.elements.mnemonics.Mnemonic;
+import com.sixtyfour.elements.mnemonics.MnemonicList;
+
 /**
  * Cpu is a 6502 emulation. It can be used to run actual binary 6502 code. Cpu
  * can't be instantiated directly but can be obtained from a machine instance.
@@ -51,6 +56,24 @@ public class Cpu {
 	 */
 	public void setCpuTracer(CpuTracer cpuTracer) {
 		this.cpuTracer = cpuTracer;
+	}
+
+	/**
+	 * Returns the abstract instruction in human readable form.
+	 * 
+	 * @param opcode
+	 *            the opcode to check
+	 * @return the instruction
+	 */
+	public String getInstruction(int opcode) {
+		List<Mnemonic> mnes = MnemonicList.getMnemonics();
+		for (Mnemonic mne : mnes) {
+			String ins = mne.getInstruction(opcode);
+			if (ins != null) {
+				return ins;
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -355,8 +378,8 @@ public class Cpu {
 			int lastPc = pc;
 			int cmd = ram[pc++];
 
-			//System.out.println("PC: " + pc + "/" + Integer.toHexString(cmd));
-
+			//System.out.println("PC: " + pc + "/" + Integer.toHexString(cmd)+" "+this.getInstruction(cmd));
+			
 			int xb = x & 0xff;
 			int yb = y & 0xff;
 			int accb = acc & 0xff;
