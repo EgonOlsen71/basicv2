@@ -1,3 +1,4 @@
+10 for i=8192to16384:pokei,255:next: rem just to test, if the assembler code below actually works...
 100 xl =-2.000:xu =0.500
   110 yl =-1.100:yu=1.100
   115 reps =20
