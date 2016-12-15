@@ -49,7 +49,7 @@ public class Line {
 				return new Line(Integer.parseInt(line.substring(0, i)), line.substring(i).trim());
 			}
 		}
-		throw new RuntimeException("No line number found in: " + line);
+		throw new RuntimeException("No command found in: " + line);
 	}
 
 	/**

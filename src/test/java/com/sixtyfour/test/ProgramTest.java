@@ -37,6 +37,7 @@ public class ProgramTest {
 		//testCalendar();
 		//testOtherPrime();
 		//testBio();
+		testIf();
 	}
 	
 	private static void testBio() {
@@ -163,6 +164,12 @@ public class ProgramTest {
 	 */
 	private static void testConditions() {
 		String[] condy = Loader.loadProgram("src/test/resources/basic/conditions.bas");
+		Basic inty = new Basic(condy);
+		inty.run();
+	}
+	
+	private static void testIf() {
+		String[] condy = Loader.loadProgram("src/test/resources/basic/if.bas");
 		Basic inty = new Basic(condy);
 		inty.run();
 	}
