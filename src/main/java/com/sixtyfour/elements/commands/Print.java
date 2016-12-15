@@ -166,7 +166,7 @@ public class Print extends AbstractCommand {
 				for (Function fun : funs) {
 					if (fun.isFunction(sub)) {
 						line = line.substring(0, i) + ";" + line.substring(i);
-						i++;
+						i+=fun.getName().length() + 1;
 						break;
 					}
 				}
