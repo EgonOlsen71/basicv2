@@ -17,4 +17,14 @@ public class NullSystemCallListener implements SystemCallListener {
 		//
 	}
 
+  /* (non-Javadoc)
+   * @see com.sixtyfour.plugins.SystemCallListener#usr(java.lang.Object)
+   */
+  @Override
+  public float usr(Object params)
+  {
+    // TODO Auto-generated method stub
+    return 0;
+  }
+
 }

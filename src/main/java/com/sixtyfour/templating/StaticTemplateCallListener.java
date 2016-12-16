@@ -50,4 +50,10 @@ public class StaticTemplateCallListener implements SystemCallListener {
 		}
 	}
 
+  @Override
+  public float usr(Object params)
+  {
+    return ramCaller.usr(params);
+  }
+
 }

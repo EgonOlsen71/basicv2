@@ -21,7 +21,8 @@ public class RamSystemCallListener
   /**
    * Creates a new instance.
    * 
-   * @param machine the machine to use
+   * @param machine
+   *          the machine to use
    */
   public RamSystemCallListener(Machine machine)
   {
@@ -33,6 +34,16 @@ public class RamSystemCallListener
   public void sys(int addr, Object... params)
   {
     machine.getCpu().execute(addr);
+  }
+
+
+  @Override
+  public float usr(Object params)
+  {
+    int[] ram = machine.getRam();
+    int addr = (ram[786] & 0xff) << 8 | (ram[785] & 0xff);
+    machine.getCpu().execute(addr);
+    return machine.getCpu().convertFloat(97);
   }
 
 }
