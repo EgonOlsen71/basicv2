@@ -30,7 +30,6 @@ public class Graphics
   private final static int GREEN = 255 * 256;
   private final static int BLUE = 255;
 
-  private final static int TEXT_MEMORY = 1024; // TODO: make this flexible
   private final static int COLOR_MEMORY = 55296;
 
 
@@ -40,15 +39,17 @@ public class Graphics
    * 
    * @param machine
    *          the machine
-   * @param startAddress
-   *          the startAddress of the graphics memory
+   * @param bitmapStartAddress
+   *          the start address of the graphics memory
+   * @param textramStartAddress
+   *          the start address of the text memory. Only needed, if withColors is true.
    * @param multiColor
    *          is multicolor mode being used?
    * @param withColors
    *          if true, colors from text/color ram will be taken into account. If false, default colors will be used.
    * @return the image (always 320*200)
    */
-  public static BufferedImage createImage(Machine machine, int startAddress, boolean multiColor, boolean withColors)
+  public static BufferedImage createImage(Machine machine, int bitmapStartAddress, int textramStartAddress, boolean multiColor, boolean withColors)
   {
     BufferedImage bi = new BufferedImage(320, 200, BufferedImage.TYPE_INT_RGB);
     int[] ram = machine.getRam();
@@ -56,11 +57,11 @@ public class Graphics
 
     if (!withColors)
     {
-      createWithDefaultColors(startAddress, multiColor, bi, ram, mc);
+      createWithDefaultColors(bitmapStartAddress, multiColor, bi, ram, mc);
     }
     else
     {
-      createWithRamColors(startAddress, multiColor, bi, ram);
+      createWithRamColors(bitmapStartAddress, textramStartAddress, multiColor, bi, ram);
     }
     return bi;
   }
@@ -95,7 +96,7 @@ public class Graphics
   }
 
 
-  private static void createWithRamColors(int startAddress, boolean multiColor, BufferedImage bi, int[] ram)
+  private static void createWithRamColors(int startAddress, int textramStartAddress, boolean multiColor, BufferedImage bi, int[] ram)
   {
     int bgColor = COLORS[ram[53281] & 0xFF];
     if (!multiColor)
@@ -110,8 +111,8 @@ public class Graphics
           int s = 128;
           for (int b = 0; b < 8; b++)
           {
-            int c = (col & s) == s ? (COLORS[ram[TEXT_MEMORY + ramPos] >> 4])
-                : (COLORS[ram[TEXT_MEMORY + ramPos] & 0b00001111]);
+            int c = (col & s) == s ? (COLORS[ram[textramStartAddress + ramPos] >> 4])
+                : (COLORS[ram[textramStartAddress + ramPos] & 0b00001111]);
             s >>= 1;
             bi.setRGB(x + b, y, c);
           }
@@ -140,10 +141,10 @@ public class Graphics
                 c1 = bgColor;
                 break;
               case 1:
-                c1 = COLORS[ram[TEXT_MEMORY + ramPos] >> 4];
+                c1 = COLORS[ram[textramStartAddress + ramPos] >> 4];
                 break;
               case 2:
-                c1 = COLORS[ram[TEXT_MEMORY + ramPos] & 0b00001111];
+                c1 = COLORS[ram[textramStartAddress + ramPos] & 0b00001111];
                 break;
               case 3:
                 c1 = COLORS[ram[COLOR_MEMORY + ramPos] & 0b00001111];
