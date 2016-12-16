@@ -79,10 +79,19 @@ Compared to PHP and tested with a simple prime number calculation (you can find 
 <p>You can find basic usage examples in the test directory. Running a BASIC program is quite simple:</p>
 
 <pre><code>String[] code= Loader.loadProgram("src/test/resources/basic/example.bas");
-Interpreter inty = new Interpreter(code);
-inty.run();`
+Basic inty = new Basic(vary);
+inty.run();
 </code></pre>
-
+      
+<p>Compiling and running an assembler program isn't particular challenging either:</p>
+      
+<pre><code>String[] code = Loader.loadProgram("src/test/resources/asm/example3.asm");
+Assembler asm = new Assembler(code);
+asm.run();
+</code></pre>
+      
+<p>You can combine both (BASIC and assembler) as well. Have a look at the "mixed" examples for more details on how to do that.</p>
+      
 <p>There are some more options, but that's basically it.<br>
 In addition, you can use it as a templating engine. You can find an example for this in the TemplateTest.java file.</p>
 
