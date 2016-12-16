@@ -7,6 +7,8 @@ Commodore home computers like the C64 or VIC 20 were using. It can run BASIC pro
 It doesn't use any parts of the implementation of the original Commodore BASIC like similar projects do. 
 It's a complete reimplementation in Java.
 
+In addition, it also offers a symbolic assembler that compiles assembler code into actual 6502 machine code. To execute these programs, it also comes with a 6502 cpu emulation.
+
 The sources come in a basic Maven like project structure as an Eclipse project. However, it doesn't actually use Maven and it has no
 dependencies to any other Java libraries. It's a stand-alone thing.
 
