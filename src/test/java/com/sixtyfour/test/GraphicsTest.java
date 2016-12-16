@@ -19,7 +19,7 @@ public class GraphicsTest {
 		String[] vary = Loader.loadProgram("src/test/resources/basic/fractal.bas");
 		Basic inty = new Basic(vary);
 		inty.run();
-		BufferedImage bi = Graphics.createImage(inty.getMachine(), 8192, false);
+		BufferedImage bi = Graphics.createImage(inty.getMachine(), 8192, false, false);
 		FileOutputStream fos = new FileOutputStream("fractal_hires.png");
 		Graphics.savePng(bi, fos);
 	}
@@ -28,7 +28,7 @@ public class GraphicsTest {
 		String[] vary = Loader.loadProgram("src/test/resources/basic/fractal_mc.bas");
 		Basic inty = new Basic(vary);
 		inty.run();
-		BufferedImage bi = Graphics.createImage(inty.getMachine(), 8192, true);
+		BufferedImage bi = Graphics.createImage(inty.getMachine(), 8192, true, false);
 		FileOutputStream fos = new FileOutputStream("fractal_multicolor.png");
 		Graphics.savePng(bi, fos);
 	}
@@ -38,7 +38,7 @@ public class GraphicsTest {
 		Basic inty = new Basic(vary);
 		inty.setSystemCallListener(new RamSystemCallListener(inty.getMachine()));
 		inty.run();
-		BufferedImage bi = Graphics.createImage(inty.getMachine(), 8192, true);
+		BufferedImage bi = Graphics.createImage(inty.getMachine(), 8192, true, true);
 		FileOutputStream fos = new FileOutputStream("fractal_multicolor2.png");
 		Graphics.savePng(bi, fos);
 	}
