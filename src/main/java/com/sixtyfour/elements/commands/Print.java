@@ -23,14 +23,14 @@ public class Print extends AbstractCommand {
 	protected List<PrintPart> parts = new ArrayList<PrintPart>();
 
 	/**
-	 * Instantiates a new prints the.
+	 * Instantiates print.
 	 */
 	public Print() {
 		super("PRINT");
 	}
 
 	/**
-	 * Instantiates a new prints the.
+	 * Instantiates print.
 	 * 
 	 * @param name
 	 *            the name
@@ -58,7 +58,7 @@ public class Print extends AbstractCommand {
 	@Override
 	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
 		super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine);
-		List<PrintPart> parts = getParts(linePart.substring(5));
+		List<PrintPart> parts = getParts(linePart.substring(linePart.startsWith("?") ? 1 : 5));
 		if (parts.size() == 0) {
 			PrintPart newLine = new PrintPart("\"\"", ' ');
 			parts.add(newLine);
@@ -166,7 +166,7 @@ public class Print extends AbstractCommand {
 				for (Function fun : funs) {
 					if (fun.isFunction(sub)) {
 						line = line.substring(0, i) + ";" + line.substring(i);
-						i+=fun.getName().length() + 1;
+						i += fun.getName().length() + 1;
 						break;
 					}
 				}
