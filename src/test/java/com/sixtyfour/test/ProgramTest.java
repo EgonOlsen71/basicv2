@@ -38,6 +38,14 @@ public class ProgramTest {
 		//testOtherPrime();
 		//testBio();
 		testIf();
+		testBuggedOn64();
+	}
+	
+	private static void testBuggedOn64() {
+		String[] vary = Loader.loadProgram("src/test/resources/basic/buggy64.bas");
+		Basic inty = new Basic(vary);
+		inty.run();
+		
 	}
 	
 	private static void testBio() {

@@ -18,7 +18,6 @@ public class PrintFile extends Print {
 	private Atom fileNumber = null;
 
 	/**
-	 * Instantiates a new prints the file.
 	 */
 	public PrintFile() {
 		super("PRINT#");

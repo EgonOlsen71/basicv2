@@ -28,6 +28,7 @@ public class CommandList {
 			add(new Return());
 			add(new PrintFile());
 			add(new Print());
+			add(new PrintShortcut());
 			add(new Dim());
 			add(new Rem());
 			add(new End());
