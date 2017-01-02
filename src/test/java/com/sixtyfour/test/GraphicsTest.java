@@ -13,6 +13,7 @@ public class GraphicsTest {
 		testFractal();
 		testFractalMulticolor();
 		testFractalMulticolor2();
+		testPlot();
 	}
 
 	private static void testFractal() throws Exception {
@@ -40,6 +41,16 @@ public class GraphicsTest {
 		inty.run();
 		BufferedImage bi = Graphics.createImage(inty.getMachine(), 8192, 1024, true, true);
 		FileOutputStream fos = new FileOutputStream("fractal_multicolor2.png");
+		Graphics.savePng(bi, fos);
+	}
+	
+	private static void testPlot() throws Exception {
+		String[] vary = Loader.loadProgram("src/test/resources/basic/plot.bas");
+		Basic inty = new Basic(vary);
+		inty.setSystemCallListener(new RamSystemCallListener(inty.getMachine()));
+		inty.run();
+		BufferedImage bi = Graphics.createImage(inty.getMachine(), 8192, 1024, false, true);
+		FileOutputStream fos = new FileOutputStream("plotted.png");
 		Graphics.savePng(bi, fos);
 	}
 }
