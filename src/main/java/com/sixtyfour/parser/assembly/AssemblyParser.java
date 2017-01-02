@@ -98,7 +98,7 @@ public class AssemblyParser
     int pos = linePart2.indexOf(" ");
     if (pos != -1)
     {
-      return new LabelAndCode(linePart.substring(0, pos), linePart.substring(pos + 1).trim());
+      return new LabelAndCode(linePart.substring(0, pos).replace(":", ""), linePart.substring(pos + 1).trim());
     }
     return null;
   }
@@ -136,10 +136,18 @@ public class AssemblyParser
         return cv.getValue();
       }
 
-      Integer labelAddr = lcon.get(number);
-      if (labelAddr != null)
+      if (number.contains("*"))
       {
-        return labelAddr;
+        number = number.replace("*", String.valueOf(addr));
+        return getConstantParsed("", number, ccon).getValue();
+      }
+      else
+      {
+        Integer labelAddr = lcon.get(number);
+        if (labelAddr != null)
+        {
+          return labelAddr;
+        }
       }
 
       // No constant and no label found...might be a delayed label...
@@ -147,6 +155,7 @@ public class AssemblyParser
       return addr;
 
     }
+
     return getValue(number);
   }
 

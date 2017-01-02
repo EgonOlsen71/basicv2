@@ -41,8 +41,27 @@ public class AssemblerTest
     testAssembler2();
     testCpuRun();
     testMath();
+    testSelfModify();
   }
 
+  private static void testSelfModify()
+  {
+    String[] code = Loader.loadProgram("src/test/resources/asm/selfmodify.asm");
+    Assembler asm = new Assembler(code);
+    asm.compile();
+    Machine machine = asm.getMachine();
+    int[] ram = machine.getRam();
+    
+    ram[0x2000]=0xff;
+    ram[0x2222]=0xfe;
+    ram[0x3567]=0xfa;
+    
+    asm.run();
+    System.out.println(ram[0x2000]+ram[0x2222]+ram[0x3567]);
+    
+    System.out.println(asm.toString());
+  }
+  
 
   private static void testMath()
   {
