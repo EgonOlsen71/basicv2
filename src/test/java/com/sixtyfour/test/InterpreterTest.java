@@ -31,8 +31,36 @@ public class InterpreterTest {
 		testIf();
 		testLogic();
 		testSys();
+		testRunStop();
 	}
 
+	private static void testRunStop() {
+		System.out.println("testRunStop");
+		String code = "10 goto 10";
+		final Basic inter = new Basic(code);
+		try {
+			new Thread() {
+				@Override
+				public void run() {
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					System.out.println("RUN/STOP called!");
+					inter.runStop();
+				}
+			}.start();
+			inter.run();
+			while (inter.isRunnning()) {
+				Thread.sleep(10);
+			}
+			System.out.println("testRunStop terminated!");
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+
+	}
 
 	/**
 	 * Test sys.
@@ -42,7 +70,6 @@ public class InterpreterTest {
 		String code = "10 a=64738\n20 sys 64738:sysa:sysa,12,\"hallo\", 4.4, a";
 		Basic inter = new Basic(code);
 		inter.run();
-
 	}
 
 	/**
