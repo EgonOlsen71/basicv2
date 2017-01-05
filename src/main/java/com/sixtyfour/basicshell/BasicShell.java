@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -54,15 +55,15 @@ public class BasicShell {
 	}
 
 	/**
-     * Returns length of the output string before the last one
-     * Needed by some input statements
-     * @return Lengh of penultimate output
-     */
-    int getPenultimateOutputSize ()
-    {
-        return lastStrLen[0];
-    }
-	
+	 * Returns length of the output string before the last one Needed by some
+	 * input statements
+	 * 
+	 * @return Lengh of penultimate output
+	 */
+	int getPenultimateOutputSize() {
+		return lastStrLen[0];
+	}
+
 	private BasicShell() {
 		setupUI();
 		mainTextArea.addKeyListener(new KeyAdapter() {
@@ -88,7 +89,7 @@ public class BasicShell {
 						String s = toTextArea.take();
 						mainTextArea.append(s);
 						mainTextArea.setCaretPosition(mainTextArea.getDocument().getLength());
-						if (runner!=null && runner.getOlsenBasic()!=null && runner.getOlsenBasic().isRunnning()) {
+						if (runner != null && runner.getOlsenBasic() != null && runner.getOlsenBasic().isRunnning()) {
 							Thread.sleep(1);
 						} else {
 							Thread.yield();
@@ -141,11 +142,12 @@ public class BasicShell {
 		mainTextArea.setDoubleBuffered(true);
 		mainTextArea.setFont(new Font(Font.MONOSPACED, Font.BOLD, 20));
 		mainTextArea.setForeground(new Color(0x6C5EB5));
-		mainTextArea.setCaretColor(new Color(0x6C5EB5));
+		mainTextArea.setCaretColor(new Color(0xffffff));
+		mainTextArea.setToolTipText("<html>Typ one of:<br>" + "- cls<br>- list<br>- run<br>- new<br>" + "- save[file]<br>- load[file]<br>- dir<br>"
+				+ "or edit your BASIC code here</html>");
 		final JScrollPane scrollPane1 = new JScrollPane(mainTextArea);
-		BlockCaret mc = new BlockCaret();
-        mainTextArea.setCaret(mc);
-		mc.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+		DefaultCaret caret = (DefaultCaret) mainTextArea.getCaret();
+		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 		panel1.add(scrollPane1, BorderLayout.CENTER);
 		panel1.setPreferredSize(new Dimension(800, 600));
 	}
@@ -194,13 +196,25 @@ public class BasicShell {
 	}
 
 	/**
+	 * 
+	 */
+	private void dir() {
+		File[] filesInFolder = new File(".").listFiles();
+		for (File fileEntry : filesInFolder) {
+			if (fileEntry.isFile()) {
+				putString(fileEntry.getName() + " -- " + fileEntry.length() + '\n');
+			}
+		}
+	}
+
+	/**
 	 * Command loop that runs in main thread
 	 */
 	private void commandLoop() {
 		ProgramStore store = new ProgramStore();
 		while (true) {
 			String s = getString();
-			String sl=s.toLowerCase();
+			String sl = s.toLowerCase();
 			if (sl.startsWith("load") || sl.startsWith("save")) {
 				s = s.replace("\"", " ").trim();
 			}
@@ -212,6 +226,8 @@ public class BasicShell {
 				store.clear();
 			} else if (s.equals("cls")) {
 				cls();
+			} else if (s.equals("dir")) {
+				dir();
 			} else if (s.equals("run")) {
 				runner = new Runner(store.toArray(), this);
 				runner.synchronousStart();
@@ -222,7 +238,9 @@ public class BasicShell {
 				String msg = store.load(split[1]);
 				putString(msg);
 			} else {
-				store.insert(s);
+				if (!store.insert(s)) {
+					putString("?Syntax Error.\n");
+				}
 			}
 		}
 	}
@@ -253,8 +271,8 @@ public class BasicShell {
 	public void putString(String outText) {
 		try {
 			toTextArea.put(outText);
-            lastStrLen[0] = lastStrLen[1];
-            lastStrLen[1] = outText.length();
+			lastStrLen[0] = lastStrLen[1];
+			lastStrLen[1] = outText.length();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

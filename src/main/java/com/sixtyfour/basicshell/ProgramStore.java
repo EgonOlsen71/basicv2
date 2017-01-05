@@ -79,7 +79,7 @@ public class ProgramStore {
 	}
 
 	@SuppressWarnings("unused")
-	public void insert(String s) {
+	public boolean insert(String s) {
 		try // Must begin with number
 		{
 			int num = getLineNumber(s);
@@ -91,7 +91,9 @@ public class ProgramStore {
 			}
 		} catch (NumberFormatException ex) {
 			System.err.println("oops");
+			return false;
 		}
+		return true;
 	}
 
 	public void clear() {
