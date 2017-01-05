@@ -181,7 +181,7 @@ public class ShellFrame {
 	private void commandLoop() {
 		ProgramStore store = new ProgramStore();
 		while (true) {
-			String s = getString();
+			String s = getString().replace("\"", " ").trim();
 			String[] split = s.split(" ");
 			s = s.toLowerCase();
 			if (s.equals("list")) {
