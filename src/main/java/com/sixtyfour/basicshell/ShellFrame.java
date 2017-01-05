@@ -94,7 +94,7 @@ public class ShellFrame {
 		final JPanel panel2 = new JPanel();
 		panel2.setLayout(new FlowLayout(FlowLayout.LEFT, 2, 2));
 		panel2.setBackground(Color.BLACK);
-		panel2.setPreferredSize(new Dimension(600, 34));
+		panel2.setPreferredSize(new Dimension(800, 34));
 		panel1.add(panel2, BorderLayout.SOUTH);
 		stopButton = new JButton();
 		stopButton.setText("Stop");
@@ -106,16 +106,17 @@ public class ShellFrame {
 		clsButton.setText("Cls");
 		panel2.add(clsButton);
 		mainTextArea = new JTextArea();
-		mainTextArea.setBackground(new Color(-12679937));
+		mainTextArea.setBackground(new Color(0x352879));
 		mainTextArea.setDoubleBuffered(true);
-		mainTextArea.setFont(new Font(Font.MONOSPACED, Font.BOLD, 16));
-		mainTextArea.setForeground(Color.YELLOW);
+		mainTextArea.setFont(new Font(Font.MONOSPACED, Font.BOLD, 20));
+		mainTextArea.setForeground(new Color(0x6C5EB5));
+		mainTextArea.setCaretColor(new Color(0xffffff));
 		// mainTextArea.setLineWrap(true);
 		final JScrollPane scrollPane1 = new JScrollPane(mainTextArea);
 		DefaultCaret caret = (DefaultCaret) mainTextArea.getCaret();
 		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 		panel1.add(scrollPane1, BorderLayout.CENTER);
-		panel1.setPreferredSize(new Dimension(600, 600));
+		panel1.setPreferredSize(new Dimension(800, 600));
 	}
 
 	/**
