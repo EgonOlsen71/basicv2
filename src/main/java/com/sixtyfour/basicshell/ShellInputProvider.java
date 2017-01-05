@@ -4,15 +4,15 @@ import com.sixtyfour.plugins.InputProvider;
 
 
 /**
- * Created by Administrator on 1/4/2017.
+ * @Author nietoperz809
  */
 public class ShellInputProvider
   implements InputProvider
 {
-  private ShellFrame shellFrame;
+  private BasicShell shellFrame;
 
 
-  public ShellInputProvider(ShellFrame shellFrame)
+  public ShellInputProvider(BasicShell shellFrame)
   {
     this.shellFrame = shellFrame;
   }

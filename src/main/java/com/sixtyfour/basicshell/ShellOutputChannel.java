@@ -3,13 +3,13 @@ package com.sixtyfour.basicshell;
 import com.sixtyfour.plugins.impl.ConsoleOutputChannel;
 
 /**
- * Created by Administrator on 1/4/2017.
+ * @Author nietoperz809
  */
 public class ShellOutputChannel extends ConsoleOutputChannel
 {
-    private ShellFrame shellFrame;
+    private BasicShell shellFrame;
 
-    public ShellOutputChannel (ShellFrame shellFrame)
+    public ShellOutputChannel (BasicShell shellFrame)
     {
         this.shellFrame = shellFrame;
     }

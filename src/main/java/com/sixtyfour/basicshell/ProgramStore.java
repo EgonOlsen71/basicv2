@@ -9,7 +9,9 @@ import java.util.TreeSet;
 import com.sixtyfour.Loader;
 
 /**
- * Created by Administrator on 1/4/2017.
+ * The storage for the edited program.
+ * 
+ * @Author nietoperz809
  */
 public class ProgramStore {
 	private final TreeSet<String> store = new TreeSet<>(new LineComparator());

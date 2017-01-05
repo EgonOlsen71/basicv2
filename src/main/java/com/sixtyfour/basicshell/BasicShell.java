@@ -25,9 +25,11 @@ import javax.swing.text.Utilities;
 import com.sixtyfour.Basic;
 
 /**
- * Created by Administrator on 1/3/2017.
+ * A simple shell for loading/editing and running BASIC programs.
+ * 
+ * @Author nietoperz809
  */
-public class ShellFrame {
+public class BasicShell {
 	static final ExecutorService executor = Executors.newFixedThreadPool(10);
 	private final ArrayBlockingQueue<String> fromTextArea = new ArrayBlockingQueue<>(20);
 	private final ArrayBlockingQueue<String> toTextArea = new ArrayBlockingQueue<>(20);
@@ -37,7 +39,20 @@ public class ShellFrame {
 	private JButton clsButton;
 	private Runner runner = null;
 
-	private ShellFrame() {
+	/**
+	 * Main thread entry point
+	 */
+	public static void main(String[] unused) {
+		JFrame frame = new JFrame("BasicShell");
+		BasicShell shellFrame = new BasicShell();
+		frame.setContentPane(shellFrame.panel1);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.pack();
+		frame.setVisible(true);
+		shellFrame.commandLoop();
+	}
+
+	private BasicShell() {
 		setupUI();
 		mainTextArea.addKeyListener(new KeyAdapter() {
 			@Override
@@ -160,19 +175,6 @@ public class ShellFrame {
 	 */
 	private void cls() {
 		mainTextArea.setText("");
-	}
-
-	/**
-	 * Main thread entry point
-	 */
-	public static void main(String[] unused) {
-		JFrame frame = new JFrame("ShellFrame");
-		ShellFrame shellFrame = new ShellFrame();
-		frame.setContentPane(shellFrame.panel1);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.pack();
-		frame.setVisible(true);
-		shellFrame.commandLoop();
 	}
 
 	/**
