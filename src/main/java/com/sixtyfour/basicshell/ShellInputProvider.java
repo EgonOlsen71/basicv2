@@ -14,8 +14,12 @@ public class ShellInputProvider implements InputProvider {
 
 	@Override
 	public Character readKey() {
-		if (shellFrame.peek() && shellFrame.getString().length() > 0)
-			return shellFrame.getString().charAt(0);
+		if (shellFrame.peek()) {
+			String s = shellFrame.getString();
+			if (s.length() > 0) {
+				return s.charAt(0);
+			}
+		}
 		return null;
 	}
 
