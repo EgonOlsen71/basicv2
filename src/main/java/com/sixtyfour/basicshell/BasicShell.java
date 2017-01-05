@@ -77,6 +77,11 @@ public class BasicShell {
 						String s = toTextArea.take();
 						mainTextArea.append(s);
 						mainTextArea.setCaretPosition(mainTextArea.getDocument().getLength());
+						if (runner.getOlsenBasic().isRunnning()) {
+							Thread.sleep(1);
+						} else {
+							Thread.yield();
+						}
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -183,9 +188,12 @@ public class BasicShell {
 	private void commandLoop() {
 		ProgramStore store = new ProgramStore();
 		while (true) {
-			String s = getString().replace("\"", " ").trim();
-			String[] split = s.split(" ");
+			String s = getString();
 			s = s.toLowerCase();
+			if (s.startsWith("load") || s.startsWith("save")) {
+				s = s.replace("\"", " ").trim();
+			}
+			String[] split = s.split(" ");
 			if (s.equals("list")) {
 				putString(store.toString());
 			} else if (s.equals("new")) {
