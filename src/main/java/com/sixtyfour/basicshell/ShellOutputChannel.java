@@ -3,7 +3,7 @@ package com.sixtyfour.basicshell;
 import com.sixtyfour.plugins.impl.ConsoleOutputChannel;
 
 /**
- * @Author nietoperz809
+ * @author nietoperz809
  */
 public class ShellOutputChannel extends ConsoleOutputChannel
 {

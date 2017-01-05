@@ -3,7 +3,7 @@ package com.sixtyfour.basicshell;
 import com.sixtyfour.plugins.InputProvider;
 
 /**
- * @Author nietoperz809
+ * @author nietoperz809
  */
 public class ShellInputProvider implements InputProvider {
 	private BasicShell shellFrame;
@@ -25,8 +25,7 @@ public class ShellInputProvider implements InputProvider {
 
 	@Override
 	public String readString() {
-		String s = shellFrame.getString();
-		s = s.substring(s.indexOf('?') + 1);
-		return s;
+		 int l = shellFrame.getPenultimateOutputSize();
+	     return shellFrame.getString().substring(l+1);
 	}
 }

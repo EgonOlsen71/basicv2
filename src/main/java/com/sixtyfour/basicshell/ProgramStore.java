@@ -11,7 +11,7 @@ import com.sixtyfour.Loader;
 /**
  * The storage for the edited program.
  * 
- * @Author nietoperz809
+ * @author nietoperz809
  */
 public class ProgramStore {
 	private final TreeSet<String> store = new TreeSet<>(new LineComparator());

@@ -7,7 +7,7 @@ import com.sixtyfour.Basic;
 /**
  * Runs the program that's inside the editor.
  * 
- * @Author nietoperz809
+ * @author nietoperz809
  */
 public class Runner implements Runnable {
 	private final Basic olsenBasic;

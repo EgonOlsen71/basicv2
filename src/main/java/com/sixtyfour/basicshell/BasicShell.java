@@ -27,7 +27,7 @@ import com.sixtyfour.Basic;
 /**
  * A simple shell for loading/editing and running BASIC programs.
  * 
- * @Author nietoperz809
+ * @author nietoperz809
  */
 public class BasicShell {
 	static final ExecutorService executor = Executors.newFixedThreadPool(10);
@@ -38,6 +38,7 @@ public class BasicShell {
 	private JButton stopButton;
 	private JButton clsButton;
 	private Runner runner = null;
+	private int[] lastStrLen = new int[2]; // Length of last output chunk
 
 	/**
 	 * Main thread entry point
@@ -52,6 +53,16 @@ public class BasicShell {
 		shellFrame.commandLoop();
 	}
 
+	/**
+     * Returns length of the output string before the last one
+     * Needed by some input statements
+     * @return Lengh of penultimate output
+     */
+    int getPenultimateOutputSize ()
+    {
+        return lastStrLen[0];
+    }
+	
 	private BasicShell() {
 		setupUI();
 		mainTextArea.addKeyListener(new KeyAdapter() {
@@ -130,11 +141,11 @@ public class BasicShell {
 		mainTextArea.setDoubleBuffered(true);
 		mainTextArea.setFont(new Font(Font.MONOSPACED, Font.BOLD, 20));
 		mainTextArea.setForeground(new Color(0x6C5EB5));
-		mainTextArea.setCaretColor(new Color(0xffffff));
-		// mainTextArea.setLineWrap(true);
+		mainTextArea.setCaretColor(new Color(0x6C5EB5));
 		final JScrollPane scrollPane1 = new JScrollPane(mainTextArea);
-		DefaultCaret caret = (DefaultCaret) mainTextArea.getCaret();
-		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+		BlockCaret mc = new BlockCaret();
+        mainTextArea.setCaret(mc);
+		mc.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 		panel1.add(scrollPane1, BorderLayout.CENTER);
 		panel1.setPreferredSize(new Dimension(800, 600));
 	}
@@ -239,9 +250,11 @@ public class BasicShell {
 	 * 
 	 * @param s
 	 */
-	public void putString(String s) {
+	public void putString(String outText) {
 		try {
-			toTextArea.put(s);
+			toTextArea.put(outText);
+            lastStrLen[0] = lastStrLen[1];
+            lastStrLen[1] = outText.length();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
