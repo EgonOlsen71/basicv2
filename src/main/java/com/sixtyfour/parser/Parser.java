@@ -577,7 +577,7 @@ public class Parser {
 	 * @return the resulting term
 	 */
 	private static String handleSigns(String term) {
-		//System.out.println("Start: "+term);
+		//System.out.println("Start: " + term);
 		term = removeWhiteSpace(term);
 		StringBuilder sb = new StringBuilder();
 		boolean inString = false;
@@ -594,7 +594,7 @@ public class Parser {
 				sb.setLength(0);
 			} else {
 				if (!inString && c == '+' && wasOp) {
-					int end = findEndOfNegation(term, i);
+					int end = findEndOfNegation(term, i, false);
 					if (end == i + 1) {
 						throw new RuntimeException("Syntax error: " + term);
 					}
@@ -606,12 +606,12 @@ public class Parser {
 
 			wasOp = Operator.isOperator(c) || c == '(';
 		}
-		//System.out.println("Result: "+term);
+		//System.out.println("Result: " + term);
 		return term;
 	}
 
 	private static void wrapSign(String term, StringBuilder sb, int i, String sign) {
-		int end = findEndOfNegation(term, i);
+		int end = findEndOfNegation(term, i, true);
 		if (end == i + 1) {
 			throw new RuntimeException("Syntax error: " + term);
 		}
@@ -778,15 +778,21 @@ public class Parser {
 		return term.length();
 	}
 
-	private static int findEndOfNegation(String term, int pos) {
+	private static int findEndOfNegation(String term, int pos, boolean negative) {
 		int brackets = 0;
+		boolean rowOfOps = true;
 		for (int i = pos + 1; i < term.length(); i++) {
 			char c = term.charAt(i);
 			if (c == ',') {
 				return i;
 			}
 
-			if (brackets == 0 && c == ')') {
+			boolean opi = Operator.isOperator(c);
+			if (!opi && negative) {
+				rowOfOps = false;
+			}
+
+			if (brackets == 0 && ((opi && !rowOfOps) || c == ')')) {
 				return i;
 			}
 			if (c == '(') {
