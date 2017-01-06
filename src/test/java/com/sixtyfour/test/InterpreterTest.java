@@ -52,7 +52,7 @@ public class InterpreterTest {
 				}
 			}.start();
 			inter.run();
-			while (inter.isRunnning()) {
+			while (inter.isRunning()) {
 				Thread.sleep(10);
 			}
 			System.out.println("testRunStop terminated!");

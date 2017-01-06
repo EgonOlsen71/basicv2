@@ -15,6 +15,7 @@ public class Runner
 {
   private final Basic olsenBasic;
   private boolean running;
+  private Basic runningBasic = null;
 
 
   public Runner(String[] program, BasicShell shellFrame)
@@ -55,9 +56,13 @@ public class Runner
       @Override
       public void run()
       {
+        running = true;
         Basic imm = new Basic("0" + command, olsenBasic.getMachine());
+        runningBasic = imm;
         imm.compile(false);
         imm.start();
+        running = false;
+        runningBasic = null;
       }
     });
     try
@@ -83,11 +88,19 @@ public class Runner
   }
 
 
+  public Basic getRunningBasic()
+  {
+    return runningBasic;
+  }
+
+
   @Override
   public void run()
   {
     running = true;
+    runningBasic = olsenBasic;
     olsenBasic.run();
     running = false;
+    runningBasic = null;
   }
 }

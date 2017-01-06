@@ -124,7 +124,7 @@ public class BasicShell
             String s = toTextArea.take();
             mainTextArea.append(s);
             mainTextArea.setCaretPosition(mainTextArea.getDocument().getLength());
-            if (runner != null && runner.getOlsenBasic() != null && runner.getOlsenBasic().isRunnning())
+            if (runner != null && runner.getRunningBasic() != null && runner.getRunningBasic().isRunning())
             {
               Thread.sleep(1);
             }
@@ -147,8 +147,11 @@ public class BasicShell
       {
         if (runner != null)
         {
-          Basic i = runner.getOlsenBasic();
-          i.runStop();
+          Basic i = runner.getRunningBasic();
+          if (i != null)
+          {
+            i.runStop();
+          }
         }
       }
     });

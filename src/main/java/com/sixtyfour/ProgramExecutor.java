@@ -59,5 +59,5 @@ public interface ProgramExecutor {
 	 * @return is it?
 	 */
 
-	boolean isRunnning();
+	boolean isRunning();
 }

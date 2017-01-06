@@ -689,7 +689,7 @@ public class Basic
 
 
   @Override
-  public boolean isRunnning()
+  public boolean isRunning()
   {
     return running;
   }
