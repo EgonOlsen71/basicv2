@@ -127,7 +127,7 @@ public class Print extends AbstractCommand {
 					toPrint = " " + toPrint;
 				}
 			}
-			
+
 			if (("\n").equals(add)) {
 				consumer.println(printId, toPrint);
 			} else {
@@ -184,7 +184,7 @@ public class Print extends AbstractCommand {
 					// "blah"a"blah")...and that's not
 					// some function call
 					String part = sb.toString();
-					if (!part.endsWith("(")) {
+					if (!part.endsWith("(") && (part.length() > 0 && !Operator.isOperator(part.charAt(part.length() - 1)))) {
 						sb.setLength(0);
 						PrintPart pp = new PrintPart(part, ' ');
 						res.add(pp);

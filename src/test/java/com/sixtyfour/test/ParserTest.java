@@ -168,7 +168,7 @@ public class ParserTest {
 	 */
 	private static void testTermCompletion() {
 		System.out.println("testTermCompletion");
-		String term = "a + b * c + d";
+		String term = "a ++++++ b + c *-- d";
 		String res = Parser.addBrackets(term);
 		System.out.println(term + " is actually " + res);
 		term = "a * b + c * d * -2";

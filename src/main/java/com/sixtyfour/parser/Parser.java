@@ -437,7 +437,7 @@ public class Parser {
 			term = "(" + term + ")";
 		}
 		term = term.replace('↑', '^');
-		return addBrackets(addBrackets(handleNegations(replaceLogicOperators(term)), 0), 1);
+		return addBrackets(addBrackets(handleSigns(replaceLogicOperators(term)), 0), 1);
 	}
 
 	/**
@@ -569,37 +569,53 @@ public class Parser {
 
 	/**
 	 * Handles negations by adding an additional -1* in front of the negated
-	 * element.
+	 * element. The same applies to terms like ++2, by adding an additional 1*
+	 * in front.
 	 * 
 	 * @param term
 	 *            the term
 	 * @return the resulting term
 	 */
-	private static String handleNegations(String term) {
+	private static String handleSigns(String term) {
+		//System.out.println("Start: "+term);
 		term = removeWhiteSpace(term);
 		StringBuilder sb = new StringBuilder();
 		boolean inString = false;
 		boolean wasOp = true;
-		wasOp = true;
 		for (int i = 0; i < term.length(); i++) {
 			char c = term.charAt(i);
 			if (c == '\"') {
 				inString = !inString;
 			}
 			if (!inString && c == '-' && wasOp) {
-				int end = findEnd(term, i);
-				if (end == i + 1) {
-					throw new RuntimeException("Syntax error: " + term);
-				}
-				sb.append(term.substring(0, i)).append("(-1*").append(term.substring(i + 1, end)).append(")").append(term.substring(end));
-				i = i + 1;
+				wrapSign(term, sb, i, "-1");
+				i++;
 				term = sb.toString();
 				sb.setLength(0);
+			} else {
+				if (!inString && c == '+' && wasOp) {
+					int end = findEndOfNegation(term, i);
+					if (end == i + 1) {
+						throw new RuntimeException("Syntax error: " + term);
+					}
+					sb.append(term.substring(0, i)).append("(").append(term.substring(i + 1, end)).append(")").append(term.substring(end));
+					term = sb.toString();
+					sb.setLength(0);
+				}
 			}
 
 			wasOp = Operator.isOperator(c) || c == '(';
 		}
+		//System.out.println("Result: "+term);
 		return term;
+	}
+
+	private static void wrapSign(String term, StringBuilder sb, int i, String sign) {
+		int end = findEndOfNegation(term, i);
+		if (end == i + 1) {
+			throw new RuntimeException("Syntax error: " + term);
+		}
+		sb.append(term.substring(0, i)).append("(" + sign + "*").append(term.substring(i + 1, end)).append(")").append(term.substring(end));
 	}
 
 	/**
@@ -751,6 +767,26 @@ public class Parser {
 			}
 
 			if (brackets == 0 && (Operator.isOperator(c) || c == ')')) {
+				return i;
+			}
+			if (c == '(') {
+				brackets++;
+			} else if (c == ')' && brackets > 0) {
+				brackets--;
+			}
+		}
+		return term.length();
+	}
+
+	private static int findEndOfNegation(String term, int pos) {
+		int brackets = 0;
+		for (int i = pos + 1; i < term.length(); i++) {
+			char c = term.charAt(i);
+			if (c == ',') {
+				return i;
+			}
+
+			if (brackets == 0 && c == ')') {
 				return i;
 			}
 			if (c == '(') {
@@ -1139,10 +1175,6 @@ public class Parser {
 				Atom fl = new Constant<Float>(Float.valueOf(part));
 				return fl;
 			} else {
-				if (part.length() == 0) {
-					// Handles stuff like a=+5 or a=+a
-					part = "0";
-				}
 				Atom in = new Constant<Integer>(Integer.valueOf(part));
 				return in;
 			}
@@ -1202,7 +1234,7 @@ public class Parser {
 	 *            the term
 	 * @return the cleaned up term
 	 */
-	private static String cleanStringConcats(String line) {
+	public static String cleanStringConcats(String line) {
 		if (!line.contains("\"") && !line.contains("$")) {
 			return line;
 		}
