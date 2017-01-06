@@ -32,8 +32,19 @@ public class InterpreterTest {
 		testLogic();
 		testSys();
 		testRunStop();
+		testStrings();
 	}
 
+	/**
+	 * Test Strings.
+	 */
+	private static void testStrings() {
+		System.out.println("testStrings");
+		String code = "10b$=\"iii\"+++\"kkkk\":a$=+++\"kkk +++\"+++\"opopo\"+\"ooooo\"++++b$:printa$:printa$++++\"uuuuuu\"";
+		Basic inter = new Basic(code);
+		inter.run();
+	}
+	
 	private static void testRunStop() {
 		System.out.println("testRunStop");
 		String code = "10 goto 10";

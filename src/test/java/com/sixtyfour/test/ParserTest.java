@@ -201,6 +201,9 @@ public class ParserTest {
 		term = "\"ha a*b*c+d llo \"+\"welt!\"";
 		res = Parser.addBrackets(term);
 		System.out.println(term + " is actually " + res);
+		term = "+++++++\"ha a*b*c+d llo \"+++++++\"welt!\"";
+		res = Parser.addBrackets(term);
+		System.out.println(term + " is actually " + res);
 	}
 
 	/**
