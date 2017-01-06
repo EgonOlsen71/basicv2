@@ -117,6 +117,7 @@ public class BasicShell
       @Override
       public void run()
       {
+        int cnt = 0;
         while (true)
         {
           try
@@ -126,12 +127,12 @@ public class BasicShell
             mainTextArea.setCaretPosition(mainTextArea.getDocument().getLength());
             if (runner != null && runner.getRunningBasic() != null && runner.getRunningBasic().isRunning())
             {
-              Thread.sleep(1);
+              if ((cnt++) % 1000 == 0)
+              {
+                Thread.sleep(1);
+              }
             }
-            else
-            {
-              Thread.yield();
-            }
+            Thread.yield();
           }
           catch (InterruptedException e)
           {
