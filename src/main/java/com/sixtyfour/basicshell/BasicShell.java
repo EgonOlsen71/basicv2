@@ -101,11 +101,11 @@ public class BasicShell
         {
           try
           {
-              fromTextArea.put(getLineAt(lineNum - 1));
+            fromTextArea.put(getLineAt(lineNum - 1));
           }
           catch (InterruptedException e1)
           {
-              e1.printStackTrace();
+            e1.printStackTrace();
           }
         }
         super.keyReleased(e);
@@ -303,7 +303,19 @@ public class BasicShell
       {
         if (!store.insert(s))
         {
-          putString("?SYNTAX ERROR\n");
+          if (runner == null)
+          {
+            runner = new Runner(new String[] {}, this);
+          }
+          try
+          {
+
+            runner.executeDirectCommand(s);
+          }
+          catch (Throwable t)
+          {
+            putString("?ERROR\n");
+          }
         }
       }
     }

@@ -121,7 +121,6 @@ public class ProgramStore
       }
       catch (NumberFormatException ex)
       {
-        System.err.println("oops");
         return false;
       }
     }
