@@ -267,7 +267,7 @@ public class Basic
     {
       try
       {
-        line = line.replaceFirst("\\s+", "");
+        line = line.replaceAll("^\\s+", "");
         if (line.isEmpty())
         {
           continue;

@@ -201,7 +201,7 @@ public class InterpreterTest {
 	 */
 	private static void testPrint() {
 		System.out.println("testPrint");
-		String code = "10 a=45:a$=\"horse\"\n20 print\"hello world and \"+a$:print a;\"oo\"a$SPC(10)a$:print a+23*a+2\n";
+		String code = "10 print\"h a\":a=45:a$=\"horse\"\n20 print\"hello world and \"+a$:print a;\"oo\"a$SPC(10)a$:print a+23*a+2\n";
 		Basic inter = new Basic(code);
 		inter.compile();
 		inter.run();

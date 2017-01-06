@@ -271,24 +271,23 @@ public class BasicShell
         s = s.replace("\"", " ").trim();
       }
       String[] split = s.split(" ");
-      s = s.toLowerCase();
-      if (s.equals("list"))
+      if (sl.equals("list"))
       {
         putString(store.toString());
       }
-      else if (s.equals("new"))
+      else if (sl.equals("new"))
       {
         store.clear();
       }
-      else if (s.equals("cls"))
+      else if (sl.equals("cls"))
       {
         cls();
       }
-      else if (s.equals("dir"))
+      else if (sl.equals("dir"))
       {
         dir();
       }
-      else if (s.equals("run"))
+      else if (sl.equals("run"))
       {
         runner = new Runner(store.toArray(), this);
         runner.synchronousStart();
@@ -313,7 +312,6 @@ public class BasicShell
           }
           try
           {
-
             runner.executeDirectCommand(s);
           }
           catch (Throwable t)

@@ -127,6 +127,7 @@ public class Print extends AbstractCommand {
 					toPrint = " " + toPrint;
 				}
 			}
+			
 			if (("\n").equals(add)) {
 				consumer.println(printId, toPrint);
 			} else {
