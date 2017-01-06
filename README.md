@@ -15,4 +15,6 @@ dependencies to any other Java libraries. It's a stand-alone thing.
 It can run BASIC programs from inside your application or from the command line. 
 You can even use it to process HTML-templates as it comes with a basic templating implementation.
 
+Thanks to nietoperz809's efforts, there's a simple BASIC shell/editor available as well (see basicshell-package) that lets you load/save/edit/run BASIC programs in a C64-like editor.
+
 
