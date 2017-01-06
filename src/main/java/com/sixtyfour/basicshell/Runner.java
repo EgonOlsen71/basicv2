@@ -48,11 +48,26 @@ public class Runner
    * @param command
    *          the command the execute
    */
-  public void executeDirectCommand(String command)
+  public void executeDirectCommand(final String command)
   {
-    Basic imm = new Basic("0" + command, olsenBasic.getMachine());
-    imm.compile(false);
-    imm.start();
+    Future<?> f = BasicShell.executor.submit(new Runnable()
+    {
+      @Override
+      public void run()
+      {
+        Basic imm = new Basic("0" + command, olsenBasic.getMachine());
+        imm.compile(false);
+        imm.start();
+      }
+    });
+    try
+    {
+      f.get();
+    }
+    catch (Exception e)
+    {
+      e.printStackTrace();
+    }
   }
 
 
