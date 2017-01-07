@@ -17,6 +17,14 @@ public class NullMemoryListener implements MemoryListener {
 		// No nothing
 	}
 
+	/* (non-Javadoc)
+	 * @see com.sixtyfour.plugins.MemoryListener#peek(int)
+	 */
+	@Override
+	public Integer peek(int addr) {
+		return null;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

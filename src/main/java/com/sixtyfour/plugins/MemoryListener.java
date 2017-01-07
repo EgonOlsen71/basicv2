@@ -16,6 +16,16 @@ public interface MemoryListener {
 	void poke(int addr, int value);
 
 	/**
+	 * PEEK has been called.
+	 * 
+	 * @param addr
+	 *            the address to peek into
+	 * @return an optional return value that override the value peeked from
+	 *         memory. If null, the value in memory will be used instead.
+	 */
+	Integer peek(int addr);
+
+	/**
 	 * WAIT has been called.
 	 * 
 	 * @param address
@@ -23,7 +33,7 @@ public interface MemoryListener {
 	 * @param value
 	 *            the value with which the memory's content will be ANDed
 	 * @param inverse
-	 *             the value with which the memory's content will be EORed
+	 *            the value with which the memory's content will be EORed
 	 * @return true, if the conditions are met. False otherwise.
 	 */
 	boolean wait(int addr, int value, int inverse);
