@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -16,13 +15,15 @@ import java.util.concurrent.Executors;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.text.BadLocationException;
-import javax.swing.text.DefaultCaret;
 
 import com.sixtyfour.Basic;
 
@@ -39,21 +40,39 @@ public class BasicShell {
 	private JPanel panel1;
 	private JButton stopButton;
 	private JButton clsButton;
+	private JButton runButton;
 	private Runner runner = null;
+	private ProgramStore store = new ProgramStore();
 	private int[] lastStrLen = new int[2]; // Length of last output chunk
-	private int lineNum; // line number set by caret listener
+	private int rowNum; // line number set by caret listener
+	private int colNum; // column number "
+	private JLabel caretLabel;
 
 	/**
 	 * Main thread entry point
 	 */
 	public static void main(String[] unused) {
-		System.setProperty("sun.java2d.d3d", "false"); // To make it work on my Radeon HD 290X...;-)
-		JFrame frame = new JFrame("BasicShell");
+		System.setProperty("sun.java2d.d3d", "false"); // To make it work on my
+														// Radeon HD 290X...;-)
+		JFrame frame = new JFrame("Commodore BASIC V2");
+		frame.setIconImage(ResourceLoader.getIcon());
 		BasicShell shellFrame = new BasicShell();
 		frame.setContentPane(shellFrame.panel1);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		frame.pack();
 		frame.setVisible(true);
+		shellFrame.putString("COMMODORE BASIC V2\n" + ProgramStore.OK);
+
+		try // increase GUI responsiveness
+		{
+			SwingUtilities.invokeAndWait(new Runnable() {
+				public void run() {
+					Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
+				}
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		shellFrame.commandLoop();
 	}
 
@@ -75,7 +94,9 @@ public class BasicShell {
 				JTextArea editArea = (JTextArea) e.getSource();
 				try {
 					int caretpos = editArea.getCaretPosition();
-					lineNum = editArea.getLineOfOffset(caretpos);
+					rowNum = editArea.getLineOfOffset(caretpos);
+					colNum = caretpos - editArea.getLineStartOffset(rowNum);
+					caretLabel.setText("  " + rowNum + " - " + colNum);
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}
@@ -86,7 +107,7 @@ public class BasicShell {
 			public void keyReleased(KeyEvent e) {
 				if (e.getKeyChar() == '\n') {
 					try {
-						fromTextArea.put(getLineAt(lineNum - 1));
+						fromTextArea.put(getLineAt(rowNum - 1));
 					} catch (InterruptedException e1) {
 						e1.printStackTrace();
 					}
@@ -110,6 +131,11 @@ public class BasicShell {
 							}
 						}
 						Thread.yield();
+
+						if (mainTextArea.getText().length() > 100000) {
+							mainTextArea.setText(mainTextArea.getText().substring(mainTextArea.getText().length() - 70000));
+						}
+
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -133,6 +159,13 @@ public class BasicShell {
 				cls();
 			}
 		});
+
+		runButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				run(false);
+			}
+		});
 	}
 
 	/**
@@ -147,30 +180,25 @@ public class BasicShell {
 		panel2.setPreferredSize(new Dimension(800, 34));
 		panel1.add(panel2, BorderLayout.SOUTH);
 		stopButton = new JButton();
-		stopButton.setText("Stop");
+		stopButton.setText("STOP");
 		stopButton.setPreferredSize(new Dimension(82, 30));
-		stopButton.setText("Stop");
 		panel2.add(stopButton);
 		clsButton = new JButton();
 		clsButton.setPreferredSize(new Dimension(82, 30));
-		clsButton.setText("Cls");
+		clsButton.setText("CLS");
 		panel2.add(clsButton);
-		mainTextArea = new JTextArea();
-		mainTextArea.setBackground(new Color(0x3E31A2));
-		mainTextArea.setDoubleBuffered(true);
-		mainTextArea.setFont(new Font(Font.MONOSPACED, Font.BOLD, 20));
-		mainTextArea.setForeground(new Color(0x7C70DA));
+		runButton = new JButton();
+		runButton.setPreferredSize(new Dimension(82, 30));
+		runButton.setText("RUN");
+		panel2.add(runButton);
+		caretLabel = new JLabel();
+		caretLabel.setPreferredSize(new Dimension(82, 30));
+		caretLabel.setForeground(Color.pink);
+		panel2.add(caretLabel);
+		mainTextArea = new ShellTextComponent(this);
 		mainTextArea.setCaretColor(new Color(0x7C70DA));
-		mainTextArea.setToolTipText("<html>Typ one of:<br>" + "- cls<br>- list<br>- run<br>- new<br>" + "- save[file]<br>- load[file]<br>- dir<br>"
-				+ "or edit your BASIC code here</html>");
 		final JScrollPane scrollPane1 = new JScrollPane(mainTextArea);
 
-		BlockCaret mc = new BlockCaret();
-		mainTextArea.setCaret(mc);
-		mc.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
-
-		// DefaultCaret caret = (DefaultCaret) mainTextArea.getCaret();
-		// caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 		panel1.add(scrollPane1, BorderLayout.CENTER);
 		panel1.setPreferredSize(new Dimension(800, 600));
 	}
@@ -199,6 +227,11 @@ public class BasicShell {
 		mainTextArea.setText("");
 	}
 
+	private void run(boolean sync) {
+		runner = new Runner(store.toArray(), this);
+		runner.start(sync);
+	}
+
 	/**
    * 
    */
@@ -212,10 +245,31 @@ public class BasicShell {
 	}
 
 	/**
+	 * Send text to text area. Blocks thd caller if buffer is full
+	 * 
+	 * @param outText
+	 */
+	public void putString(String outText) {
+		try {
+			toTextArea.put(outText);
+			lastStrLen[0] = lastStrLen[1];
+			lastStrLen[1] = outText.length();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * @param outText
+	 */
+	public void putStringUCase(String outText) {
+		putString(outText.toUpperCase());
+	}
+
+	/**
 	 * Command loop that runs in main thread
 	 */
 	private void commandLoop() {
-		ProgramStore store = new ProgramStore();
 		while (true) {
 			String s = getString();
 			String sl = s.toLowerCase();
@@ -255,6 +309,10 @@ public class BasicShell {
 		}
 	}
 
+	public ProgramStore getStore() {
+		return store;
+	}
+
 	/**
 	 * Get input from text area. Blocks the caller if there is none
 	 * 
@@ -271,20 +329,5 @@ public class BasicShell {
 
 	public boolean peek() {
 		return fromTextArea.peek() != null;
-	}
-
-	/**
-	 * Send text to text area. Blocks thd caller if buffer is full
-	 * 
-	 * @param s
-	 */
-	public void putString(String outText) {
-		try {
-			toTextArea.put(outText);
-			lastStrLen[0] = lastStrLen[1];
-			lastStrLen[1] = outText.length();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
 	}
 }

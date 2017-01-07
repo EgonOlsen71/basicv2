@@ -14,6 +14,8 @@ import javax.swing.text.JTextComponent;
 
 /**
  * Code based on Groovy text editor ... groovy-console/src/main/groovy/groovy/ui/text/TextEditor.java
+ * 
+ * @author nietoperz809
  */
 
 public class BlockCaret
