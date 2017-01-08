@@ -28,4 +28,24 @@ public interface PrintConsumer {
 	 */
 	void println(int id, String txt);
 
+	/**
+	 * Prints a system message without a line break.
+	 * 
+	 * @param id
+	 *            a channel id
+	 * @param txt
+	 *            the text
+	 */
+	void systemPrint(int id, String txt);
+
+	/**
+	 * Prints a system message followed by a line break.
+	 * 
+	 * @param id
+	 *            a channel id
+	 * @param txt
+	 *            the text
+	 */
+	void systemPrintln(int id, String txt);
+
 }

@@ -99,4 +99,26 @@ public class ConsoleOutputChannel implements OutputChannel {
 		return channel;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.sixtyfour.plugins.PrintConsumer#systemPrint(int,
+	 * java.lang.String)
+	 */
+	@Override
+	public void systemPrint(int id, String txt) {
+		this.print(id, txt != null ? txt.toUpperCase() : "");
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.sixtyfour.plugins.PrintConsumer#systemPrintln(int,
+	 * java.lang.String)
+	 */
+	@Override
+	public void systemPrintln(int id, String txt) {
+		this.println(id, txt != null ? txt.toUpperCase() : "");
+	}
+
 }

@@ -68,7 +68,7 @@ public abstract class MultiVariableCommand extends AbstractCommand {
 			input = '0';
 		}
 		if (checkColon && input == ':') {
-			machine.getOutputChannel().println(0, "?Extra ignored:" + this);
+			machine.getOutputChannel().systemPrintln(0, "?Extra ignored:" + this);
 			input = '0';
 		}
 		if (input < '0' || input > '9') {

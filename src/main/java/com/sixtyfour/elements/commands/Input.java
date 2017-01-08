@@ -139,7 +139,7 @@ public class Input extends MultiVariableCommand {
 						var.setValue(Integer.valueOf(input), pis);
 					}
 				} catch (NumberFormatException nfe) {
-					out.println(0, "?Redo from start");
+					out.systemPrintln(0, "?Redo from start");
 					queue.clear();
 					i = -1;
 				}
@@ -156,7 +156,7 @@ public class Input extends MultiVariableCommand {
 								Integer num = Integer.valueOf(input);
 								var.setValue(num);
 							} catch (NumberFormatException nfe) {
-								out.println(0, "?Redo from start");
+								out.systemPrintln(0, "?Redo from start");
 								queue.clear();
 								i = -1;
 							}
@@ -165,7 +165,7 @@ public class Input extends MultiVariableCommand {
 								Float num = Float.valueOf(input);
 								var.setValue(num);
 							} catch (NumberFormatException nfe) {
-								out.println(0, "?Redo from start");
+								out.systemPrintln(0, "?Redo from start");
 								queue.clear();
 								i = -1;
 							}
