@@ -6,8 +6,10 @@ import com.sixtyfour.system.BasicProgramCounter;
 import com.sixtyfour.system.Machine;
 
 /**
- * @author EgonOlsen
+ * Delay is an internal command that is used to execute busy wait loops similar
+ * to the timing that a real C64 would have.
  * 
+ * @author EgonOlsen
  */
 public class Delay extends AbstractCommand {
 
