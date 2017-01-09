@@ -4,7 +4,7 @@ package com.sixtyfour;
  * Enumeration for the different ways in which the BASIC compiler can deal with
  * simple busy wait loops like: FOR I=0TO1000:NEXTI
  * 
- * * @author EgonOlsen
+ * @author EgonOlsen
  */
 public enum LoopMode {
 
