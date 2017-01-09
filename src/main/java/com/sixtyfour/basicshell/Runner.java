@@ -3,7 +3,6 @@ package com.sixtyfour.basicshell;
 import java.util.concurrent.Future;
 
 import com.sixtyfour.Basic;
-import com.sixtyfour.LoopMode;
 
 
 /**
