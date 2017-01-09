@@ -58,13 +58,16 @@ public class DelayTracer
 
     long waitTime = (1000L * 1000000L / commandsPerSecond) - (ticks - lastTicks);
     waitTime /= 1000000L;
-    try
+    if (waitTime > 0)
     {
-      Thread.sleep(waitTime);
-    }
-    catch (Exception e)
-    {
-      //
+      try
+      {
+        Thread.sleep(waitTime);
+      }
+      catch (Exception e)
+      {
+        //
+      }
     }
 
     lastTicks = System.nanoTime();
