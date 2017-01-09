@@ -1,6 +1,9 @@
 package com.sixtyfour;
 
 import com.sixtyfour.elements.commands.Command;
+import com.sixtyfour.elements.commands.Get;
+import com.sixtyfour.elements.commands.Input;
+import com.sixtyfour.elements.commands.Wait;
 
 
 /**
@@ -43,7 +46,7 @@ public class DelayTracer
     }
 
     long ticks = System.nanoTime();
-    if (ticks - lastTicks < 0)
+    if (ticks - lastTicks < 0 || command instanceof Input || command instanceof Get || command instanceof Wait)
     {
       lastTicks = ticks;
     }
