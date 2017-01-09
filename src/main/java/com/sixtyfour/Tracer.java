@@ -4,7 +4,7 @@ import com.sixtyfour.elements.commands.Command;
 
 
 /**
- * Interface from implementing tracing of BASIC program. For each BASIC command, the commandExecuted() method of this
+ * Interface from implementing tracing of BASIC programs. For each BASIC command, the commandExecuted() method of this
  * interface will be called after the command has been executed.
  * 
  * @author EgonOlsen
