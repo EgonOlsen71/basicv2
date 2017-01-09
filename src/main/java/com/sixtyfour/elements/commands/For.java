@@ -4,8 +4,8 @@ import com.sixtyfour.elements.Type;
 import com.sixtyfour.elements.Variable;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.Term;
-import com.sixtyfour.system.Machine;
 import com.sixtyfour.system.BasicProgramCounter;
+import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
 /**
@@ -170,5 +170,30 @@ public class For extends AbstractCommand {
 			}
 			return false;
 		}
+	}
+
+	/**
+	 * Sets the counter to the value that it would have after finishing the loop
+	 * 
+	 * @param machine
+	 *            the current machine
+	 */
+	public void setToFinalValue(Machine machine) {
+		var.setValue(VarUtils.getFloat(endTerm.eval(machine)) + 1);
+	}
+
+	/**
+	 * Returns the number of steps that would be needed to count from start to
+	 * end using step.
+	 * 
+	 * @param machine
+	 *            the current machine
+	 * @return the steps
+	 */
+	public int getSteps(Machine machine) {
+		float s = VarUtils.getFloat(term.eval(machine));
+		float e = VarUtils.getFloat(endTerm.eval(machine));
+		float stp = VarUtils.getFloat(stepTerm.eval(machine));
+		return (int) Math.abs((((e - s) / stp) + 0.5));
 	}
 }

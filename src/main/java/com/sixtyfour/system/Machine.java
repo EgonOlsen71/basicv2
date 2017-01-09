@@ -144,15 +144,15 @@ public class Machine {
 	 */
 	public void pushFor(For fory) {
 		if (stack.size() > 10000) {
-			for (int i=0; i<stack.size(); i++) {
-				StackEntry se=stack.get(i);
+			for (int i = 0; i < stack.size(); i++) {
+				StackEntry se = stack.get(i);
 				if (se.isSubroutineCall()) {
 					System.out.println(se.getCommand());
 				}
 			}
 			throw new RuntimeException("Out of memory error, stack size exceeds 10000!");
 		}
-		
+
 		// Remove a for with the same variable and all later ones from the stack
 		for (int i = 0; i < stack.size(); i++) {
 			StackEntry cmd = stack.get(i);
@@ -164,7 +164,7 @@ public class Machine {
 			}
 		}
 
-		//System.out.println(stack.size()+"/"+fory.getVar());
+		// System.out.println(stack.size()+"/"+fory.getVar());
 		stack.push(new StackEntry(fory));
 	}
 
@@ -221,7 +221,7 @@ public class Machine {
 		for (int i = stack.size() - 1; i >= 0; i--) {
 			StackEntry entry = stack.get(i);
 			if (entry.isSubroutineCall()) {
-				int end=stack.size();
+				int end = stack.size();
 				for (int p = 0; p < end - i; p++) {
 					stack.pop();
 				}
@@ -350,7 +350,7 @@ public class Machine {
 
 	/**
 	 * Returns the command list. This list contains all the commands of the
-	 * BASIC program in order or parsing.
+	 * BASIC program in order of parsing.
 	 * 
 	 * @return the command list
 	 */
@@ -366,6 +366,13 @@ public class Machine {
 	 */
 	public void setCommandList(List<Command> commandList) {
 		this.commandList = commandList;
+	}
+
+	/**
+	 * Clears the command list.
+	 */
+	public void clearCommandList() {
+		this.commandList.clear();
 	}
 
 	/**

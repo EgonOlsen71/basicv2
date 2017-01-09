@@ -3,6 +3,7 @@ package com.sixtyfour.basicshell;
 import java.util.concurrent.Future;
 
 import com.sixtyfour.Basic;
+import com.sixtyfour.LoopMode;
 
 
 /**
@@ -21,6 +22,7 @@ public class Runner
   public Runner(String[] program, BasicShell shellFrame)
   {
     this.olsenBasic = new Basic(program);
+    //this.olsenBasic.setLoopMode(LoopMode.DELAY);
     // this.olsenBasic.setTracer(new DelayTracer(3));
     olsenBasic.setOutputChannel(new ShellOutputChannel(shellFrame));
     olsenBasic.setInputProvider(new ShellInputProvider(shellFrame));
@@ -57,8 +59,9 @@ public class Runner
       @Override
       public void run()
       {
-        running = true;
+    	running = true;
         Basic imm = new Basic("0" + command, olsenBasic.getMachine());
+        //imm.setLoopMode(LoopMode.REMOVE);
         runningBasic = imm;
         imm.compile(false);
         imm.start();
