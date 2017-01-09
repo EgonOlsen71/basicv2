@@ -16,6 +16,7 @@ public class Runner implements Runnable {
 
 	public Runner(String[] program, BasicShell shellFrame) {
 		this.olsenBasic = new Basic(program);
+		//this.olsenBasic.setTracer(new DelayTracer(100));
 		olsenBasic.setOutputChannel(new ShellOutputChannel(shellFrame));
 		olsenBasic.setInputProvider(new ShellInputProvider(shellFrame));
 	}

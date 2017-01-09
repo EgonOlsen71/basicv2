@@ -56,6 +56,8 @@ public class Basic
 
   private boolean running;
 
+  private Tracer tracer = null;
+
 
   /**
    * Instantiates a new instance for a BASIC program. No interpretation/compilation will take place at this stage.
@@ -580,6 +582,10 @@ public class Basic
     }
     Integer num = null;
     running = true;
+    if (tracer != null)
+    {
+      tracer.start(this);
+    }
     try
     {
       do
@@ -615,6 +621,10 @@ public class Basic
           Command command = line.getCommands().get(i);
           machine.setCurrentCommand(command);
           BasicProgramCounter pc = command.execute(machine);
+          if (tracer != null)
+          {
+            tracer.commandExecuted(this, command, num, i);
+          }
           machine.setCurrentCommand(null);
           if (pc != null)
           {
@@ -684,6 +694,13 @@ public class Basic
       running = false;
       throw t;
     }
+    finally
+    {
+      if (tracer != null)
+      {
+        tracer.stop(this);
+      }
+    }
     running = false;
   }
 
@@ -692,6 +709,29 @@ public class Basic
   public boolean isRunning()
   {
     return running;
+  }
+
+
+  /**
+   * Gets the current Tracer or null if none has been set.
+   * 
+   * @return the Tracer or null
+   */
+  public Tracer getTracer()
+  {
+    return tracer;
+  }
+
+
+  /**
+   * Sets a new Tracer
+   * 
+   * @param tracer
+   *          the tracer
+   */
+  public void setTracer(Tracer tracer)
+  {
+    this.tracer = tracer;
   }
 
 }
