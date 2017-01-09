@@ -29,8 +29,10 @@ public class DelayTracer
   }
 
 
-  /* (non-Javadoc)
-   * @see com.sixtyfour.Tracer#commandExecuted(com.sixtyfour.Basic, com.sixtyfour.elements.commands.Command, java.lang.Integer, int)
+  /*
+   * (non-Javadoc)
+   * @see com.sixtyfour.Tracer#commandExecuted(com.sixtyfour.Basic, com.sixtyfour.elements.commands.Command,
+   * java.lang.Integer, int)
    */
   @Override
   public void commandExecuted(Basic basic, Command command, Integer lineNumber, int count)
@@ -69,17 +71,20 @@ public class DelayTracer
   }
 
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
    * @see com.sixtyfour.Tracer#start(com.sixtyfour.Basic)
    */
   @Override
   public void start(Basic basic)
   {
     lastTicks = System.nanoTime();
+    avgTicks = 0;
   }
 
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
    * @see com.sixtyfour.Tracer#stop(com.sixtyfour.Basic)
    */
   @Override
