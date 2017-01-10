@@ -45,6 +45,8 @@ public class AdvancedGraphicsTest {
 		vary = Loader.loadProgram("src/test/resources/basic/graphics3d.bas");
 		final Basic inty2 = new Basic(vary, inty.getMachine());
 
+		// Extends the RamSystemCallListener by one who stores the current set
+		// of SYS-parameters in a global holder object.
 		inty2.setSystemCallListener(new RamSystemCallListener(inty.getMachine()) {
 			@Override
 			public void sys(int addr, Object... params) {
@@ -52,6 +54,8 @@ public class AdvancedGraphicsTest {
 				super.sys(addr, params);
 			}
 		});
+
+		// Implement a simple listener that intercept the JSR calls of the CPU.
 		inty2.getCpu().setCpuCallListener(new CpuCallListener() {
 
 			@Override
@@ -99,7 +103,7 @@ public class AdvancedGraphicsTest {
 
 		});
 
-		inty2.compile(false);
+		inty2.compile(false); // Don't reset the machine, keep the ram's content
 		inty2.run();
 
 		BufferedImage bi = Graphics.createImage(inty.getMachine(), 8192, 1024, false, true);
@@ -107,6 +111,11 @@ public class AdvancedGraphicsTest {
 		Graphics.savePng(bi, fos);
 	}
 
+	/**
+	 * A simple holder object for a SYS-call's parameters.
+	 * 
+	 * @author EgonOlsen
+	 */
 	private final static class ParameterHolder {
 		private Object[] parameters;
 		private int pos = 0;
