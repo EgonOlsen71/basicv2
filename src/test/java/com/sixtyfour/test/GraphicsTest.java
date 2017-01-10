@@ -14,8 +14,18 @@ public class GraphicsTest {
 		testFractalMulticolor();
 		testFractalMulticolor2();
 		testPlot();
+		testEllipse();
 	}
 
+	private static void testEllipse() throws Exception {
+		String[] vary = Loader.loadProgram("src/test/resources/basic/ellipse.bas");
+		Basic inty = new Basic(vary);
+		inty.run();
+		BufferedImage bi = Graphics.createImage(inty.getMachine(), 8192, 1024, false, true);
+		FileOutputStream fos = new FileOutputStream("ellipse.png");
+		Graphics.savePng(bi, fos);
+	}
+	
 	private static void testFractal() throws Exception {
 		String[] vary = Loader.loadProgram("src/test/resources/basic/fractal.bas");
 		Basic inty = new Basic(vary);
