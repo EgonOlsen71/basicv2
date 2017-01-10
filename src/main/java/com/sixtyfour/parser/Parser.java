@@ -569,8 +569,7 @@ public class Parser {
 
 	/**
 	 * Handles negations by adding an additional -1* in front of the negated
-	 * element. The same applies to terms like ++2, by adding an additional 1*
-	 * in front.
+	 * element. SOmething similar applies to terms like ++++2.
 	 * 
 	 * @param term
 	 *            the term
@@ -594,11 +593,8 @@ public class Parser {
 				sb.setLength(0);
 			} else {
 				if (!inString && c == '+' && wasOp) {
-					int end = findEndOfNegation(term, i, false);
-					if (end == i + 1) {
-						throw new RuntimeException("Syntax error: " + term);
-					}
-					sb.append(term.substring(0, i)).append("(").append(term.substring(i + 1, end)).append(")").append(term.substring(end));
+					sb.append(term.substring(0, i)).append(term.substring(i + 1, term.length()));
+					i--;
 					term = sb.toString();
 					sb.setLength(0);
 				}
