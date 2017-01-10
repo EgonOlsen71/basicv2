@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.sixtyfour.elements.mnemonics.Mnemonic;
 import com.sixtyfour.elements.mnemonics.MnemonicList;
+import com.sixtyfour.plugins.CpuCallListener;
 
 /**
  * Cpu is a 6502 emulation. It can be used to run actual binary 6502 code. Cpu
@@ -28,6 +29,7 @@ public class Cpu {
 	private int ticks = 0;
 	private boolean paused = false;
 	private CpuTracer cpuTracer = null;
+	private CpuCallListener cpuCallListener = null;
 
 	/**
 	 * Creates a new cpu for a given machine.
@@ -1429,9 +1431,13 @@ public class Cpu {
 			case 0x20:
 				// JSR $hhll
 				tmp = getWord(ram[pc], ram[++pc]);
-				push(ram, getHigh(pc));
-				push(ram, getLow(pc));
-				pc = tmp;
+				if (cpuCallListener == null || !cpuCallListener.jsr(this, tmp)) {
+					push(ram, getHigh(pc));
+					push(ram, getLow(pc));
+					pc = tmp;
+				} else {
+					pc++;
+				}
 				ticks += 6;
 				break;
 			case 0x40:
@@ -1621,6 +1627,25 @@ public class Cpu {
 			}
 
 		} while (!brk);
+	}
+
+	/**
+	 * Returns the currently set CpuCallListener.
+	 * 
+	 * @return the listener or null, if none has been set
+	 */
+	public CpuCallListener getCpuCallListener() {
+		return cpuCallListener;
+	}
+
+	/**
+	 * Set a new CpuCallListener.
+	 * 
+	 * @param cpuCallListener
+	 *            the new listener
+	 */
+	public void setCpuCallListener(CpuCallListener cpuCallListener) {
+		this.cpuCallListener = cpuCallListener;
 	}
 
 	private int asl(int a) {
