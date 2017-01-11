@@ -27,6 +27,13 @@ public class Cpu {
 	private boolean nmi = false;
 	private boolean brk = false;
 	private int ticks = 0;
+	private int pc = 0;
+	private int[] ram = null;
+	private int tmp = 0;
+	private int index = 0;
+	private int lo = 0;
+	private int hi = 0;
+	private int ac = status & 1;
 	private boolean paused = false;
 	private CpuTracer cpuTracer = null;
 	private CpuCallListener cpuCallListener = null;
@@ -394,8 +401,7 @@ public class Cpu {
 	 */
 	public void execute(Program prg) {
 		machine.putProgram(prg);
-		int pc = prg.getCodeStart();
-		execute(pc);
+		execute(prg.getCodeStart());
 	}
 
 	/**
@@ -405,18 +411,12 @@ public class Cpu {
 	 *            the start address of the program in memory
 	 */
 	public void execute(int startAddress) {
-		int pc = startAddress;
-		int[] ram = machine.getRam();
+		pc = startAddress;
+		ram = machine.getRam();
 		brk = false;
 		push(ram, 0);
 		push(ram, 0);
 
-		int tmp = 0;
-		int index = 0;
-		int lo = 0;
-    int hi = 0;
-    int ac = status & 1;
-		
 		do {
 			int lastPc = pc;
 			int cmd = ram[pc++];
@@ -438,27 +438,26 @@ public class Cpu {
 
 			boolean decimal = (status & 0b00001000) != 0;
 
-			
 			if (irq) {
 				if (!isInterruptFlagSet()) {
-				  synchronized (this) {
+					synchronized (this) {
 						push(ram, getHigh(pc));
 						push(ram, getLow(pc));
 						push(ram, status & 0b11101111);
 						pc = getWord(ram[0xFFFE], ram[0xFFFF]);
 						irq = false;
-				  }
+					}
 				}
 			}
 
 			if (nmi) {
-			  synchronized (this) {
-  				push(ram, getHigh(pc));
-  				push(ram, getLow(pc));
-  				push(ram, status & 0b11101111);
-  				pc = getWord(ram[0xFFFA], ram[0xFFFB]);
-  				nmi = false;
-			  }
+				synchronized (this) {
+					push(ram, getHigh(pc));
+					push(ram, getLow(pc));
+					push(ram, status & 0b11101111);
+					pc = getWord(ram[0xFFFA], ram[0xFFFB]);
+					nmi = false;
+				}
 			}
 
 			// System.out.println("cmd: "+Integer.toHexString(cmd)+"/"+pc);
@@ -477,1145 +476,590 @@ public class Cpu {
 				break;
 			case 0x00:
 				// BRK
-				pc++;
-				push(ram, getHigh(pc));
-				push(ram, getLow(pc));
-				push(ram, status | 0b00010000);
-				pc = getWord(ram[0xFFFE], ram[0xFFFF]);
-				brk = exitOnBreak;
-				ticks += 7;
+				brk();
 				break;
 			case 0xA9:
 				// LDA #$nn
-				acc = ram[pc++];
-				setFlags(acc, true, true);
-				ticks += 2;
+				lda_nn();
 				break;
 			case 0xAD:
 				// LDA $hhll
-				acc = ram[getWord(ram[pc++], ram[pc++])];
-				setFlags(acc, true, true);
-				ticks += 4;
+				lda_hhll();
 				break;
 			case 0xBD:
 				// LDA $hhll,X
-				tmp = getWord(ram[pc++], ram[pc++]);
-				acc = ram[tmp + xb];
-				setFlags(acc, true, true);
-				ticks += 4;
-				if (tmp >> 8 != (tmp + xb) >> 8) {
-					ticks++;
-				}
+				lda_hhll(xb);
 				break;
 			case 0xB9:
-				// LDA $hhll,Y
-				tmp = getWord(ram[pc++], ram[pc++]);
-				acc = ram[tmp + yb];
-				setFlags(acc, true, true);
-				ticks += 4;
-				if (tmp >> 8 != (tmp + yb) >> 8) {
-					ticks++;
-				}
+				lda_hhll(yb);
 				break;
 			case 0xA5:
 				// LDA $ll
-				acc = ram[ram[pc++] & 0xff];
-				setFlags(acc, true, true);
-				ticks += 3;
+				lda_ll();
 				break;
 			case 0xB5:
 				// LDA $ll,X
-				acc = ram[((ram[pc++] & 0xff) + xb) & 0xff];
-				setFlags(acc, true, true);
-				ticks += 4;
+				lda_llx(xb);
 				break;
 			case 0xA1:
 				// LDA ($ll, X)
-				acc = ram[getWord(ram[(ram[pc] + x) & 0xFF], ram[(ram[pc++] + x + 1) & 0xFF])];
-				setFlags(acc, true, true);
-				ticks += 6;
+				lda_ll_x();
 				break;
 			case 0xB1:
 				// LDA ($ll), Y
-				tmp = getWord(ram[ram[pc]], ram[(ram[pc++] + 1) & 0xFF]);
-				acc = ram[tmp + yb];
-				setFlags(acc, true, true);
-				ticks += 5;
-				if (tmp >> 8 != (tmp + yb) >> 8) {
-					ticks++;
-				}
+				lda_lly(yb);
 				break;
 			case 0xA2:
 				// LDX #$nn
-				x = ram[pc++];
-				setFlags(x, true, true);
-				ticks += 2;
+				ldx_nn();
 				break;
 			case 0xAE:
 				// LDX $hhll
-				x = ram[getWord(ram[pc++], ram[pc++])];
-				setFlags(x, true, true);
-				ticks += 4;
+				ldx_hhll();
 				break;
 			case 0xBE:
 				// LDX $hhll,Y
-				tmp = getWord(ram[pc++], ram[pc++]);
-				x = ram[tmp + yb];
-				setFlags(x, true, true);
-				ticks += 4;
-				if (tmp >> 8 != (tmp + yb) >> 8) {
-					ticks++;
-				}
+				ldx_hhllx(yb);
 				break;
 			case 0xA6:
 				// LDX $ll
-				x = ram[ram[pc++] & 0xff];
-				setFlags(x, true, true);
-				ticks += 3;
+				ldx_ll();
 				break;
 			case 0xB6:
 				// LDX $ll,Y
-				x = ram[((ram[pc++] & 0xff) + yb) & 0xff];
-				setFlags(x, true, true);
-				ticks += 4;
+				ldx_lly(yb);
 				break;
 			case 0xA0:
 				// LDY #$nn
-				y = ram[pc++];
-				setFlags(y, true, true);
-				ticks += 2;
+				ldy_nn();
 				break;
 			case 0xAC:
 				// LDY $hhll
-				y = ram[getWord(ram[pc++], ram[pc++])];
-				setFlags(y, true, true);
-				ticks += 4;
+				ldy_hhll();
 				break;
 			case 0xBC:
 				// LDY $hhll,X
-				tmp = getWord(ram[pc++], ram[pc++]);
-				y = ram[tmp + xb];
-				setFlags(y, true, true);
-				ticks += 4;
-				if (tmp >> 8 != (tmp + xb) >> 8) {
-					ticks++;
-				}
+				ldy_hhllx(xb);
 				break;
 			case 0xA4:
 				// LDY $ll
-				y = ram[ram[pc++] & 0xff];
-				setFlags(y, true, true);
-				ticks += 3;
+				ldy_ll();
 				break;
 			case 0xB4:
 				// LDY $ll,X
-				y = ram[((ram[pc++] & 0xff) + xb) & 0xff];
-				setFlags(y, true, true);
-				ticks += 4;
+				ldy_llx(xb);
 				break;
 			case 0x8D:
 				// STA $hhll
-				ram[getWord(ram[pc++], ram[pc++])] = accb;
-				ticks += 4;
+				sta_hhll(accb);
 				break;
 			case 0x9D:
 				// STA $hhll,X
-				ram[getWord(ram[pc++], ram[pc++]) + xb] = accb;
-				ticks += 5;
+				sta_hhllx(xb, accb);
 				break;
 			case 0x99:
-				// STA $hhll,Y
-				ram[getWord(ram[pc++], ram[pc++]) + yb] = accb;
-				ticks += 5;
+				sta_hhllx(yb, accb);
 				break;
 			case 0x85:
 				// STA $ll
-				ram[ram[pc++] & 0xff] = accb;
-				ticks += 3;
+				sta_ll(accb);
 				break;
 			case 0x95:
 				// STA $ll,X
-				ram[((ram[pc++] & 0xff) + xb) & 0xff] = accb;
-				ticks += 4;
+				sta_llx(xb, accb);
 				break;
 			case 0x81:
 				// STA ($ll, X)
-				ram[getWord(ram[(ram[pc] + x) & 0xFF], ram[(ram[pc++] + x + 1) & 0xFF])] = accb;
-				ticks += 6;
+				sta_ll_x(accb);
 				break;
 			case 0x91:
 				// STA ($ll), Y
-				ram[getWord(ram[ram[pc]], ram[(ram[pc++] + 1) & 0xFF]) + y] = accb;
-				ticks += 6;
+				sta_lly(accb);
 				break;
 			case 0x8E:
 				// STX $hhll
-				ram[getWord(ram[pc++], ram[pc++])] = xb;
-				ticks += 4;
+				sta_hhll(xb);
 				break;
 			case 0x86:
 				// STX $ll
-				ram[ram[pc++] & 0xff] = xb;
-				ticks += 3;
+				sta_ll(xb);
 				break;
 			case 0x96:
 				// STX $ll,Y
-				ram[((ram[pc++] & 0xff) + yb) & 0xff] = xb;
-				ticks += 4;
+				sta_llx(yb, xb);
 				break;
 			case 0x8C:
 				// STY $hhll
-				ram[getWord(ram[pc++], ram[pc++])] = yb;
-				ticks += 4;
+				sta_hhll(yb);
 				break;
 			case 0x84:
 				// STY $ll
-				ram[ram[pc++] & 0xff] = yb;
-				ticks += 3;
+				sta_ll(yb);
 				break;
 			case 0x94:
 				// STY $ll,X
-				ram[((ram[pc++] & 0xff) + xb) & 0xff] = yb;
-				ticks += 4;
+				sta_llx(xb, yb);
 				break;
 			case 0xAA:
 				// TAX
-				x = accb;
-				setFlags(x, true, true);
-				ticks += 2;
+				tax(accb);
 				break;
 			case 0xA8:
 				// TAY
-				y = accb;
-				setFlags(y, true, true);
-				ticks += 2;
+				tay(accb);
 				break;
 			case 0x8A:
 				// TXA
-				acc = xb;
-				setFlags(acc, true, true);
-				ticks += 2;
+				txa(xb);
 				break;
 			case 0x98:
-				// TYA
-				acc = yb;
-				setFlags(acc, true, true);
-				ticks += 2;
+				txa(yb);
 				break;
 			case 0xBA:
 				// TSX
-				x = stackPointer & 0xff;;
-				setFlags(x, true, true);
-				ticks += 2;
+				tsx();
 				break;
 			case 0x9A:
 				// TXS
-				stackPointer = xb;
-				ticks += 2;
+				txs(xb);
 				break;
 			case 0x29:
 				// AND #$nn
-				acc &= ram[pc++];
-				setFlags(acc, true, true);
-				ticks += 2;
+				and_nn();
 				break;
 			case 0x2D:
 				// AND $hhll
-				acc &= ram[getWord(ram[pc++], ram[pc++])];
-				setFlags(acc, true, true);
-				ticks += 4;
+				and_hhll();
 				break;
 			case 0x3D:
 				// AND $hhll,X
-				tmp = getWord(ram[pc++], ram[pc++]);
-				acc &= ram[tmp + xb];
-				setFlags(acc, true, true);
-				ticks += 4;
-				if (tmp >> 8 != (tmp + xb) >> 8) {
-					ticks++;
-				}
+				and_hhllx(xb);
 				break;
 			case 0x39:
-				// AND $hhll,Y
-				tmp = getWord(ram[pc++], ram[pc++]);
-				acc &= ram[tmp + yb];
-				setFlags(acc, true, true);
-				ticks += 4;
-				if (tmp >> 8 != (tmp + yb) >> 8) {
-					ticks++;
-				}
+				and_hhllx(yb);
 				break;
 			case 0x25:
 				// AND $ll
-				acc &= ram[ram[pc++] & 0xff];
-				setFlags(acc, true, true);
-				ticks += 3;
+				and_ll();
 				break;
 			case 0x35:
 				// AND $ll,X
-				acc &= ram[((ram[pc++] & 0xff) + xb) & 0xff];
-				setFlags(acc, true, true);
-				ticks += 4;
+				and_llx(xb);
 				break;
 			case 0x21:
 				// AND ($ll, X)
-				acc &= ram[getWord(ram[(ram[pc] + x) & 0xFF], ram[(ram[pc++] + x + 1) & 0xFF])];
-				setFlags(acc, true, true);
-				ticks += 6;
+				and_ll_x();
 				break;
 			case 0x31:
 				// AND ($ll), Y
-				tmp = getWord(ram[ram[pc]], ram[(ram[pc++] + 1) & 0xFF]);
-				acc &= ram[tmp + yb];
-				setFlags(acc, true, true);
-				ticks += 5;
-				if (tmp >> 8 != (tmp + yb) >> 8) {
-					ticks++;
-				}
+				and_lly(yb);
 				break;
 			case 0x09:
 				// OR #$nn
-				acc |= ram[pc++];
-				setFlags(acc, true, true);
-				ticks += 2;
+				or_nn();
 				break;
 			case 0x0D:
 				// OR $hhll
-				acc |= ram[getWord(ram[pc++], ram[pc++])];
-				setFlags(acc, true, true);
-				ticks += 4;
+				or_hhll();
 				break;
 			case 0x1D:
 				// OR $hhll,X
-				tmp = getWord(ram[pc++], ram[pc++]);
-				acc |= ram[tmp + xb];
-				setFlags(acc, true, true);
-				ticks += 4;
-				if (tmp >> 8 != (tmp + xb) >> 8) {
-					ticks++;
-				}
+				or_hhllx(xb);
 				break;
 			case 0x19:
-				// OR $hhll,Y
-				tmp = getWord(ram[pc++], ram[pc++]);
-				acc |= ram[tmp + yb];
-				setFlags(acc, true, true);
-				ticks += 4;
-				if (tmp >> 8 != (tmp + yb) >> 8) {
-					ticks++;
-				}
+				or_hhllx(yb);
 				break;
 			case 0x05:
 				// OR $ll
-				acc |= ram[ram[pc++] & 0xff];
-				setFlags(acc, true, true);
-				ticks += 3;
+				or_ll();
 				break;
 			case 0x15:
 				// OR $ll,X
-				acc |= ram[((ram[pc++] & 0xff) + xb) & 0xff];
-				setFlags(acc, true, true);
-				ticks += 4;
+				or_llx(xb);
 				break;
 			case 0x01:
 				// OR ($ll, X)
-				acc |= ram[getWord(ram[(ram[pc] + x) & 0xFF], ram[(ram[pc++] + x + 1) & 0xFF])];
-				setFlags(acc, true, true);
-				ticks += 6;
+				or_ll_x();
 				break;
 			case 0x11:
 				// OR ($ll), Y
-				tmp = getWord(ram[ram[pc]], ram[(ram[pc++] + 1) & 0xFF]);
-				acc |= ram[tmp + yb];
-				setFlags(acc, true, true);
-				ticks += 5;
-				if (tmp >> 8 != (tmp + yb) >> 8) {
-					ticks++;
-				}
+				or_lly(yb);
 				break;
 			case 0x49:
 				// EOR #$nn
-				acc ^= ram[pc++];
-				setFlags(acc, true, true);
-				ticks += 2;
+				eor_nn();
 				break;
 			case 0x4D:
 				// EOR $hhll
-				acc ^= ram[getWord(ram[pc++], ram[pc++])];
-				setFlags(acc, true, true);
-				ticks += 4;
+				eor_hhll();
 				break;
 			case 0x5D:
 				// EOR $hhll,X
-				tmp = getWord(ram[pc++], ram[pc++]);
-				acc ^= ram[tmp + xb];
-				setFlags(acc, true, true);
-				ticks += 4;
-				if (tmp >> 8 != (tmp + xb) >> 8) {
-					ticks++;
-				}
+				eor_hhllx(xb);
 				break;
 			case 0x59:
-				// EOR $hhll,Y
-				tmp = getWord(ram[pc++], ram[pc++]);
-				acc ^= ram[tmp + yb];
-				setFlags(acc, true, true);
-				ticks += 4;
-				if (tmp >> 8 != (tmp + yb) >> 8) {
-					ticks++;
-				}
+				eor_hhllx(yb);
 				break;
 			case 0x45:
 				// EOR $ll
-				acc ^= ram[ram[pc++] & 0xff];
-				setFlags(acc, true, true);
-				ticks += 3;
+				eor_ll();
 				break;
 			case 0x55:
 				// EOR $ll,X
-				acc ^= ram[((ram[pc++] & 0xff) + xb) & 0xff];
-				setFlags(acc, true, true);
-				ticks += 4;
+				eor_llx(xb);
 				break;
 			case 0x41:
 				// EOR ($ll, X)
-				acc ^= ram[getWord(ram[(ram[pc] + x) & 0xFF], ram[(ram[pc++] + x + 1) & 0xFF])];
-				setFlags(acc, true, true);
-				ticks += 6;
+				eor_ll_x();
 				break;
 			case 0x51:
 				// EOR ($ll), Y
-				tmp = getWord(ram[ram[pc]], ram[(ram[pc++] + 1) & 0xFF]);
-				acc ^= ram[tmp + yb];
-				setFlags(acc, true, true);
-				ticks += 5;
-				if (tmp >> 8 != (tmp + yb) >> 8) {
-					ticks++;
-				}
+				eor_lly(yb);
 				break;
 			case 0x69:
 				// ADC #$nn
-				ac = status & 1;
-				if (!decimal) {
-					acc += ram[pc++] + ac;
-				} else {
-					acc = addBCD(addBCD(accb, ac), ram[pc++]);
-				}
-				setFlags(acc, accb, true, true, true, true);
-				acc &= 0xff;
-				ticks += 2;
+				adc_nn(accb, decimal);
 				break;
 			case 0x6D:
 				// ADC $hhll
-				ac = status & 1;
-				if (!decimal) {
-					acc += ram[getWord(ram[pc++], ram[pc++])] + ac;
-				} else {
-					acc = addBCD(addBCD(accb, ac), ram[getWord(ram[pc++], ram[pc++])]);
-				}
-				setFlags(acc, accb, true, true, true, true);
-				acc &= 0xff;
-				ticks += 4;
+				adc_hhll(accb, decimal);
 				break;
 			case 0x7D:
 				// ADC $hhll,X
-				ac = status & 1;
-				tmp = getWord(ram[pc++], ram[pc++]);
-				if (!decimal) {
-					acc += ram[tmp + xb] + ac;
-				} else {
-					acc = addBCD(addBCD(accb, ac), ram[tmp + xb]);
-				}
-				setFlags(acc, accb, true, true, true, true);
-				acc &= 0xff;
-				ticks += 4;
-				if (tmp >> 8 != (tmp + xb) >> 8) {
-					ticks++;
-				}
+				adc_hhllx(xb, accb, decimal);
 				break;
 			case 0x79:
-				// ADC $hhll,Y
-				ac = status & 1;
-				tmp = getWord(ram[pc++], ram[pc++]);
-				if (!decimal) {
-					acc += ram[tmp + yb] + ac;
-				} else {
-					acc = addBCD(addBCD(accb, ac), ram[tmp + yb]);
-				}
-				setFlags(acc, accb, true, true, true, true);
-				acc &= 0xff;
-				ticks += 4;
-				if (tmp >> 8 != (tmp + yb) >> 8) {
-					ticks++;
-				}
+				adc_hhllx(yb, accb, decimal);
 				break;
 			case 0x65:
 				// ADC $ll
-				ac = status & 1;
-				if (!decimal) {
-					acc += ram[ram[pc++] & 0xff] + ac;
-				} else {
-					acc = addBCD(addBCD(accb, ac), ram[ram[pc++] & 0xff]);
-				}
-				setFlags(acc, accb, true, true, true, true);
-				acc &= 0xff;
-				ticks += 3;
+				adc_ll(accb, decimal);
 				break;
 			case 0x75:
 				// ADC $ll,X
-				ac = status & 1;
-				if (!decimal) {
-					acc += ram[((ram[pc++] & 0xff) + xb) & 0xff] + ac;
-				} else {
-					acc = addBCD(addBCD(accb, ac), ram[(ram[pc++] & 0xff) + xb]);
-				}
-				setFlags(acc, accb, true, true, true, true);
-				acc &= 0xff;
-				ticks += 4;
+				adc_llx(xb, accb, decimal);
 				break;
 			case 0x61:
 				// ADC ($ll, X)
-				ac = status & 1;
-				if (!decimal) {
-					acc += ram[getWord(ram[(ram[pc] + x) & 0xFF], ram[(ram[pc++] + x + 1) & 0xFF])] + ac;
-				} else {
-					acc = addBCD(addBCD(accb, ac), ram[getWord(ram[(ram[pc] + x) & 0xFF], ram[(ram[pc++] + x + 1) & 0xFF])]);
-				}
-				setFlags(acc, accb, true, true, true, true);
-				acc &= 0xff;
-				ticks += 6;
+				adc_ll_x(accb, decimal);
 				break;
 			case 0x71:
 				// ADC ($ll), Y
-				ac = status & 1;
-				tmp = getWord(ram[ram[pc]], ram[(ram[pc++] + 1) & 0xFF]);
-				if (!decimal) {
-					acc += ram[tmp + yb] + ac;
-				} else {
-					acc = addBCD(addBCD(accb, ac), ram[tmp + yb]);
-				}
-				setFlags(acc, accb, true, true, true, true);
-				acc &= 0xff;
-				ticks += 5;
-				if (tmp >> 8 != (tmp + yb) >> 8) {
-					ticks++;
-				}
+				adc_lly(yb, accb, decimal);
 				break;
 			case 0xE9:
 				// SBC #$nn
-				ac = (~(status & 1)) & 1;
-				if (!decimal) {
-					acc -= ram[pc++] + ac;
-				} else {
-					acc = subBCD(subBCD(accb, ac), ram[pc++]);
-				}
-				setFlags(acc, accb, true, true, true, true);
-				acc &= 0xff;
-				ticks += 2;
+				sbc_nn(accb, decimal);
 				break;
 			case 0xED:
 				// SBC $hhll
-				ac = (~(status & 1)) & 1;
-				if (!decimal) {
-					acc -= ram[getWord(ram[pc++], ram[pc++])] + ac;
-				} else {
-					acc = subBCD(subBCD(accb, ac), ram[getWord(ram[pc++], ram[pc++])]);
-				}
-				setFlags(acc, accb, true, true, true, true);
-				acc &= 0xff;
-				ticks += 4;
+				sbc_hhll(accb, decimal);
 				break;
 			case 0xFD:
 				// SBC $hhll,X
-				ac = (~(status & 1)) & 1;
-				tmp = getWord(ram[pc++], ram[pc++]);
-				if (!decimal) {
-					acc -= ram[tmp + xb] + ac;
-				} else {
-					acc = subBCD(subBCD(accb, ac), ram[tmp + xb]);
-				}
-				setFlags(acc, accb, true, true, true, true);
-				acc &= 0xff;
-				ticks += 4;
-				if (tmp >> 8 != (tmp + xb) >> 8) {
-					ticks++;
-				}
+				sbc_hhllx(xb, accb, decimal);
 				break;
 			case 0xF9:
-				// SBC $hhll,Y
-				ac = (~(status & 1)) & 1;
-				tmp = getWord(ram[pc++], ram[pc++]);
-				if (!decimal) {
-					acc -= ram[tmp + yb] + ac;
-				} else {
-					acc = subBCD(subBCD(accb, ac), ram[tmp + yb]);
-				}
-				setFlags(acc, accb, true, true, true, true);
-				acc &= 0xff;
-				ticks += 4;
-				if (tmp >> 8 != (tmp + yb) >> 8) {
-					ticks++;
-				}
+				sbc_hhllx(yb, accb, decimal);
 				break;
 			case 0xE5:
 				// SBC $ll
-				ac = (~(status & 1)) & 1;
-				if (!decimal) {
-					acc -= ram[ram[pc++] & 0xff] + ac;
-				} else {
-					acc = subBCD(subBCD(accb, ac), ram[ram[pc++] & 0xff]);
-				}
-				setFlags(acc, accb, true, true, true, true);
-				acc &= 0xff;
-				ticks += 3;
+				sbc_ll(accb, decimal);
 				break;
 			case 0xF5:
 				// SBC $ll,X
-				ac = (~(status & 1)) & 1;
-				if (!decimal) {
-					acc -= ram[((ram[pc++] & 0xff) + xb) & 0xff] + ac;
-				} else {
-					acc = subBCD(subBCD(accb, ac), ram[(ram[pc++] & 0xff) + xb]);
-				}
-				setFlags(acc, accb, true, true, true, true);
-				acc &= 0xff;
-				ticks += 4;
+				sbc_llx(xb, accb, decimal);
 				break;
 			case 0xE1:
 				// SBC ($ll, X)
-				ac = (~(status & 1)) & 1;
-				if (!decimal) {
-					acc -= ram[getWord(ram[(ram[pc] + x) & 0xFF], ram[(ram[pc++] + x + 1) & 0xFF])] + ac;
-				} else {
-					acc = subBCD(subBCD(accb, ac), ram[getWord(ram[(ram[pc] + x) & 0xFF], ram[(ram[pc++] + x + 1) & 0xFF])]);
-				}
-				setFlags(acc, accb, true, true, true, true);
-				acc &= 0xff;
-				ticks += 6;
+				sbc_ll_x(accb, decimal);
 				break;
 			case 0xF1:
 				// SBC ($ll), Y
-				ac = (~(status & 1)) & 1;
-				tmp = getWord(ram[ram[pc]], ram[(ram[pc++] + 1) & 0xFF]);
-				if (!decimal) {
-					acc -= ram[tmp + yb] + ac;
-				} else {
-					acc = subBCD(subBCD(accb, ac), ram[tmp + yb]);
-				}
-				setFlags(acc, accb, true, true, true, true);
-				acc &= 0xff;
-				ticks += 5;
-				if (tmp >> 8 != (tmp + yb) >> 8) {
-					ticks++;
-				}
+				sbc_lly(yb, accb, decimal);
 				break;
 			case 0xEE:
 				// INC $hhll
-				index = getWord(ram[pc++], ram[pc++]);
-				ram[index] = (ram[index] + 1) & 0xff;
-				setFlags(ram[index], true, true);
-				ticks += 6;
+				inc_hhll();
 				break;
 			case 0xFE:
 				// INC $hhll,X
-				index = getWord(ram[pc++], ram[pc++]) + xb;
-				ram[index] = (ram[index] + 1) & 0xff;
-				setFlags(ram[index], true, true);
-				ticks += 7;
+				inc_hhllx(xb);
 				break;
 			case 0xE6:
 				// INC $ll
-				index = ram[pc++] & 0xff;
-				ram[index] = (ram[index] + 1) & 0xff;
-				setFlags(ram[index], true, true);
-				ticks += 5;
+				inc_ll();
 				break;
 			case 0xF6:
 				// INC $ll,X
-				index = ((ram[pc++] & 0xff) + xb) & 0xff;
-				ram[index] = (ram[index] + 1) & 0xff;
-				setFlags(ram[index], true, true);
-				ticks += 6;
+				inc_llx(xb);
 				break;
 			case 0xCE:
 				// DEC $hhll
-				index = getWord(ram[pc++], ram[pc++]);
-				ram[index] = (ram[index] - 1) & 0xff;
-				setFlags(ram[index], true, true);
-				ticks += 6;
+				dec_hhll();
 				break;
 			case 0xDE:
 				// DEC $hhll,X
-				index = getWord(ram[pc++], ram[pc++]) + xb;
-				ram[index] = (ram[index] - 1) & 0xff;
-				setFlags(ram[index], true, true);
-				ticks += 7;
+				dec_hhllx(xb);
 				break;
 			case 0xC6:
 				// DEC $ll
-				index = ram[pc++] & 0xff;
-				ram[index] = (ram[index] - 1) & 0xff;
-				setFlags(ram[index], true, true);
-				ticks += 5;
+				dec_ll();
 				break;
 			case 0xD6:
 				// DEC $ll,X
-				index = ((ram[pc++] & 0xff) + xb) & 0xff;
-				ram[index] = (ram[index] - 1) & 0xff;
-				setFlags(ram[index], true, true);
-				ticks += 6;
+				dec_llx(xb);
 				break;
 			case 0xE8:
 				// INX
-				x = (xb + 1) & 0xff;
-				setFlags(x, true, true);
-				ticks += 2;
+				inx(xb);
 				break;
 			case 0xC8:
 				// INY
-				y = (yb + 1) & 0xff;
-				setFlags(y, true, true);
-				ticks += 2;
+				iny(yb);
 				break;
 			case 0xCA:
 				// DEX
-				x = (xb - 1) & 0xff;
-				setFlags(x, true, true);
-				ticks += 2;
+				dex(xb);
 				break;
 			case 0x88:
 				// DEY
-				y = (yb - 1) & 0xff;
-				setFlags(y, true, true);
-				ticks += 2;
+				dey(yb);
 				break;
 			case 0x0A:
 				// ASL
-				acc = asl(accb);
-				ticks += 2;
+				asl_(accb);
 				break;
 			case 0x0E:
 				// ASL $hhll
-				index = getWord(ram[pc++], ram[pc++]);
-				ram[index] = asl(ram[index]);
-				ticks += 6;
+				asl_hhll();
 				break;
 			case 0x1E:
 				// ASL $hhll,X
-				index = getWord(ram[pc++], ram[pc++]) + xb;
-				ram[index] = asl(ram[index]);
-				ticks += 7;
+				asl_hhllx(xb);
 				break;
 			case 0x06:
 				// ASL $ll
-				index = ram[pc++] & 0xff;
-				ram[index] = asl(ram[index]);
-				ticks += 5;
+				asl_ll();
 				break;
 			case 0x16:
 				// ASL $ll,X
-				index = ((ram[pc++] & 0xff) + xb) & 0xff;
-				ram[index] = asl(ram[index]);
-				ticks += 6;
+				asl_llx(xb);
 				break;
 			case 0x4A:
 				// LSR
-				acc = lsr(accb);
-				ticks += 2;
+				lsr_(accb);
 				break;
 			case 0x4E:
 				// LSR $hhll
-				index = getWord(ram[pc++], ram[pc++]);
-				ram[index] = lsr(ram[index]);
-				ticks += 6;
+				lsr_hhll();
 				break;
 			case 0x5E:
 				// LSR $hhll,X
-				index = getWord(ram[pc++], ram[pc++]) + xb;
-				ram[index] = lsr(ram[index]);
-				ticks += 7;
+				lsr_hhllx(xb);
 				break;
 			case 0x46:
 				// LSR $ll
-				index = ram[pc++] & 0xff;
-				ram[index] = lsr(ram[index]);
-				ticks += 5;
+				lsr_ll();
 				break;
 			case 0x56:
 				// LSR $ll,X
-				index = ((ram[pc++] & 0xff) + xb) & 0xff;
-				ram[index] = lsr(ram[index]);
-				ticks += 6;
+				lsr_llx(xb);
 				break;
 			case 0x2A:
 				// ROL
-				acc = rol(accb);
-				ticks += 2;
+				rol_(accb);
 				break;
 			case 0x2E:
 				// ROL $hhll
-				index = getWord(ram[pc++], ram[pc++]);
-				ram[index] = rol(ram[index]);
-				ticks += 6;
+				rol_hhll();
 				break;
 			case 0x3E:
 				// ROL $hhll,X
-				index = getWord(ram[pc++], ram[pc++]) + xb;
-				ram[index] = rol(ram[index]);
-				ticks += 7;
+				rol_hhllx(xb);
 				break;
 			case 0x26:
 				// ROL $ll
-				index = ram[pc++] & 0xff;
-				ram[index] = rol(ram[index]);
-				ticks += 5;
+				rol_ll();
 				break;
 			case 0x36:
 				// ROL $ll,X
-				index = ((ram[pc++] & 0xff) + xb) & 0xff;
-				ram[index] = rol(ram[index]);
-				ticks += 6;
+				rol_llx(xb);
 				break;
 			case 0x6A:
 				// ROR
-				acc = ror(accb);
-				ticks += 2;
+				ror_(accb);
 				break;
 			case 0x6E:
 				// ROR $hhll
-				index = getWord(ram[pc++], ram[pc++]);
-				ram[index] = ror(ram[index]);
-				ticks += 6;
+				ror_hhll();
 				break;
 			case 0x7E:
 				// ROR $hhll,X
-				index = getWord(ram[pc++], ram[pc++]) + xb;
-				ram[index] = ror(ram[index]);
-				ticks += 7;
+				ror_hhllx(xb);
 				break;
 			case 0x66:
 				// ROR $ll
-				index = ram[pc++] & 0xff;
-				ram[index] = ror(ram[index]);
-				ticks += 5;
+				ror_ll();
 				break;
 			case 0x76:
 				// ROR $ll,X
-				index = ((ram[pc++] & 0xff) + xb) & 0xff;
-				ram[index] = ror(ram[index]);
-				ticks += 6;
+				ror_llx(xb);
 				break;
 			case 0xC9:
 				// CMP #$nn
-				tmp = accb - ram[pc++];
-				setFlags(tmp, accb, true, true, false, true);
-				ticks += 2;
+				cmp_nn(accb);
 				break;
 			case 0xCD:
 				// CMP $hhll
-				tmp = accb - ram[getWord(ram[pc++], ram[pc++])];
-				setFlags(tmp, accb, true, true, false, true);
-				ticks += 2;
+				cmp_hhl(accb);
 				break;
 			case 0xDD:
 				// CMP $hhll,X
-				index = getWord(ram[pc++], ram[pc++]);
-				tmp = accb - ram[index + xb];
-				setFlags(tmp, accb, true, true, false, true);
-				ticks += 4;
-				if (index >> 8 != (index + xb) >> 8) {
-					ticks++;
-				}
+				cmp_hhllx(xb, accb);
 				break;
 			case 0xD9:
-				// CMP $hhll,Y
-				index = getWord(ram[pc++], ram[pc++]);
-				tmp = accb - ram[index + yb];
-				setFlags(tmp, accb, true, true, false, true);
-				ticks += 4;
-				if (index >> 8 != (index + yb) >> 8) {
-					ticks++;
-				}
+				cmp_hhllx(yb, accb);
 				break;
 			case 0xC5:
 				// CMP $ll
-				tmp = accb - ram[ram[pc++] & 0xff];
-				setFlags(tmp, accb, true, true, false, true);
-				ticks += 3;
+				cmp_ll(accb);
 				break;
 			case 0xD5:
 				// CMP $ll,X
-				tmp = accb - ram[((ram[pc++] & 0xff) + xb) & 0xff];
-				setFlags(tmp, accb, true, true, false, true);
-				ticks += 4;
+				cmp_llx(xb, accb);
 				break;
 			case 0xC1:
 				// CMP ($ll, X)
-				tmp = accb - ram[getWord(ram[(ram[pc] + x) & 0xFF], ram[(ram[pc++] + x + 1) & 0xFF])];
-				setFlags(tmp, accb, true, true, false, true);
-				ticks += 6;
+				cmp_llx(accb);
 				break;
 			case 0xD1:
 				// CMP ($ll), Y
-				index = getWord(ram[ram[pc]], ram[(ram[pc++] + 1) & 0xFF]);
-				tmp = accb - ram[index + yb];
-				setFlags(tmp, accb, true, true, false, true);
-				ticks += 5;
-				if (index >> 8 != (index + yb) >> 8) {
-					ticks++;
-				}
+				cmp_lly(yb, accb);
 				break;
 			case 0xE0:
 				// CPX #$nn
-				tmp = xb - ram[pc++];
-				setFlags(tmp, xb, true, true, false, true);
-				ticks += 2;
+				cmp_nn(xb);
 				break;
 			case 0xEC:
 				// CPX $hhll
-				tmp = xb - ram[getWord(ram[pc++], ram[pc++])];
-				setFlags(tmp, xb, true, true, false, true);
-				ticks += 4;
+				cmp_hhll(xb);
 				break;
 			case 0xE4:
 				// CPX $ll
-				tmp = xb - ram[ram[pc++] & 0xff];
-				setFlags(tmp, xb, true, true, false, true);
-				ticks += 3;
+				cmp_ll(xb);
 				break;
 			case 0xC0:
 				// CPY #$nn
-				tmp = yb - ram[pc++];
-				setFlags(tmp, yb, true, true, false, true);
-				ticks += 2;
+				cmp_nn(yb);
 				break;
 			case 0xCC:
 				// CPY $hhll
-				tmp = yb - ram[getWord(ram[pc++], ram[pc++])];
-				setFlags(tmp, yb, true, true, false, true);
-				ticks += 4;
+				cmp_hhll(yb);
 				break;
 			case 0xC4:
 				// CPY $ll
-				tmp = yb - ram[ram[pc++] & 0xff];
-				setFlags(tmp, yb, true, true, false, true);
-				ticks += 3;
+				cmp_ll(yb);
 				break;
 			case 0x2C:
 				// BIT $hhll
-				tmp = ram[getWord(ram[pc++], ram[pc++])] & 0xFF;
-				status = (status & 0b00111111) | (tmp & 0b11000000);
-				tmp &= accb;
-				setFlags(tmp, false, true);
-				ticks += 4;
+				bit_hhll(accb);
 				break;
 			case 0x24:
 				// BIT $ll
-				tmp = ram[ram[pc++] & 0xff] & 0xFF;
-				status = (status & 0b00111111) | (tmp & 0b11000000);
-				tmp &= accb;
-				setFlags(tmp, false, true);
-				ticks += 3;
+				bit_ll(accb);
 				break;
 			case 0x4C:
 				// JMP $hhll
-				pc = getWord(ram[pc++], ram[pc++]);
-				ticks += 3;
+				jmp_hhll();
 				break;
 			case 0x6C:
 				// JMP ($hhll)
-				lo = ram[pc++];
-				hi = ram[pc++];
-				tmp = ram[getWord(lo, hi)];
-				lo = (lo + 1) & 0xff;
-				pc = getWord(tmp, ram[getWord(lo, hi)]);
-				ticks += 5;
+				jmp_hhll_();
 				break;
 			case 0x20:
 				// JSR $hhll
-				tmp = getWord(ram[pc], ram[++pc]);
-				if (cpuCallListener == null || !cpuCallListener.jsr(this, tmp)) {
-					push(ram, getHigh(pc));
-					push(ram, getLow(pc));
-					pc = tmp;
-				} else {
-					pc++;
-				}
-				ticks += 6;
+				jsr_hhll();
 				break;
 			case 0x40:
 				// RTI
-				status = this.pop(ram);
-				pc = getWord(pop(ram), pop(ram));
-				ticks += 6;
+				rti();
 				break;
 			case 0x90:
 				// BCC $hhll
-				ticks += 2;
-				if ((status & 0b00000001) == 0) {
-					tmp = pc;
-					pc += (byte) (ram[pc] & 0xff) + 1;
-					ticks++;
-					if (tmp >> 8 != pc >> 8) {
-						ticks++;
-					}
-				} else {
-					pc++;
-				}
+				bcc_hhll();
 				break;
 			case 0xB0:
 				// BCS $hhll
-				ticks += 2;
-				if ((status & 0b00000001) != 0) {
-					tmp = pc;
-					pc += (byte) (ram[pc] & 0xff) + 1;
-					ticks++;
-					if (tmp >> 8 != pc >> 8) {
-						ticks++;
-					}
-				} else {
-					pc++;
-				}
+				bcs_hhll();
 				break;
 			case 0xF0:
 				// BEQ $hhll
-				ticks += 2;
-				if ((status & 0b00000010) != 0) {
-					tmp = pc;
-					pc += (byte) (ram[pc] & 0xff) + 1;
-					ticks++;
-					if (tmp >> 8 != pc >> 8) {
-						ticks++;
-					}
-				} else {
-					pc++;
-				}
+				beq_hhll();
 				break;
 			case 0xD0:
 				// BNE $hhll
-				ticks += 2;
-				if ((status & 0b00000010) == 0) {
-					tmp = pc;
-					pc += (byte) (ram[pc] & 0xff) + 1;
-					ticks++;
-					if (tmp >> 8 != pc >> 8) {
-						ticks++;
-					}
-				} else {
-					pc++;
-				}
+				bne_hhll();
 				break;
 			case 0x10:
 				// BPL $hhll
-				ticks += 2;
-				if ((status & 0b10000000) == 0) {
-					tmp = pc;
-					pc += (byte) (ram[pc] & 0xff) + 1;
-					ticks++;
-					if (tmp >> 8 != pc >> 8) {
-						ticks++;
-					}
-				} else {
-					pc++;
-				}
+				bpl_hhll();
 				break;
 			case 0x30:
 				// BMI $hhll
-				ticks += 2;
-				if ((status & 0b10000000) != 0) {
-					tmp = pc;
-					pc += (byte) (ram[pc] & 0xff) + 1;
-					ticks++;
-					if (tmp >> 8 != pc >> 8) {
-						ticks++;
-					}
-				} else {
-					pc++;
-				}
+				bmi_hhll();
 				break;
 			case 0x50:
 				// BVC $hhll
-				ticks += 2;
-				if ((status & 0b01000000) == 0) {
-					tmp = pc;
-					pc += (byte) (ram[pc] & 0xff) + 1;
-					ticks++;
-					if (tmp >> 8 != pc >> 8) {
-						ticks++;
-					}
-				} else {
-					pc++;
-				}
+				bvc_hhll();
 				break;
 			case 0x70:
 				// BVS $hhll
-				ticks += 2;
-				if ((status & 0b01000000) != 0) {
-					tmp = pc;
-					pc += (byte) (ram[pc] & 0xff) + 1;
-					ticks++;
-					if (tmp >> 8 != pc >> 8) {
-						ticks++;
-					}
-				} else {
-					pc++;
-				}
+				bvs_hhll();
 				break;
 			case 0x38:
 				// SEC
-				status |= 0b00000001;
-				ticks += 2;
+				sec();
 				break;
 			case 0x18:
 				// CLC
-				status &= 0b11111110;
-				ticks += 2;
+				clc();
 				break;
 			case 0x78:
 				// SEI
-				status |= 0b00000100;
-				ticks += 2;
+				sei();
 				break;
 			case 0x58:
 				// CLI
-				status &= 0b11111011;
-				ticks += 2;
+				cli();
 				break;
 			case 0xB8:
 				// CLV
-				status &= 0b10111111;
-				ticks += 2;
+				clv();
 				break;
 			case 0xF8:
 				// SED
-				status |= 0b00001000;
-				ticks += 2;
+				sed();
 				break;
 			case 0xD8:
 				// CLD
-				status &= 0b11110111;
-				ticks += 2;
+				cld();
 				break;
 			case 0x48:
 				// PHA
-				push(ram, accb);
-				ticks += 3;
+				pha(accb);
 				break;
 			case 0x08:
 				// PHP
-				push(ram, status);
-				ticks += 3;
+				php();
 				break;
 			case 0x68:
 				// PLA
-				acc = pop(ram);
-				setFlags(acc, true, true);
-				ticks += 3;
+				pla();
 				break;
 			case 0x28:
 				// PLP
-				status = pop(ram);
-				ticks += 3;
+				plp();
 				break;
 			case 0xEA:
 				// NOP
@@ -1630,6 +1074,995 @@ public class Cpu {
 			}
 
 		} while (!brk);
+	}
+
+	private void plp() {
+		status = pop(ram);
+		ticks += 3;
+	}
+
+	private void pla() {
+		acc = pop(ram);
+		setFlags(acc, true, true);
+		ticks += 3;
+	}
+
+	private void php() {
+		push(ram, status);
+		ticks += 3;
+	}
+
+	private void pha(int accb) {
+		push(ram, accb);
+		ticks += 3;
+	}
+
+	private void cld() {
+		status &= 0b11110111;
+		ticks += 2;
+	}
+
+	private void sed() {
+		status |= 0b00001000;
+		ticks += 2;
+	}
+
+	private void clv() {
+		status &= 0b10111111;
+		ticks += 2;
+	}
+
+	private void cli() {
+		status &= 0b11111011;
+		ticks += 2;
+	}
+
+	private void sei() {
+		status |= 0b00000100;
+		ticks += 2;
+	}
+
+	private void clc() {
+		status &= 0b11111110;
+		ticks += 2;
+	}
+
+	private void sec() {
+		status |= 0b00000001;
+		ticks += 2;
+	}
+
+	private void bvs_hhll() {
+		ticks += 2;
+		if ((status & 0b01000000) != 0) {
+			tmp = pc;
+			pc += (byte) (ram[pc] & 0xff) + 1;
+			ticks++;
+			if (tmp >> 8 != pc >> 8) {
+				ticks++;
+			}
+		} else {
+			pc++;
+		}
+	}
+
+	private void bvc_hhll() {
+		ticks += 2;
+		if ((status & 0b01000000) == 0) {
+			tmp = pc;
+			pc += (byte) (ram[pc] & 0xff) + 1;
+			ticks++;
+			if (tmp >> 8 != pc >> 8) {
+				ticks++;
+			}
+		} else {
+			pc++;
+		}
+	}
+
+	private void bmi_hhll() {
+		ticks += 2;
+		if ((status & 0b10000000) != 0) {
+			tmp = pc;
+			pc += (byte) (ram[pc] & 0xff) + 1;
+			ticks++;
+			if (tmp >> 8 != pc >> 8) {
+				ticks++;
+			}
+		} else {
+			pc++;
+		}
+	}
+
+	private void bpl_hhll() {
+		ticks += 2;
+		if ((status & 0b10000000) == 0) {
+			tmp = pc;
+			pc += (byte) (ram[pc] & 0xff) + 1;
+			ticks++;
+			if (tmp >> 8 != pc >> 8) {
+				ticks++;
+			}
+		} else {
+			pc++;
+		}
+	}
+
+	private void bne_hhll() {
+		ticks += 2;
+		if ((status & 0b00000010) == 0) {
+			tmp = pc;
+			pc += (byte) (ram[pc] & 0xff) + 1;
+			ticks++;
+			if (tmp >> 8 != pc >> 8) {
+				ticks++;
+			}
+		} else {
+			pc++;
+		}
+	}
+
+	private void beq_hhll() {
+		ticks += 2;
+		if ((status & 0b00000010) != 0) {
+			tmp = pc;
+			pc += (byte) (ram[pc] & 0xff) + 1;
+			ticks++;
+			if (tmp >> 8 != pc >> 8) {
+				ticks++;
+			}
+		} else {
+			pc++;
+		}
+	}
+
+	private void bcs_hhll() {
+		ticks += 2;
+		if ((status & 0b00000001) != 0) {
+			tmp = pc;
+			pc += (byte) (ram[pc] & 0xff) + 1;
+			ticks++;
+			if (tmp >> 8 != pc >> 8) {
+				ticks++;
+			}
+		} else {
+			pc++;
+		}
+	}
+
+	private void bcc_hhll() {
+		ticks += 2;
+		if ((status & 0b00000001) == 0) {
+			tmp = pc;
+			pc += (byte) (ram[pc] & 0xff) + 1;
+			ticks++;
+			if (tmp >> 8 != pc >> 8) {
+				ticks++;
+			}
+		} else {
+			pc++;
+		}
+	}
+
+	private void rti() {
+		status = this.pop(ram);
+		pc = getWord(pop(ram), pop(ram));
+		ticks += 6;
+	}
+
+	private void jsr_hhll() {
+		tmp = getWord(ram[pc], ram[++pc]);
+		if (cpuCallListener == null || !cpuCallListener.jsr(this, tmp)) {
+			push(ram, getHigh(pc));
+			push(ram, getLow(pc));
+			pc = tmp;
+		} else {
+			pc++;
+		}
+		ticks += 6;
+	}
+
+	private void jmp_hhll_() {
+		lo = ram[pc++];
+		hi = ram[pc++];
+		tmp = ram[getWord(lo, hi)];
+		lo = (lo + 1) & 0xff;
+		pc = getWord(tmp, ram[getWord(lo, hi)]);
+		ticks += 5;
+	}
+
+	private void jmp_hhll() {
+		pc = getWord(ram[pc++], ram[pc++]);
+		ticks += 3;
+	}
+
+	private void bit_ll(int accb) {
+		tmp = ram[ram[pc++] & 0xff] & 0xFF;
+		status = (status & 0b00111111) | (tmp & 0b11000000);
+		tmp &= accb;
+		setFlags(tmp, false, true);
+		ticks += 3;
+	}
+
+	private void bit_hhll(int accb) {
+		tmp = ram[getWord(ram[pc++], ram[pc++])] & 0xFF;
+		status = (status & 0b00111111) | (tmp & 0b11000000);
+		tmp &= accb;
+		setFlags(tmp, false, true);
+		ticks += 4;
+	}
+
+	private void cmp_hhll(int xb) {
+		tmp = xb - ram[getWord(ram[pc++], ram[pc++])];
+		setFlags(tmp, xb, true, true, false, true);
+		ticks += 4;
+	}
+
+	private void cmp_lly(int yb, int accb) {
+		index = getWord(ram[ram[pc]], ram[(ram[pc++] + 1) & 0xFF]);
+		tmp = accb - ram[index + yb];
+		setFlags(tmp, accb, true, true, false, true);
+		ticks += 5;
+		if (index >> 8 != (index + yb) >> 8) {
+			ticks++;
+		}
+	}
+
+	private void cmp_llx(int accb) {
+		tmp = accb - ram[getWord(ram[(ram[pc] + x) & 0xFF], ram[(ram[pc++] + x + 1) & 0xFF])];
+		setFlags(tmp, accb, true, true, false, true);
+		ticks += 6;
+	}
+
+	private void cmp_llx(int xb, int accb) {
+		tmp = accb - ram[((ram[pc++] & 0xff) + xb) & 0xff];
+		setFlags(tmp, accb, true, true, false, true);
+		ticks += 4;
+	}
+
+	private void cmp_ll(int accb) {
+		tmp = accb - ram[ram[pc++] & 0xff];
+		setFlags(tmp, accb, true, true, false, true);
+		ticks += 3;
+	}
+
+	private void cmp_hhllx(int xb, int accb) {
+		index = getWord(ram[pc++], ram[pc++]);
+		tmp = accb - ram[index + xb];
+		setFlags(tmp, accb, true, true, false, true);
+		ticks += 4;
+		if (index >> 8 != (index + xb) >> 8) {
+			ticks++;
+		}
+	}
+
+	private void cmp_hhl(int accb) {
+		tmp = accb - ram[getWord(ram[pc++], ram[pc++])];
+		setFlags(tmp, accb, true, true, false, true);
+		ticks += 2;
+	}
+
+	private void cmp_nn(int accb) {
+		tmp = accb - ram[pc++];
+		setFlags(tmp, accb, true, true, false, true);
+		ticks += 2;
+	}
+
+	private void ror_llx(int xb) {
+		index = ((ram[pc++] & 0xff) + xb) & 0xff;
+		ram[index] = ror(ram[index]);
+		ticks += 6;
+	}
+
+	private void ror_ll() {
+		index = ram[pc++] & 0xff;
+		ram[index] = ror(ram[index]);
+		ticks += 5;
+	}
+
+	private void ror_hhllx(int xb) {
+		index = getWord(ram[pc++], ram[pc++]) + xb;
+		ram[index] = ror(ram[index]);
+		ticks += 7;
+	}
+
+	private void ror_hhll() {
+		index = getWord(ram[pc++], ram[pc++]);
+		ram[index] = ror(ram[index]);
+		ticks += 6;
+	}
+
+	private void ror_(int accb) {
+		acc = ror(accb);
+		ticks += 2;
+	}
+
+	private void rol_llx(int xb) {
+		index = ((ram[pc++] & 0xff) + xb) & 0xff;
+		ram[index] = rol(ram[index]);
+		ticks += 6;
+	}
+
+	private void rol_ll() {
+		index = ram[pc++] & 0xff;
+		ram[index] = rol(ram[index]);
+		ticks += 5;
+	}
+
+	private void rol_hhllx(int xb) {
+		index = getWord(ram[pc++], ram[pc++]) + xb;
+		ram[index] = rol(ram[index]);
+		ticks += 7;
+	}
+
+	private void rol_hhll() {
+		index = getWord(ram[pc++], ram[pc++]);
+		ram[index] = rol(ram[index]);
+		ticks += 6;
+	}
+
+	private void rol_(int accb) {
+		acc = rol(accb);
+		ticks += 2;
+	}
+
+	private void lsr_llx(int xb) {
+		index = ((ram[pc++] & 0xff) + xb) & 0xff;
+		ram[index] = lsr(ram[index]);
+		ticks += 6;
+	}
+
+	private void lsr_ll() {
+		index = ram[pc++] & 0xff;
+		ram[index] = lsr(ram[index]);
+		ticks += 5;
+	}
+
+	private void lsr_hhllx(int xb) {
+		index = getWord(ram[pc++], ram[pc++]) + xb;
+		ram[index] = lsr(ram[index]);
+		ticks += 7;
+	}
+
+	private void lsr_hhll() {
+		index = getWord(ram[pc++], ram[pc++]);
+		ram[index] = lsr(ram[index]);
+		ticks += 6;
+	}
+
+	private void lsr_(int accb) {
+		acc = lsr(accb);
+		ticks += 2;
+	}
+
+	private void asl_llx(int xb) {
+		index = ((ram[pc++] & 0xff) + xb) & 0xff;
+		ram[index] = asl(ram[index]);
+		ticks += 6;
+	}
+
+	private void asl_ll() {
+		index = ram[pc++] & 0xff;
+		ram[index] = asl(ram[index]);
+		ticks += 5;
+	}
+
+	private void asl_hhllx(int xb) {
+		index = getWord(ram[pc++], ram[pc++]) + xb;
+		ram[index] = asl(ram[index]);
+		ticks += 7;
+	}
+
+	private void asl_hhll() {
+		index = getWord(ram[pc++], ram[pc++]);
+		ram[index] = asl(ram[index]);
+		ticks += 6;
+	}
+
+	private void asl_(int accb) {
+		acc = asl(accb);
+		ticks += 2;
+	}
+
+	private void dey(int yb) {
+		y = (yb - 1) & 0xff;
+		setFlags(y, true, true);
+		ticks += 2;
+	}
+
+	private void dex(int xb) {
+		x = (xb - 1) & 0xff;
+		setFlags(x, true, true);
+		ticks += 2;
+	}
+
+	private void iny(int yb) {
+		y = (yb + 1) & 0xff;
+		setFlags(y, true, true);
+		ticks += 2;
+	}
+
+	private void inx(int xb) {
+		x = (xb + 1) & 0xff;
+		setFlags(x, true, true);
+		ticks += 2;
+	}
+
+	private void dec_llx(int xb) {
+		index = ((ram[pc++] & 0xff) + xb) & 0xff;
+		ram[index] = (ram[index] - 1) & 0xff;
+		setFlags(ram[index], true, true);
+		ticks += 6;
+	}
+
+	private void dec_ll() {
+		index = ram[pc++] & 0xff;
+		ram[index] = (ram[index] - 1) & 0xff;
+		setFlags(ram[index], true, true);
+		ticks += 5;
+	}
+
+	private void dec_hhllx(int xb) {
+		index = getWord(ram[pc++], ram[pc++]) + xb;
+		ram[index] = (ram[index] - 1) & 0xff;
+		setFlags(ram[index], true, true);
+		ticks += 7;
+	}
+
+	private void dec_hhll() {
+		index = getWord(ram[pc++], ram[pc++]);
+		ram[index] = (ram[index] - 1) & 0xff;
+		setFlags(ram[index], true, true);
+		ticks += 6;
+	}
+
+	private void inc_llx(int xb) {
+		index = ((ram[pc++] & 0xff) + xb) & 0xff;
+		ram[index] = (ram[index] + 1) & 0xff;
+		setFlags(ram[index], true, true);
+		ticks += 6;
+	}
+
+	private void inc_ll() {
+		index = ram[pc++] & 0xff;
+		ram[index] = (ram[index] + 1) & 0xff;
+		setFlags(ram[index], true, true);
+		ticks += 5;
+	}
+
+	private void inc_hhllx(int xb) {
+		index = getWord(ram[pc++], ram[pc++]) + xb;
+		ram[index] = (ram[index] + 1) & 0xff;
+		setFlags(ram[index], true, true);
+		ticks += 7;
+	}
+
+	private void inc_hhll() {
+		index = getWord(ram[pc++], ram[pc++]);
+		ram[index] = (ram[index] + 1) & 0xff;
+		setFlags(ram[index], true, true);
+		ticks += 6;
+	}
+
+	private void sbc_lly(int yb, int accb, boolean decimal) {
+		ac = (~(status & 1)) & 1;
+		tmp = getWord(ram[ram[pc]], ram[(ram[pc++] + 1) & 0xFF]);
+		if (!decimal) {
+			acc -= ram[tmp + yb] + ac;
+		} else {
+			acc = subBCD(subBCD(accb, ac), ram[tmp + yb]);
+		}
+		setFlags(acc, accb, true, true, true, true);
+		acc &= 0xff;
+		ticks += 5;
+		if (tmp >> 8 != (tmp + yb) >> 8) {
+			ticks++;
+		}
+	}
+
+	private void sbc_ll_x(int accb, boolean decimal) {
+		ac = (~(status & 1)) & 1;
+		if (!decimal) {
+			acc -= ram[getWord(ram[(ram[pc] + x) & 0xFF], ram[(ram[pc++] + x + 1) & 0xFF])] + ac;
+		} else {
+			acc = subBCD(subBCD(accb, ac), ram[getWord(ram[(ram[pc] + x) & 0xFF], ram[(ram[pc++] + x + 1) & 0xFF])]);
+		}
+		setFlags(acc, accb, true, true, true, true);
+		acc &= 0xff;
+		ticks += 6;
+	}
+
+	private void sbc_llx(int xb, int accb, boolean decimal) {
+		ac = (~(status & 1)) & 1;
+		if (!decimal) {
+			acc -= ram[((ram[pc++] & 0xff) + xb) & 0xff] + ac;
+		} else {
+			acc = subBCD(subBCD(accb, ac), ram[(ram[pc++] & 0xff) + xb]);
+		}
+		setFlags(acc, accb, true, true, true, true);
+		acc &= 0xff;
+		ticks += 4;
+	}
+
+	private void sbc_ll(int accb, boolean decimal) {
+		ac = (~(status & 1)) & 1;
+		if (!decimal) {
+			acc -= ram[ram[pc++] & 0xff] + ac;
+		} else {
+			acc = subBCD(subBCD(accb, ac), ram[ram[pc++] & 0xff]);
+		}
+		setFlags(acc, accb, true, true, true, true);
+		acc &= 0xff;
+		ticks += 3;
+	}
+
+	private void sbc_hhllx(int xb, int accb, boolean decimal) {
+		ac = (~(status & 1)) & 1;
+		tmp = getWord(ram[pc++], ram[pc++]);
+		if (!decimal) {
+			acc -= ram[tmp + xb] + ac;
+		} else {
+			acc = subBCD(subBCD(accb, ac), ram[tmp + xb]);
+		}
+		setFlags(acc, accb, true, true, true, true);
+		acc &= 0xff;
+		ticks += 4;
+		if (tmp >> 8 != (tmp + xb) >> 8) {
+			ticks++;
+		}
+	}
+
+	private void sbc_hhll(int accb, boolean decimal) {
+		ac = (~(status & 1)) & 1;
+		if (!decimal) {
+			acc -= ram[getWord(ram[pc++], ram[pc++])] + ac;
+		} else {
+			acc = subBCD(subBCD(accb, ac), ram[getWord(ram[pc++], ram[pc++])]);
+		}
+		setFlags(acc, accb, true, true, true, true);
+		acc &= 0xff;
+		ticks += 4;
+	}
+
+	private void sbc_nn(int accb, boolean decimal) {
+		ac = (~(status & 1)) & 1;
+		if (!decimal) {
+			acc -= ram[pc++] + ac;
+		} else {
+			acc = subBCD(subBCD(accb, ac), ram[pc++]);
+		}
+		setFlags(acc, accb, true, true, true, true);
+		acc &= 0xff;
+		ticks += 2;
+	}
+
+	private void adc_lly(int yb, int accb, boolean decimal) {
+		ac = status & 1;
+		tmp = getWord(ram[ram[pc]], ram[(ram[pc++] + 1) & 0xFF]);
+		if (!decimal) {
+			acc += ram[tmp + yb] + ac;
+		} else {
+			acc = addBCD(addBCD(accb, ac), ram[tmp + yb]);
+		}
+		setFlags(acc, accb, true, true, true, true);
+		acc &= 0xff;
+		ticks += 5;
+		if (tmp >> 8 != (tmp + yb) >> 8) {
+			ticks++;
+		}
+	}
+
+	private void adc_ll_x(int accb, boolean decimal) {
+		ac = status & 1;
+		if (!decimal) {
+			acc += ram[getWord(ram[(ram[pc] + x) & 0xFF], ram[(ram[pc++] + x + 1) & 0xFF])] + ac;
+		} else {
+			acc = addBCD(addBCD(accb, ac), ram[getWord(ram[(ram[pc] + x) & 0xFF], ram[(ram[pc++] + x + 1) & 0xFF])]);
+		}
+		setFlags(acc, accb, true, true, true, true);
+		acc &= 0xff;
+		ticks += 6;
+	}
+
+	private void adc_llx(int xb, int accb, boolean decimal) {
+		ac = status & 1;
+		if (!decimal) {
+			acc += ram[((ram[pc++] & 0xff) + xb) & 0xff] + ac;
+		} else {
+			acc = addBCD(addBCD(accb, ac), ram[(ram[pc++] & 0xff) + xb]);
+		}
+		setFlags(acc, accb, true, true, true, true);
+		acc &= 0xff;
+		ticks += 4;
+	}
+
+	private void adc_ll(int accb, boolean decimal) {
+		ac = status & 1;
+		if (!decimal) {
+			acc += ram[ram[pc++] & 0xff] + ac;
+		} else {
+			acc = addBCD(addBCD(accb, ac), ram[ram[pc++] & 0xff]);
+		}
+		setFlags(acc, accb, true, true, true, true);
+		acc &= 0xff;
+		ticks += 3;
+	}
+
+	private void adc_hhllx(int xb, int accb, boolean decimal) {
+		ac = status & 1;
+		tmp = getWord(ram[pc++], ram[pc++]);
+		if (!decimal) {
+			acc += ram[tmp + xb] + ac;
+		} else {
+			acc = addBCD(addBCD(accb, ac), ram[tmp + xb]);
+		}
+		setFlags(acc, accb, true, true, true, true);
+		acc &= 0xff;
+		ticks += 4;
+		if (tmp >> 8 != (tmp + xb) >> 8) {
+			ticks++;
+		}
+	}
+
+	private void adc_hhll(int accb, boolean decimal) {
+		ac = status & 1;
+		if (!decimal) {
+			acc += ram[getWord(ram[pc++], ram[pc++])] + ac;
+		} else {
+			acc = addBCD(addBCD(accb, ac), ram[getWord(ram[pc++], ram[pc++])]);
+		}
+		setFlags(acc, accb, true, true, true, true);
+		acc &= 0xff;
+		ticks += 4;
+	}
+
+	private void adc_nn(int accb, boolean decimal) {
+		ac = status & 1;
+		if (!decimal) {
+			acc += ram[pc++] + ac;
+		} else {
+			acc = addBCD(addBCD(accb, ac), ram[pc++]);
+		}
+		setFlags(acc, accb, true, true, true, true);
+		acc &= 0xff;
+		ticks += 2;
+	}
+
+	private void eor_lly(int yb) {
+		tmp = getWord(ram[ram[pc]], ram[(ram[pc++] + 1) & 0xFF]);
+		acc ^= ram[tmp + yb];
+		setFlags(acc, true, true);
+		ticks += 5;
+		if (tmp >> 8 != (tmp + yb) >> 8) {
+			ticks++;
+		}
+	}
+
+	private void eor_ll_x() {
+		acc ^= ram[getWord(ram[(ram[pc] + x) & 0xFF], ram[(ram[pc++] + x + 1) & 0xFF])];
+		setFlags(acc, true, true);
+		ticks += 6;
+	}
+
+	private void eor_llx(int xb) {
+		acc ^= ram[((ram[pc++] & 0xff) + xb) & 0xff];
+		setFlags(acc, true, true);
+		ticks += 4;
+	}
+
+	private void eor_ll() {
+		acc ^= ram[ram[pc++] & 0xff];
+		setFlags(acc, true, true);
+		ticks += 3;
+	}
+
+	private void eor_hhllx(int xb) {
+		tmp = getWord(ram[pc++], ram[pc++]);
+		acc ^= ram[tmp + xb];
+		setFlags(acc, true, true);
+		ticks += 4;
+		if (tmp >> 8 != (tmp + xb) >> 8) {
+			ticks++;
+		}
+	}
+
+	private void eor_hhll() {
+		acc ^= ram[getWord(ram[pc++], ram[pc++])];
+		setFlags(acc, true, true);
+		ticks += 4;
+	}
+
+	private void eor_nn() {
+		acc ^= ram[pc++];
+		setFlags(acc, true, true);
+		ticks += 2;
+	}
+
+	private void or_lly(int yb) {
+		tmp = getWord(ram[ram[pc]], ram[(ram[pc++] + 1) & 0xFF]);
+		acc |= ram[tmp + yb];
+		setFlags(acc, true, true);
+		ticks += 5;
+		if (tmp >> 8 != (tmp + yb) >> 8) {
+			ticks++;
+		}
+	}
+
+	private void or_ll_x() {
+		acc |= ram[getWord(ram[(ram[pc] + x) & 0xFF], ram[(ram[pc++] + x + 1) & 0xFF])];
+		setFlags(acc, true, true);
+		ticks += 6;
+	}
+
+	private void or_llx(int xb) {
+		acc |= ram[((ram[pc++] & 0xff) + xb) & 0xff];
+		setFlags(acc, true, true);
+		ticks += 4;
+	}
+
+	private void or_ll() {
+		acc |= ram[ram[pc++] & 0xff];
+		setFlags(acc, true, true);
+		ticks += 3;
+	}
+
+	private void or_hhllx(int xb) {
+		tmp = getWord(ram[pc++], ram[pc++]);
+		acc |= ram[tmp + xb];
+		setFlags(acc, true, true);
+		ticks += 4;
+		if (tmp >> 8 != (tmp + xb) >> 8) {
+			ticks++;
+		}
+	}
+
+	private void or_hhll() {
+		acc |= ram[getWord(ram[pc++], ram[pc++])];
+		setFlags(acc, true, true);
+		ticks += 4;
+	}
+
+	private void or_nn() {
+		acc |= ram[pc++];
+		setFlags(acc, true, true);
+		ticks += 2;
+	}
+
+	private void and_lly(int yb) {
+		tmp = getWord(ram[ram[pc]], ram[(ram[pc++] + 1) & 0xFF]);
+		acc &= ram[tmp + yb];
+		setFlags(acc, true, true);
+		ticks += 5;
+		if (tmp >> 8 != (tmp + yb) >> 8) {
+			ticks++;
+		}
+	}
+
+	private void and_ll_x() {
+		acc &= ram[getWord(ram[(ram[pc] + x) & 0xFF], ram[(ram[pc++] + x + 1) & 0xFF])];
+		setFlags(acc, true, true);
+		ticks += 6;
+	}
+
+	private void and_llx(int xb) {
+		acc &= ram[((ram[pc++] & 0xff) + xb) & 0xff];
+		setFlags(acc, true, true);
+		ticks += 4;
+	}
+
+	private void and_ll() {
+		acc &= ram[ram[pc++] & 0xff];
+		setFlags(acc, true, true);
+		ticks += 3;
+	}
+
+	private void and_hhllx(int xb) {
+		tmp = getWord(ram[pc++], ram[pc++]);
+		acc &= ram[tmp + xb];
+		setFlags(acc, true, true);
+		ticks += 4;
+		if (tmp >> 8 != (tmp + xb) >> 8) {
+			ticks++;
+		}
+	}
+
+	private void and_hhll() {
+		acc &= ram[getWord(ram[pc++], ram[pc++])];
+		setFlags(acc, true, true);
+		ticks += 4;
+	}
+
+	private void and_nn() {
+		acc &= ram[pc++];
+		setFlags(acc, true, true);
+		ticks += 2;
+	}
+
+	private void txs(int xb) {
+		stackPointer = xb;
+		ticks += 2;
+	}
+
+	private void tsx() {
+		x = stackPointer & 0xff;
+		setFlags(x, true, true);
+		ticks += 2;
+	}
+
+	private void txa(int xb) {
+		acc = xb;
+		setFlags(acc, true, true);
+		ticks += 2;
+	}
+
+	private void tay(int accb) {
+		y = accb;
+		setFlags(y, true, true);
+		ticks += 2;
+	}
+
+	private void tax(int accb) {
+		x = accb;
+		setFlags(x, true, true);
+		ticks += 2;
+	}
+
+	private void sta_lly(int accb) {
+		ram[getWord(ram[ram[pc]], ram[(ram[pc++] + 1) & 0xFF]) + y] = accb;
+		ticks += 6;
+	}
+
+	private void sta_ll_x(int accb) {
+		ram[getWord(ram[(ram[pc] + x) & 0xFF], ram[(ram[pc++] + x + 1) & 0xFF])] = accb;
+		ticks += 6;
+	}
+
+	private void sta_llx(int xb, int accb) {
+		ram[((ram[pc++] & 0xff) + xb) & 0xff] = accb;
+		ticks += 4;
+	}
+
+	private void sta_ll(int accb) {
+		ram[ram[pc++] & 0xff] = accb;
+		ticks += 3;
+	}
+
+	private void sta_hhllx(int xb, int accb) {
+		ram[getWord(ram[pc++], ram[pc++]) + xb] = accb;
+		ticks += 5;
+	}
+
+	private void sta_hhll(int accb) {
+		ram[getWord(ram[pc++], ram[pc++])] = accb;
+		ticks += 4;
+	}
+
+	private void ldy_llx(int xb) {
+		y = ram[((ram[pc++] & 0xff) + xb) & 0xff];
+		setFlags(y, true, true);
+		ticks += 4;
+	}
+
+	private void ldy_ll() {
+		y = ram[ram[pc++] & 0xff];
+		setFlags(y, true, true);
+		ticks += 3;
+	}
+
+	private void ldy_hhllx(int xb) {
+		tmp = getWord(ram[pc++], ram[pc++]);
+		y = ram[tmp + xb];
+		setFlags(y, true, true);
+		ticks += 4;
+		if (tmp >> 8 != (tmp + xb) >> 8) {
+			ticks++;
+		}
+	}
+
+	private void ldy_hhll() {
+		y = ram[getWord(ram[pc++], ram[pc++])];
+		setFlags(y, true, true);
+		ticks += 4;
+	}
+
+	private void ldy_nn() {
+		y = ram[pc++];
+		setFlags(y, true, true);
+		ticks += 2;
+	}
+
+	private void ldx_lly(int yb) {
+		x = ram[((ram[pc++] & 0xff) + yb) & 0xff];
+		setFlags(x, true, true);
+		ticks += 4;
+	}
+
+	private void ldx_ll() {
+		x = ram[ram[pc++] & 0xff];
+		setFlags(x, true, true);
+		ticks += 3;
+	}
+
+	private void ldx_hhllx(int yb) {
+		tmp = getWord(ram[pc++], ram[pc++]);
+		x = ram[tmp + yb];
+		setFlags(x, true, true);
+		ticks += 4;
+		if (tmp >> 8 != (tmp + yb) >> 8) {
+			ticks++;
+		}
+	}
+
+	private void ldx_hhll() {
+		x = ram[getWord(ram[pc++], ram[pc++])];
+		setFlags(x, true, true);
+		ticks += 4;
+	}
+
+	private void ldx_nn() {
+		x = ram[pc++];
+		setFlags(x, true, true);
+		ticks += 2;
+	}
+
+	private void lda_lly(int yb) {
+		tmp = getWord(ram[ram[pc]], ram[(ram[pc++] + 1) & 0xFF]);
+		acc = ram[tmp + yb];
+		setFlags(acc, true, true);
+		ticks += 5;
+		if (tmp >> 8 != (tmp + yb) >> 8) {
+			ticks++;
+		}
+	}
+
+	private void lda_ll_x() {
+		acc = ram[getWord(ram[(ram[pc] + x) & 0xFF], ram[(ram[pc++] + x + 1) & 0xFF])];
+		setFlags(acc, true, true);
+		ticks += 6;
+	}
+
+	private void lda_llx(int xb) {
+		acc = ram[((ram[pc++] & 0xff) + xb) & 0xff];
+		setFlags(acc, true, true);
+		ticks += 4;
+	}
+
+	private void lda_ll() {
+		acc = ram[ram[pc++] & 0xff];
+		setFlags(acc, true, true);
+		ticks += 3;
+	}
+
+	private void lda_hhll(int xb) {
+		tmp = getWord(ram[pc++], ram[pc++]);
+		acc = ram[tmp + xb];
+		setFlags(acc, true, true);
+		ticks += 4;
+		if (tmp >> 8 != (tmp + xb) >> 8) {
+			ticks++;
+		}
+	}
+
+	private void lda_hhll() {
+		acc = ram[getWord(ram[pc++], ram[pc++])];
+		setFlags(acc, true, true);
+		ticks += 4;
+	}
+
+	private void lda_nn() {
+		acc = ram[pc++];
+		setFlags(acc, true, true);
+		ticks += 2;
+	}
+
+	private void brk() {
+		pc++;
+		push(ram, getHigh(pc));
+		push(ram, getLow(pc));
+		push(ram, status | 0b00010000);
+		pc = getWord(ram[0xFFFE], ram[0xFFFF]);
+		brk = exitOnBreak;
+		ticks += 7;
 	}
 
 	/**
