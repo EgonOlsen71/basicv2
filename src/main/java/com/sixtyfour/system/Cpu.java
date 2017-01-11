@@ -411,6 +411,12 @@ public class Cpu {
 		push(ram, 0);
 		push(ram, 0);
 
+		int tmp = 0;
+		int index = 0;
+		int lo = 0;
+    int hi = 0;
+    int ac = status & 1;
+		
 		do {
 			int lastPc = pc;
 			int cmd = ram[pc++];
@@ -421,12 +427,6 @@ public class Cpu {
 			int xb = x & 0xff;
 			int yb = y & 0xff;
 			int accb = acc & 0xff;
-			int spb = stackPointer & 0xff;
-			int ac = status & 1;
-			int index = 0;
-			int tmp = 0;
-			int lo = 0;
-			int hi = 0;
 
 			while (paused) {
 				try {
@@ -438,24 +438,27 @@ public class Cpu {
 
 			boolean decimal = (status & 0b00001000) != 0;
 
-			synchronized (this) {
-				if (irq) {
-					if (!isInterruptFlagSet()) {
+			
+			if (irq) {
+				if (!isInterruptFlagSet()) {
+				  synchronized (this) {
 						push(ram, getHigh(pc));
 						push(ram, getLow(pc));
 						push(ram, status & 0b11101111);
 						pc = getWord(ram[0xFFFE], ram[0xFFFF]);
 						irq = false;
-					}
+				  }
 				}
+			}
 
-				if (nmi) {
-					push(ram, getHigh(pc));
-					push(ram, getLow(pc));
-					push(ram, status & 0b11101111);
-					pc = getWord(ram[0xFFFA], ram[0xFFFB]);
-					nmi = false;
-				}
+			if (nmi) {
+			  synchronized (this) {
+  				push(ram, getHigh(pc));
+  				push(ram, getLow(pc));
+  				push(ram, status & 0b11101111);
+  				pc = getWord(ram[0xFFFA], ram[0xFFFB]);
+  				nmi = false;
+			  }
 			}
 
 			// System.out.println("cmd: "+Integer.toHexString(cmd)+"/"+pc);
@@ -701,8 +704,8 @@ public class Cpu {
 				break;
 			case 0xBA:
 				// TSX
-				x = spb;
-				setFlags(spb, true, true);
+				x = stackPointer & 0xff;;
+				setFlags(x, true, true);
 				ticks += 2;
 				break;
 			case 0x9A:
@@ -1737,11 +1740,11 @@ public class Cpu {
 	}
 
 	private int getLow(int val) {
-		return val % 256;
+		return val & 255;
 	}
 
 	private int getHigh(int val) {
-		return val / 256;
+		return val >> 8;
 	}
 
 	private int getWord(int lo, int hi) {
