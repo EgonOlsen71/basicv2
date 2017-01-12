@@ -119,19 +119,21 @@ public class ProgramStore {
 			e.printStackTrace();
 			ok = false;
 		}
-		try {
-			PrintWriter out1 = new PrintWriter(outFile);
+		if (ok) {
 			try {
-				out1.append(txt);
+				PrintWriter out1 = new PrintWriter(outFile);
+				try {
+					out1.append(txt);
+				} finally {
+					out1.close();
+				}
 			} finally {
-				out1.close();
-			}
-		} finally {
-			try {
-				outFile.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-				ok = false;
+				try {
+					outFile.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+					ok = false;
+				}
 			}
 		}
 		return ok ? OK : ERROR;

@@ -45,7 +45,7 @@ public class Loader {
 		try (BufferedReader br = new BufferedReader(new InputStreamReader(prg, "UTF-8"))) {
 			while (br.ready()) {
 				String line = br.readLine();
-				if (line.trim().length() > 0) {
+				if (line != null && line.trim().length() > 0) {
 					lines.add(line.trim());
 				}
 			}
