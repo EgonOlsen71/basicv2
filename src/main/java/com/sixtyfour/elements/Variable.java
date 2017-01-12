@@ -89,7 +89,7 @@ public class Variable implements Atom {
 			type = Type.STRING;
 		} else if (c == '%') {
 			type = Type.INTEGER;
-		} else if (Character.isAlphabetic(c) || Character.isDigit(c)) {
+		} else if (Character.isLetter(c) || Character.isDigit(c)) {
 			type = Type.REAL;
 		}
 
@@ -115,7 +115,7 @@ public class Variable implements Atom {
 			int alphaCount = 0;
 			for (int i = 0; i < name.length(); i++) {
 				char cc = name.charAt(i);
-				if (Character.isAlphabetic(cc) || Character.isDigit(cc)) {
+				if (Character.isLetter(cc) || Character.isDigit(cc)) {
 					alphaCount++;
 					if (alphaCount <= 2) {
 						sb.append(cc);

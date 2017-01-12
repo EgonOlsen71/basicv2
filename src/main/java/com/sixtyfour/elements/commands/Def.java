@@ -77,7 +77,7 @@ public class Def extends AbstractCommand {
 				inString = !inString;
 			}
 			if (!inString) {
-				if (Character.isAlphabetic(c) || Character.isDigit(c)) {
+				if (Character.isLetter(c) || Character.isDigit(c)) {
 					sb.append(c);
 				} else {
 					String tmp = VarUtils.toUpper(sb.toString());

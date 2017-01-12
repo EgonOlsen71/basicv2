@@ -219,7 +219,10 @@ public class Parser {
 		}
 		for (int i = 0; i < linePart.length(); i++) {
 			char c = linePart.charAt(i);
-			if (!Character.isAlphabetic(c) && ((i > 0) && (!Character.isDigit(c) && c != '%' && c != '$'))) {
+			if (i==0 && !Character.isLetter(c)) {
+			  throw new RuntimeException("Invalid variable name: " + linePart);
+			}
+			if (!Character.isLetter(c) && ((i > 0) && (!Character.isDigit(c) && c != '%' && c != '$'))) {
 				throw new RuntimeException("Invalid variable name: " + linePart);
 			}
 			if ((c == '%' || c == '$') && i != linePart.length() - 1) {
@@ -1195,7 +1198,7 @@ public class Parser {
 		}
 
 		// Array variables
-		if (Character.isAlphabetic(part.charAt(0)) && (part.endsWith("}") || part.endsWith(")"))) {
+		if (Character.isLetter(part.charAt(0)) && (part.endsWith("}") || part.endsWith(")"))) {
 			String var = VarUtils.toUpper(part);
 			int pos = var.replace('{', '(').indexOf("(");
 			if (pos == -1) {
