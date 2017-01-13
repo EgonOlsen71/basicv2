@@ -596,7 +596,6 @@ public class Basic implements ProgramExecutor {
 				for (int i = pos; i < line.getCommands().size(); i++) {
 
 					if (stop) {
-						machine.getOutputChannel().systemPrintln(0, "\nBREAK IN " + num);
 						break;
 					}
 
@@ -619,7 +618,7 @@ public class Basic implements ProgramExecutor {
 						if (pc.isEnd() || pc.isStop()) {
 							lineCnt = lines.size();
 							if (pc.isStop()) {
-								this.machine.getOutputChannel().systemPrintln(0, "Break in " + num);
+							  stop = true;
 							}
 							break;
 						}
@@ -659,7 +658,10 @@ public class Basic implements ProgramExecutor {
 					}
 				}
 				lineCnt++;
-			} while (lineCnt < lines.size());
+			} while (lineCnt < lines.size() && !stop);
+			if (stop) {
+			  machine.getOutputChannel().systemPrintln(0, "\nBREAK IN " + num);
+			}
 		} catch (Throwable t) {
 			String msg = t.getMessage();
 			String err = "Error in line " + (num != null ? num : "??") + (msg != null ? (": " + msg) : "");
