@@ -112,8 +112,19 @@ public class BasicShell {
 						e1.printStackTrace();
 					}
 				}
+				if (runner!=null) {
+				  runner.registerKey(null);
+				}
 				super.keyReleased(e);
 			}
+			
+			@Override
+      public void keyPressed(KeyEvent e) {
+        if (runner!=null) {
+          runner.registerKey(e.getKeyChar());
+        }
+        super.keyPressed(e);
+      }
 		});
 
 		executor.execute(new Runnable() {

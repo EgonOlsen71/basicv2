@@ -21,6 +21,10 @@ public class Runner implements Runnable {
 		olsenBasic.setOutputChannel(new ShellOutputChannel(shellFrame));
 		olsenBasic.setInputProvider(new ShellInputProvider(shellFrame));
 	}
+	
+	public void registerKey(Character key) {
+	  ((ShellInputProvider) olsenBasic.getInputProvider()).setCurrentKey(key);
+	}
 
 	/**
 	 * Start BASIC task and blocks starter until task ends

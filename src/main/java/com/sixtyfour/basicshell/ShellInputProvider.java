@@ -7,20 +7,17 @@ import com.sixtyfour.plugins.InputProvider;
  */
 public class ShellInputProvider implements InputProvider {
 	private BasicShell shellFrame;
-
+	private Character currentKey;
+	
 	public ShellInputProvider(BasicShell shellFrame) {
 		this.shellFrame = shellFrame;
 	}
 
 	@Override
 	public Character readKey() {
-		if (shellFrame.peek()) {
-			String s = shellFrame.getString();
-			if (s.length() > 0) {
-				return s.charAt(0);
-			}
-		}
-		return null;
+	  Character c=currentKey;
+	  currentKey=null;
+		return c;
 	}
 
 	@Override
@@ -28,4 +25,14 @@ public class ShellInputProvider implements InputProvider {
 		 int l = shellFrame.getPenultimateOutputSize();
 	     return shellFrame.getString().substring(l+1);
 	}
+
+  public Character getCurrentKey()
+  {
+    return currentKey;
+  }
+
+  public void setCurrentKey(Character currentKey)
+  {
+    this.currentKey = currentKey;
+  }
 }
