@@ -1264,7 +1264,7 @@ public class Cpu {
 
 	private void jmp_hhll_() {
 		lo = ram[pc++];
-		hi = ram[pc++];
+		hi = ram[pc];
 		tmp = ram[getWord(lo, hi)];
 		lo = (lo + 1) & 0xff;
 		pc = getWord(tmp, ram[getWord(lo, hi)]);
@@ -1272,7 +1272,7 @@ public class Cpu {
 	}
 
 	private void jmp_hhll() {
-		pc = getWord(ram[pc++], ram[pc++]);
+		pc = getWord(ram[pc++], ram[pc]);
 		ticks += 3;
 	}
 

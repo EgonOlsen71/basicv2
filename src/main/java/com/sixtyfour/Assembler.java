@@ -308,11 +308,12 @@ public class Assembler implements ProgramExecutor {
 
 	/**
 	 * Dumps the compiled program into a kind of monitor view. If the program
-	 * hasn't been compiled yet, null will be returned.
+	 * hasn't been compiled yet, an empty string will be returned.
 	 */
+	@Override
 	public String toString() {
 		if (program == null) {
-			return null;
+			return "";
 		}
 		Program prg = program;
 		StringBuilder sb = new StringBuilder();

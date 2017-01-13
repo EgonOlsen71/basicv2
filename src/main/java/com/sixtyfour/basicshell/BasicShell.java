@@ -237,9 +237,11 @@ public class BasicShell {
    */
 	private void dir() {
 		File[] filesInFolder = new File(".").listFiles();
-		for (File fileEntry : filesInFolder) {
-			if (fileEntry.isFile()) {
-				putString(fileEntry.getName() + " -- " + fileEntry.length() + '\n');
+		if (filesInFolder != null) {
+			for (File fileEntry : filesInFolder) {
+				if (fileEntry.isFile()) {
+					putString(fileEntry.getName() + " -- " + fileEntry.length() + '\n');
+				}
 			}
 		}
 	}
