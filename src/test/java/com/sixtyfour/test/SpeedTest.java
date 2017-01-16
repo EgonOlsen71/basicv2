@@ -3,6 +3,7 @@ package com.sixtyfour.test;
 import com.sixtyfour.Assembler;
 import com.sixtyfour.Basic;
 import com.sixtyfour.Loader;
+import com.sixtyfour.plugins.impl.ConsoleOutputChannel;
 
 
 public class SpeedTest
@@ -23,7 +24,7 @@ public class SpeedTest
     long time = System.currentTimeMillis();
     for (int i = 0; i < 10000; i++)
     {
-      System.out.println("Basic run: "+i);
+      System.out.println("Basic run: " + i);
       testBasic(basic);
     }
     long timeB = System.currentTimeMillis() - time;
@@ -31,7 +32,7 @@ public class SpeedTest
     time = System.currentTimeMillis();
     for (int i = 0; i < 10000; i++)
     {
-      System.out.println("Assembler run: "+i);
+      System.out.println("Assembler run: " + i);
       testAsm(asm);
     }
     System.out.println("Assembler: " + (System.currentTimeMillis() - time) + "ms");
@@ -49,6 +50,18 @@ public class SpeedTest
   private static void testBasic(String[] code)
   {
     Basic basic = new Basic(code);
+    basic.setOutputChannel(new ConsoleOutputChannel()
+    {
+      @Override
+      public void systemPrint(int id, String txt) {
+        //
+      }
+
+      @Override
+      public void systemPrintln(int id, String txt) {
+        //
+      }
+    });
     basic.run();
   }
 }
