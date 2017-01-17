@@ -12,8 +12,8 @@ import java.util.List;
  */
 public class FunctionList {
 
-	/** The Constant FUNCTIONS. */
-	private static final List<Function> FUNCTIONS = Collections.unmodifiableList(new ArrayList<Function>() {
+	/** The FUNCTIONS. */
+	private static List<Function> FUNCTIONS = Collections.unmodifiableList(new ArrayList<Function>() {
 		private static final long serialVersionUID = 1L;
 
 		{
@@ -45,6 +45,14 @@ public class FunctionList {
 			this.add(new Fn());
 		}
 	});
+
+	public static void registerNewFunctions(List<Function> functions) {
+		if (functions != null && !functions.isEmpty()) {
+			FUNCTIONS = new ArrayList<Function>(FUNCTIONS);
+			FUNCTIONS.addAll(functions);
+			FUNCTIONS = Collections.unmodifiableList(FUNCTIONS);
+		}
+	}
 
 	/**
 	 * Gets the function list.

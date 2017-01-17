@@ -9,10 +9,9 @@ import java.util.List;
  */
 public class CommandList {
 
-	/** The Constant COMMANDS. */
-	private static final List<Command> COMMANDS = Collections.unmodifiableList(new ArrayList<Command>() {
+	/** The COMMANDS. */
+	private static List<Command> COMMANDS = Collections.unmodifiableList(new ArrayList<Command>() {
 		private static final long serialVersionUID = 1L;
-
 		{
 			add(new Let());
 			add(new For());
@@ -56,6 +55,14 @@ public class CommandList {
 			add(new Verify());
 		}
 	});
+
+	public static void registerNewCommands(List<Command> commands) {
+		if (commands != null && !commands.isEmpty()) {
+			COMMANDS = new ArrayList<Command>(COMMANDS);
+			COMMANDS.addAll(commands);
+			COMMANDS = Collections.unmodifiableList(COMMANDS);
+		}
+	}
 
 	/**
 	 * Gets all commands.

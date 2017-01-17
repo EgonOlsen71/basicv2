@@ -3,14 +3,19 @@ package com.sixtyfour;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.sixtyfour.elements.commands.Command;
+import com.sixtyfour.elements.commands.CommandList;
 import com.sixtyfour.elements.commands.For;
 import com.sixtyfour.elements.commands.Next;
 import com.sixtyfour.elements.commands.Rem;
 import com.sixtyfour.elements.commands.internal.Delay;
+import com.sixtyfour.elements.functions.FunctionList;
+import com.sixtyfour.extensions.BasicExtension;
 import com.sixtyfour.parser.Line;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.plugins.InputProvider;
@@ -60,6 +65,8 @@ public class Basic implements ProgramExecutor {
 	private Tracer tracer = null;
 
 	private LoopMode loopMode = LoopMode.EXECUTE;
+
+	private static Set<String> addedExtensions = new HashSet<String>();
 
 	/**
 	 * Instantiates a new instance for a BASIC program. No
@@ -118,6 +125,32 @@ public class Basic implements ProgramExecutor {
 		} else {
 			this.machine = machine;
 		}
+	}
+
+	/**
+	 * Static method to register a BASIC extension. This is static, because all
+	 * registered extensions are available in all Basic instances. Adding an
+	 * extension multiple times does no harm.
+	 * 
+	 * @param extension
+	 *            the extension to add
+	 */
+	public static void registerExtension(BasicExtension extension) {
+		String name = extension.getClass().getName();
+		if (!addedExtensions.contains(name)) {
+			addedExtensions.add(name);
+			CommandList.registerNewCommands(extension.getCommands());
+			FunctionList.registerNewFunctions(extension.getFunctions());
+		}
+	}
+
+	/**
+	 * Returns the BASIC code.
+	 * 
+	 * @return the code, one line per array element
+	 */
+	public String[] getCode() {
+		return this.code;
 	}
 
 	/**
@@ -618,7 +651,7 @@ public class Basic implements ProgramExecutor {
 						if (pc.isEnd() || pc.isStop()) {
 							lineCnt = lines.size();
 							if (pc.isStop()) {
-							  stop = true;
+								stop = true;
 							}
 							break;
 						}
@@ -660,7 +693,7 @@ public class Basic implements ProgramExecutor {
 				lineCnt++;
 			} while (lineCnt < lines.size() && !stop);
 			if (stop) {
-			  machine.getOutputChannel().systemPrintln(0, "\nBREAK IN " + num);
+				machine.getOutputChannel().systemPrintln(0, "\nBREAK IN " + num);
 			}
 		} catch (Throwable t) {
 			String msg = t.getMessage();

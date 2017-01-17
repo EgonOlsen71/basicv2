@@ -1,0 +1,41 @@
+package com.sixtyfour.extensions.graphics.commands;
+
+import java.util.List;
+
+import com.sixtyfour.elements.Type;
+import com.sixtyfour.elements.commands.AbstractCommand;
+import com.sixtyfour.parser.Atom;
+import com.sixtyfour.parser.Parser;
+import com.sixtyfour.system.Machine;
+
+/**
+ * @author EgonOlsen
+ * 
+ */
+public abstract class AbstractGraphicsCommand extends AbstractCommand {
+
+	protected List<Atom> pars;
+
+	public AbstractGraphicsCommand(String name) {
+		super(name);
+	}
+
+	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine, int parCount, int addPars) {
+		super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine);
+		term = Parser.getTerm(this, linePart, machine, true);
+		pars = Parser.getParameters(term);
+
+		if (pars.size() < parCount || pars.size() > parCount + addPars) {
+			throw new RuntimeException("Syntax error: " + this);
+		}
+
+		return null;
+	}
+
+	protected void checkType(Atom x) {
+		if (x.getType().equals(Type.STRING)) {
+			throw new RuntimeException("Type mismatch error: " + this);
+		}
+	}
+
+}
