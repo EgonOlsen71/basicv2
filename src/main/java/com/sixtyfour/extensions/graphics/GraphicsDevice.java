@@ -1,8 +1,11 @@
 package com.sixtyfour.extensions.graphics;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowStateListener;
 import java.awt.image.BufferedImage;
@@ -29,14 +32,16 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 import com.sixtyfour.extensions.graphics.commands.impl.FloodFiller;
+import com.sixtyfour.extensions.graphics.commands.impl.FontProvider;
 import com.sixtyfour.extensions.graphics.commands.impl.Shape;
+import com.sixtyfour.plugins.PrintConsumer;
 import com.sixtyfour.system.Machine;
 
 /**
  * @author EgonOlsen
  * 
  */
-public class GraphicsDevice {
+public class GraphicsDevice implements PrintConsumer {
 
 	private static Map<Machine, GraphicsDevice> machine2window = new WeakHashMap<Machine, GraphicsDevice>();
 	private JFrame frame = null;
@@ -53,6 +58,10 @@ public class GraphicsDevice {
 	private long frameTime = 0;
 	private long lastDif;
 	private Map<Integer, Shape> shapes = new HashMap<Integer, Shape>();
+	private int cursorX = 0;
+	private int cursorY = 0;
+	private RenderingHints noAa = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+	private RenderingHints aa = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
 	public static GraphicsDevice getDevice(Machine machine) {
 		return machine2window.get(machine);
@@ -78,8 +87,7 @@ public class GraphicsDevice {
 		width = x;
 		height = y;
 		frame = new JFrame("Graphics " + x + "*" + y);
-		frame.setPreferredSize(new Dimension(x, y));
-		frame.setSize(x, y);
+		frame.setLayout(new BorderLayout());
 		frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		frame.addWindowStateListener(new WindowStateListener() {
 			@Override
@@ -95,10 +103,12 @@ public class GraphicsDevice {
 		gscreen.setColor(Color.BLACK);
 		gscreen.fillRect(0, 0, x, y);
 		gscreen.setColor(color);
+		gscreen.setRenderingHints(noAa);
 
 		JLabel label = new JLabel();
 		label.setIcon(new ImageIcon(screen));
-		frame.add(label);
+		label.setPreferredSize(new Dimension(x, y));
+		frame.add(label, BorderLayout.CENTER);
 		frame.pack();
 
 		frame.setVisible(true);
@@ -149,6 +159,9 @@ public class GraphicsDevice {
 	public void color(int r, int g, int b, int a) {
 		color = new Color(r & 0xff, g & 0xff, b & 0xff, a & 0xff);
 		getContext().setColor(color);
+		if (gbackBuffer != null) {
+			gscreen.setColor(color);
+		}
 	}
 
 	public void line(int xs, int ys, int xe, int ye) {
@@ -157,7 +170,9 @@ public class GraphicsDevice {
 	}
 
 	public void plot(int x, int y) {
-		getScreen().setRGB(x, y, color.getRGB());
+		if (x>=0 && x<width && y>=0 && y<height) {
+			getScreen().setRGB(x, y, color.getRGB());
+		}
 		update();
 	}
 
@@ -256,6 +271,53 @@ public class GraphicsDevice {
 			}
 		}
 		lastTime = System.nanoTime();
+	}
+
+	public void setCursor(int x, int y) {
+		this.cursorX = x;
+		this.cursorY = y;
+	}
+
+	public void setFont(String fontName, int style, int size) {
+		Font font = FontProvider.getFont(fontName, style, size);
+		getContext().setFont(font);
+		if (gbackBuffer != null) {
+			gscreen.setFont(font);
+		}
+	}
+
+	@Override
+	public void print(int id, String txt) {
+		println(id, txt);
+	}
+
+	@Override
+	public void println(int id, String txt) {
+		Graphics2D context = getContext();
+		context.drawString(txt, cursorX, cursorY);
+		cursorX += context.getFontMetrics().getStringBounds(txt, getContext()).getWidth();
+		update();
+	}
+
+	@Override
+	public void systemPrint(int id, String txt) {
+		System.err.print(id + "/" + txt);
+	}
+
+	@Override
+	public void systemPrintln(int id, String txt) {
+		System.err.println(id + "/" + txt);
+	}
+
+	public void setAAMode(boolean useAA) {
+		if (useAA) {
+			getContext().setRenderingHints(aa);
+		} else {
+			getContext().setRenderingHints(noAa);
+		}
+		if (gbackBuffer != null) {
+			gscreen.setRenderingHints(getContext().getRenderingHints());
+		}
 	}
 
 	private Graphics2D getContext() {

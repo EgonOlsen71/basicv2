@@ -55,4 +55,10 @@ GSAVE "filename" - Saves the current screen to disk with the given filename. The
 
 DRAWSHAPE id, x, y(, xd, yd) -  Draws a shape with the id "id" at position x,y. xd and yd are optional scaling parameter which indicate the size of the drawn shape in x- respectively y-direction.
 
+AAMODE 0|1 - Sets the anti-aliasing mode. 0 is off (default) and 1 (or any other value) is on.
+
+FONT "font name", size(, style) -  Sets a font to be used to text rendering. "font name" should be name of a font that's installed on the system. Something like "Arial" for example. size is the size in pixels. style is an optional parameter. If given, it can either be 0 (for plain), 1 (for bold) or 2 (for italic). Default is plain, any other value will be treated as such as well.
+
+GPRINT x,y,"what to print" - Prints text onto the graphics screen. The basic syntax is the same as for a normal PRINT in BASIC put it take two additional parameters for the location.
+
 LIMIT fps - Limits the frame rate to the set value in frames per second, if it isn't lower anyway. This can be used to achieve a constant timing without adding busy-wait loops to the BASIC code. 0 means no limit.

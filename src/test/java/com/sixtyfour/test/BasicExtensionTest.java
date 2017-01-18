@@ -21,6 +21,22 @@ public class BasicExtensionTest {
 		testFractal();
 		testShapes();
 		testDoubleBuffer();
+		testGPrint();
+		test3D();
+	}
+
+	private static void test3D() {
+		String[] vary = Loader.loadProgram("src/test/resources/ext/graphics3d.bas");
+		Basic.registerExtension(new GraphicsBasic());
+		Basic inty = new Basic(vary);
+		inty.run();
+	}
+
+	private static void testGPrint() {
+		String[] vary = Loader.loadProgram("src/test/resources/ext/gprint.bas");
+		Basic.registerExtension(new GraphicsBasic());
+		Basic inty = new Basic(vary);
+		inty.run();
 	}
 
 	private static void testDoubleBuffer() {
