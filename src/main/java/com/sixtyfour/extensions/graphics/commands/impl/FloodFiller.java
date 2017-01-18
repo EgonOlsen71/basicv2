@@ -82,7 +82,6 @@ public class FloodFiller {
 					downLine = false;
 				}
 			}
-
 		}
 	}
 

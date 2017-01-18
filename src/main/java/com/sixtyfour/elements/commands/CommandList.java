@@ -55,12 +55,14 @@ public class CommandList {
 			add(new Verify());
 		}
 	});
+	
+	private final static Command LET=COMMANDS.get(0);
 
 	public static void registerNewCommands(List<Command> commands) {
 		if (commands != null && !commands.isEmpty()) {
-			COMMANDS = new ArrayList<Command>(COMMANDS);
-			COMMANDS.addAll(commands);
-			COMMANDS = Collections.unmodifiableList(COMMANDS);
+		  commands = new ArrayList<Command>(commands);
+		  commands.addAll(COMMANDS);
+			COMMANDS = Collections.unmodifiableList(commands);
 		}
 	}
 
@@ -79,6 +81,6 @@ public class CommandList {
 	 * @return the let command
 	 */
 	public static Command getLetCommand() {
-		return COMMANDS.get(0);
+		return LET;
 	}
 }

@@ -10,7 +10,7 @@ import com.sixtyfour.extensions.graphics.GraphicsBasic;
  */
 public class BasicExtensionTest {
 	public static void main(String[] args) throws Exception {
-		testGronGroff();
+	  testGronGroff();
 		testLines();
 		testPlot();
 		testCircles();
@@ -19,8 +19,16 @@ public class BasicExtensionTest {
 		testClears();
 		testFloodFill();
 		testFractal();
+		testShapes();
 	}
 
+	private static void testShapes() {
+    String[] vary = Loader.loadProgram("src/test/resources/ext/shapes.bas");
+    Basic.registerExtension(new GraphicsBasic());
+    Basic inty = new Basic(vary);
+    inty.run();
+  }
+	
 	private static void testFractal() {
 		String[] vary = Loader.loadProgram("src/test/resources/ext/fractal.bas");
 		Basic.registerExtension(new GraphicsBasic());

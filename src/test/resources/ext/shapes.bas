@@ -1,0 +1,9 @@
+10 GRON 640,480
+15 A=LOADSHAPE("src/test/resources/bin/sprite.png")
+16 B=LOADSHAPE("src/test/resources/bin/sprite2.png")
+20 FOR I=0TO30000
+25 DRAWSHAPE A,640*RND(0),480*RND(0)
+30 DRAWSHAPE B,640*RND(0),480*RND(0), 256*RND(0), 256*RND(0)
+35 PRINT "SHAPE:";I
+40 NEXTI
+50 GROFF

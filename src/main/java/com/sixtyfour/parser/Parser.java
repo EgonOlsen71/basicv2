@@ -1131,18 +1131,19 @@ public class Parser {
 	 * @return the atom
 	 */
 	private static Atom createAtom(String part, Map<String, Term> termMap, Machine machine) {
-		// Identify commands
+	// Identify functions
+    Function function = Parser.getFunction(part, termMap, machine);
+	  
+	  // Identify commands
 		String strippedPart = Parser.replaceStrings(part, ' ');
 		Command command = Parser.getCommand(strippedPart);
-		if (command != null) {
+		if (command != null && function==null) {
 			throw new RuntimeException("Syntax error: " + part + "/" + command.getName());
 		}
 
-		// Identify functions
-		Function function = Parser.getFunction(part, termMap, machine);
 		if (function != null) {
-			return function;
-		}
+      return function;
+    }
 
 		// String constants
 		if (part.startsWith("\"")) {

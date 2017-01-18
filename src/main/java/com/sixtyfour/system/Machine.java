@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
+import com.sixtyfour.Basic;
 import com.sixtyfour.elements.Variable;
 import com.sixtyfour.elements.commands.Command;
 import com.sixtyfour.elements.commands.For;
@@ -13,6 +14,7 @@ import com.sixtyfour.elements.systemvars.Pie;
 import com.sixtyfour.elements.systemvars.Status;
 import com.sixtyfour.elements.systemvars.Time;
 import com.sixtyfour.elements.systemvars.TimeDate;
+import com.sixtyfour.extensions.BasicExtension;
 import com.sixtyfour.parser.Operator;
 import com.sixtyfour.plugins.DeviceProvider;
 import com.sixtyfour.plugins.InputProvider;
@@ -261,6 +263,9 @@ public class Machine {
 			ram[i] = 0;
 		}
 		clearVars();
+		for (BasicExtension ex: Basic.getExtensions()) {
+		  ex.reset(this);
+		}
 	}
 
 	/**

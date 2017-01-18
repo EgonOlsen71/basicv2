@@ -9,8 +9,10 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.awt.image.RenderedImage;
 import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +29,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 import com.sixtyfour.extensions.graphics.commands.impl.FloodFiller;
+import com.sixtyfour.extensions.graphics.commands.impl.Shape;
 import com.sixtyfour.system.Machine;
 
 /**
@@ -44,6 +47,7 @@ public class GraphicsDevice {
 	private int height = 0;
 	private int[] pixels = null;
 	private Color color = Color.white;
+	private Map<Integer, Shape> shapes=new HashMap<Integer, Shape>();
 
 	public static GraphicsDevice getDevice(Machine machine) {
 		return machine2window.get(machine);
@@ -96,7 +100,25 @@ public class GraphicsDevice {
 	}
 
 	public void dispose() {
+	  shapes.clear();
 		removeFromMap();
+	}
+	
+	public void addShape(Shape shape) {
+	  shapes.put(shape.getId(), shape);
+	}
+	
+	public int addShape(String shapeName) {
+	  BufferedImage img = null;
+	  try {
+	      img = ImageIO.read(new File(shapeName));
+	  } catch (Exception e) {
+	    return -1;
+	  }
+	  
+	  Shape shape=new Shape(img);
+	  addShape(shape);
+	  return shape.getId();
 	}
 
 	public void color(int r, int g, int b, int a) {
@@ -163,15 +185,24 @@ public class GraphicsDevice {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-
 	}
+	
+	public void drawShape(int id, int x, int y, int xd, int yd)
+  {
+	  Shape shape=shapes.get(id);
+	  if (shape==null) {
+	    throw new RuntimeException("Undefined shape "+id);
+	  }
+	  shape.paint(gscreen, x, y, xd, yd);
+    frame.repaint();
+  }
 
 	private void removeFromMap() {
 		List<Machine> keys = new ArrayList<Machine>();
 		for (Entry<Machine, GraphicsDevice> entry : machine2window.entrySet()) {
 			if (entry.getValue() == this) {
 				keys.add(entry.getKey());
-				entry.getValue().close();
+				this.close();
 			}
 		}
 		for (Machine machine : keys) {
@@ -184,4 +215,5 @@ public class GraphicsDevice {
 		frame.setVisible(false);
 		frame.dispose();
 	}
+  
 }

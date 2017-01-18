@@ -10,6 +10,7 @@ import com.sixtyfour.extensions.BasicExtension;
 import com.sixtyfour.extensions.graphics.commands.Circle;
 import com.sixtyfour.extensions.graphics.commands.Clear;
 import com.sixtyfour.extensions.graphics.commands.Color;
+import com.sixtyfour.extensions.graphics.commands.DrawShape;
 import com.sixtyfour.extensions.graphics.commands.Fill;
 import com.sixtyfour.extensions.graphics.commands.FillMode;
 import com.sixtyfour.extensions.graphics.commands.Groff;
@@ -18,42 +19,72 @@ import com.sixtyfour.extensions.graphics.commands.Gsave;
 import com.sixtyfour.extensions.graphics.commands.Line;
 import com.sixtyfour.extensions.graphics.commands.Plot;
 import com.sixtyfour.extensions.graphics.commands.Rect;
+import com.sixtyfour.extensions.graphics.functions.LoadShape;
+import com.sixtyfour.system.Machine;
+
 
 /**
- * A basic BASIC extension, that adds some simple graphics commands. Note that
- * these graphics are not C64 related, but make full use of the actual machine's
- * capabilities on which your program is running on.
+ * A basic BASIC extension, that adds some simple graphics commands. Note that these graphics are not C64 related, but
+ * make full use of the actual machine's capabilities on which your program is running on.
  * 
  * @author EgonOlsen
  * 
  */
-public class GraphicsBasic implements BasicExtension {
+public class GraphicsBasic
+  implements BasicExtension
+{
 
-	private final static List<Command> COMMANDS = Collections.unmodifiableList(new ArrayList<Command>() {
-		private static final long serialVersionUID = 1L;
-		{
-			this.add(new Gron());
-			this.add(new Groff());
-			this.add(new Line());
-			this.add(new Color());
-			this.add(new Plot());
-			this.add(new Circle());
-			this.add(new FillMode());
-			this.add(new Rect());
-			this.add(new Clear());
-			this.add(new Fill());
-			this.add(new Gsave());
-		}
-	});
+  private final static List<Command> COMMANDS = Collections.unmodifiableList(new ArrayList<Command>()
+  {
+    private static final long serialVersionUID = 1L;
+    {
+      this.add(new Gron());
+      this.add(new Groff());
+      this.add(new Line());
+      this.add(new Color());
+      this.add(new Plot());
+      this.add(new Circle());
+      this.add(new FillMode());
+      this.add(new Rect());
+      this.add(new Clear());
+      this.add(new Fill());
+      this.add(new Gsave());
+      this.add(new DrawShape());
+    }
+  });
+  
+  private final static List<Function> FUNCTIONS = Collections.unmodifiableList(new ArrayList<Function>()
+  {
+    private static final long serialVersionUID = 1L;
+    {
+      this.add(new LoadShape());
+    }
+  });
 
-	@Override
-	public List<Command> getCommands() {
-		return COMMANDS;
-	}
 
-	@Override
-	public List<Function> getFunctions() {
-		return null;
-	}
+  @Override
+  public List<Command> getCommands()
+  {
+    return COMMANDS;
+  }
+
+
+  @Override
+  public List<Function> getFunctions()
+  {
+    return FUNCTIONS;
+  }
+
+
+  @Override
+  public void reset(Machine machine)
+  {
+    GraphicsDevice window = GraphicsDevice.getDevice(machine);
+    if (window != null)
+    {
+      window.dispose();
+    }
+
+  }
 
 }

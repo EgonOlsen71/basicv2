@@ -299,6 +299,9 @@ public class BasicShell {
 			} else if (sl.equals("dir")) {
 				dir();
 			} else if (sl.equals("run")) {
+			  if (runner!=null) {
+			    runner.dispose();
+			  }
 				runner = new Runner(store.toArray(), this);
 				runner.synchronousStart();
 			} else if (split[0].toLowerCase().equals("save")) {

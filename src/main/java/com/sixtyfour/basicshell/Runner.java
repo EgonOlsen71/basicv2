@@ -3,6 +3,7 @@ package com.sixtyfour.basicshell;
 import java.util.concurrent.Future;
 
 import com.sixtyfour.Basic;
+import com.sixtyfour.extensions.graphics.GraphicsBasic;
 
 /**
  * Runs the program that's inside the editor.
@@ -15,11 +16,16 @@ public class Runner implements Runnable {
 	private Basic runningBasic = null;
 
 	public Runner(String[] program, BasicShell shellFrame) {
-		this.olsenBasic = new Basic(program);
-		// this.olsenBasic.setLoopMode(LoopMode.DELAY);
-		// this.olsenBasic.setTracer(new DelayTracer(3));
+	  Basic.registerExtension(new GraphicsBasic());
+	  this.olsenBasic = new Basic(program);
 		olsenBasic.setOutputChannel(new ShellOutputChannel(shellFrame));
 		olsenBasic.setInputProvider(new ShellInputProvider(shellFrame));
+	}
+	
+	public void dispose() {
+	  if (olsenBasic!=null) {
+	    olsenBasic.resetMemory();
+	  }
 	}
 	
 	public void registerKey(Character key) {
