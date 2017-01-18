@@ -41,7 +41,9 @@ public class GraphicsDevice {
 	private static Map<Machine, GraphicsDevice> machine2window = new WeakHashMap<Machine, GraphicsDevice>();
 	private JFrame frame = null;
 	private BufferedImage screen = null;
+	private BufferedImage backBuffer = null;
 	private Graphics2D gscreen = null;
+	private Graphics2D gbackBuffer = null;
 	private boolean filled = false;
 	private int width = 0;
 	private int height = 0;
@@ -104,6 +106,26 @@ public class GraphicsDevice {
 		removeFromMap();
 	}
 	
+	public void setBufferMode(boolean doubleBuffer) {
+	  if (doubleBuffer) {
+  	  if (backBuffer==null) {
+  	    backBuffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+  	    gbackBuffer = backBuffer.createGraphics();
+  	    gbackBuffer.setColor(Color.BLACK);
+  	    gbackBuffer.fillRect(0, 0, width, height);
+  	    gbackBuffer.setColor(color);
+  	    pixels=null;
+  	  }
+	  } else {
+	    if (backBuffer!=null) {
+        backBuffer = null;
+        gbackBuffer.dispose();
+        gbackBuffer=null;
+        pixels=null;
+      }
+	  }
+	}
+	
 	public void addShape(Shape shape) {
 	  shapes.put(shape.getId(), shape);
 	}
@@ -123,33 +145,33 @@ public class GraphicsDevice {
 
 	public void color(int r, int g, int b, int a) {
 		color = new Color(r & 0xff, g & 0xff, b & 0xff, a & 0xff);
-		gscreen.setColor(color);
+		getContext().setColor(color);
 	}
 
 	public void line(int xs, int ys, int xe, int ye) {
-		gscreen.drawLine(xs, ys, xe, ye);
+	  getContext().drawLine(xs, ys, xe, ye);
 		frame.repaint();
 	}
 
 	public void plot(int x, int y) {
-		screen.setRGB(x, y, color.getRGB());
+	  getScreen().setRGB(x, y, color.getRGB());
 		frame.repaint();
 	}
 
 	public void circle(int x, int y, int xr, int yr) {
 		if (filled) {
-			gscreen.fillOval(x - xr, y - yr, xr * 2, yr * 2);
+		  getContext().fillOval(x - xr, y - yr, xr * 2, yr * 2);
 		} else {
-			gscreen.drawOval(x - xr, y - yr, xr * 2, yr * 2);
+		  getContext().drawOval(x - xr, y - yr, xr * 2, yr * 2);
 		}
 		frame.repaint();
 	}
 
 	public void rect(int x1, int y1, int x2, int y2) {
 		if (filled) {
-			gscreen.fillRect(x1, y1, x2 - x1 + 1, y2 - y1 + 1);
+		  getContext().fillRect(x1, y1, x2 - x1 + 1, y2 - y1 + 1);
 		} else {
-			gscreen.drawRect(x1, y1, x2 - x1 + 1, y2 - y1 + 1);
+		  getContext().drawRect(x1, y1, x2 - x1 + 1, y2 - y1 + 1);
 		}
 		frame.repaint();
 
@@ -160,13 +182,13 @@ public class GraphicsDevice {
 	}
 
 	public void clear() {
-		gscreen.fillRect(0, 0, width, height);
+	  getContext().fillRect(0, 0, width, height);
 		frame.repaint();
 	}
 
 	public void fill(int x, int y) {
 		if (pixels == null) {
-			DataBufferInt data = (DataBufferInt) (screen.getRaster().getDataBuffer());
+			DataBufferInt data = (DataBufferInt) getScreen().getRaster().getDataBuffer();
 			pixels = data.getData();
 		}
 		new FloodFiller().fill(pixels, width, height, x, y, color);
@@ -180,7 +202,7 @@ public class GraphicsDevice {
 				ImageWriter iw = (ImageWriter) itty.next();
 				ImageWriteParam iwp = iw.getDefaultWriteParam();
 				iw.setOutput(ios);
-				iw.write(null, new IIOImage((RenderedImage) screen, null, null), iwp);
+				iw.write(null, new IIOImage((RenderedImage) getScreen(), null, null), iwp);
 			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -193,10 +215,32 @@ public class GraphicsDevice {
 	  if (shape==null) {
 	    throw new RuntimeException("Undefined shape "+id);
 	  }
-	  shape.paint(gscreen, x, y, xd, yd);
+	  shape.paint(getContext(), x, y, xd, yd);
     frame.repaint();
   }
 
+	public void flip() {
+	  if (backBuffer==null) {
+	    return;
+	  }
+	  gscreen.drawImage(backBuffer, 0, 0, null);
+	  frame.repaint();
+	}
+	
+	private Graphics2D getContext() {
+	  if (gbackBuffer!=null) {
+	    return gbackBuffer;
+	  }
+	  return gscreen;
+	}
+	
+	private BufferedImage getScreen() {
+    if (backBuffer!=null) {
+      return backBuffer;
+    }
+    return screen;
+  }
+	
 	private void removeFromMap() {
 		List<Machine> keys = new ArrayList<Machine>();
 		for (Entry<Machine, GraphicsDevice> entry : machine2window.entrySet()) {
@@ -212,6 +256,9 @@ public class GraphicsDevice {
 
 	private void close() {
 		gscreen.dispose();
+		if (gbackBuffer!=null) {
+		  gbackBuffer.dispose();
+		}
 		frame.setVisible(false);
 		frame.dispose();
 	}

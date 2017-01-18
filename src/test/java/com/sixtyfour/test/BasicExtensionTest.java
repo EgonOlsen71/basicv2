@@ -20,8 +20,16 @@ public class BasicExtensionTest {
 		testFloodFill();
 		testFractal();
 		testShapes();
+	  testDoubleBuffer();
 	}
 
+	private static void testDoubleBuffer() {
+    String[] vary = Loader.loadProgram("src/test/resources/ext/doublebuffer.bas");
+    Basic.registerExtension(new GraphicsBasic());
+    Basic inty = new Basic(vary);
+    inty.run();
+  }
+	
 	private static void testShapes() {
     String[] vary = Loader.loadProgram("src/test/resources/ext/shapes.bas");
     Basic.registerExtension(new GraphicsBasic());

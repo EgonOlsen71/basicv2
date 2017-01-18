@@ -7,12 +7,14 @@ import java.util.List;
 import com.sixtyfour.elements.commands.Command;
 import com.sixtyfour.elements.functions.Function;
 import com.sixtyfour.extensions.BasicExtension;
+import com.sixtyfour.extensions.graphics.commands.BufferMode;
 import com.sixtyfour.extensions.graphics.commands.Circle;
 import com.sixtyfour.extensions.graphics.commands.Clear;
 import com.sixtyfour.extensions.graphics.commands.Color;
 import com.sixtyfour.extensions.graphics.commands.DrawShape;
 import com.sixtyfour.extensions.graphics.commands.Fill;
 import com.sixtyfour.extensions.graphics.commands.FillMode;
+import com.sixtyfour.extensions.graphics.commands.Flip;
 import com.sixtyfour.extensions.graphics.commands.Groff;
 import com.sixtyfour.extensions.graphics.commands.Gron;
 import com.sixtyfour.extensions.graphics.commands.Gsave;
@@ -50,6 +52,8 @@ public class GraphicsBasic
       this.add(new Fill());
       this.add(new Gsave());
       this.add(new DrawShape());
+      this.add(new Flip());
+      this.add(new BufferMode());
     }
   });
   
