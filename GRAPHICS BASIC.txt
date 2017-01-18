@@ -35,7 +35,7 @@ COLOR r,g,b(,a) -  Sets the paint color. Each value is [0..255]. Values outside 
 
 CLEAR - Clears the screen with the current paint color.
 
-BUFFERMODE 0|1 - Sets the buffer mode. 0 is single buffered and default. All graphics operations happen on the front buffer in this mode. 1 is double buffering, i.e. all graphics operation happen in a back buffer and won't be visible until you call FLIP. Any other value will be treated just like 1.
+BUFFERMODE 0|1 - Sets the buffer mode. 0 is single buffered and default. All graphics operations happen on the front buffer in this mode. 1 is double buffering, i.e. all graphics operations happen in a back buffer and won't be visible until you call FLIP. Any other value will be treated just like 1.
 
 FLIP - flips the buffers if double buffering is enabled. Doesn't do anything, if it's not.
 
