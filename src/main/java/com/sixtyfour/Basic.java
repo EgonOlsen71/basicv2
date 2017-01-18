@@ -128,7 +128,8 @@ public class Basic implements ProgramExecutor {
 	/**
 	 * Static method to register a BASIC extension. This is static, because all
 	 * registered extensions are available in all Basic instances. Adding an
-	 * extension multiple times does no harm, but only the first added instance will be active.
+	 * extension multiple times does no harm, but only the first added instance
+	 * will be active.
 	 * 
 	 * @param extension
 	 *            the extension to add
@@ -137,24 +138,25 @@ public class Basic implements ProgramExecutor {
 		String name = extension.getClass().getName();
 		if (!addedExtensions.containsKey(name)) {
 			addedExtensions.put(name, extension);
-			Logger.log(name+" registered as a BASIC extension!");
+			Logger.log(name + " registered as a BASIC extension!");
 			CommandList.registerNewCommands(extension.getCommands());
 			FunctionList.registerNewFunctions(extension.getFunctions());
 		}
 	}
-	
+
 	/**
-	 * Returns all active instances of added extensions. If there are none, an empty will be returned.
+	 * Returns all active instances of added extensions. If there are none, an
+	 * empty will be returned.
 	 * 
 	 * @return the active extensions
 	 */
 	public static List<BasicExtension> getExtensions() {
-	  if (addedExtensions.size()==0) {
-	    return new ArrayList<BasicExtension>();
-	  }
-	  return new ArrayList<BasicExtension>(addedExtensions.values());
+		if (addedExtensions.size() == 0) {
+			return new ArrayList<BasicExtension>();
+		}
+		return new ArrayList<BasicExtension>(addedExtensions.values());
 	}
-	
+
 	/**
 	 * Returns the BASIC code.
 	 * 

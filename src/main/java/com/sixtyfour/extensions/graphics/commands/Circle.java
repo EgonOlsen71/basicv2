@@ -10,7 +10,7 @@ import com.sixtyfour.util.VarUtils;
  * The CIRCLE command
  * 
  * @author EgonOlsen
- *
+ * 
  */
 public class Circle extends AbstractGraphicsCommand {
 

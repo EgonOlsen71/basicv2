@@ -11,10 +11,10 @@ import com.sixtyfour.util.VarUtils;
  * The COLOR command
  * 
  * @author EgonOlsen
- *
+ * 
  */
-public class Color extends AbstractGraphicsCommand{
-	
+public class Color extends AbstractGraphicsCommand {
+
 	public Color() {
 		super("COLOR");
 	}
@@ -33,13 +33,13 @@ public class Color extends AbstractGraphicsCommand{
 		Atom b = pars.get(2);
 		checkType(b);
 		Atom a = null;
-		if (pars.size()>3) {
-			a=pars.get(3);
+		if (pars.size() > 3) {
+			a = pars.get(3);
 			checkType(a);
 		} else {
-			a=new Constant<Integer>(255);
+			a = new Constant<Integer>(255);
 		}
-		
+
 		GraphicsDevice window = GraphicsDevice.getDevice(machine);
 		if (window != null) {
 			window.color(VarUtils.getInt(r.eval(machine)), VarUtils.getInt(g.eval(machine)), VarUtils.getInt(b.eval(machine)), VarUtils.getInt(a.eval(machine)));

@@ -10,7 +10,7 @@ import com.sixtyfour.util.VarUtils;
  * The FILL command
  * 
  * @author EgonOlsen
- *
+ * 
  */
 public class Fill extends AbstractGraphicsCommand {
 

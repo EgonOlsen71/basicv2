@@ -44,8 +44,8 @@ public class Clear extends AbstractCommand {
 	public BasicProgramCounter execute(Machine machine) {
 		GraphicsDevice window = GraphicsDevice.getDevice(machine);
 		if (window != null) {
-			window.clear(); 
-		} 
+			window.clear();
+		}
 		return null;
 	}
 

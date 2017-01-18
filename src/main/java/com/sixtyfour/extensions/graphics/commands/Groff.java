@@ -45,7 +45,7 @@ public class Groff extends AbstractCommand {
 		GraphicsDevice window = GraphicsDevice.getDevice(machine);
 		if (window != null) {
 			window.dispose();
-		} 
+		}
 		return null;
 	}
 

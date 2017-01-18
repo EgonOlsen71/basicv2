@@ -44,8 +44,8 @@ public class Flip extends AbstractCommand {
 	public BasicProgramCounter execute(Machine machine) {
 		GraphicsDevice window = GraphicsDevice.getDevice(machine);
 		if (window != null) {
-			window.flip(); 
-		} 
+			window.flip();
+		}
 		return null;
 	}
 

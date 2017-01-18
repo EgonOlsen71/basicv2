@@ -15,8 +15,8 @@ public enum LoopMode {
 	EXECUTE,
 	/**
 	 * In this mode, the loop will be replaced by a delay that is close to what
-	 * an actual C64 would need to execute that loop. The loop's counter variable
-	 * will contain the correct end value after the wait though.
+	 * an actual C64 would need to execute that loop. The loop's counter
+	 * variable will contain the correct end value after the wait though.
 	 */
 	DELAY,
 	/**

@@ -10,7 +10,7 @@ import com.sixtyfour.util.VarUtils;
  * The PLOT command
  * 
  * @author EgonOlsen
- *
+ * 
  */
 public class Plot extends AbstractGraphicsCommand {
 

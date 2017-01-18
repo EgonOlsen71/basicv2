@@ -10,7 +10,7 @@ import com.sixtyfour.util.VarUtils;
  * The RECT command
  * 
  * @author EgonOlsen
- *
+ * 
  */
 public class Rect extends AbstractGraphicsCommand {
 
