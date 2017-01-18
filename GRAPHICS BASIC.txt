@@ -1,6 +1,6 @@
 An introduction to Graphics Basic
 
-Graphics Basic is a BASIC extension that is implemented on top of this BASIC V2 environment. It adds the graphics capabilities far superior to those of the Commodore 64 while still maintaining the simplicity of BASIC V2. This documentation gives a brief overview of how to use it.
+Graphics Basic is a BASIC extension that is implemented on top of this BASIC V2 environment. It adds graphics capabilities far superior to those of the Commodore 64 while still maintaining the simplicity of BASIC V2. This documentation gives a brief overview of how to use it.
 
 
 Initialization
