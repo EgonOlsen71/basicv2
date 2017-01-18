@@ -15,6 +15,11 @@ basic.run();
 Note that the extension is added to Basic in a static way, i.e. it is avialable to all Basic instances from there on. The included BASIC shell provides support for this extension by default.
 
 
+Examples
+
+Examples can be found in the test class com.sixtyfour.test.BasicExtensionTest respectively in src/test/resources/ext.
+
+
 Functions
 
 id=LOADSHAPE("filename") -  Loads a file in PNG/JPG format and assigns it to a shape. This function returns an ID which can be used to draw the shape later on. For this function to work, a graphics output has to be created. After closing it, the shapes become undefined again and can't (unlike other graphical primitives like lines and points) be drawn into nothingness.
