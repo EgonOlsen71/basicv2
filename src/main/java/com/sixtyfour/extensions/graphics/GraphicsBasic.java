@@ -18,6 +18,7 @@ import com.sixtyfour.extensions.graphics.commands.Flip;
 import com.sixtyfour.extensions.graphics.commands.Groff;
 import com.sixtyfour.extensions.graphics.commands.Gron;
 import com.sixtyfour.extensions.graphics.commands.Gsave;
+import com.sixtyfour.extensions.graphics.commands.Limit;
 import com.sixtyfour.extensions.graphics.commands.Line;
 import com.sixtyfour.extensions.graphics.commands.Plot;
 import com.sixtyfour.extensions.graphics.commands.Rect;
@@ -54,6 +55,7 @@ public class GraphicsBasic
       this.add(new DrawShape());
       this.add(new Flip());
       this.add(new BufferMode());
+      this.add(new Limit());
     }
   });
   

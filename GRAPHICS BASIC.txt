@@ -54,3 +54,5 @@ FILL x,y - does a flood fill starting at x,y. All adjacent pixels of the same co
 GSAVE "filename" - Saves the current screen to disk with the given filename. The resulting file will be in PNG format.
 
 DRAWSHAPE id, x, y(, xd, yd) -  Draws a shape with the id "id" at position x,y. xd and yd are optional scaling parameter which indicate the size of the drawn shape in x- respectively y-direction.
+
+LIMIT fps - Limits the frame rate to the set value in frames per second, if it isn't lower anyway. This can be used to achieve a constant timing without adding busy-wait loops to the BASIC code. 0 means no limit.

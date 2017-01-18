@@ -49,7 +49,10 @@ public class GraphicsDevice {
 	private int height = 0;
 	private int[] pixels = null;
 	private Color color = Color.white;
-	private Map<Integer, Shape> shapes=new HashMap<Integer, Shape>();
+	private long lastTime = 0;
+	private long frameTime = 0;
+	private long lastDif;
+	private Map<Integer, Shape> shapes = new HashMap<Integer, Shape>();
 
 	public static GraphicsDevice getDevice(Machine machine) {
 		return machine2window.get(machine);
@@ -102,45 +105,45 @@ public class GraphicsDevice {
 	}
 
 	public void dispose() {
-	  shapes.clear();
+		shapes.clear();
 		removeFromMap();
 	}
-	
+
 	public void setBufferMode(boolean doubleBuffer) {
-	  if (doubleBuffer) {
-  	  if (backBuffer==null) {
-  	    backBuffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-  	    gbackBuffer = backBuffer.createGraphics();
-  	    gbackBuffer.setColor(Color.BLACK);
-  	    gbackBuffer.fillRect(0, 0, width, height);
-  	    gbackBuffer.setColor(color);
-  	    pixels=null;
-  	  }
-	  } else {
-	    if (backBuffer!=null) {
-        backBuffer = null;
-        gbackBuffer.dispose();
-        gbackBuffer=null;
-        pixels=null;
-      }
-	  }
+		if (doubleBuffer) {
+			if (backBuffer == null) {
+				backBuffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+				gbackBuffer = backBuffer.createGraphics();
+				gbackBuffer.setColor(Color.BLACK);
+				gbackBuffer.fillRect(0, 0, width, height);
+				gbackBuffer.setColor(color);
+				pixels = null;
+			}
+		} else {
+			if (backBuffer != null) {
+				backBuffer = null;
+				gbackBuffer.dispose();
+				gbackBuffer = null;
+				pixels = null;
+			}
+		}
 	}
-	
+
 	public void addShape(Shape shape) {
-	  shapes.put(shape.getId(), shape);
+		shapes.put(shape.getId(), shape);
 	}
-	
+
 	public int addShape(String shapeName) {
-	  BufferedImage img = null;
-	  try {
-	      img = ImageIO.read(new File(shapeName));
-	  } catch (Exception e) {
-	    return -1;
-	  }
-	  
-	  Shape shape=new Shape(img);
-	  addShape(shape);
-	  return shape.getId();
+		BufferedImage img = null;
+		try {
+			img = ImageIO.read(new File(shapeName));
+		} catch (Exception e) {
+			return -1;
+		}
+
+		Shape shape = new Shape(img);
+		addShape(shape);
+		return shape.getId();
 	}
 
 	public void color(int r, int g, int b, int a) {
@@ -149,31 +152,31 @@ public class GraphicsDevice {
 	}
 
 	public void line(int xs, int ys, int xe, int ye) {
-	  getContext().drawLine(xs, ys, xe, ye);
-		frame.repaint();
+		getContext().drawLine(xs, ys, xe, ye);
+		update();
 	}
 
 	public void plot(int x, int y) {
-	  getScreen().setRGB(x, y, color.getRGB());
-		frame.repaint();
+		getScreen().setRGB(x, y, color.getRGB());
+		update();
 	}
 
 	public void circle(int x, int y, int xr, int yr) {
 		if (filled) {
-		  getContext().fillOval(x - xr, y - yr, xr * 2, yr * 2);
+			getContext().fillOval(x - xr, y - yr, xr * 2, yr * 2);
 		} else {
-		  getContext().drawOval(x - xr, y - yr, xr * 2, yr * 2);
+			getContext().drawOval(x - xr, y - yr, xr * 2, yr * 2);
 		}
-		frame.repaint();
+		update();
 	}
 
 	public void rect(int x1, int y1, int x2, int y2) {
 		if (filled) {
-		  getContext().fillRect(x1, y1, x2 - x1 + 1, y2 - y1 + 1);
+			getContext().fillRect(x1, y1, x2 - x1 + 1, y2 - y1 + 1);
 		} else {
-		  getContext().drawRect(x1, y1, x2 - x1 + 1, y2 - y1 + 1);
+			getContext().drawRect(x1, y1, x2 - x1 + 1, y2 - y1 + 1);
 		}
-		frame.repaint();
+		update();
 
 	}
 
@@ -182,8 +185,8 @@ public class GraphicsDevice {
 	}
 
 	public void clear() {
-	  getContext().fillRect(0, 0, width, height);
-		frame.repaint();
+		getContext().fillRect(0, 0, width, height);
+		update();
 	}
 
 	public void fill(int x, int y) {
@@ -192,7 +195,7 @@ public class GraphicsDevice {
 			pixels = data.getData();
 		}
 		new FloodFiller().fill(pixels, width, height, x, y, color);
-		frame.repaint();
+		update();
 	}
 
 	public void save(Machine machine, String name) {
@@ -208,39 +211,67 @@ public class GraphicsDevice {
 			throw new RuntimeException(e);
 		}
 	}
-	
-	public void drawShape(int id, int x, int y, int xd, int yd)
-  {
-	  Shape shape=shapes.get(id);
-	  if (shape==null) {
-	    throw new RuntimeException("Undefined shape "+id);
-	  }
-	  shape.paint(getContext(), x, y, xd, yd);
-    frame.repaint();
-  }
+
+	public void drawShape(int id, int x, int y, int xd, int yd) {
+		Shape shape = shapes.get(id);
+		if (shape == null) {
+			throw new RuntimeException("Undefined shape " + id);
+		}
+		shape.paint(getContext(), x, y, xd, yd);
+		update();
+	}
+
+	private void update() {
+		if (backBuffer == null) {
+			frame.repaint();
+		}
+	}
 
 	public void flip() {
-	  if (backBuffer==null) {
-	    return;
-	  }
-	  gscreen.drawImage(backBuffer, 0, 0, null);
-	  frame.repaint();
+		if (backBuffer == null) {
+			return;
+		}
+		gscreen.drawImage(backBuffer, 0, 0, null);
+		frame.repaint();
 	}
-	
+
+	public void limit(int fps) {
+		if (fps <= 0) {
+			return;
+		}
+		frameTime = 1000000000L / (long) fps;
+		long now = System.nanoTime();
+		long dif = now - lastTime;
+		if (dif < 0) {
+			// Fix overflow
+			dif = lastDif;
+		}
+		lastDif = dif;
+		if (dif < frameTime) {
+			try {
+				long waitTime = (frameTime - dif) / 1000000L;
+				Thread.sleep(waitTime);
+			} catch (Exception e) {
+				//
+			}
+		}
+		lastTime = System.nanoTime();
+	}
+
 	private Graphics2D getContext() {
-	  if (gbackBuffer!=null) {
-	    return gbackBuffer;
-	  }
-	  return gscreen;
+		if (gbackBuffer != null) {
+			return gbackBuffer;
+		}
+		return gscreen;
 	}
-	
+
 	private BufferedImage getScreen() {
-    if (backBuffer!=null) {
-      return backBuffer;
-    }
-    return screen;
-  }
-	
+		if (backBuffer != null) {
+			return backBuffer;
+		}
+		return screen;
+	}
+
 	private void removeFromMap() {
 		List<Machine> keys = new ArrayList<Machine>();
 		for (Entry<Machine, GraphicsDevice> entry : machine2window.entrySet()) {
@@ -256,11 +287,10 @@ public class GraphicsDevice {
 
 	private void close() {
 		gscreen.dispose();
-		if (gbackBuffer!=null) {
-		  gbackBuffer.dispose();
+		if (gbackBuffer != null) {
+			gbackBuffer.dispose();
 		}
 		frame.setVisible(false);
 		frame.dispose();
 	}
-  
 }
