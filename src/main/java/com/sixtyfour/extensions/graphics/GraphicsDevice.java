@@ -235,6 +235,15 @@ public class GraphicsDevice implements PrintConsumer {
 		shape.paint(getContext(), x, y, xd, yd);
 		update();
 	}
+	
+	public void drawRotatedShape(int id, int x, int y, float zoom, float rot) {
+    Shape shape = shapes.get(id);
+    if (shape == null) {
+      throw new RuntimeException("Undefined shape " + id);
+    }
+    shape.rotateAndPaint(getContext(), x, y, zoom, rot);
+    update();
+  }
 
 	private void update() {
 		if (backBuffer == null) {

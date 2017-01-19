@@ -25,6 +25,7 @@ import com.sixtyfour.extensions.graphics.commands.Limit;
 import com.sixtyfour.extensions.graphics.commands.Line;
 import com.sixtyfour.extensions.graphics.commands.Plot;
 import com.sixtyfour.extensions.graphics.commands.Rect;
+import com.sixtyfour.extensions.graphics.commands.RotateShape;
 import com.sixtyfour.extensions.graphics.functions.LoadShape;
 import com.sixtyfour.system.Machine;
 
@@ -53,6 +54,7 @@ public class GraphicsBasic implements BasicExtension {
 			this.add(new Fill());
 			this.add(new Gsave());
 			this.add(new DrawShape());
+			this.add(new RotateShape());
 			this.add(new Flip());
 			this.add(new BufferMode());
 			this.add(new Limit());
