@@ -3,9 +3,9 @@ package com.sixtyfour.templating;
 import com.sixtyfour.plugins.OutputChannel;
 import com.sixtyfour.plugins.PrintConsumer;
 
-/** 
- * An output channel for the templates. Template content shouldn't be printed onto the console, so
- * it will be redirected into here instead.
+/**
+ * An output channel for the templates. Template content shouldn't be printed
+ * onto the console, so it will be redirected into here instead.
  * 
  * @author EgonOlsen
  */
@@ -16,7 +16,7 @@ public class TemplateOutputChannel implements OutputChannel {
 
 	/** The channel. */
 	private int channel = 0;
- 
+
 	/** The other consumer. */
 	private PrintConsumer otherConsumer = null;
 
@@ -132,20 +132,26 @@ public class TemplateOutputChannel implements OutputChannel {
 		return result.toString();
 	}
 
-	/* (non-Javadoc)
-	 * @see com.sixtyfour.plugins.PrintConsumer#systemPrint(int, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.sixtyfour.plugins.PrintConsumer#systemPrint(int,
+	 * java.lang.String)
 	 */
 	@Override
 	public void systemPrint(int id, String txt) {
 		this.print(id, txt);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.sixtyfour.plugins.PrintConsumer#systemPrintln(int, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.sixtyfour.plugins.PrintConsumer#systemPrintln(int,
+	 * java.lang.String)
 	 */
 	@Override
 	public void systemPrintln(int id, String txt) {
-		this.println(id, txt);	
+		this.println(id, txt);
 	}
 
 }

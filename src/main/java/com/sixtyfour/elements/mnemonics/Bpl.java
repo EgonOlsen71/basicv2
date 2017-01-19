@@ -4,23 +4,27 @@ package com.sixtyfour.elements.mnemonics;
  * The Class Bpl.
  */
 public class Bpl extends AbstractMnemonic {
-	
+
 	/**
-   * Instantiates a new bpl.
-   */
+	 * Instantiates a new bpl.
+	 */
 	public Bpl() {
 		super("BPL", new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x10 });
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.sixtyfour.elements.mnemonics.AbstractMnemonic#isRelative()
 	 */
 	@Override
 	public boolean isRelative() {
 		return true;
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.sixtyfour.elements.mnemonics.AbstractMnemonic#isJump()
 	 */
 	@Override

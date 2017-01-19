@@ -10,8 +10,8 @@ import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
 /**
- * A virtual function (i.e. not part of the BASIC V2 specs) that is used internally
- * to access array elements.
+ * A virtual function (i.e. not part of the BASIC V2 specs) that is used
+ * internally to access array elements.
  */
 public class ArrayAccess extends AbstractFunction {
 

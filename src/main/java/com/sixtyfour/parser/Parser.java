@@ -219,8 +219,8 @@ public class Parser {
 		}
 		for (int i = 0; i < linePart.length(); i++) {
 			char c = linePart.charAt(i);
-			if (i==0 && !Character.isLetter(c)) {
-			  throw new RuntimeException("Invalid variable name: " + linePart);
+			if (i == 0 && !Character.isLetter(c)) {
+				throw new RuntimeException("Invalid variable name: " + linePart);
 			}
 			if (!Character.isLetter(c) && ((i > 0) && (!Character.isDigit(c) && c != '%' && c != '$'))) {
 				throw new RuntimeException("Invalid variable name: " + linePart);
@@ -579,7 +579,7 @@ public class Parser {
 	 * @return the resulting term
 	 */
 	private static String handleSigns(String term) {
-		//System.out.println("Start: " + term);
+		// System.out.println("Start: " + term);
 		term = removeWhiteSpace(term);
 		StringBuilder sb = new StringBuilder();
 		boolean inString = false;
@@ -605,7 +605,7 @@ public class Parser {
 
 			wasOp = Operator.isOperator(c) || c == '(';
 		}
-		//System.out.println("Result: " + term);
+		// System.out.println("Result: " + term);
 		return term;
 	}
 
@@ -1131,19 +1131,19 @@ public class Parser {
 	 * @return the atom
 	 */
 	private static Atom createAtom(String part, Map<String, Term> termMap, Machine machine) {
-	// Identify functions
-    Function function = Parser.getFunction(part, termMap, machine);
-	  
-	  // Identify commands
+		// Identify functions
+		Function function = Parser.getFunction(part, termMap, machine);
+
+		// Identify commands
 		String strippedPart = Parser.replaceStrings(part, ' ');
 		Command command = Parser.getCommand(strippedPart);
-		if (command != null && function==null) {
+		if (command != null && function == null) {
 			throw new RuntimeException("Syntax error: " + part + "/" + command.getName());
 		}
 
 		if (function != null) {
-      return function;
-    }
+			return function;
+		}
 
 		// String constants
 		if (part.startsWith("\"")) {

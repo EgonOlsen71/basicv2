@@ -55,13 +55,13 @@ public class CommandList {
 			add(new Verify());
 		}
 	});
-	
-	private final static Command LET=COMMANDS.get(0);
+
+	private final static Command LET = COMMANDS.get(0);
 
 	public static void registerNewCommands(List<Command> commands) {
 		if (commands != null && !commands.isEmpty()) {
-		  commands = new ArrayList<Command>(commands);
-		  commands.addAll(COMMANDS);
+			commands = new ArrayList<Command>(commands);
+			commands.addAll(COMMANDS);
 			COMMANDS = Collections.unmodifiableList(commands);
 		}
 	}

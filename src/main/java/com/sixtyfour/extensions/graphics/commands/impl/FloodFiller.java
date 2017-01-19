@@ -10,7 +10,6 @@ import java.util.LinkedList;
  */
 public class FloodFiller {
 
-	
 	/**
 	 * @param img
 	 * @param width

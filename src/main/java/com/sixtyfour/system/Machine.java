@@ -263,8 +263,8 @@ public class Machine {
 			ram[i] = 0;
 		}
 		clearVars();
-		for (BasicExtension ex: Basic.getExtensions()) {
-		  ex.reset(this);
+		for (BasicExtension ex : Basic.getExtensions()) {
+			ex.reset(this);
 		}
 	}
 

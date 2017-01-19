@@ -34,32 +34,31 @@ public class ProgramTest {
 		// testAdventure();
 		// testCalc();
 		testStuff();
-		//testCalendar();
-		//testOtherPrime();
-		//testBio();
+		// testCalendar();
+		// testOtherPrime();
+		// testBio();
 		testIf();
 		testBuggedOn64();
 	}
-	
+
 	private static void testBuggedOn64() {
 		String[] vary = Loader.loadProgram("src/test/resources/basic/buggy64.bas");
 		Basic inty = new Basic(vary);
 		inty.run();
-		
+
 	}
-	
+
 	private static void testBio() {
 		String[] vary = Loader.loadProgram("src/test/resources/basic/bio64.bas");
 		Basic inty = new Basic(vary);
 		inty.run();
 	}
-	
+
 	private static void testOtherPrime() {
 		String[] vary = Loader.loadProgram("src/test/resources/basic/primzahlen.bas");
 		Basic inty = new Basic(vary);
 		inty.run();
 	}
-	
 
 	private static void testCalendar() {
 		String[] vary = Loader.loadProgram("src/test/resources/basic/kalender.bas");
@@ -175,7 +174,7 @@ public class ProgramTest {
 		Basic inty = new Basic(condy);
 		inty.run();
 	}
-	
+
 	private static void testIf() {
 		String[] condy = Loader.loadProgram("src/test/resources/basic/if.bas");
 		Basic inty = new Basic(condy);

@@ -51,8 +51,8 @@ public interface Function extends Atom {
 	void setTerm(Term term);
 
 	/**
-	 * Parses a string as this function. If successful, 
-	 * it sets this instances' term to the parsed result.
+	 * Parses a string as this function. If successful, it sets this instances'
+	 * term to the parsed result.
 	 * 
 	 * @param linePart
 	 *            the input string
@@ -69,7 +69,7 @@ public interface Function extends Atom {
 	boolean hasPostfix();
 
 	/**
-	 * Sets the function's name. This is used for user defined functions only. 
+	 * Sets the function's name. This is used for user defined functions only.
 	 * 
 	 * @param functionName
 	 *            the function's name

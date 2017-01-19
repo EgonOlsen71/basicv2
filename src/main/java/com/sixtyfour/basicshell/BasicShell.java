@@ -112,19 +112,19 @@ public class BasicShell {
 						e1.printStackTrace();
 					}
 				}
-				if (runner!=null) {
-				  runner.registerKey(null);
+				if (runner != null) {
+					runner.registerKey(null);
 				}
 				super.keyReleased(e);
 			}
-			
+
 			@Override
-      public void keyPressed(KeyEvent e) {
-        if (runner!=null) {
-          runner.registerKey(e.getKeyChar());
-        }
-        super.keyPressed(e);
-      }
+			public void keyPressed(KeyEvent e) {
+				if (runner != null) {
+					runner.registerKey(e.getKeyChar());
+				}
+				super.keyPressed(e);
+			}
 		});
 
 		executor.execute(new Runnable() {
@@ -299,9 +299,9 @@ public class BasicShell {
 			} else if (sl.equals("dir")) {
 				dir();
 			} else if (sl.equals("run")) {
-			  if (runner!=null) {
-			    runner.dispose();
-			  }
+				if (runner != null) {
+					runner.dispose();
+				}
 				runner = new Runner(store.toArray(), this);
 				runner.synchronousStart();
 			} else if (split[0].toLowerCase().equals("save")) {

@@ -11,7 +11,8 @@ import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
 /**
- * An abstract base class for commands that can have multiple variables like READ.
+ * An abstract base class for commands that can have multiple variables like
+ * READ.
  * 
  * @author EgonOlsen
  */
@@ -60,7 +61,8 @@ public abstract class MultiVariableCommand extends AbstractCommand {
 	 * @param input
 	 *            the input character
 	 * @param checkColon
-	 *            if true, : will cause an ?Extra ignored message. Otherwise, it will cause an exception.
+	 *            if true, : will cause an ?Extra ignored message. Otherwise, it
+	 *            will cause an exception.
 	 * @return the character
 	 */
 	final protected Character ensureNumberKey(Machine machine, Character input, boolean checkColon) {

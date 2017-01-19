@@ -4,7 +4,7 @@ import com.sixtyfour.elements.Type;
 import com.sixtyfour.system.Machine;
 
 /**
- * The FRE function. 
+ * The FRE function.
  */
 public class Fre extends AbstractFunction {
 

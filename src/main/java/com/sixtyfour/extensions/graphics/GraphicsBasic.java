@@ -12,6 +12,7 @@ import com.sixtyfour.extensions.graphics.commands.BufferMode;
 import com.sixtyfour.extensions.graphics.commands.Circle;
 import com.sixtyfour.extensions.graphics.commands.Clear;
 import com.sixtyfour.extensions.graphics.commands.Color;
+import com.sixtyfour.extensions.graphics.commands.Copy;
 import com.sixtyfour.extensions.graphics.commands.DrawShape;
 import com.sixtyfour.extensions.graphics.commands.Fill;
 import com.sixtyfour.extensions.graphics.commands.FillMode;
@@ -27,6 +28,7 @@ import com.sixtyfour.extensions.graphics.commands.Line;
 import com.sixtyfour.extensions.graphics.commands.Plot;
 import com.sixtyfour.extensions.graphics.commands.Rect;
 import com.sixtyfour.extensions.graphics.commands.RotateShape;
+import com.sixtyfour.extensions.graphics.functions.GetShape;
 import com.sixtyfour.extensions.graphics.functions.LoadShape;
 import com.sixtyfour.system.Machine;
 
@@ -63,6 +65,7 @@ public class GraphicsBasic implements BasicExtension {
 			this.add(new Font());
 			this.add(new AAMode());
 			this.add(new Gget());
+			this.add(new Copy());
 		}
 	});
 
@@ -70,6 +73,7 @@ public class GraphicsBasic implements BasicExtension {
 		private static final long serialVersionUID = 1L;
 		{
 			this.add(new LoadShape());
+			this.add(new GetShape());
 		}
 	});
 

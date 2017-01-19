@@ -15,7 +15,8 @@ import com.sixtyfour.util.VarUtils;
 public class On extends AbstractCommand {
 
 	/** The pc. */
-	private BasicProgramCounter pc = new BasicProgramCounter(0, 0); // Recycle instance
+	private BasicProgramCounter pc = new BasicProgramCounter(0, 0); // Recycle
+																	// instance
 
 	/** The line numbers. */
 	private List<Integer> lineNumbers = new ArrayList<Integer>();

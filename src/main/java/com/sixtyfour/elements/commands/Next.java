@@ -17,7 +17,8 @@ public class Next extends AbstractCommand {
 	private String varName = null;
 
 	/** The pc. */
-	private BasicProgramCounter pc = new BasicProgramCounter(0, 0); // Recycle instance
+	private BasicProgramCounter pc = new BasicProgramCounter(0, 0); // Recycle
+																	// instance
 
 	/**
 	 * Instantiates a new next.

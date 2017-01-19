@@ -92,7 +92,7 @@ public class Get extends MultiVariableCommand {
 						var.setValue(0, pis);
 					} else {
 						input = ensureNumberKey(machine, input, true);
-						var.setValue(input.toString(), pis);
+						var.setValue(Integer.valueOf(input.toString()), pis);
 					}
 				}
 			} else {
@@ -107,7 +107,7 @@ public class Get extends MultiVariableCommand {
 						var.setValue(0);
 					} else {
 						input = ensureNumberKey(machine, input, true);
-						var.setValue(input.toString());
+						var.setValue(Integer.valueOf(input.toString()));
 					}
 				}
 			}

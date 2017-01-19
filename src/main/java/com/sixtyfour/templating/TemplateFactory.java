@@ -7,9 +7,10 @@ import java.util.Map;
 import com.sixtyfour.Loader;
 
 /**
- * A factory for creating Template objects. A template isn't thread-safe, i.e. 
+ * A factory for creating Template objects. A template isn't thread-safe, i.e.
  * if you want to serve multiple clients at a time with the same template, you
- * have to create multiple template instances and manage them in a ThreadLocal for example.
+ * have to create multiple template instances and manage them in a ThreadLocal
+ * for example.
  * 
  * @author EgonOlsen
  */

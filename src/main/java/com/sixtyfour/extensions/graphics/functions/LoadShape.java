@@ -5,52 +5,45 @@ import com.sixtyfour.elements.functions.AbstractFunction;
 import com.sixtyfour.extensions.graphics.GraphicsDevice;
 import com.sixtyfour.system.Machine;
 
+/**
+ * The LOADSHAPE function. It loads a shape from an image file of the given path
+ * and returns its internal id.
+ * 
+ * @author EgonOlsen
+ * 
+ */
+public class LoadShape extends AbstractFunction {
 
-public class LoadShape
-  extends AbstractFunction
-{
+	public LoadShape() {
+		super("LOADSHAPE");
+	}
 
-  public LoadShape()
-  {
-    super("LOADSHAPE");
-  }
+	@Override
+	public Type getType() {
+		return Type.INTEGER;
+	}
 
+	@Override
+	public Object eval(Machine machine) {
+		if (term.getType().equals(Type.STRING)) {
+			String str = (String) term.eval(machine);
+			if (str == null || str.length() == 0) {
+				throw new RuntimeException("Illegal quantity error: " + this);
+			}
 
-  @Override
-  public Type getType()
-  {
-    return Type.INTEGER;
-  }
-
-
-  @Override
-  public Object eval(Machine machine)
-  {
-    if (term.getType().equals(Type.STRING))
-    {
-      String str = (String) term.eval(machine);
-      if (str == null || str.length() == 0)
-      {
-        throw new RuntimeException("Illegal quantity error: " + this);
-      }
-
-      GraphicsDevice window = GraphicsDevice.getDevice(machine);
-      String name = term.eval(machine).toString();
-      if (window != null)
-      {
-        int id = window.addShape(name);
-        if (id == -1)
-        {
-          throw new RuntimeException("Couldn't load shape " + name);
-        }
-        return id;
-      }
-      else
-      {
-        throw new RuntimeException("Graphics mode not enabled!");
-      }
-    }
-    throw new RuntimeException("Type mismatch error: " + term.getType());
-  }
+			GraphicsDevice window = GraphicsDevice.getDevice(machine);
+			String name = term.eval(machine).toString();
+			if (window != null) {
+				int id = window.addShape(name);
+				if (id == -1) {
+					throw new RuntimeException("Couldn't load shape " + name);
+				}
+				return id;
+			} else {
+				throw new RuntimeException("Graphics mode not enabled!");
+			}
+		}
+		throw new RuntimeException("Type mismatch error: " + term.getType());
+	}
 
 }

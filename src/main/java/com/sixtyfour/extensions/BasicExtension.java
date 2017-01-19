@@ -28,12 +28,13 @@ public interface BasicExtension {
 	 * @return the new functions or null
 	 */
 	List<Function> getFunctions();
-	
+
 	/**
 	 * Called when a machine instance gets reset.
 	 * 
-	 * @param machine the machine instance
+	 * @param machine
+	 *            the machine instance
 	 */
 	void reset(Machine machine);
-	
+
 }

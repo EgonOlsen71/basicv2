@@ -44,7 +44,7 @@ public class InterpreterTest {
 		Basic inter = new Basic(code);
 		inter.run();
 	}
-	
+
 	private static void testRunStop() {
 		System.out.println("testRunStop");
 		String code = "10 goto 10";

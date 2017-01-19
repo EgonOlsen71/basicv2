@@ -1,4 +1,5 @@
 10 GRON 640,480:BUFFERMODE 1
+11 A$="wasdq"
 15 A=LOADSHAPE("src/test/resources/bin/sprite.png")
 20 X=320:Y=240
 30 CLEAR

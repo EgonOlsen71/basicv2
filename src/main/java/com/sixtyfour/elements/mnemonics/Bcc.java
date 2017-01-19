@@ -4,23 +4,27 @@ package com.sixtyfour.elements.mnemonics;
  * The Class Bcc.
  */
 public class Bcc extends AbstractMnemonic {
-	
+
 	/**
-   * Instantiates a new bcc.
-   */
+	 * Instantiates a new bcc.
+	 */
 	public Bcc() {
 		super("BCC", new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x90 });
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.sixtyfour.elements.mnemonics.AbstractMnemonic#isRelative()
 	 */
 	@Override
 	public boolean isRelative() {
 		return true;
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.sixtyfour.elements.mnemonics.AbstractMnemonic#isJump()
 	 */
 	@Override

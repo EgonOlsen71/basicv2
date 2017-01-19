@@ -29,16 +29,16 @@ public class FontProvider {
 		String name = fontName.toLowerCase() + "_" + style + "_" + size;
 		Font font = fontCache.get(name);
 		if (font == null) {
-			int styly=0;
-			switch(style) {
+			int styly = 0;
+			switch (style) {
 			case 1:
-				styly=Font.BOLD;
+				styly = Font.BOLD;
 				break;
 			case 2:
-				styly=Font.ITALIC;
+				styly = Font.ITALIC;
 				break;
 			default:
-				styly=Font.PLAIN;
+				styly = Font.PLAIN;
 				break;
 			}
 			font = new Font(fontName, styly, Math.max(1, size));

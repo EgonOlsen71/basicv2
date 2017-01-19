@@ -25,7 +25,7 @@ public class GraphicsTest {
 		FileOutputStream fos = new FileOutputStream("ellipse.png");
 		Graphics.savePng(bi, fos);
 	}
-	
+
 	private static void testFractal() throws Exception {
 		String[] vary = Loader.loadProgram("src/test/resources/basic/fractal.bas");
 		Basic inty = new Basic(vary);
@@ -34,7 +34,7 @@ public class GraphicsTest {
 		FileOutputStream fos = new FileOutputStream("fractal_hires.png");
 		Graphics.savePng(bi, fos);
 	}
-	
+
 	private static void testFractalMulticolor() throws Exception {
 		String[] vary = Loader.loadProgram("src/test/resources/basic/fractal_mc.bas");
 		Basic inty = new Basic(vary);
@@ -43,7 +43,7 @@ public class GraphicsTest {
 		FileOutputStream fos = new FileOutputStream("fractal_multicolor.png");
 		Graphics.savePng(bi, fos);
 	}
-	
+
 	private static void testFractalMulticolor2() throws Exception {
 		String[] vary = Loader.loadProgram("src/test/resources/basic/fractal_mc2.bas");
 		Basic inty = new Basic(vary);
@@ -53,7 +53,7 @@ public class GraphicsTest {
 		FileOutputStream fos = new FileOutputStream("fractal_multicolor2.png");
 		Graphics.savePng(bi, fos);
 	}
-	
+
 	private static void testPlot() throws Exception {
 		String[] vary = Loader.loadProgram("src/test/resources/basic/plot.bas");
 		Basic inty = new Basic(vary);

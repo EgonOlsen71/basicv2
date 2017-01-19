@@ -7,7 +7,8 @@ import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
 /**
- * The FN function. These functions can be defined in the basic code by DEF FN...
+ * The FN function. These functions can be defined in the basic code by DEF
+ * FN...
  */
 public class Fn extends AbstractFunction {
 

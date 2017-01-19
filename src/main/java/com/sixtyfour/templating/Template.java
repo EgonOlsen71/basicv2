@@ -19,10 +19,9 @@ import com.sixtyfour.util.VarUtils;
  * in it. When parsed the template will be converted into a BASIC program. This
  * requires to add some additional line numbers, so make sure that there's
  * enough number space left between lines. See the test package for an example
- * template.
- * A template isn't thread-safe, i.e. 
- * if you want to serve multiple clients at a time with the same template, you
- * have to create multiple template instances and manage them in a ThreadLocal for example.
+ * template. A template isn't thread-safe, i.e. if you want to serve multiple
+ * clients at a time with the same template, you have to create multiple
+ * template instances and manage them in a ThreadLocal for example.
  */
 public class Template {
 
@@ -30,7 +29,7 @@ public class Template {
 	private Map<String, Object> vars = new HashMap<String, Object>();
 
 	private Basic basic = null;
-	
+
 	private List<Program> prgs = new ArrayList<Program>();
 
 	/** The static parts. */

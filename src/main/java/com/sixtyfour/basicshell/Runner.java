@@ -16,20 +16,20 @@ public class Runner implements Runnable {
 	private Basic runningBasic = null;
 
 	public Runner(String[] program, BasicShell shellFrame) {
-	  Basic.registerExtension(new GraphicsBasic());
-	  this.olsenBasic = new Basic(program);
+		Basic.registerExtension(new GraphicsBasic());
+		this.olsenBasic = new Basic(program);
 		olsenBasic.setOutputChannel(new ShellOutputChannel(shellFrame));
 		olsenBasic.setInputProvider(new ShellInputProvider(shellFrame));
 	}
-	
+
 	public void dispose() {
-	  if (olsenBasic!=null) {
-	    olsenBasic.resetMemory();
-	  }
+		if (olsenBasic != null) {
+			olsenBasic.resetMemory();
+		}
 	}
-	
+
 	public void registerKey(Character key) {
-	  ((ShellInputProvider) olsenBasic.getInputProvider()).setCurrentKey(key);
+		((ShellInputProvider) olsenBasic.getInputProvider()).setCurrentKey(key);
 	}
 
 	/**

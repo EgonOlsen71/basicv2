@@ -4,8 +4,8 @@ import com.sixtyfour.elements.Type;
 import com.sixtyfour.system.Machine;
 
 /**
- * Interface for atoms. Every part of a BASIC program will be parsed into an Atom, i.e. terms,
- * variables, constants, commands...are all Atoms.
+ * Interface for atoms. Every part of a BASIC program will be parsed into an
+ * Atom, i.e. terms, variables, constants, commands...are all Atoms.
  */
 public interface Atom {
 

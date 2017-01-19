@@ -1,7 +1,8 @@
 package com.sixtyfour.templating;
 
 /**
- * A part of a template. Used for parsing the template, so there's no need to use this directly.
+ * A part of a template. Used for parsing the template, so there's no need to
+ * use this directly.
  */
 public class TemplatePart {
 

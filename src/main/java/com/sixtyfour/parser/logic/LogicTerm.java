@@ -27,7 +27,8 @@ public class LogicTerm implements LogicBlock {
 	 * Instantiates a new logic term.
 	 * 
 	 * @param name
-	 *            the name, which is an internal marker for this block used at parse time.
+	 *            the name, which is an internal marker for this block used at
+	 *            parse time.
 	 */
 	public LogicTerm(String name) {
 		ops.add(new LogicAnd());

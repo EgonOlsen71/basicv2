@@ -11,8 +11,8 @@ import com.sixtyfour.system.BasicProgramCounter;
 public interface Command extends Atom {
 
 	/**
-	 * Must return true, if spaces are important for the command's parameter
-	 * and false otherwise. For most commands, this will be false.
+	 * Must return true, if spaces are important for the command's parameter and
+	 * false otherwise. For most commands, this will be false.
 	 * 
 	 * @return keep or don't keep
 	 */
@@ -38,7 +38,7 @@ public interface Command extends Atom {
 	 * Clones a command with a given parameter string.
 	 * 
 	 * @param linePart
-	 *            the  parameter string
+	 *            the parameter string
 	 * @return the command
 	 */
 	Command clone(String linePart);
@@ -59,8 +59,8 @@ public interface Command extends Atom {
 	void setTerm(Term term);
 
 	/**
-	 * Parses a string as this command. If successful, 
-   * it sets this instances' term to the parsed result.
+	 * Parses a string as this command. If successful, it sets this instances'
+	 * term to the parsed result.
 	 * 
 	 * @param linePart
 	 *            the parameter string
@@ -74,7 +74,8 @@ public interface Command extends Atom {
 	 *            true, if it's the last command in the line
 	 * @param machine
 	 *            the current machine
-	 * @return an optional string that be used by the parser. Only very few commands make use of this, most return null.
+	 * @return an optional string that be used by the parser. Only very few
+	 *         commands make use of this, most return null.
 	 */
 	String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine);
 
@@ -83,7 +84,8 @@ public interface Command extends Atom {
 	 * 
 	 * @param machine
 	 *            the current machine
-	 * @return a program counter instance that contains the current state after execution
+	 * @return a program counter instance that contains the current state after
+	 *         execution
 	 */
 	BasicProgramCounter execute(Machine machine);
 

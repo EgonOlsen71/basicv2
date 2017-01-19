@@ -11,7 +11,7 @@ package com.sixtyfour.parser;
 public class Operator {
 	private final static String[] OPS = { "^", "*", "/", "+", "-", "|", ",", "°", "&", "!" };
 	private int type = -1;
-	
+
 	public final static Operator NOP = new Operator('|');
 
 	/**

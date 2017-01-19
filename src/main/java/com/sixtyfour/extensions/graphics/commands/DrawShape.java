@@ -6,6 +6,12 @@ import com.sixtyfour.system.BasicProgramCounter;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
+/**
+ * The DRAWSHAPE command. Shapes can be drawn scaled by this command.
+ * 
+ * @author EgonOlsen
+ * 
+ */
 public class DrawShape extends AbstractGraphicsCommand {
 
 	public DrawShape() {

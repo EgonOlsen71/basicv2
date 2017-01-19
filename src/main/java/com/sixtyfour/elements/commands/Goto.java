@@ -12,7 +12,8 @@ import com.sixtyfour.system.BasicProgramCounter;
 public class Goto extends AbstractCommand {
 
 	/** The pc. */
-	private BasicProgramCounter pc = new BasicProgramCounter(0, 0); // Recycle instance
+	private BasicProgramCounter pc = new BasicProgramCounter(0, 0); // Recycle
+																	// instance
 
 	/** The line number. */
 	private int lineNumber = 0;
