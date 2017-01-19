@@ -14,6 +14,7 @@ public class BasicExtensionTest
   public static void main(String[] args)
     throws Exception
   {
+    
     testGronGroff();
     testLines();
     testPlot();
@@ -28,9 +29,19 @@ public class BasicExtensionTest
     testGPrint();
     test3D();
     testRotatedShapes();
+    // testGget();
   }
 
-
+  @SuppressWarnings("unused")
+  private static void testGget()
+  {
+    String[] vary = Loader.loadProgram("src/test/resources/ext/controls.bas");
+    Basic.registerExtension(new GraphicsBasic());
+    Basic inty = new Basic(vary);
+    inty.run();
+  }
+  
+  
   private static void testRotatedShapes()
   {
     String[] vary = Loader.loadProgram("src/test/resources/ext/rotatedshapes.bas");

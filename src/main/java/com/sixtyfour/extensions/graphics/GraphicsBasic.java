@@ -17,6 +17,7 @@ import com.sixtyfour.extensions.graphics.commands.Fill;
 import com.sixtyfour.extensions.graphics.commands.FillMode;
 import com.sixtyfour.extensions.graphics.commands.Flip;
 import com.sixtyfour.extensions.graphics.commands.Font;
+import com.sixtyfour.extensions.graphics.commands.Gget;
 import com.sixtyfour.extensions.graphics.commands.Gprint;
 import com.sixtyfour.extensions.graphics.commands.Groff;
 import com.sixtyfour.extensions.graphics.commands.Gron;
@@ -61,6 +62,7 @@ public class GraphicsBasic implements BasicExtension {
 			this.add(new Gprint());
 			this.add(new Font());
 			this.add(new AAMode());
+			this.add(new Gget());
 		}
 	});
 

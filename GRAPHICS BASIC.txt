@@ -64,3 +64,5 @@ FONT "font name", size(, style) -  Sets a font to be used to text rendering. "fo
 GPRINT x,y,"what to print" - Prints text onto the graphics screen. The basic syntax is the same as for a normal PRINT in BASIC put it takes two additional parameters for the location.
 
 LIMIT fps - Limits the frame rate to the set value in frames per second, if it isn't lower anyway. This can be used to achieve a constant timing without adding busy-wait loops to the BASIC code. 0 means no limit.
+
+GGET <var> - Similar to GET in BASIC V2 but limited to one variable. This method can be used to query the keyboard in the context of the graphical output window. GET itself doesn't work here, because it's bound to the actual input provide in which the program's normal output appears (usually the console).
