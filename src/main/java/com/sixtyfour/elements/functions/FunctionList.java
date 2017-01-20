@@ -51,6 +51,15 @@ public class FunctionList {
 			FUNCTIONS = new ArrayList<Function>(FUNCTIONS);
 			FUNCTIONS.addAll(functions);
 			FUNCTIONS = Collections.unmodifiableList(FUNCTIONS);
+			List<String> names=new ArrayList<String>();
+      for (Function command:FUNCTIONS) {
+        for (String name:names) {
+          if (command.getName().startsWith(name)) {
+            throw new RuntimeException("Naming conflict: "+command.getName() + "is hidden by "+name);
+          }
+        }
+        names.add(command.getName());
+      }
 		}
 	}
 
