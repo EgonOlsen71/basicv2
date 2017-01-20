@@ -5,8 +5,8 @@ import java.util.List;
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Parser;
-import com.sixtyfour.system.Machine;
 import com.sixtyfour.system.BasicProgramCounter;
+import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
 /**
@@ -40,9 +40,10 @@ public class Wait extends AbstractCommand {
 		pars = Parser.getParameters(term);
 
 		if (pars.size() < 2 || pars.size() > 3) {
-			throw new RuntimeException("Syntax error: " + this);
+		  syntaxError(linePart);
 		}
-
+		
+		checkTypes(pars, linePart, Type.STRING, Type.STRING, Type.STRING);
 		return null;
 	}
 
@@ -67,9 +68,6 @@ public class Wait extends AbstractCommand {
 	public BasicProgramCounter execute(Machine machine) {
 		Atom addr = pars.get(0);
 		Atom waitFor = pars.get(1);
-		if (addr.getType().equals(Type.STRING) || waitFor.getType().equals(Type.STRING)) {
-			throw new RuntimeException("Type mismatch error: " + this);
-		}
 		int memAddr = VarUtils.getInt(addr.eval(machine));
 		int vally = VarUtils.getInt(waitFor.eval(machine));
 		if (vally < 0 || vally > 255 || memAddr < 0 || memAddr > 65535) {
@@ -81,9 +79,6 @@ public class Wait extends AbstractCommand {
 		if (pars.size() == 3) {
 			invertFound = true;
 			Atom inverted = pars.get(2);
-			if (inverted.getType().equals(Type.STRING) || inverted.getType().equals(Type.STRING)) {
-				throw new RuntimeException("Type mismatch error: " + this);
-			}
 			invert = VarUtils.getInt(inverted.eval(machine));
 			if (invert < 0 || invert > 255) {
 				throw new RuntimeException("Illegal quantity error: " + this);

@@ -34,7 +34,7 @@ public class Int extends AbstractFunction {
 	@Override
 	public Object eval(Machine machine) {
 		if (term.getType().equals(Type.STRING)) {
-			throw new RuntimeException("Type mismatch error: " + term.getType());
+			typeMismatch(term.getType());
 		}
 		return VarUtils.getInt(term.eval(machine));
 	}

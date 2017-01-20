@@ -80,7 +80,7 @@ public class Let extends AbstractCommand {
 		var = vai.getVariable();
 		term = Parser.getTerm(linePart, machine, true, true);
 		if (!var.getType().equals(term.getType()) && (var.getType().equals(Type.STRING) || term.getType().equals(Type.STRING))) {
-			throw new RuntimeException("Type mismatch error: " + linePart);
+		  typeMismatch(linePart);
 		}
 		return null;
 	}

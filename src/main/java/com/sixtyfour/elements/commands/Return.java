@@ -30,7 +30,7 @@ public class Return extends AbstractCommand {
 		super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine);
 		linePart = linePart.substring(6).trim();
 		if (linePart.trim().length() > 0) {
-			throw new RuntimeException("Syntax error: " + this);
+		  syntaxError(this);
 		}
 		return null;
 	}

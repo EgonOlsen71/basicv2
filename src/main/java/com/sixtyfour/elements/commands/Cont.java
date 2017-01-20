@@ -25,7 +25,7 @@ public class Cont extends AbstractCommand {
 	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
 		super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine);
 		if (linePart.trim().length() > 4) {
-			throw new RuntimeException("Syntax error: " + this);
+		  syntaxError(this);
 		}
 		return null;
 	}

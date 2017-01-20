@@ -34,7 +34,7 @@ public class Chr extends AbstractFunction {
 	@Override
 	public Object eval(Machine machine) {
 		if (term.getType().equals(Type.STRING)) {
-			throw new RuntimeException("Type mismatch error: " + term.getType());
+		  typeMismatch(term.getType());
 		}
 		Integer num = VarUtils.getInt(term.eval(machine));
 		if (num < 0 || num > 255) {

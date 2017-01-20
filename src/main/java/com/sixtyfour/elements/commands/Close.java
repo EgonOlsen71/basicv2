@@ -37,9 +37,9 @@ public class Close extends AbstractCommand {
 		pars = Parser.getParameters(term);
 
 		if (pars.size() != 1) {
-			throw new RuntimeException("Syntax error: " + this);
+		  syntaxError(this);
 		}
-
+		checkTypes(pars, linePart, Type.STRING);
 		return null;
 	}
 
@@ -53,9 +53,6 @@ public class Close extends AbstractCommand {
 	@Override
 	public BasicProgramCounter execute(Machine machine) {
 		Atom fileNumber = pars.get(0);
-		if (fileNumber.getType().equals(Type.STRING)) {
-			throw new RuntimeException("Type mismatch error: " + this);
-		}
 		int fn = VarUtils.getInt(fileNumber.eval(machine));
 
 		if (machine.getOutputChannel().getPrintConsumer() != null) {

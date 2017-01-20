@@ -21,21 +21,21 @@ public class Font extends AbstractGraphicsCommand {
 
 	@Override
 	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
-		return super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine, 2, 1);
+		String ret= super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine, 2, 1);
+		checkTypes(pars, linePart, null, Type.STRING, Type.STRING);
+		if (!pars.get(0).getType().equals(Type.STRING)) {
+		  typeMismatch(linePart);
+		}
+		return ret;
 	}
 
 	@Override
 	public BasicProgramCounter execute(Machine machine) {
 		Atom font = pars.get(0);
-		if (!font.getType().equals(Type.STRING)) {
-			throw new RuntimeException("Type mismatch error: " + this);
-		}
 		Atom size = pars.get(1);
-		checkType(size);
 		int style = 0;
 		if (pars.size() > 2) {
 			Atom st = pars.get(2);
-			checkType(st);
 			style = VarUtils.getInt(st.eval(machine));
 		}
 

@@ -25,7 +25,7 @@ public class Tab extends Spc {
 	public Object eval(Machine machine) {
 		ensureContext(machine);
 		if (term.getType().equals(Type.STRING)) {
-			throw new RuntimeException("Type mismatch error: " + this);
+		  typeMismatch(this);
 		}
 		int num = VarUtils.getInt(term.eval(machine));
 		if (num < 0 || num > 255) {

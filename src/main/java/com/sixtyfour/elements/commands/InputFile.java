@@ -44,15 +44,13 @@ public class InputFile extends Input {
 		linePart = pos != linePart.length() ? linePart.substring(pos + 1) : "";
 		List<Atom> pars = Parser.getParameters(term);
 		if (pars.size() != 1) {
-			throw new RuntimeException("Syntax error: " + this);
+		  syntaxError(this);
 		}
 		fileNumber = pars.get(0);
-		if (fileNumber.getType().equals(Type.STRING)) {
-			throw new RuntimeException("Type mismatch error: " + this);
-		}
+		checkTypes(pars, linePart, Type.STRING);
 		super.parse("INPUT" + linePart, lineCnt, lineNumber, linePos, lastPos, machine);
 		if (comment != null && !comment.isEmpty()) {
-			throw new RuntimeException("Syntax error: " + this);
+		  syntaxError(this);
 		}
 		return null;
 	}

@@ -1,9 +1,12 @@
 package com.sixtyfour.elements.commands;
 
+import java.util.List;
+
 import com.sixtyfour.elements.Type;
+import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Term;
-import com.sixtyfour.system.Machine;
 import com.sixtyfour.system.BasicProgramCounter;
+import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
 /**
@@ -43,7 +46,7 @@ public abstract class AbstractCommand implements Command {
 	public AbstractCommand(String name) {
 		this.name = VarUtils.toUpper(name);
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -183,5 +186,54 @@ public abstract class AbstractCommand implements Command {
 	public boolean isTerm() {
 		return false;
 	}
+	
+	/**
+   * Throws a type mismatch error.
+   * 
+   * @param line
+   */
+  protected void typeMismatch(String line) {
+    throw new RuntimeException("Type mismatch error: "+line);
+  }
+  
+  /**
+   * Throws a syntax error.
+   * 
+   * @param line
+   */
+  protected void syntaxError(String line) {
+    throw new RuntimeException("Syntax error: "+line);
+  }
 
+  /**
+   * Throws a type mismatch error.
+   * 
+   * @param line
+   */
+  protected void typeMismatch(Object obj) {
+    typeMismatch(obj.toString());
+  }
+  
+  /**
+   * Throws a syntax error.
+   * 
+   * @param line
+   */
+  protected void syntaxError(Object obj) {
+    syntaxError(obj.toString());
+  }
+
+  protected void checkTypes(List<Atom> params, String msg, Type... types) {
+    if (types==null) {
+      return;
+    }
+    int max=Math.min(types.length, params.size());
+    for (int i=0; i<max; i++) {
+      if (types[i]!=null && params.get(i).getType().equals(types[i])) {
+        typeMismatch(msg);
+        break;
+      }
+    }
+  }
+  
 }

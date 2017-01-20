@@ -33,7 +33,7 @@ public class Val extends AbstractFunction {
 	@Override
 	public Object eval(Machine machine) {
 		if (!term.getType().equals(Type.STRING)) {
-			throw new RuntimeException("Type mismatch error: " + term.getType());
+		  typeMismatch(term.getType());
 		}
 		String str = (String) term.eval(machine);
 		if (str == null) {

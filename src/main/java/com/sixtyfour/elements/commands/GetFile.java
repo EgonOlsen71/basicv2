@@ -43,12 +43,10 @@ public class GetFile extends Get {
 		linePart = pos != linePart.length() ? linePart.substring(pos + 1) : "";
 		List<Atom> pars = Parser.getParameters(term);
 		if (pars.size() != 1) {
-			throw new RuntimeException("Syntax error: " + this);
+		  syntaxError(this);
 		}
 		fileNumber = pars.get(0);
-		if (fileNumber.getType().equals(Type.STRING)) {
-			throw new RuntimeException("Type mismatch error: " + this);
-		}
+		checkTypes(pars, linePart, Type.STRING);
 		super.parse("GET" + linePart, lineCnt, lineNumber, linePos, lastPos, machine);
 		return null;
 	}

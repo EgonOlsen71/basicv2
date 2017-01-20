@@ -2,7 +2,6 @@ package com.sixtyfour.extensions.graphics.commands;
 
 import java.util.List;
 
-import com.sixtyfour.elements.Type;
 import com.sixtyfour.elements.commands.AbstractCommand;
 import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Parser;
@@ -26,16 +25,10 @@ public abstract class AbstractGraphicsCommand extends AbstractCommand {
 		pars = Parser.getParameters(term);
 
 		if (pars.size() < parCount || pars.size() > parCount + addPars) {
-			throw new RuntimeException("Syntax error: " + this);
+			syntaxError(linePart);
 		}
 
 		return null;
-	}
-
-	protected void checkType(Atom x) {
-		if (x.getType().equals(Type.STRING)) {
-			throw new RuntimeException("Type mismatch error: " + this);
-		}
 	}
 
 }

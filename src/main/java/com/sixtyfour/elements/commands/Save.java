@@ -43,10 +43,10 @@ public class Save extends FileOperation {
 				device.save((String) pars.get(0).eval(machine), VarUtils.getInt(pars.get(1).eval(machine)), VarUtils.getInt(pars.get(2).eval(machine)));
 				break;
 			default:
-				throw new RuntimeException("Syntax error: " + this);
+			  syntaxError(this);
 			}
 		} catch (ClassCastException e) {
-			throw new RuntimeException("Syntax error: " + this);
+		  syntaxError(this);
 		}
 
 		return null;

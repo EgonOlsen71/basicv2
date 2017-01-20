@@ -46,7 +46,7 @@ public class Read extends MultiVariableCommand {
 		linePart = Parser.removeWhiteSpace(linePart);
 		linePart = linePart.substring(4).trim();
 		if (linePart.length() == 0) {
-			throw new RuntimeException("Syntax error: " + this);
+		  syntaxError(this);
 		}
 		this.fillVariables(linePart, machine);
 		return null;
@@ -93,13 +93,13 @@ public class Read extends MultiVariableCommand {
 					if (VarUtils.isNumber(obj)) {
 						var.setValue(VarUtils.getFloat(obj), pis);
 					} else {
-						typeMismatch(obj);
+					  typeMismatchRead(obj);
 					}
 				} else if (varType.equals(Type.INTEGER)) {
 					if (VarUtils.isInteger(obj)) {
 						var.setValue(VarUtils.getInt(obj), pis);
 					} else {
-						typeMismatch(obj);
+					  typeMismatchRead(obj);
 					}
 				}
 			} else {
@@ -110,13 +110,13 @@ public class Read extends MultiVariableCommand {
 					if (VarUtils.isNumber(obj)) {
 						var.setValue(VarUtils.getFloat(obj));
 					} else {
-						typeMismatch(obj);
+					  typeMismatchRead(obj);
 					}
 				} else if (varType.equals(Type.INTEGER)) {
 					if (VarUtils.isInteger(obj)) {
 						var.setValue(VarUtils.getInt(obj));
 					} else {
-						typeMismatch(obj);
+					  typeMismatchRead(obj);
 					}
 				}
 			}
@@ -124,7 +124,7 @@ public class Read extends MultiVariableCommand {
 		return null;
 	}
 
-	private void typeMismatch(Object obj) {
+	private void typeMismatchRead(Object obj) {
 		throw new RuntimeException("Type mismatch error: " + this + "/" + obj);
 	}
 

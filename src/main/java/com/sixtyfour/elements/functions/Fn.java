@@ -41,7 +41,7 @@ public class Fn extends AbstractFunction {
 			throw new RuntimeException("Undef'd function error: " + this + "/" + this.functionName);
 		}
 		if (term.getType().equals(Type.STRING)) {
-			throw new RuntimeException("Type mismatch error: " + this);
+		  typeMismatch(this);
 		}
 		Object val = term.eval(machine);
 		Variable placeHolder = machine.getVariable(def.getVarName());

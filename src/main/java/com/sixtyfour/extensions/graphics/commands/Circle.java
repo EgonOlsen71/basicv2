@@ -1,5 +1,6 @@
 package com.sixtyfour.extensions.graphics.commands;
 
+import com.sixtyfour.elements.Type;
 import com.sixtyfour.extensions.graphics.GraphicsDevice;
 import com.sixtyfour.parser.Atom;
 import com.sixtyfour.system.BasicProgramCounter;
@@ -20,21 +21,19 @@ public class Circle extends AbstractGraphicsCommand {
 
 	@Override
 	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
-		return super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine, 3, 1);
+		String ret= super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine, 3, 1);
+    checkTypes(pars, linePart, Type.STRING, Type.STRING, Type.STRING, Type.STRING);
+    return ret;
 	}
 
 	@Override
 	public BasicProgramCounter execute(Machine machine) {
 		Atom xs = pars.get(0);
-		checkType(xs);
 		Atom ys = pars.get(1);
-		checkType(ys);
 		Atom xr = pars.get(2);
-		checkType(xr);
 		Atom yr = xr;
 		if (pars.size() > 3) {
 			yr = pars.get(3);
-			checkType(yr);
 		}
 
 		GraphicsDevice window = GraphicsDevice.getDevice(machine);

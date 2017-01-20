@@ -18,15 +18,17 @@ public class Gsave extends AbstractGraphicsCommand {
 
 	@Override
 	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
-		return super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine, 1, 0);
+		String ret= super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine, 1, 0);
+		System.out.println(pars.get(0).getType()+"/"+pars.get(0));
+		if (!pars.get(0).getType().equals(Type.STRING)) {
+      typeMismatch(linePart);
+    }
+		return ret;
 	}
 
 	@Override
 	public BasicProgramCounter execute(Machine machine) {
 		Atom name = pars.get(0);
-		if (!name.getType().equals(Type.STRING)) {
-			throw new RuntimeException("Type mismatch error: " + this);
-		}
 		GraphicsDevice window = GraphicsDevice.getDevice(machine);
 		if (window != null) {
 			window.save(machine, name.eval(machine).toString());

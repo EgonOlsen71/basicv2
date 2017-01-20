@@ -34,7 +34,7 @@ public class Str extends AbstractFunction {
 	@Override
 	public Object eval(Machine machine) {
 		if (term.getType().equals(Type.STRING)) {
-			throw new RuntimeException("Type mismatch error: " + term.getType());
+		  typeMismatch(term.getType());
 		}
 		Float num = VarUtils.getFloat(term.eval(machine));
 		String str = num.toString();

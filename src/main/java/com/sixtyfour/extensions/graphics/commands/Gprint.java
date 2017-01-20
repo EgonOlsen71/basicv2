@@ -43,6 +43,8 @@ public class Gprint extends Print {
 		String terms = linePart.substring(0, dif);
 		term = Parser.getTerm(this, terms, machine, true);
 		pars = Parser.getParameters(term);
+		
+		checkTypes(pars, linePart, Type.STRING, Type.STRING);
 
 		linePart = linePart.substring(dif + 1);
 		List<PrintPart> parts = getParts(linePart);
@@ -62,18 +64,10 @@ public class Gprint extends Print {
 		GraphicsDevice window = GraphicsDevice.getDevice(machine);
 		if (window != null) {
 			Atom x = pars.get(0);
-			checkType(x);
 			Atom y = pars.get(1);
-			checkType(y);
 			window.setCursor(VarUtils.getInt(x.eval(machine)), VarUtils.getInt(y.eval(machine)));
 			return super.execute(machine, window, printId);
 		}
 		return null;
-	}
-
-	private void checkType(Atom x) {
-		if (x.getType().equals(Type.STRING)) {
-			throw new RuntimeException("Type mismatch error: " + this);
-		}
 	}
 }

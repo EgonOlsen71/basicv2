@@ -37,9 +37,10 @@ public class Sys extends AbstractCommand {
 		pars = Parser.getParameters(term);
 
 		if (pars.isEmpty()) {
-			throw new RuntimeException("Syntax error: " + this);
+		  syntaxError(linePart);
 		}
-
+		
+		checkTypes(pars, linePart, Type.STRING);
 		return null;
 	}
 
@@ -54,9 +55,6 @@ public class Sys extends AbstractCommand {
 	public BasicProgramCounter execute(Machine machine) {
 		Atom addr = pars.get(0);
 		List<Atom> vals = pars.subList(1, pars.size());
-		if (addr.getType().equals(Type.STRING)) {
-			throw new RuntimeException("Type mismatch error: " + this);
-		}
 		int memAddr = VarUtils.getInt(addr.eval(machine));
 		if (memAddr < 0 || memAddr > 65535) {
 			throw new RuntimeException("Illegal quantity error: " + this);

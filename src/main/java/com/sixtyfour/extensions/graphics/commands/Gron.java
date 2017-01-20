@@ -1,5 +1,6 @@
 package com.sixtyfour.extensions.graphics.commands;
 
+import com.sixtyfour.elements.Type;
 import com.sixtyfour.extensions.graphics.GraphicsDevice;
 import com.sixtyfour.parser.Atom;
 import com.sixtyfour.system.BasicProgramCounter;
@@ -20,15 +21,15 @@ public class Gron extends AbstractGraphicsCommand {
 
 	@Override
 	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
-		return super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine, 2, 0);
+		String ret= super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine, 2, 0);
+		checkTypes(pars, linePart, Type.STRING, Type.STRING);
+    return ret;
 	}
 
 	@Override
 	public BasicProgramCounter execute(Machine machine) {
 		Atom x = pars.get(0);
-		checkType(x);
 		Atom y = pars.get(1);
-		checkType(y);
 		GraphicsDevice.openDevice(machine, VarUtils.getInt(x.eval(machine)), VarUtils.getInt(y.eval(machine)));
 		return null;
 	}

@@ -83,7 +83,7 @@ public class Data extends AbstractCommand {
 						hasQuotes = false;
 					} else {
 						if (hasQuotes && c != ' ') {
-							throw new RuntimeException("Syntax error: " + this);
+						  syntaxError(this);
 						}
 						sb.append(c);
 					}

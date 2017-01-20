@@ -90,7 +90,7 @@ public class For extends AbstractCommand {
 		var = Parser.getVariable(assignment, machine);
 		term = Parser.getTerm(assignment, machine, true, true);
 		if (!var.getType().equals(term.getType()) && !(var.getType().equals(Type.REAL) && term.getType().equals(Type.INTEGER))) {
-			throw new RuntimeException("Type mismatch error: " + linePart);
+		  typeMismatch(linePart);
 		}
 
 		String toTxt = null;
@@ -111,11 +111,11 @@ public class For extends AbstractCommand {
 		stepTerm = Parser.getTerm(stepTxt, machine, false, true);
 
 		if (!Parser.isNumberType(endTerm)) {
-			throw new RuntimeException("Type mismatch error: " + endTerm);
+		  typeMismatch(endTerm);
 		}
 
 		if (!Parser.isNumberType(stepTerm)) {
-			throw new RuntimeException("Type mismatch error: " + stepTerm);
+		  typeMismatch(stepTerm);
 		}
 		return null;
 	}

@@ -37,8 +37,10 @@ public class Poke extends AbstractCommand {
 		pars = Parser.getParameters(term);
 
 		if (pars.size() != 2) {
-			throw new RuntimeException("Syntax error: " + this);
+		  syntaxError(this);
 		}
+		
+		checkTypes(pars, linePart, Type.STRING, Type.STRING);
 
 		return null;
 	}
@@ -54,9 +56,6 @@ public class Poke extends AbstractCommand {
 	public BasicProgramCounter execute(Machine machine) {
 		Atom addr = pars.get(0);
 		Atom val = pars.get(1);
-		if (addr.getType().equals(Type.STRING) || val.getType().equals(Type.STRING)) {
-			throw new RuntimeException("Type mismatch error: " + this);
-		}
 		int memAddr = VarUtils.getInt(addr.eval(machine));
 		int vally = VarUtils.getInt(val.eval(machine));
 		if (vally < 0 || vally > 255 || memAddr < 0 || memAddr > 65535) {
