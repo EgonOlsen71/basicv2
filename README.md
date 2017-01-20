@@ -15,7 +15,7 @@ dependencies to any other Java libraries. It's a stand-alone thing.
 It can run BASIC programs from inside your application or from the command line. 
 You can even use it to process HTML-templates as it comes with a basic templating implementation.
 
-In addition to normal BASIC V2, it features a BASIC extension named GRAPHICS BASIC, which add some commands for...graphics. The graphics capabilities aren't limited by some artifical C64 specs but take full advantage of a modern PC's possibilities.
+In addition to normal BASIC V2, it features a BASIC extension named GRAPHICS BASIC, which adds some commands for...graphics. The graphics capabilities aren't limited by some artifical C64 specs but take full advantage of a modern PC's possibilities.
 
 Thanks to nietoperz809's efforts, there's a simple BASIC shell/editor available as well (see basicshell-package) that lets you load/save/edit/run BASIC programs in a C64-like editor.
 
