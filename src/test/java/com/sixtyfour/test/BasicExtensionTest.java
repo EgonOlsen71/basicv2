@@ -10,7 +10,6 @@ import com.sixtyfour.extensions.graphics.GraphicsBasic;
  */
 public class BasicExtensionTest {
 	public static void main(String[] args) throws Exception {
-		
 		testGronGroff();
 		testLines();
 		testPlot();

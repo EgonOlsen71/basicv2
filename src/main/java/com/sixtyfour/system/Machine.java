@@ -273,6 +273,7 @@ public class Machine {
 	 */
 	public void clearVars() {
 		for (Variable var : vars.values()) {
+			var.setPersistent(false);
 			var.clear();
 		}
 		addDefaults();
@@ -289,16 +290,20 @@ public class Machine {
 	 * @return either the newly added variable or the old one with the same name
 	 */
 	public Variable add(Variable var) {
+		if (var.isPersistent()) {
+			return var;
+		}
 		Variable ret = getVariableUpperCase(var.getUpperCaseName());
 		if (ret == null) {
 			vars.put(var.getUpperCaseName(), var);
+			var.setPersistent(true);
 			ret = var;
 		}
 		return ret;
 	}
 
 	/**
-	 * The same as add, this in addition, it will set the value of the new
+	 * The same as add, but in addition, it will set the value of the new
 	 * variable to the old one, if it finds it.
 	 * 
 	 * @param var

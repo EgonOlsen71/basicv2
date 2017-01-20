@@ -37,6 +37,8 @@ public class Variable implements Atom {
 	/** The dimensions. */
 	private int[] dimensions;
 
+	private boolean persistent = false;
+
 	/**
 	 * Instantiates a new array variable.
 	 * 
@@ -307,6 +309,9 @@ public class Variable implements Atom {
 		if (array) {
 			throw new RuntimeException("Not a simple type: " + this);
 		}
+		if (value.equals(this.value)) {
+			return;
+		}
 		// Convert into proper format
 		if (VarUtils.isFloat(value) && type.equals(Type.INTEGER)) {
 			value = VarUtils.getInt(value);
@@ -424,6 +429,26 @@ public class Variable implements Atom {
 	@Override
 	public boolean isTerm() {
 		return false;
+	}
+
+	/**
+	 * Returns true, if the variable is persistent in a machine's context.
+	 * 
+	 * @return is it?
+	 */
+	public boolean isPersistent() {
+		return persistent;
+	}
+
+	/**
+	 * Marks the variable as persistent in a machines context, i.e. it "belongs"
+	 * to that machine.
+	 * 
+	 * @param persistent
+	 *            is it persistent
+	 */
+	public void setPersistent(boolean persistent) {
+		this.persistent = persistent;
 	}
 
 	/**
