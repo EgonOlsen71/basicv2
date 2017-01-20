@@ -74,7 +74,7 @@ public abstract class MultiVariableCommand extends AbstractCommand {
 			input = '0';
 		}
 		if (input < '0' || input > '9') {
-		  syntaxError(this);
+			syntaxError(this);
 		}
 		return input;
 	}

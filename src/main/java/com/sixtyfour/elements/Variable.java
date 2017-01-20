@@ -21,8 +21,8 @@ public class Variable implements Atom {
 	private String name;
 
 	/**
-   * 
-   */
+	 * 
+	 */
 	private String upperCaseName;
 
 	/** The type. */
@@ -401,13 +401,19 @@ public class Variable implements Atom {
 	 * 
 	 * @param value
 	 *            the value to add
+	 * @return the new value
 	 */
-	public void inc(float value) {
-		if (type.equals(Type.INTEGER) || type.equals(Type.REAL)) {
-			this.value = VarUtils.getFloat(this.value) + value;
-		} else {
-			throw new RuntimeException("Type mismatch error: " + this);
+	public float inc(float value) {
+		if (type.equals(Type.INTEGER)) {
+			int ret = (int) (VarUtils.getInt(this.value) + value);
+			this.value = ret;
+			return ret;
+		} else if (type.equals(Type.REAL)) {
+			float ret = VarUtils.getFloat(this.value) + value;
+			this.value = ret;
+			return ret;
 		}
+		throw new RuntimeException("Type mismatch error: " + this);
 	}
 
 	/*

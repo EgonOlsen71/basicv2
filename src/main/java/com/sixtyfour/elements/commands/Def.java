@@ -48,11 +48,11 @@ public class Def extends AbstractCommand {
 		int pos = linePart.indexOf('(');
 		int pos2 = linePart.indexOf(')');
 		if (pos == -1 || pos2 == -1 || pos > pos2) {
-		  syntaxError(this);
+			syntaxError(this);
 		}
 		fnName = VarUtils.toUpper(linePart.substring(3, pos));
 		if (!fnName.startsWith("FN")) {
-		  syntaxError(this);
+			syntaxError(this);
 		}
 		fnName = fnName.substring(2);
 		if (fnName.length() > 2) {
@@ -60,10 +60,10 @@ public class Def extends AbstractCommand {
 		}
 		varName = VarUtils.toUpper(linePart.substring(pos + 1, pos2));
 		if (varName.length() == 0) {
-		  syntaxError(this);
+			syntaxError(this);
 		}
 		if (linePart.length() < pos2 + 2 && linePart.charAt(pos2 + 1) != '=') {
-		  syntaxError(this);
+			syntaxError(this);
 		}
 		String term = linePart.substring(pos2 + 2);
 

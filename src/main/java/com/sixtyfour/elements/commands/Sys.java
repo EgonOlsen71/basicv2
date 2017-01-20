@@ -37,9 +37,9 @@ public class Sys extends AbstractCommand {
 		pars = Parser.getParameters(term);
 
 		if (pars.isEmpty()) {
-		  syntaxError(linePart);
+			syntaxError(linePart);
 		}
-		
+
 		checkTypes(pars, linePart, Type.STRING);
 		return null;
 	}

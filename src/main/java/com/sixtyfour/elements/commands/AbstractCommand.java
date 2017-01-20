@@ -46,7 +46,7 @@ public abstract class AbstractCommand implements Command {
 	public AbstractCommand(String name) {
 		this.name = VarUtils.toUpper(name);
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -186,54 +186,54 @@ public abstract class AbstractCommand implements Command {
 	public boolean isTerm() {
 		return false;
 	}
-	
+
 	/**
-   * Throws a type mismatch error.
-   * 
-   * @param line
-   */
-  protected void typeMismatch(String line) {
-    throw new RuntimeException("Type mismatch error: "+line);
-  }
-  
-  /**
-   * Throws a syntax error.
-   * 
-   * @param line
-   */
-  protected void syntaxError(String line) {
-    throw new RuntimeException("Syntax error: "+line);
-  }
+	 * Throws a type mismatch error.
+	 * 
+	 * @param line
+	 */
+	protected void typeMismatch(String line) {
+		throw new RuntimeException("Type mismatch error: " + line);
+	}
 
-  /**
-   * Throws a type mismatch error.
-   * 
-   * @param line
-   */
-  protected void typeMismatch(Object obj) {
-    typeMismatch(obj.toString());
-  }
-  
-  /**
-   * Throws a syntax error.
-   * 
-   * @param line
-   */
-  protected void syntaxError(Object obj) {
-    syntaxError(obj.toString());
-  }
+	/**
+	 * Throws a syntax error.
+	 * 
+	 * @param line
+	 */
+	protected void syntaxError(String line) {
+		throw new RuntimeException("Syntax error: " + line);
+	}
 
-  protected void checkTypes(List<Atom> params, String msg, Type... types) {
-    if (types==null) {
-      return;
-    }
-    int max=Math.min(types.length, params.size());
-    for (int i=0; i<max; i++) {
-      if (types[i]!=null && params.get(i).getType().equals(types[i])) {
-        typeMismatch(msg);
-        break;
-      }
-    }
-  }
-  
+	/**
+	 * Throws a type mismatch error.
+	 * 
+	 * @param line
+	 */
+	protected void typeMismatch(Object obj) {
+		typeMismatch(obj.toString());
+	}
+
+	/**
+	 * Throws a syntax error.
+	 * 
+	 * @param line
+	 */
+	protected void syntaxError(Object obj) {
+		syntaxError(obj.toString());
+	}
+
+	protected void checkTypes(List<Atom> params, String msg, Type... types) {
+		if (types == null) {
+			return;
+		}
+		int max = Math.min(types.length, params.size());
+		for (int i = 0; i < max; i++) {
+			if (types[i] != null && params.get(i).getType().equals(types[i])) {
+				typeMismatch(msg);
+				break;
+			}
+		}
+	}
+
 }

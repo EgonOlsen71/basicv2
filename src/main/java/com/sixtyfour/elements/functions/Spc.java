@@ -57,7 +57,7 @@ public class Spc extends AbstractFunction {
 	public Object eval(Machine machine) {
 		ensureContext(machine);
 		if (term.getType().equals(Type.STRING)) {
-		  typeMismatch(this);
+			typeMismatch(this);
 		}
 		int num = VarUtils.getInt(term.eval(machine));
 		if (num < 0 || num > 255) {

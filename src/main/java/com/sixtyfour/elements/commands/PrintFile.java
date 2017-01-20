@@ -40,7 +40,7 @@ public class PrintFile extends Print {
 		linePart = pos != linePart.length() ? linePart.substring(pos + 1) : "";
 		List<Atom> pars = Parser.getParameters(term);
 		if (pars.size() != 1) {
-		  syntaxError(this);
+			syntaxError(this);
 		}
 		fileNumber = pars.get(0);
 		checkTypes(pars, linePart, Type.STRING);

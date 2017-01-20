@@ -40,9 +40,9 @@ public class Wait extends AbstractCommand {
 		pars = Parser.getParameters(term);
 
 		if (pars.size() < 2 || pars.size() > 3) {
-		  syntaxError(linePart);
+			syntaxError(linePart);
 		}
-		
+
 		checkTypes(pars, linePart, Type.STRING, Type.STRING, Type.STRING);
 		return null;
 	}

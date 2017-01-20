@@ -37,7 +37,7 @@ public class Open extends AbstractCommand {
 		pars = Parser.getParameters(term);
 
 		if (pars.isEmpty()) {
-		  syntaxError(this);
+			syntaxError(this);
 		}
 
 		return null;
@@ -70,10 +70,10 @@ public class Open extends AbstractCommand {
 						.get(3).eval(machine));
 				break;
 			default:
-			  syntaxError(this);
+				syntaxError(this);
 			}
 		} catch (ClassCastException e) {
-		  syntaxError(this);
+			syntaxError(this);
 		}
 
 		return null;

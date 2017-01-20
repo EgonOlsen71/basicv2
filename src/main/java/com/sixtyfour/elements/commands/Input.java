@@ -60,16 +60,16 @@ public class Input extends MultiVariableCommand {
 		linePart = Parser.removeWhiteSpace(linePart);
 		linePart = linePart.substring(5).trim();
 		if (linePart.length() == 0) {
-		  syntaxError(this);
+			syntaxError(this);
 		}
 		int pos = linePart.indexOf('"');
 		if (pos != -1) {
 			if (linePart.length() < 4 || pos != 0) {
-			  syntaxError(this);
+				syntaxError(this);
 			}
 			int pos2 = linePart.indexOf("\";", pos + 1);
 			if (pos2 == -1 || pos2 == linePart.length() - 2) {
-			  syntaxError(this);
+				syntaxError(this);
 			}
 			comment = linePart.substring(pos + 1, pos2);
 			linePart = linePart.substring(pos2 + 2);

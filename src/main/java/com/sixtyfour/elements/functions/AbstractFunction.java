@@ -37,43 +37,42 @@ public abstract class AbstractFunction implements Function {
 		this.name = VarUtils.toUpper(name);
 	}
 
-	
 	/**
-   * Throws a type mismatch error.
-   * 
-   * @param line
-   */
-  protected void typeMismatch(String line) {
-    throw new RuntimeException("Type mismatch error: "+line);
-  }
-  
-  /**
-   * Throws a syntax error.
-   * 
-   * @param line
-   */
-  protected void syntaxError(String line) {
-    throw new RuntimeException("Syntax error: "+line);
-  }
+	 * Throws a type mismatch error.
+	 * 
+	 * @param line
+	 */
+	protected void typeMismatch(String line) {
+		throw new RuntimeException("Type mismatch error: " + line);
+	}
 
-  /**
-   * Throws a type mismatch error.
-   * 
-   * @param line
-   */
-  protected void typeMismatch(Object obj) {
-    typeMismatch(obj.toString());
-  }
-  
-  /**
-   * Throws a syntax error.
-   * 
-   * @param line
-   */
-  protected void syntaxError(Object obj) {
-    syntaxError(obj.toString());
-  }
-  
+	/**
+	 * Throws a syntax error.
+	 * 
+	 * @param line
+	 */
+	protected void syntaxError(String line) {
+		throw new RuntimeException("Syntax error: " + line);
+	}
+
+	/**
+	 * Throws a type mismatch error.
+	 * 
+	 * @param line
+	 */
+	protected void typeMismatch(Object obj) {
+		typeMismatch(obj.toString());
+	}
+
+	/**
+	 * Throws a syntax error.
+	 * 
+	 * @param line
+	 */
+	protected void syntaxError(Object obj) {
+		syntaxError(obj.toString());
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

@@ -55,7 +55,7 @@ public class Get extends MultiVariableCommand {
 		linePart = Parser.removeWhiteSpace(linePart);
 		linePart = linePart.substring(3).trim();
 		if (linePart.length() == 0) {
-		  syntaxError(this);
+			syntaxError(this);
 		}
 		this.fillVariables(linePart, machine);
 		return null;

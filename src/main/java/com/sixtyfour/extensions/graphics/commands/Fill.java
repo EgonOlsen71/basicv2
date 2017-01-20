@@ -21,9 +21,9 @@ public class Fill extends AbstractGraphicsCommand {
 
 	@Override
 	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
-		String ret= super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine, 2, 0);
+		String ret = super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine, 2, 0);
 		checkTypes(pars, linePart, Type.STRING, Type.STRING);
-    return ret;
+		return ret;
 	}
 
 	@Override

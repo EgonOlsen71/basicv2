@@ -60,14 +60,14 @@ public class CommandList {
 			commands = new ArrayList<Command>(commands);
 			commands.addAll(COMMANDS);
 			COMMANDS = Collections.unmodifiableList(commands);
-			List<String> names=new ArrayList<String>();
-			for (Command command:COMMANDS) {
-			  for (String name:names) {
-			    if (command.getName().startsWith(name)) {
-			      throw new RuntimeException("Naming conflict: "+command.getName() + " is hidden by "+name);
-			    }
-			  }
-			  names.add(command.getName());
+			List<String> names = new ArrayList<String>();
+			for (Command command : COMMANDS) {
+				for (String name : names) {
+					if (command.getName().startsWith(name)) {
+						throw new RuntimeException("Naming conflict: " + command.getName() + " is hidden by " + name);
+					}
+				}
+				names.add(command.getName());
 			}
 		}
 	}

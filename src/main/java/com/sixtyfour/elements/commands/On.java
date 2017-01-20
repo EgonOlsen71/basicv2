@@ -44,12 +44,12 @@ public class On extends AbstractCommand {
 		String uPart = VarUtils.toUpper(linePart);
 		int pos = uPart.lastIndexOf("GO");
 		if (pos == -1) {
-		  syntaxError(this);
+			syntaxError(this);
 		}
 		term = Parser.getTerm(linePart.substring(0, pos), machine, false, true);
 
 		if (term.getType().equals(Type.STRING)) {
-		  typeMismatch(linePart);
+			typeMismatch(linePart);
 		}
 
 		gosub = uPart.indexOf("GOSUB") != -1;
@@ -64,7 +64,7 @@ public class On extends AbstractCommand {
 			}
 		}
 		if (numPos == -1) {
-		  syntaxError(this);
+			syntaxError(this);
 		}
 		String[] parts = lines.substring(numPos).split(",");
 		for (String part : parts) {
@@ -76,7 +76,7 @@ public class On extends AbstractCommand {
 					lineNumbers.add(li);
 				}
 			} catch (Exception e) {
-			  syntaxError(this);
+				syntaxError(this);
 			}
 		}
 		return null;

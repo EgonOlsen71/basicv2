@@ -15,9 +15,9 @@ public class Copy extends AbstractGraphicsCommand {
 
 	@Override
 	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
-		String ret= super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine, 6, 0);
-    checkTypes(pars, linePart, Type.STRING, Type.STRING, Type.STRING, Type.STRING, Type.STRING, Type.STRING);
-    return ret;
+		String ret = super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine, 6, 0);
+		checkTypes(pars, linePart, Type.STRING, Type.STRING, Type.STRING, Type.STRING, Type.STRING, Type.STRING);
+		return ret;
 	}
 
 	@Override

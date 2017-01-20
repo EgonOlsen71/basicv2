@@ -230,7 +230,11 @@ public class Term implements Atom {
 				}
 			} else {
 				Number n1 = (Number) left.eval(machine);
-				Number n2 = (Number) right.eval(machine);
+				Number n2 = n1;
+				if (left != right) {
+					n2 = (Number) right.eval(machine);
+				}
+
 				float v1 = 0;
 				if (operator.isPlus()) {
 					v1 = n1.floatValue() + n2.floatValue();

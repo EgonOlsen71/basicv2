@@ -90,7 +90,7 @@ public class For extends AbstractCommand {
 		var = Parser.getVariable(assignment, machine);
 		term = Parser.getTerm(assignment, machine, true, true);
 		if (!var.getType().equals(term.getType()) && !(var.getType().equals(Type.REAL) && term.getType().equals(Type.INTEGER))) {
-		  typeMismatch(linePart);
+			typeMismatch(linePart);
 		}
 
 		String toTxt = null;
@@ -111,11 +111,11 @@ public class For extends AbstractCommand {
 		stepTerm = Parser.getTerm(stepTxt, machine, false, true);
 
 		if (!Parser.isNumberType(endTerm)) {
-		  typeMismatch(endTerm);
+			typeMismatch(endTerm);
 		}
 
 		if (!Parser.isNumberType(stepTerm)) {
-		  typeMismatch(stepTerm);
+			typeMismatch(stepTerm);
 		}
 		return null;
 	}
@@ -156,8 +156,7 @@ public class For extends AbstractCommand {
 		if (!running) {
 			return false;
 		}
-		var.inc(step);
-		float cur = VarUtils.getFloat(var.getValue());
+		float cur = var.inc(step);
 		if ((step < 0 && cur >= end) || (step > 0 && cur <= end)) {
 			return true;
 		} else {

@@ -37,7 +37,7 @@ public class Close extends AbstractCommand {
 		pars = Parser.getParameters(term);
 
 		if (pars.size() != 1) {
-		  syntaxError(this);
+			syntaxError(this);
 		}
 		checkTypes(pars, linePart, Type.STRING);
 		return null;

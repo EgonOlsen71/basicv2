@@ -21,9 +21,9 @@ public class DrawShape extends AbstractGraphicsCommand {
 
 	@Override
 	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
-		String ret= super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine, 3, 2);
+		String ret = super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine, 3, 2);
 		checkTypes(pars, linePart, Type.STRING, Type.STRING, Type.STRING, Type.STRING, Type.STRING);
-    return ret;
+		return ret;
 	}
 
 	@Override

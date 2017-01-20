@@ -43,7 +43,7 @@ public class Gprint extends Print {
 		String terms = linePart.substring(0, dif);
 		term = Parser.getTerm(this, terms, machine, true);
 		pars = Parser.getParameters(term);
-		
+
 		checkTypes(pars, linePart, Type.STRING, Type.STRING);
 
 		linePart = linePart.substring(dif + 1);

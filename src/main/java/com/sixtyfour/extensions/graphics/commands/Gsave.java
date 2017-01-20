@@ -18,11 +18,10 @@ public class Gsave extends AbstractGraphicsCommand {
 
 	@Override
 	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
-		String ret= super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine, 1, 0);
-		System.out.println(pars.get(0).getType()+"/"+pars.get(0));
+		String ret = super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine, 1, 0);
 		if (!pars.get(0).getType().equals(Type.STRING)) {
-      typeMismatch(linePart);
-    }
+			typeMismatch(linePart);
+		}
 		return ret;
 	}
 

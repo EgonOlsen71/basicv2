@@ -37,9 +37,9 @@ public class Poke extends AbstractCommand {
 		pars = Parser.getParameters(term);
 
 		if (pars.size() != 2) {
-		  syntaxError(this);
+			syntaxError(this);
 		}
-		
+
 		checkTypes(pars, linePart, Type.STRING, Type.STRING);
 
 		return null;
