@@ -17,6 +17,6 @@ You can even use it to process HTML-templates as it comes with a basic templatin
 
 In addition to normal BASIC V2, it features a BASIC extension named GRAPHICS BASIC, which adds some commands for...graphics. The graphics capabilities aren't limited by some artifical C64 specs but take full advantage of a modern PC's capabilities.
 
-Thanks to nietoperz809's efforts, there's a simple BASIC shell/editor available as well (see basicshell-package) that lets you load/save/edit/run BASIC programs in a C64-like editor.
+Thanks to nietoperz809's efforts, there's a simple BASIC shell/editor available as well (see basicshell-package) that lets you load/save/edit/run BASIC programs in a C64-like editor. Or you can have a look at this second approach on this topic: https://github.com/nietoperz809/C64Screen
 
 
