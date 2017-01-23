@@ -54,9 +54,8 @@ public class ArrayAccess extends AbstractFunction {
 			pars = Parser.getParameters(term);
 			pis = new int[pars.size()];
 		}
-		int cnt = 0;
-		for (Atom par : pars) {
-			pis[cnt++] = VarUtils.getInt(par.eval(machine));
+		for (int i=0; i<pars.size(); i++) {
+			pis[i] = VarUtils.getInt(pars.get(i).eval(machine));
 		}
 		Variable vary = machine.getVariableUpperCase(variableName);
 		if (vary == null) {
