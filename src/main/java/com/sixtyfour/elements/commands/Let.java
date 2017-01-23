@@ -25,6 +25,10 @@ public class Let extends AbstractCommand {
 
 	/** The index term. */
 	private Term indexTerm;
+	
+	private List<Atom> pars;
+	
+	private int[] pis;
 
 	/**
 	 * Instantiates a new let.
@@ -82,6 +86,10 @@ public class Let extends AbstractCommand {
 		if (!var.getType().equals(term.getType()) && (var.getType().equals(Type.STRING) || term.getType().equals(Type.STRING))) {
 			typeMismatch(linePart);
 		}
+		if (indexTerm != null) {
+		  pars = Parser.getParameters(indexTerm);
+		  pis = new int[pars.size()];
+		}
 		return null;
 	}
 
@@ -100,11 +108,8 @@ public class Let extends AbstractCommand {
 			var.setValue(term.eval(machine));
 		} else {
 			// array
-			List<Atom> pars = Parser.getParameters(indexTerm);
-			int[] pis = new int[pars.size()];
-			int cnt = 0;
-			for (Atom par : pars) {
-				pis[cnt++] = VarUtils.getInt(par.eval(machine));
+			for (int i=0; i<pars.size(); i++) {
+				pis[i] = VarUtils.getInt(pars.get(i).eval(machine));
 			}
 			var.setValue(term.eval(machine), pis);
 		}
