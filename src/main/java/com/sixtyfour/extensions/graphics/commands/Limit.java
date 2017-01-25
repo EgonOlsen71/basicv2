@@ -1,7 +1,6 @@
 package com.sixtyfour.extensions.graphics.commands;
 
 import com.sixtyfour.elements.Type;
-import com.sixtyfour.extensions.graphics.GraphicsDevice;
 import com.sixtyfour.parser.Atom;
 import com.sixtyfour.system.BasicProgramCounter;
 import com.sixtyfour.system.Machine;
@@ -14,6 +13,10 @@ import com.sixtyfour.util.VarUtils;
  * 
  */
 public class Limit extends AbstractGraphicsCommand {
+
+	private long frameTime;
+	private long lastTime;
+	private long lastDif;
 
 	public Limit() {
 		super("LIMIT");
@@ -29,11 +32,38 @@ public class Limit extends AbstractGraphicsCommand {
 	@Override
 	public BasicProgramCounter execute(Machine machine) {
 		Atom m = pars.get(0);
-		GraphicsDevice window = GraphicsDevice.getDevice(machine);
-		if (window != null) {
-			window.limit(VarUtils.getInt(m.eval(machine)));
-		}
+		limit(VarUtils.getInt(m.eval(machine)));
 		return null;
 	}
+	
+	/**
+	 * Limits the speed of a fixed max. fps value. 0 (or lower) means no limit.
+	 * 
+	 * @param fps
+	 *            the desired fps value
+	 */
+	private void limit(int fps) {
+		if (fps <= 0) {
+			return;
+		}
+		frameTime = 1000000000L / (long) fps;
+		long now = System.nanoTime();
+		long dif = now - lastTime;
+		if (dif < 0) {
+			// Fix overflow
+			dif = lastDif;
+		}
+		lastDif = dif;
+		if (dif < frameTime) {
+			try {
+				long waitTime = (frameTime - dif) / 1000000L;
+				Thread.sleep(waitTime);
+			} catch (Exception e) {
+				//
+			}
+		}
+		lastTime = System.nanoTime();
+	}
+
 
 }

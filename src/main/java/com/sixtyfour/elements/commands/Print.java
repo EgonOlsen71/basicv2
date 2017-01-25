@@ -128,6 +128,8 @@ public class Print extends AbstractCommand {
 				}
 			}
 
+			//System.out.println("prt: ["+toPrint+"]");
+			
 			if (("\n").equals(add)) {
 				consumer.println(printId, toPrint);
 			} else {

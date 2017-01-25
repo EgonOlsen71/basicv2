@@ -63,9 +63,6 @@ public class GraphicsDevice implements PrintConsumer {
 	private int height = 0;
 	private int[] pixels = null;
 	private Color color = Color.white;
-	private long lastTime = 0;
-	private long frameTime = 0;
-	private long lastDif;
 	private Map<Integer, Shape> shapes = new HashMap<Integer, Shape>();
 	private int cursorX = 0;
 	private int cursorY = 0;
@@ -111,7 +108,7 @@ public class GraphicsDevice implements PrintConsumer {
 		}
 		return window;
 	}
-
+	
 	private GraphicsDevice(int x, int y) {
 		System.setProperty("sun.java2d.d3d", "false");
 		width = x;
@@ -441,35 +438,6 @@ public class GraphicsDevice implements PrintConsumer {
 		}
 		gscreen.drawImage(backBuffer, 0, 0, null);
 		frame.repaint();
-	}
-
-	/**
-	 * Limits the speed of a fixed max. fps value. 0 (or lower) means no limit.
-	 * 
-	 * @param fps
-	 *            the desired fps value
-	 */
-	public void limit(int fps) {
-		if (fps <= 0) {
-			return;
-		}
-		frameTime = 1000000000L / (long) fps;
-		long now = System.nanoTime();
-		long dif = now - lastTime;
-		if (dif < 0) {
-			// Fix overflow
-			dif = lastDif;
-		}
-		lastDif = dif;
-		if (dif < frameTime) {
-			try {
-				long waitTime = (frameTime - dif) / 1000000L;
-				Thread.sleep(waitTime);
-			} catch (Exception e) {
-				//
-			}
-		}
-		lastTime = System.nanoTime();
 	}
 
 	/**
