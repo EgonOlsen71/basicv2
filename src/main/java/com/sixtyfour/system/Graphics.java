@@ -12,6 +12,8 @@ import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
 
+import com.sixtyfour.util.Colors;
+
 /**
  * A simple helper class to save hires/multicolor bitmap screens into png files
  * 
@@ -19,9 +21,6 @@ import javax.imageio.stream.ImageOutputStream;
  * 
  */
 public class Graphics {
-
-	private final static int[] COLORS = new int[] { 0x000000, 0xFFFFFF, 0x68372B, 0x70A4B2, 0x6F3D86, 0x588D43, 0x352879, 0xB8C76F, 0x6F4F25, 0x433900, 0x9A6759, 0x444444,
-			0x6C6C6C, 0x9AD284, 0x6C5EB5, 0x959595 };
 
 	private final static int WHITE = 255 * 256 * 256 + 255 * 256 + 255;
 	private final static int RED = 255 * 256 * 256;
@@ -86,7 +85,7 @@ public class Graphics {
 	}
 
 	private static void createWithRamColors(int startAddress, int textramStartAddress, boolean multiColor, BufferedImage bi, int[] ram) {
-		int bgColor = COLORS[ram[53281] & 0xFF];
+		int bgColor = Colors.COLORS[ram[53281] & 0xFF];
 		if (!multiColor) {
 			for (int x = 0; x < 320; x += 8) {
 				for (int y = 0; y < 200; y++) {
@@ -95,7 +94,7 @@ public class Graphics {
 					int col = ram[p] & 0xff;
 					int s = 128;
 					for (int b = 0; b < 8; b++) {
-						int c = (col & s) == s ? (COLORS[ram[textramStartAddress + ramPos] >> 4]) : (COLORS[ram[textramStartAddress + ramPos] & 0b00001111]);
+						int c = (col & s) == s ? (Colors.COLORS[ram[textramStartAddress + ramPos] >> 4]) : (Colors.COLORS[ram[textramStartAddress + ramPos] & 0b00001111]);
 						s >>= 1;
 						bi.setRGB(x + b, y, c);
 					}
@@ -118,13 +117,13 @@ public class Graphics {
 							c1 = bgColor;
 							break;
 						case 1:
-							c1 = COLORS[ram[textramStartAddress + ramPos] >> 4];
+							c1 = Colors.COLORS[ram[textramStartAddress + ramPos] >> 4];
 							break;
 						case 2:
-							c1 = COLORS[ram[textramStartAddress + ramPos] & 0b00001111];
+							c1 = Colors.COLORS[ram[textramStartAddress + ramPos] & 0b00001111];
 							break;
 						case 3:
-							c1 = COLORS[ram[COLOR_MEMORY + ramPos] & 0b00001111];
+							c1 = Colors.COLORS[ram[COLOR_MEMORY + ramPos] & 0b00001111];
 							break;
 						}
 

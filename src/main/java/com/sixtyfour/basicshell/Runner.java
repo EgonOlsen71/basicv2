@@ -4,6 +4,7 @@ import java.util.concurrent.Future;
 
 import com.sixtyfour.Basic;
 import com.sixtyfour.extensions.graphics.GraphicsBasic;
+import com.sixtyfour.extensions.textmode.ConsoleSupport;
 
 /**
  * Runs the program that's inside the editor.
@@ -17,6 +18,7 @@ public class Runner implements Runnable {
 
 	public Runner(String[] program, BasicShell shellFrame) {
 		Basic.registerExtension(new GraphicsBasic());
+		Basic.registerExtension(new ConsoleSupport());
 		this.olsenBasic = new Basic(program);
 		olsenBasic.setOutputChannel(new ShellOutputChannel(shellFrame));
 		olsenBasic.setInputProvider(new ShellInputProvider(shellFrame));
