@@ -593,18 +593,33 @@ public class GraphicsDevice implements PrintConsumer {
 	/**
 	 * Creates a new shape and links its image content to the one of an open PETSCII console. 
 	 * If no console is open, an empty shape will be returned.
+	 * @param machine the Machine
 	 * 
-	 * @return
+	 * @param update 
+	 *       if 0, updates to the console won't show up in the shape. If 1, they will.
+	 * 
+	 * @return the new shape's ID
 	 */
-	public int linkShape(Machine machine)
+	public int linkShape(Machine machine, int update)
   {
     ConsoleDevice console=ConsoleDevice.getDevice(machine);
     if (console==null) {
       return getShape(0,0,1,1);
     }
-    Shape shape = new Shape(console.getScreen());
-    addShape(shape);
-    return shape.getId();
+    if (update!=0) {
+      Shape shape = new Shape(console.getScreen());
+      addShape(shape);
+      return shape.getId();
+    } else {
+      BufferedImage conImg=console.getScreen();
+      BufferedImage shapeImage = new BufferedImage(conImg.getWidth(), conImg.getHeight(), BufferedImage.TYPE_INT_ARGB);
+      Graphics2D sg = shapeImage.createGraphics();
+      sg.drawImage(conImg, 0, 0, conImg.getWidth(), conImg.getHeight(), null);
+      sg.dispose();
+      Shape shape = new Shape(shapeImage);
+      addShape(shape);
+      return shape.getId();
+    }
   }
 
 	/**
