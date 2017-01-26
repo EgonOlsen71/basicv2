@@ -29,6 +29,7 @@ import com.sixtyfour.extensions.graphics.commands.Plot;
 import com.sixtyfour.extensions.graphics.commands.Rect;
 import com.sixtyfour.extensions.graphics.commands.RotateShape;
 import com.sixtyfour.extensions.graphics.functions.GetShape;
+import com.sixtyfour.extensions.graphics.functions.LinkShape;
 import com.sixtyfour.extensions.graphics.functions.LoadShape;
 import com.sixtyfour.system.Machine;
 
@@ -74,6 +75,7 @@ public class GraphicsBasic implements BasicExtension {
 		{
 			this.add(new LoadShape());
 			this.add(new GetShape());
+			this.add(new LinkShape());
 		}
 	});
 

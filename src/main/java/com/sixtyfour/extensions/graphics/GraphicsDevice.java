@@ -38,6 +38,7 @@ import javax.swing.JLabel;
 import com.sixtyfour.extensions.graphics.commands.impl.FloodFiller;
 import com.sixtyfour.extensions.graphics.commands.impl.FontProvider;
 import com.sixtyfour.extensions.graphics.commands.impl.Shape;
+import com.sixtyfour.extensions.textmode.ConsoleDevice;
 import com.sixtyfour.plugins.PrintConsumer;
 import com.sixtyfour.system.Machine;
 
@@ -588,6 +589,23 @@ public class GraphicsDevice implements PrintConsumer {
 		addShape(shape);
 		return shape.getId();
 	}
+	
+	/**
+	 * Creates a new shape and links its image content to the one of an open PETSCII console. 
+	 * If no console is open, an empty shape will be returned.
+	 * 
+	 * @return
+	 */
+	public int linkShape(Machine machine)
+  {
+    ConsoleDevice console=ConsoleDevice.getDevice(machine);
+    if (console==null) {
+      return getShape(0,0,1,1);
+    }
+    Shape shape = new Shape(console.getScreen());
+    addShape(shape);
+    return shape.getId();
+  }
 
 	/**
 	 * Reads a key from the keyboard when the graphics output window has focus.
@@ -668,4 +686,6 @@ public class GraphicsDevice implements PrintConsumer {
 		frame.setVisible(false);
 		frame.dispose();
 	}
+
+  
 }

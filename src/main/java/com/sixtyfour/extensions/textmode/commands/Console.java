@@ -22,8 +22,8 @@ public class Console
   @Override
   public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine)
   {
-    String ret = super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine, 1, 0);
-    checkTypes(pars, linePart, Type.STRING);
+    String ret = super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine, 1, 3);
+    checkTypes(pars, linePart, Type.STRING, Type.STRING, Type.STRING, Type.STRING);
     return ret;
   }
 
@@ -34,16 +34,31 @@ public class Console
     Atom m = pars.get(0);
     ConsoleDevice window = ConsoleDevice.getDevice(machine);
     int mode = VarUtils.getInt(m.eval(machine));
+    boolean clear = true;
+    int width = 800;
+    int height = 500;
     if (window != null && mode == 0)
     {
       window.dispose();
     }
     else
     {
-      if (mode > 0)
+      if (pars.size() > 1)
       {
-        ConsoleDevice.openDevice(machine, 800, 500);
+        clear = VarUtils.getInt(pars.get(1).eval(machine)) != 0;
       }
+
+      if (pars.size() > 2)
+      {
+        width = VarUtils.getInt(pars.get(2).eval(machine));
+      }
+
+      if (pars.size() > 3)
+      {
+        height = VarUtils.getInt(pars.get(4).eval(machine));
+      }
+
+      ConsoleDevice.openDevice(machine, mode, clear, width, height);
     }
     return null;
   }

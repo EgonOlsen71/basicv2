@@ -79,13 +79,14 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 	 * 
 	 * @param machine
 	 *            the machine
+	 * @param clear 
 	 * @param x
 	 *            the width
 	 * @param y
 	 *            the height
 	 * @return a GraphicsDevice instance for the machine
 	 */
-	public static ConsoleDevice openDevice(Machine machine, int x, int y) {
+	public static ConsoleDevice openDevice(Machine machine, int consoleType, boolean clear, int x, int y) {
 		if (x <= 0) {
 			x = 320;
 		}
@@ -94,13 +95,13 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 		}
 		ConsoleDevice window = machine2window.get(machine);
 		if (window == null) {
-			window = new ConsoleDevice(machine, x, y);
+			window = new ConsoleDevice(machine, consoleType, clear, x, y);
 			machine2window.put(machine, window);
 		}
 		return window;
 	}
 
-	private ConsoleDevice(Machine machine, int x, int y) {
+	private ConsoleDevice(Machine machine, int consoleType ,boolean clear, int x, int y) {
 		System.setProperty("sun.java2d.d3d", "false");
 		width = x;
 		height = y;
@@ -169,13 +170,19 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 		frame.add(label, BorderLayout.CENTER);
 		frame.pack();
 
-		//clearScreen(); // TODO Somehow make this dependent on something...
+		if (clear) {
+		  clearScreen();
+		}
 		Font ft = loadFont("CommodoreServer.ttf", width);
 		gscreen.setFont(ft);
 		graphicsFontUsed = true;
 		baseLine = width / 40;
 
-		frame.setVisible(true);
+		if (!clear) {
+		  updateScreen();
+		}
+		
+		frame.setVisible(consoleType>0);
 	}
 
 	private String createCharsetMapping() {
@@ -345,6 +352,10 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 	public boolean wait(int addr, int value, int inverse) {
 		return oldMemoryListener.wait(addr, value, inverse);
 	}
+	
+	public BufferedImage getScreen() {
+    return screen;
+  }
 
 	private void setCharset(boolean graphics) {
 		this.graphicsFontUsed = graphics;
