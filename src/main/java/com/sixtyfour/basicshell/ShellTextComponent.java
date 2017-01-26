@@ -11,8 +11,6 @@ import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetAdapter;
 import java.awt.dnd.DropTargetDropEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.List;
 
@@ -37,14 +35,6 @@ class ShellTextComponent extends JTextArea {
 		mc.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 		setCaret(mc);
 		setFont(ResourceLoader.getFont());
-		addKeyListener(new KeyAdapter() {
-			public void keyTyped(KeyEvent e) {
-				char keyChar = e.getKeyChar();
-				if (Character.isLowerCase(keyChar)) {
-					e.setKeyChar(Character.toUpperCase(keyChar));
-				}
-			}
-		});
 		new DropTarget(this, new DropTargetAdapter() {
 			@Override
 			public void drop(DropTargetDropEvent event) {

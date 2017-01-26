@@ -96,16 +96,17 @@ public class Input extends MultiVariableCommand {
 				if (comment != null) {
 					out.print(0, comment);
 				}
-				out.print(0, "?");
+				out.print(0, "? ");
 			} else {
 				if (queue.isEmpty()) {
-					out.print(0, "??");
+					out.print(0, "?? ");
 				}
 			}
 
 			String input = null;
 			if (queue.isEmpty()) {
 				input = machine.getInputProvider().readString();
+				out.println(0, "");
 				if (input == null) {
 					input = "";
 				}

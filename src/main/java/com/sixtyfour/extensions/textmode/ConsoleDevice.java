@@ -12,17 +12,20 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowStateListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Queue;
+import java.util.Set;
 import java.util.WeakHashMap;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
+import com.sixtyfour.plugins.InputProvider;
 import com.sixtyfour.plugins.MemoryListener;
 import com.sixtyfour.plugins.OutputChannel;
 import com.sixtyfour.plugins.PrintConsumer;
@@ -34,7 +37,7 @@ import com.sixtyfour.util.Colors;
  * @author EgonOlsen
  * 
  */
-public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryListener {
+public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryListener, InputProvider {
 
 	private static final int COLOR_RAM = 55296;
 	private static final int TEXT_RAM = 1024;
@@ -58,8 +61,27 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 	private SystemCallListener oldSystemCallListener = null;
 	private MemoryListener oldMemoryListener = null;
 	private OutputChannel oldOutputChannel = null;
+	private InputProvider oldInputProvider = null;
 	private int[] ram;
 	private Color[] colors = new Color[Colors.COLORS.length];
+	private StringBuilder inputString = new StringBuilder();
+	private boolean inputMode = false;
+	private boolean cursorMode = false;
+	private boolean cursorOn = false;
+	private int insertPos = -1;
+	private Thread cursorThread = null;
+	private boolean shiftDown = false;
+
+	private Set<Integer> toIgnore = new HashSet<Integer>() {
+		private static final long serialVersionUID = 1L;
+		{
+			this.add(KeyEvent.VK_SHIFT);
+			this.add(KeyEvent.VK_CONTROL);
+			this.add(KeyEvent.VK_CAPS_LOCK);
+			this.add(KeyEvent.VK_ALT);
+			this.add(KeyEvent.VK_ALT_GRAPH);
+		}
+	};
 
 	/**
 	 * Returns an existing device for machine. If there is none, null will be
@@ -79,7 +101,7 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 	 * 
 	 * @param machine
 	 *            the machine
-	 * @param clear 
+	 * @param clear
 	 * @param x
 	 *            the width
 	 * @param y
@@ -101,7 +123,7 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 		return window;
 	}
 
-	private ConsoleDevice(Machine machine, int consoleType ,boolean clear, int x, int y) {
+	private ConsoleDevice(Machine machine, int consoleType, boolean clear, int x, int y) {
 		System.setProperty("sun.java2d.d3d", "false");
 		width = x;
 		height = y;
@@ -111,6 +133,7 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 		oldSystemCallListener = machine.getSystemCallListener();
 		oldMemoryListener = machine.getMemoryListener();
 		oldOutputChannel = machine.getOutputChannel();
+		oldInputProvider = machine.getInputProvider();
 
 		ram = machine.getRam();
 
@@ -121,6 +144,7 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 		machine.setSystemCallListener(this);
 		machine.setMemoryListener(this);
 		machine.setOutputChannel(this);
+		machine.setInputProvider(this);
 
 		frame = new JFrame("Console " + x + "*" + y);
 		frame.setLayout(new BorderLayout());
@@ -137,14 +161,105 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 		frame.addKeyListener(new KeyListener() {
 			@Override
 			public void keyTyped(KeyEvent e) {
-				//
+				if (inputMode) {
+					char c = e.getKeyChar();
+					if (Character.isDigit(c) || Character.isAlphabetic(c) || Character.isWhitespace(c) || "#-.,:;'+*/\"!§$%&/()][}{ß?´`".indexOf(c) != -1) {
+						if (Character.isWhitespace(c)) {
+							c = ' ';
+						}
+						if (insertPos == -1) {
+							inputString.append(c);
+						} else {
+							inputString.setCharAt(insertPos, c);
+							insertPos++;
+							if (insertPos >= inputString.length()) {
+								insertPos = -1;
+							}
+						}
+						print(0, Character.toString(c));
+					}
+				}
 			}
 
 			@Override
 			public void keyPressed(KeyEvent e) {
 				synchronized (keysPressed) {
 					if (!keysPressed.contains(e.getKeyChar())) {
-						keysPressed.add(e.getKeyChar());
+						if (!toIgnore.contains(e.getKeyCode())) {
+							keysPressed.add(e.getKeyChar());
+						}
+					}
+					if (inputMode) {
+						switch (e.getKeyCode()) {
+						case KeyEvent.VK_SHIFT:
+							shiftDown = true;
+							break;
+						case KeyEvent.VK_ENTER:
+							inputMode = false;
+							cursorThread.interrupt();
+							break;
+						case KeyEvent.VK_BACK_SPACE:
+							if (!shiftDown) {
+								if (inputString.length() > 0) {
+									if (insertPos == -1) {
+										inputString.setLength(Math.max(0, inputString.length() - 1));
+										pokeValue(getTextRamPos(), 32, TEXT_RAM);
+										setCursor(cursorX - 1, cursorY);
+										pokeValue(getTextRamPos(), 32, TEXT_RAM);
+									} else {
+										insertPos--;
+										if (insertPos < 0) {
+											insertPos = 0;
+										} else {
+											inputString.deleteCharAt(insertPos);
+											setCursor(cursorX - 1, cursorY);
+											shiftLeft();
+											updateScreen();
+										}
+									}
+								}
+							} else {
+								if (inputString.length() > 0) {
+									if (insertPos != -1) {
+										inputString.insert(insertPos, ' ');
+										shiftRight();
+										updateScreen();
+									}
+								}
+							}
+							cursorThread.interrupt();
+							break;
+						case KeyEvent.VK_LEFT:
+							if (insertPos == -1) {
+								insertPos = inputString.length() - 1;
+								setCursor(cursorX - 1, cursorY);
+							} else {
+								insertPos--;
+								if (insertPos < 0) {
+									insertPos = 0;
+								} else {
+									setCursor(cursorX - 1, cursorY);
+								}
+							}
+							cursorThread.interrupt();
+							break;
+						case KeyEvent.VK_RIGHT:
+							if (insertPos == -1) {
+								inputString.append(' ');
+								print(0, Character.toString(' '));
+							} else {
+								insertPos++;
+								if (insertPos >= inputString.length()) {
+									insertPos = -1;
+								}
+								setCursor(cursorX + 1, cursorY);
+							}
+							cursorThread.interrupt();
+							break;
+						default:
+							break;
+						}
+
 					}
 				}
 			}
@@ -154,6 +269,9 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 				synchronized (keysPressed) {
 					while (keysPressed.remove(e.getKeyChar())) {
 						//
+					}
+					if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
+						shiftDown = false;
 					}
 				}
 			}
@@ -171,7 +289,7 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 		frame.pack();
 
 		if (clear) {
-		  clearScreen();
+			clearScreen();
 		}
 		Font ft = loadFont("CommodoreServer.ttf", width);
 		gscreen.setFont(ft);
@@ -179,10 +297,10 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 		baseLine = width / 40;
 
 		if (!clear) {
-		  updateScreen();
+			updateScreen();
 		}
-		
-		frame.setVisible(consoleType>0);
+
+		frame.setVisible(consoleType > 0);
 	}
 
 	private String createCharsetMapping() {
@@ -352,10 +470,96 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 	public boolean wait(int addr, int value, int inverse) {
 		return oldMemoryListener.wait(addr, value, inverse);
 	}
-	
+
 	public BufferedImage getScreen() {
-    return screen;
-  }
+		return screen;
+	}
+
+	@Override
+	public Character readKey() {
+		synchronized (keysPressed) {
+			Character chr = keysPressed.poll();
+			return chr;
+		}
+	}
+
+	@Override
+	public String readString() {
+		inputString.setLength(0);
+		if (!frame.isVisible()) {
+			return null;
+		}
+
+		insertPos = -1;
+		inputMode = true;
+		startCursor();
+
+		while (inputMode) {
+			try {
+				Thread.sleep(5);
+			} catch (Exception e) {
+				//
+			}
+		}
+		stopCursor();
+		return inputString.toString();
+	}
+
+	private void stopCursor() {
+		cursorMode = false;
+		while (cursorOn) {
+			try {
+				Thread.sleep(1);
+			} catch (Exception e) {
+				//
+			}
+		}
+	}
+
+	private void startCursor() {
+		cursorOn = true;
+		cursorMode = true;
+		cursorThread = new Thread() {
+
+			@Override
+			public void run() {
+
+				int lastVal = 0;
+
+				while (cursorMode) {
+					int addr = getTextRamPos();
+					int val = ram[addr];
+					lastVal = val;
+					if (val < 128) {
+						val += 128;
+					} else {
+						val -= 128;
+					}
+					renderValue(addr, val, TEXT_RAM);
+					delay();
+					if (val > 128) {
+						val -= 128;
+					} else {
+						val += 128;
+					}
+					if (ram[addr] == lastVal) {
+						renderValue(addr, val, TEXT_RAM);
+					}
+					delay();
+				}
+				cursorOn = false;
+			}
+
+			private void delay() {
+				try {
+					Thread.sleep(333);
+				} catch (Exception e) {
+					//
+				}
+			}
+		};
+		cursorThread.start();
+	}
 
 	private void setCharset(boolean graphics) {
 		this.graphicsFontUsed = graphics;
@@ -364,12 +568,15 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 
 	private void updateScreen() {
 		clearRect(0, 0, width, height, bgColor);
-		for (int y = 0; y < 25; y++) {
-			for (int x = 0; x < 40; x++) {
-				updateChar(x, y, false);
+		synchronized (this) {
+			for (int y = 0; y < 25; y++) {
+				for (int x = 0; x < 40; x++) {
+					updateChar(x, y, false);
+				}
 			}
 		}
 		update();
+
 	}
 
 	private void pokeChar(int addr, int value) {
@@ -390,6 +597,27 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 		}
 	}
 
+	private void renderValue(int addr, int value, int baseAddr) {
+		int y = (int) (addr - baseAddr) / 40;
+		int x = (addr - baseAddr) - y * 40;
+		if (y < 25 && x < 40) {
+			int cw = width / 40;
+			int xc = x * cw;
+			int yc = y * cw;
+			int offset = x + y * 40;
+			clearRect(xc, yc, xc + cw, yc + cw, bgColor);
+			getContext().setColor(colors[ram[COLOR_RAM + offset] & 15]);
+			String ch = null;
+			if (graphicsFontUsed) {
+				ch = Character.toString(charset.charAt(value & 0xff));
+			} else {
+				ch = Character.toString(charset.charAt((value & 0xff) + 256));
+			}
+			getContext().drawString(ch, xc, yc + baseLine);
+			update();
+		}
+	}
+
 	private void updateChar(int x, int y, boolean clear) {
 		int cw = width / 40;
 		int xc = x * cw;
@@ -400,14 +628,14 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 		}
 		reallyPrintChar(offset, yc, xc);
 	}
-	
+
 	private void printChar(char c) {
 		int offset = cursorX + cursorY * 40;
 		int cw = width / 40;
 		int yc = cursorY * cw;
 		int xc = cursorX * cw;
-		int ci=getASCII(c);
-		ci+=reverseMode?128:0;
+		int ci = getASCII(c);
+		ci += reverseMode ? 128 : 0;
 		ram[TEXT_RAM + offset] = (int) (ci & 0xff);
 		ram[COLOR_RAM + offset] = ram[646] & 15;
 		clearRect(xc, yc, xc + cw, yc + cw, bgColor);
@@ -427,18 +655,19 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 	}
 
 	private int getASCII(char c) {
-		// Highly inefficient...:-)
-		int s=0;
-		if (!this.graphicsFontUsed) {
-			s=256;
+		if (c >= 'a' && c <= 'z') {
+			c = (char) ((int) c - 32);
+		} else if (c >= 'A' && c <= 'Z') {
+			c = (char) ((int) c + 32);
 		}
-		for (int i=0; i<256; i++) {
-			char ct=charset.charAt(i+s);
-			if (ct==c) {
-				return i;
+
+		for (int i = 0; i < 512; i++) {
+			char ct = charset.charAt(i);
+			if (ct == c) {
+				return i > 255 ? i - 256 : i;
 			}
 		}
-		return 0;
+		return 32;
 	}
 
 	private Font loadFont(String name, int width) {
@@ -464,34 +693,37 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 	}
 
 	private void setCursor(int x, int y) {
-		cursorX = x;
-		cursorY = y;
-		
-		if (cursorX > 39) {
-			cursorX = 0;
-			cursorY++;
-		}
+		synchronized (this) {
+			cursorX = x;
+			cursorY = y;
 
-		if (cursorX < 0) {
-			if (cursorY == 0) {
-				cursorY = 0;
+			if (cursorX > 39) {
 				cursorX = 0;
-			} else {
-				cursorX = 40 + cursorX;
-				cursorY--;
+				cursorY++;
 			}
+
+			if (cursorX < 0) {
+				if (cursorY == 0) {
+					cursorY = 0;
+					cursorX = 0;
+				} else {
+					cursorX = 40 + cursorX;
+					cursorY--;
+				}
+			}
+
+			if (cursorY < 0) {
+				cursorY = 0;
+			}
+
+			while (cursorY > 24) {
+				cursorY--;
+				scrollUp();
+			}
+			ram[211] = cursorX;
+			ram[214] = cursorY;
 		}
 
-		if (cursorY < 0) {
-			cursorY = 0;
-		}
-
-		while (cursorY > 24) {
-			cursorY--;
-			scrollUp();
-		}
-		ram[211] = cursorX;
-		ram[214] = cursorY;
 	}
 
 	private void scrollUp() {
@@ -499,7 +731,7 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 			ram[TEXT_RAM - 40 + i] = ram[TEXT_RAM + i];
 			ram[COLOR_RAM - 40 + i] = ram[COLOR_RAM + i];
 		}
-		for (int i = 1000-40; i < 1000; i++) {
+		for (int i = 1000 - 40; i < 1000; i++) {
 			ram[TEXT_RAM + i] = 32;
 			ram[COLOR_RAM + i] = bgColor;
 		}
@@ -519,6 +751,10 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 		update();
 	}
 
+	private int getTextRamPos() {
+		return TEXT_RAM + cursorX + 40 * cursorY;
+	}
+
 	private void removeFromMap() {
 		List<Machine> keys = new ArrayList<Machine>();
 		for (Entry<Machine, ConsoleDevice> entry : machine2window.entrySet()) {
@@ -532,6 +768,7 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 			machine.setMemoryListener(oldMemoryListener);
 			machine.setSystemCallListener(oldSystemCallListener);
 			machine.setOutputChannel(oldOutputChannel);
+			machine.setInputProvider(oldInputProvider);
 		}
 	}
 
@@ -635,7 +872,13 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 				break;
 			case 32:
 				clearCursor();
-				setCursor(cursorX+1, cursorY);
+				setCursor(cursorX + 1, cursorY);
+				break;
+			case 14:
+				setCharset(false);
+				break;
+			case 142:
+				setCharset(true);
 				break;
 			default:
 				printChar(c);
@@ -651,11 +894,31 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 	}
 
 	private void shiftRight() {
-		// TODO Mimic actual C64 behaviour
-		int offset = cursorY * 40 + cursorX;
-		for (int i = 999; i > offset; i--) {
-			ram[TEXT_RAM + i] = ram[TEXT_RAM + i - 1];
-			ram[COLOR_RAM + i] = ram[COLOR_RAM + i - 1];
+		synchronized (this) {
+			int end = (((cursorY & 1) == 1) ? 39 : 79);
+			int offset = cursorY * 40 + cursorX;
+			for (int i = offset + end; i > offset; i--) {
+				if (ram[TEXT_RAM + offset + end] != 32) {
+					break;
+				}
+				ram[TEXT_RAM + i] = ram[TEXT_RAM + i - 1];
+				ram[COLOR_RAM + i] = ram[COLOR_RAM + i - 1];
+			}
+			pokeValue(TEXT_RAM + offset, 32, TEXT_RAM);
+			pokeValue(COLOR_RAM + offset, bgColor, COLOR_RAM);
+		}
+	}
+
+	private void shiftLeft() {
+		int i;
+		synchronized (this) {
+			int offset = cursorY * 40;
+			for (i = cursorX + offset; i < (((cursorY & 1) == 1) ? 39 : 79) + offset; i++) {
+				ram[TEXT_RAM + i] = ram[TEXT_RAM + i + 1];
+				ram[COLOR_RAM + i] = ram[COLOR_RAM + i + 1];
+			}
+			pokeValue(TEXT_RAM + i, 32, TEXT_RAM);
+			pokeValue(COLOR_RAM + i, bgColor, COLOR_RAM);
 		}
 	}
 
