@@ -184,9 +184,13 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 			@Override
 			public void keyPressed(KeyEvent e) {
 				synchronized (keysPressed) {
-					if (!keysPressed.contains(e.getKeyChar())) {
+				  char kc=e.getKeyChar();
+				  if (e.getKeyCode()==KeyEvent.VK_ENTER) {
+				    kc=(char) 13;
+				  }
+					if (!keysPressed.contains(kc)) {
 						if (!toIgnore.contains(e.getKeyCode())) {
-							keysPressed.add(e.getKeyChar());
+							keysPressed.add(kc);
 						}
 					}
 					if (inputMode) {
