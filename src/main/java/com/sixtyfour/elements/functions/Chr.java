@@ -40,7 +40,15 @@ public class Chr extends AbstractFunction {
 		if (num < 0 || num > 255) {
 			throw new RuntimeException("Illegal quantity error: " + num);
 		}
-		return Character.toString((char) num.intValue());
-
+		return Character.toString(getConvertedChar((char) num.intValue()));
 	}
+	
+	private char getConvertedChar(char c) {
+    if (c >= 'a' && c <= 'z') {
+      c = (char) ((int) c - 32);
+    } else if (c >= 'A' && c <= 'Z') {
+      c = (char) ((int) c + 32);
+    }
+    return c;
+  }
 }

@@ -272,7 +272,11 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 			@Override
 			public void keyReleased(KeyEvent e) {
 				synchronized (keysPressed) {
-					while (keysPressed.remove(e.getKeyChar())) {
+				  char kc=e.getKeyChar();
+          if (e.getKeyCode()==KeyEvent.VK_ENTER) {
+            kc=(char) 13;
+          }
+					while (keysPressed.remove(kc)) {
 						//
 					}
 					if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
@@ -641,7 +645,7 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 		int cw = width / 40;
 		int yc = cursorY * cw;
 		int xc = cursorX * cw;
-		int ci = getASCII(c);
+		int ci = getValueToPoke(c);
 		ci += reverseMode ? 128 : 0;
 		ram[TEXT_RAM + offset] = (int) (ci & 0xff);
 		ram[COLOR_RAM + offset] = ram[646] & 15;
@@ -661,12 +665,17 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 		getContext().drawString(ch, xc, yc + baseLine);
 	}
 
-	private int getASCII(char c) {
-		if (c >= 'a' && c <= 'z') {
-			c = (char) ((int) c - 32);
-		} else if (c >= 'A' && c <= 'Z') {
-			c = (char) ((int) c + 32);
-		}
+	private char getConvertedChar(char c) {
+	  if (c >= 'a' && c <= 'z') {
+      c = (char) ((int) c - 32);
+    } else if (c >= 'A' && c <= 'Z') {
+      c = (char) ((int) c + 32);
+    }
+	  return c;
+	}
+	
+	private int getValueToPoke(char c) {
+		c=getConvertedChar(c);
 
 		for (int i = 0; i < 512; i++) {
 			char ct = charset.charAt(i);

@@ -37,8 +37,17 @@ public class Asc extends AbstractFunction {
 			if (str == null || str.length() == 0) {
 				throw new RuntimeException("Illegal quantity error: " + this);
 			}
-			return (int) str.charAt(0);
+			return (int) getConvertedChar(str.charAt(0));
 		}
 		throw new RuntimeException("Type mismatch error: " + term.getType());
 	}
+	
+	private char getConvertedChar(char c) {
+    if (c >= 'a' && c <= 'z') {
+      c = (char) ((int) c - 32);
+    } else if (c >= 'A' && c <= 'Z') {
+      c = (char) ((int) c + 32);
+    }
+    return c;
+  }
 }
