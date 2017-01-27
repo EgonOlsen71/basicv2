@@ -52,6 +52,7 @@ public class Run extends AbstractCommand {
 	@Override
 	public BasicProgramCounter execute(Machine machine) {
 		machine.resetMemory();
+		machine.getDataStore().restore();
 		pc.setLinePos(-1);
 		if (lineNumber != -1) {
 			pc.setLineNumber(lineNumber);
