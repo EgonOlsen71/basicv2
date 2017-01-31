@@ -10,41 +10,38 @@ import com.sixtyfour.extensions.BasicExtension;
 import com.sixtyfour.extensions.textmode.commands.Console;
 import com.sixtyfour.system.Machine;
 
+/**
+ * A BASIC extension, that adds PETSCII console support. For more details see
+ * "CONSOLE SUPPORT.txt"
+ * 
+ * @author EgonOlsen
+ * 
+ */
+public class ConsoleSupport implements BasicExtension {
 
-public class ConsoleSupport
-  implements BasicExtension
-{
+	private final static List<Command> COMMANDS = Collections.unmodifiableList(new ArrayList<Command>() {
+		private static final long serialVersionUID = 1L;
+		{
+			this.add(new Console());
+		}
+	});
 
-  private final static List<Command> COMMANDS = Collections.unmodifiableList(new ArrayList<Command>() {
-    private static final long serialVersionUID = 1L;
-    {
-      this.add(new Console());
-    }
-  });
+	@Override
+	public List<Command> getCommands() {
+		return COMMANDS;
+	}
 
+	@Override
+	public List<Function> getFunctions() {
+		return null;
+	}
 
-  @Override
-  public List<Command> getCommands()
-  {
-    return COMMANDS;
-  }
-
-
-  @Override
-  public List<Function> getFunctions()
-  {
-    return null;
-  }
-
-
-  @Override
-  public void reset(Machine machine)
-  {
-    ConsoleDevice window = ConsoleDevice.getDevice(machine);
-    if (window != null)
-    {
-      window.dispose();
-    }
-  }
+	@Override
+	public void reset(Machine machine) {
+		ConsoleDevice window = ConsoleDevice.getDevice(machine);
+		if (window != null) {
+			window.dispose();
+		}
+	}
 
 }

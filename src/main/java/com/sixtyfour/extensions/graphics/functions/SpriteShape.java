@@ -11,16 +11,16 @@ import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
 /**
- * The LINKSHAPE function. It creates a shape from a PETSCII console's content.
- * If none is open, nothing happens.
+ * The SPRITESHAPE function. It converts a sprite in C64 format from memory into
+ * a shape and returns its internal id.
  * 
  * @author EgonOlsen
  * 
  */
-public class LinkShape extends AbstractFunction {
+public class SpriteShape extends AbstractFunction {
 
-	public LinkShape() {
-		super("LINKSHAPE");
+	public SpriteShape() {
+		super("SPRITESHAPE");
 	}
 
 	@Override
@@ -31,16 +31,17 @@ public class LinkShape extends AbstractFunction {
 	@Override
 	public Object eval(Machine machine) {
 		List<Atom> pars = Parser.getParameters(term);
-		if (pars.size() != 1) {
+		if (pars.size() != 2) {
 			throw new RuntimeException("Wrong number of parameters: " + term);
 		}
-
-		Atom type = pars.get(0);
+		Atom addr = pars.get(0);
+		checkType(addr);
+		Atom type = pars.get(1);
 		checkType(type);
 
 		GraphicsDevice window = GraphicsDevice.getDevice(machine);
 		if (window != null) {
-			return window.linkShape(machine, VarUtils.getInt(type.eval(machine)));
+			return window.spriteShape(machine, VarUtils.getInt(addr.eval(machine)), VarUtils.getInt(type.eval(machine)) == 1);
 		}
 		throw new RuntimeException("Graphics mode not enabled!");
 	}
@@ -50,4 +51,5 @@ public class LinkShape extends AbstractFunction {
 			throw new RuntimeException("Type mismatch error: " + this);
 		}
 	}
+
 }

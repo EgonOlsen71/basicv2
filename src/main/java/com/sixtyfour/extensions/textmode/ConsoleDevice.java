@@ -34,6 +34,8 @@ import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.Colors;
 
 /**
+ * The console device provides a PETSCII console with 40*25 characters.
+ * 
  * @author EgonOlsen
  * 
  */
@@ -467,7 +469,7 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 				setCharset(true);
 			}
 		} else if (addr == 198 && value == 0) {
-			synchronized(keysPressed) {
+			synchronized (keysPressed) {
 				keysPressed.clear();
 			}
 		}
@@ -477,6 +479,9 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 
 	@Override
 	public Integer peek(int addr) {
+		if (addr == 198) {
+			return ram[addr];
+		}
 		return oldMemoryListener.peek(addr);
 	}
 

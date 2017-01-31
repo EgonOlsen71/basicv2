@@ -129,9 +129,9 @@ public class Basic implements ProgramExecutor {
 	 * Static method to register a BASIC extension. This is static, because all
 	 * registered extensions are available in all Basic instances. Adding an
 	 * extension multiple times does no harm, but only the first added instance
-	 * will be active. This version of the method takes an actual instance of the 
-	 * extension. If another instance of the same extension has already been added,
-	 * nothing will happen.
+	 * will be active. This version of the method takes an actual instance of
+	 * the extension. If another instance of the same extension has already been
+	 * added, nothing will happen.
 	 * 
 	 * @param extension
 	 *            the extension instance to add
@@ -145,26 +145,23 @@ public class Basic implements ProgramExecutor {
 			FunctionList.registerNewFunctions(extension.getFunctions());
 		}
 	}
-	
-	 /**
-   * Static method to register a BASIC extension. This is static, because all
-   * registered extensions are available in all Basic instances. Adding an
-   * extension multiple times does no harm, but only the first added instance
-   * will be active. This version of the method takes the extension's class instead
-   * of an actual instance.
-   * 
-   * @param extension
-   *            the extension class to add
-   */
+
+	/**
+	 * Static method to register a BASIC extension. This is static, because all
+	 * registered extensions are available in all Basic instances. Adding an
+	 * extension multiple times does no harm, but only the first added instance
+	 * will be active. This version of the method takes the extension's class
+	 * instead of an actual instance.
+	 * 
+	 * @param extension
+	 *            the extension class to add
+	 */
 	public static void registerExtension(Class<? extends BasicExtension> clazz) {
-	  try
-    {
-      registerExtension(clazz.newInstance());
-    }
-    catch (Exception e)
-    {
-      throw new RuntimeException("Failed to register extension "+clazz);
-    }
+		try {
+			registerExtension(clazz.newInstance());
+		} catch (Exception e) {
+			throw new RuntimeException("Failed to register extension " + clazz);
+		}
 	}
 
 	/**

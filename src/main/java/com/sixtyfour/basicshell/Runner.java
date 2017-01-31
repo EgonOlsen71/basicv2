@@ -31,9 +31,9 @@ public class Runner implements Runnable {
 	}
 
 	public void registerKey(Character key) {
-	  if (olsenBasic.getInputProvider() instanceof ShellInputProvider) {
-	    ((ShellInputProvider) olsenBasic.getInputProvider()).setCurrentKey(key);
-	  }
+		if (olsenBasic.getInputProvider() instanceof ShellInputProvider) {
+			((ShellInputProvider) olsenBasic.getInputProvider()).setCurrentKey(key);
+		}
 	}
 
 	/**

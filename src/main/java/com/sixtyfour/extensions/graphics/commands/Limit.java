@@ -35,7 +35,7 @@ public class Limit extends AbstractGraphicsCommand {
 		limit(VarUtils.getInt(m.eval(machine)));
 		return null;
 	}
-	
+
 	/**
 	 * Limits the speed of a fixed max. fps value. 0 (or lower) means no limit.
 	 * 
@@ -64,6 +64,5 @@ public class Limit extends AbstractGraphicsCommand {
 		}
 		lastTime = System.nanoTime();
 	}
-
 
 }

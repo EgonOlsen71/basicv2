@@ -41,6 +41,7 @@ import com.sixtyfour.extensions.graphics.commands.impl.Shape;
 import com.sixtyfour.extensions.textmode.ConsoleDevice;
 import com.sixtyfour.plugins.PrintConsumer;
 import com.sixtyfour.system.Machine;
+import com.sixtyfour.util.Colors;
 
 /**
  * The GraphicsDevice provides an output window for advanced graphics in 24bit
@@ -109,7 +110,7 @@ public class GraphicsDevice implements PrintConsumer {
 		}
 		return window;
 	}
-	
+
 	private GraphicsDevice(int x, int y) {
 		System.setProperty("sun.java2d.d3d", "false");
 		width = x;
@@ -589,38 +590,98 @@ public class GraphicsDevice implements PrintConsumer {
 		addShape(shape);
 		return shape.getId();
 	}
-	
+
 	/**
-	 * Creates a new shape and links its image content to the one of an open PETSCII console. 
-	 * If no console is open, an empty shape will be returned.
-	 * @param machine the Machine
+	 * Creates a new shape and links its image content to the one of an open
+	 * PETSCII console. If no console is open, an empty shape will be returned.
 	 * 
-	 * @param update 
-	 *       if 0, updates to the console won't show up in the shape. If 1, they will.
+	 * @param machine
+	 *            the Machine
+	 * 
+	 * @param update
+	 *            if 0, updates to the console won't show up in the shape. If 1,
+	 *            they will.
 	 * 
 	 * @return the new shape's ID
 	 */
-	public int linkShape(Machine machine, int update)
-  {
-    ConsoleDevice console=ConsoleDevice.getDevice(machine);
-    if (console==null) {
-      return getShape(0,0,1,1);
-    }
-    if (update!=0) {
-      Shape shape = new Shape(console.getScreen());
-      addShape(shape);
-      return shape.getId();
-    } else {
-      BufferedImage conImg=console.getScreen();
-      BufferedImage shapeImage = new BufferedImage(conImg.getWidth(), conImg.getHeight(), BufferedImage.TYPE_INT_ARGB);
-      Graphics2D sg = shapeImage.createGraphics();
-      sg.drawImage(conImg, 0, 0, conImg.getWidth(), conImg.getHeight(), null);
-      sg.dispose();
-      Shape shape = new Shape(shapeImage);
-      addShape(shape);
-      return shape.getId();
-    }
-  }
+	public int linkShape(Machine machine, int update) {
+		ConsoleDevice console = ConsoleDevice.getDevice(machine);
+		if (console == null) {
+			return getShape(0, 0, 1, 1);
+		}
+		if (update != 0) {
+			Shape shape = new Shape(console.getScreen());
+			addShape(shape);
+			return shape.getId();
+		} else {
+			BufferedImage conImg = console.getScreen();
+			BufferedImage shapeImage = new BufferedImage(conImg.getWidth(), conImg.getHeight(), BufferedImage.TYPE_INT_ARGB);
+			Graphics2D sg = shapeImage.createGraphics();
+			sg.drawImage(conImg, 0, 0, conImg.getWidth(), conImg.getHeight(), null);
+			sg.dispose();
+			Shape shape = new Shape(shapeImage);
+			addShape(shape);
+			return shape.getId();
+		}
+	}
+
+	/**
+	 * Converts a sprite from C64 ram to a shape.
+	 * 
+	 * @param machine
+	 *            the machine
+	 * @param address
+	 *            the address of the sprite
+	 * @param multicolor
+	 *            is it a multi-color sprite?
+	 * @return the id of the converted sprite/shape
+	 */
+	public int spriteShape(Machine machine, int address, boolean multicolor) {
+		BufferedImage shapeImage = new BufferedImage(24, 21, BufferedImage.TYPE_INT_ARGB);
+		int[] ram = machine.getRam();
+		int col0 = 0;
+		int col1 = 0xff << 24 | Colors.COLORS[ram[53287] & 15];
+		int col2 = 0xff << 24 | Colors.COLORS[ram[53285] & 15];
+		int col3 = 0xff << 24 | Colors.COLORS[ram[53286] & 15];
+
+		boolean[] bits = new boolean[8];
+		int x = 0;
+		int y = 0;
+		for (int i = 0; i < 63; i++) {
+			int col = ram[address + i];
+			int cnt = 0;
+			for (int p = 7; p >= 0; p--) {
+				int pow = (int) Math.pow(2, p);
+				bits[cnt++] = ((col & pow) == pow);
+			}
+
+			if (!multicolor) {
+				for (int p = 0; p < bits.length; p++) {
+					shapeImage.setRGB(x++, y, bits[p] ? col1 : col0);
+				}
+			} else {
+				for (int p = 0; p < bits.length; p += 2) {
+					int cl = col0;
+					if (bits[p] && bits[p + 1]) {
+						cl = col3;
+					} else if (!bits[p] && bits[p + 1]) {
+						cl = col2;
+					} else if (bits[p] && !bits[p + 1]) {
+						cl = col1;
+					}
+					shapeImage.setRGB(x++, y, cl);
+					shapeImage.setRGB(x++, y, cl);
+				}
+			}
+			if (i % 3 == 2) {
+				y++;
+				x = 0;
+			}
+		}
+		Shape shape = new Shape(shapeImage);
+		addShape(shape);
+		return shape.getId();
+	}
 
 	/**
 	 * Reads a key from the keyboard when the graphics output window has focus.
@@ -701,6 +762,4 @@ public class GraphicsDevice implements PrintConsumer {
 		frame.setVisible(false);
 		frame.dispose();
 	}
-
-  
 }

@@ -54,7 +54,7 @@ public class ArrayAccess extends AbstractFunction {
 			pars = Parser.getParameters(term);
 			pis = new int[pars.size()];
 		}
-		for (int i=0; i<pars.size(); i++) {
+		for (int i = 0; i < pars.size(); i++) {
 			pis[i] = VarUtils.getInt(pars.get(i).eval(machine));
 		}
 		Variable vary = machine.getVariableUpperCase(variableName);

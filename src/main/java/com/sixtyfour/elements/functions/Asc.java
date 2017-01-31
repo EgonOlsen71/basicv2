@@ -41,13 +41,13 @@ public class Asc extends AbstractFunction {
 		}
 		throw new RuntimeException("Type mismatch error: " + term.getType());
 	}
-	
+
 	private char getConvertedChar(char c) {
-    if (c >= 'a' && c <= 'z') {
-      c = (char) ((int) c - 32);
-    } else if (c >= 'A' && c <= 'Z') {
-      c = (char) ((int) c + 32);
-    }
-    return c;
-  }
+		if (c >= 'a' && c <= 'z') {
+			c = (char) ((int) c - 32);
+		} else if (c >= 'A' && c <= 'Z') {
+			c = (char) ((int) c + 32);
+		}
+		return c;
+	}
 }

@@ -26,6 +26,9 @@ id=LOADSHAPE("filename") -  Loads a file in PNG/JPG format and assigns it to a s
 
 id=GETSHAPE(xs, ys, xe, ye) - Copies a region of the screen buffer into a shape. This function returns an ID which can be used to draw the shape later on. For this function to work, a graphics output has to be created. After closing it, the shapes become undefined again and can't (unlike other graphical primitives like lines and points) be drawn into nothingness.
 
+id=SPRITESHAPE(addr, multicolor) - This creates a shape out of sprite data in the simulated RAM. It's meant to be a bridge between GRAPHICS BASIC and C64's old way of doing movable objects. addr indicates the address on which the C64 sprite is located in ram and multicolor=0 means, that it's a single colored sprite. multicolor=1 means, it's a multi-color sprite. The color(s) of the created shape will be taken out of the VICII-register(s) for sprite 0.
+
+id=LINKSHAPE(mode) - This is a bridge to another BASIC extension, the CONSOLE SUPPORT (see CONSOLE SUPPORT.txt). With this function, you can convert the content of PETSCII console created by CONSOLE SUPPORT into a shape. mode can either be 1 or 0. 1 means, that changes to the console output will be reflected in the shape, 0 means that they won't.
 
 Commands
 

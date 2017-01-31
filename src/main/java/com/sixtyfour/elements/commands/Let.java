@@ -25,9 +25,9 @@ public class Let extends AbstractCommand {
 
 	/** The index term. */
 	private Term indexTerm;
-	
+
 	private List<Atom> pars;
-	
+
 	private int[] pis;
 
 	/**
@@ -87,8 +87,8 @@ public class Let extends AbstractCommand {
 			typeMismatch(linePart);
 		}
 		if (indexTerm != null) {
-		  pars = Parser.getParameters(indexTerm);
-		  pis = new int[pars.size()];
+			pars = Parser.getParameters(indexTerm);
+			pis = new int[pars.size()];
 		}
 		return null;
 	}
@@ -108,7 +108,7 @@ public class Let extends AbstractCommand {
 			var.setValue(term.eval(machine));
 		} else {
 			// array
-			for (int i=0; i<pars.size(); i++) {
+			for (int i = 0; i < pars.size(); i++) {
 				pis[i] = VarUtils.getInt(pars.get(i).eval(machine));
 			}
 			var.setValue(term.eval(machine), pis);

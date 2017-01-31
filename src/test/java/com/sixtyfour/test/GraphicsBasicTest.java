@@ -8,10 +8,9 @@ import com.sixtyfour.extensions.graphics.GraphicsBasic;
  * @author EgonOlsen
  * 
  */
-public class BasicExtensionTest {
+public class GraphicsBasicTest {
 	public static void main(String[] args) throws Exception {
-		
-	  testGronGroff();
+		testGronGroff();
 		testLines();
 		testPlot();
 		testCircles();
@@ -30,7 +29,14 @@ public class BasicExtensionTest {
 		// testGget();
 		testCopy();
 		testGetShape();
-		
+		testSprites();
+	}
+
+	private static void testSprites() {
+		String[] vary = Loader.loadProgram("src/test/resources/ext/sprites.bas");
+		Basic.registerExtension(new GraphicsBasic());
+		Basic inty = new Basic(vary);
+		inty.run();
 	}
 
 	private static void testGetShape() {
