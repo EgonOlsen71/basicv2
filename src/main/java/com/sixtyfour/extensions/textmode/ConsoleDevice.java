@@ -193,6 +193,7 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 							keysPressed.add(kc);
 						}
 					}
+					ram[198] = keysPressed.size();
 					if (inputMode) {
 						switch (e.getKeyCode()) {
 						case KeyEvent.VK_SHIFT:
@@ -465,6 +466,10 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 			} else if (value == 21) {
 				setCharset(true);
 			}
+		} else if (addr == 198 && value == 0) {
+			synchronized(keysPressed) {
+				keysPressed.clear();
+			}
 		}
 
 		oldMemoryListener.poke(addr, value);
@@ -477,6 +482,9 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 
 	@Override
 	public boolean wait(int addr, int value, int inverse) {
+		if (addr == 198) {
+			return ram[addr] != value;
+		}
 		return oldMemoryListener.wait(addr, value, inverse);
 	}
 
@@ -808,7 +816,7 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 				setCursor(0, 0);
 				break;
 			case 19:
-				//clearScreen();
+				// clearScreen();
 				setCursor(0, 0);
 				break;
 			case 29:

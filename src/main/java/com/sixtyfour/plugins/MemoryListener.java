@@ -34,7 +34,7 @@ public interface MemoryListener {
 	 *            the value with which the memory's content will be ANDed
 	 * @param inverse
 	 *            the value with which the memory's content will be EORed
-	 * @return true, if the conditions are met. False otherwise.
+	 * @return true, if the conditions are not met. False otherwise.
 	 */
 	boolean wait(int addr, int value, int inverse);
 }
