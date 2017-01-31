@@ -184,10 +184,10 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 			@Override
 			public void keyPressed(KeyEvent e) {
 				synchronized (keysPressed) {
-				  char kc=e.getKeyChar();
-				  if (e.getKeyCode()==KeyEvent.VK_ENTER) {
-				    kc=(char) 13;
-				  }
+					char kc = e.getKeyChar();
+					if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+						kc = (char) 13;
+					}
 					if (!keysPressed.contains(kc)) {
 						if (!toIgnore.contains(e.getKeyCode())) {
 							keysPressed.add(kc);
@@ -226,7 +226,7 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 								if (inputString.length() > 0) {
 									if (insertPos != -1) {
 										if (shiftRight()) {
-										  inputString.insert(insertPos, ' ');
+											inputString.insert(insertPos, ' ');
 										}
 										updateScreen();
 									}
@@ -272,10 +272,10 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 			@Override
 			public void keyReleased(KeyEvent e) {
 				synchronized (keysPressed) {
-				  char kc=e.getKeyChar();
-          if (e.getKeyCode()==KeyEvent.VK_ENTER) {
-            kc=(char) 13;
-          }
+					char kc = e.getKeyChar();
+					if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+						kc = (char) 13;
+					}
 					while (keysPressed.remove(kc)) {
 						//
 					}
@@ -511,9 +511,9 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 			}
 		}
 		stopCursor();
-		
-		System.out.println("["+inputString+"]");
-		
+
+		System.out.println("[" + inputString + "]");
+
 		return inputString.toString();
 	}
 
@@ -625,7 +625,7 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 				ch = Character.toString(charset.charAt((value & 0xff) + 256));
 			}
 			getContext().drawString(ch, xc, yc + baseLine);
-			update(xc-cw, yc-cw, cw*3, cw*3+baseLine);
+			update(xc - cw, yc - cw, cw * 3, cw * 3 + baseLine);
 		}
 	}
 
@@ -666,16 +666,16 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 	}
 
 	private char getConvertedChar(char c) {
-	  if (c >= 'a' && c <= 'z') {
-      c = (char) ((int) c - 32);
-    } else if (c >= 'A' && c <= 'Z') {
-      c = (char) ((int) c + 32);
-    }
-	  return c;
+		if (c >= 'a' && c <= 'z') {
+			c = (char) ((int) c - 32);
+		} else if (c >= 'A' && c <= 'Z') {
+			c = (char) ((int) c + 32);
+		}
+		return c;
 	}
-	
+
 	private int getValueToPoke(char c) {
-		c=getConvertedChar(c);
+		c = getConvertedChar(c);
 
 		for (int i = 0; i < 512; i++) {
 			char ct = charset.charAt(i);
@@ -698,10 +698,10 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 	private void update() {
 		frame.repaint();
 	}
-	
+
 	private void update(int x, int y, int w, int h) {
-    frame.repaint(x, y, w, h);
-  }
+		frame.repaint(x, y, w, h);
+	}
 
 	private Graphics2D getContext() {
 		return gscreen;
@@ -808,7 +808,7 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 				setCursor(0, 0);
 				break;
 			case 19:
-				clearScreen();
+				//clearScreen();
 				setCursor(0, 0);
 				break;
 			case 29:
@@ -891,7 +891,11 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 				setCursor(0, cursorY + 1);
 				break;
 			case 32:
-				clearAtCursor();
+				if (reverseMode) {
+					setAtCursor();
+				} else {
+					clearAtCursor();
+				}
 				setCursor(cursorX + 1, cursorY);
 				break;
 			case 14:
@@ -917,9 +921,9 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 		synchronized (this) {
 			int offset = cursorY * 40 + cursorX;
 			int end = cursorY * 40 + (((cursorY & 1) == 1) ? 39 : 79);
-			 if (ram[TEXT_RAM + end] != 32) {
-         return false;
-       }
+			if (ram[TEXT_RAM + end] != 32) {
+				return false;
+			}
 			for (int i = end; i > offset; i--) {
 				ram[TEXT_RAM + i] = ram[TEXT_RAM + i - 1];
 				ram[COLOR_RAM + i] = ram[COLOR_RAM + i - 1];
@@ -927,7 +931,7 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 			pokeValue(TEXT_RAM + offset, 32, TEXT_RAM);
 			pokeValue(COLOR_RAM + offset, color, COLOR_RAM);
 		}
-		
+
 		return true;
 	}
 
@@ -948,9 +952,19 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 		int cw = width / 40;
 		int y = cursorY * 40 * cw;
 		int x = cursorX * cw;
-		int pos=this.getTextRamPos()-TEXT_RAM;
+		int pos = this.getTextRamPos() - TEXT_RAM;
 		clearRect(x, y, x + cw, y + cw, bgColor);
 		pokeValue(TEXT_RAM + pos, 32, TEXT_RAM);
-    pokeValue(COLOR_RAM + pos, color, COLOR_RAM);
+		pokeValue(COLOR_RAM + pos, color, COLOR_RAM);
+	}
+
+	private void setAtCursor() {
+		int cw = width / 40;
+		int y = cursorY * 40 * cw;
+		int x = cursorX * cw;
+		int pos = this.getTextRamPos() - TEXT_RAM;
+		clearRect(x, y, x + cw, y + cw, color);
+		pokeValue(TEXT_RAM + pos, 160, TEXT_RAM);
+		pokeValue(COLOR_RAM + pos, color, COLOR_RAM);
 	}
 }
