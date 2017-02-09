@@ -33,7 +33,7 @@ Examples
 Examples can be found in the test class com.sixtyfour.test.BasicExtensionTest respectively in src/test/resources/ext.
 
 
-Function
+Functions
 
 None
 
