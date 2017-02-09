@@ -155,4 +155,10 @@ public class LogicTerm implements LogicBlock {
 		return false;
 	}
 
+  @Override
+  public String toCode()
+  {
+    return null;
+  }
+
 }

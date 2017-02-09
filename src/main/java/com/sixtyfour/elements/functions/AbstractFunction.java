@@ -180,4 +180,9 @@ public abstract class AbstractFunction implements Function {
 	public boolean isTerm() {
 		return false;
 	}
+	
+	@Override
+  public String toCode() {
+    return null;
+  }
 }

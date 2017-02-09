@@ -1,5 +1,7 @@
 package com.sixtyfour.parser;
 
+import java.lang.reflect.Method;
+
 import com.sixtyfour.elements.Constant;
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.system.Machine;
@@ -10,6 +12,8 @@ import com.sixtyfour.system.Machine;
  */
 public class Term implements Atom {
 
+  private static int termId;
+  
 	/** The left child */
 	private Atom left;
 
@@ -27,6 +31,14 @@ public class Term implements Atom {
 
 	/** The type that the Term returns */
 	private Type type;
+	
+	private int id=termId++;
+	
+	private int callCount=0;
+	
+	private Method jittedMethod=null;
+	
+	private boolean jitRun=false;
 
 	/**
 	 * Instantiates a new term based on the given expression.
@@ -216,7 +228,11 @@ public class Term implements Atom {
 	@Override
 	public Object eval(Machine machine) {
 		try {
-			machine.setCurrentOperator(operator);
+		  callCount++;
+		  machine.setCurrentOperator(operator);
+		  if (jittedMethod!=null) {
+		    return machine.getJit().call(machine, this);
+		  }
 			if (operator.isNop()) {
 				if (left == null) {
 					throw new RuntimeException("Syntax error!");
@@ -261,8 +277,74 @@ public class Term implements Atom {
 			throw new RuntimeException("Unable to evaluate term: " + this.toString());
 		} finally {
 			machine.setCurrentOperator(null);
+			// TODO Make 20 dependent on something
+			if (!jitRun && callCount>20 && machine.getJit()!=null) {
+			  machine.getJit().addMethod(this);
+			  jitRun=true;
+			}
 		}
 	}
+	
+	@Override
+	public String toCode() {
+    try {
+      if (operator.isNop()) {
+        if (left == null) {
+          throw new RuntimeException("Syntax error!");
+        }
+        String ls=left.toCode();
+        if (ls!=null) {
+          return "("+ls+")";
+        } else {
+          return null;
+        }
+      }
+      Type type = getType();
+      if (type == Type.STRING) {
+        if (operator.isPlus()) {
+          String ls=left.toCode();
+          String rs=right.toCode();
+          if (ls==null || rs==null) {
+            return null;
+          }
+          return "("+ls + "+" + rs+")";
+        }
+      } else {
+        String n1 = left.toCode();
+        String n2 = n1;
+        if (left != right) {
+          n2 = right.toCode();
+        }
+
+        if (n1==null || n2==null) {
+          return null;
+        }
+        
+        String v1 = "";
+        if (operator.isPlus()) {
+          v1 = n1 +"+"+ n2;
+        } else if (operator.isMinus()) {
+          v1 = n1 +"-"+ n2;
+        } else if (operator.isPower()) {
+          v1 = "(float) Math.pow("+n1+","+n2+")";
+        } else if (operator.isMultiplication()) {
+          v1 = n1 +"*"+ n2;
+        } else if (operator.isDivision()) {
+          v1 = n1 +"/"+ n2;
+        } else if (operator.isOr()) {
+          v1 = n1 +"|"+ n2;
+        } else if (operator.isAnd()) {
+          v1 = n1 +"&"+ n2;
+        } else if (operator.isNot()) {
+          v1 = "~"+n2;
+        }
+        return "("+v1+")";
+      }
+      throw new RuntimeException("Unable to convert term to code: " + this.toString());
+    } finally {
+      //
+    }
+  }
 
 	/*
 	 * (non-Javadoc)
@@ -273,5 +355,23 @@ public class Term implements Atom {
 	public boolean isTerm() {
 		return true;
 	}
+	
+	public int getId() {
+	  return id;
+	}
+	
+	public int getCallCount() {
+	  return callCount;
+	}
+
+  public Method getJittedMethod()
+  {
+    return jittedMethod;
+  }
+
+  public void setJittedMethod(Method jitted)
+  {
+    this.jittedMethod = jitted;
+  }
 
 }

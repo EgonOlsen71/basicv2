@@ -26,6 +26,7 @@ import com.sixtyfour.plugins.impl.ConsoleOutputChannel;
 import com.sixtyfour.plugins.impl.MemoryDeviceProvider;
 import com.sixtyfour.plugins.impl.NullMemoryListener;
 import com.sixtyfour.plugins.impl.NullSystemCallListener;
+import com.sixtyfour.util.Jit;
 import com.sixtyfour.util.VarUtils;
 
 /**
@@ -76,6 +77,8 @@ public class Machine {
 	private DeviceProvider deviceProvider = null;
 
 	private Cpu cpu = null;
+	
+	private Jit jit=null;
 
 	/**
 	 * Instantiates a new machine.
@@ -584,6 +587,16 @@ public class Machine {
 			System.arraycopy(bin, 0, this.getRam(), part.getAddress(), bin.length);
 		}
 	}
+	
+	public Jit getJit()
+  {
+    return jit;
+  }
+
+  public void setJit(Jit jit)
+  {
+    this.jit = jit;
+  }
 
 	/**
 	 * Adds the default variables

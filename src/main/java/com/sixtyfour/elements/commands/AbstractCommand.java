@@ -186,6 +186,11 @@ public abstract class AbstractCommand implements Command {
 	public boolean isTerm() {
 		return false;
 	}
+	
+	@Override
+	public String toCode() {
+	  return null;
+	}
 
 	/**
 	 * Throws a type mismatch error.

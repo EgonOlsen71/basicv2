@@ -170,4 +170,10 @@ public class Comparison implements LogicBlock {
 	public boolean isTerm() {
 		return false;
 	}
+
+  @Override
+  public String toCode()
+  {
+    return null;
+  }
 }

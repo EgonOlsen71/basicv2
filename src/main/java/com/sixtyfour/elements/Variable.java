@@ -450,6 +450,20 @@ public class Variable implements Atom {
 	public void setPersistent(boolean persistent) {
 		this.persistent = persistent;
 	}
+	
+  @Override
+  public String toCode()
+  {
+    if (array) {
+      return null;
+    }
+    if (type == Type.REAL) {
+        return "((Number) machine.getVariableUpperCase(\""+this.name+"\").eval(machine)).floatValue()";
+    } else if (type == Type.INTEGER) {
+      return "((Number) machine.getVariableUpperCase(\""+this.name+"\").eval(machine)).intValue()";
+    }
+    return "machine.getVariableUpperCase(\""+this.name+"\").eval(machine)";
+  }
 
 	/**
 	 * Calc size.
