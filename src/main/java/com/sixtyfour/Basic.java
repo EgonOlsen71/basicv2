@@ -23,6 +23,7 @@ import com.sixtyfour.plugins.SystemCallListener;
 import com.sixtyfour.system.BasicProgramCounter;
 import com.sixtyfour.system.Cpu;
 import com.sixtyfour.system.Machine;
+import com.sixtyfour.util.Jit;
 import com.sixtyfour.util.VarUtils;
 
 /**
@@ -123,6 +124,37 @@ public class Basic implements ProgramExecutor {
 		} else {
 			this.machine = machine;
 		}
+	}
+
+	/**
+	 * Enables an experimental JIT-compiler with a default compile threshold of
+	 * 19. This works only if the application runs on a JDK installation. It
+	 * won't work with a JRE. A JIT might help to improve performance for
+	 * complex calculations. If your program doesn't do these, it might not even
+	 * kick in or the additional overhead might slow your program down. Keep in
+	 * mind that compiling the code by the JIT takes some time as well.
+	 * If the JIT compiler kicks in, you'll see some console output about it.
+	 */
+	public void enableJit() {
+		machine.setJit(new Jit());
+	}
+
+	/**
+	 * Enables an experimental JIT-compiler with a given compile threshold. This
+	 * works only if the application runs on a JDK installation. It won't work
+	 * with a JRE. One might have to play around with the threshold to find a
+	 * value which actually speed up the application. A JIT might help to
+	 * improve performance for complex calculations. If your program doesn't do
+	 * these, it might not even kick in or the additional overhead might slow
+	 * your program down. Keep in mind that compiling the code by the JIT takes
+	 * some time as well.
+	 * If the JIT compiler kicks in, you'll see some console output about it.
+	 * 
+	 * @param compileThreshold
+	 *            the compile threshold
+	 */
+	public void enableJit(int compileThreshold) {
+		machine.setJit(new Jit(compileThreshold));
 	}
 
 	/**

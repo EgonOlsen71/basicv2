@@ -186,10 +186,15 @@ public abstract class AbstractCommand implements Command {
 	public boolean isTerm() {
 		return false;
 	}
-	
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.sixtyfour.parser.Atom#toCode(com.sixtyfour.system.Machine)
+	 */
 	@Override
-	public String toCode() {
-	  return null;
+	public String toCode(Machine machine) {
+		return null;
 	}
 
 	/**

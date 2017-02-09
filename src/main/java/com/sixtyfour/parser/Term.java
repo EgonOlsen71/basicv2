@@ -12,8 +12,8 @@ import com.sixtyfour.system.Machine;
  */
 public class Term implements Atom {
 
-  private static int termId;
-  
+	private static int termId;
+
 	/** The left child */
 	private Atom left;
 
@@ -31,14 +31,14 @@ public class Term implements Atom {
 
 	/** The type that the Term returns */
 	private Type type;
-	
-	private int id=termId++;
-	
-	private int callCount=0;
-	
-	private Method jittedMethod=null;
-	
-	private boolean jitRun=false;
+
+	private int id = termId++;
+
+	private int callCount = 0;
+
+	private Method jittedMethod = null;
+
+	private boolean jitRun = false;
 
 	/**
 	 * Instantiates a new term based on the given expression.
@@ -228,11 +228,11 @@ public class Term implements Atom {
 	@Override
 	public Object eval(Machine machine) {
 		try {
-		  callCount++;
-		  machine.setCurrentOperator(operator);
-		  if (jittedMethod!=null) {
-		    return machine.getJit().call(machine, this);
-		  }
+			callCount++;
+			machine.setCurrentOperator(operator);
+			if (jittedMethod != null) {
+				return machine.getJit().call(machine, this);
+			}
 			if (operator.isNop()) {
 				if (left == null) {
 					throw new RuntimeException("Syntax error!");
@@ -278,73 +278,73 @@ public class Term implements Atom {
 		} finally {
 			machine.setCurrentOperator(null);
 			// TODO Make 20 dependent on something
-			if (!jitRun && callCount>20 && machine.getJit()!=null) {
-			  machine.getJit().addMethod(this);
-			  jitRun=true;
+			if (!jitRun && callCount > 20 && machine.getJit() != null) {
+				machine.getJit().addMethod(this, machine);
+				jitRun = true;
 			}
 		}
 	}
-	
-	@Override
-	public String toCode() {
-    try {
-      if (operator.isNop()) {
-        if (left == null) {
-          throw new RuntimeException("Syntax error!");
-        }
-        String ls=left.toCode();
-        if (ls!=null) {
-          return "("+ls+")";
-        } else {
-          return null;
-        }
-      }
-      Type type = getType();
-      if (type == Type.STRING) {
-        if (operator.isPlus()) {
-          String ls=left.toCode();
-          String rs=right.toCode();
-          if (ls==null || rs==null) {
-            return null;
-          }
-          return "("+ls + "+" + rs+")";
-        }
-      } else {
-        String n1 = left.toCode();
-        String n2 = n1;
-        if (left != right) {
-          n2 = right.toCode();
-        }
 
-        if (n1==null || n2==null) {
-          return null;
-        }
-        
-        String v1 = "";
-        if (operator.isPlus()) {
-          v1 = n1 +"+"+ n2;
-        } else if (operator.isMinus()) {
-          v1 = n1 +"-"+ n2;
-        } else if (operator.isPower()) {
-          v1 = "(float) Math.pow("+n1+","+n2+")";
-        } else if (operator.isMultiplication()) {
-          v1 = n1 +"*"+ n2;
-        } else if (operator.isDivision()) {
-          v1 = n1 +"/"+ n2;
-        } else if (operator.isOr()) {
-          v1 = n1 +"|"+ n2;
-        } else if (operator.isAnd()) {
-          v1 = n1 +"&"+ n2;
-        } else if (operator.isNot()) {
-          v1 = "~"+n2;
-        }
-        return "("+v1+")";
-      }
-      throw new RuntimeException("Unable to convert term to code: " + this.toString());
-    } finally {
-      //
-    }
-  }
+	@Override
+	public String toCode(Machine machine) {
+		try {
+			if (operator.isNop()) {
+				if (left == null) {
+					throw new RuntimeException("Syntax error!");
+				}
+				String ls = left.toCode(machine);
+				if (ls != null) {
+					return filterCode("(" + ls + ")");
+				} else {
+					return null;
+				}
+			}
+			Type type = getType();
+			if (type == Type.STRING) {
+				if (operator.isPlus()) {
+					String ls = left.toCode(machine);
+					String rs = right.toCode(machine);
+					if (ls == null || rs == null) {
+						return null;
+					}
+					return filterCode("(" + ls + "+" + rs + ")");
+				}
+			} else {
+				String n1 = left.toCode(machine);
+				String n2 = n1;
+				if (left != right) {
+					n2 = right.toCode(machine);
+				}
+
+				if (n1 == null || n2 == null) {
+					return null;
+				}
+
+				String v1 = "";
+				if (operator.isPlus()) {
+					v1 = n1 + "+" + n2;
+				} else if (operator.isMinus()) {
+					v1 = n1 + "-" + n2;
+				} else if (operator.isPower()) {
+					v1 = "(float) Math.pow(" + n1 + "," + n2 + ")";
+				} else if (operator.isMultiplication()) {
+					v1 = n1 + "*" + n2;
+				} else if (operator.isDivision()) {
+					v1 = n1 + "/" + n2;
+				} else if (operator.isOr()) {
+					v1 = n1 + "|" + n2;
+				} else if (operator.isAnd()) {
+					v1 = n1 + "&" + n2;
+				} else if (operator.isNot()) {
+					v1 = "~" + n2;
+				}
+				return filterCode("(" + v1 + ")");
+			}
+			throw new RuntimeException("Unable to convert term to code: " + this.toString());
+		} finally {
+			//
+		}
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -355,23 +355,48 @@ public class Term implements Atom {
 	public boolean isTerm() {
 		return true;
 	}
-	
+
+	/**
+	 * Gets a unique ID for this term.
+	 * 
+	 * @return the ID
+	 */
 	public int getId() {
-	  return id;
+		return id;
 	}
-	
+
+	/**
+	 * Gets the number of calls for this term.
+	 * 
+	 * @return the count
+	 */
 	public int getCallCount() {
-	  return callCount;
+		return callCount;
 	}
 
-  public Method getJittedMethod()
-  {
-    return jittedMethod;
-  }
+	/**
+	 * If this term has been compiled by the JIT compiler, this will return the
+	 * Method instance in the compiled code.
+	 * 
+	 * @return the method instance of null
+	 */
+	public Method getJittedMethod() {
+		return jittedMethod;
+	}
 
-  public void setJittedMethod(Method jitted)
-  {
-    this.jittedMethod = jitted;
-  }
+	/**
+	 * Sets the Method instance, once this term has been compiled by the JIT
+	 * compiler
+	 * 
+	 * @param jitted
+	 *            the method
+	 */
+	public void setJittedMethod(Method jitted) {
+		this.jittedMethod = jitted;
+	}
 
+	private String filterCode(String code) {
+		// TODO stuff?
+		return code;
+	}
 }

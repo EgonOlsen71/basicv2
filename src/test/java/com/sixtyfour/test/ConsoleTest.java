@@ -19,16 +19,16 @@ public class ConsoleTest {
 		testShowImage();
 		testGfxAndConsole();
 	}
-	
+
 	private static void testGfxAndConsole() {
-    String[] vary = Loader.loadProgram("src/test/resources/ext/gfxandconsole.bas");
-    Basic.registerExtension(new ConsoleSupport());
-    Basic.registerExtension(new GraphicsBasic());
-    Basic inty = new Basic(vary);
-    inty.compile();
-    loadImage(inty);
-    inty.run();
-  }
+		String[] vary = Loader.loadProgram("src/test/resources/ext/gfxandconsole.bas");
+		Basic.registerExtension(new ConsoleSupport());
+		Basic.registerExtension(new GraphicsBasic());
+		Basic inty = new Basic(vary);
+		inty.compile();
+		loadImage(inty);
+		inty.run();
+	}
 
 	private static void testShowImage() {
 		String[] vary = Loader.loadProgram("src/test/resources/ext/showimage.bas");
@@ -40,34 +40,31 @@ public class ConsoleTest {
 		inty.run();
 	}
 
-  private static void loadImage(Basic inty)
-  {
-    try {
-      loadBinary(inty, "src/test/resources/bin/textram.bin", 1024);
-      loadBinary(inty, "src/test/resources/bin/colorram.bin", 55296);
+	private static void loadImage(Basic inty) {
+		try {
+			loadBinary(inty, "src/test/resources/bin/textram.bin", 1024);
+			loadBinary(inty, "src/test/resources/bin/colorram.bin", 55296);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-  }
+	}
 
-  private static void loadBinary(Basic inty, String name, int targetAddr)
-    throws Exception
-  {
-    InputStream is = new FileInputStream(name);
-    byte[] buf = new byte[1024];
-    int len = 0;
-    int total = 0;
-    while (len > -1) {
-    	len = is.read(buf);
-    	if (len > 0) {
-    		for (int i = 0; i < len; i++) {
-    			inty.getRam()[targetAddr + total + i] = (int) (buf[i] & 0xff);
-    		}
-    		total += len;
-    	}
-    }
-    is.close();
-  }
+	private static void loadBinary(Basic inty, String name, int targetAddr) throws Exception {
+		InputStream is = new FileInputStream(name);
+		byte[] buf = new byte[1024];
+		int len = 0;
+		int total = 0;
+		while (len > -1) {
+			len = is.read(buf);
+			if (len > 0) {
+				for (int i = 0; i < len; i++) {
+					inty.getRam()[targetAddr + total + i] = (int) (buf[i] & 0xff);
+				}
+				total += len;
+			}
+		}
+		is.close();
+	}
 
 	private static void testConsole() {
 		String[] vary = Loader.loadProgram("src/test/resources/ext/console.bas");

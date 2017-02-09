@@ -77,8 +77,8 @@ public class Machine {
 	private DeviceProvider deviceProvider = null;
 
 	private Cpu cpu = null;
-	
-	private Jit jit=null;
+
+	private Jit jit = null;
 
 	/**
 	 * Instantiates a new machine.
@@ -587,16 +587,14 @@ public class Machine {
 			System.arraycopy(bin, 0, this.getRam(), part.getAddress(), bin.length);
 		}
 	}
-	
-	public Jit getJit()
-  {
-    return jit;
-  }
 
-  public void setJit(Jit jit)
-  {
-    this.jit = jit;
-  }
+	public Jit getJit() {
+		return jit;
+	}
+
+	public void setJit(Jit jit) {
+		this.jit = jit;
+	}
 
 	/**
 	 * Adds the default variables

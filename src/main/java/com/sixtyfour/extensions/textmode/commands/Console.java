@@ -12,7 +12,7 @@ import com.sixtyfour.util.VarUtils;
  * The CONSOLE command
  * 
  * @author EgonOlsen
- *
+ * 
  */
 public class Console extends AbstractGraphicsCommand {
 

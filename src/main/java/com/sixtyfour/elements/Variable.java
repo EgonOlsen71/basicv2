@@ -287,6 +287,10 @@ public class Variable implements Atom {
 		return value;
 	}
 
+	public Object evalFromCode() {
+		return value;
+	}
+
 	/**
 	 * Gets the value of a non-array variable.
 	 * 
@@ -450,20 +454,22 @@ public class Variable implements Atom {
 	public void setPersistent(boolean persistent) {
 		this.persistent = persistent;
 	}
-	
-  @Override
-  public String toCode()
-  {
-    if (array) {
-      return null;
-    }
-    if (type == Type.REAL) {
-        return "((Number) machine.getVariableUpperCase(\""+this.name+"\").eval(machine)).floatValue()";
-    } else if (type == Type.INTEGER) {
-      return "((Number) machine.getVariableUpperCase(\""+this.name+"\").eval(machine)).intValue()";
-    }
-    return "machine.getVariableUpperCase(\""+this.name+"\").eval(machine)";
-  }
+
+	@Override
+	public String toCode(Machine machine) {
+		if (array) {
+			return null;
+		}
+
+		int pos = machine.getJit().addVariable(this);
+
+		if (type == Type.REAL) {
+			return "((Number) vars[" + pos + "].evalFromCode()).floatValue()";
+		} else if (type == Type.INTEGER) {
+			return "((Number) vars[" + pos + "].evalFromCode()).intValue()";
+		}
+		return "vars[" + pos + "].evalevalFromCode()";
+	}
 
 	/**
 	 * Calc size.

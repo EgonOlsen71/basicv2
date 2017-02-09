@@ -7,7 +7,7 @@ public class JavaTest {
 
 	public static void main(String[] args) {
 		fractal();
-		//fractal();
+		// fractal();
 	}
 
 	public static void fractal() {
