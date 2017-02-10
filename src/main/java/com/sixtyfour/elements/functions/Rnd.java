@@ -34,4 +34,12 @@ public class Rnd extends AbstractFunction {
 	public Object eval(Machine machine) {
 		return (float) Math.random();
 	}
+	
+	 /* (non-Javadoc)
+   * @see com.sixtyfour.elements.functions.AbstractFunction#toCode(com.sixtyfour.system.Machine)
+   */
+  @Override
+  public String toCode(Machine machine) {
+    return "(float) Math.random()";
+  }
 }

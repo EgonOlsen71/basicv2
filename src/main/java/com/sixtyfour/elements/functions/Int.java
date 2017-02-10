@@ -38,5 +38,17 @@ public class Int extends AbstractFunction {
 		}
 		return VarUtils.getInt(term.eval(machine));
 	}
+	
+	 /* (non-Javadoc)
+   * @see com.sixtyfour.elements.functions.AbstractFunction#toCode(com.sixtyfour.system.Machine)
+   */
+  @Override
+  public String toCode(Machine machine) {
+    String inter=term.toCode(machine);
+    if (inter==null) {
+      return null;
+    }
+    return "(int) ("+inter+")";
+  }
 
 }
