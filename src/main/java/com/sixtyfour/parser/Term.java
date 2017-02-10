@@ -340,7 +340,7 @@ public class Term implements Atom {
 				}
 				return filterCode("(" + v1 + ")");
 			}
-			throw new RuntimeException("Unable to convert term to code: " + this.toString());
+			return null;
 		} finally {
 			//
 		}
