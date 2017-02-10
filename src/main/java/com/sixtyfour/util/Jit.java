@@ -57,7 +57,7 @@ public class Jit {
 	 */
 	public Jit(int compileThreshold) {
 		this.compileThreshold = compileThreshold;
-		code.append("import com.sixtyfour.system.*; import com.sixtyfour.elements.*; \npublic class JittedImpl implements com.sixtyfour.util.Jitted { private Variable[] vars; public JittedImpl() {} \n public void setVars(Variable[] vars) {this.vars=vars;} ");
+		code.append("import com.sixtyfour.system.*; import com.sixtyfour.elements.*; \npublic class JittedImpl implements com.sixtyfour.util.Jitted { private Variable[] vars; [vars] public JittedImpl() {} \n public void setVars(Variable[] vars) {this.vars=vars;} ");
 	}
 
 	/**
@@ -135,6 +135,13 @@ public class Jit {
 					Logger.log("Running JIT-Compiler...");
 					code.append("}");
 					String source = code.toString();
+					
+					StringBuilder varStr=new StringBuilder();
+					for (Variable var:vars) {
+					  varStr.append("\npublic Variable ").append(var.getName()).append("=null;\n");
+					}
+					source=source.replace("[vars]", varStr.toString());
+					
 					//System.out.println(source);
 
 					sourceFile = new File("JittedImpl.java");
@@ -151,6 +158,11 @@ public class Jit {
 					Class<?> cls = Class.forName("JittedImpl", true, classLoader);
 					jitted = (Jitted) cls.newInstance();
 					jitted.setVars(this.vars.toArray(new Variable[vars.size()]));
+					
+					for (Variable var:vars) {
+					  jitted.getClass().getField(var.getName()).set(jitted, var);
+					}
+					
 					Logger.log("JIT-Compiler executed in " + (System.currentTimeMillis() - s) + "ms, " + jittedTerms.size() + " methods compiled!");
 
 					for (Term jittedTerm : jittedTerms) {

@@ -461,14 +461,14 @@ public class Variable implements Atom {
 			return null;
 		}
 
-		int pos = machine.getJit().addVariable(this);
+		machine.getJit().addVariable(this);
 
-		if (type == Type.REAL) {
-			return "((Number) vars[" + pos + "].evalFromCode()).floatValue()";
-		} else if (type == Type.INTEGER) {
-			return "((Number) vars[" + pos + "].evalFromCode()).intValue()";
-		}
-		return "vars[" + pos + "].evalevalFromCode()";
+		 if (type == Type.REAL) {
+	      return "((Number) "+name+".evalFromCode()).floatValue()";
+	    } else if (type == Type.INTEGER) {
+	      return "((Number) "+name+".evalFromCode()).intValue()";
+	    }
+	    return name+".evalFromCode()";
 	}
 
 	/**
