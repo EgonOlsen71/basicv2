@@ -463,12 +463,13 @@ public class Variable implements Atom {
 
 		machine.getJit().addVariable(this);
 
+		String nam=name.replace('%', '_').replace("$", "__");
 		 if (type == Type.REAL) {
-	      return "((Number) "+name+".evalFromCode()).floatValue()";
+	      return "((Number) "+nam+".evalFromCode()).floatValue()";
 	    } else if (type == Type.INTEGER) {
-	      return "((Number) "+name+".evalFromCode()).intValue()";
+	      return "((Number) "+nam+".evalFromCode()).intValue()";
 	    }
-	    return name+".evalFromCode()";
+	    return nam+".evalFromCode()";
 	}
 
 	/**

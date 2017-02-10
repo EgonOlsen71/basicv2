@@ -50,7 +50,7 @@ public class JitTest {
 	private static void testComplexCalculation() {
 		String[] prime = Loader.loadProgram("src/test/resources/basic/jittest.bas");
 		Basic inty = new Basic(prime);
-		inty.enableJit();
+		inty.enableJit(0);
 		inty.run();
 	}
 

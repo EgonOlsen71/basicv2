@@ -407,6 +407,9 @@ public class Machine {
 	 */
 	public void setCurrentCommand(Command currentCommand) {
 		this.currentCommand = currentCommand;
+		if (jit!=null) {
+		  jit.autoCompile();
+		}
 	}
 
 	/**

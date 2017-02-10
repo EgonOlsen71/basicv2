@@ -35,12 +35,12 @@ public class Jit {
 	private boolean failed = false;
 	private List<Variable> vars = new ArrayList<Variable>();
 	private static Object sync = new Object();
+	private long lastAdd=0;
 
 	/**
 	 * Creates a new Jit. A Jit has to be assigned to the current instance of
-	 * Machine. This constructor creates a JIT with the default count of 19
-	 * methods to compile, i.e. the actual bytecode generation kicks in when 19
-	 * expressions are marked as potentially jittable.
+	 * Machine. This constructor creates a JIT with the default threshold of 0,
+	 * i.e. the JIT compiler will try to auto-detect when to compile.
 	 */
 	public Jit() {
 		this(19);
@@ -51,7 +51,8 @@ public class Jit {
 	 * Machine. This constructor creates a JIT with a user defined count of
 	 * "compileThreshold" methods to compile, i.e. the actual bytecode
 	 * generation kicks in when compileThreshold expressions are marked as
-	 * potentially jittable.
+	 * potentially jittable. If the threshold is <=0, then the JIT compiler will try to
+	 * auto-detect when to compile.
 	 * 
 	 * @param compileThreshold
 	 */
@@ -94,14 +95,29 @@ public class Jit {
 				}
 				code.append("\npublic final Object m").append(term.getId()).append("(Machine machine) {").append("return ").append(cody.trim()).append(";}\n");
 				jittedTerms.add(term);
-
+				lastAdd=System.currentTimeMillis();
+				
 				// Logger.log("Jitted methods: " + jittedTerms.size());
 
-				if (jittedTerms.size() > compileThreshold) {
+				if (compileThreshold>0 && jittedTerms.size() > compileThreshold) {
 					compile();
 				}
 			}
 		}
+	}
+	
+	/**
+	 * Triggers the JIT to check if a compilation might be useful to do now.
+	 * If yes, it will compile the code that it has marked so far.
+	 * If not, nothing will happen.
+	 */
+	public void autoCompile() {
+	  if (lastAdd>0 && compileThreshold<=0 && jitted==null && !failed) {
+	    if (System.currentTimeMillis()-lastAdd>=200) {
+	      Logger.log("Auto-compilation triggered!");
+	      compile();
+	    }
+	  }
 	}
 
 	/**
@@ -138,7 +154,7 @@ public class Jit {
 					
 					StringBuilder varStr=new StringBuilder();
 					for (Variable var:vars) {
-					  varStr.append("\npublic Variable ").append(var.getName()).append("=null;\n");
+					  varStr.append("\npublic Variable ").append(var.getName().replace('%', '_').replace("$", "__")).append("=null;\n");
 					}
 					source=source.replace("[vars]", varStr.toString());
 					
@@ -160,7 +176,7 @@ public class Jit {
 					jitted.setVars(this.vars.toArray(new Variable[vars.size()]));
 					
 					for (Variable var:vars) {
-					  jitted.getClass().getField(var.getName()).set(jitted, var);
+					  jitted.getClass().getField(var.getName().replace('%', '_').replace("$", "__")).set(jitted, var);
 					}
 					
 					Logger.log("JIT-Compiler executed in " + (System.currentTimeMillis() - s) + "ms, " + jittedTerms.size() + " methods compiled!");

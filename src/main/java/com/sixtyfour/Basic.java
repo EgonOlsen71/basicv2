@@ -128,7 +128,7 @@ public class Basic implements ProgramExecutor {
 
 	/**
 	 * Enables an experimental JIT-compiler with a default compile threshold of
-	 * 19. This works only if the application runs on a JDK installation. It
+	 * 0. This works only if the application runs on a JDK installation. It
 	 * won't work with a JRE. A JIT might help to improve performance for
 	 * complex calculations. If your program doesn't do these, it might not even
 	 * kick in or the additional overhead might slow your program down. Keep in
@@ -143,11 +143,13 @@ public class Basic implements ProgramExecutor {
 	 * Enables an experimental JIT-compiler with a given compile threshold. This
 	 * works only if the application runs on a JDK installation. It won't work
 	 * with a JRE. One might have to play around with the threshold to find a
-	 * value which actually speed up the application. A JIT might help to
-	 * improve performance for complex calculations. If your program doesn't do
-	 * these, it might not even kick in or the additional overhead might slow
-	 * your program down. Keep in mind that compiling the code by the JIT takes
-	 * some time as well.
+	 * value which actually speed up the application.
+	 * If the threshold is <=0, then the JIT compiler will try to
+   * auto-detect when to compile.
+	 * A JIT might help to improve performance for complex calculations. 
+	 * If your program doesn't do these, it might not even kick in or the 
+	 * additional overhead might slow your program down. Keep in mind that 
+	 * compiling the code by the JIT takes some time as well.
 	 * If the JIT compiler kicks in, you'll see some console output about it.
 	 * 
 	 * @param compileThreshold
