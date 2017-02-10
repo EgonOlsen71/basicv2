@@ -43,7 +43,7 @@ public class Jit {
 	 * i.e. the JIT compiler will try to auto-detect when to compile.
 	 */
 	public Jit() {
-		this(19);
+		this(0);
 	}
 
 	/**
