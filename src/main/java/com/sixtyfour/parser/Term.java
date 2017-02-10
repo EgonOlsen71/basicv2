@@ -231,7 +231,7 @@ public class Term implements Atom {
 			callCount++;
 			machine.setCurrentOperator(operator);
 			if (jittedMethod != null) {
-				return machine.getJit().call(machine, this);
+				return machine.getJit().call(this);
 			}
 			if (operator.isNop()) {
 				if (left == null) {

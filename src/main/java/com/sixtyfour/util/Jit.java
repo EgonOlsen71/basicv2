@@ -93,7 +93,7 @@ public class Jit {
 				if (cody == null || cody.length() < 80) {
 					return;
 				}
-				code.append("\npublic final Object m").append(term.getId()).append("(Machine machine) {").append("return ").append(cody.trim()).append(";}\n");
+				code.append("\npublic final Object m").append(term.getId()).append("() {").append("return ").append(cody.trim()).append(";}\n");
 				jittedTerms.add(term);
 				lastAdd=System.currentTimeMillis();
 				
@@ -123,19 +123,17 @@ public class Jit {
 	/**
 	 * Calls the actual compiled bytecode of a Term.
 	 * 
-	 * @param machine
-	 *            the current machine
 	 * @param term
 	 *            the term
 	 * @return the result
 	 */
-	public Object call(Machine machine, Term term) {
+	public Object call(Term term) {
 		Method m = term.getJittedMethod();
 		if (m == null) {
 			throw new RuntimeException("Internal JIT error: " + term);
 		}
 		try {
-			return m.invoke(jitted, machine);
+			return m.invoke(jitted);
 		} catch (Exception e) {
 			throw new RuntimeException("Internal JIT error: " + term, e);
 		}
@@ -183,7 +181,7 @@ public class Jit {
 
 					for (Term jittedTerm : jittedTerms) {
 						try {
-							jittedTerm.setJittedMethod(jitted.getClass().getMethod("m" + jittedTerm.getId(), Machine.class));
+							jittedTerm.setJittedMethod(jitted.getClass().getMethod("m" + jittedTerm.getId()));
 						} catch (Exception e) {
 							throw new RuntimeException("Internal JIT error: " + jittedTerm, e);
 						}
