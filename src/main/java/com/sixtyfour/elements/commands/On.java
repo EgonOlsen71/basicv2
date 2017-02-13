@@ -5,8 +5,8 @@ import java.util.List;
 
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.parser.Parser;
-import com.sixtyfour.system.Machine;
 import com.sixtyfour.system.BasicProgramCounter;
+import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
 /**
@@ -101,5 +101,5 @@ public class On extends AbstractCommand {
 		}
 		return pc;
 	}
-
+	
 }
