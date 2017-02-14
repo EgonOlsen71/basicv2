@@ -316,13 +316,13 @@ public class Variable implements Atom {
 		if (array) {
 			throw new RuntimeException("Not a simple type: " + this);
 		}
-		if (value.equals(this.value)) {
+		if (value == this.value || value.equals(this.value)) {
 			return;
 		}
 		// Convert into proper format
-		if (VarUtils.isFloat(value) && type.equals(Type.INTEGER)) {
+		if (type == Type.INTEGER && VarUtils.isFloat(value)) {
 			value = VarUtils.getInt(value);
-		} else if (VarUtils.isInteger(value) && type.equals(Type.REAL)) {
+		} else if (type == Type.REAL && VarUtils.isInteger(value)) {
 			value = VarUtils.getFloat(value);
 		}
 		this.value = value;
@@ -394,9 +394,9 @@ public class Variable implements Atom {
 			}
 		}
 
-		if (VarUtils.isFloat(val) && type.equals(Type.INTEGER)) {
+		if (type==Type.INTEGER && VarUtils.isFloat(val)) {
 			val = VarUtils.getInt(val);
-		} else if (VarUtils.isInteger(val) && type.equals(Type.REAL)) {
+		} else if (type==Type.REAL && VarUtils.isInteger(val)) {
 			val = VarUtils.getFloat(val);
 		}
 
