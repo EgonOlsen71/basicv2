@@ -16,6 +16,8 @@ import com.sixtyfour.util.VarUtils;
  */
 public class Color extends AbstractGraphicsCommand {
 
+  private static Constant<Integer> alpha=new Constant<Integer>(255);
+  
 	public Color() {
 		super("COLOR");
 	}
@@ -36,7 +38,7 @@ public class Color extends AbstractGraphicsCommand {
 		if (pars.size() > 3) {
 			a = pars.get(3);
 		} else {
-			a = new Constant<Integer>(255);
+			a = alpha;
 		}
 
 		GraphicsDevice window = GraphicsDevice.getDevice(machine);

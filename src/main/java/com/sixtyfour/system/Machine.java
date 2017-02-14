@@ -79,6 +79,8 @@ public class Machine {
 	private Cpu cpu = null;
 
 	private Jit jit = null;
+	
+	private List<StackEntry> toRemove = new ArrayList<StackEntry>();
 
 	/**
 	 * Instantiates a new machine.
@@ -182,7 +184,7 @@ public class Machine {
 	 * @return the popped command
 	 */
 	public For popFor(For fory) {
-		List<StackEntry> toRemove = new ArrayList<StackEntry>();
+	  toRemove.clear();
 		for (int i = stack.size() - 1; i >= 0; i--) {
 			StackEntry entry = stack.get(i);
 			if (entry.getCommand() == fory) {

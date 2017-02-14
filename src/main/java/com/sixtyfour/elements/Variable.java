@@ -233,6 +233,9 @@ public class Variable implements Atom {
 			return false;
 		}
 		if (o instanceof Variable) {
+		  if (o == this) {
+		    return true;
+		  }
 			return this.name.equalsIgnoreCase(((Variable) o).name);
 		}
 		return false;
