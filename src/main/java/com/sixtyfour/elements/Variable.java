@@ -416,11 +416,11 @@ public class Variable implements Atom {
 	 * @return the new value
 	 */
 	public float inc(float value) {
-		if (type.equals(Type.INTEGER)) {
+		if (type == Type.INTEGER) {
 			int ret = (int) (VarUtils.getInt(this.value) + value);
 			this.value = ret;
 			return ret;
-		} else if (type.equals(Type.REAL)) {
+		} else if (type == Type.REAL) {
 			float ret = VarUtils.getFloat(this.value) + value;
 			this.value = ret;
 			return ret;
