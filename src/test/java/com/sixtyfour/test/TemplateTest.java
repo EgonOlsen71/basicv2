@@ -13,6 +13,7 @@ import com.sixtyfour.templating.TemplateFactory;
 public class TemplateTest {
 	public static void main(String[] args) throws Exception {
 		testTemplate();
+		testLabeledTemplate();
 	}
 
 	private static void testTemplate() throws Exception {
@@ -21,6 +22,16 @@ public class TemplateTest {
 		vars.put("NA$", "Test");
 		vars.put("TT$", "At least better than PHP!");
 		Template templ = TemplateFactory.getTemplate(new FileInputStream("src/test/resources/templates/html.cbm"), vars);
+		String res = templ.process();
+		System.out.println(res);
+	}
+	
+	private static void testLabeledTemplate() throws Exception {
+		Map<String, Object> vars = new HashMap<String, Object>();
+		vars.put("CN", 10);
+		vars.put("NA$", "Test");
+		vars.put("TT$", "At least better than PHP!");
+		Template templ = TemplateFactory.getTemplate(new FileInputStream("src/test/resources/templates/htmlwithlabels.cbm"), vars);
 		String res = templ.process();
 		System.out.println(res);
 	}

@@ -10,6 +10,7 @@ import com.sixtyfour.Assembler;
 import com.sixtyfour.Basic;
 import com.sixtyfour.elements.Variable;
 import com.sixtyfour.parser.Line;
+import com.sixtyfour.parser.Preprocessor;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.system.Program;
 import com.sixtyfour.util.VarUtils;
@@ -37,7 +38,7 @@ public class Template {
 
 	/** The out. */
 	private TemplateOutputChannel out;
-
+	
 	/**
 	 * Instantiates a new template.
 	 * 
@@ -106,7 +107,12 @@ public class Template {
 	 *            the template
 	 */
 	private void parseTemplate(String template) {
-		template += "<?cbm 9999999 REM end ?>";
+		boolean labels = template.toLowerCase(Locale.ENGLISH).contains("<!labels>");
+		if (labels) {
+			template += "<?cbm REM end ?>";
+		} else {
+			template += "<?cbm 9999999 REM end ?>";
+		}
 		String utemp = VarUtils.toUpper(template);
 		int pos = 0;
 		int last = 0;
@@ -147,39 +153,50 @@ public class Template {
 				String[] lines = codePart.split("\n");
 
 				if (!asm) {
-					for (String line : lines) {
-						line = line.replace("\t", "").trim();
-						if (!line.isEmpty()) {
-							Line lo = Line.getLine(line);
-							firstLine = lo.getNumber();
-							break;
+					if (!labels) {
+						// Normal BASIC code with line numbers
+						for (String line : lines) {
+							line = line.replace("\t", "").trim();
+							if (!line.isEmpty()) {
+								Line lo = Line.getLine(line);
+								firstLine = lo.getNumber();
+								break;
+							}
 						}
-					}
 
-					for (int i = lines.length - 1; i >= 0; i--) {
-						String line = lines[i];
-						line = line.replace("\t", "").trim();
-						if (!line.isEmpty()) {
-							Line lo = Line.getLine(line);
-							endLine = lo.getNumber();
-							break;
+						for (int i = lines.length - 1; i >= 0; i--) {
+							String line = lines[i];
+							line = line.replace("\t", "").trim();
+							if (!line.isEmpty()) {
+								Line lo = Line.getLine(line);
+								endLine = lo.getNumber();
+								break;
+							}
 						}
-					}
 
-					if (firstLine <= lastLine) {
-						throw new RuntimeException("Line numbers (" + firstLine + "/" + lastLine + ") too close, can't insert static content into template!");
-					}
+						if (firstLine <= lastLine) {
+							throw new RuntimeException("Line numbers (" + firstLine + "/" + lastLine + ") too close, can't insert static content into template!");
+						}
 
-					if (!prior.isEmpty()) {
-						TemplatePart tp = new TemplatePart(prior);
-						tp.setFirstLine(lastLine);
-						tp.setLastLine(firstLine - 1);
-						lastLine++;
-						code.append(lastLine).append(" SYS1000,").append(lastLine).append('\n');
-						staticParts.put(lastLine, tp);
+						if (!prior.isEmpty()) {
+							TemplatePart tp = new TemplatePart(prior);
+							tp.setFirstLine(lastLine);
+							tp.setLastLine(firstLine - 1);
+							lastLine++;
+							code.append(lastLine).append(" SYS1000,").append(lastLine).append('\n');
+							staticParts.put(lastLine, tp);
+						}
+						lastLine = endLine;
+					} else {
+						// BASIC code with labels instead of line numbers
+						if (!prior.isEmpty()) {
+							TemplatePart tp = new TemplatePart(prior);
+							lastLine++;
+							code.append("SYS1000,").append(lastLine).append('\n');
+							staticParts.put(lastLine, tp);
+						}
 					}
 					code.append(codePart).append('\n');
-					lastLine = endLine;
 				} else {
 					Assembler assem = new Assembler(lines);
 					assem.compile();
@@ -190,7 +207,16 @@ public class Template {
 			}
 		} while (pos != -1);
 
+		if (labels) {
+			String[] lines = code.toString().split("\n");
+			lines = Preprocessor.convertToLineNumbers(lines);
+			code.setLength(0);
+			for (String line : lines) {
+				code.append(line).append('\n');
+			}
+		}
 		// System.out.println(code);
+		
 		basic = new Basic(code.toString());
 		basic.compile();
 		out = new TemplateOutputChannel();
