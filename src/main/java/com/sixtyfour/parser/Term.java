@@ -332,11 +332,11 @@ public class Term implements Atom {
 				} else if (operator.isDivision()) {
 					v1 = n1 + "/" + n2;
 				} else if (operator.isOr()) {
-					v1 = n1 + "|" + n2;
+					v1 = "(int) ("+ n1 + ")|" + n2;
 				} else if (operator.isAnd()) {
-					v1 = n1 + "&" + n2;
+					v1 = "(int) ("+n1 + ")&" + n2;
 				} else if (operator.isNot()) {
-					v1 = "~" + n2;
+					v1 = "~(int) (" + n2+")";
 				}
 				return filterCode("(" + v1 + ")");
 			}
