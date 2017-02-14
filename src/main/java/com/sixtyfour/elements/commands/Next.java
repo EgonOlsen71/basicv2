@@ -60,7 +60,7 @@ public class Next extends AbstractCommand {
 		String ret = null;
 		String[] vars = linePart.split(",");
 
-		// Handle the i,j,k...case by returning an artifical, new command and
+		// Handle the i,j,k...case by returning an artifical, new command that
 		// includes only j,k...
 		if (vars.length > 1) {
 			linePart = vars[0];
