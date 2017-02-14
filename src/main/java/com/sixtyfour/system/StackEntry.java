@@ -13,6 +13,8 @@ public class StackEntry {
 
 	/** The command */
 	private Command command;
+	private boolean isFor = false;
+	private boolean isJump = false;
 
 	/**
 	 * Instantiates a new stack entry.
@@ -22,6 +24,8 @@ public class StackEntry {
 	 */
 	public StackEntry(Command command) {
 		this.command = command;
+		isFor = command instanceof For;
+		isJump = command instanceof Gosub || command instanceof On;
 	}
 
 	/**
@@ -39,7 +43,7 @@ public class StackEntry {
 	 * @return true, if it is
 	 */
 	public boolean isFor() {
-		return command instanceof For;
+		return isFor;
 	}
 
 	/**
@@ -48,6 +52,6 @@ public class StackEntry {
 	 * @return true, if it is
 	 */
 	public boolean isSubroutineCall() {
-		return command instanceof Gosub || command instanceof On;
+		return isJump;
 	}
 }
