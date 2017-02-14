@@ -16,7 +16,9 @@ public class Sys extends AbstractCommand {
 
 	/** The pars. */
 	private List<Atom> pars;
-
+	private Atom addr;
+	private List<Atom> vals;
+	
 	/**
 	 * Instantiates a new sys.
 	 */
@@ -41,6 +43,8 @@ public class Sys extends AbstractCommand {
 		}
 
 		checkTypes(pars, linePart, Type.STRING);
+		addr = pars.get(0);
+		vals = pars.subList(1, pars.size());
 		return null;
 	}
 
@@ -53,8 +57,6 @@ public class Sys extends AbstractCommand {
 	 */
 	@Override
 	public BasicProgramCounter execute(Machine machine) {
-		Atom addr = pars.get(0);
-		List<Atom> vals = pars.subList(1, pars.size());
 		int memAddr = VarUtils.getInt(addr.eval(machine));
 		if (memAddr < 0 || memAddr > 65535) {
 			throw new RuntimeException("Illegal quantity error: " + this);

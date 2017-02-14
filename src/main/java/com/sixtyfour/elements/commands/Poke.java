@@ -17,6 +17,8 @@ public class Poke extends AbstractCommand {
 	/** The pars. */
 	private List<Atom> pars;
 
+	private Atom addr=null;
+	private Atom val=null;
 	/**
 	 * Instantiates a new poke.
 	 */
@@ -42,6 +44,9 @@ public class Poke extends AbstractCommand {
 
 		checkTypes(pars, linePart, Type.STRING, Type.STRING);
 
+		addr = pars.get(0);
+    val = pars.get(1);
+		
 		return null;
 	}
 
@@ -54,8 +59,6 @@ public class Poke extends AbstractCommand {
 	 */
 	@Override
 	public BasicProgramCounter execute(Machine machine) {
-		Atom addr = pars.get(0);
-		Atom val = pars.get(1);
 		int memAddr = VarUtils.getInt(addr.eval(machine));
 		int vally = VarUtils.getInt(val.eval(machine));
 		if (vally < 0 || vally > 255 || memAddr < 0 || memAddr > 65535) {
