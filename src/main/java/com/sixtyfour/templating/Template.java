@@ -39,6 +39,8 @@ public class Template {
 	/** The out. */
 	private TemplateOutputChannel out;
 	
+	private String basicCode;
+	
 	/**
 	 * Instantiates a new template.
 	 * 
@@ -48,7 +50,9 @@ public class Template {
 	 *            the variables to prefill the template with
 	 */
 	public Template(String template, Map<String, Object> variables) {
-		vars.putAll(variables);
+	  if (variables != null) {
+	    vars.putAll(variables);
+	  }
 		parseTemplate(template);
 	}
 
@@ -64,6 +68,24 @@ public class Template {
 		vars.put(name, value);
 	}
 
+	/**
+	 * Sets all variables to new values. Old variables will be cleared before this.
+	 * 
+	 * @param variables the new variables
+	 */
+	public void setVariables(Map<String, Object> variables) {
+	  vars.clear();
+	  vars.putAll(variables);
+	}
+	
+	/**
+	 * Returns the BASIC code that has been created by parsing the template. This is the code that will actually be compiled and executed.
+	 * @return the code
+	 */
+	public String getBasicCode() {
+	  return basicCode;
+	}
+	
 	/**
 	 * Gets a variable's value.
 	 * 
@@ -107,9 +129,11 @@ public class Template {
 	 *            the template
 	 */
 	private void parseTemplate(String template) {
-		boolean labels = template.toLowerCase(Locale.ENGLISH).contains("<!labels>");
+	  int pl=template.toLowerCase(Locale.ENGLISH).indexOf("<!labels>");
+		boolean labels = pl!=-1;
 		if (labels) {
 			template += "<?cbm REM end ?>";
+			template=template.substring(0,pl)+template.substring(pl+9);
 		} else {
 			template += "<?cbm 9999999 REM end ?>";
 		}
@@ -217,7 +241,8 @@ public class Template {
 		}
 		// System.out.println(code);
 		
-		basic = new Basic(code.toString());
+		basicCode=code.toString();
+		basic = new Basic(basicCode);
 		basic.compile();
 		out = new TemplateOutputChannel();
 		basic.setOutputChannel(out);
