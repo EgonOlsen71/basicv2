@@ -196,7 +196,7 @@ public class Jit
               StringBuilder varStr = new StringBuilder();
               for (Variable var : vars)
               {
-                varStr.append("\npublic Variable ").append(var.getName().replace('%', '_').replace("$", "__"))
+                varStr.append("\npublic Variable ").append(VarUtils.relabel(var.getName()))
                     .append("=null;\n");
               }
               source = source.replace("[vars]", varStr.toString());
@@ -221,7 +221,7 @@ public class Jit
 
               for (Variable var : vars)
               {
-                jittedCode.getClass().getField(var.getName().replace('%', '_').replace("$", "__")).set(jittedCode, var);
+                jittedCode.getClass().getField(VarUtils.relabel(var.getName())).set(jittedCode, var);
               }
 
               Logger.log("JIT-Compiler executed in " + (System.currentTimeMillis() - s) + "ms, " + jittedTerms.size()

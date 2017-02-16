@@ -86,5 +86,15 @@ public final class VarUtils {
 	public static String toUpper(String txt) {
 		return txt.toUpperCase(Locale.ENGLISH);
 	}
+	
+	/**
+	 * Changes variable names to match the JIT's requirements.
+	 * 
+	 * @param varName the name
+	 * @return the new name
+	 */
+	public static String relabel(String varName) {
+	  return varName.replace('%', '_').replace("$", "__");
+	}
 
 }

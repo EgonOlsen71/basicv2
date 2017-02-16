@@ -466,7 +466,7 @@ public class Variable implements Atom {
 
 		machine.getJit().addVariable(this);
 
-		String nam=name.replace('%', '_').replace("$", "__");
+		String nam=VarUtils.relabel(name);
 		 if (type == Type.REAL) {
 	      return "((Number) "+nam+".evalFromCode()).floatValue()";
 	    } else if (type == Type.INTEGER) {
