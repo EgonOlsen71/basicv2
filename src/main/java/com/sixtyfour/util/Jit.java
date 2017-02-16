@@ -94,8 +94,11 @@ public class Jit
    */
   public boolean addMethod(Term term, Machine machine)
   {
-    if (compilerRunning) {
-      return false;
+    synchronized (sync)
+    {
+      if (compilerRunning) {
+        return false;
+      }
     }
     if (!failed)
     {
