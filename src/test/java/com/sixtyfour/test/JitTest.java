@@ -58,7 +58,7 @@ public class JitTest {
 		String[] vary = Loader.loadProgram("src/test/resources/ext/fractal.bas");
 		Basic.registerExtension(new GraphicsBasic());
 		Basic inty = new Basic(vary);
-		inty.enableJit(12);
+		inty.enableJit(4);
 		inty.run();
 	}
 }

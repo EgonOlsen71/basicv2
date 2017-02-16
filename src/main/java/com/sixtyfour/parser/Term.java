@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import com.sixtyfour.elements.Constant;
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.system.Machine;
+import com.sixtyfour.util.Jitted;
 
 /**
  * A Term is a (part of a) calculation or a logical operation. Terms have two
@@ -37,6 +38,8 @@ public class Term implements Atom {
 	private int callCount = 0;
 
 	private Method jittedMethod = null;
+	
+	private Jitted jittedInstance=null;
 
 	private boolean jitRun = false;
 
@@ -279,8 +282,7 @@ public class Term implements Atom {
 			machine.setCurrentOperator(null);
 			// TODO Make 20 dependent on something
 			if (!jitRun && callCount > 20 && machine.getJit() != null) {
-				machine.getJit().addMethod(this, machine);
-				jitRun = true;
+			  jitRun=machine.getJit().addMethod(this, machine);
 			}
 		}
 	}
@@ -384,6 +386,22 @@ public class Term implements Atom {
 		return jittedMethod;
 	}
 
+	/**
+	 * @return
+	 */
+	public Jitted getJittedInstance()
+  {
+    return jittedInstance;
+  }
+
+  /**
+   * @param jittedInstance
+   */
+  public void setJittedInstance(Jitted jittedInstance)
+  {
+    this.jittedInstance = jittedInstance;
+  }
+	
 	/**
 	 * Sets the Method instance, once this term has been compiled by the JIT
 	 * compiler

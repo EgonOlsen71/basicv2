@@ -29,7 +29,6 @@ import com.sixtyfour.system.Machine;
 public class Jit
 {
   private StringBuilder code = new StringBuilder();
-  private Jitted jitted = null;
   private List<Term> jittedTerms = new ArrayList<Term>();
   private int compileThreshold = 0;
   private boolean failed = false;
@@ -37,6 +36,7 @@ public class Jit
   private static Object sync = new Object();
   private long lastAdd = 0;
   private boolean compilerRunning = false;
+  private static int id=0;
 
 
   /**
@@ -60,10 +60,8 @@ public class Jit
   public Jit(int compileThreshold)
   {
     this.compileThreshold = compileThreshold;
-    code.append(
-        "import com.sixtyfour.system.*; import com.sixtyfour.elements.*; \npublic class JittedImpl implements com.sixtyfour.util.Jitted { private Variable[] vars; [vars] public JittedImpl() {} \n public void setVars(Variable[] vars) {this.vars=vars;} ");
+    initCode();
   }
-
 
   /**
    * Adds a variable to the compiled code. Used internally, no need to call this from an application.
@@ -94,30 +92,32 @@ public class Jit
    * @param machine
    *          the current machine
    */
-  public void addMethod(Term term, Machine machine)
+  public boolean addMethod(Term term, Machine machine)
   {
-    if (jitted == null && !failed && !compilerRunning)
+    if (compilerRunning) {
+      return false;
+    }
+    if (!failed)
     {
       if (!jittedTerms.contains(term))
       {
         String cody = term.toCode(machine);
         if (cody == null || cody.length() < 80)
         {
-          return;
+          return true;
         }
         code.append("\npublic final Object m").append(term.getId()).append("() {").append("return ").append(cody.trim())
             .append(";}\n");
         jittedTerms.add(term);
         lastAdd = System.currentTimeMillis();
 
-        // Logger.log("Jitted methods: " + jittedTerms.size());
-
         if (compileThreshold > 0 && jittedTerms.size() > compileThreshold && !compilerRunning)
         {
           compile();
         }
       }
-    }
+    } 
+    return true;
   }
 
 
@@ -127,7 +127,7 @@ public class Jit
    */
   public void autoCompile()
   {
-    if (lastAdd > 0 && compileThreshold <= 0 && jitted == null && !failed)
+    if (lastAdd > 0 && compileThreshold <= 0 && !failed)
     {
       if (System.currentTimeMillis() - lastAdd >= 200 && !compilerRunning)
       {
@@ -154,7 +154,7 @@ public class Jit
     }
     try
     {
-      return m.invoke(jitted);
+      return m.invoke(term.getJittedInstance());
     }
     catch (Exception e)
     {
@@ -166,7 +166,7 @@ public class Jit
 
   private void compile()
   {
-    if (jitted == null && !failed)
+    if (!failed)
     {
       synchronized (sync)
       {
@@ -180,6 +180,7 @@ public class Jit
           @Override
           public void run()
           {
+            String clazzName="JittedImpl"+(id++);
             File sourceFile = null;
             try
             {
@@ -199,7 +200,7 @@ public class Jit
 
               // System.out.println(source);
 
-              sourceFile = new File("JittedImpl.java");
+              sourceFile = new File(clazzName+".java");
               Files.write(sourceFile.toPath(), source.getBytes(StandardCharsets.UTF_8));
               JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
               if (compiler == null)
@@ -211,7 +212,7 @@ public class Jit
               compiler.run(null, null, null, sourceFile.getPath());
 
               URLClassLoader classLoader = URLClassLoader.newInstance(new URL[] { new File(".").toURI().toURL() });
-              Class<?> cls = Class.forName("JittedImpl", true, classLoader);
+              Class<?> cls = Class.forName(clazzName, true, classLoader);
               Jitted jittedCode = (Jitted) cls.newInstance();
               jittedCode.setVars(vars.toArray(new Variable[vars.size()]));
 
@@ -221,15 +222,14 @@ public class Jit
               }
 
               Logger.log("JIT-Compiler executed in " + (System.currentTimeMillis() - s) + "ms, " + jittedTerms.size()
-                  + " methods compiled!");
+                  + " methods compiled into "+clazzName+".class!");
 
-              jitted = jittedCode;
-              
               for (Term jittedTerm : jittedTerms)
               {
                 try
                 {
-                  jittedTerm.setJittedMethod(jitted.getClass().getMethod("m" + jittedTerm.getId()));
+                  jittedTerm.setJittedInstance(jittedCode);
+                  jittedTerm.setJittedMethod(jittedCode.getClass().getMethod("m" + jittedTerm.getId()));
                 }
                 catch (Exception e)
                 {
@@ -246,13 +246,17 @@ public class Jit
             {
               if (sourceFile != null)
               {
-                new File("JittedImpl.class").delete();
+                new File(clazzName+".class").delete();
                 if (!sourceFile.delete())
                 {
                   sourceFile.deleteOnExit();
-                  new File("JittedImpl.class").deleteOnExit();
+                  new File(clazzName+".class").deleteOnExit();
                 }
               }
+              initCode();
+              vars.clear();
+              jittedTerms.clear();
+              lastAdd=0;
               compilerRunning = false;
             }
 
@@ -261,6 +265,13 @@ public class Jit
         compileThread.start();
       }
     }
+  }
+  
+  private void initCode()
+  {
+    code.setLength(0);
+    code.append(
+        "import com.sixtyfour.system.*; import com.sixtyfour.elements.*; \npublic class JittedImpl"+id+" implements com.sixtyfour.util.Jitted { private Variable[] vars; [vars] public JittedImpl"+id+"() {} \n public void setVars(Variable[] vars) {this.vars=vars;} ");
   }
 
 }
