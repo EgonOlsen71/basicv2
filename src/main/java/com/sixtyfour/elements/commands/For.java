@@ -157,7 +157,7 @@ public class For extends AbstractCommand {
 			return false;
 		}
 		float cur = var.inc(step);
-		if ((step < 0 && cur >= end) || (step > 0 && cur <= end)) {
+		if ((step > 0 && cur <= end) || (step < 0 && cur >= end)) {
 			return true;
 		} else {
 			if (running) {
