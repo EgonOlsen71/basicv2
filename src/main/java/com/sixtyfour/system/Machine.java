@@ -203,21 +203,30 @@ public class Machine
    */
   public For popFor(For fory)
   {
-    toRemove.clear();
-    for (int i = stack.size() - 1; i >= 0; i--)
+    int end = stack.size() - 1;
+    for (int i = end; i >= 0; i--)
     {
       StackEntry entry = stack.get(i);
       if (entry.getCommand() == fory)
       {
-        for (int p = stack.size() - 1; p >= i; p--)
+        if (i == end)
         {
-          entry = stack.get(i);
-          if (entry.isFor())
-          {
-            toRemove.add(entry);
-          }
+          // Shortcut for FORs that are at the top of the stack
+          stack.remove(end);
         }
-        stack.removeAll(toRemove);
+        else
+        {
+          toRemove.clear();
+          for (int p = end; p >= i; p--)
+          {
+            entry = stack.get(i);
+            if (entry.isFor())
+            {
+              toRemove.add(entry);
+            }
+          }
+          stack.removeAll(toRemove);
+        }
         return (For) entry.getCommand();
       }
     }
@@ -261,7 +270,7 @@ public class Machine
         int end = stack.size();
         for (int p = 0; p < end - i; p++)
         {
-          stack.remove(stack.size()-1);
+          stack.remove(stack.size() - 1);
         }
         return entry;
       }
@@ -277,8 +286,9 @@ public class Machine
    */
   public StackEntry peek()
   {
-    if (stack.size()>0) {
-      return stack.get(stack.size()-1);
+    if (stack.size() > 0)
+    {
+      return stack.get(stack.size() - 1);
     }
     return null;
   }
@@ -295,7 +305,7 @@ public class Machine
     {
       throw new RuntimeException("Out of memory error, stack is empty!");
     }
-    return stack.remove(stack.size()-1);
+    return stack.remove(stack.size() - 1);
   }
 
 
