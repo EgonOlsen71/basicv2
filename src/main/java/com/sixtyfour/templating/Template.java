@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.sixtyfour.Assembler;
 import com.sixtyfour.Basic;
@@ -40,6 +41,8 @@ public class Template {
 	private TemplateOutputChannel out;
 	
 	private String basicCode;
+	
+	private String path;
 	
 	/**
 	 * Instantiates a new template.
@@ -77,6 +80,34 @@ public class Template {
 	  vars.clear();
 	  vars.putAll(variables);
 	}
+	
+	/**
+	 * Similar to setVariables, but the names don't have to follow BASIC's naming conventions. 
+	 * This method will take care that they do, i.e. Floats will keeps their name, 
+	 * Integers will get a "%" added and Strings a "$".
+	 * 
+	 * @param variables the new variables
+	 */
+	public void setVariablesWithType(Map<String, Object> variables) {
+    vars.clear();
+    Map<String, Object> vars = new HashMap<String, Object>();
+    for (Entry<String, Object> entry:variables.entrySet()) {
+      String name=entry.getKey();
+      Object obj=entry.getValue();
+      
+      if (obj instanceof Double) {
+        obj=((Number) obj).floatValue();
+      }
+      
+      if (obj instanceof Integer) {
+        name+="%";
+      } else if (obj instanceof String) {
+        name+="$";
+      }
+      vars.put(name, obj);
+    }
+    vars.putAll(vars);
+  }
 	
 	/**
 	 * Returns the BASIC code that has been created by parsing the template. This is the code that will actually be compiled and executed.
@@ -121,6 +152,27 @@ public class Template {
 		basic.start();
 		return out.getResult();
 	}
+	
+	/**
+	 * Gets the path of the template in the file system, if one has been set.
+	 * 
+	 * @return the path or null, if none has been set
+	 */
+	public String getPath()
+  {
+    return path;
+  }
+
+  /**
+   * Sets the path of the template in the file system. The template itself doesn't do anything with this
+   * information, so it doesn't have to exist in all cases.
+   * 
+   * @param path the path
+   */
+  public void setPath(String path)
+  {
+    this.path = path;
+  }
 
 	/**
 	 * Parses the template.
@@ -248,5 +300,4 @@ public class Template {
 		basic.setOutputChannel(out);
 		basic.getMachine().setSystemCallListener(new StaticTemplateCallListener(staticParts, out, basic.getMachine()));
 	}
-
 }

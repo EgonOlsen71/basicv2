@@ -47,6 +47,7 @@ public class TemplateManager
     {
       if (existing.hasChanged())
       {
+        Logger.log("Template "+pathToTemplate+" has been modified, reloading...");
         templates.remove(existing);
       }
 
@@ -77,6 +78,7 @@ public class TemplateManager
       Logger.log("Creating new template instance for " + pathToTemplate);
       Template tmpl = TemplateFactory.getTemplate(new FileInputStream(pathToTemplate), null);
       tl.set(tmpl);
+      tmpl.setPath(pathToTemplate);
       existing.setBasicCode(tmpl.getBasicCode());
       return tmpl;
     }
