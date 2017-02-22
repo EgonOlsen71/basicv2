@@ -405,6 +405,15 @@ public class Machine
     name = VarUtils.toUpper(name);
     return vars.get(name);
   }
+  
+  /**
+   * Returns a map that contains all known Variables with their names as keys.
+   * 
+   * @return the map
+   */
+  public Map<String, Variable> getVariables() {
+    return new HashMap<String, Variable>(vars);
+  }
 
 
   /**

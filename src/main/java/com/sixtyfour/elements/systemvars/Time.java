@@ -11,7 +11,7 @@ import com.sixtyfour.system.Machine;
  * 
  * @author EgonOlsen
  */
-public class Time extends Variable {
+public class Time extends Variable implements SystemVariable {
 
 	/**
 	 * Instantiates a new time.

@@ -8,7 +8,7 @@ import com.sixtyfour.elements.Variable;
 /**
  * A system variable that represents PI.
  */
-public class Pie extends Variable {
+public class Pie extends Variable implements SystemVariable {
 
 	/**
 	 * Instantiates a new pie.

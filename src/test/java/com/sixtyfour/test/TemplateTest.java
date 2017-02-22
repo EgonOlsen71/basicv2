@@ -1,6 +1,8 @@
 package com.sixtyfour.test;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.sixtyfour.templating.Template;
@@ -16,7 +18,22 @@ public class TemplateTest
     throws Exception
   {
     testTemplate();
+    testTemplateInclude();
     testLabeledTemplate();
+  }
+
+
+  private static void testTemplateInclude()
+  {
+    Map<String, Object> vars = new HashMap<String, Object>();
+    vars.put("M", "This is a text");
+    vars.put("EN", 8);
+    vars.put("ST", 5);
+    TemplateManager tm = TemplateManager.getInstance();
+    Template templ = tm.getTemplate("src/test/resources/templates/includer.cbm");
+    templ.setVariablesWithType(vars);
+    String res = templ.process();
+    System.out.println(res);
   }
 
 
@@ -28,7 +45,7 @@ public class TemplateTest
     vars.put("NA$", "Test");
     vars.put("TT$", "At least better than PHP!");
 
-    TemplateManager tm = new TemplateManager();
+    TemplateManager tm = TemplateManager.getInstance();
     Template templ = tm.getTemplate("src/test/resources/templates/html.cbm");
     templ.setVariables(vars);
     String res = templ.process();
@@ -39,11 +56,11 @@ public class TemplateTest
   private static void testLabeledTemplate()
     throws Exception
   {
-    final TemplateManager tm = new TemplateManager();
+    final TemplateManager tm = TemplateManager.getInstance();
 
+    List<Thread> ts=new ArrayList<Thread>();
     for (int i = 0; i < 10; i++)
     {
-
       Thread tr = new Thread()
       {
         @Override
@@ -62,6 +79,11 @@ public class TemplateTest
         }
       };
       tr.start();
+      ts.add(tr);
+    }
+    
+    for (Thread t:ts) {
+      t.join();
     }
 
   }

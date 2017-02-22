@@ -106,7 +106,7 @@ public class Template {
       }
       vars.put(name, obj);
     }
-    vars.putAll(vars);
+    setVariables(vars);
   }
 	
 	/**
@@ -153,6 +153,7 @@ public class Template {
 		return out.getResult();
 	}
 	
+	
 	/**
 	 * Gets the path of the template in the file system, if one has been set.
 	 * 
@@ -173,7 +174,37 @@ public class Template {
   {
     this.path = path;
   }
+  
+  /**
+   * Gets the current machine instance of the internal Basic instance.
+   * 
+   * @param machine the machine
+   */
+  public Machine getMachine() {
+    return basic.getMachine();
+  }
 
+  /**
+   * Injects a new machine instance into the internal Basic instance.
+   * 
+   * @param machine the machine
+   */
+  public void setMachine(Machine machine) {
+    basic.setMachine(machine);
+  }
+  
+  /**
+   * Processes a part of a template.
+   * 
+   * @param out
+   * @return
+   */
+  String processPart() {
+      out.reset();
+      basic.start();
+      return out.getResult();
+  }
+  
 	/**
 	 * Parses the template.
 	 * 
@@ -299,5 +330,6 @@ public class Template {
 		out = new TemplateOutputChannel();
 		basic.setOutputChannel(out);
 		basic.getMachine().setSystemCallListener(new StaticTemplateCallListener(staticParts, out, basic.getMachine()));
+		basic.getMachine().setDeviceProvider(new TemplateDeviceProvider(basic, this));
 	}
 }

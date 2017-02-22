@@ -140,7 +140,7 @@ public class TemplateOutputChannel implements OutputChannel {
 	 */
 	@Override
 	public void systemPrint(int id, String txt) {
-		this.print(id, txt);
+		//this.print(id, txt);
 	}
 
 	/*
@@ -151,7 +151,7 @@ public class TemplateOutputChannel implements OutputChannel {
 	 */
 	@Override
 	public void systemPrintln(int id, String txt) {
-		this.println(id, txt);
+		//this.println(id, txt);
 	}
 
 }

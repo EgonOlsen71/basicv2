@@ -11,7 +11,7 @@ import com.sixtyfour.system.Machine;
  * 
  * @author EgonOlsen
  */
-public class TimeDate extends Variable {
+public class TimeDate extends Variable implements SystemVariable {
 
 	/** The sdf. */
 	private SimpleDateFormat sdf = new SimpleDateFormat("HHmmss");

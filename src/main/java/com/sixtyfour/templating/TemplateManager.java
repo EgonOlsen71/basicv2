@@ -18,9 +18,13 @@ public class TemplateManager
 {
   private Map<TemplateInfo, ThreadLocal<Template>> templates = new HashMap<TemplateInfo, ThreadLocal<Template>>();
   private Map<String, TemplateInfo> templateInfos = new HashMap<String, TemplateInfo>();
+  private static TemplateManager instance=new TemplateManager();
+  
+  public static TemplateManager getInstance() {
+    return instance;
+  }
 
-
-  public TemplateManager()
+  private TemplateManager()
   {
     //
   }
@@ -40,8 +44,10 @@ public class TemplateManager
       existing = new TemplateInfo(pathToTemplate);
       ThreadLocal<Template> tl = new ThreadLocal<Template>();
       templates.put(existing, tl);
-
-      return createTemplate(pathToTemplate, existing, tl);
+      
+      Template tmpl= createTemplate(pathToTemplate, existing, tl);
+      templateInfos.put(pathToTemplate, existing);
+      return tmpl;
     }
     else
     {
