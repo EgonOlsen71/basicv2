@@ -88,4 +88,9 @@ public class DelayedLabel {
 		this.high = high;
 	}
 
+	@Override
+	public String toString() {
+		return this.label + "/" + this.high + "/" + this.low;
+	}
+
 }

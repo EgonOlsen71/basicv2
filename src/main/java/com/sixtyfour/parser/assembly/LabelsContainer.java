@@ -34,7 +34,7 @@ public class LabelsContainer {
 	}
 
 	/**
-	 * Put a new label with an address into the container.
+	 * Puts a new label with an address into the container.
 	 * 
 	 * @param label
 	 *            the label
@@ -63,7 +63,7 @@ public class LabelsContainer {
 						throw new RuntimeException("Destination address out of range: " + value + "/" + targetAddr + "/" + offset);
 					}
 				} else {
-					// System.out.println("Applied delayed Label: "+entry.getValue());
+					 //System.out.println("Applied delayed Label: "+entry.getValue()+"@"+Integer.toHexString(targetAddr)+"/"+value);
 					if (dl.isLow()) {
 						ram[++targetAddr] = AssemblyParser.getLowByte(value);
 					} else if (dl.isHigh()) {

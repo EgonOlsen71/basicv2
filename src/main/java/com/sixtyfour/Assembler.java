@@ -135,8 +135,7 @@ public class Assembler implements ProgramExecutor {
 						initial = false;
 					} else {
 						ProgramPart part = new ProgramPart();
-						part.setAddress(start);
-						part.setBytes(Arrays.copyOfRange(compileMachine.getRam(), start, addr));
+						part.setEndAddress(addr);
 						part.setLineAddresses(createAndResetOpas(lineBreaks));
 						prg.addPart(part);
 					}
@@ -198,9 +197,13 @@ public class Assembler implements ProgramExecutor {
 		if (addr != start) {
 			ProgramPart part = new ProgramPart();
 			part.setAddress(start);
-			part.setBytes(Arrays.copyOfRange(compileMachine.getRam(), start, addr));
+			part.setEndAddress(addr);
 			part.setLineAddresses(createAndResetOpas(lineBreaks));
 			prg.addPart(part);
+		}
+		
+		for (ProgramPart part:prg.getParts()) {
+			part.setBytes(Arrays.copyOfRange(compileMachine.getRam(), part.getAddress(), part.getEndAddress()));
 		}
 
 		prg.setCodeStart(codeStart == -1 ? start : codeStart);

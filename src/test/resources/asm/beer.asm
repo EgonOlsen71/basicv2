@@ -66,7 +66,7 @@ MULTI		JSR PUTS
    			RTS
 
 PUTS		INY
-			LDA $bfff,Y
+			LDA $c1ff,Y
 			BEQ DONE
 			JSR OUT
 			JMP PUTS
@@ -77,7 +77,7 @@ OUT			PHP
 			RTS
 
 
-
+*=$c200
 TAKE 		.text "take one down and pass it around, "
    			.byte $0
 STORE  		.text "go to the store and buy some more"

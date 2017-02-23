@@ -9,6 +9,7 @@ package com.sixtyfour.system;
 public class ProgramPart {
 
 	private int address;
+	private int endAddress;
 	private int[] bytes;
 	private int[] lineAddresses;
 
@@ -76,6 +77,23 @@ public class ProgramPart {
 	 */
 	public void setLineAddresses(int[] lineAddresses) {
 		this.lineAddresses = lineAddresses;
+	}
+
+	/**
+	 * Sets the end address
+	 * @return the end address
+	 */
+	public int getEndAddress() {
+		return endAddress;
+	}
+
+	/**
+	 * Returns the end address
+	 * 
+	 * @param endAddress the end address
+	 */
+	public void setEndAddress(int endAddress) {
+		this.endAddress = endAddress;
 	}
 
 }
