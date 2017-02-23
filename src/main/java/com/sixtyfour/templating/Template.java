@@ -99,9 +99,9 @@ public class Template {
         obj=((Number) obj).floatValue();
       }
       
-      if (obj instanceof Integer) {
+      if (obj instanceof Integer && !name.endsWith("%")) {
         name+="%";
-      } else if (obj instanceof String) {
+      } else if (obj instanceof String && !name.endsWith("$")) {
         name+="$";
       }
       vars.put(name, obj);
