@@ -113,7 +113,7 @@ public class AssemblyParser {
 	 */
 	public static int getValue(String number, int addr, ConstantsContainer ccon, LabelsContainer lcon, boolean low, boolean high) {
 		number = number.trim();
-		if (!number.startsWith("$") && !number.startsWith("%") && !Character.isDigit(number.charAt(0))) {
+		if (!number.startsWith("$") && !number.startsWith("%") && !Character.isDigit(number.charAt(0)) && !(number.startsWith("-"))) {
 			ConstantValue cv = ccon.get(number);
 			if (cv != null) {
 				return cv.getValue();
@@ -329,7 +329,7 @@ public class AssemblyParser {
 
 			return val;
 		} catch (Exception e) {
-			throw new RuntimeException("Invalid number: " + number);
+			throw new RuntimeException("Invalid number: " + number, e);
 		}
 	}
 }
