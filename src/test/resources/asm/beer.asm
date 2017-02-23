@@ -1,9 +1,9 @@
 *=$c000
 
-ECHO=$FFD2
-MAXBEER=99
+SYSOUT=$FFD2
+MAX=99
 
-   			LDX #MAXBEER	  	;99 bottles
+   			LDX #MAX
 LOOP		JSR BOTTLEOUT
 			JSR PUTS
 			LDY #<COM
@@ -18,7 +18,7 @@ LOOP		JSR BOTTLEOUT
    			BPL CONTI
    			LDY #<STORE
    			JSR PUTS
-   			LDX #MAXBEER
+   			LDX #MAX
    			JSR WALLCR
    			RTS
 CONTI		LDY #<TAKE
@@ -72,7 +72,7 @@ PUTS		INY
 			JMP PUTS
 DONE		RTS
 OUT			PHP
-			JSR ECHO
+			JSR SYSOUT
 			PLP
 			RTS
 
