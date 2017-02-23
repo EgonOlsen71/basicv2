@@ -1,130 +1,95 @@
-;BEER SONG IN 6502 ASSEMBLY LANGUAGE
-;   BY BARRYM 2010-05-30
-;THANKS TO:
-;   SBPROJECTS.COM FOR LOTS OF VALUABLE
-;      INFO AND A VERY NICE ASSEMBLER! 
-;SEE THE END OF THIS LISTING FOR
-;   IMPORTANT INFORMATION ABOUT THE
-;   TARGET MACHINE!
-;
-;CONFIGURE.
-;
 *=$c000
 
-;
-;THE TARGET MACHINE FOR THIS ASSEMBLY
-;   IS THE APPLE 1, BUT IT IS VERY EASY
-;   TO MAKE IT RUN ON DIFFERENT 65XX
-;   MACHINES BY CHANGING THE NEXT TWO
-;   EQUATES.  TWO MACHINE-TESTED
-;   EXAMPLES:
-;   APPLE II: $FDED, $80
-;   COMMODORE 64: $FFD2, $00
-;
-ECHO=$FFD2 	;EMIT ASCII CHAR
-ORMASK=$00   	;($00 FOR + ASCII)
-;
-ANDMSK=127
-MAXBEER=99    	;STARTING BEER COUNT
+ECHO=$FFD2
+MAXBEER=99
 
-;
-;DEFINE.
-;
-;X REG. HOLDS NUMBER OF BOTTLES, (AND
-;   TENS DIGIT IN THE BINARY-TO-ASCII
-;   CONVERSION ROUTINE).
-;Y REG. IS THE STRING INDEX POINTER.
-;A REG. TAKES CARE OF EVERYTHING ELSE
-;   (WITH A LITTLE HELP FROM THE STACK)
-;ZERO PAGE IS NOT DIRECTLY DISTURBED.
-;
-;PRINT COMPLETE, CORRECT SONG (ADJUSTED
-;   FOR UPPER-CASE, 40-COLUMN DISPLAY).
-;
-   LDX #MAXBEER	  	;INIT. BEER COUNT
-   BNE PRSONG     	;SING THE SONG
-BEERME  LDY #<TAKE1 	;? "TAKE ... AROUND,"
-   JSR PRBOB      	;? X;" BOT ... WALL."
-PRSONG  LDY #<CR   	;BLANK LINE  
-   JSR PRBOB      	;? X;" BOT ... WALL";
-   LDY #<COMCR 		;? ","
-   JSR PRBOB      	;? X;" BOT ... BEER."
-   DEX            	;X=X-1
-   BPL BEERME     	;IF X>-1 THEN BEERME
-;
-;EMIT LAST SENTENCE AND FALL THROUGH.
-;
-   LDX #MAXBEER   	;RESET BEER COUNT
-   LDY #<GSTOR 		;? "GO TO ... MORE,"
-;
-PRBOB  TYA            	;SAVE PRE-STRING PTR
-   PHA            	;   FOR LATER USE.
-   JSR PUTS       	;EMIT THE PRE-STRING.
-   TXA
-   BEQ PRNONE     	;IF X>0 THEN
-   PHA            	;   CONVERT X TO
-   LDX #-1        	;   ASCII AND EMIT.
-   SEC            	;   (
-TENS  INX
-   SBC #10
-   BCS TENS
-   PHA
-   TXA
-   BEQ ONEDIG
-   ORA #0       	;   IF X>10 THEN
-   JSR PUTCH      	;      ? INT(X/10);
-ONEDIG  PLA            
-   CLC
-   ADC #10
-   ORA #0
-   JSR PUTCH      	;   ? X MOD 10;
-   PLA
-   TAX
-   LDY #<BOTTL
-   BNE PRBOTT     	;   )
-PRNONE  LDY #<NOMOR
-   JSR PUTS       	;ELSE ? "NO MORE";
-PRBOTT  JSR PUTS       	;? " BOTTLE";
-   INY
-   DEX
-   BEQ SINGLE
-   DEY            	;IF X<>1 THEN ? "S";
-SINGLE  INX
-   JSR PUTS       	;? " OF BEER";
-   PLA            	;RETRIEVE PRE-PTR
-   CMP #<COMCR
-   BNE PRWALL
-   LDY #<DOTCR
-   BPL PUTS
-PRWALL  PHA            	;IF APPROPRIATE THEN
-   JSR PUTS       	;   ? " ON THE WALL";
-   PLA
-   CMP #<CR    		;IF APPROPRIATE THEN
-   BEQ KPUT       	;   ? "."
+   			LDX #MAXBEER	  	;99 bottles
+LOOP		JSR BOTTLEOUT
+			JSR PUTS
+			LDY #<COM
+			JSR PUTS
+			JSR BOTTLEOUT
+			TYA
+			CLC
+			ADC #13
+			TAY
+			JSR PUTS
+   			DEX
+   			BPL CONTI
+   			LDY #<STORE
+   			JSR PUTS
+   			LDX #MAXBEER
+   			JSR WALLCR
+   			RTS
+CONTI		LDY #<TAKE
+			JSR PUTS
+			JSR WALLCR
+			JMP LOOP
 
-PUTS INY
-   LDA TXT, Y
-PUTCH  PHP
-   JSR ECHO
-   PLP
-   BPL PUTS
-KPUT RTS
-;
+WALLCR 		JSR BOTTLEOUT
+			JSR PUTS
+			JSR PUTS
+			DEY
+			DEY
+			JSR PUTS
+			RTS
 
-TXT .byte 00
-TAKE1 .text "TAKE ONE DOWN AND PASS IT AROUND,"
-   .byte 13
-   .byte $0
-GSTOR  .text "GO TO THE STORE AND BUY SOME MORE"
-   .byte $0
-COMCR  .text ","
-   .byte 13
-   .byte $0
-NOMOR  .text "no more"
-   .byte $0
-BOTTL .text " bottles of beer on the wall"
-   .byte $0
-DOTCR .text "."
-   .byte $0
-CR .byte 13 
-   .byte$0
+BOTTLEOUT  	TXA
+			BNE STILLBEER
+			LDY #<NOMORE
+			JSR PUTS
+			JMP POSTFIX
+STILLBEER	PHA
+			LDX #-1
+   			SEC
+DIV10	    INX
+   			SBC #10
+   			BCS DIV10
+   			PHA
+   			TXA
+   			BEQ SINGLE
+   			CLC
+   			ADC #48
+   			JSR OUT
+SINGLE  	PLA
+   			CLC
+   			ADC #58
+   			JSR OUT
+			PLA
+   			TAX
+POSTFIX		LDY #<BOTTLE
+   			JSR PUTS
+   			CPX #1
+   			BNE MULTI
+   			INY
+MULTI		JSR PUTS
+   			RTS
+
+PUTS		INY
+			LDA $bfff,Y
+			BEQ DONE
+			JSR OUT
+			JMP PUTS
+DONE		RTS
+OUT			PHP
+			JSR ECHO
+			PLP
+			RTS
+
+
+
+TAKE 		.text "take one down and pass it around, "
+   			.byte $0
+STORE  		.text "go to the store and buy some more"
+COM  		.text ", "
+   			.byte $0
+NOMORE  	.text "no more"
+   			.byte $0
+BOTTLE 		.text " bottle"
+			.byte $0
+			.text "s of beer"
+			.byte $0
+			.text " on the wall"
+			.byte $0
+DOTCR 		.text "."
+CR			.byte 13 0

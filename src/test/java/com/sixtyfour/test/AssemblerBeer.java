@@ -26,7 +26,11 @@ public class AssemblerBeer
       @Override
       public void commandExecuted(Cpu cpu, int opcode, int opcodePc, int newPc)
       {
-        System.out.println(Integer.toHexString(opcode)+"/"+Integer.toHexString(opcodePc)+": "+cpu.getInstruction(opcode));
+    	  try {
+        	//Thread.sleep(1);
+        } catch(Exception e) {
+        	
+        }
       }
       
     });
