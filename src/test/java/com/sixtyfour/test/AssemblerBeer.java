@@ -7,43 +7,51 @@ import com.sixtyfour.system.Cpu;
 import com.sixtyfour.system.CpuTracer;
 import com.sixtyfour.system.Machine;
 
+
 public class AssemblerBeer
 {
-  public static void main(String[] args) {
+  public static void main(String[] args)
+  {
     testBeer();
   }
-  
-  private static void testBeer() {
+
+
+  private static void testBeer()
+  {
     String[] code = Loader.loadProgram("src/test/resources/asm/beer.asm");
     Assembler asm = new Assembler(code);
     asm.compile();
     Machine machine = asm.getMachine();
-    
+
     System.out.println(asm.toString());
-    
-    machine.getCpu().setCpuTracer(new CpuTracer() {
+
+    machine.getCpu().setCpuTracer(new CpuTracer()
+    {
 
       @Override
       public void commandExecuted(Cpu cpu, int opcode, int opcodePc, int newPc)
       {
-    	  try {
-        	//Thread.sleep(1);
-        } catch(Exception e) {
-        	
+        try
+        {
+          // Thread.sleep(1);
+        }
+        catch (Exception e)
+        {
+
         }
       }
-      
+
     });
-    
-    machine.getCpu().setCpuCallListener(new CpuCallListener() {
+
+    machine.getCpu().setCpuCallListener(new CpuCallListener()
+    {
 
       @Override
       public boolean jsr(Cpu cpu, int addr)
       {
-        if (addr==65490) {
-          if (cpu.getAcc()!=0) {
-            System.out.print((char) (cpu.getAcc()));
-          }
+        if (addr == 65490)
+        {
+          System.out.print((char) (cpu.getAcc()));
           return true;
         }
         return false;
@@ -51,5 +59,5 @@ public class AssemblerBeer
     });
     asm.run();
   }
-  
+
 }
