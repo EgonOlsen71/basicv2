@@ -321,7 +321,7 @@ public class Template {
 				code.append(line).append('\n');
 			}
 		}
-		 System.out.println(code);
+		// System.out.println(code);
 		
 		basicCode=code.toString();
 		basic = new Basic(basicCode);
