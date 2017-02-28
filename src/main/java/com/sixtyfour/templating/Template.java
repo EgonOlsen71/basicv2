@@ -287,7 +287,7 @@ public class Template {
 							throw new RuntimeException("Line numbers (" + firstLine + "/" + lastLine + ") too close, can't insert static content into template!");
 						}
 
-						lastLine=addStaticPart(lastLine, code, prior, firstLine);
+						lastLine=addStaticPart(lastLine, code, prior, firstLine, labels);
 						prior=null;
 						lastLine = endLine;
 					} else {
@@ -302,7 +302,7 @@ public class Template {
 					}
 					code.append(codePart).append('\n');
 				} else {
-				  lastLine=addStaticPart(lastLine, code, prior, firstLine);
+				  lastLine=addStaticPart(lastLine, code, prior, firstLine, labels);
 				  prior=null;
 					Assembler assem = new Assembler(lines);
 					assem.compile();
@@ -345,14 +345,14 @@ public class Template {
     });
 	}
 
-  private int addStaticPart(int lastLine, StringBuilder code, String prior, int firstLine)
+  private int addStaticPart(int lastLine, StringBuilder code, String prior, int firstLine, boolean labels)
   {
     if (!prior.isEmpty()) {
       TemplatePart tp = new TemplatePart(prior);
       tp.setFirstLine(lastLine);
       tp.setLastLine(firstLine - 1);
       lastLine++;
-      code.append(lastLine).append(" SYS1000,").append(lastLine).append('\n');
+      code.append(labels?"":lastLine).append(" SYS1000,").append(lastLine).append('\n');
       staticParts.put(lastLine, tp);
     }
     return lastLine;
