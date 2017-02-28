@@ -36,7 +36,7 @@ public class TemplateManager
    * @param pathToTemplate
    * @return the template instance
    */
-  public Template getTemplate(String pathToTemplate)
+  public synchronized Template getTemplate(String pathToTemplate)
   {
     TemplateInfo existing = templateInfos.get(pathToTemplate);
     if (existing == null)
