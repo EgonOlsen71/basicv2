@@ -9,8 +9,7 @@ It's a complete reimplementation in Java.
 
 In addition, it offers a symbolic assembler that compiles assembler code into actual 6502 machine code. To execute these programs, it comes with a 6502 cpu emulation.
 
-The sources come in a basic Maven like project structure as an Eclipse project. However, it doesn't actually use Maven and it has no
-dependencies to any other Java libraries. It's a stand-alone thing.
+The sources come in a basic Maven project structure as an Eclipse project. It has no dependencies to any other Java libraries. It's a stand-alone thing.
 
 It can run BASIC programs from inside your application or from the command line. 
 You can even use it to process HTML-templates as it comes with a basic templating implementation.
