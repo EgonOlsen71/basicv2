@@ -1,6 +1,7 @@
 package com.sixtyfour.parser;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -66,7 +67,7 @@ public class Preprocessor {
 			if (!line.isEmpty()) {
 				char c = line.charAt(0);
 				if (Character.isDigit(c)) {
-					throw new RuntimeException("Code already contains line numbers: " + code);
+					throw new RuntimeException("Code already contains line numbers: " + Arrays.toString(code));
 				}
 				int pos = line.indexOf(":");
 				if (pos != -1) {
