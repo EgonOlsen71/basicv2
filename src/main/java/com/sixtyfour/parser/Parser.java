@@ -356,7 +356,7 @@ public class Parser {
 
 	/**
 	 * Returns the term that represents the term in the text. The result will be
-	 * a binary tree formed out of term with the returned term being the root
+	 * a binary tree build out of terms with the returned term being the root
 	 * element.
 	 * 
 	 * @param term
@@ -375,7 +375,7 @@ public class Parser {
 
 	/**
 	 * Returns the term that represents the term in the text. The result will be
-	 * a binary tree formed out of term with the returned term being the root
+	 * a binary tree build out of terms with the returned term being the root
 	 * element.
 	 * 
 	 * @param term
@@ -406,7 +406,7 @@ public class Parser {
 
 	/**
 	 * Returns the term that represents the term in the text minus the command
-	 * at the start of it. The result will be a binary tree formed out of term
+	 * at the start of it. The result will be a binary tree build out of terms
 	 * with the returned term being the root element.
 	 * 
 	 * @param command
