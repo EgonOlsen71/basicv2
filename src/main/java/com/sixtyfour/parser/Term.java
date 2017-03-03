@@ -255,25 +255,38 @@ public class Term implements Atom {
 				}
 
 				float v1 = 0;
-				if (operator.isPlus()) {
-					v1 = n1.floatValue() + n2.floatValue();
-				} else if (operator.isMinus()) {
-					v1 = n1.floatValue() - n2.floatValue();
-				} else if (operator.isPower()) {
-					v1 = (float) Math.pow(n1.doubleValue(), n2.doubleValue());
-				} else if (operator.isMultiplication()) {
-					v1 = n1.floatValue() * n2.floatValue();
-				} else if (operator.isDivision()) {
-					if (n2.floatValue() == 0) {
-						throw new RuntimeException("Division by zero error: " + n1 + "/" + n2);
-					}
-					v1 = n1.floatValue() / n2.floatValue();
-				} else if (operator.isOr()) {
-					v1 = n1.intValue() | n2.intValue();
-				} else if (operator.isAnd()) {
-					v1 = n1.intValue() & n2.intValue();
-				} else if (operator.isNot()) {
-					v1 = ~n2.intValue();
+				switch(operator.getType()) {
+				  case 0: 
+				    v1 = (float) Math.pow(n1.doubleValue(), n2.doubleValue());
+				    break;
+				  case 1:
+				    v1 = n1.floatValue() * n2.floatValue();
+				    break;
+				  case 2:
+				    if (n2.floatValue() == 0) {
+	            throw new RuntimeException("Division by zero error: " + n1 + "/" + n2);
+	          }
+	          v1 = n1.floatValue() / n2.floatValue();
+	          break;
+				  case 3:
+				    v1 = n1.floatValue() + n2.floatValue();
+				    break;
+				  case 4: 
+				    v1 = n1.floatValue() - n2.floatValue();
+				    break;
+				  case 5:
+				    v1 = n1.intValue() | n2.intValue();
+				    break;
+				  case 6:
+				    break;
+				  case 7:
+				    break;
+				  case 8:  
+				    v1 = n1.intValue() & n2.intValue();
+				    break;
+				  case 9:
+				    v1 = ~n2.intValue();
+				    break;
 				}
 				return v1;
 			}
