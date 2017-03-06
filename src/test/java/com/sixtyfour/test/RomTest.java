@@ -32,6 +32,6 @@ public class RomTest {
 		machine.addRoms();
 		asm.run();
 		System.out.println(machine.getCpu().convertFloat(8192));
-		System.out.println(machine.getCpu().convertFloat(0x61) + " ~ " + Math.sqrt(machine.getCpu().convertFloat(8192)));
+		System.out.println(machine.getCpu().convertFloat(0x2010) + " ~ " + Math.sqrt(machine.getCpu().convertFloat(8192)));
 	}
 }

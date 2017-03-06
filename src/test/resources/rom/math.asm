@@ -9,4 +9,7 @@
 		ldy #$20
 		jsr 48034
 		jsr 49009
+		ldx #$10
+		ldy #$20
+		jsr 48087
 		rts
