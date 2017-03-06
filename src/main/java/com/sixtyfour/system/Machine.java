@@ -1,5 +1,6 @@
 package com.sixtyfour.system;
 
+import java.io.BufferedInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -7,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.sixtyfour.Basic;
+import com.sixtyfour.Logger;
 import com.sixtyfour.elements.Variable;
 import com.sixtyfour.elements.commands.Command;
 import com.sixtyfour.elements.commands.For;
@@ -83,6 +85,8 @@ public class Machine
 
   private List<StackEntry> toRemove = new ArrayList<StackEntry>();
 
+  private List<RomInfo> roms;
+
 
   /**
    * Instantiates a new machine.
@@ -96,6 +100,21 @@ public class Machine
     setSystemCallListener(new NullSystemCallListener());
     addDefaults();
     this.cpu = new Cpu(this);
+  }
+
+
+  /**
+   * Loads and adds a C64's KERNAL- and BASIC-ROMs to the machines memory. This might help to execute some assembler
+   * programs that call these functions. However, because no actual is simulated here, not all of them might do
+   * something reasonable. Consider this to be an experimental feature for now.
+   */
+  public void addRoms()
+  {
+    roms = new ArrayList<RomInfo>();
+    Logger.log("KERNAL ROM and BASIC ROM added to memory!");
+    roms.add(loadRom("/basic.$A000.bin", 0xa000));
+    roms.add(loadRom("/kernal.$E000.bin", 0xe000));
+    copyRoms();
   }
 
 
@@ -310,7 +329,8 @@ public class Machine
 
 
   /**
-   * Resets the memory. This will clean the 64KB of main memory as well as all variables. It will not reset the cpu.
+   * Resets the memory. This will clean the 64KB of main memory as well as all variables. It will not reset the cpu. It
+   * will ensure what previously loaded ROM data has been restored.
    */
   public void resetMemory()
   {
@@ -323,6 +343,7 @@ public class Machine
     {
       ex.reset(this);
     }
+    copyRoms();
   }
 
 
@@ -405,13 +426,15 @@ public class Machine
     name = VarUtils.toUpper(name);
     return vars.get(name);
   }
-  
+
+
   /**
    * Returns a map that contains all known Variables with their names as keys.
    * 
    * @return the map
    */
-  public Map<String, Variable> getVariables() {
+  public Map<String, Variable> getVariables()
+  {
     return new HashMap<String, Variable>(vars);
   }
 
@@ -721,5 +744,78 @@ public class Machine
     add(new Time());
     add(new TimeDate());
     add(new Status());
+  }
+
+
+  private void copyRoms()
+  {
+    if (roms != null)
+    {
+      for (RomInfo rom : roms)
+      {
+        System.arraycopy(rom.data, 0, this.ram, rom.address, rom.data.length);
+      }
+    }
+    ram[53272] = 21;
+    ram[648] = 0x04;
+  }
+
+
+  private RomInfo loadRom(String rom, int address)
+  {
+    RomInfo ri = new RomInfo();
+    ri.address = address;
+    BufferedInputStream br = null;
+    byte[] buffer = new byte[8192];
+    int[] dest = new int[8192];
+    try
+    {
+      br = new BufferedInputStream(this.getClass().getResourceAsStream(rom));
+      int len = 0;
+      int cnt = 0;
+      do
+      {
+        len = br.read(buffer);
+        if (len > 0)
+        {
+          for (int i = 0; i < len; i++)
+          {
+            if (cnt + i >= dest.length)
+            {
+              throw new RuntimeException("ROM file too large!");
+            }
+            dest[cnt + i] = buffer[i] & 0xff;
+          }
+        }
+      }
+      while (len != -1);
+    }
+    catch (Exception e)
+    {
+      throw new RuntimeException("Failed to load ROM file: " + rom, e);
+    }
+    finally
+    {
+      try
+      {
+        if (br != null)
+        {
+          br.close();
+        }
+      }
+      catch (Exception e)
+      {
+        //
+      }
+    }
+    ri.data = dest;
+    return ri;
+  }
+
+
+  private static class RomInfo
+  {
+    int[] data;
+    int address;
   }
 }
