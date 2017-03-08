@@ -12,4 +12,5 @@
 		ldx #$10
 		ldy #$20
 		jsr 48087
+		jsr 43708
 		rts

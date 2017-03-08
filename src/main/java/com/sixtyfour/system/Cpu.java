@@ -421,8 +421,8 @@ public class Cpu {
 			int lastPc = pc;
 			int cmd = ram[pc++];
 
-			// System.out.println("PC: " + pc + "/" +
-			// Integer.toHexString(cmd)+" "+this.getInstruction(cmd));
+			 System.out.println("PC: " + (pc-1) +"("+Integer.toHexString((pc-1))+")"+ "/" +
+			 Integer.toHexString(cmd)+" "+this.getInstruction(cmd));
 
 			int xb = x & 0xff;
 			int yb = y & 0xff;
