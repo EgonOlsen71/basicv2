@@ -779,7 +779,7 @@ public class Machine
     ram[0x32C] = 0x2F;
     ram[0x32D] = 0xf3;
 
-    int[] chrget = new int[] { 230, 122, 208, 2, 230, 123, 173, 22, 8, 201, 58, 176, 10, 201, 32, 240, 239, 56, 233, 48,
+    int[] chrget = new int[] { 230, 122, 208, 2, 230, 123, 173, 0, 8, 201, 58, 176, 10, 201, 32, 240, 239, 56, 233, 48,
         56, 233, 208, 96 };
     System.arraycopy(chrget, 0, this.ram, 115, chrget.length);
   }
