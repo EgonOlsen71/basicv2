@@ -420,7 +420,7 @@ public class Cpu {
 		do {
 			int lastPc = pc;
 			int cmd = ram[pc++];
-
+ 
 			// System.out.println("PC: " + (pc-1) +"("+Integer.toHexString((pc-1))+")"+ "/" +
 			// Integer.toHexString(cmd)+" "+this.getInstruction(cmd));
 
