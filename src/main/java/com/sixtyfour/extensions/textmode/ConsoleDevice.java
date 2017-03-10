@@ -121,6 +121,8 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 		if (window == null) {
 			window = new ConsoleDevice(machine, consoleType, clear, x, y);
 			machine2window.put(machine, window);
+		} else {
+		  window.updateScreen();
 		}
 		return window;
 	}

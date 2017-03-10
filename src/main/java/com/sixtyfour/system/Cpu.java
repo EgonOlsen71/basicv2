@@ -422,7 +422,7 @@ public class Cpu {
 			int cmd = ram[pc++];
  
 			// System.out.println("PC: " + (pc-1) +"("+Integer.toHexString((pc-1))+")"+ "/" +
-			// Integer.toHexString(cmd)+" "+this.getInstruction(cmd));
+			// Integer.toHexString(cmd)+" "+this.getInstruction(cmd)+"/"+x+"/"+ram[22]);
 
 			int xb = x & 0xff;
 			int yb = y & 0xff;
