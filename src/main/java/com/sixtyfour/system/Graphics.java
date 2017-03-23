@@ -15,7 +15,7 @@ import javax.imageio.stream.ImageOutputStream;
 import com.sixtyfour.util.Colors;
 
 /**
- * A simple helper class to save hires/multicolor bitmap screens into png files
+ * A simple helper class to give Java programs access to hires/multicolor bitmap
  * 
  * @author EgonOlsen
  * 
@@ -30,7 +30,7 @@ public class Graphics {
 	private final static int COLOR_MEMORY = 55296;
 
 	/**
-	 * Converts the content of a hires screen from memory into a png. It can
+	 * Converts the content of a hires screen from memory into an image. It can
 	 * take actual colors into account. Otherwise, it will map the pixels to
 	 * default colors.
 	 * 
@@ -50,7 +50,34 @@ public class Graphics {
 	 */
 	public static BufferedImage createImage(Machine machine, int bitmapStartAddress, int textramStartAddress, boolean multiColor, boolean withColors) {
 		BufferedImage bi = new BufferedImage(320, 200, BufferedImage.TYPE_INT_RGB);
-		int[] ram = machine.getRam();
+		fillImage(machine, bitmapStartAddress, textramStartAddress, multiColor, withColors, bi);
+		return bi;
+	}
+
+	/**
+   * Fills an image with the content of a hires screen from memory. It can
+   * take actual colors into account. Otherwise, it will map the pixels to
+   * default colors.
+   * 
+   * @param machine
+   *            the machine
+   * @param bitmapStartAddress
+   *            the start address of the graphics memory
+   * @param textramStartAddress
+   *            the start address of the text memory. Only needed, if
+   *            withColors is true.
+   * @param multiColor
+   *            is multicolor mode being used?
+   * @param withColors
+   *            if true, colors from text/color ram will be taken into
+   *            account. If false, default colors will be used.
+   * @param bi
+   *            The image instance to be filled
+   */
+	public static void fillImage(Machine machine, int bitmapStartAddress, int textramStartAddress, boolean multiColor,
+      boolean withColors, BufferedImage bi)
+  {
+    int[] ram = machine.getRam();
 		int[] mc = new int[] { 0, BLUE, GREEN, RED };
 
 		if (!withColors) {
@@ -58,8 +85,7 @@ public class Graphics {
 		} else {
 			createWithRamColors(bitmapStartAddress, textramStartAddress, multiColor, bi, ram);
 		}
-		return bi;
-	}
+  }
 
 	/**
 	 * Saves an image as PNG file.
