@@ -104,7 +104,7 @@ public class Machine
 
   /**
    * Loads and adds a C64's KERNAL- and BASIC-ROMs to the machines memory. This might help to execute some assembler
-   * programs that call these functions. However, because no actual is simulated here, not all of them might do
+   * programs that call these functions. However, because no actual C64 is simulated here, not all of them might do
    * something reasonable. Consider this to be an experimental feature for now.<br/>
    * Keep in mind that you have to add some instance of SystemCallListener that actually supports calls to machine code
    * like the RamSystemCallListener to call ROM routines from BASIC.
