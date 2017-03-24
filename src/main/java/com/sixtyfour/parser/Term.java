@@ -275,11 +275,11 @@ public class Term implements Atom {
 				    v1 = n1.floatValue() - n2.floatValue();
 				    break;
 				  case 5:
-				    v1 = n1.intValue() | n2.intValue();
 				    break;
 				  case 6:
 				    break;
 				  case 7:
+				    v1 = n1.intValue() | n2.intValue();
 				    break;
 				  case 8:  
 				    v1 = n1.intValue() & n2.intValue();
