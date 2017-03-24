@@ -18,9 +18,9 @@ gosub setup
 xd%=200:yd%=200
 xh%=xd%/2:yh%=yd%/2
 
-for i=0 to 1440:sn%(i)=512*sin((i/2)-360)*PI/180:nexti
+for i=0 to 1440:sn%(i)=512*sin(((i/2)-360)*3.14159265359/180):nexti
 
-for w%=0 to 360
+for w%=0 to 45
 ag%(0)=w%:ag%(1)=0:ag%(2)=0
 gosub rotate
 gosub render
@@ -33,8 +33,10 @@ gosub clearscr
 
 tc%=0
 for i%=0 to 17 step 9
+
 t%=0:l%=3:r%=6
 tt%=0:tl%=2:tr%=4
+
 if xy%(i%+4)>=xy%(i%+1) then top2
 t%=3:l%=6:r%=0
 tt%=2:tl%=4:tr%=0
@@ -76,7 +78,7 @@ u0%=u0%/df%
 v0%=v0%/df%
 
 calc2:
-df%=xy%(r%+1)-xy%(r%+1)
+df%=xy%(r%+1)-xy%(t%+1)
 if df%<>0 then calc3
 dr%=0:u1%=0:v1%=0
 goto calc4
@@ -87,7 +89,7 @@ u1%=u1%/df%
 v1%=v1%/df%
 
 calc4:
-xs%=xy%(t)*128
+xs%=xy%(t%)*128
 xe%=xs%
 
 us%=ts%(tt%)*128
@@ -96,7 +98,8 @@ ue%=us%
 vs%=ts%(tt%+1)*128
 ve%=vs%
 
-kp%=(xy%(l%)-xy%(t%))*(xy%(r%+1)-xy%(t%+1))-(xy%(l%+1)-xy%(t%+1))*(xy%(r%)-xy%(t%))
+kp%=(xy%(l%)-xy%(t%))*(xy%(r%+1)-xy%(t%+1))
+kp%=kp%-(xy%(l%+1)-xy%(t%+1))*(xy%(r%)-xy%(t%))
 if kp%<=0 then dontswap
 q%=dl%:dl%=dr%:dr%=q%
 q%=l%:l%=r%:r%=q%
@@ -142,7 +145,7 @@ us%=ts%(tl%)*128
 vs%=ts%(tl%+1)*128
 
 if df%<>0 then notnull1
-dl=0:u0=0:v0=0:
+dl%=0:u0%=0:v0%=0:
 goto xloop
 notnull1:
 dl%=dl%/df%
@@ -162,7 +165,7 @@ ue%=ts%(tr%)*128
 ve%=ts%(tr%+1)*128
 
 if df%<>0 then notnull2
-dr=0:u1=0:v1=0:
+dr%=0:u1%=0:v1%=0:
 goto xloop
 notnull2:
 dr%=dr%/df%
@@ -173,6 +176,7 @@ xloop:
 next it%
 tc%=tc%+6
 next i%
+return
 
 setpixel:
 li% = int(y%/8)
@@ -181,7 +185,7 @@ cp% = int(x%/8)
 ma% = 8192 + li%*320 + cp%*8 + bl%
 bp% = 7 - (x% and 7)
 poke ma%, peek(ma%) or 2^bp%
-print ma%,peek(ma%),x%,y%,(0 or 2^bp%),(2^bp%)
+rem print ma%,peek(ma%),x%,y%,(0 or 2^bp%),(2^bp%)
 return
 
 paint:
@@ -217,7 +221,8 @@ skipz:
 z%=z%-mp%
 xy%(c%)=xh%+((x%*128)/z%):c%=c%+1
 xy%(c%)=yh%+((y%*128)/z%):c%=c%+1
-xy%(c%)=z%
+xy%(c%)=z%:c%=c%+1
+next p%
 return
 
 setup:
@@ -227,7 +232,7 @@ cs%(6)=-10:cs%(7)=-10:cs%(8)=-mp%
 
 cs%(9)=10:cs%(10)=10:cs%(11)=-mp%
 cs%(12)=10:cs%(13)=-10:cs%(14)=-mp%
-cs%(15)=-10:cs%(16)=-10:cs%(17)=-mp%
+cs%(15)=-10:cs%(16)=10:cs%(17)=-mp%
 
 ts%(0)=0:ts%(1)=0:ts%(2)=tw%
 ts%(3)=tw%:ts%(4)=0:ts%(5)=tw%
@@ -243,7 +248,7 @@ for i=8192to16192:pokei,0:nexti
 return
 
 setcolor:
-for i = 1024 TO 2023:poke i,1:next i
+for i = 1024 to 2023:poke i,1:next i
 return
 
 
