@@ -34,7 +34,7 @@ public class AffineTextureMappingTest
     Basic inty = new Basic(vary);
     inty.enableJit(-1);
     inty.run();
-    BufferedImage bi = Graphics.createImage(inty.getMachine(), 8192, 1024, false, true);
+    BufferedImage bi = Graphics.createImage(inty.getMachine(), 8192, 1024, true, true);
     FileOutputStream fos = new FileOutputStream("affine.png");
     Graphics.savePng(bi, fos);
   }
