@@ -18,10 +18,10 @@ gosub setup
 xd%=200:yd%=200
 xh%=xd%/2:yh%=yd%/2
 
-for i=0 to 1440:sn%(i)=512*sin(((i/2)-360)*3.14159265359/180):nexti
+for i=0 to 720:vl%=512*sin(((i/2)-360)*3.14159265359/180):sn%(i)=vl%:sn%(i*2)=vl%:nexti
 
 for w%=0 to 45
-ag%(0)=w%:ag%(1)=0:ag%(2)=0
+ag%(0)=0:ag%(1)=0:ag%(2)=w%
 gosub rotate
 gosub render
 gosub paint
@@ -90,13 +90,10 @@ v1%=v1%/df%
 
 calc4:
 xs%=xy%(t%)*128
-xe%=xs%
 
 us%=ts%(tt%)*128
-ue%=us%
 
 vs%=ts%(tt%+1)*128
-ve%=vs%
 
 kp%=(xy%(l%)-xy%(t%))*(xy%(r%+1)-xy%(t%+1))
 kp%=kp%-(xy%(l%+1)-xy%(t%+1))*(xy%(r%)-xy%(t%))
@@ -108,6 +105,11 @@ q%=u0%:u0%=u1%:u1%=q%
 
 dontswap:
 y%=xy%(t%+1)
+
+xe%=xy%(r%)*128-df%*dr%
+ue%=ts%(tr%)*128-df%*u1%
+ve%=ts%(tr%+1)*128-df%*v1%
+
 for it%=0 to 1
 innerloop:
 u%=us%:v%=vs%
@@ -206,21 +208,23 @@ x%=cs%(p%)
 y%=cs%(p%+1)
 z%=cs%(p%+2)+mp%
 
+xn%=x%:yn%=y%:zn%=z%
+
 if ag%(0)=0 then skipx
-y%=(y%*cx%-z%*sx%)/512
-z%=(y%*sx%+z%*cx%)/512
+yn%=(y%*cx%-z%*sx%)/512
+zn%=(y%*sx%+z%*cx%)/512
 skipx:
 if ag%(1)=0 then skipy
-z%=(z%*cy%-x%*sy%)/512
-x%=(z%*sy%+x%*cy%)/512
+zn%=(z%*cy%-x%*sy%)/512
+xn%=(z%*sy%+x%*cy%)/512
 skipy:
 if ag%(2)=0 then skipz
-x%=(x%*cz%-y%*sz%)/512
-y%=(x%*sz%+y%*cz%)/512
+xn%=(x%*cz%-y%*sz%)/512
+yn%=(x%*sz%+y%*cz%)/512
 skipz:
-z%=z%-mp%
-xy%(c%)=xh%+((x%*128)/z%):c%=c%+1
-xy%(c%)=yh%+((y%*128)/z%):c%=c%+1
+zn%=zn%-mp%
+xy%(c%)=xh%+((xn%*128)/zn%):c%=c%+1
+xy%(c%)=yh%+((yn%*128)/zn%):c%=c%+1
 xy%(c%)=z%:c%=c%+1
 next p%
 return
