@@ -1,6 +1,6 @@
 dim pt%(4), cs%(18), xy%(18), ts%(12), ag%(3), sn%(1440)
 
-tx=49152:tz=0
+tx=49152:tz=0:di%=128
 mp%=25:tw%=64:xd%=0:yd%=0:xh%=0:yh%=0:tc%=0:t%=0:l%=0:r%=0
 tt%=0:tl%=0:tr%=0:dl%=0:dr%=0:u0%=0:u1%=0:v0%=0:v1%=0
 n%=0:df%=0:de%=0:xs%=0:xe%=0:us%=0:ue%=0:vs%=0:ve%=0:kp%=0
@@ -87,12 +87,12 @@ tt%=tt%+tc%
 tl%=tl%+tc%
 tr%=tr%+tc%
 
-dl%=(xy%(l%)-xy%(t%))*128
-dr%=(xy%(r%)-xy%(t%))*128
-u0%=(ts%(tl%)-ts%(tt%))*128
-u1%=(ts%(tr%)-ts%(tt%))*128
-v0%=(ts%(tl%+1)-ts%(tt%+1))*128
-v1%=(ts%(tr%+1)-ts%(tt%+1))*128
+dl%=(xy%(l%)-xy%(t%))*di%
+dr%=(xy%(r%)-xy%(t%))*di%
+u0%=(ts%(tl%)-ts%(tt%))*di%
+u1%=(ts%(tr%)-ts%(tt%))*di%
+v0%=(ts%(tl%+1)-ts%(tt%+1))*di%
+v1%=(ts%(tr%+1)-ts%(tt%+1))*di%
 
 n%=l%
 if xy%(n%+1)<=xy%(r%+1) then nok
@@ -121,10 +121,10 @@ u1%=u1%/de%
 v1%=v1%/de%
 
 calc4:
-xs%=xy%(t%)*128
+xs%=xy%(t%)*di%
 
-us%=ts%(tt%)*128
-vs%=ts%(tt%+1)*128
+us%=ts%(tt%)*di%
+vs%=ts%(tt%+1)*di%
 
 kp%=(xy%(l%)-xy%(t%))*(xy%(r%+1)-xy%(t%+1))
 kp%=kp%-(xy%(l%+1)-xy%(t%+1))*(xy%(r%)-xy%(t%))
@@ -143,24 +143,24 @@ y%=xy%(t%+1)
 
 ue%=us%
 ve%=vs%
-xe%=xy%(r%)*128-de%*dr%
+xe%=xy%(r%)*di%-de%*dr%
 
 
 doit:
 for it=0 to 1
 innerloop:
 u%=us%:v%=vs%
-le%=(xe%-xs%)/128
+le%=(xe%-xs%)/di%
 du%=0:dv%=0
 
-if le%=0 then nodiv
+if le%=0 then nodi%v
 du%=(ue%-us%)/le%
 dv%=(ve%-vs%)/le%
 
-nodiv:
+nodi%v:
 mt%=16384 + int(y%/8)*320 + (y% and 7)
-for x=int(xs%/128) to int(xe%/128)
-tp%=int(v%/128)*tw%+int(u%/128)
+for x=int(xs%/di%) to int(xe%/di%)
+tp%=int(v%/di%)*tw%+int(u%/di%)
 ma% = mt% + 2*(x and 252)
 poke ma%, peek(ma%) or (peek(tx+(tp% and 4095))*pt%(x and 3))
 u%=u%+du%:v%=v%+dv%
@@ -175,14 +175,14 @@ if y%<=xy%(n%+1) then innerloop
 
 if n%=r% then setr
 n%=r%
-dl%=(xy%(r%)-xy%(l%))*128
+dl%=(xy%(r%)-xy%(l%))*di%
 df%=xy%(r%+1)-xy%(l%+1)
-xs%=xy%(l%)*128
+xs%=xy%(l%)*di%
 
-u0%=(ts%(tr%)-ts%(tl%))*128
-v0%=(ts%(tr%+1)-ts%(tl%+1))*128
-us%=ts%(tl%)*128
-vs%=ts%(tl%+1)*128
+u0%=(ts%(tr%)-ts%(tl%))*di%
+v0%=(ts%(tr%+1)-ts%(tl%+1))*di%
+us%=ts%(tl%)*di%
+vs%=ts%(tl%+1)*di%
 
 if df%<>0 then notnull1
 dl%=0:u0%=0:v0%=0:
@@ -195,14 +195,14 @@ goto xloop
 
 setr: 
 n%=l%
-dr%=(xy%(l%)-xy%(r%))*128
+dr%=(xy%(l%)-xy%(r%))*di%
 df%=xy%(l%+1)-xy%(r%+1)
-xe%=xy%(r%)*128
+xe%=xy%(r%)*di%
 
-u1%=(ts%(tl%)-ts%(tr%))*128
-v1%=(ts%(tl%+1)-ts%(tr%+1))*128
-ue%=ts%(tr%)*128
-ve%=ts%(tr%+1)*128
+u1%=(ts%(tl%)-ts%(tr%))*di%
+v1%=(ts%(tl%+1)-ts%(tr%+1))*di%
+ue%=ts%(tr%)*di%
+ve%=ts%(tr%+1)*di%
 
 if df%<>0 then notnull2
 dr%=0:u1%=0:v1%=0:
@@ -256,8 +256,8 @@ y%=yn%
 x%=xn%
 skipz:
 zn%=zn%-mp%
-xy%(c%)=(xh%+((xn%*128)/zn%))/2:c%=c%+1
-xy%(c%)=yh%+((yn%*128)/zn%):c%=c%+1
+xy%(c%)=(xh%+((xn%*di%)/zn%))/2:c%=c%+1
+xy%(c%)=yh%+((yn%*di%)/zn%):c%=c%+1
 xy%(c%)=z%:c%=c%+1
 next p
 return
