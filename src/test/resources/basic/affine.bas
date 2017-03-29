@@ -22,7 +22,6 @@ poke 56576,2
 poke 53272,(peek(53272) and (255-8)) or 0
 poke 53272,(peek(53272) and 15) or 128
 poke 53265,peek(53265) or 32
-poke 53265,peek(53265) or 32
 poke 53270,peek(53270) or 16
 return
 
@@ -33,7 +32,6 @@ poke 53272, (peek(53272) and (255-8)) or 1
 poke 53272,(peek(53272) and 15) or 16
 poke 53265,peek(53265) and 223
 poke 53270,peek(53270) and 239
-poke 53265,peek(53265) and 223
 poke 56578,63
 return
 
