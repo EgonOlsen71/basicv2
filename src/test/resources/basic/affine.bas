@@ -1,18 +1,40 @@
-dim cs%(18), xy%(18), ts%(12), ag%(3), sn%(1440)
+dim pt%(4), cs%(18), xy%(18), ts%(12), ag%(3), sn%(1440)
 
 tx=49152:tz=0
-mp%=20:tw%=64:xd%=0:yd%=0:xh%=0:yh%=0:tc%=0:t%=0:l%=0:r%=0
+mp%=25:tw%=64:xd%=0:yd%=0:xh%=0:yh%=0:tc%=0:t%=0:l%=0:r%=0
 tt%=0:tl%=0:tr%=0:dl%=0:dr%=0:u0%=0:u1%=0:v0%=0:v1%=0
-n%=0:df%=0:xs%=0:xe%=0:us%=0:ue%=0:vs%=0:ve%=0:kp%=0
-u%=0:v%=0:le%=0:du%=0:dv%=0:x%=0:y%=0:z%=0:tp%=0:sx%=0
-cx%=0:sy%=0:cy%=0:sz%=0:cz%=0:c%=0:tv%=0:
+n%=0:df%=0:de%=0:xs%=0:xe%=0:us%=0:ue%=0:vs%=0:ve%=0:kp%=0
+u%=0:v%=0:le%=0:du%=0:dv%=0:x=0:y%=0:z%=0:tp%=0:si%=0
+co%=0:c%=0:tv%=0:mt%=0
 
+gosub bitmapon
 gosub unpack
 gosub clearscr
 gosub setcolor
 gosub draw
-rem gosub testdraw
+key: get a$:if a$=""then key
+gosub bitmapoff
 end
+
+bitmapon:
+poke 56578,3
+poke 56576,2
+poke 53272,(peek(53272) and (255-8)) or 0
+poke 53272,(peek(53272) and 15) or 128
+poke 53265,peek(53265) or 32
+poke 53265,peek(53265) or 32
+poke 53270,peek(53270) or 16
+return
+
+bitmapoff:
+poke 56578,3
+poke 56576,3
+poke 53272, (peek(53272) and (255-8)) or 1
+poke 53272,(peek(53272) and 15) or 16
+poke 53265,peek(53265) and 223
+poke 53270,peek(53270) and 239
+poke 53265,peek(53265) and 223
+return
 
 draw:
 gosub setup
@@ -20,38 +42,45 @@ gosub setup
 xd%=200:yd%=200
 xh%=xd%/2:yh%=yd%/2
 
-for i=0 to 720:vl%=512*sin(((i/2)-360)*3.14159265359/180):sn%(i)=vl%:sn%(i+720)=vl%:nexti
+for i=0 to 720:vl%=512*sin(((i/2)-360)*3.14159265359/180)
+sn%(i)=vl%:sn%(i+720)=vl%:nexti
+for i=0 to 3:pt%(i)=64/(2^(2*i)):nexti
 
-for w%=0 to 90
-ag%(0)=0:ag%(1)=0:ag%(2)=w%
+rem for w=0 to 360:w%=w
+w%=40
+gosub mapit
+rem next w
+return
+
+mapit:
+ag%(0)=w%:ag%(1)=0:ag%(2)=w%
 gosub rotate
 gosub render
 gosub paint
-nextw%
 return
 
 render:
 gosub clearscr
 
 tc%=0
-for i%=0 to 17 step 9
+for i=0 to 17 step 9
 
 t%=0:l%=3:r%=6
 tt%=0:tl%=2:tr%=4
 
-if xy%(i%+4)>=xy%(i%+1) then top2
+if xy%(i+4)>=xy%(i+1) then top2
 t%=3:l%=6:r%=0
 tt%=2:tl%=4:tr%=0
 
 top2:
-if xy%(i%+7)>=xy%(i%+t%+1) then top3
+if xy%(i+7)>=xy%(i+t%+1) then top3
 t%=6:l%=0:r%=3
 tt%=4:tl%=0:tr%=2
 
 top3:
-t%=t%+i%
-l%=l%+i%
-r%=r%+i%
+t%=t%+i
+l%=l%+i
+r%=r%+i
 
 tt%=tt%+tc%
 tl%=tl%+tc%
@@ -80,15 +109,15 @@ u0%=u0%/df%
 v0%=v0%/df%
 
 calc2:
-df%=xy%(r%+1)-xy%(t%+1)
-if df%<>0 then calc3
+de%=xy%(r%+1)-xy%(t%+1)
+if de%<>0 then calc3
 dr%=0:u1%=0:v1%=0
 goto calc4
 
 calc3:
-dr%=dr%/df%
-u1%=u1%/df%
-v1%=v1%/df%
+dr%=dr%/de%
+u1%=u1%/de%
+v1%=v1%/de%
 
 calc4:
 xs%=xy%(t%)*128
@@ -98,20 +127,26 @@ vs%=ts%(tt%+1)*128
 
 kp%=(xy%(l%)-xy%(t%))*(xy%(r%+1)-xy%(t%+1))
 kp%=kp%-(xy%(l%+1)-xy%(t%+1))*(xy%(r%)-xy%(t%))
+sw%=0
 if kp%<=0 then dontswap
+sw%=1
 q%=dl%:dl%=dr%:dr%=q%
+q%=df%:df%=de%:de%=q%
 q%=l%:l%=r%:r%=q%
 q%=tl%:tl%=tr%:tr%=q%
 q%=u0%:u0%=u1%:u1%=q%
+q%=v0%:v0%=v1%:v1%=q%
 
 dontswap:
 y%=xy%(t%+1)
 
-xe%=xy%(r%)*128-df%*dr%
-ue%=ts%(tr%)*128-df%*u1%
-ve%=ts%(tr%+1)*128-df%*v1%
+ue%=us%
+ve%=vs%
+xe%=xy%(r%)*128-de%*dr%
 
-for it%=0 to 1
+
+doit:
+for it=0 to 1
 innerloop:
 u%=us%:v%=vs%
 le%=(xe%-xs%)/128
@@ -122,12 +157,12 @@ du%=(ue%-us%)/le%
 dv%=(ve%-vs%)/le%
 
 nodiv:
-for x%=xs%/128 to xe%/128
+mt%=16384 + int(y%/8)*320 + (y% and 7)
+for x=int(xs%/128) to int(xe%/128)
 tp%=int(v%/128)*tw%+int(u%/128)
-: rem range check?
 gosub setpixel
 u%=u%+du%:v%=v%+dv%
-next x%
+next x
 
 xs%=xs%+dl%:xe%=xe%+dr%
 us%=us%+u0%:vs%=vs%+v0%
@@ -176,31 +211,15 @@ u1%=u1%/df%
 v1%=v1%/df%
 
 xloop:
-next it%
+next it
 tc%=tc%+6
-next i%
-return
-
-testdraw:
-tp%=0
-for y%=0 to 63
-for x%=15 to 31+15
-gosub setpixel
-tp%=tp%+2
-next x%
-next y%
+next i
+sys 49152
 return
 
 setpixel:
-x2% = x%*2
-li% = int(y%/8)
-bl% = y% and 7
-cp% = int(x2%/8)
-ma% = 8192 + li%*320 + cp%*8 + bl%
-bp% = 64/(2^(x2% and 7))
-if tp%<0 then tp%=0
-if tp%>4095 then tp%=4095
-poke ma%, peek(ma%) or (bp%*peek(tx+tp%))
+ma% = mt% + int(x/4)*8
+poke ma%, peek(ma%) or (pt%(x and 3)*peek(tx+(tp% and 4095)))
 return
 
 paint:
@@ -208,38 +227,43 @@ rem display render
 return
 
 rotate:
-sx%=sn%(ag%(0)*2)
-cx%=-sn%((ag%(0)+90)*2)
-sy%=sn%(ag%(1)*2)
-cy%=-sn%((ag%(1)+90)*2)
-sz%=sn%(ag%(2)*2)
-cz%=-sn%((ag%(2)+90)*2)
 c%=0
-
-for p%=0 to 17 step 3
-x%=cs%(p%)
-y%=cs%(p%+1)
-z%=cs%(p%+2)+mp%
+for p=0 to 17 step 3
+x%=cs%(p)
+y%=cs%(p+1)
+z%=cs%(p+2)+mp%
 
 xn%=x%:yn%=y%:zn%=z%
 
 if ag%(0)=0 then skipx
-yn%=(y%*cx%-z%*sx%)/512
-zn%=(y%*sx%+z%*cx%)/512
+si%=sn%(ag%(0)*2)
+co%=sn%((ag%(0)+90)*2)
+yn%=(y%*co%-z%*si%)/512
+zn%=(y%*si%+z%*co%)/512
+y%=yn%
+z%=zn%
 skipx:
 if ag%(1)=0 then skipy
-zn%=(z%*cy%-x%*sy%)/512
-xn%=(z%*sy%+x%*cy%)/512
+si%=sn%(ag%(1)*2)
+co%=sn%((ag%(1)+90)*2)
+zn%=(z%*co%-x%*si%)/512
+xn%=(z%*si%+x%*co%)/512
+x%=xn%
+z%=zn%
 skipy:
 if ag%(2)=0 then skipz
-xn%=(x%*cz%-y%*sz%)/512
-yn%=(x%*sz%+y%*cz%)/512
+si%=sn%(ag%(2)*2)
+co%=sn%((ag%(2)+90)*2)
+xn%=(x%*co%-y%*si%)/512
+yn%=(x%*si%+y%*co%)/512
+y%=yn%
+x%=xn%
 skipz:
 zn%=zn%-mp%
 xy%(c%)=(xh%+((xn%*128)/zn%))/2:c%=c%+1
 xy%(c%)=yh%+((yn%*128)/zn%):c%=c%+1
 xy%(c%)=z%:c%=c%+1
-next p%
+next p
 return
 
 setup:
@@ -257,38 +281,37 @@ ts%(3)=tw%:ts%(4)=tw%:ts%(5)=tw%
 ts%(6)=0:ts%(7)=0:ts%(8)=0
 ts%(9)=tw%:ts%(10)=tw%:ts%(11)=0
 
-rem load and process texture here
 return
 
 clearscr:
-for i=8192to16192:pokei,0:nexti
+for i=16384to24383:pokei,0:nexti
 return
 
 setcolor:
 poke 53281,1
-v=6+14*16
-for i = 1024 to 2023:poke i,v:next i
+v=14+6*16
+for i = 24576 to 25575:poke i,v:next i
 for i = 55296 to 56295:poke i,2:next i
 return
 
 unpack:
 p=tx
 packloop:
-read c%,v%
-if c%=-1 then extend
-for i%=1 to c%
+read c,v%
+if c=-1 then extend
+for i=1 to c
 pokep,v% 
 p=p+4
-nexti%
+nexti
 goto packloop
 
 extend:
 for i=tx to tx+4095 step 4
 v%=peek(i)
-poke i+0, (v% and (128+64))/64
-poke i+1, (v% and (32+16))/16
-poke i+2, (v% and (8+4))/4
-poke i+3, (v% and (2+1))
+poke i+0, (v% and 192)/64
+poke i+1, (v% and 48)/16
+poke i+2, (v% and 12)/4
+poke i+3, (v% and 3)
 next i
 return
 

@@ -55,29 +55,27 @@ public class Graphics {
 	}
 
 	/**
-   * Fills an image with the content of a hires screen from memory. It can
-   * take actual colors into account. Otherwise, it will map the pixels to
-   * default colors.
-   * 
-   * @param machine
-   *            the machine
-   * @param bitmapStartAddress
-   *            the start address of the graphics memory
-   * @param textramStartAddress
-   *            the start address of the text memory. Only needed, if
-   *            withColors is true.
-   * @param multiColor
-   *            is multicolor mode being used?
-   * @param withColors
-   *            if true, colors from text/color ram will be taken into
-   *            account. If false, default colors will be used.
-   * @param bi
-   *            The image instance to be filled
-   */
-	public static void fillImage(Machine machine, int bitmapStartAddress, int textramStartAddress, boolean multiColor,
-      boolean withColors, BufferedImage bi)
-  {
-    int[] ram = machine.getRam();
+	 * Fills an image with the content of a hires screen from memory. It can
+	 * take actual colors into account. Otherwise, it will map the pixels to
+	 * default colors.
+	 * 
+	 * @param machine
+	 *            the machine
+	 * @param bitmapStartAddress
+	 *            the start address of the graphics memory
+	 * @param textramStartAddress
+	 *            the start address of the text memory. Only needed, if
+	 *            withColors is true.
+	 * @param multiColor
+	 *            is multicolor mode being used?
+	 * @param withColors
+	 *            if true, colors from text/color ram will be taken into
+	 *            account. If false, default colors will be used.
+	 * @param bi
+	 *            The image instance to be filled
+	 */
+	public static void fillImage(Machine machine, int bitmapStartAddress, int textramStartAddress, boolean multiColor, boolean withColors, BufferedImage bi) {
+		int[] ram = machine.getRam();
 		int[] mc = new int[] { 0, BLUE, GREEN, RED };
 
 		if (!withColors) {
@@ -85,7 +83,7 @@ public class Graphics {
 		} else {
 			createWithRamColors(bitmapStartAddress, textramStartAddress, multiColor, bi, ram);
 		}
-  }
+	}
 
 	/**
 	 * Saves an image as PNG file.
@@ -142,10 +140,10 @@ public class Graphics {
 						case 0:
 							c1 = bgColor;
 							break;
-						case 1:
+						case 2:
 							c1 = Colors.COLORS[ram[textramStartAddress + ramPos] >> 4];
 							break;
-						case 2:
+						case 1:
 							c1 = Colors.COLORS[ram[textramStartAddress + ramPos] & 0b00001111];
 							break;
 						case 3:
