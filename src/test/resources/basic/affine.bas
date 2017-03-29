@@ -34,6 +34,7 @@ poke 53272,(peek(53272) and 15) or 16
 poke 53265,peek(53265) and 223
 poke 53270,peek(53270) and 239
 poke 53265,peek(53265) and 223
+poke 56578,63
 return
 
 draw:
@@ -214,7 +215,6 @@ xloop:
 next it
 tc%=tc%+6
 next i
-sys 49152
 return
 
 setpixel:
@@ -223,7 +223,7 @@ poke ma%, peek(ma%) or (pt%(x and 3)*peek(tx+(tp% and 4095)))
 return
 
 paint:
-rem display render
+sys 49152
 return
 
 rotate:
