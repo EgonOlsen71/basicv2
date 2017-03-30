@@ -5,7 +5,7 @@ mp%=25:tw%=64:xd%=0:yd%=0:xh%=0:yh%=0:tc%=0:t%=0:l%=0:r%=0
 tt%=0:tl%=0:tr%=0:dl%=0:dr%=0:u0%=0:u1%=0:v0%=0:v1%=0
 n%=0:df%=0:de%=0:xs%=0:xe%=0:us%=0:ue%=0:vs%=0:ve%=0:kp%=0
 u%=0:v%=0:le%=0:du%=0:dv%=0:x=0:y%=0:z%=0:tp%=0:si%=0
-co%=0:c%=0:tv%=0:mt%=0
+co%=0:c%=0:tv%=0:mt=0:ma=0
 
 gosub bitmapon
 gosub unpack
