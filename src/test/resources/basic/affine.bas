@@ -48,9 +48,9 @@ for i=0 to 720:vl%=512*sin(((i/2)-360)*3.14159265359/180)
 sn%(i)=vl%:sn%(i+720)=vl%:nexti
 for i=0 to 3:pt%(i)=64/(2^(2*i)):nexti
 
-rem for w=0 to 360:w%=w
+for w=0 to 360:w%=w
 gosub mapit
-rem next w
+next w
 return
 
 mapit:
