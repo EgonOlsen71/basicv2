@@ -156,11 +156,11 @@ du%=(ue%-us%)/le%
 dv%=(ve%-vs%)/le%
 
 nodi%v:
-mt%=16384 + int(y%/8)*320 + (y% and 7)
+mt=16384 + int(y%/8)*320 + (y% and 7)
 for x=int(xs%/di%) to int(xe%/di%)
 tp%=int(v%/di%)*tw%+int(u%/di%)
-ma% = mt% + 2*(x and 252)
-poke ma%, peek(ma%) or (peek(tx+(tp% and 4095))*pt%(x and 3))
+ma = mt + 2*(x and 252)
+poke ma, peek(ma) or (peek(tx+(tp% and 4095))*pt%(x and 3))
 u%=u%+du%:v%=v%+dv%
 next x
 
