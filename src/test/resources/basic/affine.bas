@@ -151,11 +151,11 @@ u%=us%:v%=vs%
 le%=(xe%-xs%)/di%
 du%=0:dv%=0
 
-if le%=0 then nodi%v
+if le%=0 then nodiv
 du%=(ue%-us%)/le%
 dv%=(ve%-vs%)/le%
 
-nodi%v:
+nodiv:
 mt=16384 + int(y%/8)*320 + (y% and 7)
 for x=int(xs%/di%) to int(xe%/di%)
 tp%=int(v%/di%)*tw%+int(u%/di%)
