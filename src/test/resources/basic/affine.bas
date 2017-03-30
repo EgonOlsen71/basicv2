@@ -1,3 +1,7 @@
+rem@ £allram: £fastfor: £shortif: £fastarray
+rem@ £word x=fast, ma=fast, mt, tx, tz, v
+rem@ £varstart $6590
+
 dim pt%(4), cs%(18), xy%(18), ts%(12), ag%(3), sn%(1440)
 
 tx=49152:tz=0:di%=128
@@ -17,8 +21,7 @@ gosub bitmapoff
 end
 
 bitmapon:
-poke 56578,3
-poke 56576,2
+poke 56576,(peek(56576) and 252) or 2
 poke 53272,(peek(53272) and (255-8)) or 0
 poke 53272,(peek(53272) and 15) or 128
 poke 53265,peek(53265) or 32
@@ -26,13 +29,11 @@ poke 53270,peek(53270) or 16
 return
 
 bitmapoff:
-poke 56578,3
-poke 56576,3
+poke 56576,(peek(56576) and 252) or 3
 poke 53272, (peek(53272) and (255-8)) or 1
 poke 53272,(peek(53272) and 15) or 16
 poke 53265,peek(53265) and 223
 poke 53270,peek(53270) and 239
-poke 56578,63
 return
 
 draw:
