@@ -59,7 +59,7 @@ public class AffineTextureMappingTest {
 		inty.setSystemCallListener(new SystemCallListener() {
 			@Override
 			public void sys(int addr, Object... params) {
-				if (addr==49152) {
+				if (addr==832) {
 					Graphics.fillImage(inty.getMachine(), 16384, 24576, true, true, bi);
 					o.repaint();
 					Thread.yield();

@@ -1,8 +1,10 @@
-rem@ £allram: £fastfor: £shortif: £fastarray
-rem@ £word x=fast, ma=fast, mt, tx, tz, v
+rem@ £allram:£fastfor:£shortif:£fastarray
+rem@ £word x=fast, ma=fast, mt, tx, tz, v, i
 rem@ £varstart $6590
 
 dim pt%(4), cs%(18), xy%(18), ts%(12), ag%(3), sn%(1440)
+
+w%=40
 
 tx=49152:tz=0:di%=128
 mp%=25:tw%=64:xd%=0:yd%=0:xh%=0:yh%=0:tc%=0:t%=0:l%=0:r%=0
@@ -46,8 +48,7 @@ for i=0 to 720:vl%=512*sin(((i/2)-360)*3.14159265359/180)
 sn%(i)=vl%:sn%(i+720)=vl%:nexti
 for i=0 to 3:pt%(i)=64/(2^(2*i)):nexti
 
-remfor w=0 to 360:w%=w
-w%=40
+rem for w=0 to 360:w%=w
 gosub mapit
 rem next w
 return
@@ -218,7 +219,8 @@ next i
 return
 
 paint:
-sys 49152
+rem not needed on actual hardware 
+sys 832
 return
 
 rotate:
@@ -273,6 +275,9 @@ ts%(3)=tw%:ts%(4)=tw%:ts%(5)=tw%
 
 ts%(6)=0:ts%(7)=0:ts%(8)=0
 ts%(9)=tw%:ts%(10)=tw%:ts%(11)=0
+
+poke 832, 234
+poke 833, 96
 
 return
 
