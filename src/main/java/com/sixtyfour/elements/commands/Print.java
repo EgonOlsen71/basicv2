@@ -207,7 +207,7 @@ public class Print extends AbstractCommand {
 
 				boolean end = i == line.length() - 1;
 
-				if (end || (brackets == 0 && (c == '"' || (c == ')' && nc != '=' && nc != '<' && nc != '>') || c == ',' || c == ';' || (c == '$' && nc != '(') || c == '%'))) {
+				if (end || (brackets == 0 && (c == '"' || (c == ')' && nc != '=' && nc != '<' && nc != '>') || c == ',' || c == ';' || (c == '$' && nc != '(') || (c == '%' && nc!='(')))) {
 					if (end || !Operator.isRealOperator(nc) || c == ';' || c == ',') {
 						if (end || c == '"' || c == ')' || c == '%' || c == '$') {
 							if (end) {
