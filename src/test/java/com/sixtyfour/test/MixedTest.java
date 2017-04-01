@@ -24,15 +24,14 @@ public class MixedTest {
 		testBeerTemplate();
 	}
 
-	private static void testBeerTemplate() throws Exception
-  {
-	  Template templ = TemplateFactory.getTemplate(new FileInputStream("src/test/resources/mixed/beer.cbm"), null);
-    String res = templ.process();
-    System.out.println(res);
-    
-  }
+	private static void testBeerTemplate() throws Exception {
+		Template templ = TemplateFactory.getTemplate(new FileInputStream("src/test/resources/mixed/beer.cbm"), null);
+		String res = templ.process();
+		System.out.println(res);
 
-  private static void testMixedTemplate() throws Exception {
+	}
+
+	private static void testMixedTemplate() throws Exception {
 		Map<String, Object> vars = new HashMap<String, Object>();
 		vars.put("CN", 10);
 		vars.put("NA$", "Test");

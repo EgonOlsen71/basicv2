@@ -5,8 +5,8 @@ import java.util.List;
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Parser;
-import com.sixtyfour.system.Machine;
 import com.sixtyfour.system.BasicProgramCounter;
+import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
 /**
@@ -17,8 +17,9 @@ public class Poke extends AbstractCommand {
 	/** The pars. */
 	private List<Atom> pars;
 
-	private Atom addr=null;
-	private Atom val=null;
+	private Atom addr = null;
+	private Atom val = null;
+
 	/**
 	 * Instantiates a new poke.
 	 */
@@ -45,8 +46,8 @@ public class Poke extends AbstractCommand {
 		checkTypes(pars, linePart, Type.STRING, Type.STRING);
 
 		addr = pars.get(0);
-    val = pars.get(1);
-		
+		val = pars.get(1);
+
 		return null;
 	}
 
@@ -62,7 +63,7 @@ public class Poke extends AbstractCommand {
 		int memAddr = VarUtils.getInt(addr.eval(machine));
 		int vally = VarUtils.getInt(val.eval(machine));
 		if (vally < 0 || vally > 255 || memAddr < 0 || memAddr > 65535) {
-			throw new RuntimeException("Illegal quantity error: " + this);
+			throw new RuntimeException("Illegal quantity error: " + this + "/" + vally+"/"+memAddr);
 		}
 
 		machine.getRam()[memAddr] = vally;

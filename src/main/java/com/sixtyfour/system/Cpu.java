@@ -420,8 +420,9 @@ public class Cpu {
 		do {
 			int lastPc = pc;
 			int cmd = ram[pc++];
- 
-			// System.out.println("PC: " + (pc-1) +"("+Integer.toHexString((pc-1))+")"+ "/" +
+
+			// System.out.println("PC: " + (pc-1)
+			// +"("+Integer.toHexString((pc-1))+")"+ "/" +
 			// Integer.toHexString(cmd)+" "+this.getInstruction(cmd)+"/"+x+"/"+ram[22]);
 
 			int xb = x & 0xff;
@@ -1066,9 +1067,9 @@ public class Cpu {
 				ticks += 2;
 				break;
 			default:
-				throw new RuntimeException("Illegal opcode: $" + Integer.toHexString(cmd));
+				throw new RuntimeException("Illegal opcode @:" + Integer.toHexString(lastPc) + " $" + Integer.toHexString(cmd));
 			}
-
+			
 			if (cpuTracer != null) {
 				cpuTracer.commandExecuted(this, cmd, lastPc, pc);
 			}
