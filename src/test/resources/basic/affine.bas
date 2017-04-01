@@ -2,11 +2,11 @@ rem@ £allram:£fastfor:£shortif:£fastarray
 rem@ £word x=fast, ma=fast, mt, tx, tz, v, i
 rem@ £varstart $6590
 
-dim pt%(4), cs%(18), xy%(18), ts%(12), ag%(3), sn%(1440)
+dim pt%(6), cs%(18), xy%(18), ts%(12), ag%(3), sn%(1440)
 
 w%=40
 
-tx=49152:tz=0:di%=128
+tx=49152:tz=0:di%=128:dh%=64
 mp%=25:tw%=64:xd%=0:yd%=0:xh%=0:yh%=0:tc%=0:t%=0:l%=0:r%=0
 tt%=0:tl%=0:tr%=0:dl%=0:dr%=0:u0%=0:u1%=0:v0%=0:v1%=0
 n%=0:df%=0:de%=0:xs%=0:xe%=0:us%=0:ue%=0:vs%=0:ve%=0:kp%=0
@@ -46,7 +46,7 @@ xh%=xd%/2:yh%=yd%/2
 
 for i=0 to 720:vl%=512*sin(((i/2)-360)*3.14159265359/180)
 sn%(i)=vl%:sn%(i+720)=vl%:nexti
-for i=0 to 3:pt%(i)=64/(2^(2*i)):nexti
+for i=0 to 6:pt%(i)=64/(2^(i)):nexti
 
 for w=0 to 360:w%=w
 gosub mapit
@@ -159,10 +159,10 @@ dv%=(ve%-vs%)/le%
 
 nodiv:
 mt=16384 + int(y%/8)*320 + (y% and 7)
-for x=int(xs%/di%) to int(xe%/di%)
-tp%=((v%/2) and 65472)+int(u%/di%)
-ma = mt + 2*(x and 252)
-poke ma, peek(ma) or (peek(tx+(tp% and 4095))*pt%(x and 3))
+for x=2*int(xs%/di%) to 2*int(xe%/di%) step 2
+tp%=((v%/2) and 4032)+int(u%/di%)
+ma = mt + (x and 504)
+poke ma, peek(ma) or (peek(tx+(tp% and 4095))*pt%(x and 6))
 u%=u%+du%:v%=v%+dv%
 next x
 
