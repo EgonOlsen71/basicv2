@@ -9,13 +9,11 @@ import java.io.FileOutputStream;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import com.sixtyfour.Assembler;
 import com.sixtyfour.Basic;
 import com.sixtyfour.Loader;
 import com.sixtyfour.parser.Preprocessor;
 import com.sixtyfour.plugins.impl.RamSystemCallListener;
 import com.sixtyfour.system.Graphics;
-import com.sixtyfour.system.ProgramPart;
 
 /**
  * @author EgonOlsen

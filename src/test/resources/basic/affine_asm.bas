@@ -1,6 +1,6 @@
 rem@ £allram:£fastfor:£shortif:£fastarray
-rem@ £word x=fast, ma=fast, mt, tx, tz, v, i
-rem@ £varstart $6590
+rem@ £word x=fast, ma=fast, mt,tx,tz,v,i,t,p
+rem@ £varstart $6590: £progstart $88b8
 
 dim pt%(4), cs%(18), xy%(18), ts%(12), ag%(3), sn%(1440)
 
@@ -45,7 +45,7 @@ xd%=200:yd%=200
 xh%=xd%/2:yh%=yd%/2
 
 for i=0 to 720:vl%=512*sin(((i/2)-360)*3.14159265359/180)
-sn%(i)=vl%:sn%(i+720)=vl%:nexti
+sn%(i)=vl%:sn%(i+720)=vl%:poke 53280,iand15:nexti
 for i=0 to 3:pt%(i)=64/(2^(2*i)):nexti
 
 for w=0 to 360:w%=w
@@ -166,11 +166,11 @@ t=int(xs%/di%):poke 834,t
 t=int(xe%/di%):poke 835,t
 if u%<0 then u%=0
 if v%<0 then v%=0
-t=v%:poke 836,t-int(t/256)*256:poke 837,t/256
-t=u%:poke 838,t-int(t/256)*256:poke 839,t/256
-t=mt:poke 844,t-int(t/256)*256:poke 845,t/256
+t=v%:poke 836,t and 255:poke 837,t/256
+t=u%:poke 838,t and 255:poke 839,t/256
+t=mt:poke 844,t and 255:poke 845,t/256
 if du%>=0 then posu
-t=abs(du%):lb=t-int(t/256)*256:hb=t/256
+t=abs(du%):lb=t and 255:hb=t/256
 hb=(hb or 255) and not(hb and 255)
 lb=(lb or 255) and not(lb and 255)
 lb=lb+1
@@ -180,11 +180,11 @@ poke 841,hb
 goto calcv
 
 posu:
-t=du%:poke 840,t-int(t/256)*256:poke 841,t/256
+t=du%:poke 840,t and 255:poke 841,t/256
 
 calcv:
 if dv%>=0 then posu2
-t=abs(dv%):lb=t-int(t/256)*256:hb=t/256
+t=abs(dv%):lb=t and 255:hb=t/256
 hb=(hb or 255) and not(hb and 255)
 lb=(lb or 255) and not(lb and 255)
 lb=lb+1
@@ -194,7 +194,8 @@ poke 843,hb
 goto asmloop
 
 posu2:
-t=dv%:poke 842,t-int(t/256)*256:poke 843,t/256
+t=dv%:poke 842,t and 255:poke 843,t/256
+
 asmloop:
 sys 1024
 
@@ -288,6 +289,7 @@ xn=(xc*co%-yc*si%)/512
 yn=(xc*si%+yc*co%)/512
 skipz:
 zn=zn-mp%
+if zn=0 then zn=1
 xy%(c%)=(xh%+((xn*di%)/zn))/2:c%=c%+1
 xy%(c%)=yh%+((yn*di%)/zn):c%=c%+1
 xy%(c%)=z:c%=c%+1
@@ -329,7 +331,7 @@ unpack:
 ml=1024
 p=tx
 packloop:
-read c,v%
+read c,v%:poke 53280,c
 if c=0 then extend
 for i=1 to c
 pokep,v% 
@@ -340,13 +342,13 @@ goto packloop
 extend:
 read c
 if c=-1 then unzip
-poke ml,c
+poke ml,c:poke 53280,c
 ml=ml+1
 goto extend
 
 unzip:
 for i=tx to tx+4095 step 4
-v%=peek(i)
+v%=peek(i):poke 53280,v%
 poke i+0, (v% and 192)/64
 poke i+1, (v% and 48)/16
 poke i+2, (v% and 12)/4
@@ -384,6 +386,7 @@ data 1,105,1,166,1,154,1,105,1,169,1,106,1,85,1,165
 data 1,105,1,170,1,86,160,170,1,170
 data 0,0
 rem innerloop ml code
+rem@ £datatype integer
 data 173,68,3,74,170,173,69,3,24,74
 data 144,6,168,138,9,128,170,152,41,15
 data 141,79,3,138,41,192,141,78,3,169
