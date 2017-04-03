@@ -9,13 +9,11 @@ import java.io.FileOutputStream;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import com.sixtyfour.Assembler;
 import com.sixtyfour.Basic;
 import com.sixtyfour.Loader;
 import com.sixtyfour.parser.Preprocessor;
 import com.sixtyfour.plugins.impl.RamSystemCallListener;
 import com.sixtyfour.system.Graphics;
-import com.sixtyfour.system.ProgramPart;
 
 /**
  * @author EgonOlsen
@@ -50,7 +48,7 @@ public class AffineTextureMappingTest {
 		g.setColor(Color.BLACK);
 		g.dispose();
 
-		
+		/*
 		String[] code = Loader.loadProgram("src/test/resources/asm/innerloop.asm");
 		Assembler asm = new Assembler(code);
 		asm.compile();
@@ -65,10 +63,10 @@ public class AffineTextureMappingTest {
 			cnt++;
 		}
 		System.out.println();
-		
+		*/
 
-		String[] vary = Loader.loadProgram("src/test/resources/basic/affine_asm.bas");
-		//String[] vary = Loader.loadProgram("src/test/resources/basic/affine.bas");
+		//String[] vary = Loader.loadProgram("src/test/resources/basic/affine_asm.bas");
+		String[] vary = Loader.loadProgram("src/test/resources/basic/affine.bas");
 		
 		vary = Preprocessor.convertToLineNumbers(vary);
 		for (String line : vary) {
@@ -77,7 +75,7 @@ public class AffineTextureMappingTest {
 		final Basic inty = new Basic(vary);
 		inty.compile();
 
-		inty.getMachine().putProgram(asm.getProgram());
+		//inty.getMachine().putProgram(asm.getProgram());
 		inty.enableJit(-1);
 
 		inty.setSystemCallListener(new RamSystemCallListener(inty.getMachine()) {
