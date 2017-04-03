@@ -116,12 +116,22 @@ public class AssemblyParser {
 		if (!number.startsWith("$") && !number.startsWith("%") && !Character.isDigit(number.charAt(0)) && !(number.startsWith("-"))) {
 			ConstantValue cv = ccon.get(number);
 			if (cv != null) {
+			  //System.out.println("Assigned: "+cv.getValue());
 				return cv.getValue();
+			} else {
+			  if (!number.contains("*")) {
+  			  cv=getConstantParsed("___", number, ccon, false);
+  			  if (cv!=null && cv.getValue()!=0) {
+  			    //System.out.println("Calculated: "+cv.getValue());
+  			    return cv.getValue();
+  			  }
+			  }
+			  cv=null;
 			}
 
 			if (number.contains("*")) {
 				number = number.replace("*", String.valueOf(addr));
-				return getConstantParsed("", number, ccon).getValue();
+				return getConstantParsed("", number, ccon, true).getValue();
 			} else {
 				Integer labelAddr = lcon.get(number);
 				if (labelAddr != null) {
@@ -221,7 +231,7 @@ public class AssemblyParser {
 			String right = linePart.substring(pos + 1).trim();
 
 			if (ccon != null && (right.contains("+") || right.contains("-") || right.contains("*") || right.contains("/"))) {
-				return getConstantParsed(left, right, ccon);
+				return getConstantParsed(left, right, ccon, true);
 			}
 
 			int val = getValue(right);
@@ -244,9 +254,11 @@ public class AssemblyParser {
 	 *            the right hand side of the assignment
 	 * @param ccon
 	 *            a container for constants
+	 * @param raiseError
+	 *           if true, an error will be raised if a constant can't be found. Otherwise, null will be returned
 	 * @return the new constant
 	 */
-	public static ConstantValue getConstantParsed(String left, String right, ConstantsContainer ccon) {
+	public static ConstantValue getConstantParsed(String left, String right, ConstantsContainer ccon, boolean raiseError) {
 		// Uses the Basic parser's term parsing method to evaluate the
 		// constant's assignment.
 		// Due to limitations in Basic V2, we have to convert the variable names
@@ -296,11 +308,23 @@ public class AssemblyParser {
 		for (String name : names2vars.keySet()) {
 			ConstantValue cv = ccon.get(name);
 			if (cv == null) {
-				throw new RuntimeException("Undefined constant: " + name);
+			  if (raiseError) {
+			    throw new RuntimeException("Undefined constant: " + name);
+			  }
+			  return null;
 			}
 			machine.add(new Variable(names2vars.get(name), ccon.get(name).getValue()));
 		}
-		Term ressy = Parser.getTerm(res.toString(), machine, true, true);
+		
+		Term ressy=null;
+		try {
+		  ressy = Parser.getTerm(res.toString(), machine, true, true);
+		} catch(Throwable nfe) {
+		  if (raiseError) {
+		    throw nfe;
+		  }
+		  return null;
+		}
 		int resultValue = ((Number) ressy.eval(machine)).intValue();
 
 		if (resultValue < 256) {

@@ -14,21 +14,21 @@ public class AssemblyParserTest {
 		testLabel();
 	}
 
-	private static void testComplexConstants() {
+  private static void testComplexConstants() {
 		ConstantsContainer ccon = new ConstantsContainer();
 		ConstantValue cv = new ConstantInt("HONK", 10);
 		ccon.put(cv);
 		cv = new ConstantInt("HONKI2", 100);
 		ccon.put(cv);
 
-		ConstantValue vally = AssemblyParser.getConstantParsed("KLONK", "HONK+35*HONKI2", ccon);
+		ConstantValue vally = AssemblyParser.getConstantParsed("KLONK", "HONK+35*HONKI2", ccon, true);
 		System.out.println(vally.getName() + " = " + vally.getValue());
 	}
 
 	private static void testComplexConstants2() {
 		ConstantsContainer ccon = new ConstantsContainer();
 
-		ConstantValue vally = AssemblyParser.getConstantParsed("KLONK", "1234*3+11", ccon);
+		ConstantValue vally = AssemblyParser.getConstantParsed("KLONK", "1234*3+11", ccon, true);
 		System.out.println(vally.getName() + " = " + vally.getValue());
 	}
 

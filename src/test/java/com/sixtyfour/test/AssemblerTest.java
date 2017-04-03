@@ -41,9 +41,21 @@ public class AssemblerTest {
 		testMath();
 		testSelfModify();
 		testCpuCallListener();
+		testConstants();
 	}
 
-	private static void testCpuCallListener() {
+	private static void testConstants()
+  {
+	    String line = "*=$c000  \n";
+	    line += "CONST=$c000 \n";
+	    line += "ELSE=$200 \n";
+	    line += "lda CONST \n";
+	    line += "lda CONST+100 \n";
+	    line += "lda CONST-ELSE \n";
+	    execute(line);
+  }
+
+  private static void testCpuCallListener() {
 		String[] code = Loader.loadProgram("src/test/resources/asm/calllistener.asm");
 		Assembler asm = new Assembler(code);
 		asm.compile();
