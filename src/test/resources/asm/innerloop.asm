@@ -10,24 +10,21 @@
 xstart = 834
 xend = 835
 vcoord = 836
-vcoord_h = 837
 ucoord = 838
-ucoord_h = 839
 deltau  = 840
-deltau_h = 841
 deltav = 842
-deltav_h = 843
 graphics = 844
-graphics_h = 845
 temp_low = 846
 temp_high = temp_low+1
 mem_low = 848
 mem_high = mem_low+1
 
+			lda xstart
+			sta $fe
 loop		lda vcoord		; (v%/2)
 			lsr
 			tax				;x = low
-			lda vcoord_h	;a = high
+			lda vcoord+1	;a = high
 			clc
 			lsr
 			bcc cont
@@ -44,7 +41,7 @@ cont		and #$0f		; ...and 4032
 			lda #$7			;shift counter, u%/di%
 			sta $2
 			ldx ucoord 		;x = low
-			ldy ucoord_h	;y = high
+			ldy ucoord+1	;y = high
 shiftloop	txa
 			lsr
 			tax
@@ -62,12 +59,12 @@ cont3		dec $2
 			bne shiftloop
 			txa
 			ora temp_low	; a+b
-			sta temp_low	; store result in temp
+			sta $fb			; store result in temp
 			lda graphics
 			sta mem_low
-			lda graphics_h
+			lda graphics+1
 			sta mem_high
-			lda xstart		; mt + 2*(x and 252)
+			lda $fe			; mt + 2*(x and 252)
 			and #$fc
 			clc
 			asl
@@ -82,14 +79,11 @@ cont5		sta mem_low
 			and #$0f
 			clc
 			adc #$c0		; + $c000
-			sta temp_high
 			sta $fc
-			lda temp_low
-			sta $fb
 			ldy #0
 			lda ($fb),y		; peek(...)
 			tax
-			lda xstart
+			lda $fe
 			and #$03
 			tay
 			txa
@@ -112,26 +106,26 @@ noshift		lda mem_low
 			clc
 			adc deltau
 			bcc cont6
-			inc ucoord_h
+			inc ucoord+1
 cont6		sta ucoord
-			lda ucoord_h
+			lda ucoord+1
 			clc
-			adc deltau_h
-			sta ucoord_h
+			adc deltau+1
+			sta ucoord+1
 			lda vcoord		; v%=v%+dv%
 			clc
 			adc deltav
 			bcc cont7
-			inc vcoord_h
+			inc vcoord+1
 cont7		sta vcoord
-			lda vcoord_h
+			lda vcoord+1
 			clc
-			adc deltav_h
-			sta vcoord_h
-			lda xstart
+			adc deltav+1
+			sta vcoord+1
+			lda $fe
 			cmp xend
 			beq end
-			inc xstart
+			inc $fe
 			jmp loop
 end			rts
 
