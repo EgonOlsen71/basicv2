@@ -28,30 +28,30 @@ vx=yt+x
 for i=0 to bl
 if bs(i,0)<>0 then move
 if peek(vx)<160 then x=x+1:vx=vx+1:goto skip
-bs(i,0)=x:bs(i,1)=y
-if rnd(0)<0.5 then bs(i,2)=int(rnd(0)*40):bs(i,3)=24*int(rnd(0)+0.5):goto delta
-bs(i,2)=39*int(rnd(0)+0.5):bs(i,3)=int(rnd(0)*25)
+bs(i,0)=x:bs(i,1)=y*40
+if rnd(0)<0.5 then bs(i,2)=int(rnd(0)*40):bs(i,3)=24*int(rnd(0)+0.5)*40:goto delta
+bs(i,2)=39*int(rnd(0)+0.5):bs(i,3)=int(rnd(0)*25)*40
 delta:
-ly=abs(bs(i,1)-bs(i,3)):lx=abs(bs(i,0)-bs(i,2))
+ly=abs(bs(i,1)-bs(i,3))/40:lx=abs(bs(i,0)-bs(i,2))
 dx=0:dy=0
 if ly>lx then lx=ly
 if lx=0 then skipx
 dx=(bs(i,0)-bs(i,2))/lx
 dy=(bs(i,1)-bs(i,3))/lx
 skipx:
-bs(i,4)=dx:bs(i,5)=dy:bs(i,6)=bs(i,0)+bs(i,1)*40
+bs(i,4)=dx:bs(i,5)=dy:bs(i,6)=bs(i,0)+bs(i,1)
 ac=ac+1
 x=x+1:vx=vx+1
 goto paint
 move:
 b2=bs(i,2):b3=bs(i,3)
-p=int(b2+0.5)+int(b3+0.5)*40
+p=int(b2+0.5)+int(b3+0.5)
 pv=peek(wp+p)
 poke bp+p,pv and 240:poke cp+p,pv and 15
 bs(i,2)=b2+bs(i,4)
 bs(i,3)=b3+bs(i,5)
 paint:
-p=int(bs(i,2)+0.5)+int(bs(i,3)+0.5)*40
+p=int(bs(i,2)+0.5)+int(bs(i,3)+0.5)
 pv=peek(vp+bs(i,6))
 poke bp+p,160:poke cp+p,pv and 15
 if int(bs(i,2)+0.5)<>bs(i,0) or int(bs(i,3)+0.5)<>bs(i,1) then skip

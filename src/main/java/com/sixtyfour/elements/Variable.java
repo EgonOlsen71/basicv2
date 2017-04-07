@@ -233,9 +233,9 @@ public class Variable implements Atom {
 			return false;
 		}
 		if (o instanceof Variable) {
-		  if (o == this) {
-		    return true;
-		  }
+			if (o == this) {
+				return true;
+			}
 			return this.name.equalsIgnoreCase(((Variable) o).name);
 		}
 		return false;
@@ -344,7 +344,7 @@ public class Variable implements Atom {
 		int cnt = 0;
 
 		if (pos.length != dimensions.length) {
-			throw new RuntimeException("Array indices don't match: " + this);
+			throw new RuntimeException("Array indices don't match: " + this + "/" + pos.length + "/" + dimensions.length);
 		}
 
 		if (pos.length == 1) {
@@ -394,9 +394,9 @@ public class Variable implements Atom {
 			}
 		}
 
-		if (type==Type.INTEGER && VarUtils.isFloat(val)) {
+		if (type == Type.INTEGER && VarUtils.isFloat(val)) {
 			val = VarUtils.getInt(val);
-		} else if (type==Type.REAL && VarUtils.isInteger(val)) {
+		} else if (type == Type.REAL && VarUtils.isInteger(val)) {
 			val = VarUtils.getFloat(val);
 		}
 
@@ -466,13 +466,13 @@ public class Variable implements Atom {
 
 		machine.getJit().addVariable(this);
 
-		String nam=VarUtils.relabel(name);
-		 if (type == Type.REAL) {
-	      return "((Number) "+nam+".evalFromCode()).floatValue()";
-	    } else if (type == Type.INTEGER) {
-	      return "((Number) "+nam+".evalFromCode()).intValue()";
-	    }
-	    return nam+".evalFromCode()";
+		String nam = VarUtils.relabel(name);
+		if (type == Type.REAL) {
+			return "((Number) " + nam + ".evalFromCode()).floatValue()";
+		} else if (type == Type.INTEGER) {
+			return "((Number) " + nam + ".evalFromCode()).intValue()";
+		}
+		return nam + ".evalFromCode()";
 	}
 
 	/**

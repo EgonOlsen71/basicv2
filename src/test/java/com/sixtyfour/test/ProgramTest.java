@@ -16,6 +16,8 @@ public class ProgramTest {
 	 *            the arguments
 	 */
 	public static void main(String[] args) {
+		testArray();
+		if (true)  System.exit(0);
 		testPrime();
 		testJavaPrime();
 		testPrime();
@@ -39,6 +41,12 @@ public class ProgramTest {
 		// testBio();
 		testIf();
 		testBuggedOn64();
+	}
+
+	private static void testArray() {
+		String[] vary = Loader.loadProgram("src/test/resources/basic/array.bas");
+		Basic inty = new Basic(vary);
+		inty.run();
 	}
 
 	private static void testBuggedOn64() {

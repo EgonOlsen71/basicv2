@@ -416,12 +416,12 @@ public class Parser
       }
       else
       {
-        fun.setTerm(Parser.createTerm(linePart.substring(pos, pos2 + 1), termMap, machine));
+    	  fun.setTerm(Parser.createTerm(linePart.substring(pos, pos2 + 1), termMap, machine));
       }
     }
     else
     {
-      fun.parse(linePart.substring(pos + 1, pos2), machine);
+    	fun.parse(linePart.substring(pos + 1, pos2), machine);
     }
     fun.setVariable(var);
     return fun;
@@ -920,9 +920,9 @@ public class Parser
     for (int i = pos + 1; i < term.length(); i++)
     {
       char c = term.charAt(i);
-      if (c == ',')
+      if (c == ',' && brackets==0)
       {
-        return i;
+    	  return i;
       }
 
       if (brackets == 0 && (Operator.isOperator(c) || c == ')'))

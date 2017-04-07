@@ -38,8 +38,8 @@ public class Term implements Atom {
 	private int callCount = 0;
 
 	private Method jittedMethod = null;
-	
-	private Jitted jittedInstance=null;
+
+	private Jitted jittedInstance = null;
 
 	private boolean jitRun = false;
 
@@ -255,38 +255,38 @@ public class Term implements Atom {
 				}
 
 				float v1 = 0;
-				switch(operator.getType()) {
-				  case 0: 
-				    v1 = (float) Math.pow(n1.doubleValue(), n2.doubleValue());
-				    break;
-				  case 1:
-				    v1 = n1.floatValue() * n2.floatValue();
-				    break;
-				  case 2:
-				    if (n2.floatValue() == 0) {
-	            throw new RuntimeException("Division by zero error: " + n1 + "/" + n2);
-	          }
-	          v1 = n1.floatValue() / n2.floatValue();
-	          break;
-				  case 3:
-				    v1 = n1.floatValue() + n2.floatValue();
-				    break;
-				  case 4: 
-				    v1 = n1.floatValue() - n2.floatValue();
-				    break;
-				  case 5:
-				    break;
-				  case 6:
-				    break;
-				  case 7:
-				    v1 = n1.intValue() | n2.intValue();
-				    break;
-				  case 8:  
-				    v1 = n1.intValue() & n2.intValue();
-				    break;
-				  case 9:
-				    v1 = ~n2.intValue();
-				    break;
+				switch (operator.getType()) {
+				case 0:
+					v1 = (float) Math.pow(n1.doubleValue(), n2.doubleValue());
+					break;
+				case 1:
+					v1 = n1.floatValue() * n2.floatValue();
+					break;
+				case 2:
+					if (n2.floatValue() == 0) {
+						throw new RuntimeException("Division by zero error: " + n1 + "/" + n2);
+					}
+					v1 = n1.floatValue() / n2.floatValue();
+					break;
+				case 3:
+					v1 = n1.floatValue() + n2.floatValue();
+					break;
+				case 4:
+					v1 = n1.floatValue() - n2.floatValue();
+					break;
+				case 5:
+					break;
+				case 6:
+					break;
+				case 7:
+					v1 = n1.intValue() | n2.intValue();
+					break;
+				case 8:
+					v1 = n1.intValue() & n2.intValue();
+					break;
+				case 9:
+					v1 = ~n2.intValue();
+					break;
 				}
 				return v1;
 			}
@@ -295,7 +295,7 @@ public class Term implements Atom {
 			machine.setCurrentOperator(null);
 			// TODO Make 20 dependent on something
 			if (!jitRun && callCount > 20 && machine.getJit() != null) {
-			  jitRun=machine.getJit().addMethod(this, machine);
+				jitRun = machine.getJit().addMethod(this, machine);
 			}
 		}
 	}
@@ -347,11 +347,11 @@ public class Term implements Atom {
 				} else if (operator.isDivision()) {
 					v1 = n1 + "/" + n2;
 				} else if (operator.isOr()) {
-					v1 = "(int) ("+ n1 + ")|" + n2;
+					v1 = "(int) (" + n1 + ")|" + n2;
 				} else if (operator.isAnd()) {
-					v1 = "(int) ("+n1 + ")&" + n2;
+					v1 = "(int) (" + n1 + ")&" + n2;
 				} else if (operator.isNot()) {
-					v1 = "~(int) (" + n2+")";
+					v1 = "~(int) (" + n2 + ")";
 				}
 				return filterCode("(" + v1 + ")");
 			}
@@ -402,19 +402,17 @@ public class Term implements Atom {
 	/**
 	 * @return
 	 */
-	public Jitted getJittedInstance()
-  {
-    return jittedInstance;
-  }
+	public Jitted getJittedInstance() {
+		return jittedInstance;
+	}
 
-  /**
-   * @param jittedInstance
-   */
-  public void setJittedInstance(Jitted jittedInstance)
-  {
-    this.jittedInstance = jittedInstance;
-  }
-	
+	/**
+	 * @param jittedInstance
+	 */
+	public void setJittedInstance(Jitted jittedInstance) {
+		this.jittedInstance = jittedInstance;
+	}
+
 	/**
 	 * Sets the Method instance, once this term has been compiled by the JIT
 	 * compiler

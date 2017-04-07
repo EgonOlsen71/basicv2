@@ -19,6 +19,7 @@ public class ParserTest {
 	 *            the arguments
 	 */
 	public static void main(String[] args) {
+		testArrayAccess();
 		testLineNumber();
 		testCommands();
 		testTermCompletion();
@@ -28,6 +29,26 @@ public class ParserTest {
 		testPowerOf();
 		testAbs();
 		testStuff();
+	}
+
+	private static void testArrayAccess() {
+		String term = "10*b(1,1)";
+		Machine machine = new Machine();
+		Term t = Parser.getTerm(term, machine, false, true);
+		System.out.println(t);
+		System.out.println(Parser.addBrackets(term));
+		
+		term = "10+b(1,1)";
+		t = Parser.getTerm(term, machine, false, true);
+		System.out.println(t);
+		System.out.println(Parser.addBrackets(term));
+		
+		term = "a=10t";
+		t = Parser.getTerm(term, machine, true, true);
+		System.out.println(t);
+		System.out.println(t.getOperator());
+		System.out.println(t.eval(machine));
+		System.out.println(Parser.addBrackets(term));
 	}
 
 	/**
