@@ -1,6 +1,10 @@
+rem@ £fastfor:£fastarray:£word i=fast,x=fast,y,p,pp,pv,ac,bl:£shortif
+rem@ £word wp,vp,bp,cp,vx
+rem@ £integer c,cn:£datatype integer
+
 console 1
 bl=10
-dim bs(bl,6)
+dim xt(bl),yt(bl),xp(bl),yp(bl),xd(bl),yd(bl),sc(bl)
 dim i,x,y,b2,b3,p,pp,pv,ac
 vp=20000
 wp=21000
@@ -25,34 +29,34 @@ yt=y*40+vp
 x=8
 xloop: vx=yt+x
 for i=0 to bl
-if bs(i,0)<>0 then move
+if xt(i)<>0 then move
 if peek(vx)<160 then x=x+1:vx=vx+1:goto skip
-bs(i,0)=x:bs(i,1)=y
+xt(i)=x:yt(i)=y
 if rnd(0)<0.4 then leftright
-bs(i,2)=6+int(rnd(0)*26)
-bs(i,3)=0
-if y>10 then bs(i,3)=24
+xp(i)=6+int(rnd(0)*26)
+yp(i)=0
+if y>10 then yp(i)=24
 goto delta
 leftright: 
-bs(i,2)=0
-if x>20 then bs(i,2)=39
-bs(i,3)=4+int(rnd(0)*18)
-delta: ly=abs(bs(i,1)-bs(i,3)):lx=abs(bs(i,0)-bs(i,2))
+xp(i)=0
+if x>20 then xp(i)=39
+yp(i)=4+int(rnd(0)*18)
+delta: ly=abs(yt(i)-yp(i)):lx=abs(xt(i)-xp(i))
 dx=0:dy=0
 if ly>lx then lx=ly
 if lx=0 then skipx
-dx=(bs(i,0)-bs(i,2))/lx
-dy=(bs(i,1)-bs(i,3))/lx
-skipx: bs(i,4)=dx:bs(i,5)=dy:bs(i,6)=bs(i,0)+bs(i,1)*40+vp
+dx=(xt(i)-xp(i))/lx
+dy=(yt(i)-yp(i))/lx
+skipx: xd(i)=dx:yd(i)=dy:sc(i)=xt(i)+yt(i)*40+vp
 ac=ac+1
 x=x+1:vx=vx+1
 goto paint
-move: b2=bs(i,2):b3=bs(i,3):p=int(b2+0.5)+int(b3+0.5)*40:pv=peek(wp+p)
-bs(i,2)=b2+bs(i,4):bs(i,3)=b3+bs(i,5):pokebp+p,pvand240:pokecp+p,pvand15
-paint: p1=int(bs(i,2)+0.5):p2=int(bs(i,3)+0.5):p=p1+p2*40
-pokebp+p,160:pokecp+p,peek(bs(i,6))and15
-if p1<>bs(i,0)orp2<>bs(i,1)thenskip
-bs(i,0)=0:pokewp-vp+bs(i,6),peek(bs(i,6)):ac=ac-1
+move: b2=xp(i):b3=yp(i):p=int(b2+0.5)+int(b3+0.5)*40:pv=peek(wp+p)
+xp(i)=b2+xd(i):yp(i)=b3+yd(i):pokebp+p,pvand240:pokecp+p,pvand15
+paint: p1=int(xp(i)+0.5):p2=int(yp(i)+0.5):p=p1+p2*40
+pokebp+p,160:pokecp+p,peek(sc(i))and15
+if p1<>xt(i)orp2<>yt(i)thenskip
+xt(i)=0:pokewp-vp+sc(i),peek(sc(i)):ac=ac-1
 skip: next
 limit 40
 if x<33 then xloop
