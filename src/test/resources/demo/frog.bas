@@ -1,11 +1,11 @@
 rem@ £fastfor:£fastarray:£word i=fast,x=fast,y,p,pp,ac,bl:£shortif
-rem@ £word wp,vp,cp,vx
+rem@ £word wp,vp,cp,vx,ml
 rem@ £integer c,cn:£datatype integer
 
 console 1
-bl=10
-dim xt(bl),yt(bl),xp(bl),yp(bl),xd(bl),yd(bl),sc(bl)
-dim i,x,y,b2,b3,p,pp,ac
+bl=10:ml=40:ad=0.5
+dim i,xt(bl),yt(bl),xp(bl),yp(bl),xd(bl),yd(bl),sc(bl)
+dim x,y,b2,b3,p,pp,ac
 vp=20000
 wp=21000
 cp=55296
@@ -47,17 +47,17 @@ if ly>lx then lx=ly
 if lx=0 then skipx
 dx=(xt(i)-xp(i))/lx
 dy=(yt(i)-yp(i))/lx
-skipx: xd(i)=dx:yd(i)=dy:sc(i)=peek(xt(i)+yt(i)*40+vp)
+skipx: xd(i)=dx:yd(i)=dy:sc(i)=peek(xt(i)+yt(i)*ml+vp)
 ac=ac+1
 x=x+1:vx=vx+1
 b2=xp(i):b3=yp(i)
 goto paint
-move: b2=xp(i):b3=yp(i):p=int(b2+0.5)+int(b3+0.5)*40
+move: b2=xp(i):b3=yp(i):p=int(b2+ad)+int(b3+ad)*ml
 b2=b2+xd(i):b3=b3+yd(i):pokecp+p,peek(wp+p)
-paint: p1=int(b2+0.5):p2=int(b3+0.5):p=p1+p2*40
+paint: p1=int(b2+ad):p2=int(b3+ad):p=p1+p2*ml
 pokecp+p,sc(i):xp(i)=b2:yp(i)=b3
 if p1<>xt(i)orp2<>yt(i)thenskip
-pokewp+xt(i)+yt(i)*40,sc(i):ac=ac-1:xt(i)=0
+pokewp+xt(i)+yt(i)*ml,sc(i):ac=ac-1:xt(i)=0
 skip: next
 limit 60
 if x<33 then xloop
