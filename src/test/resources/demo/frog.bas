@@ -1,21 +1,21 @@
-rem@ £fastfor:£fastarray:£word i=fast,x=fast,y,p,pp,pv,ac,bl:£shortif
-rem@ £word wp,vp,bp,cp,vx
+rem@ £fastfor:£fastarray:£word i=fast,x=fast,y,p,pp,ac,bl:£shortif
+rem@ £word wp,vp,cp,vx
 rem@ £integer c,cn:£datatype integer
 
 console 1
 bl=10
 dim xt(bl),yt(bl),xp(bl),yp(bl),xd(bl),yd(bl),sc(bl)
-dim i,x,y,b2,b3,p,pp,pv,ac
+dim i,x,y,b2,b3,p,pp,ac
 vp=20000
 wp=21000
-bp=1024
 cp=55296
 
 gosub clearscr
+poke 52380,0:poke53281,0:poke 646,2
 print "initializing frog engine 0.01..."
 gosub clearmem
 gosub initfrog
-gosub clearscr
+poke 52380,6:poke53281,6
 gosub render
 
 key:
@@ -30,7 +30,7 @@ x=8
 xloop: vx=yt+x
 for i=0 to bl
 if xt(i)<>0 then move
-if peek(vx)<160 then x=x+1:vx=vx+1:goto skip
+if peek(vx)=6 then x=x+1:vx=vx+1:goto skip
 xt(i)=x:yt(i)=y
 if rnd(0)<0.4 then leftright
 xp(i)=6+int(rnd(0)*26)
@@ -47,18 +47,18 @@ if ly>lx then lx=ly
 if lx=0 then skipx
 dx=(xt(i)-xp(i))/lx
 dy=(yt(i)-yp(i))/lx
-skipx: xd(i)=dx:yd(i)=dy:sc(i)=xt(i)+yt(i)*40+vp
+skipx: xd(i)=dx:yd(i)=dy:sc(i)=peek(xt(i)+yt(i)*40+vp)
 ac=ac+1
 x=x+1:vx=vx+1
 goto paint
-move: b2=xp(i):b3=yp(i):p=int(b2+0.5)+int(b3+0.5)*40:pv=peek(wp+p)
-xp(i)=b2+xd(i):yp(i)=b3+yd(i):pokebp+p,pvand240:pokecp+p,pvand15
+move: b2=xp(i):b3=yp(i):p=int(b2+0.5)+int(b3+0.5)*40
+xp(i)=b2+xd(i):yp(i)=b3+yd(i):pokecp+p,peek(wp+p)
 paint: p1=int(xp(i)+0.5):p2=int(yp(i)+0.5):p=p1+p2*40
-pokebp+p,160:pokecp+p,peek(sc(i))and15
+pokecp+p,sc(i)
 if p1<>xt(i)orp2<>yt(i)thenskip
-xt(i)=0:pokewp-vp+sc(i),peek(sc(i)):ac=ac-1
+pokewp+xt(i)+yt(i)*40,sc(i):ac=ac-1:xt(i)=0
 skip: next
-limit 40
+limit 60
 if x<33 then xloop
 x=8:if y=22 and ac<>0 then y=21
 next
@@ -76,12 +76,17 @@ if c<x and c<>0 then y=y+1
 if c<>0 then x=c
 p=vp+y*40
 read cn
-for i=p+x to p+cn+x-1:poke i,160 or cl:next i
+for i=p+x to p+cn+x-1:poke i,cl:poke53280,cl:next i
 x=x+cn
 goto loop
 
 clearmem:
-for i=20000 to 21999:pokei,32:next
+print:print"v-init: allocate screens."
+for i=20000 to 20999:pokei,6:next
+print"m-loaddefaults: load system defaults."
+for i=21000 to 21999:pokei,6:next
+print"z-init: init memory daemon."
+for i=0 to 999:pokei+55296,6:pokei+1024,160:next
 return
 
 clearscr:
