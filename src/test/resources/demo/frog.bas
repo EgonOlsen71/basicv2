@@ -11,11 +11,11 @@ wp=21000
 cp=55296
 
 gosub clearscr
-poke 52380,0:poke53281,0:poke 646,2
+poke 53280,0:poke53281,0:poke 646,2
 print "initializing frog engine 0.01..."
 gosub clearmem
 gosub initfrog
-poke 52380,6:poke53281,6
+poke 53280,6:poke53281,6
 gosub render
 
 key:
@@ -50,11 +50,12 @@ dy=(yt(i)-yp(i))/lx
 skipx: xd(i)=dx:yd(i)=dy:sc(i)=peek(xt(i)+yt(i)*40+vp)
 ac=ac+1
 x=x+1:vx=vx+1
+b2=xp(i):b3=yp(i)
 goto paint
 move: b2=xp(i):b3=yp(i):p=int(b2+0.5)+int(b3+0.5)*40
-xp(i)=b2+xd(i):yp(i)=b3+yd(i):pokecp+p,peek(wp+p)
-paint: p1=int(xp(i)+0.5):p2=int(yp(i)+0.5):p=p1+p2*40
-pokecp+p,sc(i)
+b2=b2+xd(i):b3=b3+yd(i):pokecp+p,peek(wp+p)
+paint: p1=int(b2+0.5):p2=int(b3+0.5):p=p1+p2*40
+pokecp+p,sc(i):xp(i)=b2:yp(i)=b3
 if p1<>xt(i)orp2<>yt(i)thenskip
 pokewp+xt(i)+yt(i)*40,sc(i):ac=ac-1:xt(i)=0
 skip: next
