@@ -1,11 +1,11 @@
 console 1
+bl=10
+dim bs(bl,6)
+dim i,x,y,b2,b3,p,pp,pv,ac
 vp=20000
 wp=21000
 bp=1024
 cp=55296
-bl=10
-ac=0
-dim bs(bl,6)
 
 gosub clearscr
 print "initializing frog engine 0.01..."
@@ -23,47 +23,40 @@ render:
 for y=5 to 22
 yt=y*40+vp
 x=8
-xloop:
-vx=yt+x
+xloop: vx=yt+x
 for i=0 to bl
 if bs(i,0)<>0 then move
 if peek(vx)<160 then x=x+1:vx=vx+1:goto skip
-bs(i,0)=x:bs(i,1)=y*40
-if rnd(0)<0.5 then bs(i,2)=int(rnd(0)*40):bs(i,3)=24*int(rnd(0)+0.5)*40:goto delta
-bs(i,2)=39*int(rnd(0)+0.5):bs(i,3)=int(rnd(0)*25)*40
-delta:
-ly=abs(bs(i,1)-bs(i,3))/40:lx=abs(bs(i,0)-bs(i,2))
+bs(i,0)=x:bs(i,1)=y
+if rnd(0)<0.4 then leftright
+bs(i,2)=6+int(rnd(0)*26)
+bs(i,3)=0
+if y>10 then bs(i,3)=24
+goto delta
+leftright: 
+bs(i,2)=0
+if x>20 then bs(i,2)=39
+bs(i,3)=4+int(rnd(0)*18)
+delta: ly=abs(bs(i,1)-bs(i,3)):lx=abs(bs(i,0)-bs(i,2))
 dx=0:dy=0
 if ly>lx then lx=ly
 if lx=0 then skipx
 dx=(bs(i,0)-bs(i,2))/lx
 dy=(bs(i,1)-bs(i,3))/lx
-skipx:
-bs(i,4)=dx:bs(i,5)=dy:bs(i,6)=bs(i,0)+bs(i,1)
+skipx: bs(i,4)=dx:bs(i,5)=dy:bs(i,6)=bs(i,0)+bs(i,1)*40+vp
 ac=ac+1
 x=x+1:vx=vx+1
 goto paint
-move:
-b2=bs(i,2):b3=bs(i,3)
-p=int(b2+0.5)+int(b3+0.5)
-pv=peek(wp+p)
-poke bp+p,pv and 240:poke cp+p,pv and 15
-bs(i,2)=b2+bs(i,4)
-bs(i,3)=b3+bs(i,5)
-paint:
-p=int(bs(i,2)+0.5)+int(bs(i,3)+0.5)
-pv=peek(vp+bs(i,6))
-poke bp+p,160:poke cp+p,pv and 15
-if int(bs(i,2)+0.5)<>bs(i,0) or int(bs(i,3)+0.5)<>bs(i,1) then skip
-bs(i,0)=0
-poke wp+bs(i,6),pv
-ac=ac-1
-skip:
-next
+move: b2=bs(i,2):b3=bs(i,3):p=int(b2+0.5)+int(b3+0.5)*40:pv=peek(wp+p)
+bs(i,2)=b2+bs(i,4):bs(i,3)=b3+bs(i,5):pokebp+p,pvand240:pokecp+p,pvand15
+paint: p1=int(bs(i,2)+0.5):p2=int(bs(i,3)+0.5):p=p1+p2*40
+pokebp+p,160:pokecp+p,peek(bs(i,6))and15
+if p1<>bs(i,0)orp2<>bs(i,1)thenskip
+bs(i,0)=0:pokewp-vp+bs(i,6),peek(bs(i,6)):ac=ac-1
+skip: next
 limit 40
 if x<33 then xloop
-x=8
-if y=22 and ac<>0 then y=21
+x=8:if y=22 and ac<>0 then y=21
 next
 return
 

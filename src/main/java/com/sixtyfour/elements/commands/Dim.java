@@ -10,8 +10,8 @@ import com.sixtyfour.elements.Variable;
 import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.VariableAndTerms;
-import com.sixtyfour.system.Machine;
 import com.sixtyfour.system.BasicProgramCounter;
+import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
 /**
@@ -73,10 +73,12 @@ public class Dim extends AbstractCommand {
 		List<VariableAndTerms> vars = Parser.getArrayVariables(linePart, machine);
 		terms = new HashMap<String, List<Atom>>();
 		this.vars = new ArrayList<Variable>();
-		for (VariableAndTerms var : vars) {
-			terms.put(var.getVarName(), var.getTerms());
-			// Some placeholder vars...
-			this.vars.add(new Variable(var.getVarName(), null));
+		if (vars != null) {
+			for (VariableAndTerms var : vars) {
+				terms.put(var.getVarName(), var.getTerms());
+				// Some placeholder vars...
+				this.vars.add(new Variable(var.getVarName(), null));
+			}
 		}
 		return null;
 	}
