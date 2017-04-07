@@ -719,6 +719,9 @@ public class Parser {
 	 * @return true, if its a parameter
 	 */
 	private static boolean toAdd(Atom atom) {
+		if (atom == null) {
+			throw new RuntimeException("Parameter missing!");
+		}
 		return (!atom.isTerm() || !((Term) atom).getOperator().isDelimiter());
 	}
 
@@ -1188,6 +1191,12 @@ public class Parser {
 				Atom fl = new Constant<Float>(Float.valueOf(part));
 				return fl;
 			} else {
+				if (part.isEmpty()) {
+					// Actually, this isn't correct. We might as well throw a
+					// syntax error here, but it's handled on another location
+					// anyway with better error reporting, so...
+					part = "0";
+				}
 				Atom in = new Constant<Integer>(Integer.valueOf(part));
 				return in;
 			}

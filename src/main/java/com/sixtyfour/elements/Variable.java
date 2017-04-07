@@ -84,6 +84,10 @@ public class Variable implements Atom {
 			}
 		}
 
+		if (Character.isDigit(un.charAt(0))) {
+			throw new RuntimeException("Syntax error: " + un);
+		}
+		
 		String woa = name.replace("[]", "");
 		char c = woa.charAt(woa.length() - 1);
 		type = null;

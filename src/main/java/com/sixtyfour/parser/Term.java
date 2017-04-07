@@ -189,7 +189,7 @@ public class Term implements Atom {
 	 */
 	@Override
 	public String toString() {
-		return "([" + key + "]\\l:" + left + this.operator + "\\r:" + right + ")";
+		return "([" + key + "]\\l:" + left + "/" + this.operator + "\\r:" + right + ")";
 	}
 
 	/*
@@ -201,6 +201,9 @@ public class Term implements Atom {
 	public Type getType() {
 		if (type != null) {
 			return type;
+		}
+		if (left == null) {
+			throw new RuntimeException("Syntax error: " + this.toString());
 		}
 		Type t1 = left.getType();
 		Type t2 = t1;

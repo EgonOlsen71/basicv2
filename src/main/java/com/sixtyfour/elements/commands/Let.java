@@ -11,8 +11,8 @@ import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.Term;
 import com.sixtyfour.parser.VariableAndIndex;
-import com.sixtyfour.system.Machine;
 import com.sixtyfour.system.BasicProgramCounter;
+import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
 /**
@@ -83,6 +83,9 @@ public class Let extends AbstractCommand {
 		indexTerm = vai.getIndexTerm();
 		var = vai.getVariable();
 		term = Parser.getTerm(linePart, machine, true, true);
+		if (term.getOperator().isDelimiter()) {
+			syntaxError(linePart);
+		}
 		if (!var.getType().equals(term.getType()) && (var.getType().equals(Type.STRING) || term.getType().equals(Type.STRING))) {
 			typeMismatch(linePart);
 		}
