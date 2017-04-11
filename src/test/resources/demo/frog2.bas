@@ -1,19 +1,18 @@
-rem@ £fastfor:£fastarray:£word i=fast,x=fast,y,p,pp,ac,bl:£shortif
-rem@ £word wp,vp,cp,vx,ml
+rem@ £fastfor:£fastarray:£word i=fast,x=fast,y,p,pp:£shortif
+rem@ £word wp,vp,cp
 rem@ £integer c,cn:£datatype integer
 
 console 1
-bl=10:ml=40:ad=0.5
 dim i,x,y,p,pp
 vp=20000
 wp=21000
 cp=55296
 sp=wp
 
-gosub clearscr
+gosub wipescr
 poke 53280,0:poke53281,0:poke 646,2
 print "initializing frog engine 0.01..."
-gosub clearmem
+gosub wipemem
 gosub initfrog
 poke 53280,6:poke53281,6
 gosub render
@@ -33,22 +32,22 @@ if x>32 then x=8:y=y+1:if y>21 then skipscan
 goto scan
 skipscan:
 sc=8
-if cl=5 then cl=1:x=8:y=5:goto scan
-if cl=1 then cl=0:x=8:y=5:goto scan
+if cl=5 then cl=1:x=12:y=5:goto scan
+if cl=1 then cl=0:x=14:y=6:goto scan
 return
 
 foundcolor:
 poke sp,x:poke sp+1,y:sp=sp+2
 poke cp+p,cl
-limit 60
+limit 20
 xt=x+1:yt=y:gosub findnext
 if f=0 then xt=x+1:yt=y+1:gosub findnext
 if f=0 then xt=x+1:yt=y-1:gosub findnext
 if f=0 then xt=x:yt=y+1:gosub findnext
 if f=0 then xt=x-1:yt=y:gosub findnext
 if f=0 then xt=x-1:yt=y+1:gosub findnext
-if f=0 then xt=x:yt=y-1:gosub findnext
 if f=0 then xt=x-1:yt=y-1:gosub findnext
+if f=0 then xt=x:yt=y-1:gosub findnext
 if f=1 then draw
 y=5:x=8
 if sp>wp then x=peek(wp):y=peek(wp+1):sp=wp
@@ -61,7 +60,7 @@ goto foundcolor
 findnext:
 tp=yt*40+xt+vp
 c=0:f=0
-if (peek(yt*40+xt+cp) and 15)=cl then return
+if (peek(tp-vp+cp) and 15)=cl then return
 if peek(tp)<>cl then return
 if peek(tp+40)<>cl then c=c+1
 if peek(tp+1)<>cl then c=c+1
@@ -90,14 +89,14 @@ for i=p+x to p+cn+x-1:poke i,cl:poke53280,cl:next i
 x=x+cn
 goto loop
 
-clearmem:
+wipemem:
 print:print"v-init: allocate screens."
 for i=20000 to 20999:pokei,6:next
 print"m-loaddefaults: load system defaults."
 for i=0 to 999:pokei+55296,6:pokei+1024,160:next
 return
 
-clearscr:
+wipescr:
 print chr$(147)
 return
 

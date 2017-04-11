@@ -142,7 +142,7 @@ public class Preprocessor {
 								for (String target : targets) {
 									Integer lineNum = label2line.get(target.trim());
 									if (lineNum == null) {
-										throw new RuntimeException("Label '" + target + "' not found: " + line);
+										throw new RuntimeException("Label '" + target.trim() + "' not found: " + line);
 									}
 									sb.append((cnt++) == 0 ? "" : ",");
 									sb.append(lineNum);

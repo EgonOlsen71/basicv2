@@ -10,10 +10,10 @@ vp=20000
 wp=21000
 cp=55296
 
-gosub clearscr
+gosub wipescr
 poke 53280,0:poke53281,0:poke 646,2
 print "initializing frog engine 0.01..."
-gosub clearmem
+gosub wipemem
 gosub initfrog
 poke 53280,6:poke53281,6
 gosub render
@@ -81,7 +81,7 @@ for i=p+x to p+cn+x-1:poke i,cl:poke53280,cl:next i
 x=x+cn
 goto loop
 
-clearmem:
+wipemem:
 print:print"v-init: allocate screens."
 for i=20000 to 20999:pokei,6:next
 print"m-loaddefaults: load system defaults."
@@ -90,7 +90,7 @@ print"z-init: init memory daemon."
 for i=0 to 999:pokei+55296,6:pokei+1024,160:next
 return
 
-clearscr:
+wipescr:
 print chr$(147)
 return
 
