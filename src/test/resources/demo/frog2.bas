@@ -4,8 +4,7 @@ rem@ £integer c,cn:£datatype integer
 
 console 1
 bl=10:ml=40:ad=0.5
-dim i,xt(bl),yt(bl),xp(bl),yp(bl),xd(bl),yd(bl),sc(bl)
-dim x,y,b2,b3,p,pp,ac
+dim i,x,y,p,pp
 vp=20000
 wp=21000
 cp=55296
@@ -25,33 +24,34 @@ console 0
 end
 
 render:
-y=5:x=8:cl=5:xs=8:ys=5:sc=5
+y=5:x=8:cl=5:xs=8:ys=5:sc=6
 scan:
 p=y*40+x
-if peek(p+vp)=cl and peek(p+cp)and15<>cl then foundcolor
+if peek(p+vp)=cl and (peek(p+cp) and 15)<>cl then foundcolor
 x=x+1
-if x>32 then x=8:y=y+1
-if y<23 then scan
+if x>32 then x=8:y=y+1:if y>21 then skipscan
+goto scan
+skipscan:
 sc=8
 if cl=5 then cl=1:x=8:y=5:goto scan
 if cl=1 then cl=0:x=8:y=5:goto scan
 return
 
 foundcolor:
-poke sp,x:poke sp+1,y:sp=sp+2:printchr$(19);sp,wp
+poke sp,x:poke sp+1,y:sp=sp+2
 poke cp+p,cl
-limit 5
+limit 60
 xt=x+1:yt=y:gosub findnext
 if f=0 then xt=x+1:yt=y+1:gosub findnext
 if f=0 then xt=x+1:yt=y-1:gosub findnext
 if f=0 then xt=x:yt=y+1:gosub findnext
 if f=0 then xt=x-1:yt=y:gosub findnext
 if f=0 then xt=x-1:yt=y+1:gosub findnext
-if f=0 then xt=x-1:yt=y-1:gosub findnext
 if f=0 then xt=x:yt=y-1:gosub findnext
+if f=0 then xt=x-1:yt=y-1:gosub findnext
 if f=1 then draw
 y=5:x=8
-if sp>wp+4 then x=peek(sp-4):y=peek(sp-3):sp=sp-4:print sp
+if sp>wp then x=peek(wp):y=peek(wp+1):sp=wp
 goto scan
 draw:
 xs=x:ys=y
@@ -61,7 +61,7 @@ goto foundcolor
 findnext:
 tp=yt*40+xt+vp
 c=0:f=0
-if peek(yt*40+xt+cp)and15=cl then return
+if (peek(yt*40+xt+cp) and 15)=cl then return
 if peek(tp)<>cl then return
 if peek(tp+40)<>cl then c=c+1
 if peek(tp+1)<>cl then c=c+1
