@@ -397,7 +397,7 @@ public class Variable
     // Convert into proper format
     if (type == Type.INTEGER && VarUtils.isFloat(value))
     {
-      value = VarUtils.getInt(value);
+      value = IntegerC.valueOf(VarUtils.getInt(value));
     }
     else if (type == Type.REAL && VarUtils.isInteger(value))
     {
@@ -490,7 +490,7 @@ public class Variable
 
     if (type == Type.INTEGER && VarUtils.isFloat(val))
     {
-      val = VarUtils.getInt(val);
+      val = IntegerC.valueOf(VarUtils.getInt(val));
     }
     else if (type == Type.REAL && VarUtils.isInteger(val))
     {
