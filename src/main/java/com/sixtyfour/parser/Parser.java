@@ -430,8 +430,8 @@ public class Parser {
 
 	/**
 	 * Adds the brackets. This is used to simplify expression parsing later.
-	 * Actually, it might be better to convert the expression from infox to RPN
-	 * and use stack to evaluate them, but then again...I can't be bothered,
+	 * Actually, it might be better to convert the expressions from infix to RPN
+	 * and use a stack to evaluate them, but then again...I can't be bothered,
 	 * because this works as well and it's better suitable for JITting the
 	 * result.
 	 * 
