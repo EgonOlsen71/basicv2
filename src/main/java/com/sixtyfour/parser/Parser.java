@@ -1152,7 +1152,7 @@ public class Parser {
 				sb.append(c);
 			}
 		}
-		 System.out.println("SFN: "+line+"/"+sb.toString());
+		// System.out.println("SFN: "+line+"/"+sb.toString());
 		return sb.toString();
 	}
 
