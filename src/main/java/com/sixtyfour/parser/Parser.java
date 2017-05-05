@@ -1105,7 +1105,7 @@ public class Parser {
 
 		for (int i = 0; i < line.length(); i++) {
 			char c = Character.toLowerCase(line.charAt(i));
-			if (c == 'e' && i < line.length() - 1 && i > 0) {
+			if (c == 'e' && i > 0) {
 				char cp = line.charAt(i - 1);
 				if (!Character.isDigit(cp)) {
 					sb.append(c);
@@ -1152,7 +1152,7 @@ public class Parser {
 				sb.append(c);
 			}
 		}
-		// System.out.println("SFN: "+line+"/"+sb.toString());
+		 System.out.println("SFN: "+line+"/"+sb.toString());
 		return sb.toString();
 	}
 
