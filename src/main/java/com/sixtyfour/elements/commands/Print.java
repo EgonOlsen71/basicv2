@@ -65,6 +65,7 @@ public class Print extends AbstractCommand {
 		}
 		for (PrintPart part : parts) {
 			part.term = Parser.getTerm(part.part, machine, false, true);
+			System.out.println(part);
 		}
 		this.parts = parts;
 		return null;
@@ -267,6 +268,7 @@ public class Print extends AbstractCommand {
 				}
 			}
 		}
+		//System.out.println(line);
 		return line;
 	}
 
