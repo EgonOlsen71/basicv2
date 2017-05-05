@@ -731,9 +731,7 @@ public class Basic implements ProgramExecutor {
 								break;
 							}
 							if (pc.getLineNumber() == -1) {
-								// Line index is known (FOR...NEXT/RETURN/RUN
-								// w/o
-								// line)
+								// Line index is unknown (FOR...NEXT/RETURN/RUN w/o line)
 								lineCnt = pc.getLineCnt();
 								num = lineNumbers.get(lineCnt);
 								line = lines.get(num);
