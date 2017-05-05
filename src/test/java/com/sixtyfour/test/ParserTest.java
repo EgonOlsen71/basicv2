@@ -29,6 +29,25 @@ public class ParserTest {
 		testPowerOf();
 		testAbs();
 		testStuff();
+		testMinusPower();
+	}
+
+	private static void testMinusPower() {
+		System.out.println("testMinusPower");
+		String term = "2+-(32-30)^10";
+		String s=Parser.addBrackets(term);
+		System.out.println(s);
+		Machine machine = new Machine();
+		Term t = Parser.getTerm(term, machine, false, true);
+		System.out.println(t);
+		System.out.println(t.eval(machine));
+		
+		term = "1*-3^2e1";
+		s=Parser.addBrackets(term);
+		System.out.println(s);
+		t = Parser.getTerm(term, machine, false, true);
+		System.out.println(t);
+		System.out.println(t.eval(machine));
 	}
 
 	private static void testArrayAccess() {

@@ -17,7 +17,6 @@ public class ProgramTest {
 	 */
 	public static void main(String[] args) {
 		testArray();
-		if (true)  System.exit(0);
 		testPrime();
 		testJavaPrime();
 		testPrime();
