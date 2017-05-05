@@ -16,6 +16,7 @@ import com.sixtyfour.elements.functions.FunctionList;
 import com.sixtyfour.extensions.BasicExtension;
 import com.sixtyfour.parser.Line;
 import com.sixtyfour.parser.Parser;
+import com.sixtyfour.plugins.CodeEnhancer;
 import com.sixtyfour.plugins.InputProvider;
 import com.sixtyfour.plugins.MemoryListener;
 import com.sixtyfour.plugins.OutputChannel;
@@ -66,6 +67,8 @@ public class Basic implements ProgramExecutor {
 	private LoopMode loopMode = LoopMode.EXECUTE;
 
 	private static Map<String, BasicExtension> addedExtensions = new HashMap<String, BasicExtension>();
+	
+	private CodeEnhancer codeEnhancer;
 
 	/**
 	 * Instantiates a new instance for a BASIC program. No
@@ -660,15 +663,60 @@ public class Basic implements ProgramExecutor {
 	public void setLoopMode(LoopMode loopMode) {
 		this.loopMode = loopMode;
 	}
+	
+	
+	/**
+	 * Sets a new code enhancer instance.
+	 * 
+	 * @return the new code enhancer
+	 */
+	public CodeEnhancer getCodeEnhancer()
+  {
+    return codeEnhancer;
+  }
+
+  /**
+   * Returns the current code enhancer instance.
+   * 
+   * @param codeEnhancer the instance
+   */
+  public void setCodeEnhancer(CodeEnhancer codeEnhancer)
+  {
+    this.codeEnhancer = codeEnhancer;
+  }
 
 	/**
    */
 	private void runInternal() {
 		long start = System.nanoTime();
+		if (codeEnhancer!=null) {
+		  String cmd=codeEnhancer.getFirstCommand();
+		  executeSingleCommand(cmd);
+		}
 		execute(0, 0);
+		if (codeEnhancer!=null) {
+		  String cmd=codeEnhancer.getLastCommand();
+		  executeSingleCommand(cmd);
+    }
 		long end = System.nanoTime();
 		machine.getOutputChannel().systemPrintln(0, "\nREADY. (" + ((end - start) / 1000000L) + "ms)");
 	}
+
+  private void executeSingleCommand(String cmd)
+  {
+    if (cmd==null || cmd.isEmpty()) {
+      return;
+    }
+    Command command = Parser.getCommand(cmd.trim());
+    if (command == null) {
+      throw new RuntimeException("Syntax error: " + cmd);
+    }
+    if (!command.keepSpaces()) {
+      cmd = Parser.removeWhiteSpace(cmd);
+    }
+    command.parse(cmd, 0, 0, 0, false, machine);
+    command.execute(machine);
+  }
 
 	/**
 	 * @param lineCnt

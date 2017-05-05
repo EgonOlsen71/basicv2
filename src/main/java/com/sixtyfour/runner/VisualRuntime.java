@@ -17,6 +17,7 @@ import com.sixtyfour.Basic;
 import com.sixtyfour.Loader;
 import com.sixtyfour.extensions.graphics.GraphicsBasic;
 import com.sixtyfour.extensions.textmode.ConsoleSupport;
+import com.sixtyfour.plugins.CodeEnhancer;
 
 
 /**
@@ -176,16 +177,31 @@ public class VisualRuntime
       public void run()
       {
         basic = new Basic(code);
+        basic.setCodeEnhancer(new CodeEnhancer()
+        {
+          @Override
+          public String getFirstCommand()
+          {
+            return "CONSOLE1";
+          }
+
+          @Override
+          public String getLastCommand()
+          {
+            return "CONSOLE0";
+          }
+        });
         try
         {
           basic.run();
-          stopProgram();
         }
         catch (Exception e)
         {
-          stopProgram();
           JOptionPane.showMessageDialog(frame, "ERROR: " + e.getMessage());
-          basic = null;
+        }
+        finally
+        {
+          stopProgram();
         }
       }
     }.start();
