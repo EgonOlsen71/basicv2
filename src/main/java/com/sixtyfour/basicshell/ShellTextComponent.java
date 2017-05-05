@@ -17,6 +17,8 @@ import java.util.List;
 import javax.swing.JTextArea;
 import javax.swing.text.DefaultCaret;
 
+import com.sixtyfour.util.Colors;
+
 /**
  * @author nietoperz809
  */
@@ -26,10 +28,10 @@ class ShellTextComponent extends JTextArea {
 
 	public ShellTextComponent(BasicShell sf) {
 		parent = sf;
-		setBackground(new Color(0x3E31A2));
+		setBackground(new Color(Colors.COLORS[6]));
 		setDoubleBuffered(true);
-		setForeground(new Color(0x7C70DA));
-		setCaretColor(new Color(0x7C70DA));
+		setForeground(new Color(Colors.COLORS[14]));
+		setCaretColor(new Color(Colors.COLORS[14]));
 		setToolTipText("<html>Type one of:<br>" + "- cls<br>- list<br>- run<br>- new<br>" + "- save[file]<br>- load[file]<br>- dir<br>" + "or edit your BASIC code here</html>");
 		BlockCaret mc = new BlockCaret();
 		mc.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
