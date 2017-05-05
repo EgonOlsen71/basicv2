@@ -26,6 +26,7 @@ import javax.swing.event.CaretListener;
 import javax.swing.text.BadLocationException;
 
 import com.sixtyfour.Basic;
+import com.sixtyfour.util.Colors;
 
 /**
  * A simple shell for loading/editing and running BASIC programs.
@@ -207,7 +208,7 @@ public class BasicShell {
 		caretLabel.setForeground(Color.pink);
 		panel2.add(caretLabel);
 		mainTextArea = new ShellTextComponent(this);
-		mainTextArea.setCaretColor(new Color(0x7C70DA));
+		mainTextArea.setCaretColor(new Color(Colors.COLORS[14]));
 		final JScrollPane scrollPane1 = new JScrollPane(mainTextArea);
 
 		panel1.add(scrollPane1, BorderLayout.CENTER);
