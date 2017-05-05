@@ -403,6 +403,7 @@ public class Parser {
 				term = term.substring(pos + 1);
 			}
 		}
+		term = replaceScientificNotation(term);
 		term = addBrackets(term);
 		return createTerms(term, termMap, machine, checkForLogicTerm);
 	}
@@ -424,6 +425,7 @@ public class Parser {
 	 */
 	public static Term getTerm(Command command, String term, Machine machine, boolean checkForLogicTerm) {
 		term = removeWhiteSpace(term.substring(command.getName().length()));
+		term = replaceScientificNotation(term);
 		term = addBrackets(term);
 		return createTerms(term, new HashMap<String, Term>(), machine, checkForLogicTerm);
 	}
@@ -865,7 +867,7 @@ public class Parser {
 	 */
 	private static Term createTerms(String term, Map<String, Term> termMap, Machine machine, boolean checkForLogicTerm) {
 		try {
-			int start = 0;
+		  int start = 0;
 			boolean open = false;
 			boolean inString = false;
 
@@ -1078,6 +1080,70 @@ public class Parser {
 	}
 
 	/**
+	 * Replaces x*e^y by an actual term to ease the parsing later on
+	 * 
+	 * @param line
+	 * @return
+	 */
+	private static String replaceScientificNotation(String line)
+  {
+	  if (line.contains("\"") || line.contains("$")) {
+      return line;
+    }
+	  
+	  StringBuilder sb=new StringBuilder();
+	  
+	  for (int i=0; i<line.length(); i++) {
+	    char c=Character.toLowerCase(line.charAt(i));
+	    if (c=='e' && i<line.length()-1 && i>0) {
+        char cp=line.charAt(i-1);
+        if (!Character.isDigit(cp)) {
+          sb.append(c);
+          continue;
+        }
+	      
+        boolean signFound=false;
+        boolean numFound=false;
+        StringBuilder num=new StringBuilder();
+        int np=i;
+	      for (int p=i+1; p<line.length(); p++) {
+	        cp=line.charAt(p);
+	        if (!signFound) {
+	          if (cp=='-' || cp=='+') {
+	            signFound=true;
+	            num.append(cp);
+	            np=p;
+	            continue;
+	          }
+	        }
+	        if (Character.isDigit(cp)) {
+	          num.append(cp);
+	          numFound=true;
+	          signFound=true;
+	          np=p;
+	        } else {
+	          break;
+	        }
+	      }
+	      
+	      if (!numFound) {
+	        num.append("0");
+	      }
+	      if (num.length()>0) {
+	        sb.append("*(10^"+num.toString()+")");
+	        i=np;
+	      } else {
+	        sb.append(c);
+	      }
+	    } else {
+	      sb.append(c);
+	    }
+	  }
+	  //System.out.println("SFN: "+line+"/"+sb.toString());
+	  return sb.toString();
+  }
+
+  /**
 	 * Builds the actual term content of a prefilled term.
 	 * 
 	 * @param t
