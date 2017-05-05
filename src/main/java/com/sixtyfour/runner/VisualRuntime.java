@@ -103,9 +103,35 @@ public class VisualRuntime
     });
 
     pause = new JButton();
-    pause.setText("PAUSE");
+    pause.setText("RESUME");
     pause.setSize(200, 60);
     pause.setEnabled(false);
+    pause.setActionCommand("pause");
+    pause.addActionListener(new ActionListener()
+    {
+      @Override
+      public void actionPerformed(ActionEvent e)
+      {
+        if ("pause".equals(e.getActionCommand()))
+        {
+          if (basic != null)
+          {
+            basic.setPause(true);
+            pause.setActionCommand("resume");
+            pause.setText("RESUME");
+          }
+        }
+        if ("resume".equals(e.getActionCommand()))
+        {
+          if (basic != null)
+          {
+            basic.setPause(false);
+            pause.setActionCommand("pause");
+            pause.setText("PAUSE");
+          }
+        }
+      }
+    });
 
     panel.add(load);
     panel.add(run);
@@ -114,8 +140,9 @@ public class VisualRuntime
     frame.add(panel);
     frame.pack();
     frame.setLocationRelativeTo(null);
+    pause.setText("PAUSE");
     frame.setVisible(true);
-    
+
     Basic.registerExtension(ConsoleSupport.class);
     Basic.registerExtension(GraphicsBasic.class);
   }
@@ -132,6 +159,7 @@ public class VisualRuntime
     run.setEnabled(true);
     pause.setText("PAUSE");
     pause.setEnabled(false);
+    pause.setActionCommand("pause");
   }
 
 
@@ -141,6 +169,7 @@ public class VisualRuntime
     pause.setText("PAUSE");
     run.setEnabled(true);
     pause.setEnabled(true);
+    pause.setActionCommand("pause");
 
     new Thread()
     {
@@ -174,6 +203,7 @@ public class VisualRuntime
     pause.setEnabled(false);
     run.setText("RUN");
     pause.setText("PAUSE");
+    pause.setActionCommand("pause");
   }
 
 
