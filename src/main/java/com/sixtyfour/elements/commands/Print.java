@@ -155,26 +155,7 @@ public class Print extends AbstractCommand {
 		int brackets = 0;
 		StringBuilder sb = new StringBuilder();
 
-		// Crude fix for functions that directly follow vars or constants...
-		// Like for example PRINT 1TAB(10)ACHR$(161)B2TAB(23)123TAB(5)..
-		// This is quite inefficient and a real crudge, but...anyway...
-		List<Function> funs = FunctionList.getFunctions();
-		for (int i = 1; i < line.length() - 5; i++) {
-			char c = line.charAt(i - 1);
-			if (c == '"') {
-				inString = !inString;
-			}
-			if (!inString && Character.isLetterOrDigit(c)) {
-				String sub = line.substring(i);
-				for (Function fun : funs) {
-					if (fun.isFunction(sub)) {
-						line = line.substring(0, i) + ";" + line.substring(i);
-						i += fun.getName().length() + 1;
-						break;
-					}
-				}
-			}
-		}
+		line = fixKludges(line);
 
 		inString = false;
 		for (int i = 0; i < line.length(); i++) {
@@ -207,7 +188,8 @@ public class Print extends AbstractCommand {
 
 				boolean end = i == line.length() - 1;
 
-				if (end || (brackets == 0 && (c == '"' || (c == ')' && nc != '=' && nc != '<' && nc != '>') || c == ',' || c == ';' || (c == '$' && nc != '(') || (c == '%' && nc!='(')))) {
+				if (end
+						|| (brackets == 0 && (c == '"' || (c == ')' && nc != '=' && nc != '<' && nc != '>') || c == ',' || c == ';' || (c == '$' && nc != '(') || (c == '%' && nc != '(')))) {
 					if (end || !Operator.isRealOperator(nc) || c == ';' || c == ',') {
 						if (end || c == '"' || c == ')' || c == '%' || c == '$') {
 							if (end) {
@@ -245,6 +227,47 @@ public class Print extends AbstractCommand {
 			sb.append(c);
 		}
 		return res;
+	}
+
+	private String fixKludges(String line) {
+		// Crude fix for functions/vars/constants that directly follow functions/vars/constants...
+		// Like for example PRINT 1TAB(10)ACHR$(161)B2TAB(23)123TAB(5)..or PRINT 3(3)a(a(3))3
+		// This is quite inefficient and a real crudge, but...anyway...
+		boolean inString = false;
+		boolean hadLetter = false;
+		List<Function> funs = FunctionList.getFunctions();
+
+		for (int i = 1; i < line.length(); i++) {
+			char c = line.charAt(i - 1);
+			if (c == '"') {
+				inString = !inString;
+			}
+			if (!inString && (Character.isLetterOrDigit(c) || c == '.')) {
+				hadLetter |= Character.isLetter(c);
+				String sub = line.substring(i);
+				boolean splitted = false;
+				for (Function fun : funs) {
+					if (fun.isFunction(sub)) {
+						line = line.substring(0, i) + ";" + line.substring(i);
+						i += fun.getName().length() + 1;
+						splitted = true;
+						hadLetter = false;
+						break;
+					}
+				}
+				// Special case where a variable (or some other term) directly follows something else
+				if (!splitted) {
+					char cn = line.charAt(i);
+					if ((Character.isDigit(c) || c == '.' || c == ')')
+							&& ((!hadLetter && cn == '(') || Character.isLetter(cn) || (c == '.' && cn == '.') || (c == ')' && Character.isLetterOrDigit(cn))) && cn != 'e') {
+						line = line.substring(0, i) + ";" + line.substring(i);
+						i++;
+						hadLetter = false;
+					}
+				}
+			}
+		}
+		return line;
 	}
 
 	/**
