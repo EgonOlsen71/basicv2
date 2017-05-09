@@ -456,7 +456,30 @@ public class Basic implements ProgramExecutor {
 			machine.getOutputChannel().systemPrintln(0, "\nREADY.");
 		}
 	}
-
+	
+	/**
+	 * Executes a single command in the context of this instance's machine. 
+	 * Please note that this might happen in parallel with another command of 
+	 * the actual problem, so depending on the given command, this can have some 
+	 * sideeffects at runtime.
+   * @param cmd the command to execute
+   */
+  public void executeSingleCommand(String cmd)
+  {
+    if (cmd==null || cmd.isEmpty()) {
+      return;
+    }
+    Command command = Parser.getCommand(cmd.trim());
+    if (command == null) {
+      throw new RuntimeException("Syntax error: " + cmd);
+    }
+    if (!command.keepSpaces()) {
+      cmd = Parser.removeWhiteSpace(cmd);
+    }
+    command.parse(cmd, 0, 0, 0, false, machine);
+    command.execute(machine);
+  }
+	
 	/**
 	 * Resets the memory. This will clean the 64KB of main memory as well as all
 	 * variables.
@@ -471,6 +494,7 @@ public class Basic implements ProgramExecutor {
 	 */
 	@Override
 	public void runStop() {
+	  paused = false;
 		stop = true;
 	}
 
@@ -701,22 +725,6 @@ public class Basic implements ProgramExecutor {
 		long end = System.nanoTime();
 		machine.getOutputChannel().systemPrintln(0, "\nREADY. (" + ((end - start) / 1000000L) + "ms)");
 	}
-
-  private void executeSingleCommand(String cmd)
-  {
-    if (cmd==null || cmd.isEmpty()) {
-      return;
-    }
-    Command command = Parser.getCommand(cmd.trim());
-    if (command == null) {
-      throw new RuntimeException("Syntax error: " + cmd);
-    }
-    if (!command.keepSpaces()) {
-      cmd = Parser.removeWhiteSpace(cmd);
-    }
-    command.parse(cmd, 0, 0, 0, false, machine);
-    command.execute(machine);
-  }
 
 	/**
 	 * @param lineCnt

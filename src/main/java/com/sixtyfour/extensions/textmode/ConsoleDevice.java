@@ -153,6 +153,7 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 		frame = new JFrame("Console " + x + "*" + y);
 		frame.setLayout(new BorderLayout());
 		frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+		frame.addKeyListener(new FontToggler());
 		frame.addWindowStateListener(new WindowStateListener() {
 			@Override
 			public void windowStateChanged(WindowEvent e) {
@@ -531,6 +532,24 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 
 		return inputString.toString();
 	}
+	
+	/**
+	 * Sets the used charset to either lower or not lower (i.e. upper) case.
+	 * 
+	 * @param isLower is it lower case?
+	 */
+	public void setFontMode(boolean isLower) {
+	  setCharset(!isLower);
+	  update();
+	}
+	
+	/**
+	 * Toggles the current charset between lower case and upper/grapchis characters mode.
+	 */
+	public void toggleFontMode() {
+    setCharset(!this.graphicsFontUsed);
+    update();
+  }
 
 	private void stopCursor() {
 		cursorMode = false;
@@ -982,4 +1001,32 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 		pokeValue(TEXT_RAM + pos, 160, TEXT_RAM);
 		pokeValue(COLOR_RAM + pos, color, COLOR_RAM);
 	}
+	
+	private class FontToggler implements KeyListener {
+
+    private boolean pressed=false;
+    
+    @Override
+    public void keyTyped(KeyEvent e)
+    {
+      //
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e)
+    {
+      if (e.isControlDown() && e.isShiftDown()) {
+        if (!pressed) {
+          toggleFontMode();
+          pressed=true;
+        }
+      }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e)
+    {
+      pressed=false;
+    }
+  }
 }

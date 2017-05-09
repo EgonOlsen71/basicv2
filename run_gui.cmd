@@ -1,0 +1,1 @@
+start /min /b javaw -Xmx256m -jar dist/basicv2.jar

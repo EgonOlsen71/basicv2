@@ -18,6 +18,7 @@ import com.sixtyfour.Loader;
 import com.sixtyfour.extensions.graphics.GraphicsBasic;
 import com.sixtyfour.extensions.textmode.ConsoleSupport;
 import com.sixtyfour.plugins.CodeEnhancer;
+import com.sixtyfour.plugins.impl.RamSystemCallListener;
 
 
 /**
@@ -64,7 +65,6 @@ public class VisualRuntime
 
     load = new JButton();
     load.setText("LOAD");
-    load.setSize(200, 60);
     load.setActionCommand("load");
     load.addActionListener(new ActionListener()
     {
@@ -81,7 +81,6 @@ public class VisualRuntime
 
     run = new JButton();
     run.setText("RUN");
-    run.setSize(200, 60);
     run.setEnabled(false);
     run.setActionCommand("run");
     run.addActionListener(new ActionListener()
@@ -105,7 +104,6 @@ public class VisualRuntime
 
     pause = new JButton();
     pause.setText("RESUME");
-    pause.setSize(200, 60);
     pause.setEnabled(false);
     pause.setActionCommand("pause");
     pause.addActionListener(new ActionListener()
@@ -140,6 +138,7 @@ public class VisualRuntime
 
     frame.add(panel);
     frame.pack();
+    frame.setSize(480, 80);
     frame.setLocationRelativeTo(null);
     pause.setText("PAUSE");
     frame.setVisible(true);
@@ -177,6 +176,8 @@ public class VisualRuntime
       public void run()
       {
         basic = new Basic(code);
+        basic.getMachine().addRoms();
+        basic.setSystemCallListener(new RamSystemCallListener(basic.getMachine()));
         basic.setCodeEnhancer(new CodeEnhancer()
         {
           @Override
@@ -188,6 +189,7 @@ public class VisualRuntime
           @Override
           public String getLastCommand()
           {
+            JOptionPane.showMessageDialog(frame, "Program terminated, click OK to close console output!");
             return "CONSOLE0";
           }
         });

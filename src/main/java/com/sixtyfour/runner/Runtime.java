@@ -1,10 +1,13 @@
 /*
  * 
  */
-package com.sixtyfour;
+package com.sixtyfour.runner;
 
+import com.sixtyfour.Basic;
+import com.sixtyfour.Loader;
 import com.sixtyfour.extensions.graphics.GraphicsBasic;
 import com.sixtyfour.extensions.textmode.ConsoleSupport;
+import com.sixtyfour.plugins.impl.RamSystemCallListener;
 
 /**
  * A simple helper class that allows for starting BASIC programs from the
@@ -29,6 +32,8 @@ public class Runtime {
 		Basic.registerExtension(new GraphicsBasic());
 		Basic.registerExtension(new ConsoleSupport());
 		Basic parser = new Basic(code);
+		parser.getMachine().addRoms();
+		parser.setSystemCallListener(new RamSystemCallListener(parser.getMachine()));
 		parser.run();
 	}
 

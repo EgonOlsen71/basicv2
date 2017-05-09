@@ -8,10 +8,11 @@ import com.sixtyfour.elements.commands.Command;
 import com.sixtyfour.elements.functions.Function;
 import com.sixtyfour.extensions.BasicExtension;
 import com.sixtyfour.extensions.textmode.commands.Console;
+import com.sixtyfour.extensions.textmode.commands.ConsoleFont;
 import com.sixtyfour.system.Machine;
 
 /**
- * A BASIC extension, that adds PETSCII console support. For more details see
+ * A BASIC extension that adds PETSCII console support. For more details see
  * "CONSOLE SUPPORT.txt"
  * 
  * @author EgonOlsen
@@ -22,7 +23,8 @@ public class ConsoleSupport implements BasicExtension {
 	private final static List<Command> COMMANDS = Collections.unmodifiableList(new ArrayList<Command>() {
 		private static final long serialVersionUID = 1L;
 		{
-			this.add(new Console());
+		  this.add(new ConsoleFont());
+		  this.add(new Console());
 		}
 	});
 
