@@ -17,11 +17,16 @@ import com.sixtyfour.Basic;
 import com.sixtyfour.Loader;
 import com.sixtyfour.extensions.graphics.GraphicsBasic;
 import com.sixtyfour.extensions.textmode.ConsoleSupport;
+import com.sixtyfour.parser.Preprocessor;
 import com.sixtyfour.plugins.CodeEnhancer;
 import com.sixtyfour.plugins.impl.RamSystemCallListener;
 
 
 /**
+ * A simple UI class that allows for starting BASIC programs from the desktop. It can load, run, stop and pause BASIC
+ * programs. It uses the CONSOLE extension to automatically display a program's output in the console emulation. It also
+ * registers the GRAPHICS extention and adds the C64 ROMS to the internal machines memory.
+ * 
  * @author EgonOlsen
  *
  */
@@ -39,9 +44,23 @@ public class VisualRuntime
   private File lastDir;
 
 
+  /**
+   * The main method. Just run this without any parameters.
+   * 
+   * @param args
+   */
   public static void main(String[] args)
   {
-    new VisualRuntime().setup();
+    new VisualRuntime();
+  }
+
+
+  /**
+   * Creates a new visual runtime.
+   */
+  public VisualRuntime()
+  {
+    setup();
   }
 
 
@@ -148,7 +167,7 @@ public class VisualRuntime
   }
 
 
-  protected void stopProgram()
+  public void stopProgram()
   {
     if (basic != null)
     {
@@ -163,7 +182,7 @@ public class VisualRuntime
   }
 
 
-  protected void runProgram()
+  public void runProgram()
   {
     run.setText("STOP");
     pause.setText("PAUSE");
@@ -185,6 +204,7 @@ public class VisualRuntime
           {
             return "CONSOLE1";
           }
+
 
           @Override
           public String getLastCommand()
@@ -210,7 +230,7 @@ public class VisualRuntime
   }
 
 
-  protected void terminate()
+  public void terminate()
   {
     if (basic != null)
     {
@@ -225,7 +245,7 @@ public class VisualRuntime
   }
 
 
-  protected void loadProgram()
+  public void loadProgram()
   {
     run.setText("RUN");
     JFileChooser fc = new JFileChooser();
@@ -242,6 +262,19 @@ public class VisualRuntime
     File file = fc.getSelectedFile();
     code = Loader.loadProgram(file.toString());
     lastDir = file.getParentFile();
+    for (String line : code)
+    {
+      line = line.trim();
+      if (!line.isEmpty())
+      {
+        if (!Character.isDigit(line.charAt(0)))
+        {
+          code = Preprocessor.convertToLineNumbers(code);
+          JOptionPane.showMessageDialog(frame, "Program converted from labels to line numbers!");
+        }
+      }
+      break;
+    }
     run.setEnabled(true);
     frame.setTitle(file.getName());
   }

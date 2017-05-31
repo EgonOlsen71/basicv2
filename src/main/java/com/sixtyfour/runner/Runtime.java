@@ -12,7 +12,8 @@ import com.sixtyfour.plugins.impl.RamSystemCallListener;
 /**
  * A simple helper class that allows for starting BASIC programs from the
  * command line. It takes the file name as the only parameter, then loads and
- * runs it once.
+ * runs it once. It also registers the GRAPHICS and the CONSOLE extentions and
+ * adds the C64 ROMS to the internal machines memory.
  */
 public class Runtime {
 
