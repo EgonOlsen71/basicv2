@@ -461,7 +461,7 @@ public class Basic implements ProgramExecutor {
 	 * Executes a single command in the context of this instance's machine. 
 	 * Please note that this might happen in parallel with another command of 
 	 * the actual problem, so depending on the given command, this can have some 
-	 * sideeffects at runtime.
+	 * side effects at runtime.
    * @param cmd the command to execute
    */
   public void executeSingleCommand(String cmd)
