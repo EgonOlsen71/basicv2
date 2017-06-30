@@ -1,7 +1,5 @@
 package com.sixtyfour.parser.logic;
 
-import java.util.List;
-
 import com.sixtyfour.parser.Atom;
 import com.sixtyfour.system.Machine;
 
