@@ -1,5 +1,7 @@
 package com.sixtyfour.elements.functions;
 
+import java.util.List;
+
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.Term;
 import com.sixtyfour.system.Machine;
@@ -89,6 +91,11 @@ public abstract class AbstractFunction implements Function {
 
 	}
 
+	@Override
+	public List<String> evalToExpression(Machine machine) {
+	  return null;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

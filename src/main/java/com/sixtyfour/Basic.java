@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.sixtyfour.cbmnative.PCode;
 import com.sixtyfour.elements.commands.Command;
 import com.sixtyfour.elements.commands.CommandList;
 import com.sixtyfour.elements.commands.For;
@@ -254,6 +255,16 @@ public class Basic implements ProgramExecutor {
 		return machine.getCpu();
 	}
 
+	/**
+	 * Returns the compiled program wrapped into a PCode instance. 
+	 * This method isn't needed for normal usage.
+	 * 
+	 * @return the PCode instance
+	 */
+	public PCode getPCode() {
+	  return new PCode(lineNumbers, lines);
+	}
+	
 	/**
 	 * Gets the value of a string variable.
 	 * 

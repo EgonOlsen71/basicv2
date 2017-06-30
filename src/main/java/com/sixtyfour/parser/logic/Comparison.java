@@ -1,5 +1,7 @@
 package com.sixtyfour.parser.logic;
 
+import java.util.List;
+
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.parser.Term;
 import com.sixtyfour.system.Machine;
@@ -62,6 +64,12 @@ public class Comparison implements LogicBlock {
 		}
 		return ret;
 	}
+	
+	@Override
+  public List<String> evalToExpression(Machine machine) {
+    return null;
+  }
+
 
 	/**
 	 * Gets the left term.

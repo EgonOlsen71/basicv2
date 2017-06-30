@@ -1,5 +1,8 @@
 package com.sixtyfour.elements;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.sixtyfour.parser.Atom;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
@@ -36,6 +39,13 @@ public class Constant<T> implements Atom {
 			throw new RuntimeException("Type mismatch error: " + value);
 		}
 	}
+	
+	@Override
+  public List<String> evalToExpression(Machine machine) {
+    List<String> ret= new ArrayList<String>();
+    ret.add("#"+value.toString()+"{"+type+"}");
+    return ret;
+  }
 
 	/*
 	 * (non-Javadoc)
