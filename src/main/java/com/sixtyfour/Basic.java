@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.sixtyfour.cbmnative.PCode;
 import com.sixtyfour.elements.commands.Command;
 import com.sixtyfour.elements.commands.CommandList;
 import com.sixtyfour.elements.commands.For;
@@ -255,6 +256,16 @@ public class Basic implements ProgramExecutor {
 	}
 
 	/**
+	 * Returns the compiled program wrapped into a PCode instance. 
+	 * This method isn't needed for normal usage.
+	 * 
+	 * @return the PCode instance
+	 */
+	public PCode getPCode() {
+	  return new PCode(lineNumbers, lines);
+	}
+	
+	/**
 	 * Gets the value of a string variable.
 	 * 
 	 * @param name
@@ -461,7 +472,7 @@ public class Basic implements ProgramExecutor {
 	 * Executes a single command in the context of this instance's machine. 
 	 * Please note that this might happen in parallel with another command of 
 	 * the actual problem, so depending on the given command, this can have some 
-	 * sideeffects at runtime.
+	 * side effects at runtime.
    * @param cmd the command to execute
    */
   public void executeSingleCommand(String cmd)

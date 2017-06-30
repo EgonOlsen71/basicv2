@@ -85,7 +85,7 @@ public class Jit
 
 
   /**
-   * Adds a method that evaluates an expressions. Used internally, no need to call this from an application.
+   * Adds a method that evaluates an expression. Used internally, no need to call this from an application.
    * 
    * @param term
    *          the term that forms the expression

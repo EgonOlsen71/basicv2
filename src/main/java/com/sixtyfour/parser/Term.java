@@ -1,6 +1,8 @@
 package com.sixtyfour.parser;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.sixtyfour.elements.Constant;
 import com.sixtyfour.elements.Type;
@@ -226,6 +228,90 @@ public class Term implements Atom {
 		return t1;
 	}
 
+	@Override
+  public List<String> evalToExpression(Machine machine) {
+	  List<String> ret=new ArrayList<String>();
+      if (operator.isNop()) {
+        if (left == null) {
+          throw new RuntimeException("Syntax error!");
+        }
+        return left.evalToExpression(machine);
+      }
+      Type type = getType();
+      if (type == Type.STRING) {
+        if (operator.isPlus()) {
+          ret.add(0,"_");
+          ret.add(0,":+");
+          ret.addAll(0,left.evalToExpression(machine));
+          ret.addAll(0,right.evalToExpression(machine));
+          return ret;
+        }
+      } else {
+        List<String> n1 = left.evalToExpression(machine);
+        List<String> n2 = n1;
+        if (left != right) {
+          n2 = right.evalToExpression(machine);
+        }
+
+        switch (operator.getType()) {
+        case 0:
+          ret.add(0,"_");
+          n2.add(0,":^");
+          ret.addAll(0,n1);
+          ret.addAll(0,n2);
+          break;
+        case 1:
+          ret.add(0,"_");
+          n2.add(0,":*");
+          ret.addAll(0,n1);
+          ret.addAll(0,n2);
+          break;
+        case 2:
+          ret.add(0,"_");
+          n2.add(0,":/");
+          ret.addAll(0,n1);
+          ret.addAll(0,n2);
+          break;
+        case 3:
+          ret.add(0,"_");
+          n2.add(0,":+");
+          ret.addAll(0,n1);
+          ret.addAll(0,n2);
+          break;
+        case 4:
+          ret.add(0,"_");
+          n2.add(0,":-");
+          ret.addAll(0,n1);
+          ret.addAll(0,n2);
+          break;
+        case 5:
+          break;
+        case 6:
+          break;
+        case 7:
+          ret.add(0,"_");
+          n2.add(0,":|");
+          ret.addAll(0,n1);
+          ret.addAll(0,n2);
+          break;
+        case 8:
+          ret.add(0,"_");
+          n2.add(0,":&");
+          ret.addAll(0,n1);
+          ret.addAll(0,n2);
+          break;
+        case 9:
+          ret.add(0,"_");
+          n2.add(0,":!");
+          ret.addAll(0,n2);
+          break;
+        }
+        return ret;
+      }
+      throw new RuntimeException("Unable to evaluate term to expression: " + this.toString());
+  }
+
+	
 	/*
 	 * (non-Javadoc)
 	 * 

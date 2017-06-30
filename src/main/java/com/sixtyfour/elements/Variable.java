@@ -164,7 +164,13 @@ public class Variable
     this.setValue(value);
   }
 
-
+  @Override
+  public List<String> evalToExpression(Machine machine) {
+    List<String> ret= new ArrayList<String>();
+    ret.add(upperCaseName.toString()+"{"+type+"}");
+    return ret;
+  }
+  
   /**
    * Clears the variable by setting it back to its default.
    */
