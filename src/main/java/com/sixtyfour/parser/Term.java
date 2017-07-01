@@ -253,6 +253,10 @@ public class Term implements Atom {
           n2 = right.evalToExpression(machine);
         }
 
+        if (n1==null || n2==null) {
+        	throw new RuntimeException("Unknown function name: "+this.getExpression());
+        }
+        
         switch (operator.getType()) {
         case 0:
           ret.add(0,"_");

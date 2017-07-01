@@ -16,6 +16,17 @@ public class NativeCompilerTest {
 		testExpression1();
 		testExpression2();
 		testExpression3();
+		testExpression4();
+	}
+	
+	private static void testExpression4() {
+		System.out.println("\n\ntestExpression4");
+		Machine machine = new Machine();
+		machine.add(new Variable("A", 35f));
+		machine.add(new Variable("B", 1.2f));
+		String term = "2.3/SIN(((A-X)^4+(B-Y)^3+(C-Z)^2)^SIN(1/2))";
+		//String term="2.3/(A+B)";
+		testExpr(machine, term);
 	}
 
 	private static void testExpression3() {

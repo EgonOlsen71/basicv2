@@ -2,8 +2,11 @@ package com.sixtyfour.cbmnative;
 
 import java.util.ArrayList;
 import java.util.Deque;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 
 import com.sixtyfour.parser.Term;
 import com.sixtyfour.system.Machine;
@@ -14,6 +17,15 @@ import com.sixtyfour.system.Machine;
  */
 public class NativeCompiler {
 
+	private Set<String> SINGLES = new HashSet<String>() {
+		private static final long serialVersionUID = 1L;
+
+		{
+			this.add("!");
+			this.add("SIN");
+		}
+	};
+
 	public List<String> compileToPseudoCode(Machine machine, Term term) {
 		List<String> code = new ArrayList<String>();
 		List<String> expr = term.evalToExpression(machine);
@@ -21,11 +33,18 @@ public class NativeCompiler {
 		Deque<String> yStack = new LinkedList<String>();
 		boolean left = false;
 		boolean right = false;
+		boolean swap=false;
+		boolean wasBreak=false;
 
 		for (String exp : expr) {
 			boolean isOp = exp.startsWith(":");
 			boolean isBreak = exp.equals("_");
 
+			if (wasBreak && isBreak) {
+				swap=false;
+			}
+			wasBreak=isBreak;
+			
 			if (!isBreak) {
 				if (!isOp) {
 					if (!right) {
@@ -35,8 +54,16 @@ public class NativeCompiler {
 						code.add("MOV X," + exp);
 						left = true;
 					}
+					if (left && right) {
+						swap=true;
+					}
 				}
 			}
+			
+			if (isOp && !isSingle(exp.replace(":", ""))) {
+				swap=false;
+			}
+			
 			if (isOp && right && !left) {
 				String lc = code.get(code.size() - 1);
 				if (lc.startsWith("MOV Y")) {
@@ -53,7 +80,8 @@ public class NativeCompiler {
 				String ex = stack.pop();
 				String op = ex.replace(":", "");
 				boolean isSingle = isSingle(op);
-
+				boolean dontSwap=left&right;
+				
 				if (!left && !isSingle) {
 					if (code.size() >= 1 && code.get(code.size() - 1).equals("PUSH X")) {
 						code.remove(code.size() - 1);
@@ -83,6 +111,11 @@ public class NativeCompiler {
 					right = true;
 				}
 
+				if (!dontSwap && swap && !isSingle) {
+					code.add("SWAP X,Y");
+					swap=false;
+				}
+				
 				switch (op) {
 				case "+":
 					code.add("ADD X,Y");
@@ -108,6 +141,9 @@ public class NativeCompiler {
 				case "!":
 					code.add("NOT X,Y");
 					break;
+				case "SIN":
+					code.add("SIN X,Y");
+					break;
 				default:
 					throw new RuntimeException("Unknown operator: " + op);
 				}
@@ -129,7 +165,7 @@ public class NativeCompiler {
 	}
 
 	private boolean isSingle(String op) {
-		return op.equals("!");
+		return SINGLES.contains(op.toUpperCase(Locale.ENGLISH));
 	}
 
 }

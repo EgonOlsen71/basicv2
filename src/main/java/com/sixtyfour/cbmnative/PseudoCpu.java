@@ -59,6 +59,12 @@ public class PseudoCpu {
 				case "POW":
 					pow(parts);
 					break;
+				case "SIN":
+					sin(parts);
+					break;
+				case "SWAP":
+					swap(parts);
+					break;
 				default:
 					throw new RuntimeException("Unknown instruction: " + parts[0]);
 				}
@@ -73,6 +79,20 @@ public class PseudoCpu {
 		return stack;
 	}
 
+	private void sin(String[] parts) {
+		calc(parts, new Calc() {
+			@Override
+			public Number calc(Number n1, Number n2) {
+				return Math.sin(n2.doubleValue());
+			}
+
+			@Override
+			public String op() {
+				return "SIN(_)";
+			}
+		});
+	}
+
 	private void not(String[] parts) {
 		calc(parts, new Calc() {
 			@Override
@@ -81,8 +101,8 @@ public class PseudoCpu {
 			}
 
 			@Override
-			public char op() {
-				return '!';
+			public String op() {
+				return "!_";
 			}
 		});
 	}
@@ -95,8 +115,8 @@ public class PseudoCpu {
 			}
 
 			@Override
-			public char op() {
-				return '|';
+			public String op() {
+				return "|_";
 			}
 		});
 	}
@@ -109,8 +129,8 @@ public class PseudoCpu {
 			}
 
 			@Override
-			public char op() {
-				return '&';
+			public String op() {
+				return "&_";
 			}
 		});
 	}
@@ -123,8 +143,8 @@ public class PseudoCpu {
 			}
 
 			@Override
-			public char op() {
-				return '+';
+			public String op() {
+				return "+_";
 			}
 		});
 	}
@@ -137,8 +157,8 @@ public class PseudoCpu {
 			}
 
 			@Override
-			public char op() {
-				return '^';
+			public String op() {
+				return "^_";
 			}
 		});
 	}
@@ -151,8 +171,8 @@ public class PseudoCpu {
 			}
 
 			@Override
-			public char op() {
-				return '-';
+			public String op() {
+				return "-_";
 			}
 		});
 	}
@@ -165,8 +185,8 @@ public class PseudoCpu {
 			}
 
 			@Override
-			public char op() {
-				return '/';
+			public String op() {
+				return "/_";
 			}
 		});
 	}
@@ -179,8 +199,8 @@ public class PseudoCpu {
 			}
 
 			@Override
-			public char op() {
-				return '*';
+			public String op() {
+				return "*_";
 			}
 		});
 	}
@@ -199,12 +219,14 @@ public class PseudoCpu {
 
 		regs[ti] = calc.calc(n2, n1);
 
+		/*
 		if (n1 instanceof Integer && n2 instanceof Integer) {
 			regs[ti] = regs[ti].intValue();
 		}
+		*/
 
-		System.out.println(target + ("" + calc.op()) + source);
-		System.out.println(n2 + ("" + calc.op()) + n1 + "=" + regs[ti]);
+		System.out.println(target + "" + calc.op().replace("_", source));
+		System.out.println(((n2 == n1) ? "" : n2) + "" + calc.op().replace("_", n1.toString()) + "=" + regs[ti]);
 	}
 
 	private void pop(String[] parts) {
@@ -217,6 +239,20 @@ public class PseudoCpu {
 		String target = parts[1];
 		int ti = getIndex(target);
 		stack.push(regs[ti]);
+	}
+
+	private void swap(String[] parts) {
+		String[] ops = parts[1].split(",");
+		String target = ops[0];
+		String source = ops[1];
+		int ti = 0;
+		int si = 0;
+
+		ti = getIndex(target);
+		si = getIndex(source);
+		Number rti = regs[ti];
+		regs[ti] = regs[si];
+		regs[si] = rti;
 	}
 
 	private void mov(String[] parts) {
@@ -264,6 +300,6 @@ public class PseudoCpu {
 	private interface Calc {
 		Number calc(Number n1, Number n2);
 
-		char op();
+		String op();
 	}
 }

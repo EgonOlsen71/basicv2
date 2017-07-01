@@ -1,6 +1,8 @@
 package com.sixtyfour.elements.functions;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.Term;
@@ -93,9 +95,14 @@ public abstract class AbstractFunction implements Function {
 
 	@Override
 	public List<String> evalToExpression(Machine machine) {
-	  return null;
+		List<String> ret = new ArrayList<String>();
+		ret.add(0, "_");
+		List<String> n1 = term.evalToExpression(machine);
+		n1.add(":" + this.getClass().getSimpleName().toUpperCase(Locale.ENGLISH));
+		ret.addAll(0, n1);
+		return ret;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
