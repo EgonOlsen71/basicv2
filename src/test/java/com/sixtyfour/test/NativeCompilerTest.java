@@ -20,11 +20,24 @@ public class NativeCompilerTest {
 	}
 	
 	private static void testExpression4() {
-		System.out.println("\n\ntestExpression4");
+		
+		System.out.println("\n\ntestExpression4.1");
 		Machine machine = new Machine();
 		machine.add(new Variable("A", 35f));
 		machine.add(new Variable("B", 1.2f));
-		String term = "2.3/SIN(((A-X)^4+(B-Y)^3+(C-Z)^2)^SIN(1/2))";
+		String term = "SIN(((A-X)^4+(B-Y)^3+(C-Z)^2)^SIN(1/2))^2";
+		//String term="2.3/(A+B)";
+		testExpr(machine, term);
+		
+		System.out.println("\n\ntestExpression4.2");
+		machine = new Machine();
+		machine.add(new Variable("A", 3.5f));
+		machine.add(new Variable("B", 1.2f));
+		machine.add(new Variable("X", 1));
+		machine.add(new Variable("Y", 1.1));
+		machine.add(new Variable("Z", 1.1));
+		machine.add(new Variable("C", 2.1));
+		term = "10/((-2/((2+-(32-A)^2-1+(2*A)/(8*B))/100000))^-(2*SIN(((A-X)^4+(B-Y)^3+(1+2+6*2/6-2^1+C-Z)^2)^SIN(1/2)/20)))*12345";
 		//String term="2.3/(A+B)";
 		testExpr(machine, term);
 	}

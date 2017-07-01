@@ -33,18 +33,12 @@ public class NativeCompiler {
 		Deque<String> yStack = new LinkedList<String>();
 		boolean left = false;
 		boolean right = false;
-		boolean swap=false;
-		boolean wasBreak=false;
+		Set<Integer> fromAbove = new HashSet<Integer>();
 
 		for (String exp : expr) {
 			boolean isOp = exp.startsWith(":");
 			boolean isBreak = exp.equals("_");
 
-			if (wasBreak && isBreak) {
-				swap=false;
-			}
-			wasBreak=isBreak;
-			
 			if (!isBreak) {
 				if (!isOp) {
 					if (!right) {
@@ -54,16 +48,9 @@ public class NativeCompiler {
 						code.add("MOV X," + exp);
 						left = true;
 					}
-					if (left && right) {
-						swap=true;
-					}
 				}
 			}
-			
-			if (isOp && !isSingle(exp.replace(":", ""))) {
-				swap=false;
-			}
-			
+
 			if (isOp && right && !left) {
 				String lc = code.get(code.size() - 1);
 				if (lc.startsWith("MOV Y")) {
@@ -80,8 +67,7 @@ public class NativeCompiler {
 				String ex = stack.pop();
 				String op = ex.replace(":", "");
 				boolean isSingle = isSingle(op);
-				boolean dontSwap=left&right;
-				
+
 				if (!left && !isSingle) {
 					if (code.size() >= 1 && code.get(code.size() - 1).equals("PUSH X")) {
 						code.remove(code.size() - 1);
@@ -96,26 +82,27 @@ public class NativeCompiler {
 						}
 					}
 					left = true;
+					// code.add("SWAP X,Y");
 				}
 				if (!right) {
 					if (yStack.isEmpty()) {
-						code.add("POP Y");
+						popy(code);
 					} else {
 						String v = yStack.pop();
 						if (v == null) {
-							code.add("POP Y");
+							popy(code);
 						} else {
 							code.add(v);
+							fromAbove.add(code.size() - 1);
 						}
 					}
 					right = true;
 				}
 
-				if (!dontSwap && swap && !isSingle) {
+				if (code.size() > 1 && code.get(code.size() - 1).startsWith("MOV Y") && !code.get(code.size() - 1).equals("MOV Y,X") && !fromAbove.contains(code.size() - 1)) {
 					code.add("SWAP X,Y");
-					swap=false;
 				}
-				
+
 				switch (op) {
 				case "+":
 					code.add("ADD X,Y");
@@ -162,6 +149,14 @@ public class NativeCompiler {
 			throw new RuntimeException("Operator stack not empty, " + stack.size() + " elements remaining!");
 		}
 		return code;
+	}
+
+	private void popy(List<String> code) {
+		if (code.get(code.size() - 1).equals("PUSH X")) {
+			code.set(code.size() - 1, "MOV Y,X");
+		} else {
+			code.add("POP Y");
+		}
 	}
 
 	private boolean isSingle(String op) {

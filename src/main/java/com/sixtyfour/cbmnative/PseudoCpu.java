@@ -23,6 +23,7 @@ public class PseudoCpu {
 		this.machine = machine;
 		stack.clear();
 		for (String line : code) {
+			//System.out.println(regs[0]+"/"+regs[1]);
 			String[] parts = line.split(" ");
 			if (parts.length > 0) {
 				switch (parts[0]) {
@@ -270,7 +271,7 @@ public class PseudoCpu {
 		if (pos == -1) {
 			regs[ti] = regs[si];
 		} else {
-			String ts = source.substring(pos + 1, source.length() - 1);
+			String ts = source.substring(pos + 1, source.indexOf("}"));
 			String val = source.substring(0, pos);
 			type = Type.valueOf(ts);
 
