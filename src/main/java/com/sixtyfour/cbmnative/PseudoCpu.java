@@ -119,7 +119,7 @@ public class PseudoCpu {
 			}
 		});
 	}
-	
+
 	private void rnd(String[] parts) {
 		calc(parts, new Calc() {
 			@Override
@@ -363,8 +363,9 @@ public class PseudoCpu {
 		 * regs[ti].intValue(); }
 		 */
 
-		System.out.println(target + "" + calc.op().replace("_", source));
-		System.out.println(((n2 == n1) ? "" : n2) + "" + calc.op().replace("_", n1.toString()) + "=" + regs[ti]);
+		//System.out.println(target + "" + calc.op().replace("_", source));
+		System.out.println((calc.op().contains("(") ? "" : n2) + "" + calc.op().replace("_", n1.toString()) + "="
+				+ regs[ti]);
 	}
 
 	private void pop(String[] parts) {

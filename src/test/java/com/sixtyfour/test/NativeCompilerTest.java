@@ -33,7 +33,7 @@ public class NativeCompilerTest {
 	private static void testExpression5() {
 		System.out.println("\n\ntestExpression5.1");
 		Machine machine = new Machine();
-		String term = "INT(SIN(35)*100)";
+		String term = "INT(SIN(35)*100/7)";
 		testExpr(machine, term);
 
 		System.out.println("\n\ntestExpression5.2 - Random number");
