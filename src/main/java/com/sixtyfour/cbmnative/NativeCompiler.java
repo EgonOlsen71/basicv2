@@ -23,12 +23,21 @@ public class NativeCompiler {
 		{
 			this.add("!");
 			this.add("SIN");
+			this.add("COS");
+			this.add("TAN");
+			this.add("LOG");
+			this.add("INT");
+			this.add("ABS");
+			this.add("SGN");
+			this.add("SQR");
+			this.add("RND");
 		}
 	};
 
 	public List<String> compileToPseudoCode(Machine machine, Term term) {
 		List<String> code = new ArrayList<String>();
 		List<String> expr = term.evalToExpression(machine);
+
 		Deque<String> stack = new LinkedList<String>();
 		Deque<String> yStack = new LinkedList<String>();
 		boolean left = false;
@@ -52,7 +61,7 @@ public class NativeCompiler {
 			}
 
 			if (isOp && right && !left) {
-				String lc = code.get(code.size() - 1);
+				String lc = getLastEntry(code);
 				if (lc.startsWith("MOV Y")) {
 					yStack.push(lc);
 					code.remove(code.size() - 1);
@@ -69,11 +78,11 @@ public class NativeCompiler {
 				boolean isSingle = isSingle(op);
 
 				if (!left && !isSingle) {
-					if (code.size() >= 1 && code.get(code.size() - 1).equals("PUSH X")) {
+					if (code.size() >= 1 && getLastEntry(code).equals("PUSH X")) {
 						code.remove(code.size() - 1);
 						yStack.pop();
 					} else {
-						if (code.size() >= 2 && code.get(code.size() - 2).equals("PUSH X") && code.get(code.size() - 1).startsWith("MOV Y")) {
+						if (code.size() >= 2 && code.get(code.size() - 2).equals("PUSH X") && getLastEntry(code).startsWith("MOV Y")) {
 							code.remove(code.size() - 2);
 							yStack.pop();
 						} else {
@@ -82,7 +91,6 @@ public class NativeCompiler {
 						}
 					}
 					left = true;
-					// code.add("SWAP X,Y");
 				}
 				if (!right) {
 					if (yStack.isEmpty()) {
@@ -99,8 +107,17 @@ public class NativeCompiler {
 					right = true;
 				}
 
-				if (code.size() > 1 && code.get(code.size() - 1).startsWith("MOV Y") && !code.get(code.size() - 1).equals("MOV Y,X") && !fromAbove.contains(code.size() - 1)) {
-					code.add("SWAP X,Y");
+				if (!code.isEmpty() && getLastEntry(code).startsWith("MOV Y") && !getLastEntry(code).equals("MOV Y,X") && !fromAbove.contains(code.size() - 1)) {
+					// code.add("SWAP X,Y");
+					// Swap register usage is needed
+					code.add(code.size() - 1, "MOV Y,X");
+					code.set(code.size() - 1, getLastEntry(code).replace("MOV Y,", "MOV X,"));
+				} else {
+					// Fix wrong register order for single operand function calls
+					if (isSingle && !code.isEmpty() && getLastEntry(code).startsWith("MOV X")) {
+						code.add(code.size() - 1, "PUSH Y");
+						code.set(code.size() - 1, getLastEntry(code).replace("MOV X,", "MOV Y,"));
+					}
 				}
 
 				switch (op) {
@@ -131,6 +148,30 @@ public class NativeCompiler {
 				case "SIN":
 					code.add("SIN X,Y");
 					break;
+				case "COS":
+					code.add("COS X,Y");
+					break;
+				case "LOG":
+					code.add("LOG X,Y");
+					break;
+				case "SQR":
+					code.add("SQR X,Y");
+					break;
+				case "INT":
+					code.add("INT X,Y");
+					break;
+				case "ABS":
+					code.add("ABS X,Y");
+					break;
+				case "SGN":
+					code.add("SGN X,Y");
+					break;
+				case "TAN":
+					code.add("TAN X,Y");
+					break;
+				case "RND":
+					code.add("RND X,Y");
+					break;
 				default:
 					throw new RuntimeException("Unknown operator: " + op);
 				}
@@ -148,11 +189,26 @@ public class NativeCompiler {
 		if (!stack.isEmpty()) {
 			throw new RuntimeException("Operator stack not empty, " + stack.size() + " elements remaining!");
 		}
+
+		// End simple expressions properly
+		if (!code.isEmpty() && !getLastEntry(code).equals("PUSH X")) {
+			String cl = getLastEntry(code);
+			if (cl.startsWith("MOV Y")) {
+				code.add("PUSH Y");
+			} else {
+				code.add("PUSH X");
+			}
+		}
+
 		return code;
 	}
 
+	private String getLastEntry(List<String> code) {
+		return code.get(code.size() - 1);
+	}
+
 	private void popy(List<String> code) {
-		if (code.get(code.size() - 1).equals("PUSH X")) {
+		if (getLastEntry(code).equals("PUSH X")) {
 			code.set(code.size() - 1, "MOV Y,X");
 		} else {
 			code.add("POP Y");

@@ -1,9 +1,11 @@
 package com.sixtyfour.cbmnative;
 
+import java.util.Arrays;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.sixtyfour.Logger;
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.system.Machine;
 
@@ -23,7 +25,7 @@ public class PseudoCpu {
 		this.machine = machine;
 		stack.clear();
 		for (String line : code) {
-			//System.out.println(regs[0]+"/"+regs[1]);
+			// System.out.println(regs[0]+"/"+regs[1]);
 			String[] parts = line.split(" ");
 			if (parts.length > 0) {
 				switch (parts[0]) {
@@ -63,6 +65,30 @@ public class PseudoCpu {
 				case "SIN":
 					sin(parts);
 					break;
+				case "COS":
+					cos(parts);
+					break;
+				case "LOG":
+					log(parts);
+					break;
+				case "SQR":
+					sqr(parts);
+					break;
+				case "INT":
+					inty(parts);
+					break;
+				case "ABS":
+					abs(parts);
+					break;
+				case "SGN":
+					sgn(parts);
+					break;
+				case "TAN":
+					tan(parts);
+					break;
+				case "RND":
+					rnd(parts);
+					break;
 				case "SWAP":
 					swap(parts);
 					break;
@@ -90,6 +116,118 @@ public class PseudoCpu {
 			@Override
 			public String op() {
 				return "SIN(_)";
+			}
+		});
+	}
+	
+	private void rnd(String[] parts) {
+		calc(parts, new Calc() {
+			@Override
+			public Number calc(Number n1, Number n2) {
+				return Math.random();
+			}
+
+			@Override
+			public String op() {
+				return "RND(_)";
+			}
+		});
+	}
+
+	private void cos(String[] parts) {
+		calc(parts, new Calc() {
+			@Override
+			public Number calc(Number n1, Number n2) {
+				return Math.cos(n2.doubleValue());
+			}
+
+			@Override
+			public String op() {
+				return "COS(_)";
+			}
+		});
+	}
+
+	private void tan(String[] parts) {
+		calc(parts, new Calc() {
+			@Override
+			public Number calc(Number n1, Number n2) {
+				return Math.tan(n2.doubleValue());
+			}
+
+			@Override
+			public String op() {
+				return "TAN(_)";
+			}
+		});
+	}
+
+	private void log(String[] parts) {
+		calc(parts, new Calc() {
+			@Override
+			public Number calc(Number n1, Number n2) {
+				return Math.log(n2.doubleValue());
+			}
+
+			@Override
+			public String op() {
+				return "LOG(_)";
+			}
+		});
+	}
+
+	private void sqr(String[] parts) {
+		calc(parts, new Calc() {
+			@Override
+			public Number calc(Number n1, Number n2) {
+				return Math.sqrt(n2.doubleValue());
+			}
+
+			@Override
+			public String op() {
+				return "SQR(_)";
+			}
+		});
+	}
+
+	private void sgn(String[] parts) {
+		calc(parts, new Calc() {
+			@Override
+			public Number calc(Number n1, Number n2) {
+				return Math.signum(n2.doubleValue());
+			}
+
+			@Override
+			public String op() {
+				return "SGN(_)";
+			}
+		});
+	}
+
+	private void inty(String[] parts) {
+		calc(parts, new Calc() {
+			@Override
+			public Number calc(Number n1, Number n2) {
+				return n2.intValue();
+			}
+
+			@Override
+			public String op() {
+				return "INT(_)";
+			}
+		});
+	}
+
+	private void abs(String[] parts) {
+		calc(parts, new Calc() {
+			@Override
+			public Number calc(Number n1, Number n2) {
+				return Math.abs(n2.doubleValue());
+			}
+
+			@Override
+			public String op() {
+				return "ABS(_)";
 			}
 		});
 	}
@@ -221,19 +359,23 @@ public class PseudoCpu {
 		regs[ti] = calc.calc(n2, n1);
 
 		/*
-		if (n1 instanceof Integer && n2 instanceof Integer) {
-			regs[ti] = regs[ti].intValue();
-		}
-		*/
+		 * if (n1 instanceof Integer && n2 instanceof Integer) { regs[ti] =
+		 * regs[ti].intValue(); }
+		 */
 
 		System.out.println(target + "" + calc.op().replace("_", source));
 		System.out.println(((n2 == n1) ? "" : n2) + "" + calc.op().replace("_", n1.toString()) + "=" + regs[ti]);
 	}
 
 	private void pop(String[] parts) {
-		String target = parts[1];
-		int ti = getIndex(target);
-		regs[ti] = stack.pop();
+		try {
+			String target = parts[1];
+			int ti = getIndex(target);
+			regs[ti] = stack.pop();
+		} catch (Throwable t) {
+			Logger.log("Illegal opcode: " + Arrays.toString(parts), t);
+			throw new RuntimeException(t);
+		}
 	}
 
 	private void push(String[] parts) {
@@ -262,10 +404,10 @@ public class PseudoCpu {
 		String source = ops[1];
 		int ti = 0;
 		int si = 0;
-		Type type = Type.INTEGER;
 
 		ti = getIndex(target);
 		si = getIndex(source);
+		Type type = Type.INTEGER;
 
 		int pos = source.indexOf("{");
 		if (pos == -1) {
