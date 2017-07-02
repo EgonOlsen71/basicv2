@@ -117,6 +117,7 @@ public class NativeCompiler {
 					if (isSingle && !code.isEmpty() && getLastEntry(code).startsWith("MOV X")) {
 						code.add(code.size() - 1, "PUSH Y");
 						code.set(code.size() - 1, getLastEntry(code).replace("MOV X,", "MOV Y,"));
+						yStack.push(null);
 					}
 				}
 

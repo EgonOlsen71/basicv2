@@ -67,7 +67,7 @@ public class NativeCompilerTest {
 		machine.add(new Variable("Y", 1.1));
 		machine.add(new Variable("Z", 1.1));
 		machine.add(new Variable("C", 2.1));
-		term = "10/((-2/((2+-(32-A)^2-1+(2*A)/(8*B))/100000))^-(2*SIN(((A-X)^4+(B-Y)^3+(1+2+6*2/6-2^1+C-Z)^2)^SIN(1/2)/20)))*(12345+INT(32.67/COS(A*B)*111.2)/-ABS(A)*(1/LOG(2)*3))";
+		term = "10/((-2/((2+-(32-A)^2-1+(2*A)/(8*B))/100000))^-(2*SIN(((A-X)^4+(B-Y)^3+(1+2+6*2/6-2^1+C-Z)^2)^SIN(1/2)/20)))*(12345+INT(32.67/COS(A*B)*111.2)/-ABS(A)*(1/LOG(2)*3))+SIN(34)*23/7+2/(COS(A)*132)";
 		// String term="2.3/(A+B)";
 		testExpr(machine, term);
 	}
