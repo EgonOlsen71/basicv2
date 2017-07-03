@@ -239,6 +239,8 @@ public class PseudoCpu {
 	}
 
 	private void concat(String[] parts) {
+		// @todo make sure that string operations ARE always linear (i.e. remove brackets). That will
+		// eliminate the second branch!
 		int sp = regs[5].intValue();
 		String s1 = readString(sp);
 		String s2 = readString(regs[6].intValue());
@@ -250,8 +252,8 @@ public class PseudoCpu {
 			System.arraycopy(toIntArray(s2), 0, memory, MEM_SIZE + 1 + memory[MEM_SIZE], s2.length());
 			memory[MEM_SIZE] = memory[MEM_SIZE] + s2.length();
 			bufferPos = MEM_SIZE + memory[MEM_SIZE] + 1;
-			
-			//System.out.println("L: " + readString(sp));
+
+			// System.out.println("L: " + readString(sp));
 		} else {
 			// None-linear adding
 			regs[5] = bufferPos;
@@ -260,11 +262,11 @@ public class PseudoCpu {
 			bufferPos = bufferPos + s1.length() + 1;
 			checkBufferSpace(s2);
 			System.arraycopy(toIntArray(s2), 0, memory, bufferPos, s2.length());
-			bufferPos +=  s2.length();
-			memory[regs[5].intValue()] = s1.length()+s2.length();
-			
+			bufferPos += s2.length();
+			memory[regs[5].intValue()] = s1.length() + s2.length();
+
 			// System.out.println(ss + "/" + bufferPos);
-			//System.out.println("NL: " + readString(bufferPos));
+			// System.out.println("NL: " + readString(bufferPos));
 		}
 	}
 

@@ -24,10 +24,13 @@ public class NativeCompilerTest {
 	}
 
 	private static void testStringExpression0() {
-		System.out.println("\n\testStringExpression0");
+		System.out.println("\n\ntestStringExpression0");
 		Machine machine = new Machine();
 		machine.add(new Variable("A$", "hello"));
 		String term = "(A$+\" \")+(\"world\"+\", \"+A$)+\" universe!\"";
+		testExpr(machine, term, true);
+		
+		term = "\"Hello World!\"";
 		testExpr(machine, term, true);
 		
 		term = "A$+\" \"+\"world\"+\", \"+A$+\" universe!\"";
