@@ -373,6 +373,7 @@ public class Parser {
 	 * @return the resulting term
 	 */
 	public static Term getTerm(String term, Machine machine, boolean stripAssignment, boolean checkForLogicTerm) {
+		checkForInvalidChars(term);
 		return getTerm(term, machine, stripAssignment, checkForLogicTerm, null);
 	}
 
@@ -424,6 +425,7 @@ public class Parser {
 	 * @return the term
 	 */
 	public static Term getTerm(Command command, String term, Machine machine, boolean checkForLogicTerm) {
+		checkForInvalidChars(term);
 		term = removeWhiteSpace(term.substring(command.getName().length()));
 		term = replaceScientificNotation(term);
 		term = addBrackets(term);
@@ -1445,4 +1447,20 @@ public class Parser {
 
 		return fun;
 	}
+
+	private static void checkForInvalidChars(String term) {
+		boolean inString = false;
+		for (int i = 0; i < term.length(); i++) {
+			char c = term.charAt(i);
+			if (c == '"') {
+				inString = !inString;
+			}
+			if (!inString) {
+				if ("&!|~?'§{}[]".indexOf(c) != -1) {
+					throw new RuntimeException("Syntax error: " + term + "/" + c);
+				}
+			}
+		}
+	}
+
 }
