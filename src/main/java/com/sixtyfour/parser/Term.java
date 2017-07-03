@@ -240,10 +240,12 @@ public class Term implements Atom {
 		Type type = getType();
 		if (type == Type.STRING) {
 			if (operator.isPlus()) {
+			  List<String> s1=left.evalToExpression(machine);
+			  List<String> s2=right.evalToExpression(machine);
 				ret.add(0, "_");
-				ret.add(0, ":+");
-				ret.addAll(0, left.evalToExpression(machine));
-				ret.addAll(0, right.evalToExpression(machine));
+				s2.add(0, ":.");
+				ret.addAll(0, s1);
+				ret.addAll(0, s2);
 				return ret;
 			}
 		} else {

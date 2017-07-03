@@ -11,213 +11,287 @@ import java.util.Set;
 import com.sixtyfour.parser.Term;
 import com.sixtyfour.system.Machine;
 
+
 /**
  * @author Foerster-H
  * 
  */
-public class NativeCompiler {
+public class NativeCompiler
+{
 
-	private Set<String> SINGLES = new HashSet<String>() {
-		private static final long serialVersionUID = 1L;
+  private Set<String> SINGLES = new HashSet<String>()
+  {
+    private static final long serialVersionUID = 1L;
 
-		{
-			this.add("!");
-			this.add("SIN");
-			this.add("COS");
-			this.add("TAN");
-			this.add("LOG");
-			this.add("INT");
-			this.add("ABS");
-			this.add("SGN");
-			this.add("SQR");
-			this.add("RND");
-		}
-	};
+    {
+      this.add("!");
+      this.add("SIN");
+      this.add("COS");
+      this.add("TAN");
+      this.add("LOG");
+      this.add("INT");
+      this.add("ABS");
+      this.add("SGN");
+      this.add("SQR");
+      this.add("RND");
+    }
+  };
 
-	public List<String> compileToPseudoCode(Machine machine, Term term) {
-		List<String> code = new ArrayList<String>();
-		List<String> expr = term.evalToExpression(machine);
 
-		Deque<String> stack = new LinkedList<String>();
-		Deque<String> yStack = new LinkedList<String>();
-		boolean left = false;
-		boolean right = false;
-		Set<Integer> fromAbove = new HashSet<Integer>();
+  public List<String> compileToPseudoCode(Machine machine, Term term)
+  {
+    String tr = "X";
+    String sr = "Y";
+    boolean stringMode = false;
 
-		for (String exp : expr) {
-			boolean isOp = exp.startsWith(":");
-			boolean isBreak = exp.equals("_");
+    List<String> code = new ArrayList<String>();
+    List<String> expr = term.evalToExpression(machine);
 
-			if (!isBreak) {
-				if (!isOp) {
-					if (!right) {
-						code.add("MOV Y," + exp);
-						right = true;
-					} else if (!left) {
-						code.add("MOV X," + exp);
-						left = true;
-					}
-				}
-			}
+    Deque<String> stack = new LinkedList<String>();
+    Deque<String> yStack = new LinkedList<String>();
+    boolean left = false;
+    boolean right = false;
+    Set<Integer> fromAbove = new HashSet<Integer>();
 
-			if (isOp && right && !left) {
-				String lc = getLastEntry(code);
-				if (lc.startsWith("MOV Y")) {
-					yStack.push(lc);
-					code.remove(code.size() - 1);
-				} else {
-					code.add("PUSH Y");
-					yStack.push(null);
-				}
-				right = false;
-			}
+    for (String exp : expr)
+    {
+      boolean isOp = exp.startsWith(":");
+      boolean isBreak = exp.equals("_");
+      if (exp.contains("{"))
+      {
+        if (exp.contains("{STRING"))
+        {
+          tr = "A";
+          sr = "B";
+        }
+        else
+        {
+          stringMode = false;
+          tr = "X";
+          sr = "Y";
+        }
+      }
 
-			if (isBreak) {
-				String ex = stack.pop();
-				String op = ex.replace(":", "");
-				boolean isSingle = isSingle(op);
+      if (!isBreak)
+      {
+        if (!isOp)
+        {
+          if (!right)
+          {
+            code.add("MOV " + sr + "," + exp);
+            right = true;
+          }
+          else if (!left)
+          {
+            code.add("MOV " + tr + "," + exp);
+            left = true;
+          }
+        }
+      }
 
-				if (!left && !isSingle) {
-					if (code.size() >= 1 && getLastEntry(code).equals("PUSH X")) {
-						code.remove(code.size() - 1);
-						yStack.pop();
-					} else {
-						if (code.size() >= 2 && code.get(code.size() - 2).equals("PUSH X") && getLastEntry(code).startsWith("MOV Y")) {
-							code.remove(code.size() - 2);
-							yStack.pop();
-						} else {
-							code.add("POP X");
-							yStack.pop();
-						}
-					}
-					left = true;
-				}
-				if (!right) {
-					if (yStack.isEmpty()) {
-						popy(code);
-					} else {
-						String v = yStack.pop();
-						if (v == null) {
-							popy(code);
-						} else {
-							code.add(v);
-							fromAbove.add(code.size() - 1);
-						}
-					}
-					right = true;
-				}
+      if (isOp && right && !left)
+      {
+        String lc = getLastEntry(code);
+        if (lc.startsWith("MOV " + sr + ""))
+        {
+          yStack.push(lc);
+          code.remove(code.size() - 1);
+        }
+        else
+        {
+          code.add("PUSH " + sr);
+          yStack.push(null);
+        }
+        right = false;
+      }
 
-				if (!code.isEmpty() && getLastEntry(code).startsWith("MOV Y") && !getLastEntry(code).equals("MOV Y,X") && !fromAbove.contains(code.size() - 1)) {
-					// code.add("SWAP X,Y");
-					// Swap register usage is needed
-					code.add(code.size() - 1, "MOV Y,X");
-					code.set(code.size() - 1, getLastEntry(code).replace("MOV Y,", "MOV X,"));
-				} else {
-					// Fix wrong register order for single operand function calls
-					if (isSingle && !code.isEmpty() && getLastEntry(code).startsWith("MOV X")) {
-						code.add(code.size() - 1, "PUSH Y");
-						code.set(code.size() - 1, getLastEntry(code).replace("MOV X,", "MOV Y,"));
-						yStack.push(null);
-					}
-				}
+      if (isBreak)
+      {
+        String ex = stack.pop();
+        String op = ex.replace(":", "");
+        boolean isSingle = isSingle(op);
 
-				switch (op) {
-				case "+":
-					code.add("ADD X,Y");
-					break;
-				case "-":
-					code.add("SUB X,Y");
-					break;
-				case "*":
-					code.add("MUL X,Y");
-					break;
-				case "/":
-					code.add("DIV X,Y");
-					break;
-				case "^":
-					code.add("POW X,Y");
-					break;
-				case "|":
-					code.add("OR X,Y");
-					break;
-				case "&":
-					code.add("AND X,Y");
-					break;
-				case "!":
-					code.add("NOT X,Y");
-					break;
-				case "SIN":
-					code.add("SIN X,Y");
-					break;
-				case "COS":
-					code.add("COS X,Y");
-					break;
-				case "LOG":
-					code.add("LOG X,Y");
-					break;
-				case "SQR":
-					code.add("SQR X,Y");
-					break;
-				case "INT":
-					code.add("INT X,Y");
-					break;
-				case "ABS":
-					code.add("ABS X,Y");
-					break;
-				case "SGN":
-					code.add("SGN X,Y");
-					break;
-				case "TAN":
-					code.add("TAN X,Y");
-					break;
-				case "RND":
-					code.add("RND X,Y");
-					break;
-				default:
-					throw new RuntimeException("Unknown operator: " + op);
-				}
-				code.add("PUSH X");
-				yStack.push(null);
-				left = false;
-				right = false;
-			}
+        if (!left && !isSingle)
+        {
+          if (code.size() >= 1 && getLastEntry(code).equals("PUSH " + tr))
+          {
+            code.remove(code.size() - 1);
+            yStack.pop();
+          }
+          else
+          {
+            if (code.size() >= 2 && code.get(code.size() - 2).equals("PUSH " + tr)
+                && getLastEntry(code).startsWith("MOV " + sr))
+            {
+              code.remove(code.size() - 2);
+              yStack.pop();
+            }
+            else
+            {
+              code.add("POP " + tr);
+              yStack.pop();
+            }
+          }
+          left = true;
+        }
+        if (!right)
+        {
+          if (yStack.isEmpty())
+          {
+            popy(code, tr, sr);
+          }
+          else
+          {
+            String v = yStack.pop();
+            if (v == null)
+            {
+              popy(code, tr, sr);
+            }
+            else
+            {
+              code.add(v);
+              fromAbove.add(code.size() - 1);
+            }
+          }
+          right = true;
+        }
 
-			if (isOp) {
-				stack.push(exp);
-			}
-		}
+        if (!code.isEmpty() && getLastEntry(code).startsWith("MOV " + sr)
+            && !getLastEntry(code).equals("MOV " + sr + "," + tr) && !fromAbove.contains(code.size() - 1))
+        {
+          // code.add("SWAP X,Y");
+          // Swap register usage is needed
+          code.add(code.size() - 1, "MOV " + sr + "," + tr);
+          code.set(code.size() - 1, getLastEntry(code).replace("MOV " + sr + ",", "MOV " + tr + ","));
+        }
+        else
+        {
+          // Fix wrong register order for single operand function calls
+          if (isSingle && !code.isEmpty() && getLastEntry(code).startsWith("MOV " + tr))
+          {
+            code.add(code.size() - 1, "PUSH " + sr);
+            code.set(code.size() - 1, getLastEntry(code).replace("MOV " + tr + ",", "MOV " + sr + ","));
+            yStack.push(null);
+          }
+        }
 
-		if (!stack.isEmpty()) {
-			throw new RuntimeException("Operator stack not empty, " + stack.size() + " elements remaining!");
-		}
+        String regs = stringMode ? "A,B" : "X,Y";
+        switch (op)
+        {
+          case "+":
+            code.add("ADD " + regs);
+            break;
+          case "-":
+            code.add("SUB " + regs);
+            break;
+          case "*":
+            code.add("MUL " + regs);
+            break;
+          case "/":
+            code.add("DIV " + regs);
+            break;
+          case "^":
+            code.add("POW " + regs);
+            break;
+          case "|":
+            code.add("OR " + regs);
+            break;
+          case "&":
+            code.add("AND " + regs);
+            break;
+          case "!":
+            code.add("NOT " + regs);
+            break;
+          case "SIN":
+            code.add("SIN " + regs);
+            break;
+          case "COS":
+            code.add("COS " + regs);
+            break;
+          case "LOG":
+            code.add("LOG " + regs);
+            break;
+          case "SQR":
+            code.add("SQR " + regs);
+            break;
+          case "INT":
+            code.add("INT " + regs);
+            break;
+          case "ABS":
+            code.add("ABS " + regs);
+            break;
+          case "SGN":
+            code.add("SGN " + regs);
+            break;
+          case "TAN":
+            code.add("TAN " + regs);
+            break;
+          case "RND":
+            code.add("RND " + regs);
+            break;
+          case ".":
+            code.add("JSR CONCAT");
+            break;
+          default:
+            throw new RuntimeException("Unknown operator: " + op);
+        }
+        code.add("PUSH " + tr);
+        yStack.push(null);
+        left = false;
+        right = false;
+      }
 
-		// End simple expressions properly
-		if (!code.isEmpty() && !getLastEntry(code).equals("PUSH X")) {
-			String cl = getLastEntry(code);
-			if (cl.startsWith("MOV Y")) {
-				code.add("PUSH Y");
-			} else {
-				code.add("PUSH X");
-			}
-		}
+      if (isOp)
+      {
+        stack.push(exp);
+      }
+    }
 
-		return code;
-	}
+    if (!stack.isEmpty())
+    {
+      throw new RuntimeException("Operator stack not empty, " + stack.size() + " elements remaining!");
+    }
 
-	private String getLastEntry(List<String> code) {
-		return code.get(code.size() - 1);
-	}
+    // End simple expressions properly
+    if (!code.isEmpty() && !getLastEntry(code).equals("PUSH " + tr))
+    {
+      String cl = getLastEntry(code);
+      if (cl.startsWith("MOV " + sr))
+      {
+        code.add("PUSH " + sr);
+      }
+      else
+      {
+        code.add("PUSH " + tr);
+      }
+    }
 
-	private void popy(List<String> code) {
-		if (getLastEntry(code).equals("PUSH X")) {
-			code.set(code.size() - 1, "MOV Y,X");
-		} else {
-			code.add("POP Y");
-		}
-	}
+    return code;
+  }
 
-	private boolean isSingle(String op) {
-		return SINGLES.contains(op.toUpperCase(Locale.ENGLISH));
-	}
+
+  private String getLastEntry(List<String> code)
+  {
+    return code.get(code.size() - 1);
+  }
+
+
+  private void popy(List<String> code, String tr, String sr)
+  {
+    if (getLastEntry(code).equals("PUSH " + tr))
+    {
+      code.set(code.size() - 1, "MOV " + sr + "," + tr);
+    }
+    else
+    {
+      code.add("POP " + sr);
+    }
+  }
+
+
+  private boolean isSingle(String op)
+  {
+    return SINGLES.contains(op.toUpperCase(Locale.ENGLISH));
+  }
 
 }
