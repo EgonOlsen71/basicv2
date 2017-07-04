@@ -777,20 +777,26 @@ public class Parser {
 	 */
 	private static int findEnd(String term, int pos) {
 		int brackets = 0;
+		boolean inString = false;
 		for (int i = pos + 1; i < term.length(); i++) {
 			char c = term.charAt(i);
-			if (c == ',' && brackets == 0) {
-				return i;
-			}
-
-			if (brackets == 0 && (Operator.isOperator(c) || c == ')')) {
-				return i;
-			}
-			if (c == '(') {
-				brackets++;
-			} else if (c == ')' && brackets > 0) {
-				brackets--;
-			}
+			if (c == '"') {
+        inString = !inString;
+      }
+      if (!inString) {
+  			if (c == ',' && brackets == 0) {
+  				return i;
+  			}
+  
+  			if (brackets == 0 && (Operator.isOperator(c) || c == ')')) {
+  				return i;
+  			}
+  			if (c == '(') {
+  				brackets++;
+  			} else if (c == ')' && brackets > 0) {
+  				brackets--;
+  			}
+      }
 		}
 		return term.length();
 	}
@@ -839,28 +845,33 @@ public class Parser {
 	 */
 	private static int findStart(String term, int pos) {
 		int brackets = 0;
+		boolean inString = false;
 		for (int i = pos - 1; i >= 0; i--) {
 			char c = term.charAt(i);
-
-			if (c == ',' && brackets == 0) {
-				return i + 1;
-			}
-			char pc = c;
-			if (i > 0) {
-				pc = term.charAt(i - 1);
-			}
-
-			// This handles negative numbers as well, like *-10. However, the
-			// parser doesn't allow for such numbers here, because they get
-			// resolved much earlier...anyway...
-			if (brackets == 0 && ((Operator.isOperator(c) && (c != '-' || (i > 0 && !Operator.isOperator(pc) && pc != '('))) || c == '(')) {
-				return i + 1;
-			}
-			if (c == ')') {
-				brackets++;
-			} else if (c == '(' && brackets > 0) {
-				brackets--;
-			}
+			if (c == '"') {
+        inString = !inString;
+      }
+      if (!inString) {
+  			if (c == ',' && brackets == 0) {
+  				return i + 1;
+  			}
+  			char pc = c;
+  			if (i > 0) {
+  				pc = term.charAt(i - 1);
+  			}
+  
+  			// This handles negative numbers as well, like *-10. However, the
+  			// parser doesn't allow for such numbers here, because they get
+  			// resolved much earlier...anyway...
+  			if (brackets == 0 && ((Operator.isOperator(c) && (c != '-' || (i > 0 && !Operator.isOperator(pc) && pc != '('))) || c == '(')) {
+  				return i + 1;
+  			}
+  			if (c == ')') {
+  				brackets++;
+  			} else if (c == '(' && brackets > 0) {
+  				brackets--;
+  			}
+      }
 		}
 		return 0;
 	}
