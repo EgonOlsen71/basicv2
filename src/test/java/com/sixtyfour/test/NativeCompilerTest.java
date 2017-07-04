@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.sixtyfour.cbmnative.NativeCompiler;
 import com.sixtyfour.cbmnative.PseudoCpu;
+import com.sixtyfour.cbmnative.TermHelper;
 import com.sixtyfour.elements.Variable;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.Term;
@@ -20,9 +21,16 @@ public class NativeCompilerTest {
 		testExpression4();
 		testExpression5();
 		testExpression6();
+		testLinearize();
 		testStringExpression0();
 	}
 
+	public static void testLinearize() {
+	  System.out.println("\n\ntestLinearize");
+    String txt = "(A$+\" \")+ASC(I*144+SIN(PI+ASC(CHR$(ASC((A$+\"hello\")+B$))))+(((\"world\"+\", \"+(((A$))))))+\" universe!\"";
+    System.out.println(TermHelper.linearize(txt));
+	}
+	
 	private static void testStringExpression0() {
 		System.out.println("\n\ntestStringExpression0");
 		Machine machine = new Machine();
@@ -126,7 +134,7 @@ public class NativeCompilerTest {
 
 		Term t = Parser.getTerm(term, machine, false, true);
 		System.out.println(t);
-		List<String> ret = t.evalToExpression(machine);
+		List<String> ret = TermHelper.linearize(machine, t).evalToExpression(machine);
 
 		System.out.println("Expression:");
 		for (String line : ret) {

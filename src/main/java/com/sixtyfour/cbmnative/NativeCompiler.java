@@ -35,6 +35,7 @@ public class NativeCompiler {
 	};
 
 	public List<String> compileToPseudoCode(Machine machine, Term term) {
+	  term=TermHelper.linearize(machine, term);
 		String tr = null;
 		String sr = null;
 		boolean stringMode = false;

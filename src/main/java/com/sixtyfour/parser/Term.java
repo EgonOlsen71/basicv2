@@ -30,6 +30,9 @@ public class Term
 
   /** The expression that created this Term */
   private String expression;
+  
+  /** The initial expression that this term was based on */
+  private String initial;
 
   /** The key for term replacement while parsing */
   private String key;
@@ -624,5 +627,17 @@ public class Term
   {
     // TODO stuff?
     return code;
+  }
+
+
+  public String getInitial()
+  {
+    return initial;
+  }
+
+
+  public void setInitial(String initial)
+  {
+    this.initial = initial;
   }
 }

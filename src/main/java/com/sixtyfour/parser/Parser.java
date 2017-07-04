@@ -374,7 +374,9 @@ public class Parser {
 	 */
 	public static Term getTerm(String term, Machine machine, boolean stripAssignment, boolean checkForLogicTerm) {
 		checkForInvalidChars(term);
-		return getTerm(term, machine, stripAssignment, checkForLogicTerm, null);
+		Term ret=getTerm(term, machine, stripAssignment, checkForLogicTerm, null);
+		ret.setInitial(term);
+    return ret;
 	}
 
 	/**
@@ -406,7 +408,9 @@ public class Parser {
 		}
 		term = replaceScientificNotation(term);
 		term = addBrackets(term);
-		return createTerms(term, termMap, machine, checkForLogicTerm);
+		Term ret= createTerms(term, termMap, machine, checkForLogicTerm);
+		ret.setInitial(term);
+    return ret;
 	}
 
 	/**
@@ -429,7 +433,9 @@ public class Parser {
 		term = removeWhiteSpace(term.substring(command.getName().length()));
 		term = replaceScientificNotation(term);
 		term = addBrackets(term);
-		return createTerms(term, new HashMap<String, Term>(), machine, checkForLogicTerm);
+		Term ret= createTerms(term, new HashMap<String, Term>(), machine, checkForLogicTerm);
+		ret.setInitial(term);
+		return ret;
 	}
 
 	/**

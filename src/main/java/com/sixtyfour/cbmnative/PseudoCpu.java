@@ -29,6 +29,7 @@ public class PseudoCpu {
 	private int memPointer = 0;
 	private int varStart = 0;
 	private int bufferPos = MEM_SIZE;
+	private int bufferStart = MEM_SIZE;
 
 	/**
 	 * @param code
@@ -239,35 +240,23 @@ public class PseudoCpu {
 	}
 
 	private void concat(String[] parts) {
-		// @todo make sure that string operations ARE always linear (i.e. remove brackets). That will
-		// eliminate the second branch!
 		int sp = regs[5].intValue();
 		String s1 = readString(sp);
 		String s2 = readString(regs[6].intValue());
 
-		if (sp == MEM_SIZE) {
-			// Linear adding
-			checkBufferSpace(s2);
-			regs[5] = MEM_SIZE;
-			System.arraycopy(toIntArray(s2), 0, memory, MEM_SIZE + 1 + memory[MEM_SIZE], s2.length());
-			memory[MEM_SIZE] = memory[MEM_SIZE] + s2.length();
-			bufferPos = MEM_SIZE + memory[MEM_SIZE] + 1;
-
-			// System.out.println("L: " + readString(sp));
-		} else {
-			// None-linear adding
-			regs[5] = bufferPos;
-			checkBufferSpace(s1);
-			System.arraycopy(toIntArray(s1), 0, memory, bufferPos + 1, s1.length());
-			bufferPos = bufferPos + s1.length() + 1;
-			checkBufferSpace(s2);
-			System.arraycopy(toIntArray(s2), 0, memory, bufferPos, s2.length());
-			bufferPos += s2.length();
-			memory[regs[5].intValue()] = s1.length() + s2.length();
-
-			// System.out.println(ss + "/" + bufferPos);
-			// System.out.println("NL: " + readString(bufferPos));
+		if (sp != bufferStart) {
+		  bufferStart = bufferPos;
+      checkBufferSpace(s1);
+      System.arraycopy(toIntArray(s1), 0, memory, bufferStart + 1, s1.length());
+      bufferPos+= s1.length() + 1;
+      memory[bufferStart] = s1.length();
 		}
+		
+		checkBufferSpace(s2);
+		regs[5] = bufferStart;
+		System.arraycopy(toIntArray(s2), 0, memory, bufferStart + 1 + memory[bufferStart], s2.length());
+		memory[bufferStart] = memory[bufferStart] + s2.length();
+		bufferPos+= s2.length()+1;
 	}
 
 	private void checkBufferSpace(String ss) {
