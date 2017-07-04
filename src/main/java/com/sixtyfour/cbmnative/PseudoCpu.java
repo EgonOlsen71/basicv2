@@ -257,6 +257,8 @@ public class PseudoCpu {
 		System.arraycopy(toIntArray(s2), 0, memory, bufferStart + 1 + memory[bufferStart], s2.length());
 		memory[bufferStart] = memory[bufferStart] + s2.length();
 		bufferPos+= s2.length()+1;
+		
+		//@todo: bufferStart (and -pos) have to be reset after assigning the result to an actual variable.
 	}
 
 	private void checkBufferSpace(String ss) {
