@@ -1069,7 +1069,7 @@ public class Cpu {
 			default:
 				throw new RuntimeException("Illegal opcode @:" + Integer.toHexString(lastPc) + " $" + Integer.toHexString(cmd));
 			}
-			
+
 			if (cpuTracer != null) {
 				cpuTracer.commandExecuted(this, cmd, lastPc, pc);
 			}

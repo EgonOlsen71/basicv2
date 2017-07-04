@@ -31,11 +31,13 @@ public class NativeCompiler {
 			this.add("SGN");
 			this.add("SQR");
 			this.add("RND");
+			this.add("CHR");
+			this.add("ASC");
 		}
 	};
 
 	public List<String> compileToPseudoCode(Machine machine, Term term) {
-	  term=TermHelper.linearize(machine, term);
+		term = TermHelper.linearize(machine, term);
 		String tr = null;
 		String sr = null;
 		boolean stringMode = false;
@@ -57,7 +59,7 @@ public class NativeCompiler {
 				if (exp.contains("{STRING")) {
 					if (!stringMode) {
 						modeSwitchCnt++;
-						if (modeSwitchCnt > 1) {
+						if (modeSwitchCnt > 1 && !code.isEmpty()) {
 							code.add("CHGCTX #1");
 						}
 					}
@@ -67,7 +69,7 @@ public class NativeCompiler {
 				} else {
 					if (stringMode) {
 						modeSwitchCnt++;
-						if (modeSwitchCnt > 1) {
+						if (modeSwitchCnt > 1 && !code.isEmpty()) {
 							code.add("CHGCTX #0");
 						}
 					}
@@ -151,6 +153,7 @@ public class NativeCompiler {
 					}
 				}
 
+				String newTr = null;
 				String regs = stringMode ? "A,B" : "X,Y";
 				switch (op) {
 				case "+":
@@ -207,10 +210,23 @@ public class NativeCompiler {
 				case ".":
 					code.add("JSR CONCAT");
 					break;
+				case "CHR":
+					// The call to CHR has to make sure that the result is
+					// stored in register B
+					code.add("JSR CHR");
+					newTr = "B";
+					break;
+				case "ASC":
+					// The call to ASC has to make sure that the result is
+					// stored in register Y
+					code.add("JSR ASC");
+					newTr = "Y";
+					break;
 				default:
 					throw new RuntimeException("Unknown operator: " + op);
 				}
-				code.add("PUSH " + tr);
+				code.add("PUSH " + (newTr != null ? newTr : tr));
+				newTr = null;
 				yStack.push(null);
 				left = false;
 				right = false;

@@ -201,8 +201,8 @@ public class Assembler implements ProgramExecutor {
 			part.setLineAddresses(createAndResetOpas(lineBreaks));
 			prg.addPart(part);
 		}
-		
-		for (ProgramPart part:prg.getParts()) {
+
+		for (ProgramPart part : prg.getParts()) {
 			part.setBytes(Arrays.copyOfRange(compileMachine.getRam(), part.getAddress(), part.getEndAddress()));
 		}
 

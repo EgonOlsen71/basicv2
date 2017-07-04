@@ -23,7 +23,7 @@ public class FrogTest {
 		inty.compile();
 		inty.run();
 	}
-	
+
 	public static void testFrog2() {
 		String[] vary = Preprocessor.convertToLineNumbers(Loader.loadProgram("src/test/resources/demo/frog2.bas"));
 		for (String line : vary) {

@@ -68,7 +68,7 @@ public class Basic implements ProgramExecutor {
 	private LoopMode loopMode = LoopMode.EXECUTE;
 
 	private static Map<String, BasicExtension> addedExtensions = new HashMap<String, BasicExtension>();
-	
+
 	private CodeEnhancer codeEnhancer;
 
 	/**
@@ -136,8 +136,8 @@ public class Basic implements ProgramExecutor {
 	 * won't work with a JRE. A JIT might help to improve performance for
 	 * complex calculations. If your program doesn't do these, it might not even
 	 * kick in or the additional overhead might slow your program down. Keep in
-	 * mind that compiling the code by the JIT takes some time as well.
-	 * If the JIT compiler kicks in, you'll see some console output about it.
+	 * mind that compiling the code by the JIT takes some time as well. If the
+	 * JIT compiler kicks in, you'll see some console output about it.
 	 */
 	public void enableJit() {
 		machine.setJit(new Jit());
@@ -147,14 +147,13 @@ public class Basic implements ProgramExecutor {
 	 * Enables an experimental JIT-compiler with a given compile threshold. This
 	 * works only if the application runs on a JDK installation. It won't work
 	 * with a JRE. One might have to play around with the threshold to find a
-	 * value which actually speed up the application.
-	 * If the threshold is <=0, then the JIT compiler will try to
-   * auto-detect when to compile.
-	 * A JIT might help to improve performance for complex calculations. 
-	 * If your program doesn't do these, it might not even kick in or the 
-	 * additional overhead might slow your program down. Keep in mind that 
-	 * compiling the code by the JIT takes some time as well.
-	 * If the JIT compiler kicks in, you'll see some console output about it.
+	 * value which actually speed up the application. If the threshold is <=0,
+	 * then the JIT compiler will try to auto-detect when to compile. A JIT
+	 * might help to improve performance for complex calculations. If your
+	 * program doesn't do these, it might not even kick in or the additional
+	 * overhead might slow your program down. Keep in mind that compiling the
+	 * code by the JIT takes some time as well. If the JIT compiler kicks in,
+	 * you'll see some console output about it.
 	 * 
 	 * @param compileThreshold
 	 *            the compile threshold
@@ -256,15 +255,15 @@ public class Basic implements ProgramExecutor {
 	}
 
 	/**
-	 * Returns the compiled program wrapped into a PCode instance. 
-	 * This method isn't needed for normal usage.
+	 * Returns the compiled program wrapped into a PCode instance. This method
+	 * isn't needed for normal usage.
 	 * 
 	 * @return the PCode instance
 	 */
 	public PCode getPCode() {
-	  return new PCode(lineNumbers, lines);
+		return new PCode(lineNumbers, lines);
 	}
-	
+
 	/**
 	 * Gets the value of a string variable.
 	 * 
@@ -467,30 +466,31 @@ public class Basic implements ProgramExecutor {
 			machine.getOutputChannel().systemPrintln(0, "\nREADY.");
 		}
 	}
-	
+
 	/**
-	 * Executes a single command in the context of this instance's machine. 
-	 * Please note that this might happen in parallel with another command of 
-	 * the actual problem, so depending on the given command, this can have some 
+	 * Executes a single command in the context of this instance's machine.
+	 * Please note that this might happen in parallel with another command of
+	 * the actual problem, so depending on the given command, this can have some
 	 * side effects at runtime.
-   * @param cmd the command to execute
-   */
-  public void executeSingleCommand(String cmd)
-  {
-    if (cmd==null || cmd.isEmpty()) {
-      return;
-    }
-    Command command = Parser.getCommand(cmd.trim());
-    if (command == null) {
-      throw new RuntimeException("Syntax error: " + cmd);
-    }
-    if (!command.keepSpaces()) {
-      cmd = Parser.removeWhiteSpace(cmd);
-    }
-    command.parse(cmd, 0, 0, 0, false, machine);
-    command.execute(machine);
-  }
-	
+	 * 
+	 * @param cmd
+	 *            the command to execute
+	 */
+	public void executeSingleCommand(String cmd) {
+		if (cmd == null || cmd.isEmpty()) {
+			return;
+		}
+		Command command = Parser.getCommand(cmd.trim());
+		if (command == null) {
+			throw new RuntimeException("Syntax error: " + cmd);
+		}
+		if (!command.keepSpaces()) {
+			cmd = Parser.removeWhiteSpace(cmd);
+		}
+		command.parse(cmd, 0, 0, 0, false, machine);
+		command.execute(machine);
+	}
+
 	/**
 	 * Resets the memory. This will clean the 64KB of main memory as well as all
 	 * variables.
@@ -505,7 +505,7 @@ public class Basic implements ProgramExecutor {
 	 */
 	@Override
 	public void runStop() {
-	  paused = false;
+		paused = false;
 		stop = true;
 	}
 
@@ -698,41 +698,39 @@ public class Basic implements ProgramExecutor {
 	public void setLoopMode(LoopMode loopMode) {
 		this.loopMode = loopMode;
 	}
-	
-	
+
 	/**
 	 * Sets a new code enhancer instance.
 	 * 
 	 * @return the new code enhancer
 	 */
-	public CodeEnhancer getCodeEnhancer()
-  {
-    return codeEnhancer;
-  }
+	public CodeEnhancer getCodeEnhancer() {
+		return codeEnhancer;
+	}
 
-  /**
-   * Returns the current code enhancer instance.
-   * 
-   * @param codeEnhancer the instance
-   */
-  public void setCodeEnhancer(CodeEnhancer codeEnhancer)
-  {
-    this.codeEnhancer = codeEnhancer;
-  }
+	/**
+	 * Returns the current code enhancer instance.
+	 * 
+	 * @param codeEnhancer
+	 *            the instance
+	 */
+	public void setCodeEnhancer(CodeEnhancer codeEnhancer) {
+		this.codeEnhancer = codeEnhancer;
+	}
 
 	/**
    */
 	private void runInternal() {
 		long start = System.nanoTime();
-		if (codeEnhancer!=null) {
-		  String cmd=codeEnhancer.getFirstCommand();
-		  executeSingleCommand(cmd);
+		if (codeEnhancer != null) {
+			String cmd = codeEnhancer.getFirstCommand();
+			executeSingleCommand(cmd);
 		}
 		execute(0, 0);
-		if (codeEnhancer!=null) {
-		  String cmd=codeEnhancer.getLastCommand();
-		  executeSingleCommand(cmd);
-    }
+		if (codeEnhancer != null) {
+			String cmd = codeEnhancer.getLastCommand();
+			executeSingleCommand(cmd);
+		}
 		long end = System.nanoTime();
 		machine.getOutputChannel().systemPrintln(0, "\nREADY. (" + ((end - start) / 1000000L) + "ms)");
 	}
@@ -798,7 +796,8 @@ public class Basic implements ProgramExecutor {
 								break;
 							}
 							if (pc.getLineNumber() == -1) {
-								// Line index is unknown (FOR...NEXT/RETURN/RUN w/o line)
+								// Line index is unknown (FOR...NEXT/RETURN/RUN
+								// w/o line)
 								lineCnt = pc.getLineCnt();
 								num = lineNumbers.get(lineCnt);
 								line = lines.get(num);

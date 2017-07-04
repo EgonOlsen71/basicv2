@@ -47,12 +47,11 @@ public class LogicTerm implements LogicBlock {
 		blocks.add(block);
 		ops.add(op);
 	}
-	
-	@Override
-  public List<String> evalToExpression(Machine machine) {
-    return null;
-  }
 
+	@Override
+	public List<String> evalToExpression(Machine machine) {
+		return null;
+	}
 
 	/*
 	 * (non-Javadoc)

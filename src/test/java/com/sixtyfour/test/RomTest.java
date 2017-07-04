@@ -36,23 +36,23 @@ public class RomTest {
 		System.out.println(machine.getCpu().convertFloat(0x2000));
 		System.out.println(machine.getCpu().convertFloat(0x2010) + " ~ " + Math.sqrt(machine.getCpu().convertFloat(0x2000)));
 	}
-	
+
 	private static void testRomAndBasicCalc() {
-    String[] code = Loader.loadProgram("src/test/resources/rom/math.asm");
-    Assembler asm = new Assembler(code);
-    asm.compile();
-    
-    String[] basic = Loader.loadProgram("src/test/resources/rom/math.bas");
-    Basic.registerExtension(ConsoleSupport.class);
-    Basic inty = new Basic(basic);
-    inty.compile();
-    inty.setSystemCallListener(new RamSystemCallListener(inty.getMachine()));
-    
-    Machine machine = inty.getMachine();
-    machine.addRoms();
-    machine.putProgram(asm.getProgram());
-    inty.run();
-   
-    System.out.println(machine.getCpu().convertFloat(0x2010));
-  }
+		String[] code = Loader.loadProgram("src/test/resources/rom/math.asm");
+		Assembler asm = new Assembler(code);
+		asm.compile();
+
+		String[] basic = Loader.loadProgram("src/test/resources/rom/math.bas");
+		Basic.registerExtension(ConsoleSupport.class);
+		Basic inty = new Basic(basic);
+		inty.compile();
+		inty.setSystemCallListener(new RamSystemCallListener(inty.getMachine()));
+
+		Machine machine = inty.getMachine();
+		machine.addRoms();
+		machine.putProgram(asm.getProgram());
+		inty.run();
+
+		System.out.println(machine.getCpu().convertFloat(0x2010));
+	}
 }

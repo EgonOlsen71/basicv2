@@ -23,24 +23,44 @@ public class NativeCompilerTest {
 		testExpression6();
 		testLinearize();
 		testStringExpression0();
+		testStringExpression1();
+		testStringExpression2();
 	}
 
 	public static void testLinearize() {
-	  System.out.println("\n\ntestLinearize");
-    String txt = "(A$+\" \")+ASC(I*144+SIN(PI+ASC(CHR$(ASC((A$+\"hello\")+B$))))+(((\"world\"+\", \"+(((A$))))))+\" universe!\"";
-    System.out.println(TermHelper.linearize(txt));
+		System.out.println("\n\ntestLinearize");
+		String txt = "(A$+\" \")+ASC(I*144+SIN(PI+ASC(CHR$(ASC((A$+\"hello\")+B$))))+(((\"world\"+\", \"+(((A$))))))+\" universe!\"";
+		System.out.println(TermHelper.linearize(txt));
 	}
-	
+
+	private static void testStringExpression2() {
+		System.out.println("\n\ntestStringExpression2");
+		Machine machine = new Machine();
+		machine.add(new Variable("A$", "h"));
+		machine.add(new Variable("B", 65));
+		String term = "B+ASC(A$+\"hello\")*ASC(\"32222\"+A$)";
+		testExpr(machine, term);
+	}
+
+	private static void testStringExpression1() {
+		System.out.println("\n\ntestStringExpression1");
+		Machine machine = new Machine();
+		machine.add(new Variable("A$", "hello"));
+		machine.add(new Variable("B", 65));
+		String term = "(A$+\" \")+(\"world\"+\", \"+A$)+\" (\"+CHR$(B+(66-B))+CHR$(B)+\"!\"+\") universe!\"+\" -- \"+A$";
+		testExpr(machine, term, true);
+	}
+
 	private static void testStringExpression0() {
 		System.out.println("\n\ntestStringExpression0");
 		Machine machine = new Machine();
 		machine.add(new Variable("A$", "hello"));
 		String term = "(A$+\" \")+(\"world\"+\", \"+A$)+\" universe!\"";
 		testExpr(machine, term, true);
-		
+
 		term = "\"Hello World!\"";
 		testExpr(machine, term, true);
-		
+
 		term = "A$+\" \"+\"world\"+\", \"+A$+\" universe!\"";
 		testExpr(machine, term, true);
 	}

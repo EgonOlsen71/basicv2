@@ -374,9 +374,9 @@ public class Parser {
 	 */
 	public static Term getTerm(String term, Machine machine, boolean stripAssignment, boolean checkForLogicTerm) {
 		checkForInvalidChars(term);
-		Term ret=getTerm(term, machine, stripAssignment, checkForLogicTerm, null);
+		Term ret = getTerm(term, machine, stripAssignment, checkForLogicTerm, null);
 		ret.setInitial(term);
-    return ret;
+		return ret;
 	}
 
 	/**
@@ -408,9 +408,9 @@ public class Parser {
 		}
 		term = replaceScientificNotation(term);
 		term = addBrackets(term);
-		Term ret= createTerms(term, termMap, machine, checkForLogicTerm);
+		Term ret = createTerms(term, termMap, machine, checkForLogicTerm);
 		ret.setInitial(term);
-    return ret;
+		return ret;
 	}
 
 	/**
@@ -433,7 +433,7 @@ public class Parser {
 		term = removeWhiteSpace(term.substring(command.getName().length()));
 		term = replaceScientificNotation(term);
 		term = addBrackets(term);
-		Term ret= createTerms(term, new HashMap<String, Term>(), machine, checkForLogicTerm);
+		Term ret = createTerms(term, new HashMap<String, Term>(), machine, checkForLogicTerm);
 		ret.setInitial(term);
 		return ret;
 	}
@@ -787,22 +787,22 @@ public class Parser {
 		for (int i = pos + 1; i < term.length(); i++) {
 			char c = term.charAt(i);
 			if (c == '"') {
-        inString = !inString;
-      }
-      if (!inString) {
-  			if (c == ',' && brackets == 0) {
-  				return i;
-  			}
-  
-  			if (brackets == 0 && (Operator.isOperator(c) || c == ')')) {
-  				return i;
-  			}
-  			if (c == '(') {
-  				brackets++;
-  			} else if (c == ')' && brackets > 0) {
-  				brackets--;
-  			}
-      }
+				inString = !inString;
+			}
+			if (!inString) {
+				if (c == ',' && brackets == 0) {
+					return i;
+				}
+
+				if (brackets == 0 && (Operator.isOperator(c) || c == ')')) {
+					return i;
+				}
+				if (c == '(') {
+					brackets++;
+				} else if (c == ')' && brackets > 0) {
+					brackets--;
+				}
+			}
 		}
 		return term.length();
 	}
@@ -855,29 +855,30 @@ public class Parser {
 		for (int i = pos - 1; i >= 0; i--) {
 			char c = term.charAt(i);
 			if (c == '"') {
-        inString = !inString;
-      }
-      if (!inString) {
-  			if (c == ',' && brackets == 0) {
-  				return i + 1;
-  			}
-  			char pc = c;
-  			if (i > 0) {
-  				pc = term.charAt(i - 1);
-  			}
-  
-  			// This handles negative numbers as well, like *-10. However, the
-  			// parser doesn't allow for such numbers here, because they get
-  			// resolved much earlier...anyway...
-  			if (brackets == 0 && ((Operator.isOperator(c) && (c != '-' || (i > 0 && !Operator.isOperator(pc) && pc != '('))) || c == '(')) {
-  				return i + 1;
-  			}
-  			if (c == ')') {
-  				brackets++;
-  			} else if (c == '(' && brackets > 0) {
-  				brackets--;
-  			}
-      }
+				inString = !inString;
+			}
+			if (!inString) {
+				if (c == ',' && brackets == 0) {
+					return i + 1;
+				}
+				char pc = c;
+				if (i > 0) {
+					pc = term.charAt(i - 1);
+				}
+
+				// This handles negative numbers as well, like *-10. However,
+				// the
+				// parser doesn't allow for such numbers here, because they get
+				// resolved much earlier...anyway...
+				if (brackets == 0 && ((Operator.isOperator(c) && (c != '-' || (i > 0 && !Operator.isOperator(pc) && pc != '('))) || c == '(')) {
+					return i + 1;
+				}
+				if (c == ')') {
+					brackets++;
+				} else if (c == '(' && brackets > 0) {
+					brackets--;
+				}
+			}
 		}
 		return 0;
 	}

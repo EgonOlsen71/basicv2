@@ -18,7 +18,7 @@ public class Sys extends AbstractCommand {
 	private List<Atom> pars;
 	private Atom addr;
 	private List<Atom> vals;
-	
+
 	/**
 	 * Instantiates a new sys.
 	 */

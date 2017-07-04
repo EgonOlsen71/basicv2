@@ -63,7 +63,7 @@ public class Poke extends AbstractCommand {
 		int memAddr = VarUtils.getInt(addr.eval(machine));
 		int vally = VarUtils.getInt(val.eval(machine));
 		if (vally < 0 || vally > 255 || memAddr < 0 || memAddr > 65535) {
-			throw new RuntimeException("Illegal quantity error: " + this + "/" + vally+"/"+memAddr);
+			throw new RuntimeException("Illegal quantity error: " + this + "/" + vally + "/" + memAddr);
 		}
 
 		machine.getRam()[memAddr] = vally;

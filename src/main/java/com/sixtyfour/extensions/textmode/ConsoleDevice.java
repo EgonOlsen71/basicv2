@@ -122,7 +122,7 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 			window = new ConsoleDevice(machine, consoleType, clear, x, y);
 			machine2window.put(machine, window);
 		} else {
-		  window.updateScreen();
+			window.updateScreen();
 		}
 		return window;
 	}
@@ -532,24 +532,26 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 
 		return inputString.toString();
 	}
-	
+
 	/**
 	 * Sets the used charset to either lower or not lower (i.e. upper) case.
 	 * 
-	 * @param isLower is it lower case?
+	 * @param isLower
+	 *            is it lower case?
 	 */
 	public void setFontMode(boolean isLower) {
-	  setCharset(!isLower);
-	  update();
+		setCharset(!isLower);
+		update();
 	}
-	
+
 	/**
-	 * Toggles the current charset between lower case and upper/grapchis characters mode.
+	 * Toggles the current charset between lower case and upper/grapchis
+	 * characters mode.
 	 */
 	public void toggleFontMode() {
-    setCharset(!this.graphicsFontUsed);
-    update();
-  }
+		setCharset(!this.graphicsFontUsed);
+		update();
+	}
 
 	private void stopCursor() {
 		cursorMode = false;
@@ -1001,32 +1003,29 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 		pokeValue(TEXT_RAM + pos, 160, TEXT_RAM);
 		pokeValue(COLOR_RAM + pos, color, COLOR_RAM);
 	}
-	
+
 	private class FontToggler implements KeyListener {
 
-    private boolean pressed=false;
-    
-    @Override
-    public void keyTyped(KeyEvent e)
-    {
-      //
-    }
+		private boolean pressed = false;
 
-    @Override
-    public void keyPressed(KeyEvent e)
-    {
-      if (e.isControlDown() && e.isShiftDown()) {
-        if (!pressed) {
-          toggleFontMode();
-          pressed=true;
-        }
-      }
-    }
+		@Override
+		public void keyTyped(KeyEvent e) {
+			//
+		}
 
-    @Override
-    public void keyReleased(KeyEvent e)
-    {
-      pressed=false;
-    }
-  }
+		@Override
+		public void keyPressed(KeyEvent e) {
+			if (e.isControlDown() && e.isShiftDown()) {
+				if (!pressed) {
+					toggleFontMode();
+					pressed = true;
+				}
+			}
+		}
+
+		@Override
+		public void keyReleased(KeyEvent e) {
+			pressed = false;
+		}
+	}
 }

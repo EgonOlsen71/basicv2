@@ -64,12 +64,11 @@ public class Comparison implements LogicBlock {
 		}
 		return ret;
 	}
-	
-	@Override
-  public List<String> evalToExpression(Machine machine) {
-    return null;
-  }
 
+	@Override
+	public List<String> evalToExpression(Machine machine) {
+		return null;
+	}
 
 	/**
 	 * Gets the left term.

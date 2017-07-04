@@ -63,7 +63,7 @@ public class LabelsContainer {
 						throw new RuntimeException("Destination address out of range: " + value + "/" + targetAddr + "/" + offset);
 					}
 				} else {
-					 //System.out.println("Applied delayed Label: "+entry.getValue()+"@"+Integer.toHexString(targetAddr)+"/"+value);
+					// System.out.println("Applied delayed Label: "+entry.getValue()+"@"+Integer.toHexString(targetAddr)+"/"+value);
 					if (dl.isLow()) {
 						ram[++targetAddr] = AssemblyParser.getLowByte(value);
 					} else if (dl.isHigh()) {

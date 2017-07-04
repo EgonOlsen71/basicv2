@@ -11,6 +11,10 @@ import java.util.Map.Entry;
 import com.sixtyfour.Logger;
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.elements.Variable;
+import com.sixtyfour.elements.functions.Asc;
+import com.sixtyfour.elements.functions.Chr;
+import com.sixtyfour.elements.functions.Function;
+import com.sixtyfour.parser.Parser;
 import com.sixtyfour.system.Machine;
 
 /**
@@ -19,7 +23,11 @@ import com.sixtyfour.system.Machine;
  */
 public class PseudoCpu {
 
-	private static final int MEM_SIZE = 16384;
+	public final static int MEM_SIZE = 16384;
+	public final static int A = 5;
+	public final static int B = 6;
+	public final static int X = 0;
+	public final static int Y = 1;
 
 	private Deque<Number> stack = new LinkedList<Number>();
 	private Number[] regs = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; // x,y,..,..,..,a,b,...
@@ -30,6 +38,8 @@ public class PseudoCpu {
 	private int varStart = 0;
 	private int bufferPos = MEM_SIZE;
 	private int bufferStart = MEM_SIZE;
+	private Function chr = new Chr();
+	private Function asc = new Asc();
 
 	/**
 	 * @param code
@@ -236,29 +246,58 @@ public class PseudoCpu {
 			concat(parts);
 			return;
 		}
+		if (parts[1].equals("CHR")) {
+			chr(parts);
+			return;
+		}
+		if (parts[1].equals("ASC")) {
+			asc(parts);
+			return;
+		}
 		throw new RuntimeException("Undefined call address: " + parts[1]);
 	}
 
+	private void asc(String[] parts) {
+		String ch = readString(regs[B].intValue());
+		asc.setTerm(Parser.getTerm("\"" + ch + "\"", machine, false, false));
+		Number num = ((Number) asc.eval(machine)).intValue();
+		regs[Y] = num;
+	}
+
 	private void concat(String[] parts) {
-		int sp = regs[5].intValue();
+		int sp = regs[A].intValue();
 		String s1 = readString(sp);
-		String s2 = readString(regs[6].intValue());
+		String s2 = readString(regs[B].intValue());
 
 		if (sp != bufferStart) {
-		  bufferStart = bufferPos;
-      checkBufferSpace(s1);
-      System.arraycopy(toIntArray(s1), 0, memory, bufferStart + 1, s1.length());
-      bufferPos+= s1.length() + 1;
-      memory[bufferStart] = s1.length();
+			bufferStart = bufferPos;
+			checkBufferSpace(s1);
+			System.arraycopy(toIntArray(s1), 0, memory, bufferStart + 1, s1.length());
+			bufferPos += s1.length() + 1;
+			memory[bufferStart] = s1.length();
 		}
-		
+
 		checkBufferSpace(s2);
 		regs[5] = bufferStart;
 		System.arraycopy(toIntArray(s2), 0, memory, bufferStart + 1 + memory[bufferStart], s2.length());
 		memory[bufferStart] = memory[bufferStart] + s2.length();
-		bufferPos+= s2.length()+1;
-		
-		//@todo: bufferStart (and -pos) have to be reset after assigning the result to an actual variable.
+		bufferPos += s2.length() + 1;
+
+		// @todo: bufferStart (and -pos) have to be reset after assigning the
+		// result to an actual variable.
+	}
+
+	private void chr(String[] parts) {
+		// These results will be stored in the actual variable memory, not in
+		// the concat buffer. This will populate the buffer, but anyway...
+		Number num = (Number) regs[Y];
+		chr.setTerm(Parser.getTerm(String.valueOf(num.intValue()), machine, false, false));
+		String snum = chr.eval(machine).toString();
+		collectGarbage(snum.length());
+		regs[B] = memPointer;
+		memory[memPointer] = snum.length();
+		System.arraycopy(toIntArray(snum), 0, memory, memPointer + 1, snum.length());
+		memPointer += snum.length() + 1;
 	}
 
 	private void checkBufferSpace(String ss) {
@@ -268,10 +307,11 @@ public class PseudoCpu {
 		}
 	}
 
-	@SuppressWarnings("unused")
-	private void collectGarbage() {
-		System.out.println("Variable start is " + varStart);
-		throw new RuntimeException("Not implemented!");
+	private void collectGarbage(int addSize) {
+		if (memPointer + addSize >= MEM_SIZE) {
+			System.out.println("Variable start is " + varStart);
+			throw new RuntimeException("Not implemented!");
+		}
 	}
 
 	private void sin(String[] parts) {

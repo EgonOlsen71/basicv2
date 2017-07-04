@@ -10,7 +10,8 @@ import com.sixtyfour.Loader;
  * A factory for creating Template objects. A template isn't thread-safe, i.e.
  * if you want to serve multiple clients at a time with the same template, you
  * have to create multiple template instances and manage them in a ThreadLocal
- * for example. The TemplateManager class has a basic implementation of this approach.
+ * for example. The TemplateManager class has a basic implementation of this
+ * approach.
  * 
  * @author EgonOlsen
  */

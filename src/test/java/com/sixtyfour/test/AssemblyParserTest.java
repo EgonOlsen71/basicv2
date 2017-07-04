@@ -14,7 +14,7 @@ public class AssemblyParserTest {
 		testLabel();
 	}
 
-  private static void testComplexConstants() {
+	private static void testComplexConstants() {
 		ConstantsContainer ccon = new ConstantsContainer();
 		ConstantValue cv = new ConstantInt("HONK", 10);
 		ccon.put(cv);

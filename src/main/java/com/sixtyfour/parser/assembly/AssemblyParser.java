@@ -116,17 +116,17 @@ public class AssemblyParser {
 		if (!number.startsWith("$") && !number.startsWith("%") && !Character.isDigit(number.charAt(0)) && !(number.startsWith("-"))) {
 			ConstantValue cv = ccon.get(number);
 			if (cv != null) {
-			  //System.out.println("Assigned: "+cv.getValue());
+				// System.out.println("Assigned: "+cv.getValue());
 				return cv.getValue();
 			} else {
-			  if (!number.contains("*")) {
-  			  cv=getConstantParsed("___", number, ccon, false);
-  			  if (cv!=null && cv.getValue()!=0) {
-  			    //System.out.println("Calculated: "+cv.getValue());
-  			    return cv.getValue();
-  			  }
-			  }
-			  cv=null;
+				if (!number.contains("*")) {
+					cv = getConstantParsed("___", number, ccon, false);
+					if (cv != null && cv.getValue() != 0) {
+						// System.out.println("Calculated: "+cv.getValue());
+						return cv.getValue();
+					}
+				}
+				cv = null;
 			}
 
 			if (number.contains("*")) {
@@ -255,7 +255,8 @@ public class AssemblyParser {
 	 * @param ccon
 	 *            a container for constants
 	 * @param raiseError
-	 *           if true, an error will be raised if a constant can't be found. Otherwise, null will be returned
+	 *            if true, an error will be raised if a constant can't be found.
+	 *            Otherwise, null will be returned
 	 * @return the new constant
 	 */
 	public static ConstantValue getConstantParsed(String left, String right, ConstantsContainer ccon, boolean raiseError) {
@@ -308,22 +309,22 @@ public class AssemblyParser {
 		for (String name : names2vars.keySet()) {
 			ConstantValue cv = ccon.get(name);
 			if (cv == null) {
-			  if (raiseError) {
-			    throw new RuntimeException("Undefined constant: " + name);
-			  }
-			  return null;
+				if (raiseError) {
+					throw new RuntimeException("Undefined constant: " + name);
+				}
+				return null;
 			}
 			machine.add(new Variable(names2vars.get(name), ccon.get(name).getValue()));
 		}
-		
-		Term ressy=null;
+
+		Term ressy = null;
 		try {
-		  ressy = Parser.getTerm(res.toString(), machine, true, true);
-		} catch(Throwable nfe) {
-		  if (raiseError) {
-		    throw nfe;
-		  }
-		  return null;
+			ressy = Parser.getTerm(res.toString(), machine, true, true);
+		} catch (Throwable nfe) {
+			if (raiseError) {
+				throw nfe;
+			}
+			return null;
 		}
 		int resultValue = ((Number) ressy.eval(machine)).intValue();
 

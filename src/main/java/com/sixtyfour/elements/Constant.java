@@ -39,13 +39,13 @@ public class Constant<T> implements Atom {
 			throw new RuntimeException("Type mismatch error: " + value);
 		}
 	}
-	
+
 	@Override
-  public List<String> evalToExpression(Machine machine) {
-    List<String> ret= new ArrayList<String>();
-    ret.add("#"+value.toString()+"{"+type+"}");
-    return ret;
-  }
+	public List<String> evalToExpression(Machine machine) {
+		List<String> ret = new ArrayList<String>();
+		ret.add("#" + value.toString() + "{" + type + "}");
+		return ret;
+	}
 
 	/*
 	 * (non-Javadoc)

@@ -23,8 +23,8 @@ public class ConsoleSupport implements BasicExtension {
 	private final static List<Command> COMMANDS = Collections.unmodifiableList(new ArrayList<Command>() {
 		private static final long serialVersionUID = 1L;
 		{
-		  this.add(new ConsoleFont());
-		  this.add(new Console());
+			this.add(new ConsoleFont());
+			this.add(new Console());
 		}
 	});
 

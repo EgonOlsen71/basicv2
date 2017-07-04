@@ -16,8 +16,8 @@ import com.sixtyfour.util.VarUtils;
  */
 public class Color extends AbstractGraphicsCommand {
 
-  private static Constant<Integer> alpha=new Constant<Integer>(255);
-  
+	private static Constant<Integer> alpha = new Constant<Integer>(255);
+
 	public Color() {
 		super("COLOR");
 	}

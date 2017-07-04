@@ -64,10 +64,10 @@ public abstract class AbstractCommand implements Command {
 	}
 
 	@Override
-  public List<String> evalToExpression(Machine machine) {
-    return null;
-  }
-	
+	public List<String> evalToExpression(Machine machine) {
+		return null;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

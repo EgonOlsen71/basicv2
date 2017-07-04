@@ -230,8 +230,10 @@ public class Print extends AbstractCommand {
 	}
 
 	private String fixKludges(String line) {
-		// Crude fix for functions/vars/constants that directly follow functions/vars/constants...
-		// Like for example PRINT 1TAB(10)ACHR$(161)B2TAB(23)123TAB(5)..or PRINT 3(3)a(a(3))3
+		// Crude fix for functions/vars/constants that directly follow
+		// functions/vars/constants...
+		// Like for example PRINT 1TAB(10)ACHR$(161)B2TAB(23)123TAB(5)..or PRINT
+		// 3(3)a(a(3))3
 		// This is quite inefficient and a real crudge, but...anyway...
 		boolean inString = false;
 		boolean hadLetter = false;
@@ -255,7 +257,8 @@ public class Print extends AbstractCommand {
 						break;
 					}
 				}
-				// Special case where a variable (or some other term) directly follows something else
+				// Special case where a variable (or some other term) directly
+				// follows something else
 				if (!splitted) {
 					char cn = line.charAt(i);
 					if ((Character.isDigit(c) || c == '.' || c == ')')
@@ -267,7 +270,7 @@ public class Print extends AbstractCommand {
 				}
 			}
 		}
-		//System.out.println(line);
+		// System.out.println(line);
 		return line;
 	}
 

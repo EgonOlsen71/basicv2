@@ -49,25 +49,19 @@ public class AffineTextureMappingTest {
 		g.dispose();
 
 		/*
-		String[] code = Loader.loadProgram("src/test/resources/asm/innerloop.asm");
-		Assembler asm = new Assembler(code);
-		asm.compile();
-		ProgramPart pp=asm.getProgram().getParts().get(0);
-		int[] bytes=pp.getBytes();
-		int cnt=0;
-		for (int i=0; i<bytes.length; i++) {
-			if (cnt%10==0) {
-				System.out.print("\ndata ");
-			}
-			System.out.print(((byte) (bytes[i])& 0xff)+",");
-			cnt++;
-		}
-		System.out.println();
-		*/
+		 * String[] code =
+		 * Loader.loadProgram("src/test/resources/asm/innerloop.asm"); Assembler
+		 * asm = new Assembler(code); asm.compile(); ProgramPart
+		 * pp=asm.getProgram().getParts().get(0); int[] bytes=pp.getBytes(); int
+		 * cnt=0; for (int i=0; i<bytes.length; i++) { if (cnt%10==0) {
+		 * System.out.print("\ndata "); } System.out.print(((byte) (bytes[i])&
+		 * 0xff)+","); cnt++; } System.out.println();
+		 */
 
-		//String[] vary = Loader.loadProgram("src/test/resources/basic/affine_asm.bas");
+		// String[] vary =
+		// Loader.loadProgram("src/test/resources/basic/affine_asm.bas");
 		String[] vary = Loader.loadProgram("src/test/resources/basic/affine.bas");
-		
+
 		vary = Preprocessor.convertToLineNumbers(vary);
 		for (String line : vary) {
 			System.out.println(line);
@@ -75,7 +69,7 @@ public class AffineTextureMappingTest {
 		final Basic inty = new Basic(vary);
 		inty.compile();
 
-		//inty.getMachine().putProgram(asm.getProgram());
+		// inty.getMachine().putProgram(asm.getProgram());
 		inty.enableJit(-1);
 
 		inty.setSystemCallListener(new RamSystemCallListener(inty.getMachine()) {
@@ -95,16 +89,17 @@ public class AffineTextureMappingTest {
 				return super.usr(params);
 			}
 		});
-/*
-		inty.getCpu().setCpuTracer(new CpuTracer() {
-			@Override
-			public void commandExecuted(Cpu cpu, int opcode, int lastPc, int pc) {
-				System.out.println("@ ." + Integer.toHexString(pc) + "\t" + Integer.toHexString(lastPc) + "\t" + cpu.getInstruction(opcode) + "/"
-						+ Integer.toBinaryString(cpu.getStatus()));
-
-			}
-		});
-*/
+		/*
+		 * inty.getCpu().setCpuTracer(new CpuTracer() {
+		 * 
+		 * @Override public void commandExecuted(Cpu cpu, int opcode, int
+		 * lastPc, int pc) { System.out.println("@ ." + Integer.toHexString(pc)
+		 * + "\t" + Integer.toHexString(lastPc) + "\t" +
+		 * cpu.getInstruction(opcode) + "/" +
+		 * Integer.toBinaryString(cpu.getStatus()));
+		 * 
+		 * } });
+		 */
 		inty.start();
 		BufferedImage bi2 = Graphics.createImage(inty.getMachine(), 16384, 24576, true, true);
 		FileOutputStream fos = new FileOutputStream("affine.png");

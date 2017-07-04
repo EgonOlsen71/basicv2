@@ -81,6 +81,7 @@ public class ProgramPart {
 
 	/**
 	 * Sets the end address
+	 * 
 	 * @return the end address
 	 */
 	public int getEndAddress() {
@@ -90,7 +91,8 @@ public class ProgramPart {
 	/**
 	 * Returns the end address
 	 * 
-	 * @param endAddress the end address
+	 * @param endAddress
+	 *            the end address
 	 */
 	public void setEndAddress(int endAddress) {
 		this.endAddress = endAddress;

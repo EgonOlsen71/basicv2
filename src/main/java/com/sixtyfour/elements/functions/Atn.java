@@ -38,17 +38,21 @@ public class Atn extends AbstractFunction {
 		}
 		throw new RuntimeException("Type mismatch error: " + term.getType());
 	}
-	
-	 /* (non-Javadoc)
-   * @see com.sixtyfour.elements.functions.AbstractFunction#toCode(com.sixtyfour.system.Machine)
-   */
-  @Override
-  public String toCode(Machine machine) {
-    String inter=term.toCode(machine);
-    if (inter==null) {
-      return null;
-    }
-    return "(float) Math.atan("+inter+")";
-  }
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.sixtyfour.elements.functions.AbstractFunction#toCode(com.sixtyfour
+	 * .system.Machine)
+	 */
+	@Override
+	public String toCode(Machine machine) {
+		String inter = term.toCode(machine);
+		if (inter == null) {
+			return null;
+		}
+		return "(float) Math.atan(" + inter + ")";
+	}
 
 }
