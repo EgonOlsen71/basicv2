@@ -78,7 +78,6 @@ public class NativeCompiler {
 					sr = "Y";
 				}
 			}
-
 			if (!isBreak) {
 				if (!isOp) {
 					if (!right) {
@@ -117,7 +116,7 @@ public class NativeCompiler {
 							code.remove(code.size() - 2);
 							yStack.pop();
 						} else {
-							code.add("POP " + tr);
+							popy(code, sr, tr);
 							yStack.pop();
 						}
 					}
@@ -140,14 +139,14 @@ public class NativeCompiler {
 
 				if (!code.isEmpty() && getLastEntry(code).startsWith("MOV " + sr) && !getLastEntry(code).equals("MOV " + sr + "," + tr) && !fromAbove.contains(code.size() - 1)) {
 					// code.add("SWAP X,Y");
-					// Swap register usage is needed
+					// Swap register usage if needed
 					code.add(code.size() - 1, "MOV " + sr + "," + tr);
 					code.set(code.size() - 1, getLastEntry(code).replace("MOV " + sr + ",", "MOV " + tr + ","));
 				} else {
 					// Fix wrong register order for single operand function
 					// calls
 					if (isSingle && !code.isEmpty() && getLastEntry(code).startsWith("MOV " + tr)) {
-						code.add(code.size() - 1, "PUSH " + sr);
+						code.add(code.size() - 1, "PUSH " + getLastMoveTarget(code));
 						code.set(code.size() - 1, getLastEntry(code).replace("MOV " + tr + ",", "MOV " + sr + ","));
 						yStack.push(null);
 					}
@@ -155,6 +154,29 @@ public class NativeCompiler {
 
 				String newTr = null;
 				String regs = stringMode ? "A,B" : "X,Y";
+
+				if (op.equals(".") || op.equals("CHR")) {
+					if (!stringMode) {
+						modeSwitchCnt++;
+						if (modeSwitchCnt > 1 && !code.isEmpty()) {
+							code.add("CHGCTX #1");
+						}
+					}
+					stringMode = true;
+					tr = "A";
+					sr = "B";
+				} else {
+					if (stringMode) {
+						modeSwitchCnt++;
+						if (modeSwitchCnt > 1 && !code.isEmpty()) {
+							code.add("CHGCTX #0");
+						}
+					}
+					stringMode = false;
+					tr = "X";
+					sr = "Y";
+				}
+
 				switch (op) {
 				case "+":
 					code.add("ADD " + regs);
@@ -212,13 +234,13 @@ public class NativeCompiler {
 					break;
 				case "CHR":
 					// The call to CHR has to make sure that the result is
-					// stored in register B
+					// stored in register B for the next PUSH to work fine.
 					code.add("JSR CHR");
 					newTr = "B";
 					break;
 				case "ASC":
 					// The call to ASC has to make sure that the result is
-					// stored in register Y
+					// stored in register Y for the next PUSH to work fine.
 					code.add("JSR ASC");
 					newTr = "Y";
 					break;
@@ -254,6 +276,18 @@ public class NativeCompiler {
 		return code;
 	}
 
+	private String getLastMoveTarget(List<String> code) {
+		for (int i = code.size() - 2; i >= 0; i--) {
+			if (code.get(i).startsWith("MOV ")) {
+				String reg = code.get(i).substring(4, code.get(i).indexOf(",")).trim();
+				if (reg.length() == 1) {
+					return reg;
+				}
+			}
+		}
+		return null;
+	}
+
 	private String getLastEntry(List<String> code) {
 		return code.get(code.size() - 1);
 	}
@@ -262,7 +296,11 @@ public class NativeCompiler {
 		if (getLastEntry(code).equals("PUSH " + tr)) {
 			code.set(code.size() - 1, "MOV " + sr + "," + tr);
 		} else {
-			code.add("POP " + sr);
+			if (getLastEntry(code).equals("PUSH " + sr)) {
+				code.remove(code.size() - 1);
+			} else {
+				code.add("POP " + sr);
+			}
 		}
 	}
 
