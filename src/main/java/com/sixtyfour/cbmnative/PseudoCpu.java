@@ -120,6 +120,12 @@ public class PseudoCpu {
 					case "TAN":
 						tan(parts);
 						break;
+					case "ATN":
+            atn(parts);
+            break;
+					case "EXP":
+            exp(parts);
+            break;
 					case "RND":
 						rnd(parts);
 						break;
@@ -369,6 +375,34 @@ public class PseudoCpu {
 			}
 		});
 	}
+	
+	private void atn(String[] parts) {
+    calc(parts, new Calc() {
+      @Override
+      public Number calc(Number n1, Number n2) {
+        return Math.atan(n2.doubleValue());
+      }
+
+      @Override
+      public String op() {
+        return "ATN(_)";
+      }
+    });
+  }
+	
+	private void exp(String[] parts) {
+    calc(parts, new Calc() {
+      @Override
+      public Number calc(Number n1, Number n2) {
+        return Math.exp(n2.doubleValue());
+      }
+
+      @Override
+      public String op() {
+        return "EXP(_)";
+      }
+    });
+  }
 
 	private void log(String[] parts) {
 		calc(parts, new Calc() {

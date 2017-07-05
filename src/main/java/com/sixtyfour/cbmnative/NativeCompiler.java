@@ -25,6 +25,8 @@ public class NativeCompiler {
 			this.add("SIN");
 			this.add("COS");
 			this.add("TAN");
+			this.add("ATN");
+			this.add("EXP");
 			this.add("LOG");
 			this.add("INT");
 			this.add("ABS");
@@ -226,6 +228,12 @@ public class NativeCompiler {
 				case "TAN":
 					code.add("TAN " + regs);
 					break;
+			  case "ATN":
+          code.add("ATN " + regs);
+          break;
+			  case "EXP":
+          code.add("EXP " + regs);
+          break;
 				case "RND":
 					code.add("RND " + regs);
 					break;
