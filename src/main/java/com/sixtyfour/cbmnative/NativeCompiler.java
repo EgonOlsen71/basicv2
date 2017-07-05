@@ -36,6 +36,7 @@ public class NativeCompiler {
 			this.add("ASC");
 			this.add("STR");
 			this.add("VAL");
+			this.add("LEN");
 		}
 	};
 
@@ -260,6 +261,9 @@ public class NativeCompiler {
 					break;
 				case "ASC":
 					code.add("JSR ASC");
+					break;
+				case "LEN":
+					code.add("JSR LEN");
 					break;
 				default:
 					throw new RuntimeException("Unknown operator: " + op);

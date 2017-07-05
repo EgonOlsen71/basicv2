@@ -35,7 +35,7 @@ public class NativeCompilerTest {
 		Machine machine = new Machine();
 		machine.add(new Variable("P$", "1.2345"));
 		machine.add(new Variable("H$", "67890"));
-		String term = "10/VAL(P$+H$)*3";
+		String term = "10/VAL(P$+H$)*3+LEN(P$)";
 		testExpr(machine, term);
 	}
 

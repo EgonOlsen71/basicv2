@@ -14,6 +14,7 @@ import com.sixtyfour.elements.Variable;
 import com.sixtyfour.elements.functions.Asc;
 import com.sixtyfour.elements.functions.Chr;
 import com.sixtyfour.elements.functions.Function;
+import com.sixtyfour.elements.functions.Len;
 import com.sixtyfour.elements.functions.Str;
 import com.sixtyfour.elements.functions.Val;
 import com.sixtyfour.parser.Parser;
@@ -44,6 +45,7 @@ public class PseudoCpu {
 	private Function asc = new Asc();
 	private Function str = new Str();
 	private Function val = new Val();
+	private Function len = new Len();
 
 	/**
 	 * @param code
@@ -272,6 +274,10 @@ public class PseudoCpu {
 			val(parts);
 			return;
 		}
+		if (parts[1].equals("LEN")) {
+			len(parts);
+			return;
+		}
 		throw new RuntimeException("Undefined call address: " + parts[1]);
 	}
 
@@ -304,6 +310,10 @@ public class PseudoCpu {
 
 	private void val(String[] parts) {
 		runStringIntFunction(parts, val, false);
+	}
+	
+	private void len(String[] parts) {
+		runStringIntFunction(parts, len, true);
 	}
 
 	private void runStringIntFunction(String[] parts, Function func, boolean inty) {
