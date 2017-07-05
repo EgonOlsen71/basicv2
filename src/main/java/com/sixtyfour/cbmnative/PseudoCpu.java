@@ -15,6 +15,7 @@ import com.sixtyfour.elements.functions.Asc;
 import com.sixtyfour.elements.functions.Chr;
 import com.sixtyfour.elements.functions.Function;
 import com.sixtyfour.elements.functions.Str;
+import com.sixtyfour.elements.functions.Val;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.system.Machine;
 
@@ -42,6 +43,7 @@ public class PseudoCpu {
 	private Function chr = new Chr();
 	private Function asc = new Asc();
 	private Function str = new Str();
+	private Function val = new Val();
 
 	/**
 	 * @param code
@@ -123,11 +125,11 @@ public class PseudoCpu {
 						tan(parts);
 						break;
 					case "ATN":
-            atn(parts);
-            break;
+						atn(parts);
+						break;
 					case "EXP":
-            exp(parts);
-            break;
+						exp(parts);
+						break;
 					case "RND":
 						rnd(parts);
 						break;
@@ -258,68 +260,83 @@ public class PseudoCpu {
 			chr(parts);
 			return;
 		}
-		if (parts[1].equals("STR")) {
-      str(parts);
-      return;
-    }
 		if (parts[1].equals("ASC")) {
 			asc(parts);
+			return;
+		}
+		if (parts[1].equals("STR")) {
+			str(parts);
+			return;
+		}
+		if (parts[1].equals("VAL")) {
+			val(parts);
 			return;
 		}
 		throw new RuntimeException("Undefined call address: " + parts[1]);
 	}
 
 	private void concat(String[] parts) {
-    int sp = regs[A].intValue();
-    String s1 = readString(sp);
-    String s2 = readString(regs[B].intValue());
+		int sp = regs[A].intValue();
+		String s1 = readString(sp);
+		String s2 = readString(regs[B].intValue());
 
-    if (sp != bufferStart) {
-      bufferStart = bufferPos;
-      checkBufferSpace(s1);
-      System.arraycopy(toIntArray(s1), 0, memory, bufferStart + 1, s1.length());
-      bufferPos += s1.length() + 1;
-      memory[bufferStart] = s1.length();
-    }
+		if (sp != bufferStart) {
+			bufferStart = bufferPos;
+			checkBufferSpace(s1);
+			System.arraycopy(toIntArray(s1), 0, memory, bufferStart + 1, s1.length());
+			bufferPos += s1.length() + 1;
+			memory[bufferStart] = s1.length();
+		}
 
-    checkBufferSpace(s2);
-    regs[5] = bufferStart;
-    System.arraycopy(toIntArray(s2), 0, memory, bufferStart + 1 + memory[bufferStart], s2.length());
-    memory[bufferStart] = memory[bufferStart] + s2.length();
-    bufferPos += s2.length() + 1;
+		checkBufferSpace(s2);
+		regs[5] = bufferStart;
+		System.arraycopy(toIntArray(s2), 0, memory, bufferStart + 1 + memory[bufferStart], s2.length());
+		memory[bufferStart] = memory[bufferStart] + s2.length();
+		bufferPos += s2.length() + 1;
 
-    // @todo: bufferStart (and -pos) have to be reset after assigning the
-    // result to an actual variable.
-  }
-	
-  private void asc(String[] parts) {
+		// @todo: bufferStart (and -pos) have to be reset after assigning the
+		// result to an actual variable.
+	}
+
+	private void asc(String[] parts) {
+		runStringIntFunction(parts, asc, true);
+	}
+
+	private void val(String[] parts) {
+		runStringIntFunction(parts, val, false);
+	}
+
+	private void runStringIntFunction(String[] parts, Function func, boolean inty) {
 		String ch = readString(regs[B].intValue());
-		asc.setTerm(Parser.getTerm("\"" + ch + "\"", machine, false, false));
-		Number num = ((Number) asc.eval(machine)).intValue();
+		func.setTerm(Parser.getTerm("\"" + ch + "\"", machine, false, false));
+		Number num = ((Number) func.eval(machine));
+		if (inty) {
+			num = num.intValue();
+		}
 		regs[X] = num;
 	}
 
 	private void chr(String[] parts) {
-		runStringFunction(parts, chr, true);
+		runIntStringFunction(parts, chr, true);
 	}
-	
-	private void str(String[] parts) {
-	  runStringFunction(parts, str, false);
-  }
 
-	private void runStringFunction(String[] parts, Function func, boolean inty) {
-	  // These results will be stored in the actual variable memory, not in
-    // the concat buffer. This will populate the buffer, but anyway...
-	  Number num = (Number) regs[Y];
-    func.setTerm(Parser.getTerm(String.valueOf(inty?num.intValue():num.floatValue()), machine, false, false));
-    String snum = func.eval(machine).toString();
-    collectGarbage(snum.length());
-    regs[A] = memPointer;
-    memory[memPointer] = snum.length();
-    System.arraycopy(toIntArray(snum), 0, memory, memPointer + 1, snum.length());
-    memPointer += snum.length() + 1;
+	private void str(String[] parts) {
+		runIntStringFunction(parts, str, false);
 	}
-	
+
+	private void runIntStringFunction(String[] parts, Function func, boolean inty) {
+		// These results will be stored in the actual variable memory, not in
+		// the concat buffer. This will populate the buffer, but anyway...
+		Number num = (Number) regs[Y];
+		func.setTerm(Parser.getTerm(String.valueOf(inty ? num.intValue() : num.floatValue()), machine, false, false));
+		String snum = func.eval(machine).toString();
+		collectGarbage(snum.length());
+		regs[A] = memPointer;
+		memory[memPointer] = snum.length();
+		System.arraycopy(toIntArray(snum), 0, memory, memPointer + 1, snum.length());
+		memPointer += snum.length() + 1;
+	}
+
 	private void checkBufferSpace(String ss) {
 		int max = bufferPos + ss.length();
 		if (max >= memory.length) {
@@ -389,34 +406,34 @@ public class PseudoCpu {
 			}
 		});
 	}
-	
+
 	private void atn(String[] parts) {
-    calc(parts, new Calc() {
-      @Override
-      public Number calc(Number n1, Number n2) {
-        return Math.atan(n2.doubleValue());
-      }
+		calc(parts, new Calc() {
+			@Override
+			public Number calc(Number n1, Number n2) {
+				return Math.atan(n2.doubleValue());
+			}
 
-      @Override
-      public String op() {
-        return "ATN(_)";
-      }
-    });
-  }
-	
+			@Override
+			public String op() {
+				return "ATN(_)";
+			}
+		});
+	}
+
 	private void exp(String[] parts) {
-    calc(parts, new Calc() {
-      @Override
-      public Number calc(Number n1, Number n2) {
-        return Math.exp(n2.doubleValue());
-      }
+		calc(parts, new Calc() {
+			@Override
+			public Number calc(Number n1, Number n2) {
+				return Math.exp(n2.doubleValue());
+			}
 
-      @Override
-      public String op() {
-        return "EXP(_)";
-      }
-    });
-  }
+			@Override
+			public String op() {
+				return "EXP(_)";
+			}
+		});
+	}
 
 	private void log(String[] parts) {
 		calc(parts, new Calc() {

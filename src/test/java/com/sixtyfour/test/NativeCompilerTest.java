@@ -27,17 +27,27 @@ public class NativeCompilerTest {
 		testStringExpression2();
 		testStringExpression3();
 		testStringExpression4();
+		testStringExpression5();
 	}
-	
+
+	private static void testStringExpression5() {
+		System.out.println("\n\ntestStringExpression5");
+		Machine machine = new Machine();
+		machine.add(new Variable("P$", "1.2345"));
+		machine.add(new Variable("H$", "67890"));
+		String term = "10/VAL(P$+H$)*3";
+		testExpr(machine, term);
+	}
+
 	private static void testStringExpression4() {
-    System.out.println("\n\ntestStringExpression4");
-    Machine machine = new Machine();
-    machine.add(new Variable("P", 1.234567890f));
-    machine.add(new Variable("B%", 65));
-    machine.add(new Variable("A$", "65"));
-    String term = "\"vars: \"+STR$(P)";//+\" \"+STR$(B%+100)";
-    testExpr(machine, term, true);
-  }
+		System.out.println("\n\ntestStringExpression4");
+		Machine machine = new Machine();
+		machine.add(new Variable("P", 1.234567890f));
+		machine.add(new Variable("B%", 65));
+		machine.add(new Variable("A$", "65"));
+		String term = "\"vars: \"+STR$(P)";
+		testExpr(machine, term, true);
+	}
 
 	public static void testLinearize() {
 		System.out.println("\n\ntestLinearize");
@@ -53,7 +63,7 @@ public class NativeCompilerTest {
 		String term = "B+ASC(A$+\"hello\")*2+-ASC((\"32222\"+A$)+A$)/2";
 		testExpr(machine, term);
 	}
-	
+
 	private static void testStringExpression3() {
 		System.out.println("\n\ntestStringExpression3");
 		Machine machine = new Machine();

@@ -35,16 +35,17 @@ public class NativeCompiler {
 			this.add("CHR");
 			this.add("ASC");
 			this.add("STR");
+			this.add("VAL");
 		}
 	};
-	
+
 	private final static Set<String> STRING_OPERATORS = new HashSet<String>() {
-    private static final long serialVersionUID = 1L;
-    {
-	    this.add("CHR");
-      this.add(".");
-      this.add("STR");
-	  }
+		private static final long serialVersionUID = 1L;
+		{
+			this.add("CHR");
+			this.add(".");
+			this.add("STR");
+		}
 	};
 
 	public List<String> compileToPseudoCode(Machine machine, Term term) {
@@ -68,7 +69,7 @@ public class NativeCompiler {
 			boolean isBreak = exp.equals("_");
 			if (exp.contains("{")) {
 				if (exp.contains("{STRING")) {
-				  modeSwitchCnt++;
+					modeSwitchCnt++;
 					if (!stringMode) {
 						if (modeSwitchCnt > 1 && !code.isEmpty()) {
 							code.add("CHGCTX #1");
@@ -78,7 +79,7 @@ public class NativeCompiler {
 					tr = "A";
 					sr = "B";
 				} else {
-				  modeSwitchCnt++;
+					modeSwitchCnt++;
 					if (stringMode) {
 						if (modeSwitchCnt > 1 && !code.isEmpty()) {
 							code.add("CHGCTX #0");
@@ -157,7 +158,7 @@ public class NativeCompiler {
 					// Fix wrong register order for single operand function
 					// calls
 					if (isSingle && !code.isEmpty() && getLastEntry(code).startsWith("MOV " + tr)) {
-					  code.add(code.size() - 1, "PUSH " + getLastMoveTarget(code));
+						code.add(code.size() - 1, "PUSH " + getLastMoveTarget(code));
 						code.set(code.size() - 1, getLastEntry(code).replace("MOV " + tr + ",", "MOV " + sr + ","));
 						yStack.push(null);
 					}
@@ -166,7 +167,7 @@ public class NativeCompiler {
 				String regs = stringMode ? "A,B" : "X,Y";
 
 				if (STRING_OPERATORS.contains(op)) {
-				  modeSwitchCnt++;
+					modeSwitchCnt++;
 					if (!stringMode) {
 						if (modeSwitchCnt > 1 && !code.isEmpty()) {
 							code.add("CHGCTX #1");
@@ -176,7 +177,7 @@ public class NativeCompiler {
 					tr = "A";
 					sr = "B";
 				} else {
-				  modeSwitchCnt++;
+					modeSwitchCnt++;
 					if (stringMode) {
 						if (modeSwitchCnt > 1 && !code.isEmpty()) {
 							code.add("CHGCTX #0");
@@ -236,12 +237,12 @@ public class NativeCompiler {
 				case "TAN":
 					code.add("TAN " + regs);
 					break;
-			  case "ATN":
-          code.add("ATN " + regs);
-          break;
-			  case "EXP":
-          code.add("EXP " + regs);
-          break;
+				case "ATN":
+					code.add("ATN " + regs);
+					break;
+				case "EXP":
+					code.add("EXP " + regs);
+					break;
 				case "RND":
 					code.add("RND " + regs);
 					break;
@@ -252,15 +253,18 @@ public class NativeCompiler {
 					code.add("JSR CHR");
 					break;
 				case "STR":
-          code.add("JSR STR");
-          break;
+					code.add("JSR STR");
+					break;
+				case "VAL":
+					code.add("JSR VAL");
+					break;
 				case "ASC":
 					code.add("JSR ASC");
 					break;
 				default:
 					throw new RuntimeException("Unknown operator: " + op);
 				}
-				code.add("PUSH " +  tr);
+				code.add("PUSH " + tr);
 				yStack.push(null);
 				left = false;
 				right = false;
