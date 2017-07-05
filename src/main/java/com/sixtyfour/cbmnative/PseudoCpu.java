@@ -14,6 +14,7 @@ import com.sixtyfour.elements.Variable;
 import com.sixtyfour.elements.functions.Asc;
 import com.sixtyfour.elements.functions.Chr;
 import com.sixtyfour.elements.functions.Function;
+import com.sixtyfour.elements.functions.Str;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.system.Machine;
 
@@ -40,6 +41,7 @@ public class PseudoCpu {
 	private int bufferStart = MEM_SIZE;
 	private Function chr = new Chr();
 	private Function asc = new Asc();
+	private Function str = new Str();
 
 	/**
 	 * @param code
@@ -256,6 +258,10 @@ public class PseudoCpu {
 			chr(parts);
 			return;
 		}
+		if (parts[1].equals("STR")) {
+      str(parts);
+      return;
+    }
 		if (parts[1].equals("ASC")) {
 			asc(parts);
 			return;
@@ -263,49 +269,57 @@ public class PseudoCpu {
 		throw new RuntimeException("Undefined call address: " + parts[1]);
 	}
 
-	private void asc(String[] parts) {
+	private void concat(String[] parts) {
+    int sp = regs[A].intValue();
+    String s1 = readString(sp);
+    String s2 = readString(regs[B].intValue());
+
+    if (sp != bufferStart) {
+      bufferStart = bufferPos;
+      checkBufferSpace(s1);
+      System.arraycopy(toIntArray(s1), 0, memory, bufferStart + 1, s1.length());
+      bufferPos += s1.length() + 1;
+      memory[bufferStart] = s1.length();
+    }
+
+    checkBufferSpace(s2);
+    regs[5] = bufferStart;
+    System.arraycopy(toIntArray(s2), 0, memory, bufferStart + 1 + memory[bufferStart], s2.length());
+    memory[bufferStart] = memory[bufferStart] + s2.length();
+    bufferPos += s2.length() + 1;
+
+    // @todo: bufferStart (and -pos) have to be reset after assigning the
+    // result to an actual variable.
+  }
+	
+  private void asc(String[] parts) {
 		String ch = readString(regs[B].intValue());
 		asc.setTerm(Parser.getTerm("\"" + ch + "\"", machine, false, false));
 		Number num = ((Number) asc.eval(machine)).intValue();
-		regs[Y] = num;
-	}
-
-	private void concat(String[] parts) {
-		int sp = regs[A].intValue();
-		String s1 = readString(sp);
-		String s2 = readString(regs[B].intValue());
-
-		if (sp != bufferStart) {
-			bufferStart = bufferPos;
-			checkBufferSpace(s1);
-			System.arraycopy(toIntArray(s1), 0, memory, bufferStart + 1, s1.length());
-			bufferPos += s1.length() + 1;
-			memory[bufferStart] = s1.length();
-		}
-
-		checkBufferSpace(s2);
-		regs[5] = bufferStart;
-		System.arraycopy(toIntArray(s2), 0, memory, bufferStart + 1 + memory[bufferStart], s2.length());
-		memory[bufferStart] = memory[bufferStart] + s2.length();
-		bufferPos += s2.length() + 1;
-
-		// @todo: bufferStart (and -pos) have to be reset after assigning the
-		// result to an actual variable.
+		regs[X] = num;
 	}
 
 	private void chr(String[] parts) {
-		// These results will be stored in the actual variable memory, not in
-		// the concat buffer. This will populate the buffer, but anyway...
-		Number num = (Number) regs[Y];
-		chr.setTerm(Parser.getTerm(String.valueOf(num.intValue()), machine, false, false));
-		String snum = chr.eval(machine).toString();
-		collectGarbage(snum.length());
-		regs[B] = memPointer;
-		memory[memPointer] = snum.length();
-		System.arraycopy(toIntArray(snum), 0, memory, memPointer + 1, snum.length());
-		memPointer += snum.length() + 1;
+		runStringFunction(parts, chr, true);
 	}
+	
+	private void str(String[] parts) {
+	  runStringFunction(parts, str, false);
+  }
 
+	private void runStringFunction(String[] parts, Function func, boolean inty) {
+	  // These results will be stored in the actual variable memory, not in
+    // the concat buffer. This will populate the buffer, but anyway...
+	  Number num = (Number) regs[Y];
+    func.setTerm(Parser.getTerm(String.valueOf(inty?num.intValue():num.floatValue()), machine, false, false));
+    String snum = func.eval(machine).toString();
+    collectGarbage(snum.length());
+    regs[A] = memPointer;
+    memory[memPointer] = snum.length();
+    System.arraycopy(toIntArray(snum), 0, memory, memPointer + 1, snum.length());
+    memPointer += snum.length() + 1;
+	}
+	
 	private void checkBufferSpace(String ss) {
 		int max = bufferPos + ss.length();
 		if (max >= memory.length) {

@@ -17,9 +17,8 @@ import com.sixtyfour.system.Machine;
  */
 public class NativeCompiler {
 
-	private Set<String> SINGLES = new HashSet<String>() {
+	private final static Set<String> SINGLES = new HashSet<String>() {
 		private static final long serialVersionUID = 1L;
-
 		{
 			this.add("!");
 			this.add("SIN");
@@ -35,7 +34,17 @@ public class NativeCompiler {
 			this.add("RND");
 			this.add("CHR");
 			this.add("ASC");
+			this.add("STR");
 		}
+	};
+	
+	private final static Set<String> STRING_OPERATORS = new HashSet<String>() {
+    private static final long serialVersionUID = 1L;
+    {
+	    this.add("CHR");
+      this.add(".");
+      this.add("STR");
+	  }
 	};
 
 	public List<String> compileToPseudoCode(Machine machine, Term term) {
@@ -139,6 +148,8 @@ public class NativeCompiler {
 					right = true;
 				}
 
+				System.out.println(sr+"/"+tr+"/"+exp+": "+getLastEntry(code)+"/"+getLastEntry(code).startsWith("MOV " + sr));
+				
 				if (!code.isEmpty() && getLastEntry(code).startsWith("MOV " + sr) && !getLastEntry(code).equals("MOV " + sr + "," + tr) && !fromAbove.contains(code.size() - 1)) {
 					// code.add("SWAP X,Y");
 					// Swap register usage if needed
@@ -148,16 +159,15 @@ public class NativeCompiler {
 					// Fix wrong register order for single operand function
 					// calls
 					if (isSingle && !code.isEmpty() && getLastEntry(code).startsWith("MOV " + tr)) {
-						code.add(code.size() - 1, "PUSH " + getLastMoveTarget(code));
+					  code.add(code.size() - 1, "PUSH " + getLastMoveTarget(code));
 						code.set(code.size() - 1, getLastEntry(code).replace("MOV " + tr + ",", "MOV " + sr + ","));
 						yStack.push(null);
 					}
 				}
 
-				String newTr = null;
 				String regs = stringMode ? "A,B" : "X,Y";
 
-				if (op.equals(".") || op.equals("CHR")) {
+				if (STRING_OPERATORS.contains(op)) {
 					if (!stringMode) {
 						modeSwitchCnt++;
 						if (modeSwitchCnt > 1 && !code.isEmpty()) {
@@ -241,22 +251,18 @@ public class NativeCompiler {
 					code.add("JSR CONCAT");
 					break;
 				case "CHR":
-					// The call to CHR has to make sure that the result is
-					// stored in register B for the next PUSH to work fine.
 					code.add("JSR CHR");
-					newTr = "B";
 					break;
+				case "STR":
+          code.add("JSR STR");
+          break;
 				case "ASC":
-					// The call to ASC has to make sure that the result is
-					// stored in register Y for the next PUSH to work fine.
 					code.add("JSR ASC");
-					newTr = "Y";
 					break;
 				default:
 					throw new RuntimeException("Unknown operator: " + op);
 				}
-				code.add("PUSH " + (newTr != null ? newTr : tr));
-				newTr = null;
+				code.add("PUSH " +  tr);
 				yStack.push(null);
 				left = false;
 				right = false;
@@ -302,6 +308,7 @@ public class NativeCompiler {
 
 	private void popy(List<String> code, String tr, String sr) {
 		if (getLastEntry(code).equals("PUSH " + tr)) {
+		  System.out.println(getLastEntry(code));
 			code.set(code.size() - 1, "MOV " + sr + "," + tr);
 		} else {
 			if (getLastEntry(code).equals("PUSH " + sr)) {

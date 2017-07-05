@@ -96,7 +96,7 @@ public abstract class AbstractFunction implements Function {
 	@Override
 	public List<String> evalToExpression(Machine machine) {
 		List<String> ret = new ArrayList<String>();
-		ret.add(0, "_");
+		ret.add("_");
 		List<String> n1 = term.evalToExpression(machine);
 		n1.add(":" + this.getClass().getSimpleName().toUpperCase(Locale.ENGLISH));
 		ret.addAll(0, n1);

@@ -26,7 +26,18 @@ public class NativeCompilerTest {
 		testStringExpression1();
 		testStringExpression2();
 		testStringExpression3();
+		testStringExpression4();
 	}
+	
+	private static void testStringExpression4() {
+    System.out.println("\n\ntestStringExpression4");
+    Machine machine = new Machine();
+    machine.add(new Variable("P", 1.234567890f));
+    machine.add(new Variable("B%", 65));
+    machine.add(new Variable("A$", "65"));
+    String term = "\"vars: \"+STR$(P)";//+\" \"+STR$(B%+100)";
+    testExpr(machine, term, true);
+  }
 
 	public static void testLinearize() {
 		System.out.println("\n\ntestLinearize");
