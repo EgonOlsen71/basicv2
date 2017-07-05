@@ -68,8 +68,8 @@ public class NativeCompiler {
 			boolean isBreak = exp.equals("_");
 			if (exp.contains("{")) {
 				if (exp.contains("{STRING")) {
+				  modeSwitchCnt++;
 					if (!stringMode) {
-						modeSwitchCnt++;
 						if (modeSwitchCnt > 1 && !code.isEmpty()) {
 							code.add("CHGCTX #1");
 						}
@@ -78,8 +78,8 @@ public class NativeCompiler {
 					tr = "A";
 					sr = "B";
 				} else {
+				  modeSwitchCnt++;
 					if (stringMode) {
-						modeSwitchCnt++;
 						if (modeSwitchCnt > 1 && !code.isEmpty()) {
 							code.add("CHGCTX #0");
 						}
@@ -166,8 +166,8 @@ public class NativeCompiler {
 				String regs = stringMode ? "A,B" : "X,Y";
 
 				if (STRING_OPERATORS.contains(op)) {
+				  modeSwitchCnt++;
 					if (!stringMode) {
-						modeSwitchCnt++;
 						if (modeSwitchCnt > 1 && !code.isEmpty()) {
 							code.add("CHGCTX #1");
 						}
@@ -176,8 +176,8 @@ public class NativeCompiler {
 					tr = "A";
 					sr = "B";
 				} else {
+				  modeSwitchCnt++;
 					if (stringMode) {
-						modeSwitchCnt++;
 						if (modeSwitchCnt > 1 && !code.isEmpty()) {
 							code.add("CHGCTX #0");
 						}
