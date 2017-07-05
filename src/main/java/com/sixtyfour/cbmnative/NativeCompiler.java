@@ -148,8 +148,6 @@ public class NativeCompiler {
 					right = true;
 				}
 
-				System.out.println(sr+"/"+tr+"/"+exp+": "+getLastEntry(code)+"/"+getLastEntry(code).startsWith("MOV " + sr));
-				
 				if (!code.isEmpty() && getLastEntry(code).startsWith("MOV " + sr) && !getLastEntry(code).equals("MOV " + sr + "," + tr) && !fromAbove.contains(code.size() - 1)) {
 					// code.add("SWAP X,Y");
 					// Swap register usage if needed
@@ -308,7 +306,6 @@ public class NativeCompiler {
 
 	private void popy(List<String> code, String tr, String sr) {
 		if (getLastEntry(code).equals("PUSH " + tr)) {
-		  System.out.println(getLastEntry(code));
 			code.set(code.size() - 1, "MOV " + sr + "," + tr);
 		} else {
 			if (getLastEntry(code).equals("PUSH " + sr)) {
