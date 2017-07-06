@@ -338,10 +338,41 @@ public class NativeCompiler {
 			}
 		}
 
-		return code;
+		return optimize(code);
 	}
 
-	private String getLastMoveTarget(List<String> code, int offset) {
+	private List<String> optimize(List<String> code)
+  {
+	    List<String> ret=new ArrayList<String>();
+	    for (int i=0; i<code.size()-1; i++) {
+	      String l0=code.get(i);
+	      String l1=code.get(i+1);
+	      boolean rep=false;
+	      for (char c:new char[]{'C', 'D'}) {
+  	      if (l1.startsWith("MOV "+c+",")) {
+  	        if (l0.startsWith("MOV ")) {
+  	          int pos=l0.indexOf(",");
+  	          String r0=l0.substring(4, pos).trim();
+  	          String r1=l1.substring(6).trim();
+  	          if (r0.equals(r1)) {
+  	            ret.add("MOV "+c+","+l0.substring(pos+1).trim());
+  	            rep=true;
+  	            break;
+  	          }
+  	        }
+  	      }
+	      }
+	      if (!rep) {
+	        ret.add(l0);
+	      } else {
+	        i++;
+	      }
+	    }
+	    ret.add(code.get(code.size()-1));
+	    return ret;
+  }
+
+  private String getLastMoveTarget(List<String> code, int offset) {
 		for (int i = code.size() - offset; i >= 0; i--) {
 			if (code.get(i).startsWith("MOV ")) {
 				String reg = code.get(i).substring(4, code.get(i).indexOf(",")).trim();
