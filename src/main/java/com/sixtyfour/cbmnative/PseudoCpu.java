@@ -15,6 +15,7 @@ import com.sixtyfour.elements.functions.Asc;
 import com.sixtyfour.elements.functions.Chr;
 import com.sixtyfour.elements.functions.Function;
 import com.sixtyfour.elements.functions.Len;
+import com.sixtyfour.elements.functions.Mid;
 import com.sixtyfour.elements.functions.Str;
 import com.sixtyfour.elements.functions.Val;
 import com.sixtyfour.parser.Parser;
@@ -29,11 +30,13 @@ public class PseudoCpu {
 	public final static int MEM_SIZE = 16384;
 	public final static int A = 5;
 	public final static int B = 6;
+	public final static int C = 7;
+	public final static int D = 8;
 	public final static int X = 0;
 	public final static int Y = 1;
 
 	private Deque<Number> stack = new LinkedList<Number>();
-	private Number[] regs = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; // x,y,..,..,..,a,b,...
+	private Number[] regs = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; // x,y,..,..,..,a,b,...
 	private Machine machine;
 	private int[] memory = null;
 	private Map<String, Integer> memLocations = new HashMap<String, Integer>();
@@ -46,6 +49,7 @@ public class PseudoCpu {
 	private Function str = new Str();
 	private Function val = new Val();
 	private Function len = new Len();
+	private Function mid = new Mid();
 
 	/**
 	 * @param code
@@ -254,34 +258,36 @@ public class PseudoCpu {
 	}
 
 	private void jsr(String[] parts) {
-		if (parts[1].equals("CONCAT")) {
-			concat(parts);
-			return;
-		}
-		if (parts[1].equals("CHR")) {
-			chr(parts);
-			return;
-		}
-		if (parts[1].equals("ASC")) {
-			asc(parts);
-			return;
-		}
-		if (parts[1].equals("STR")) {
-			str(parts);
-			return;
-		}
-		if (parts[1].equals("VAL")) {
-			val(parts);
-			return;
-		}
-		if (parts[1].equals("LEN")) {
-			len(parts);
-			return;
-		}
-		throw new RuntimeException("Undefined call address: " + parts[1]);
+	  
+	  switch(parts[1]) {
+	    case "CONCAT":
+	      concat(parts);
+	      return;
+  	  case "CHR":
+  			chr(parts);
+  			return;
+  	  case "ASC":
+  	    asc(parts);
+  			return;
+  	  case "STR":
+  			str(parts);
+  			return;
+  	  case "VAL":
+  			val(parts);
+  			return;
+  	  case "LEN":
+  			len(parts);
+  			return;
+  	  case "MID":
+        mid(parts);
+        return;
+      default:
+        throw new RuntimeException("Undefined call address: " + parts[1]);
+    }
+		
 	}
 
-	private void concat(String[] parts) {
+  private void concat(String[] parts) {
 		int sp = regs[A].intValue();
 		String s1 = readString(sp);
 		String s2 = readString(regs[B].intValue());
@@ -304,6 +310,25 @@ public class PseudoCpu {
 		// result to an actual variable.
 	}
 
+  private void mid(String[] parts)
+  {
+    String ch = readString(regs[B].intValue());
+    int end=regs[D].intValue();
+    int start=regs[C].intValue();
+    
+    if (end!=-1) {
+      mid.setTerm(Parser.getTerm("\""+ch+"\","+start+","+end, machine, false, false));
+    } else {
+      mid.setTerm(Parser.getTerm("\""+ch+"\","+start, machine, false, false));
+    }
+    String snum = mid.eval(machine).toString();
+    collectGarbage(snum.length());
+    regs[A] = memPointer;
+    memory[memPointer] = snum.length();
+    System.arraycopy(toIntArray(snum), 0, memory, memPointer + 1, snum.length());
+    memPointer += snum.length() + 1;
+  }
+  
 	private void asc(String[] parts) {
 		runStringIntFunction(parts, asc, true);
 	}
@@ -730,7 +755,11 @@ public class PseudoCpu {
 			ti = 5;
 		} else if (target.equals("B")) {
 			ti = 6;
-		}
+		} else if (target.equals("C")) {
+      ti = 7;
+    } else if (target.equals("D")) {
+      ti = 8;
+    }
 		return ti;
 	}
 

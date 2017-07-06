@@ -37,6 +37,8 @@ public class NativeCompiler {
 			this.add("STR");
 			this.add("VAL");
 			this.add("LEN");
+			this.add("MID");
+			this.add("PAR");
 		}
 	};
 
@@ -46,6 +48,7 @@ public class NativeCompiler {
 			this.add("CHR");
 			this.add(".");
 			this.add("STR");
+			this.add("MID");
 		}
 	};
 
@@ -64,6 +67,7 @@ public class NativeCompiler {
 		boolean left = false;
 		boolean right = false;
 		Set<Integer> fromAbove = new HashSet<Integer>();
+		char parReg='C';
 
 		for (String exp : expr) {
 			boolean isOp = exp.startsWith(":");
@@ -91,6 +95,7 @@ public class NativeCompiler {
 					sr = "Y";
 				}
 			}
+			
 			if (!isBreak) {
 				if (!isOp) {
 					if (!right) {
@@ -99,10 +104,12 @@ public class NativeCompiler {
 					} else if (!left) {
 						code.add("MOV " + tr + "," + exp);
 						left = true;
+					} else {
+					 //throw new RuntimeException("No free registers left to handle "+exp);
 					}
 				}
 			}
-
+			
 			if (isOp && right && !left) {
 				String lc = getLastEntry(code);
 				if (lc.startsWith("MOV " + sr + "")) {
@@ -129,19 +136,40 @@ public class NativeCompiler {
 							code.remove(code.size() - 2);
 							yStack.pop();
 						} else {
-							popy(code, sr, tr);
+							popy(code, sr, tr, sr, tr);
 							yStack.pop();
 						}
 					}
 					left = true;
 				}
+				
 				if (!right) {
+				  
+				  String ntr=tr;
+				  String nsr=sr;
+				  
+				  if (STRING_OPERATORS.contains(op)) {
+	          if (!stringMode) {
+	            if (modeSwitchCnt > 1 && !code.isEmpty()) {
+	              ntr="A";
+	              nsr="B";
+	            }
+	          }
+	        } else {
+	          if (stringMode) {
+	            if (modeSwitchCnt > 1 && !code.isEmpty()) {
+	              ntr="X";
+                nsr="Y";
+              }
+	          }
+	        }
+				  
 					if (yStack.isEmpty()) {
-						popy(code, tr, sr);
+						popy(code, tr, sr, ntr, nsr);
 					} else {
 						String v = yStack.pop();
 						if (v == null) {
-							popy(code, tr, sr);
+							popy(code, tr, sr, ntr, nsr);
 						} else {
 							code.add(v);
 							fromAbove.add(code.size() - 1);
@@ -156,17 +184,15 @@ public class NativeCompiler {
 					code.add(code.size() - 1, "MOV " + sr + "," + tr);
 					code.set(code.size() - 1, getLastEntry(code).replace("MOV " + sr + ",", "MOV " + tr + ","));
 				} else {
-					// Fix wrong register order for single operand function
-					// calls
+					// Fix wrong register order for single operand function calls
 					if (isSingle && !code.isEmpty() && getLastEntry(code).startsWith("MOV " + tr)) {
-						code.add(code.size() - 1, "PUSH " + getLastMoveTarget(code));
+					  String lmt=getLastMoveTarget(code, 2);
+						code.add(code.size() - 1, "PUSH " + lmt);
 						code.set(code.size() - 1, getLastEntry(code).replace("MOV " + tr + ",", "MOV " + sr + ","));
 						yStack.push(null);
 					}
 				}
-
-				String regs = stringMode ? "A,B" : "X,Y";
-
+				
 				if (STRING_OPERATORS.contains(op)) {
 					modeSwitchCnt++;
 					if (!stringMode) {
@@ -188,7 +214,10 @@ public class NativeCompiler {
 					tr = "X";
 					sr = "Y";
 				}
-
+				String regs = stringMode ? "A,B" : "X,Y";
+				
+				boolean dontPush=false;
+				
 				switch (op) {
 				case "+":
 					code.add("ADD " + regs);
@@ -265,13 +294,29 @@ public class NativeCompiler {
 				case "LEN":
 					code.add("JSR LEN");
 					break;
+			  case "MID":
+          code.add("JSR MID");
+          parReg='C';
+          break;
+			  case "PAR":
+			    if (getLastEntry(code).startsWith("MOV " + sr)) {
+  		        code.add("MOV "+(parReg++)+"," + sr);
+  		    } else {
+  		        code.add("MOV "+(parReg++)+"," + tr);
+		      }
+			    //yStack.push(null);
+			    dontPush=true;
+          break;
 				default:
 					throw new RuntimeException("Unknown operator: " + op);
 				}
-				code.add("PUSH " + tr);
-				yStack.push(null);
+				if (!dontPush) {
+  				code.add("PUSH " + tr);
+  				yStack.push(null);
+				}
+				dontPush=false;
 				left = false;
-				right = false;
+				right= false;
 			}
 
 			if (isOp) {
@@ -296,8 +341,8 @@ public class NativeCompiler {
 		return code;
 	}
 
-	private String getLastMoveTarget(List<String> code) {
-		for (int i = code.size() - 2; i >= 0; i--) {
+	private String getLastMoveTarget(List<String> code, int offset) {
+		for (int i = code.size() - offset; i >= 0; i--) {
 			if (code.get(i).startsWith("MOV ")) {
 				String reg = code.get(i).substring(4, code.get(i).indexOf(",")).trim();
 				if (reg.length() == 1) {
@@ -312,14 +357,14 @@ public class NativeCompiler {
 		return code.get(code.size() - 1);
 	}
 
-	private void popy(List<String> code, String tr, String sr) {
+	private void popy(List<String> code, String tr, String sr, String ntr, String nsr) {
 		if (getLastEntry(code).equals("PUSH " + tr)) {
 			code.set(code.size() - 1, "MOV " + sr + "," + tr);
 		} else {
-			if (getLastEntry(code).equals("PUSH " + sr)) {
+			if (getLastEntry(code).equals("PUSH " + nsr)) {
 				code.remove(code.size() - 1);
 			} else {
-				code.add("POP " + sr);
+				code.add("POP " + nsr);
 			}
 		}
 	}

@@ -28,8 +28,21 @@ public class NativeCompilerTest {
 		testStringExpression3();
 		testStringExpression4();
 		testStringExpression5();
+		testStringExpression6();
 	}
 
+	private static void testStringExpression6() {
+    System.out.println("\n\ntestStringExpression6");
+    Machine machine = new Machine();
+    machine.add(new Variable("P$", "hello world"));
+    String term = "\"test: \"+MID$(P$,4,ASC(\"A\")-92)+MID$(\"YEAH!\",4+1)";
+    //String term="MID$(\"hello\",1,2)";
+    testExpr(machine, term, true);
+    
+    term="CHR$(123)";
+    testExpr(machine, term, true);
+  }
+	
 	private static void testStringExpression5() {
 		System.out.println("\n\ntestStringExpression5");
 		Machine machine = new Machine();
