@@ -39,6 +39,7 @@ public class NativeCompiler {
 			this.add("LEN");
 			this.add("MID");
 			this.add("PAR");
+			// this.add("ARRAYACCESS");
 		}
 	};
 
@@ -56,7 +57,8 @@ public class NativeCompiler {
 		term = TermHelper.linearize(machine, term);
 		String tr = null;
 		String sr = null;
-		boolean stringMode = false;
+		boolean pointerMode = false;
+		int contextMode = 0;
 		int modeSwitchCnt = 0;
 
 		List<String> code = new ArrayList<String>();
@@ -67,35 +69,37 @@ public class NativeCompiler {
 		boolean left = false;
 		boolean right = false;
 		Set<Integer> fromAbove = new HashSet<Integer>();
-		char parReg='C';
+		char parReg = 'C';
 
 		for (String exp : expr) {
 			boolean isOp = exp.startsWith(":");
 			boolean isBreak = exp.equals("_");
 			if (exp.contains("{")) {
-				if (exp.contains("{STRING")) {
+				if (exp.contains("{STRING") || exp.contains("[]")) {
 					modeSwitchCnt++;
-					if (!stringMode) {
-						if (modeSwitchCnt > 1 && !code.isEmpty()) {
+					if (!pointerMode) {
+						if (modeSwitchCnt > 1 && !code.isEmpty() && exp.contains("{STRING") && contextMode != 1) {
 							code.add("CHGCTX #1");
+							contextMode = 1;
 						}
 					}
-					stringMode = true;
+					pointerMode = true;
 					tr = "A";
 					sr = "B";
 				} else {
 					modeSwitchCnt++;
-					if (stringMode) {
-						if (modeSwitchCnt > 1 && !code.isEmpty()) {
+					if (pointerMode) {
+						if (modeSwitchCnt > 1 && !code.isEmpty() && contextMode != 0) {
 							code.add("CHGCTX #0");
+							contextMode = 0;
 						}
 					}
-					stringMode = false;
+					pointerMode = false;
 					tr = "X";
 					sr = "Y";
 				}
 			}
-			
+
 			if (!isBreak) {
 				if (!isOp) {
 					if (!right) {
@@ -105,11 +109,12 @@ public class NativeCompiler {
 						code.add("MOV " + tr + "," + exp);
 						left = true;
 					} else {
-					 //throw new RuntimeException("No free registers left to handle "+exp);
+						// throw new
+						// RuntimeException("No free registers left to handle "+exp);
 					}
 				}
 			}
-			
+
 			if (isOp && right && !left) {
 				String lc = getLastEntry(code);
 				if (lc.startsWith("MOV " + sr + "")) {
@@ -142,28 +147,28 @@ public class NativeCompiler {
 					}
 					left = true;
 				}
-				
+
 				if (!right) {
-				  
-				  String ntr=tr;
-				  String nsr=sr;
-				  
-				  if (STRING_OPERATORS.contains(op)) {
-	          if (!stringMode) {
-	            if (modeSwitchCnt > 1 && !code.isEmpty()) {
-	              ntr="A";
-	              nsr="B";
-	            }
-	          }
-	        } else {
-	          if (stringMode) {
-	            if (modeSwitchCnt > 1 && !code.isEmpty()) {
-	              ntr="X";
-                nsr="Y";
-              }
-	          }
-	        }
-				  
+
+					String ntr = tr;
+					String nsr = sr;
+
+					if (STRING_OPERATORS.contains(op)) {
+						if (!pointerMode) {
+							if (modeSwitchCnt > 1 && !code.isEmpty()) {
+								ntr = "A";
+								nsr = "B";
+							}
+						}
+					} else {
+						if (pointerMode) {
+							if (modeSwitchCnt > 1 && !code.isEmpty()) {
+								ntr = "X";
+								nsr = "Y";
+							}
+						}
+					}
+
 					if (yStack.isEmpty()) {
 						popy(code, tr, sr, ntr, nsr);
 					} else {
@@ -184,40 +189,41 @@ public class NativeCompiler {
 					code.add(code.size() - 1, "MOV " + sr + "," + tr);
 					code.set(code.size() - 1, getLastEntry(code).replace("MOV " + sr + ",", "MOV " + tr + ","));
 				} else {
-					// Fix wrong register order for single operand function calls
+					// Fix wrong register order for single operand function
+					// calls
 					if (isSingle && !code.isEmpty() && getLastEntry(code).startsWith("MOV " + tr)) {
-					  String lmt=getLastMoveTarget(code, 2);
+						String lmt = getLastMoveTarget(code, 2);
 						code.add(code.size() - 1, "PUSH " + lmt);
 						code.set(code.size() - 1, getLastEntry(code).replace("MOV " + tr + ",", "MOV " + sr + ","));
 						yStack.push(null);
 					}
 				}
-				
+
 				if (STRING_OPERATORS.contains(op)) {
 					modeSwitchCnt++;
-					if (!stringMode) {
+					if (!pointerMode) {
 						if (modeSwitchCnt > 1 && !code.isEmpty()) {
 							code.add("CHGCTX #1");
 						}
 					}
-					stringMode = true;
+					pointerMode = true;
 					tr = "A";
 					sr = "B";
 				} else {
 					modeSwitchCnt++;
-					if (stringMode) {
+					if (pointerMode) {
 						if (modeSwitchCnt > 1 && !code.isEmpty()) {
 							code.add("CHGCTX #0");
 						}
 					}
-					stringMode = false;
+					pointerMode = false;
 					tr = "X";
 					sr = "Y";
 				}
-				String regs = stringMode ? "A,B" : "X,Y";
-				
-				boolean dontPush=false;
-				
+				String regs = pointerMode ? "A,B" : "X,Y";
+
+				boolean dontPush = false;
+
 				switch (op) {
 				case "+":
 					code.add("ADD " + regs);
@@ -294,29 +300,32 @@ public class NativeCompiler {
 				case "LEN":
 					code.add("JSR LEN");
 					break;
-			  case "MID":
-          code.add("JSR MID");
-          parReg='C';
-          break;
-			  case "PAR":
-			    if (getLastEntry(code).startsWith("MOV " + sr)) {
-  		        code.add("MOV "+(parReg++)+"," + sr);
-  		    } else {
-  		        code.add("MOV "+(parReg++)+"," + tr);
-		      }
-			    //yStack.push(null);
-			    dontPush=true;
-          break;
+				case "ARRAYACCESS":
+					code.add("JSR ARRAYACCESS");
+					break;
+				case "MID":
+					code.add("JSR MID");
+					parReg = 'C';
+					break;
+				case "PAR":
+					if (getLastEntry(code).startsWith("MOV " + sr)) {
+						code.add("MOV " + (parReg++) + "," + sr);
+					} else {
+						code.add("MOV " + (parReg++) + "," + tr);
+					}
+					// yStack.push(null);
+					dontPush = true;
+					break;
 				default:
 					throw new RuntimeException("Unknown operator: " + op);
 				}
 				if (!dontPush) {
-  				code.add("PUSH " + tr);
-  				yStack.push(null);
+					code.add("PUSH " + tr);
+					yStack.push(null);
 				}
-				dontPush=false;
+				dontPush = false;
 				left = false;
-				right= false;
+				right = false;
 			}
 
 			if (isOp) {
@@ -341,38 +350,37 @@ public class NativeCompiler {
 		return optimize(code);
 	}
 
-	private List<String> optimize(List<String> code)
-  {
-	    List<String> ret=new ArrayList<String>();
-	    for (int i=0; i<code.size()-1; i++) {
-	      String l0=code.get(i);
-	      String l1=code.get(i+1);
-	      boolean rep=false;
-	      for (char c:new char[]{'C', 'D'}) {
-  	      if (l1.startsWith("MOV "+c+",")) {
-  	        if (l0.startsWith("MOV ")) {
-  	          int pos=l0.indexOf(",");
-  	          String r0=l0.substring(4, pos).trim();
-  	          String r1=l1.substring(6).trim();
-  	          if (r0.equals(r1)) {
-  	            ret.add("MOV "+c+","+l0.substring(pos+1).trim());
-  	            rep=true;
-  	            break;
-  	          }
-  	        }
-  	      }
-	      }
-	      if (!rep) {
-	        ret.add(l0);
-	      } else {
-	        i++;
-	      }
-	    }
-	    ret.add(code.get(code.size()-1));
-	    return ret;
-  }
+	private List<String> optimize(List<String> code) {
+		List<String> ret = new ArrayList<String>();
+		for (int i = 0; i < code.size() - 1; i++) {
+			String l0 = code.get(i);
+			String l1 = code.get(i + 1);
+			boolean rep = false;
+			for (char c : new char[] { 'C', 'D' }) {
+				if (l1.startsWith("MOV " + c + ",")) {
+					if (l0.startsWith("MOV ")) {
+						int pos = l0.indexOf(",");
+						String r0 = l0.substring(4, pos).trim();
+						String r1 = l1.substring(6).trim();
+						if (r0.equals(r1)) {
+							ret.add("MOV " + c + "," + l0.substring(pos + 1).trim());
+							rep = true;
+							break;
+						}
+					}
+				}
+			}
+			if (!rep) {
+				ret.add(l0);
+			} else {
+				i++;
+			}
+		}
+		ret.add(code.get(code.size() - 1));
+		return ret;
+	}
 
-  private String getLastMoveTarget(List<String> code, int offset) {
+	private String getLastMoveTarget(List<String> code, int offset) {
 		for (int i = code.size() - offset; i >= 0; i--) {
 			if (code.get(i).startsWith("MOV ")) {
 				String reg = code.get(i).substring(4, code.get(i).indexOf(",")).trim();

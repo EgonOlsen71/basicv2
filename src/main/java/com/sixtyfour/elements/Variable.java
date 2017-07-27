@@ -10,8 +10,8 @@ import com.sixtyfour.elements.functions.Function;
 import com.sixtyfour.elements.functions.FunctionList;
 import com.sixtyfour.parser.Atom;
 import com.sixtyfour.system.Machine;
-import com.sixtyfour.util.VarUtils;
 import com.sixtyfour.util.IntegerC;
+import com.sixtyfour.util.VarUtils;
 
 /**
  * A variable. This can either be a simple variable or an array.
@@ -341,6 +341,15 @@ public class Variable implements Atom {
 	}
 
 	/**
+	 * Returns the actual value object regardless of type.
+	 * 
+	 * @return the value object
+	 */
+	public Object getInternalValue() {
+		return value;
+	}
+	
+	/**
 	 * Gets the value of an array element.
 	 * 
 	 * @param pos
@@ -367,10 +376,15 @@ public class Variable implements Atom {
 			for (int p : pos) {
 				ap += m * p;
 				m *= (dimensions[cnt] + 1);
+				// System.out.println(ap+"/"+m+"/"+p);
 				cnt++;
 			}
 		}
 		return ((List<Object>) value).get(ap);
+	}
+
+	public int[] getDimensions() {
+		return dimensions;
 	}
 
 	/**

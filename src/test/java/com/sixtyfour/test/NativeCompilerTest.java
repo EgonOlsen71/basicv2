@@ -1,5 +1,7 @@
 package com.sixtyfour.test;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Deque;
 import java.util.List;
 
@@ -29,20 +31,35 @@ public class NativeCompilerTest {
 		testStringExpression4();
 		testStringExpression5();
 		testStringExpression6();
+		testArrayAccess0();
+	}
+
+	private static void testArrayAccess0() {
+		System.out.println("\n\ntestArrayAccess0");
+		Machine machine = new Machine();
+		List<Object> objs = new ArrayList<Object>(Arrays.asList(new Float[] { 1.2f, 2.3f, 4.5f, 4.5f, 1.1f, .21f, 1.1f, 2.3f, 4.5f, 6.6f, 2.2f, 1.3f, 4.5f, 4.5f, 1f, 2.2f, 3.1f,
+				2.3f, 5.5f, 6.6f }));
+		machine.add(new Variable("A[]", objs, 1, 9));
+		machine.add(new Variable("B[]", objs, 19));
+		machine.add(new Variable("C", 4.2f));
+		machine.add(new Variable("D%", 2));
+		String term = "A(1,D%)*A(0,D%+D%+1)+A(1,C*2)*B(12)";
+		//String term = "A(1,D%)*A(0,D%+D%+1)+A(1,C*2)*B(B(0)*12)";
+		testExpr(machine, term, false);
 	}
 
 	private static void testStringExpression6() {
-    System.out.println("\n\ntestStringExpression6");
-    Machine machine = new Machine();
-    machine.add(new Variable("P$", "hello world"));
-    String term = "\"test: \"+MID$(P$,4,ASC(\"A\")-92)+MID$(\"YEAH!\",4+1)";
-    //String term="MID$(\"hello\",1,2)";
-    testExpr(machine, term, true);
-    
-    term="CHR$(123)";
-    testExpr(machine, term, true);
-  }
-	
+		System.out.println("\n\ntestStringExpression6");
+		Machine machine = new Machine();
+		machine.add(new Variable("P$", "hello world"));
+		String term = "\"test: \"+MID$(P$,4,ASC(\"A\")-92)+MID$(\"YEAH!\",4+1)";
+		// String term="MID$(\"hello\",1,2)";
+		testExpr(machine, term, true);
+
+		term = "CHR$(123)";
+		testExpr(machine, term, true);
+	}
+
 	private static void testStringExpression5() {
 		System.out.println("\n\ntestStringExpression5");
 		Machine machine = new Machine();
@@ -204,7 +221,6 @@ public class NativeCompilerTest {
 		for (String line : ret) {
 			System.out.println("--> " + line);
 		}
-
 		List<String> code = new NativeCompiler().compileToPseudoCode(machine, t);
 		System.out.println("Pseudocode of " + term + " :");
 		for (String line : code) {

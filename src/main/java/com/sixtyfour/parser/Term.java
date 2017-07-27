@@ -56,6 +56,7 @@ public class Term implements Atom {
 	 */
 	public Term(String expression) {
 		this.setExpression(expression);
+		this.setInitial(expression);
 	}
 
 	/**
@@ -506,6 +507,24 @@ public class Term implements Atom {
 	public void setJittedInstance(Jitted jittedInstance) {
 		this.jittedInstance = jittedInstance;
 	}
+	
+	/**
+	 * Gets the initial term.
+	 * 
+	 * @return the term
+	 */
+	public String getInitial() {
+		return initial;
+	}
+
+	/**
+	 * Sets the initial term.
+	 * 
+	 * @param initial the initial term
+	 */
+	public void setInitial(String initial) {
+		this.initial = initial;
+	}
 
 	/**
 	 * Sets the Method instance, once this term has been compiled by the JIT
@@ -521,13 +540,5 @@ public class Term implements Atom {
 	private String filterCode(String code) {
 		// TODO stuff?
 		return code;
-	}
-
-	public String getInitial() {
-		return initial;
-	}
-
-	public void setInitial(String initial) {
-		this.initial = initial;
 	}
 }

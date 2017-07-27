@@ -64,6 +64,9 @@ public class PseudoCpu {
 		// Writing (string) constants into memory, extracted from actual code
 		createStringConstants(code);
 
+		// Writing arrays into memory
+		createArrays();
+
 		// Writing (string) variables into memory
 		createStringVariables();
 
@@ -207,6 +210,48 @@ public class PseudoCpu {
 		}
 	}
 
+	private void createArrays() {
+		Map<String, Variable> vars = machine.getVariables();
+		for (Entry<String, Variable> entry : vars.entrySet()) {
+			String name = entry.getKey();
+			Variable var = entry.getValue();
+			if (var.isArray()) {
+				@SuppressWarnings("unchecked")
+				List<Object> vals = (List<Object>) var.getInternalValue();
+				memLocations.put(name, memPointer);
+				boolean flagged = false;
+				for (Object val : vals) {
+					if (val instanceof Float) {
+						if (!flagged) {
+							memory[memPointer++] = 1; // Flag a Floatarray
+							memory[memPointer++] = vals.size();
+							flagged = true;
+						}
+						memory[memPointer++] = Float.floatToIntBits((Float) val);
+					} else if (val instanceof Float) {
+						if (!flagged) {
+							memory[memPointer++] = 0; // Flag a Integerarray
+							memory[memPointer++] = vals.size();
+							flagged = true;
+						}
+						memory[memPointer++] = (Integer) val;
+					} else {
+						if (!flagged) {
+							memory[memPointer++] = 2; // Flag a Stringarray
+							memory[memPointer++] = vals.size();
+							flagged = true;
+						}
+						throw new RuntimeException("tdb");
+					}
+				}
+				if (memLocations.containsKey(val)) {
+					throw new RuntimeException("Variable defined twice: " + name);
+				}
+
+			}
+		}
+	}
+
 	private void storeString(String name, String val) {
 		storeString(name, val, 0);
 	}
@@ -258,36 +303,39 @@ public class PseudoCpu {
 	}
 
 	private void jsr(String[] parts) {
-	  
-	  switch(parts[1]) {
-	    case "CONCAT":
-	      concat(parts);
-	      return;
-  	  case "CHR":
-  			chr(parts);
-  			return;
-  	  case "ASC":
-  	    asc(parts);
-  			return;
-  	  case "STR":
-  			str(parts);
-  			return;
-  	  case "VAL":
-  			val(parts);
-  			return;
-  	  case "LEN":
-  			len(parts);
-  			return;
-  	  case "MID":
-        mid(parts);
-        return;
-      default:
-        throw new RuntimeException("Undefined call address: " + parts[1]);
-    }
-		
+
+		switch (parts[1]) {
+		case "CONCAT":
+			concat(parts);
+			return;
+		case "CHR":
+			chr(parts);
+			return;
+		case "ASC":
+			asc(parts);
+			return;
+		case "STR":
+			str(parts);
+			return;
+		case "VAL":
+			val(parts);
+			return;
+		case "LEN":
+			len(parts);
+			return;
+		case "MID":
+			mid(parts);
+			return;
+		case "ARRAYACCESS":
+			arrayAccess(parts);
+			return;
+		default:
+			throw new RuntimeException("Undefined call address: " + parts[1]);
+		}
+
 	}
 
-  private void concat(String[] parts) {
+	private void concat(String[] parts) {
 		int sp = regs[A].intValue();
 		String s1 = readString(sp);
 		String s2 = readString(regs[B].intValue());
@@ -310,25 +358,24 @@ public class PseudoCpu {
 		// result to an actual variable.
 	}
 
-  private void mid(String[] parts)
-  {
-    String ch = readString(regs[B].intValue());
-    int end=regs[D].intValue();
-    int start=regs[C].intValue();
-    
-    if (end!=-1) {
-      mid.setTerm(Parser.getTerm("\""+ch+"\","+start+","+end, machine, false, false));
-    } else {
-      mid.setTerm(Parser.getTerm("\""+ch+"\","+start, machine, false, false));
-    }
-    String snum = mid.eval(machine).toString();
-    collectGarbage(snum.length());
-    regs[A] = memPointer;
-    memory[memPointer] = snum.length();
-    System.arraycopy(toIntArray(snum), 0, memory, memPointer + 1, snum.length());
-    memPointer += snum.length() + 1;
-  }
-  
+	private void mid(String[] parts) {
+		String ch = readString(regs[B].intValue());
+		int end = regs[D].intValue();
+		int start = regs[C].intValue();
+
+		if (end != -1) {
+			mid.setTerm(Parser.getTerm("\"" + ch + "\"," + start + "," + end, machine, false, false));
+		} else {
+			mid.setTerm(Parser.getTerm("\"" + ch + "\"," + start, machine, false, false));
+		}
+		String snum = mid.eval(machine).toString();
+		collectGarbage(snum.length());
+		regs[A] = memPointer;
+		memory[memPointer] = snum.length();
+		System.arraycopy(toIntArray(snum), 0, memory, memPointer + 1, snum.length());
+		memPointer += snum.length() + 1;
+	}
+
 	private void asc(String[] parts) {
 		runStringIntFunction(parts, asc, true);
 	}
@@ -336,7 +383,7 @@ public class PseudoCpu {
 	private void val(String[] parts) {
 		runStringIntFunction(parts, val, false);
 	}
-	
+
 	private void len(String[] parts) {
 		runStringIntFunction(parts, len, true);
 	}
@@ -398,6 +445,30 @@ public class PseudoCpu {
 				return "SIN(_)";
 			}
 		});
+	}
+
+	private void arrayAccess(String[] parts) {
+		int addr = regs[B].intValue();
+		int offset = regs[X].intValue();
+		int type = memory[addr];
+		int size = memory[addr + 1];
+		if (type == 2) {
+			throw new RuntimeException("tbd");
+		}
+		if (offset >= size) {
+			throw new RuntimeException("Array index out of bound: " + offset + "/" + (size-1));
+		}
+		int pos = addr + offset + 2; // plus 2 because of the type and size
+										// information in the first entries
+		int val = memory[pos];
+
+		System.out.println(pos + "/" + val);
+
+		if (type == 1) {
+			regs[X] = Float.intBitsToFloat(val);
+		} else {
+			regs[X] = val;
+		}
 	}
 
 	private void rnd(String[] parts) {
@@ -738,8 +809,16 @@ public class PseudoCpu {
 					}
 					regs[ti] = n;
 				} else {
-					Number n = (Number) machine.getVariableUpperCase(val).eval(machine);
-					regs[ti] = n;
+					if (val.contains("[]")) {
+						Integer addr = memLocations.get(val);
+						if (addr == null) {
+							throw new RuntimeException("Unknown pointer to: " + val);
+						}
+						regs[ti] = addr;
+					} else {
+						Number n = (Number) machine.getVariableUpperCase(val).eval(machine);
+						regs[ti] = n;
+					}
 				}
 			}
 		}
@@ -756,10 +835,10 @@ public class PseudoCpu {
 		} else if (target.equals("B")) {
 			ti = 6;
 		} else if (target.equals("C")) {
-      ti = 7;
-    } else if (target.equals("D")) {
-      ti = 8;
-    }
+			ti = 7;
+		} else if (target.equals("D")) {
+			ti = 8;
+		}
 		return ti;
 	}
 
