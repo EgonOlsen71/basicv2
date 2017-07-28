@@ -409,7 +409,7 @@ public class Parser {
 		term = replaceScientificNotation(term);
 		term = addBrackets(term);
 		Term ret = createTerms(term, termMap, machine, checkForLogicTerm);
-		ret.setInitial(term);
+		ret.setInitial(term, termMap);
 		return ret;
 	}
 
@@ -957,7 +957,7 @@ public class Parser {
 				}
 			}
 
-			Term finalTerm = new Term(term);
+			Term finalTerm = new Term(term, termMap);
 			termMap.put("final", finalTerm);
 			finalTerm = build(finalTerm, termMap, machine);
 			finalTerm.setKey("final");
@@ -1064,7 +1064,7 @@ public class Parser {
 			return termMap.get(termWoBrackets);
 		}
 		if (!term.contains("(") && !term.contains(")")) {
-			Term t = new Term(term);
+			Term t = new Term(term, termMap);
 			LogicTerm logicTerm = LogicParser.getTerm(term, machine, termMap);
 			t.setLeft(logicTerm);
 			if (!t.isComplete()) {
@@ -1097,7 +1097,7 @@ public class Parser {
 		String mTerm = Parser.replaceStrings(term, '.');
 		if (!mTerm.contains("(") && !mTerm.contains(")")) {
 			term = cleanStringConcats(term);
-			Term t = new Term(term);
+			Term t = new Term(term, termMap);
 			t = build(t, termMap, machine);
 			// System.out.println(term+": "+t.getLeft()+" # "+t.getOperator() +
 			// " # "+t.getRight());
@@ -1215,7 +1215,7 @@ public class Parser {
 			if (isOp && !appended) {
 				part.setLength(0);
 				if (t.isComplete()) {
-					Term nt = new Term(t.getExpression());
+					Term nt = new Term(t.getExpression(), termMap);
 					nt.setLeft(t);
 					t = nt;
 				}

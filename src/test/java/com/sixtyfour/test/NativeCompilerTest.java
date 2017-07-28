@@ -43,8 +43,8 @@ public class NativeCompilerTest {
 		machine.add(new Variable("B[]", objs, 19));
 		machine.add(new Variable("C", 4.2f));
 		machine.add(new Variable("D%", 2));
-		String term = "A(1,D%)*A(0,D%+D%+1)+A(1,C*2)*B(12)";
-		//String term = "A(1,D%)*A(0,D%+D%+1)+A(1,C*2)*B(B(0)*12)";
+		//String term = "A(1,D%)*A(0,D%+D%+1)+A(1,C*2)*B(COS(0)*12)";
+		String term = "A(1,D%)*A(0,D%+D%+1)+A(1,C*2)*B(B(0)*12)";
 		testExpr(machine, term, false);
 	}
 

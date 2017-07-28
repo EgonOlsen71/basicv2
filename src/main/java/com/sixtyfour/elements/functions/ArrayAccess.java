@@ -74,7 +74,7 @@ public class ArrayAccess extends AbstractFunction {
 
 	@Override
 	public List<String> evalToExpression(Machine machine) {
-		fillParameterIndices(machine);
+	  fillParameterIndices(machine);
 		List<String> ret = new ArrayList<String>();
 		ret.add("_");
 		Variable vary = machine.getVariableUpperCase(variableName);
