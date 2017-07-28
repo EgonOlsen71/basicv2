@@ -74,7 +74,7 @@ public class ArrayAccess extends AbstractFunction {
 
 	@Override
 	public List<String> evalToExpression(Machine machine) {
-	  fillParameterIndices(machine);
+	  //fillParameterIndices(machine);
 		List<String> ret = new ArrayList<String>();
 		ret.add("_");
 		Variable vary = machine.getVariableUpperCase(variableName);
@@ -110,8 +110,8 @@ public class ArrayAccess extends AbstractFunction {
 		Term t = Parser.getTerm(sb.toString(), machine, true, true);
 		//System.out.println("Parsed final term: "+t);
 		
-		List<String> n1 = vary.evalToExpression(machine);
-		n1.addAll(t.evalToExpression(machine));
+		List<String> n1 = t.evalToExpression(machine);
+		n1.addAll(vary.evalToExpression(machine));
 		n1.add(":" + this.getClass().getSimpleName().toUpperCase(Locale.ENGLISH));
 		ret.addAll(0, n1);
 		return ret;

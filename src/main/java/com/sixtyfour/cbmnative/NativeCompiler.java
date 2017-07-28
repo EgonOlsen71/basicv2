@@ -68,12 +68,14 @@ public class NativeCompiler {
 		Deque<String> yStack = new LinkedList<String>();
 		boolean left = false;
 		boolean right = false;
+		boolean isArrayAccess=false;
 		Set<Integer> fromAbove = new HashSet<Integer>();
 		char parReg = 'C';
 
 		for (String exp : expr) {
 			boolean isOp = exp.startsWith(":");
 			boolean isBreak = exp.equals("_");
+			isArrayAccess=false;
 			if (exp.contains("{")) {
 				if (exp.contains("{STRING") || exp.contains("[]")) {
 					modeSwitchCnt++;
@@ -84,8 +86,14 @@ public class NativeCompiler {
 						}
 					}
 					pointerMode = true;
-					tr = "A";
-					sr = "B";
+					if (!exp.contains("[]")) {
+					  tr = "A";
+					  sr = "B";
+					} else {
+					  tr = "B";
+	          sr = "B";
+	          isArrayAccess=true;
+					}
 				} else {
 					modeSwitchCnt++;
 					if (pointerMode) {
@@ -102,7 +110,7 @@ public class NativeCompiler {
 
 			if (!isBreak) {
 				if (!isOp) {
-					if (!right) {
+					if (!right || isArrayAccess) {
 						code.add("MOV " + sr + "," + exp);
 						right = true;
 					} else if (!left) {
@@ -117,7 +125,7 @@ public class NativeCompiler {
 
 			if (isOp && right && !left) {
 				String lc = getLastEntry(code);
-				if (lc.startsWith("MOV " + sr + "")) {
+				if (lc.startsWith("MOV " + sr + "") && !lc.contains("[]")) {
 					yStack.push(lc);
 					code.remove(code.size() - 1);
 				} else {
@@ -141,7 +149,7 @@ public class NativeCompiler {
 							code.remove(code.size() - 2);
 							yStack.pop();
 						} else {
-							popy(code, sr, tr, sr, tr);
+							popy(code, sr, tr, sr, tr, false);
 							yStack.pop();
 						}
 					}
@@ -170,11 +178,11 @@ public class NativeCompiler {
 					}
 
 					if (yStack.isEmpty()) {
-						popy(code, tr, sr, ntr, nsr);
+						popy(code, tr, sr, ntr, nsr, true);
 					} else {
 						String v = yStack.pop();
 						if (v == null) {
-							popy(code, tr, sr, ntr, nsr);
+							popy(code, tr, sr, ntr, nsr, false);
 						} else {
 							code.add(v);
 							fromAbove.add(code.size() - 1);
@@ -331,6 +339,8 @@ public class NativeCompiler {
 			if (isOp) {
 				stack.push(exp);
 			}
+			
+			System.out.println(code.size()+": "+this.getLastEntry(code)+" / "+exp);
 		}
 
 		if (!stack.isEmpty()) {
@@ -393,17 +403,22 @@ public class NativeCompiler {
 	}
 
 	private String getLastEntry(List<String> code) {
-		return code.get(code.size() - 1);
+	  if (code.size()>0) {
+	    return code.get(code.size() - 1);
+	  } 
+	  return null;
 	}
 
-	private void popy(List<String> code, String tr, String sr, String ntr, String nsr) {
+	private void popy(List<String> code, String tr, String sr, String ntr, String nsr, boolean stackEmpty) {
 		if (getLastEntry(code).equals("PUSH " + tr)) {
 			code.set(code.size() - 1, "MOV " + sr + "," + tr);
 		} else {
 			if (getLastEntry(code).equals("PUSH " + nsr)) {
 				code.remove(code.size() - 1);
 			} else {
-				code.add("POP " + nsr);
+			  if (!stackEmpty) {
+			    code.add("POP " + nsr);
+			  }
 			}
 		}
 	}

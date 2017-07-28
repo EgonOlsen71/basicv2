@@ -16,7 +16,7 @@ import com.sixtyfour.system.Machine;
 public class NativeCompilerTest {
 
 	public static void main(String[] args) {
-		testExpression0();
+		/*testExpression0();
 		testExpression1();
 		testExpression2();
 		testExpression3();
@@ -30,7 +30,7 @@ public class NativeCompilerTest {
 		testStringExpression3();
 		testStringExpression4();
 		testStringExpression5();
-		testStringExpression6();
+		testStringExpression6();*/
 		testArrayAccess0();
 	}
 
@@ -44,7 +44,7 @@ public class NativeCompilerTest {
 		machine.add(new Variable("C", 4.2f));
 		machine.add(new Variable("D%", 2));
 		//String term = "A(1,D%)*A(0,D%+D%+1)+A(1,C*2)*B(COS(0)*12)";
-		String term = "A(1,D%)*A(0,D%+D%+1)+A(1,C*2)*B(B(0)*12)";
+		String term = "A(1,D%)*A(0,D%+D%+COS(A(0,0)-1.2))+A(1,C*2)*B(B(ASC(\"A\")-96)*4)";
 		testExpr(machine, term, false);
 	}
 
