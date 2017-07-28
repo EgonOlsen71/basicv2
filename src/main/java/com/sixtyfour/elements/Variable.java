@@ -348,7 +348,7 @@ public class Variable implements Atom {
 	public Object getInternalValue() {
 		return value;
 	}
-	
+
 	/**
 	 * Gets the value of an array element.
 	 * 

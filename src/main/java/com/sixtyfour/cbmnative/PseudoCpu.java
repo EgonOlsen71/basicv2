@@ -448,7 +448,7 @@ public class PseudoCpu {
 	}
 
 	private void arrayAccess(String[] parts) {
-		int addr = regs[B].intValue();
+		int addr = regs[C].intValue();
 		int offset = regs[X].intValue();
 		int type = memory[addr];
 		int size = memory[addr + 1];
@@ -456,7 +456,7 @@ public class PseudoCpu {
 			throw new RuntimeException("tbd");
 		}
 		if (offset >= size) {
-			throw new RuntimeException("Array index out of bound: " + offset + "/" + (size-1));
+			throw new RuntimeException("Array index out of bound: " + offset + "/" + (size - 1));
 		}
 		int pos = addr + offset + 2; // plus 2 because of the type and size
 										// information in the first entries

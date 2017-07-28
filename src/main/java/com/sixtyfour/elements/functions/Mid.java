@@ -32,37 +32,39 @@ public class Mid extends AbstractFunction {
 		return Type.STRING;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.sixtyfour.elements.functions.AbstractFunction#evalToExpression(com.sixtyfour.system.Machine)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.sixtyfour.elements.functions.AbstractFunction#evalToExpression(com
+	 * .sixtyfour.system.Machine)
 	 */
 	@Override
-  public List<String> evalToExpression(Machine machine) {
-	  List<Atom> pars = Parser.getParameters(term);
-	  checkParameters(pars);
-	  Atom var = pars.get(0);
-	  
-	  List<String> ret = new ArrayList<String>();
-	  List<String> n1 = var.evalToExpression(machine);
-	  
-	  // Add additional parameters in reverse order
-	  
-	  n1.addAll(pars.get(1).evalToExpression(machine));
-	  n1.add(":PAR");
-	  n1.add("_");
-	  
-	  if (pars.size() > 2) {
-      n1.addAll(pars.get(2).evalToExpression(machine));
-    } else {
-      n1.add("#-1{INTEGER}");
-    }
-	  n1.add(":PAR");
-	  n1.add("_");
-	  
-    n1.add(":" + this.getClass().getSimpleName().toUpperCase(Locale.ENGLISH));
-    ret.addAll(0, n1);
-    ret.add("_");
-    return ret;
-  }
+	public List<String> evalToExpression(Machine machine) {
+		List<Atom> pars = Parser.getParameters(term);
+		checkParameters(pars);
+		Atom var = pars.get(0);
+
+		List<String> ret = new ArrayList<String>();
+
+		// Add additional parameters in reverse order
+		List<String> n1 = pars.get(1).evalToExpression(machine);
+		n1.add(":PAR");
+		n1.add("_");
+
+		if (pars.size() > 2) {
+			n1.addAll(pars.get(2).evalToExpression(machine));
+		} else {
+			n1.add("#-1{INTEGER}");
+		}
+		n1.add(":PAR");
+		n1.add("_");
+		n1.addAll(var.evalToExpression(machine));
+		n1.add(":" + this.getClass().getSimpleName().toUpperCase(Locale.ENGLISH));
+		ret.addAll(0, n1);
+		ret.add("_");
+		return ret;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -72,17 +74,16 @@ public class Mid extends AbstractFunction {
 	@Override
 	public Object eval(Machine machine) {
 		try {
-		  List<Atom> pars = Parser.getParameters(term);
-		  checkParameters(pars);
+			List<Atom> pars = Parser.getParameters(term);
+			checkParameters(pars);
 			Atom var = pars.get(0);
-			
-			
+
 			int start = VarUtils.getInt(pars.get(1).eval(machine)) - 1;
 			int end = -999;
 			if (pars.size() > 2) {
 				end = VarUtils.getInt(pars.get(2).eval(machine)) + start;
 			}
-			
+
 			String txt = var.eval(machine).toString();
 			if (end == -999) {
 				end = txt.length();
@@ -103,11 +104,11 @@ public class Mid extends AbstractFunction {
 			throw new RuntimeException("Syntax error: " + term);
 		}
 	}
-	
-   private void checkParameters(List<Atom> pars) {
-      if (pars.size() != 2 && pars.size() != 3) {
-        throw new RuntimeException("Wrong number of parameters: " + term);
-      }
-   }
+
+	private void checkParameters(List<Atom> pars) {
+		if (pars.size() != 2 && pars.size() != 3) {
+			throw new RuntimeException("Wrong number of parameters: " + term);
+		}
+	}
 
 }

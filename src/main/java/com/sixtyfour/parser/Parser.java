@@ -812,7 +812,7 @@ public class Parser {
 		boolean rowOfOps = true;
 		for (int i = pos + 1; i < term.length(); i++) {
 			char c = term.charAt(i);
-			if (c == ',') {
+			if (c == ',' && brackets == 0) {
 				return i;
 			}
 

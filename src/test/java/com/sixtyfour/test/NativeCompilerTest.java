@@ -16,7 +16,8 @@ import com.sixtyfour.system.Machine;
 public class NativeCompilerTest {
 
 	public static void main(String[] args) {
-		/*testExpression0();
+
+		testExpression0();
 		testExpression1();
 		testExpression2();
 		testExpression3();
@@ -30,7 +31,7 @@ public class NativeCompilerTest {
 		testStringExpression3();
 		testStringExpression4();
 		testStringExpression5();
-		testStringExpression6();*/
+		testStringExpression6();
 		testArrayAccess0();
 	}
 
@@ -43,8 +44,10 @@ public class NativeCompilerTest {
 		machine.add(new Variable("B[]", objs, 19));
 		machine.add(new Variable("C", 4.2f));
 		machine.add(new Variable("D%", 2));
-		//String term = "A(1,D%)*A(0,D%+D%+1)+A(1,C*2)*B(COS(0)*12)";
-		String term = "A(1,D%)*A(0,D%+D%+COS(A(0,0)-1.2))+A(1,C*2)*B(B(ASC(\"A\")-96)*4)";
+		// String term = "A(1,D%)*A(0,D%+D%+1)+A(1,C*2)*B(COS(0)*12)";
+		String term = "A((1/183)*(B+ASC(A$+\"hello\")*2+-ASC((MID$(\"32222\",2)+A$)+A$)/2),D%)*A(0,D%+D%+COS(A(0,0)-1.2))+A(1,C*2)*B(B(ASC(\"A\")-96)*4)";
+		// String term =
+		// "A(1,D%)*A(0,D%+D%+COS(A(0,0)-1.2))+A(1,C*2)*B(B(ASC(\"A\")-96)*4)";
 		testExpr(machine, term, false);
 	}
 
@@ -55,7 +58,7 @@ public class NativeCompilerTest {
 		String term = "\"test: \"+MID$(P$,4,ASC(\"A\")-92)+MID$(\"YEAH!\",4+1)";
 		// String term="MID$(\"hello\",1,2)";
 		testExpr(machine, term, true);
-
+		System.out.println("\n\n");
 		term = "CHR$(123)";
 		testExpr(machine, term, true);
 	}
@@ -90,8 +93,10 @@ public class NativeCompilerTest {
 		Machine machine = new Machine();
 		machine.add(new Variable("A$", "h"));
 		machine.add(new Variable("B", 65));
-		String term = "B+ASC(A$+\"hello\")*2+-ASC((\"32222\"+A$)+A$)/2";
-		testExpr(machine, term);
+		// String term =
+		// "B+ASC(A$+\"hello\")*2+-ASC((MID$(\"32222\",2)+A$)+A$)/2";
+		String term = "MID$(\"32222\",2+1)+A$";
+		testExpr(machine, term, true);
 	}
 
 	private static void testStringExpression3() {
@@ -211,10 +216,11 @@ public class NativeCompilerTest {
 
 	private static void testExpr(Machine machine, String term, boolean outString) {
 		String s = Parser.addBrackets(term);
-		System.out.println(s);
+		System.out.println("w/o brackets: " + term);
+		System.out.println("With brackets: " + s);
 
 		Term t = Parser.getTerm(term, machine, false, true);
-		System.out.println(t);
+		System.out.println("TERM: " + t);
 		List<String> ret = TermHelper.linearize(machine, t).evalToExpression(machine);
 
 		System.out.println("Expression:");
