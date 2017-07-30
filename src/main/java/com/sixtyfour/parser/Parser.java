@@ -589,7 +589,7 @@ public class Parser {
 
 	/**
 	 * Handles negations by adding an additional -1* in front of the negated
-	 * element. SOmething similar applies to terms like ++++2.
+	 * element. Something similar applies to terms like ++++2.
 	 * 
 	 * @param term
 	 *            the term
@@ -810,31 +810,39 @@ public class Parser {
 	private static int findEndOfNegation(String term, int pos, boolean negative) {
 		int brackets = 0;
 		boolean rowOfOps = true;
+		boolean inString = false;
 		for (int i = pos + 1; i < term.length(); i++) {
 			char c = term.charAt(i);
-			if (c == ',' && brackets == 0) {
-				return i;
+			if (c == '"') {
+				inString = !inString;
 			}
 
-			boolean opi = Operator.isOperator(c);
-			if (!opi && negative) {
-				rowOfOps = false;
-			}
-
-			if (brackets == 0 && ((opi && !rowOfOps) || c == ')')) {
-				if (c == '^') {
-					// Power of x must not be wrapped into brackets, because
-					// that would kill the correct operator order. We return a
-					// -1 to indicate that.
-					return -1;
-				} else {
+			if (!inString) {
+				if (c == ',' && brackets == 0) {
 					return i;
 				}
-			}
-			if (c == '(') {
-				brackets++;
-			} else if (c == ')' && brackets > 0) {
-				brackets--;
+
+				boolean opi = Operator.isOperator(c);
+				if (!opi && negative) {
+					rowOfOps = false;
+				}
+
+				if (brackets == 0 && ((opi && !rowOfOps) || c == ')')) {
+					if (c == '^') {
+						// Power of x must not be wrapped into brackets, because
+						// that would kill the correct operator order. We return
+						// a
+						// -1 to indicate that.
+						return -1;
+					} else {
+						return i;
+					}
+				}
+				if (c == '(') {
+					brackets++;
+				} else if (c == ')' && brackets > 0) {
+					brackets--;
+				}
 			}
 		}
 		return term.length();

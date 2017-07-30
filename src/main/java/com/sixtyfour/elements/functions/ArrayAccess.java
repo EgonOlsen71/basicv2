@@ -106,7 +106,7 @@ public class ArrayAccess extends AbstractFunction {
 			m *= dimensions[i] + 1;
 		}
 
-		System.out.println("Resulting access term: " + sb.toString());
+		//System.out.println("Resulting access term: " + sb.toString());
 		Term t = Parser.getTerm(sb.toString(), machine, true, true);
 		// System.out.println("Parsed final term: "+t);
 
