@@ -1,6 +1,8 @@
 package com.sixtyfour.elements.functions;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.parser.Atom;
@@ -56,4 +58,28 @@ public class Left extends AbstractFunction {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.sixtyfour.elements.functions.AbstractFunction#evalToExpression(com
+	 * .sixtyfour.system.Machine)
+	 */
+	@Override
+	public List<String> evalToExpression(Machine machine) {
+		List<Atom> pars = Parser.getParameters(term);
+		if (pars.size() != 2) {
+			throw new RuntimeException("Wrong number of parameters: " + term);
+		}
+		Atom var = pars.get(0);
+		List<String> ret = new ArrayList<String>();
+		List<String> n1 = pars.get(1).evalToExpression(machine);
+		n1.add(":PAR");
+		n1.add("_");
+		n1.addAll(var.evalToExpression(machine));
+		n1.add(":" + this.getClass().getSimpleName().toUpperCase(Locale.ENGLISH));
+		ret.addAll(0, n1);
+		ret.add("_");
+		return ret;
+	}
 }

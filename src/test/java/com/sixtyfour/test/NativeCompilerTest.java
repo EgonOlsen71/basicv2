@@ -9,6 +9,8 @@ import com.sixtyfour.cbmnative.NativeCompiler;
 import com.sixtyfour.cbmnative.PseudoCpu;
 import com.sixtyfour.cbmnative.TermHelper;
 import com.sixtyfour.elements.Variable;
+import com.sixtyfour.elements.functions.Spc;
+import com.sixtyfour.elements.functions.Tab;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.Term;
 import com.sixtyfour.system.Machine;
@@ -33,6 +35,49 @@ public class NativeCompilerTest {
 		testStringExpression5();
 		testStringExpression6();
 		testArrayAccess0();
+		testStringExpression7();
+		testStringExpression8();
+		testExpression7();
+		testStringExpression9();
+	}
+
+	private static void testStringExpression9() {
+		System.out.println("\n\ntestStringExpression9");
+		Tab.setLimitedToPrint(false);
+		Spc.setLimitedToPrint(false);
+		Machine machine = new Machine();
+		machine.add(new Variable("A$", "I hate you!"));
+		machine.add(new Variable("B$", "I love me!"));
+		String term = "A$+TAB(20)+B$+SPC(10)+\"!!!\"";
+		testExpr(machine, term, true);
+		term = "POS(35)";
+		testExpr(machine, term);
+	}
+
+	private static void testExpression7() {
+		System.out.println("\n\ntestExpression7");
+		Machine machine = new Machine();
+		String term = "-2*PEEK(-2*256*-2)*-1";
+		testExpr(machine, term);
+	}
+
+	private static void testStringExpression8() {
+		System.out.println("\n\ntestStringExpression8");
+		Machine machine = new Machine();
+		machine.add(new Variable("A$", "I hate you!"));
+		machine.add(new Variable("B$", "I love me!"));
+		machine.add(new Variable("A", 2));
+		String term = "LEFT$(B$,A*3)+\" \"+RIGHT$(A$, A^A/COS(0))";
+		testExpr(machine, term, true);
+	}
+
+	private static void testStringExpression7() {
+		System.out.println("\n\ntestStringExpression7");
+		Machine machine = new Machine();
+		machine.add(new Variable("A$", "Hello World"));
+		machine.add(new Variable("BB$", "YEAH!!!"));
+		String term = "LEFT$(A$,4)+\" \"+LEFT$(BB$, 5)";
+		testExpr(machine, term, true);
 	}
 
 	private static void testArrayAccess0() {

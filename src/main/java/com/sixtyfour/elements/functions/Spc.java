@@ -12,6 +12,7 @@ public class Spc extends AbstractFunction {
 
 	/** The Constant SPACES. */
 	protected final static String SPACES;
+	private static boolean limitedToPrint = true;
 
 	static {
 		StringBuilder sb = new StringBuilder();
@@ -36,6 +37,17 @@ public class Spc extends AbstractFunction {
 	 */
 	public Spc() {
 		super("SPC");
+	}
+
+	/**
+	 * If set to false, this function can be called outside of PRINT, PRINT# and
+	 * CMD as well. Default is true (i.e. it can't, which is normal CBM BASIC behaviour).
+	 * 
+	 * @param limited
+	 *            should it be limited
+	 */
+	public static void setLimitedToPrint(boolean limited) {
+		limitedToPrint = limited;
 	}
 
 	/*
@@ -73,8 +85,10 @@ public class Spc extends AbstractFunction {
 	 *            the machine
 	 */
 	protected void ensureContext(Machine machine) {
-		if (!(machine.getCurrentCommand() instanceof Print) || !machine.getCurrentOperator().isNop()) {
-			throw new RuntimeException("Systax error: " + this);
+		if (limitedToPrint) {
+			if (!(machine.getCurrentCommand() instanceof Print) || !machine.getCurrentOperator().isNop()) {
+				throw new RuntimeException("Systax error: " + this);
+			}
 		}
 	}
 }

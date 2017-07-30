@@ -36,10 +36,15 @@ public class NativeCompiler {
 			this.add("ASC");
 			this.add("STR");
 			this.add("VAL");
+			this.add("POS");
+			this.add("TAB");
+			this.add("SPC");
 			this.add("LEN");
+			this.add("PEEK");
 			this.add("MID");
 			this.add("PAR");
-			// this.add("ARRAYACCESS");
+			this.add("LEFT");
+			this.add("RIGHT");
 		}
 	};
 
@@ -50,6 +55,10 @@ public class NativeCompiler {
 			this.add(".");
 			this.add("STR");
 			this.add("MID");
+			this.add("LEFT");
+			this.add("RIGHT");
+			this.add("TAB");
+			this.add("SPC");
 		}
 	};
 
@@ -295,6 +304,9 @@ public class NativeCompiler {
 				case "RND":
 					code.add("RND " + regs);
 					break;
+				case "PEEK":
+					code.add("MOV " + regs.replace(",", ",(") + ")");
+					break;
 				case ".":
 					code.add("JSR CONCAT");
 					break;
@@ -313,11 +325,28 @@ public class NativeCompiler {
 				case "LEN":
 					code.add("JSR LEN");
 					break;
+				case "TAB":
+					code.add("JSR TAB");
+					break;
+				case "SPC":
+					code.add("JSR SPC");
+					break;
+				case "POS":
+					code.add("JSR POS");
+					break;
 				case "ARRAYACCESS":
 					code.add("JSR ARRAYACCESS");
 					break;
 				case "MID":
 					code.add("JSR MID");
+					parReg = 'C';
+					break;
+				case "LEFT":
+					code.add("JSR LEFT");
+					parReg = 'C';
+					break;
+				case "RIGHT":
+					code.add("JSR RIGHT");
 					parReg = 'C';
 					break;
 				case "PAR":

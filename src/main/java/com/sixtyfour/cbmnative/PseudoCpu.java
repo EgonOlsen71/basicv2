@@ -14,9 +14,14 @@ import com.sixtyfour.elements.Variable;
 import com.sixtyfour.elements.functions.Asc;
 import com.sixtyfour.elements.functions.Chr;
 import com.sixtyfour.elements.functions.Function;
+import com.sixtyfour.elements.functions.Left;
 import com.sixtyfour.elements.functions.Len;
 import com.sixtyfour.elements.functions.Mid;
+import com.sixtyfour.elements.functions.Pos;
+import com.sixtyfour.elements.functions.Right;
+import com.sixtyfour.elements.functions.Spc;
 import com.sixtyfour.elements.functions.Str;
+import com.sixtyfour.elements.functions.Tab;
 import com.sixtyfour.elements.functions.Val;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.system.Machine;
@@ -50,16 +55,26 @@ public class PseudoCpu {
 	private Function val = new Val();
 	private Function len = new Len();
 	private Function mid = new Mid();
+	private Function left = new Left();
+	private Function right = new Right();
+	private Function pos = new Pos();
+	private Function tab = new Tab();
+	private Function spc = new Spc();
 
 	/**
 	 * @param code
 	 */
 	public void execute(Machine machine, List<String> code) {
+		Tab.setLimitedToPrint(false);
+		Spc.setLimitedToPrint(false);
 		this.machine = machine;
 		stack.clear();
 		regs = new Number[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 		memory = new int[MEM_SIZE + MEM_SIZE / 2]; // normal string variable
 													// memory + work buffer
+
+		// Copy machine's memory content over to this cpu's
+		System.arraycopy(machine.getRam(), 0, memory, 0, memory.length);
 
 		// Writing (string) constants into memory, extracted from actual code
 		createStringConstants(code);
@@ -326,6 +341,21 @@ public class PseudoCpu {
 		case "MID":
 			mid(parts);
 			return;
+		case "LEFT":
+			left(parts);
+			return;
+		case "RIGHT":
+			right(parts);
+			return;
+		case "TAB":
+			tab(parts);
+			return;
+		case "SPC":
+			spc(parts);
+			return;
+		case "POS":
+			pos(parts);
+			return;
 		case "ARRAYACCESS":
 			arrayAccess(parts);
 			return;
@@ -369,6 +399,40 @@ public class PseudoCpu {
 			mid.setTerm(Parser.getTerm("\"" + ch + "\"," + start, machine, false, false));
 		}
 		String snum = mid.eval(machine).toString();
+		copyStringResult(snum);
+	}
+
+	private void left(String[] parts) {
+		String ch = readString(regs[B].intValue());
+		int end = regs[C].intValue();
+		left.setTerm(Parser.getTerm("\"" + ch + "\"," + end, machine, false, false));
+		String snum = left.eval(machine).toString();
+		copyStringResult(snum);
+	}
+
+	private void right(String[] parts) {
+		String ch = readString(regs[B].intValue());
+		int end = regs[C].intValue();
+		right.setTerm(Parser.getTerm("\"" + ch + "\"," + end, machine, false, false));
+		String snum = right.eval(machine).toString();
+		copyStringResult(snum);
+	}
+
+	private void tab(String[] parts) {
+		runIntStringFunction(parts, tab, true);
+	}
+
+	private void spc(String[] parts) {
+		runIntStringFunction(parts, spc, true);
+	}
+
+	private void pos(String[] parts) {
+		pos.setTerm(Parser.getTerm("0", machine, false, false));
+		Number num = (Number) pos.eval(machine);
+		regs[X] = num;
+	}
+
+	private void copyStringResult(String snum) {
 		collectGarbage(snum.length());
 		regs[A] = memPointer;
 		memory[memPointer] = snum.length();
@@ -412,11 +476,7 @@ public class PseudoCpu {
 		Number num = (Number) regs[Y];
 		func.setTerm(Parser.getTerm(String.valueOf(inty ? num.intValue() : num.floatValue()), machine, false, false));
 		String snum = func.eval(machine).toString();
-		collectGarbage(snum.length());
-		regs[A] = memPointer;
-		memory[memPointer] = snum.length();
-		System.arraycopy(toIntArray(snum), 0, memory, memPointer + 1, snum.length());
-		memPointer += snum.length() + 1;
+		copyStringResult(snum);
 	}
 
 	private void checkBufferSpace(String ss) {
@@ -788,7 +848,11 @@ public class PseudoCpu {
 
 		int pos = source.lastIndexOf("{");
 		if (pos == -1) {
-			regs[ti] = regs[si];
+			if (source.startsWith("(") && source.endsWith(")")) {
+				regs[ti] = memory[regs[si].intValue()] & 0xff;
+			} else {
+				regs[ti] = regs[si];
+			}
 		} else {
 			String ts = source.substring(pos + 1, source.lastIndexOf("}"));
 			String val = source.substring(0, pos);
@@ -826,17 +890,17 @@ public class PseudoCpu {
 
 	private int getIndex(String target) {
 		int ti = -1;
-		if (target.equals("X")) {
+		if (target.equals("X") || target.equals("(X)")) {
 			ti = 0;
-		} else if (target.equals("Y")) {
+		} else if (target.equals("Y") || target.equals("(Y)")) {
 			ti = 1;
-		} else if (target.equals("A")) {
+		} else if (target.equals("A") || target.equals("(A)")) {
 			ti = 5;
-		} else if (target.equals("B")) {
+		} else if (target.equals("B") || target.equals("(B)")) {
 			ti = 6;
-		} else if (target.equals("C")) {
+		} else if (target.equals("C") || target.equals("(C)")) {
 			ti = 7;
-		} else if (target.equals("D")) {
+		} else if (target.equals("D") || target.equals("(D)")) {
 			ti = 8;
 		}
 		return ti;
