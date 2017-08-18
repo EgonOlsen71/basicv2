@@ -285,6 +285,7 @@ public class NativeCompilerTest {
 		System.out.println("------------------------------");
 		System.out.println(outString ? pc.getStringFromStack() : stack.pop());
 		System.out.println(t.eval(machine));
+		pc.compactMemory();
 	}
 
 	private static void testExpr(Machine machine, String term) {

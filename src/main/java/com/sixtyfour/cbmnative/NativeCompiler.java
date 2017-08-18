@@ -75,6 +75,7 @@ public class NativeCompiler {
 
 		Deque<String> stack = new LinkedList<String>();
 		Deque<String> yStack = new LinkedList<String>();
+		boolean withStrings=false;
 		boolean left = false;
 		boolean right = false;
 		boolean isArrayAccess = false;
@@ -98,6 +99,7 @@ public class NativeCompiler {
 					if (!exp.contains("[]")) {
 						tr = "A";
 						sr = "B";
+						withStrings=true;
 					} else {
 						tr = "C";
 						sr = "C";
@@ -176,6 +178,7 @@ public class NativeCompiler {
 							if (modeSwitchCnt > 1 && !code.isEmpty()) {
 								ntr = "A";
 								nsr = "B";
+								withStrings=true;
 							}
 						}
 					} else {
@@ -230,6 +233,7 @@ public class NativeCompiler {
 					pointerMode = true;
 					tr = "A";
 					sr = "B";
+					withStrings=true;
 				} else {
 					modeSwitchCnt++;
 					if (pointerMode) {
@@ -392,6 +396,10 @@ public class NativeCompiler {
 			}
 		}
 
+		if (withStrings) {
+		  code.add(0, "JSR COMPACT");
+		}
+		
 		return optimize(code);
 	}
 
