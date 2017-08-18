@@ -272,8 +272,18 @@ public class PseudoCpu
       {
         @SuppressWarnings("unchecked")
         List<Object> vals = (List<Object>) var.getInternalValue();
+
+        int[] mems = new int[vals.size()];
+        int pos = 0;
+        for (Object val : vals)
+        {
+          storeString(null, val.toString());
+          mems[pos++] = memPointer;
+        }
+
         memLocations.put(name, memPointer);
         boolean flagged = false;
+        pos = 0;
         for (Object val : vals)
         {
           if (val instanceof Float)
@@ -290,7 +300,7 @@ public class PseudoCpu
           {
             if (!flagged)
             {
-              memory[memPointer++] = 0; // Flag a Integerarray
+              memory[memPointer++] = 0; // Flag an Integerarray
               memory[memPointer++] = vals.size();
               flagged = true;
             }
@@ -304,14 +314,16 @@ public class PseudoCpu
               memory[memPointer++] = vals.size();
               flagged = true;
             }
-            throw new RuntimeException("tdb");
+
+            int addr = mems[pos++];
+            memory[memPointer++] = addr;
+            stringNames.add(name);
           }
         }
         if (memLocations.containsKey(val))
         {
           throw new RuntimeException("Variable defined twice: " + name);
         }
-
       }
     }
   }
@@ -610,6 +622,9 @@ public class PseudoCpu
 
   private void collectGarbage()
   {
+    if (true) {
+      return;
+    }
     int lookFor = stringStart;
     int closest = MEM_SIZE;
     int highest = stringStart;
@@ -620,23 +635,61 @@ public class PseudoCpu
       highest = 0;
       for (int i = 0; i < stringNames.size(); i++)
       {
-        int memAddr = memLocations.get(stringNames.get(i));
-        if (lookFor > highest)
+        String name = stringNames.get(i);
+        if (!name.endsWith("[]"))
         {
-          highest = lookFor;
-        }
-        if (lookFor == memAddr)
-        {
-          Logger.log("Memory (" + memory[lookFor] + " Bytes@" + lookFor + ") for " + stringNames.get(i)
-              + " still in use, skipping!");
-          i = -1;
-          lookFor = memAddr + memory[memAddr] + 1;
+          // Handle normal strings
+          int memAddr = memLocations.get(name);
+          if (lookFor > highest)
+          {
+            highest = lookFor;
+          }
+          if (lookFor == memAddr)
+          {
+            Logger
+                .log("Memory (" + memory[lookFor] + " Bytes@" + lookFor + ") for " + name + " still in use, skipping!");
+            i = -1;
+            lookFor = memAddr + memory[memAddr] + 1;
+          }
+          else
+          {
+            if (memAddr > lookFor && memAddr < closest)
+            {
+              closest = memAddr;
+            }
+          }
         }
         else
         {
-          if (memAddr > lookFor && memAddr < closest)
+          // Handle string array
+          int addr = memLocations.get(name);
+          int type = memory[addr++];
+          int size = memory[addr++];
+          if (type != 2)
           {
-            closest = memAddr;
+            throw new RuntimeException("Unknown array type: " + type);
+          }
+          for (int p = 0; p < size; p++)
+          {
+            int memAddr = memory[addr + p];
+            if (lookFor > highest)
+            {
+              highest = lookFor;
+            }
+            if (lookFor == memAddr)
+            {
+              Logger.log("Memory (" + memory[lookFor] + " Bytes@" + lookFor + ") for " + name + "[" + p
+                  + "] still in use, skipping!");
+              i = -1;
+              lookFor = memAddr + memory[memAddr] + 1;
+            }
+            else
+            {
+              if (memAddr > lookFor && memAddr < closest)
+              {
+                closest = memAddr;
+              }
+            }
           }
         }
       }
@@ -654,11 +707,34 @@ public class PseudoCpu
         int dif = lookFor - closest;
         for (String strName : stringNames)
         {
-          int memAddr = memLocations.get(strName);
-          if (memAddr >= lookFor)
+          if (!strName.endsWith("[]"))
           {
-            Logger.log("Correcting address of " + strName + " from " + memAddr + " to " + (memAddr - dif) + "!");
-            memLocations.put(strName, memAddr - dif);
+            int memAddr = memLocations.get(strName);
+            if (memAddr >= lookFor)
+            {
+              Logger.log("Correcting address of " + strName + " from " + memAddr + " to " + (memAddr - dif) + "!");
+              memLocations.put(strName, memAddr - dif);
+            }
+          }
+          else
+          {
+            int addr = memLocations.get(strName);
+            int type = memory[addr++];
+            int sz = memory[addr++];
+            if (type != 2)
+            {
+              throw new RuntimeException("Unknown array type: " + type);
+            }
+            for (int p = 0; p < sz; p++)
+            {
+              int memAddr = memory[addr + p];
+              if (memAddr >= lookFor)
+              {
+                Logger.log("Correcting array address of " + strName + "[" + p + "] from " + memAddr + " to "
+                    + (memAddr - dif) + "!");
+                memory[addr + p] = memAddr - dif;
+              }
+            }
           }
         }
       }
@@ -703,16 +779,11 @@ public class PseudoCpu
     int offset = regs[X].intValue();
     int type = memory[addr];
     int size = memory[addr + 1];
-    if (type == 2)
-    {
-      throw new RuntimeException("tbd");
-    }
     if (offset >= size)
     {
-      throw new RuntimeException("Array index out of bound: " + offset + "/" + (size - 1));
+      throw new RuntimeException("Array index out of bounds: " + offset + "/" + (size - 1));
     }
-    int pos = addr + offset + 2; // plus 2 because of the type and size
-    // information in the first entries
+    int pos = addr + offset + 2; // plus 2 because of the type and size information in the first entries
     int val = memory[pos];
 
     // System.out.println(pos + "/" + val);
@@ -723,7 +794,14 @@ public class PseudoCpu
     }
     else
     {
-      regs[X] = val;
+      if (type == 0)
+      {
+        regs[X] = val;
+      }
+      else
+      {
+        regs[A] = val;
+      }
     }
   }
 
