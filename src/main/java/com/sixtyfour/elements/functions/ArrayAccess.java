@@ -107,7 +107,7 @@ public class ArrayAccess extends AbstractFunction {
 		}
 
 		//System.out.println("Resulting access term: " + sb.toString());
-		Term t = Parser.getTerm(sb.toString(), machine, true, true);
+		Term t = Parser.getTermWithoutChecks(sb.toString(), machine, true, true);
 		// System.out.println("Parsed final term: "+t);
 
 		List<String> n1 = t.evalToExpression(machine);

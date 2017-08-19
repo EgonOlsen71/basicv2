@@ -378,6 +378,25 @@ public class Parser {
 		ret.setInitial(term);
 		return ret;
 	}
+	
+	/**
+	 * Similar to getTerm() but omits some additional syntax checks. Used internally only!
+	 * 
+	 * @param term
+	 *            the term as text
+	 * @param machine
+	 *            the machine
+	 * @param stripAssignment
+	 *            if true, assignments will be stripped
+	 * @param checkForLogicTerm
+	 *            if true, logic terms will be checked for as well
+	 * @return the resulting term
+	 */
+	public static Term getTermWithoutChecks(String term, Machine machine, boolean stripAssignment, boolean checkForLogicTerm) {
+		Term ret = getTerm(term, machine, stripAssignment, checkForLogicTerm, null);
+		ret.setInitial(term);
+		return ret;
+	}
 
 	/**
 	 * Returns the term that represents the term in the text. The result will be
@@ -1482,7 +1501,7 @@ public class Parser {
 				inString = !inString;
 			}
 			if (!inString) {
-				if ("&!|~?'§{}[]".indexOf(c) != -1) {
+				if ("&!|~?'§{}[]°".indexOf(c) != -1) {
 					throw new RuntimeException("Syntax error: " + term + "/" + c);
 				}
 			}

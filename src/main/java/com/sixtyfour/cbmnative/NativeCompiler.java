@@ -45,6 +45,7 @@ public class NativeCompiler {
 			this.add("PAR");
 			this.add("LEFT");
 			this.add("RIGHT");
+			this.add("ARRAYACCESS");
 		}
 	};
 
@@ -69,13 +70,21 @@ public class NativeCompiler {
 		boolean pointerMode = false;
 		int contextMode = 0;
 		int modeSwitchCnt = 0;
+		Set<String> floatRegs = new HashSet<String>() {
+			private static final long serialVersionUID = 1L;
+			{
+				this.add("X");
+				this.add("Y");
+			}
+		};
 
 		List<String> code = new ArrayList<String>();
 		List<String> expr = term.evalToExpression(machine);
 
 		Deque<String> stack = new LinkedList<String>();
 		Deque<String> yStack = new LinkedList<String>();
-		boolean withStrings=false;
+		Deque<Boolean> stringStack = new LinkedList<Boolean>();
+		boolean withStrings = false;
 		boolean left = false;
 		boolean right = false;
 		boolean isArrayAccess = false;
@@ -86,12 +95,14 @@ public class NativeCompiler {
 			boolean isOp = exp.startsWith(":");
 			boolean isBreak = exp.equals("_");
 			isArrayAccess = false;
+			String osr = sr;
 			if (exp.contains("{")) {
 				if (exp.contains("{STRING") || exp.contains("[]")) {
 					modeSwitchCnt++;
+					String add = null;
 					if (!pointerMode) {
 						if (modeSwitchCnt > 1 && !code.isEmpty() && exp.contains("{STRING") && contextMode != 1) {
-							code.add("CHGCTX #1");
+							add = "CHGCTX #1";
 						}
 					}
 					contextMode = 1;
@@ -99,17 +110,55 @@ public class NativeCompiler {
 					if (!exp.contains("[]")) {
 						tr = "A";
 						sr = "B";
-						withStrings=true;
+						withStrings = true;
 					} else {
-						tr = "C";
-						sr = "C";
+						tr = "G";
+						sr = "G";
 						isArrayAccess = true;
+						if (exp.contains("{STRING")) {
+							withStrings = true;
+							stringStack.push(true);
+							if (this.getLastEntry(code).equals("PUSH X")) {
+								yStack.pop();
+								code.remove(code.size() - 1);
+							}
+						} else {
+							stringStack.push(false);
+						}
+						if (right && left) {
+							code.add("PUSH " + osr);
+							yStack.push(null);
+							right = false;
+						}
+					}
+					if (add != null) {
+						if (right && !isArrayAccess) {
+							code.add("PUSH Y");
+							yStack.push(null);
+							right = false;
+						}
+						if (left && !isArrayAccess) {
+							code.add("PUSH X");
+							yStack.push(null);
+							left = false;
+						}
+						code.add(add);
 					}
 				} else {
 					modeSwitchCnt++;
 					if (pointerMode) {
 						if (modeSwitchCnt > 1 && !code.isEmpty() && contextMode != 0) {
 							code.add("CHGCTX #0");
+							if (right) {
+								code.add("PUSH B");
+								yStack.push(null);
+								right = false;
+							}
+							if (left) {
+								code.add("PUSH A");
+								yStack.push(null);
+								left = false;
+							}
 						}
 					}
 					contextMode = 0;
@@ -122,7 +171,7 @@ public class NativeCompiler {
 			if (!isBreak) {
 				if (!isOp) {
 					if (!right || isArrayAccess) {
-						code.add("MOV " + sr + "," + exp);
+						code.add("MOV " + (isArrayAccess ? "G" : sr) + "," + exp);
 						right = true;
 					} else if (!left) {
 						code.add("MOV " + tr + "," + exp);
@@ -141,8 +190,10 @@ public class NativeCompiler {
 					yStack.push(lc);
 					code.remove(code.size() - 1);
 				} else {
-					code.add("PUSH " + sr);
-					yStack.push(null);
+					if (!isParameterRegister(sr)) {
+						code.add("PUSH " + sr);
+						yStack.push(null);
+					}
 				}
 				right = false;
 			}
@@ -151,6 +202,14 @@ public class NativeCompiler {
 				String ex = stack.pop();
 				String op = ex.replace(":", "");
 				boolean isSingle = isSingle(op);
+				if (op.startsWith("ARRAYACCESS")) {
+					if ("Y".equals(getLastFilledRegister(code, 1, floatRegs))) {
+						// Move an array index from Y to x if needed
+						System.out.println(code.get(code.size() - 2));
+						code.add(code.size() - (code.get(code.size() - 2).startsWith("CHGCTX") ? 2 : 1), "MOV X,Y");
+					}
+				}
+				boolean isStringArrayAccess = (!stringStack.isEmpty() && stringStack.peek() && contextMode == 1);
 
 				if (!left && !isSingle) {
 					if (code.size() >= 1 && getLastEntry(code).equals("PUSH " + tr)) {
@@ -161,8 +220,9 @@ public class NativeCompiler {
 							code.remove(code.size() - 2);
 							yStack.pop();
 						} else {
-							popy(code, sr, tr, sr, tr, false);
-							yStack.pop();
+							if (popy(code, sr, tr, sr, tr, false)) {
+								yStack.pop();
+							}
 						}
 					}
 					left = true;
@@ -173,14 +233,15 @@ public class NativeCompiler {
 					String ntr = tr;
 					String nsr = sr;
 
-					if (STRING_OPERATORS.contains(op)) {
-						if (!pointerMode) {
+					if (STRING_OPERATORS.contains(op) || isStringArrayAccess) {
+						if (!pointerMode || isStringArrayAccess) {
 							if (modeSwitchCnt > 1 && !code.isEmpty()) {
 								ntr = "A";
 								nsr = "B";
-								withStrings=true;
+								withStrings = true;
 							}
 						}
+
 					} else {
 						if (pointerMode) {
 							if (modeSwitchCnt > 1 && !code.isEmpty()) {
@@ -190,15 +251,20 @@ public class NativeCompiler {
 						}
 					}
 
-					if (yStack.isEmpty()) {
-						popy(code, tr, sr, ntr, nsr, true);
-					} else {
-						String v = yStack.pop();
-						if (v == null) {
-							popy(code, tr, sr, ntr, nsr, false);
+					boolean mayPop = !op.equals("ARRAYACCESS") || nsr.equals("Y");
+					if (mayPop) {
+						if (yStack.isEmpty()) {
+							popy(code, tr, sr, ntr, nsr, true);
 						} else {
-							code.add(v);
-							fromAbove.add(code.size() - 1);
+							String v = yStack.pop();
+							if (v == null) {
+								if (!popy(code, tr, sr, ntr, nsr, false)) {
+									yStack.push(null);
+								}
+							} else {
+								code.add(v);
+								fromAbove.add(code.size() - 1);
+							}
 						}
 					}
 					right = true;
@@ -222,7 +288,7 @@ public class NativeCompiler {
 					}
 				}
 
-				if (STRING_OPERATORS.contains(op)) {
+				if (STRING_OPERATORS.contains(op) || isStringArrayAccess) {
 					modeSwitchCnt++;
 					if (!pointerMode) {
 						if (modeSwitchCnt > 1 && !code.isEmpty() && contextMode != 1) {
@@ -233,7 +299,7 @@ public class NativeCompiler {
 					pointerMode = true;
 					tr = "A";
 					sr = "B";
-					withStrings=true;
+					withStrings = true;
 				} else {
 					modeSwitchCnt++;
 					if (pointerMode) {
@@ -340,6 +406,7 @@ public class NativeCompiler {
 					break;
 				case "ARRAYACCESS":
 					code.add("JSR ARRAYACCESS");
+					stringStack.pop();
 					break;
 				case "MID":
 					code.add("JSR MID");
@@ -366,8 +433,10 @@ public class NativeCompiler {
 					throw new RuntimeException("Unknown operator: " + op);
 				}
 				if (!dontPush) {
-					code.add("PUSH " + tr);
-					yStack.push(null);
+					if (!isParameterRegister(tr)) {
+						code.add("PUSH " + tr);
+						yStack.push(null);
+					}
 				}
 				dontPush = false;
 				left = false;
@@ -379,27 +448,31 @@ public class NativeCompiler {
 			}
 
 			// System.out.println(code.size() + ": " + this.getLastEntry(code) +
-			// " / " + exp);
+			// " / " + exp + "/" + sr);
 		}
 
 		if (!stack.isEmpty()) {
-			throw new RuntimeException("Operator stack not empty, " + stack.size() + " elements remaining!");
+			throw new RuntimeException("Operator stack not empty, " + stack.size() + " element(s) remaining!");
 		}
 
 		// End simple expressions properly
 		if (!code.isEmpty() && !getLastEntry(code).equals("PUSH " + tr)) {
 			String cl = getLastEntry(code);
 			if (cl.startsWith("MOV " + sr)) {
-				code.add("PUSH " + sr);
+				if (!isParameterRegister(sr)) {
+					code.add("PUSH " + sr);
+				}
 			} else {
-				code.add("PUSH " + tr);
+				if (!isParameterRegister(tr)) {
+					code.add("PUSH " + tr);
+				}
 			}
 		}
 
 		if (withStrings) {
-		  code.add(0, "JSR COMPACT");
+			code.add(0, "JSR COMPACT");
 		}
-		
+
 		return optimize(code);
 	}
 
@@ -457,6 +530,21 @@ public class NativeCompiler {
 		return null;
 	}
 
+	private String getLastFilledRegister(List<String> code, int offset, Set<String> allowed) {
+		for (int i = code.size() - offset; i >= 0; i--) {
+			if (code.get(i).indexOf(" ") == 3) {
+				int pos = code.get(i).indexOf(",");
+				if (pos > 4) {
+					String reg = code.get(i).substring(4, pos).trim();
+					if (reg.length() == 1 && allowed.contains(reg)) {
+						return reg;
+					}
+				}
+			}
+		}
+		return null;
+	}
+
 	private String getLastEntry(List<String> code) {
 		if (code.size() > 0) {
 			return code.get(code.size() - 1);
@@ -464,22 +552,29 @@ public class NativeCompiler {
 		return null;
 	}
 
-	private void popy(List<String> code, String tr, String sr, String ntr, String nsr, boolean stackEmpty) {
+	private boolean popy(List<String> code, String tr, String sr, String ntr, String nsr, boolean stackEmpty) {
 		if (getLastEntry(code).equals("PUSH " + tr)) {
 			code.set(code.size() - 1, "MOV " + sr + "," + tr);
 		} else {
 			if (getLastEntry(code).equals("PUSH " + nsr)) {
 				code.remove(code.size() - 1);
 			} else {
-				if (!stackEmpty) {
+				if (!stackEmpty && !isParameterRegister(nsr)) {
 					code.add("POP " + nsr);
+				} else {
+					return false;
 				}
 			}
 		}
+		return true;
 	}
 
 	private boolean isSingle(String op) {
 		return SINGLES.contains(op.toUpperCase(Locale.ENGLISH));
+	}
+
+	private boolean isParameterRegister(String reg) {
+		return reg.equals("C") || reg.equals("D") || reg.equals("G");
 	}
 
 }
