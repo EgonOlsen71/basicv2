@@ -50,7 +50,7 @@ public class NativeCompilerTest {
 	private static void testArrayAccessTotal() {
 		System.out.println("\n\ntestArrayAccess1");
 		Machine machine = new Machine();
-		List<Object> objs = new ArrayList<Object>(Arrays.asList(new Float[] { 1.2f, 2.3f, 4.5f, 4.1f, 1.1f, .21f, 1.1f, 2.3f, 4.5f, 6.6f, 2.2f, 1.3f, 4.5f, 4.5f, 1f, 2.2f, 3.1f,
+		List<Object> objs = new ArrayList<Object>(Arrays.asList(new Float[] { 93f, 2.3f, 4.5f, 4.1f, 1.1f, .21f, 1.1f, 2.3f, 4.5f, 6.6f, 2.2f, 1.3f, 4.5f, 4.5f, 1f, 2.2f, 3.1f,
 				2.3f, 5.5f, 6.6f }));
 		machine.add(new Variable("A[]", objs, 1, 9));
 		machine.add(new Variable("B[]", objs, 19));
@@ -59,7 +59,7 @@ public class NativeCompilerTest {
 		List<Object> objs2 = new ArrayList<Object>(Arrays.asList(new String[] { "AAA", "BBB", "CCC", "DDD", "EEE", "FFF", "GGG", "HHH", "JJJ", "KKK", "LLL", "MMM", "NNN", "OOO" }));
 		machine.add(new Variable("AA$[]", objs2, 1, 7));
 		machine.add(new Variable("B$[]", objs2, 13));
-		String term = "B(4)+6+B(1)+ASC(B$(ASC(\"A\")-93)+\" \")";
+		String term = "B(4)+6+B(1)+ASC(B$(ASC(\"A\")-A(0,0))+\" \")";
 		// String term="B(4 AND 4)+6+B(1)+ASC(\"A\")";
 		testExpr(machine, term, false);
 	}
