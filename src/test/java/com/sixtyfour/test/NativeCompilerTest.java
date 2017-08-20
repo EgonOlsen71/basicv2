@@ -54,12 +54,12 @@ public class NativeCompilerTest {
 				2.3f, 5.5f, 6.6f }));
 		machine.add(new Variable("A[]", objs, 1, 9));
 		machine.add(new Variable("B[]", objs, 19));
-		machine.add(new Variable("C", 4.2f));
+		machine.add(new Variable("C", 0));
 		machine.add(new Variable("D%", 2));
 		List<Object> objs2 = new ArrayList<Object>(Arrays.asList(new String[] { "AAA", "BBB", "CCC", "DDD", "EEE", "FFF", "GGG", "HHH", "JJJ", "KKK", "LLL", "MMM", "NNN", "OOO" }));
 		machine.add(new Variable("AA$[]", objs2, 1, 7));
 		machine.add(new Variable("B$[]", objs2, 13));
-		String term = "B(4)+6+B(1)+ASC(B$(ASC(\"A\")-A(0,0))+\" \")";
+		String term = "B(4)+6+B(1)+ASC(B$(ASC(\"A\")-A(0,C))+\" \")";
 		// String term="B(4 AND 4)+6+B(1)+ASC(\"A\")";
 		testExpr(machine, term, false);
 	}
