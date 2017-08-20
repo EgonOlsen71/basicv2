@@ -18,25 +18,35 @@ import com.sixtyfour.system.Machine;
 public class NativeCompilerTest {
 
 	public static void main(String[] args) {
-		/*
-		 * testExpression0(); testExpression1(); testExpression2();
-		 * testExpression3(); testExpression4(); testExpression5();
-		 * testExpression6(); testLinearize(); testStringExpression0();
-		 * testStringExpression1(); testStringExpression2();
-		 * testStringExpression3(); testStringExpression4();
-		 * testStringExpression5(); testStringExpression6();
-		 */
-		//testArrayAccess0();
+		testExpression0();
+		testExpression1();
+		testExpression2();
+		testExpression3();
+		testExpression4();
+		testExpression5();
+		testExpression6();
+		testLinearize();
+		testStringExpression0();
+		testStringExpression1();
+		testStringExpression2();
+		testStringExpression3();
+		testStringExpression4();
+		testStringExpression5();
+		testStringExpression6();
+
+		testArrayAccess0();
 		testArrayAccess1();
-		/*
-		 * testStringExpression7(); testStringExpression8(); testExpression7();
-		 * testStringExpression9();
-		 */
+
+		testStringExpression7();
+		testStringExpression8();
+		testExpression7();
+		testStringExpression9();
+
 		testStringArrayAccess0();
 		testStringArrayAccess1();
 		testArrayAccessTotal();
 	}
-	
+
 	private static void testArrayAccessTotal() {
 		System.out.println("\n\ntestArrayAccess1");
 		Machine machine = new Machine();
@@ -49,11 +59,11 @@ public class NativeCompilerTest {
 		List<Object> objs2 = new ArrayList<Object>(Arrays.asList(new String[] { "AAA", "BBB", "CCC", "DDD", "EEE", "FFF", "GGG", "HHH", "JJJ", "KKK", "LLL", "MMM", "NNN", "OOO" }));
 		machine.add(new Variable("AA$[]", objs2, 1, 7));
 		machine.add(new Variable("B$[]", objs2, 13));
-		//String term="B(4)+6+B(1)+ASC(B$(3)+\" \")";
-		String term="B(4 AND 4)+6+B(1)+ASC(\"A\")";
+		String term = "B(4)+6+B(1)+ASC(B$(ASC(\"A\")-93)+\" \")";
+		// String term="B(4 AND 4)+6+B(1)+ASC(\"A\")";
 		testExpr(machine, term, false);
 	}
-	
+
 	private static void testArrayAccess1() {
 		System.out.println("\n\ntestArrayAccess1");
 		Machine machine = new Machine();
@@ -63,7 +73,7 @@ public class NativeCompilerTest {
 		machine.add(new Variable("B[]", objs, 19));
 		machine.add(new Variable("C", 4.2f));
 		machine.add(new Variable("D%", 2));
-		String term="B(5)+6+B(1)";
+		String term = "B(5)+6+B(1)";
 		testExpr(machine, term, false);
 	}
 
@@ -77,7 +87,7 @@ public class NativeCompilerTest {
 		String term = "B$(1)+\"K\"+B$(4)";
 		testExpr(machine, term, true);
 	}
-	
+
 	private static void testStringArrayAccess1() {
 		System.out.println("\n\ntestStringArrayAccess1");
 		Machine machine = new Machine();
@@ -85,7 +95,7 @@ public class NativeCompilerTest {
 		machine.add(new Variable("AA$[]", objs, 1, 7));
 		machine.add(new Variable("B$[]", objs, 13));
 		machine.add(new Variable("A$", "Hello"));
-		String term="AA$(0,1)+\" \"+A$+B$(4)+B$(5)+AA$(1,3)";
+		String term = "AA$(0,1)+\" \"+A$+B$(4)+B$(5)+AA$(1,3)";
 		testExpr(machine, term, true);
 	}
 
@@ -138,7 +148,7 @@ public class NativeCompilerTest {
 		machine.add(new Variable("C", 4.2f));
 		machine.add(new Variable("D%", 2));
 		String term = "A((1/183)*(B+ASC(A$+\"hello\")*2+-ASC((MID$(\"32222\",2)+A$)+A$)/2),D%)*A(0,D%+D%+COS(A(0,0)-1.2))+A(1,C*2)*B(B(ASC(\"A\")-96)*4)";
-		//term="B(5)+B(1)";
+		// term="B(5)+B(1)";
 		testExpr(machine, term, false);
 	}
 
@@ -331,7 +341,7 @@ public class NativeCompilerTest {
 		System.out.println("------------------------------");
 		System.out.println(outString ? pc.getStringFromStack() : stack.pop());
 		System.out.println(t.eval(machine));
-		pc.compactMemory();
+		// pc.compactMemory();
 	}
 
 	private static void testExpr(Machine machine, String term) {

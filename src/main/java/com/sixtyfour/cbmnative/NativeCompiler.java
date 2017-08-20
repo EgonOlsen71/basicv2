@@ -118,13 +118,15 @@ public class NativeCompiler {
 						if (exp.contains("{STRING")) {
 							withStrings = true;
 							stringStack.push(true);
-							if (this.getLastEntry(code).equals("PUSH X")) {
-								yStack.pop();
-								code.remove(code.size() - 1);
-							}
 						} else {
 							stringStack.push(false);
 						}
+
+						if (this.getLastEntry(code).equals("PUSH X")) {
+							yStack.pop();
+							code.remove(code.size() - 1);
+						}
+
 						if (right && left) {
 							code.add("PUSH " + osr);
 							yStack.push(null);
@@ -205,7 +207,6 @@ public class NativeCompiler {
 				if (op.startsWith("ARRAYACCESS")) {
 					if ("Y".equals(getLastFilledRegister(code, 1, floatRegs))) {
 						// Move an array index from Y to x if needed
-						System.out.println(code.get(code.size() - 2));
 						code.add(code.size() - (code.get(code.size() - 2).startsWith("CHGCTX") ? 2 : 1), "MOV X,Y");
 					}
 				}
@@ -251,7 +252,7 @@ public class NativeCompiler {
 						}
 					}
 
-					boolean mayPop = !op.equals("ARRAYACCESS") || nsr.equals("Y");
+					boolean mayPop = !op.equals("ARRAYACCESS");
 					if (mayPop) {
 						if (yStack.isEmpty()) {
 							popy(code, tr, sr, ntr, nsr, true);
@@ -489,6 +490,12 @@ public class NativeCompiler {
 			if (l2 != null && l0.equals("PUSH X") && l1.startsWith("MOV C") && l1.contains("[]") && l2.equals("POP Y")) {
 				ret.add(l1);
 				i += 2;
+				continue;
+			}
+
+			if (l0.startsWith("MOV Y,") && l1.equals("MOV X,Y")) {
+				ret.add(l0.replace("MOV Y,", "MOV X,"));
+				i += 1;
 				continue;
 			}
 

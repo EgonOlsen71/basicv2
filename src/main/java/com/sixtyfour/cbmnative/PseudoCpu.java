@@ -518,9 +518,6 @@ public class PseudoCpu {
 	}
 
 	private void collectGarbage() {
-		if (true) {
-			return;
-		}
 		int lookFor = stringStart;
 		int closest = MEM_SIZE;
 		int highest = stringStart;
