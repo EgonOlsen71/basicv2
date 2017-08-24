@@ -95,7 +95,7 @@ public class NativeCompilerTest {
 		machine.add(new Variable("AA$[]", objs, 1, 7));
 		machine.add(new Variable("B$[]", objs, 13));
 		machine.add(new Variable("A$", "Hello"));
-		String term = "AA$(0,1)+\" \"+A$+B$(4)+B$(5)+AA$(1,3)";
+		String term = "AA$(0,1)+\" \"+A$+B$(4)+B$(5)+\"hello\"+AA$(1,3)";
 		testExpr(machine, term, true);
 	}
 
