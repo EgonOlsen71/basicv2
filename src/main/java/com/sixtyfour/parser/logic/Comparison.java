@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.parser.Term;
+import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.system.Machine;
 
 /**
@@ -66,7 +67,7 @@ public class Comparison implements LogicBlock {
 	}
 
 	@Override
-	public List<String> evalToExpression(Machine machine) {
+	public List<CodeContainer> evalToCode(Machine machine) {
 		return null;
 	}
 

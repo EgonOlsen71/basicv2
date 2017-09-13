@@ -6,6 +6,7 @@ import java.util.Locale;
 
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.Term;
+import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
@@ -94,13 +95,15 @@ public abstract class AbstractFunction implements Function {
 	}
 
 	@Override
-	public List<String> evalToExpression(Machine machine) {
+	public List<CodeContainer> evalToCode(Machine machine) {
 		List<String> ret = new ArrayList<String>();
 		ret.add("_");
-		List<String> n1 = term.evalToExpression(machine);
+		List<String> n1 = term.evalToCode(machine).get(0).getExpression();
 		n1.add(":" + this.getClass().getSimpleName().toUpperCase(Locale.ENGLISH));
 		ret.addAll(0, n1);
-		return ret;
+		List<CodeContainer> cc=new ArrayList<CodeContainer>();
+		cc.add(new CodeContainer(ret));
+		return cc;
 	}
 
 	/*

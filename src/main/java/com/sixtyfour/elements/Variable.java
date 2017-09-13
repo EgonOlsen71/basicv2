@@ -9,6 +9,7 @@ import com.sixtyfour.elements.commands.CommandList;
 import com.sixtyfour.elements.functions.Function;
 import com.sixtyfour.elements.functions.FunctionList;
 import com.sixtyfour.parser.Atom;
+import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.IntegerC;
 import com.sixtyfour.util.VarUtils;
@@ -139,10 +140,12 @@ public class Variable implements Atom {
 	}
 
 	@Override
-	public List<String> evalToExpression(Machine machine) {
+	public List<CodeContainer> evalToCode(Machine machine) {
 		List<String> ret = new ArrayList<String>();
 		ret.add(upperCaseName.toString() + "{" + type + "}");
-		return ret;
+		List<CodeContainer> cc=new ArrayList<CodeContainer>();
+    cc.add(new CodeContainer(ret));
+    return cc;
 	}
 
 	/**

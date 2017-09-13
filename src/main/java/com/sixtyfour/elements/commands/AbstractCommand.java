@@ -3,8 +3,10 @@ package com.sixtyfour.elements.commands;
 import java.util.List;
 
 import com.sixtyfour.elements.Type;
+import com.sixtyfour.elements.Variable;
 import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Term;
+import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.system.BasicProgramCounter;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
@@ -64,7 +66,7 @@ public abstract class AbstractCommand implements Command {
 	}
 
 	@Override
-	public List<String> evalToExpression(Machine machine) {
+	public List<CodeContainer> evalToCode(Machine machine) {
 		return null;
 	}
 
@@ -250,5 +252,18 @@ public abstract class AbstractCommand implements Command {
 			}
 		}
 	}
+	
+	protected String getVariableLabel(Machine machine, Variable variable) {
+	  List<CodeContainer> ccs=variable.evalToCode(machine);
+	  return ccs.get(0).getExpression().get(0);
+	}
+	
+	protected String getPushRegister(String line) {
+    if (line.startsWith("PUSH")) {
+      line=line.substring(4).trim();
+      return line;
+    }
+    return null;
+  }
 
 }

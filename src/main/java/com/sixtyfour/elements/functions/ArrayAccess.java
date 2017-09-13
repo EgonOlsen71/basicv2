@@ -9,6 +9,7 @@ import com.sixtyfour.elements.Variable;
 import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.Term;
+import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
@@ -73,7 +74,7 @@ public class ArrayAccess extends AbstractFunction {
 	}
 
 	@Override
-	public List<String> evalToExpression(Machine machine) {
+	public List<CodeContainer> evalToCode(Machine machine) {
 		// fillParameterIndices(machine);
 		List<String> ret = new ArrayList<String>();
 		ret.add("_");
@@ -85,36 +86,15 @@ public class ArrayAccess extends AbstractFunction {
 			throw new RuntimeException("Array indices don't match: " + this + "/" + pars.size() + "/" + dimensions.length);
 		}
 
-		int m = 1;
-		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < pars.size(); i++) {
-			if (sb.length() > 0) {
-				sb.append("+");
-			}
-			sb.append("(");
-			Atom atom = pars.get(i);
-			if (!(atom instanceof Term)) {
-				sb.append(atom.eval(machine));
-			} else {
-				sb.append(((Term) atom).getInitial());
-			}
-			if (m == 1) {
-				sb.append(")");
-			} else {
-				sb.append(")*(").append(m).append(")");
-			}
-			m *= dimensions[i] + 1;
-		}
+		Term t = Parser.createIndexTerm(machine, pars, dimensions);
 
-		//System.out.println("Resulting access term: " + sb.toString());
-		Term t = Parser.getTermWithoutChecks(sb.toString(), machine, true, true);
-		// System.out.println("Parsed final term: "+t);
-
-		List<String> n1 = t.evalToExpression(machine);
-		n1.addAll(vary.evalToExpression(machine));
+		List<String> n1 = t.evalToCode(machine).get(0).getExpression();
+		n1.addAll(vary.evalToCode(machine).get(0).getExpression());
 		n1.add(":" + this.getClass().getSimpleName().toUpperCase(Locale.ENGLISH));
 		ret.addAll(0, n1);
-		return ret;
+		List<CodeContainer> cc=new ArrayList<CodeContainer>();
+    cc.add(new CodeContainer(ret));
+    return cc;
 	}
 
 	/**

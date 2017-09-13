@@ -3,6 +3,7 @@ package com.sixtyfour.parser;
 import java.util.List;
 
 import com.sixtyfour.elements.Type;
+import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.system.Machine;
 
 /**
@@ -30,14 +31,13 @@ public interface Atom {
 	Object eval(Machine machine);
 
 	/**
-	 * "Evaluates" an Atom to an expression. In the end, each atom/operator is
-	 * placed in one list entry.
+	 * "Evaluates" an Atom to "native" code.
 	 * 
 	 * @param machine
 	 *            the machine
 	 * @return the result list
 	 */
-	List<String> evalToExpression(Machine machine);
+	List<CodeContainer> evalToCode(Machine machine);
 
 	/**
 	 * Returns true, if the Atom represents a Term and false otherwise.

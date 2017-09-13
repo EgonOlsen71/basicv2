@@ -506,6 +506,41 @@ public class Parser {
 			throw new RuntimeException("Invalid term: " + term + "/" + open);
 		}
 	}
+	
+	/**
+	 * Creates a term based on an array index.
+	 * 
+	 * @param machine the machine
+	 * @param pars the parameter list (i.e. the array indices)
+	 * @param dimensions the dimension of the array
+	 * @return the term
+	 */
+	public static Term createIndexTerm(Machine machine, List<Atom> pars, int[] dimensions)
+  {
+    int m = 1;
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < pars.size(); i++) {
+      if (sb.length() > 0) {
+        sb.append("+");
+      }
+      sb.append("(");
+      Atom atom = pars.get(i);
+      if (!(atom instanceof Term)) {
+        sb.append(atom.eval(machine));
+      } else {
+        sb.append(((Term) atom).getInitial());
+      }
+      if (m == 1) {
+        sb.append(")");
+      } else {
+        sb.append(")*(").append(m).append(")");
+      }
+      m *= dimensions[i] + 1;
+    }
+
+    Term t = Parser.getTermWithoutChecks(sb.toString(), machine, true, true);
+    return t;
+  }
 
 	/**
 	 * Replaces logic BASIC operators in a term by a one-char representation.

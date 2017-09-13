@@ -3,14 +3,17 @@
  */
 package com.sixtyfour.elements.commands;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import com.sixtyfour.cbmnative.NativeCompiler;
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.elements.Variable;
 import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.Term;
 import com.sixtyfour.parser.VariableAndIndex;
+import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.system.BasicProgramCounter;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
@@ -118,4 +121,36 @@ public class Let extends AbstractCommand {
 		}
 		return null;
 	}
+	
+	
+	@Override
+  public List<CodeContainer> evalToCode(Machine machine) {
+	  var=machine.add(var);
+	  NativeCompiler compiler=NativeCompiler.getCompiler();
+	  List<String> after=new ArrayList<String>();
+	  List<String> expr= compiler.compileToPseudoCode(machine, term);
+	  List<String> before=null;
+	  
+	  String expPush=getPushRegister(expr.get(expr.size()-1));
+	  expr=expr.subList(0, expr.size()-1); // Remove trailing PUSH X/PUSH A
+	  
+	  if (indexTerm != null) {
+	    before=compiler.compileToPseudoCode(machine, Parser.createIndexTerm(machine, pars, var.getDimensions()));
+	    if (expPush.equals("X")) {
+	      after.add("MOV Y,X");
+	    } else if (expPush.equals("B")) {
+	      after.add("MOV A,B");
+	    }
+	    after.add("POP X");
+	    after.add("MOV G,"+getVariableLabel(machine, var));
+	    after.add("JSR ARRAYSTORE");
+	  } else {
+	    after.add("MOV "+getVariableLabel(machine, var)+","+expPush);
+	  }
+	  
+	  CodeContainer cc=new CodeContainer(before, expr, after);
+	  List<CodeContainer> ccs=new ArrayList<CodeContainer>();
+    ccs.add(cc);
+    return ccs;
+  }
 }
