@@ -1,5 +1,6 @@
 package com.sixtyfour.elements.commands;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.sixtyfour.elements.Type;
@@ -252,18 +253,27 @@ public abstract class AbstractCommand implements Command {
 			}
 		}
 	}
-	
+
 	protected String getVariableLabel(Machine machine, Variable variable) {
-	  List<CodeContainer> ccs=variable.evalToCode(machine);
-	  return ccs.get(0).getExpression().get(0);
+		List<CodeContainer> ccs = variable.evalToCode(machine);
+		return ccs.get(0).getExpression().get(0);
 	}
-	
+
 	protected String getPushRegister(String line) {
-    if (line.startsWith("PUSH")) {
-      line=line.substring(4).trim();
-      return line;
-    }
-    return null;
-  }
+		if (line.startsWith("PUSH")) {
+			line = line.substring(4).trim();
+			return line;
+		}
+		return null;
+	}
+
+	protected List<CodeContainer> createSingleCommand(String command) {
+		List<String> after = new ArrayList<String>();
+		after.add(command);
+		CodeContainer cc = new CodeContainer(null, null, after);
+		List<CodeContainer> ccs = new ArrayList<CodeContainer>();
+		ccs.add(cc);
+		return ccs;
+	}
 
 }

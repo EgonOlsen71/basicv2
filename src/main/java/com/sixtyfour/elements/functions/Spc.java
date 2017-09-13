@@ -41,7 +41,8 @@ public class Spc extends AbstractFunction {
 
 	/**
 	 * If set to false, this function can be called outside of PRINT, PRINT# and
-	 * CMD as well. Default is true (i.e. it can't, which is normal CBM BASIC behaviour).
+	 * CMD as well. Default is true (i.e. it can't, which is normal CBM BASIC
+	 * behaviour).
 	 * 
 	 * @param limited
 	 *            should it be limited

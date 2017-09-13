@@ -48,6 +48,7 @@ public class PseudoCpu {
 	private Deque<Number> stack = new LinkedList<Number>();
 	private Number[] regs = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; // x,y,..,..,..,a,b,...
 	private Machine machine;
+	private boolean halt = false;
 	private int[] memory = null;
 	private Map<String, Integer> memLocations = new HashMap<String, Integer>();
 	private List<String> stringNames = new ArrayList<String>();
@@ -75,6 +76,7 @@ public class PseudoCpu {
 		Spc.setLimitedToPrint(false);
 		this.machine = machine;
 		stack.clear();
+		halt = false;
 		regs = new Number[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 		memory = new int[MEM_SIZE + MEM_SIZE / 2]; // normal string variable
 		// memory + work buffer
@@ -91,11 +93,19 @@ public class PseudoCpu {
 		// Writing (string) variables into memory
 		createStringVariables();
 
-		for (String line : code) {
+		int addr = 0;
+		do {
+			String line = code.get(addr++);
 			try {
 				// System.out.println(regs[0]+"/"+regs[1]);
 				String[] parts = split(line, " ");
 				if (parts.length > 0) {
+
+					if (parts[0].endsWith(":") && Character.isDigit(parts[0].charAt(0))) {
+						// Just a line number label...skip!
+						continue;
+					}
+
 					switch (parts[0]) {
 					case "MOV":
 						mov(parts);
@@ -169,6 +179,9 @@ public class PseudoCpu {
 					case "JSR":
 						jsr(parts);
 						break;
+					case "RTS":
+						rts(parts);
+						break;
 					case "CHGCTX":
 						nop(parts);
 						break;
@@ -179,7 +192,7 @@ public class PseudoCpu {
 			} catch (Exception e) {
 				throw new RuntimeException("Error while executing: " + line, e);
 			}
-		}
+		} while (!halt && addr < code.size());
 	}
 
 	public void compactMemory() {
@@ -260,21 +273,21 @@ public class PseudoCpu {
 				for (Object val : vals) {
 					if (val instanceof Float) {
 						if (!flagged) {
-							memory[memPointer++] = 1; // Flag a Floatarray
+							memory[memPointer++] = 1; // Flags a Float array
 							memory[memPointer++] = vals.size();
 							flagged = true;
 						}
 						memory[memPointer++] = Float.floatToIntBits((Float) val);
-					} else if (val instanceof Float) {
+					} else if (val instanceof Integer) {
 						if (!flagged) {
-							memory[memPointer++] = 0; // Flag an Integerarray
+							memory[memPointer++] = 0; // Flags an Integer array
 							memory[memPointer++] = vals.size();
 							flagged = true;
 						}
 						memory[memPointer++] = (Integer) val;
 					} else {
 						if (!flagged) {
-							memory[memPointer++] = 2; // Flag a Stringarray
+							memory[memPointer++] = 2; // Flags a String array
 							memory[memPointer++] = vals.size();
 							flagged = true;
 							stringNames.add(name);
@@ -333,47 +346,47 @@ public class PseudoCpu {
 	}
 
 	public Object getVariableValue(String name) {
-	  name=name.toUpperCase(Locale.ENGLISH);
-	  if (name.contains("$")) {
-	    return readString(memLocations.get(name));
-	  }
-	  return this.machine.getVariable(name).eval(machine);
+		name = name.toUpperCase(Locale.ENGLISH);
+		if (name.contains("$")) {
+			return readString(memLocations.get(name));
+		}
+		return this.machine.getVariable(name).eval(machine);
 	}
-	
-	public Object getVariableValue(String name, int...pos) {
-    name=name.toUpperCase(Locale.ENGLISH);
-    if (!name.endsWith("[]")) {
-      name=name+"[]";
-    }
-    Variable var=machine.getVariable(name);
-    int offset=calcArrayOffset(var, pos);
-    int val=memLocations.get(name)+2+offset;
-    if (name.contains("$")) {
-      return readString(memory[val]);
-    } else if (name.contains("%")) {
-      return memory[val];
-    }
-    return Float.intBitsToFloat(memory[val]);
-  }
-	
-	private int calcArrayOffset(Variable var, int...pos) {
-	  int ap = 0;
-    int cnt = 0;
 
-    if (pos.length == 1) {
-      // Fast path for one-dimensional arrays
-      ap = pos[0];
-    } else {
-      int m = 1;
-      for (int p : pos) {
-        ap += m * p;
-        m *= (var.getDimensions()[cnt] + 1);
-        cnt++;
-      }
-    }
-    return ap;
+	public Object getVariableValue(String name, int... pos) {
+		name = name.toUpperCase(Locale.ENGLISH);
+		if (!name.endsWith("[]")) {
+			name = name + "[]";
+		}
+		Variable var = machine.getVariable(name);
+		int offset = calcArrayOffset(var, pos);
+		int val = memLocations.get(name) + 2 + offset;
+		if (name.contains("$")) {
+			return readString(memory[val]);
+		} else if (name.contains("%")) {
+			return memory[val];
+		}
+		return Float.intBitsToFloat(memory[val]);
 	}
-	
+
+	private int calcArrayOffset(Variable var, int... pos) {
+		int ap = 0;
+		int cnt = 0;
+
+		if (pos.length == 1) {
+			// Fast path for one-dimensional arrays
+			ap = pos[0];
+		} else {
+			int m = 1;
+			for (int p : pos) {
+				ap += m * p;
+				m *= (var.getDimensions()[cnt] + 1);
+				cnt++;
+			}
+		}
+		return ap;
+	}
+
 	private String readString(Integer num) {
 		return new String(memory, num + 1, memory[num]);
 	}
@@ -424,16 +437,19 @@ public class PseudoCpu {
 		case "ARRAYACCESS":
 			arrayAccess(parts);
 			return;
-	  case "ARRAYSTORE":
-      arrayStore(parts);
-      return;
+		case "ARRAYSTORE":
+			arrayStore(parts);
+			return;
 		case "COMPACT":
 			collectGarbage();
 			return;
 		default:
 			throw new RuntimeException("Undefined call address: " + parts[1]);
 		}
+	}
 
+	private void rts(String[] parts) {
+		halt = true;
 	}
 
 	private void concat(String[] parts) {
@@ -672,29 +688,30 @@ public class PseudoCpu {
 	}
 
 	private void arrayStore(String[] parts) {
-    int addr = regs[G].intValue();
-    int offset = regs[X].intValue();
-    float val = regs[Y].floatValue();
-    int valStr=regs[A].intValue();
-    int type = memory[addr];
-    int size = memory[addr + 1];
-    if (offset >= size) {
-      throw new RuntimeException("Array index out of bounds: " + offset + "/" + (size - 1));
-    }
-    int pos = addr + offset + 2; // plus 2 because of the type and size
-                    // information in the first entries
-    if (type == 1) {
-      memory[pos]=Float.floatToIntBits(val);
-    } else {
-      if (type == 0) {
-        memory[pos]=(int) val;
-      } else {
-        //System.out.println("valstr: "+valStr+"/"+this.readString(valStr));
-        memory[pos] = valStr;
-      }
-    }
-  }
-	
+		int addr = regs[G].intValue();
+		int offset = regs[X].intValue();
+		float val = regs[Y].floatValue();
+		int valStr = regs[A].intValue();
+		int type = memory[addr];
+		int size = memory[addr + 1];
+		if (offset >= size) {
+			throw new RuntimeException("Array index out of bounds: " + offset + "/" + (size - 1));
+		}
+		int pos = addr + offset + 2; // plus 2 because of the type and size
+										// information in the first entries
+
+		if (type == 1) {
+			memory[pos] = Float.floatToIntBits(val);
+		} else {
+			if (type == 0) {
+				memory[pos] = (int) val;
+			} else {
+				// System.out.println("valstr: "+valStr+"/"+this.readString(valStr));
+				memory[pos] = valStr;
+			}
+		}
+	}
+
 	private void arrayAccess(String[] parts) {
 		int addr = regs[G].intValue();
 		int offset = regs[X].intValue();
@@ -1035,75 +1052,70 @@ public class PseudoCpu {
 		si = getIndex(source);
 		Type type = Type.INTEGER;
 
-		if (ti==-1 && si!=-1) {
-		  // From register into memory
-		  int pos = target.lastIndexOf("{");
-		  if (pos!=-1) {
-		    String ts = target.substring(pos + 1, target.lastIndexOf("}"));
-        String val = target.substring(0, pos);
-        type = Type.valueOf(ts);
-        if (type == Type.STRING) {
-          // a string...
-          Integer addr =regs[si].intValue();
-          memLocations.put(val, addr);
-        } else {
-          // a number...
-            if (val.contains("[]")) {
-              /*
-              Integer addr = memLocations.get(val);
-              if (addr == null) {
-                throw new RuntimeException("Unknown pointer to: " + val);
-              }
-              regs[ti] = addr;*/
-            } else {
-              machine.getVariableUpperCase(val).setValue(regs[si]);;
-            }
-        }
-		  } else {
-		    throw new RuntimeException("Unknown opcode: "+Arrays.toString(parts));
-		  }
+		if (ti == -1 && si != -1) {
+			// From register into memory
+			int pos = target.lastIndexOf("{");
+			if (pos != -1) {
+				String ts = target.substring(pos + 1, target.lastIndexOf("}"));
+				String val = target.substring(0, pos);
+				type = Type.valueOf(ts);
+				if (type == Type.STRING) {
+					// a string...
+					Integer addr = regs[si].intValue();
+					memLocations.put(val, addr);
+				} else {
+					// a number...
+					if (val.contains("[]")) {
+						throw new RuntimeException("Writing into '" + val + "' isn't supported!");
+					} else {
+						machine.getVariableUpperCase(val).setValue(regs[si]);
+					}
+				}
+			} else {
+				throw new RuntimeException("Unknown opcode: " + Arrays.toString(parts));
+			}
 		} else {
-		  // From memory or register into register
-  		int pos = source.lastIndexOf("{");
-  		if (pos == -1) {
-  			if (source.startsWith("(") && source.endsWith(")")) {
-  				regs[ti] = memory[regs[si].intValue()] & 0xff;
-  			} else {
-  				regs[ti] = regs[si];
-  			}
-  		} else {
-  			String ts = source.substring(pos + 1, source.lastIndexOf("}"));
-  			String val = source.substring(0, pos);
-  			type = Type.valueOf(ts);
-  			if (type == Type.STRING) {
-  				// a string...
-  				Integer addr = memLocations.get(val);
-  				if (addr == null) {
-  					throw new RuntimeException("Unknown string: " + val);
-  				}
-  				regs[ti] = addr;
-  			} else {
-  				// a number...
-  				if (val.startsWith("#")) {
-  					Number n = Float.valueOf(val.replace("#", ""));
-  					if (type == Type.INTEGER) {
-  						n = n.intValue();
-  					}
-  					regs[ti] = n;
-  				} else {
-  					if (val.contains("[]")) {
-  						Integer addr = memLocations.get(val);
-  						if (addr == null) {
-  							throw new RuntimeException("Unknown pointer to: " + val);
-  						}
-  						regs[ti] = addr;
-  					} else {
-  						Number n = (Number) machine.getVariableUpperCase(val).eval(machine);
-  						regs[ti] = n;
-  					}
-  				}
-  			}
-  		}
+			// From memory or register into register
+			int pos = source.lastIndexOf("{");
+			if (pos == -1) {
+				if (source.startsWith("(") && source.endsWith(")")) {
+					regs[ti] = memory[regs[si].intValue()] & 0xff;
+				} else {
+					regs[ti] = regs[si];
+				}
+			} else {
+				String ts = source.substring(pos + 1, source.lastIndexOf("}"));
+				String val = source.substring(0, pos);
+				type = Type.valueOf(ts);
+				if (type == Type.STRING) {
+					// a string...
+					Integer addr = memLocations.get(val);
+					if (addr == null) {
+						throw new RuntimeException("Unknown string: " + val);
+					}
+					regs[ti] = addr;
+				} else {
+					// a number...
+					if (val.startsWith("#")) {
+						Number n = Float.valueOf(val.replace("#", ""));
+						if (type == Type.INTEGER) {
+							n = n.intValue();
+						}
+						regs[ti] = n;
+					} else {
+						if (val.contains("[]")) {
+							Integer addr = memLocations.get(val);
+							if (addr == null) {
+								throw new RuntimeException("Unknown pointer to: " + val);
+							}
+							regs[ti] = addr;
+						} else {
+							Number n = (Number) machine.getVariableUpperCase(val).eval(machine);
+							regs[ti] = n;
+						}
+					}
+				}
+			}
 		}
 	}
 

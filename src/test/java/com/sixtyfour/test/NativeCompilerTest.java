@@ -46,91 +46,102 @@ public class NativeCompilerTest {
 		testStringArrayAccess0();
 		testStringArrayAccess1();
 		testArrayAccessTotal();
-		
+
 		testLoginExpression0();
-		
+
 		testSimpleProgram0();
 		testSimpleProgram1();
 		testSimpleProgram2();
 		testSimpleProgram3();
 		testSimpleProgram4();
+		testSimpleProgram5();
+		testSimpleProgram6();
 	}
 
-	private static void testSimpleProgram0()
-  {
-	  System.out.println("\n\ntestSimpleProgram0");
-    String prg="10 A=56+(77-1)";
-    PseudoCpu pc = compileAndRun(prg);
-    System.out.println("Var: "+ pc.getVariableValue("A"));
-  }
-	
-	private static void testSimpleProgram1()
-  {
-    System.out.println("\n\ntestSimpleProgram1");
-    String prg="10 A$=\"hello\"+\" \"+\"world\"";
-    PseudoCpu pc = compileAndRun(prg);
-    System.out.println("Var: "+ pc.getVariableValue("A$"));
-  }
-	
-	private static void testSimpleProgram2()
-  {
-    System.out.println("\n\ntestSimpleProgram2");
-    String prg="10 A$=\"hello\"+\" \"+\"world\":B$=\"yeah...\"+A$:A$=B$:B$=\"???\"";
-    PseudoCpu pc = compileAndRun(prg);
-    System.out.println("Var: A$:"+ pc.getVariableValue("A$")+" - B$:"+pc.getVariableValue("B$"));
-  }
-	
-	private static void testSimpleProgram3()
-  {
-    System.out.println("\n\ntestSimpleProgram3");
-    String prg="10 F=3:B=34:C=B+2:A(1)=C+B:A(F)=A(1)+2:K(1,2)=A(F)*C+A(1)";
-    PseudoCpu pc = compileAndRun(prg);
-    System.out.println("Var: A(1)="+ pc.getVariableValue("A[]", 1));
-    System.out.println("Var: A(3)="+ pc.getVariableValue("A[]", 3));
-    System.out.println("Var: K(1,2)="+ pc.getVariableValue("K[]", 1,2));
-  }
-	
-	private static void testSimpleProgram4()
-  {
-    System.out.println("\n\ntestSimpleProgram4");
-    String prg="10 A$(2)=\"hello\":A$(3)=\"world\":B$(1,2)=A$(2)+\" \"+A$(3)+\"!\"";
-    PseudoCpu pc = compileAndRun(prg);
-    System.out.println("Var: A$(2)="+ pc.getVariableValue("A$[]",2));
-    System.out.println("Var: A$(3)="+ pc.getVariableValue("A$[]",3));
-    System.out.println("Var: B$(1,2)="+ pc.getVariableValue("B$[]",1,2));
-  }
+	private static void testSimpleProgram0() {
+		System.out.println("\n\ntestSimpleProgram0");
+		String prg = "10 A=56+(77-1)";
+		PseudoCpu pc = compileAndRun(prg);
+		System.out.println("Var: " + pc.getVariableValue("A"));
+	}
 
-  private static PseudoCpu compileAndRun(String prg)
-  {
-    Basic basic=new Basic(prg);
-    basic.compile();
-    List<String> mCode=testMachineCode(basic);
-    PseudoCpu pc = new PseudoCpu();
-    pc.execute(basic.getMachine(), mCode);
-    return pc;
-  }
+	private static void testSimpleProgram1() {
+		System.out.println("\n\ntestSimpleProgram1");
+		String prg = "10 A$=\"hello\"+\" \"+\"world\"";
+		PseudoCpu pc = compileAndRun(prg);
+		System.out.println("Var: " + pc.getVariableValue("A$"));
+	}
 
-  private static List<String> testMachineCode(Basic basic)
-  {
-    List<String> mCode=NativeCompiler.getCompiler().compileToPseudeCode(basic.getMachine(), basic.getPCode());
-    System.out.println("------------------------------");
-    for (String line:mCode) {
-      System.out.println(line);
-    }
-    System.out.println("------------------------------");
-    return mCode;
-  }
+	private static void testSimpleProgram2() {
+		System.out.println("\n\ntestSimpleProgram2");
+		String prg = "10 A$=\"hello\"+\" \"+\"world\":B$=\"yeah...\"+A$:A$=B$:B$=\"???\"";
+		PseudoCpu pc = compileAndRun(prg);
+		System.out.println("Var: A$:" + pc.getVariableValue("A$") + " - B$:" + pc.getVariableValue("B$"));
+	}
 
-  private static void testLoginExpression0() {
-    System.out.println("\n\ntestLoginExpression0");
-    Machine machine = new Machine();
-    machine.add(new Variable("A", 1));
-    machine.add(new Variable("B", 0));
-    machine.add(new Variable("C", 1));
-    String term = "(A OR B) AND (C AND NOT(B))";
-    testExpr(machine, term);
-  }
+	private static void testSimpleProgram3() {
+		System.out.println("\n\ntestSimpleProgram3");
+		String prg = "10 F=3:B=34:C=B+2:A(1)=C+B:A(F)=A(1)+2:K(1,2)=A(F)*C+A(1)";
+		PseudoCpu pc = compileAndRun(prg);
+		System.out.println("Var: A(1)=" + pc.getVariableValue("A[]", 1));
+		System.out.println("Var: A(3)=" + pc.getVariableValue("A[]", 3));
+		System.out.println("Var: K(1,2)=" + pc.getVariableValue("K[]", 1, 2));
+	}
+
+	private static void testSimpleProgram4() {
+		System.out.println("\n\ntestSimpleProgram4");
+		String prg = "10 A$(2)=\"hello\":A$(3)=\"world\":B$(1,2)=A$(2)+\" \"+A$(3)+\"!\"";
+		PseudoCpu pc = compileAndRun(prg);
+		System.out.println("Var: A$(2)=" + pc.getVariableValue("A$[]", 2));
+		System.out.println("Var: A$(3)=" + pc.getVariableValue("A$[]", 3));
+		System.out.println("Var: B$(1,2)=" + pc.getVariableValue("B$[]", 1, 2));
+	}
 	
+	private static void testSimpleProgram5() {
+		System.out.println("\n\ntestSimpleProgram5");
+		String prg = "10 A=56+(77-1.45)\n20 B=A-12\n30 DIM J%(20,20)\n40 J%(10,11)=A";
+		PseudoCpu pc = compileAndRun(prg);
+		System.out.println("Var: A=" + pc.getVariableValue("A"));
+		System.out.println("Var: J%(10,11)=" + pc.getVariableValue("J%", 10,11));
+	}
+
+	private static void testSimpleProgram6() {
+		System.out.println("\n\ntestSimpleProgram6");
+		String prg = "10 A=56+(77-1.45)\n20 B=A-12\n30 DIM J%(20,20)\n40 END:J%(10,11)=A";
+		PseudoCpu pc = compileAndRun(prg);
+		System.out.println("Var: A=" + pc.getVariableValue("A"));
+		System.out.println("Var: J%(10,11)=" + pc.getVariableValue("J%", 10,11));
+	}
+	
+	private static PseudoCpu compileAndRun(String prg) {
+		Basic basic = new Basic(prg);
+		basic.compile();
+		List<String> mCode = testMachineCode(basic);
+		PseudoCpu pc = new PseudoCpu();
+		pc.execute(basic.getMachine(), mCode);
+		return pc;
+	}
+
+	private static List<String> testMachineCode(Basic basic) {
+		List<String> mCode = NativeCompiler.getCompiler().compileToPseudeCode(basic.getMachine(), basic.getPCode());
+		System.out.println("------------------------------");
+		for (String line : mCode) {
+			System.out.println(line);
+		}
+		System.out.println("------------------------------");
+		return mCode;
+	}
+
+	private static void testLoginExpression0() {
+		System.out.println("\n\ntestLoginExpression0");
+		Machine machine = new Machine();
+		machine.add(new Variable("A", 1));
+		machine.add(new Variable("B", 0));
+		machine.add(new Variable("C", 1));
+		String term = "(A OR B) AND (C AND NOT(B))";
+		testExpr(machine, term);
+	}
+
 	private static void testArrayAccessTotal() {
 		System.out.println("\n\ntestArrayAccess1");
 		Machine machine = new Machine();

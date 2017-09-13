@@ -92,9 +92,9 @@ public class ArrayAccess extends AbstractFunction {
 		n1.addAll(vary.evalToCode(machine).get(0).getExpression());
 		n1.add(":" + this.getClass().getSimpleName().toUpperCase(Locale.ENGLISH));
 		ret.addAll(0, n1);
-		List<CodeContainer> cc=new ArrayList<CodeContainer>();
-    cc.add(new CodeContainer(ret));
-    return cc;
+		List<CodeContainer> cc = new ArrayList<CodeContainer>();
+		cc.add(new CodeContainer(ret));
+		return cc;
 	}
 
 	/**

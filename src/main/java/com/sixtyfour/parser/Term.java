@@ -239,7 +239,7 @@ public class Term implements Atom {
 	@Override
 	public List<CodeContainer> evalToCode(Machine machine) {
 		List<String> ret = new ArrayList<String>();
-		List<CodeContainer> cc=new ArrayList<CodeContainer>();
+		List<CodeContainer> cc = new ArrayList<CodeContainer>();
 		if (operator.isNop()) {
 			if (left == null) {
 				throw new RuntimeException("Syntax error!");
@@ -256,7 +256,7 @@ public class Term implements Atom {
 				ret.addAll(0, s1);
 				ret.addAll(0, s2);
 				cc.add(new CodeContainer(ret));
-		    return cc;
+				return cc;
 			}
 		} else {
 			List<String> n1 = left.evalToCode(machine).get(0).getExpression();
@@ -319,8 +319,8 @@ public class Term implements Atom {
 				ret.addAll(0, n2);
 				break;
 			}
-	    cc.add(new CodeContainer(ret));
-	    return cc;
+			cc.add(new CodeContainer(ret));
+			return cc;
 		}
 		throw new RuntimeException("Unable to evaluate term to expression: " + this.toString());
 	}

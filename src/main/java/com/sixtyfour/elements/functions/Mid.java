@@ -64,9 +64,9 @@ public class Mid extends AbstractFunction {
 		n1.add(":" + this.getClass().getSimpleName().toUpperCase(Locale.ENGLISH));
 		ret.addAll(0, n1);
 		ret.add("_");
-	  List<CodeContainer> cc=new ArrayList<CodeContainer>();
-    cc.add(new CodeContainer(ret));
-    return cc;
+		List<CodeContainer> cc = new ArrayList<CodeContainer>();
+		cc.add(new CodeContainer(ret));
+		return cc;
 	}
 
 	/*

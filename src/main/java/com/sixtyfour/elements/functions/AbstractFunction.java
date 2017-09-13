@@ -101,7 +101,7 @@ public abstract class AbstractFunction implements Function {
 		List<String> n1 = term.evalToCode(machine).get(0).getExpression();
 		n1.add(":" + this.getClass().getSimpleName().toUpperCase(Locale.ENGLISH));
 		ret.addAll(0, n1);
-		List<CodeContainer> cc=new ArrayList<CodeContainer>();
+		List<CodeContainer> cc = new ArrayList<CodeContainer>();
 		cc.add(new CodeContainer(ret));
 		return cc;
 	}

@@ -45,9 +45,9 @@ public class Constant<T> implements Atom {
 	public List<CodeContainer> evalToCode(Machine machine) {
 		List<String> ret = new ArrayList<String>();
 		ret.add("#" + value.toString() + "{" + type + "}");
-		List<CodeContainer> cc=new ArrayList<CodeContainer>();
-    cc.add(new CodeContainer(ret));
-    return cc;
+		List<CodeContainer> cc = new ArrayList<CodeContainer>();
+		cc.add(new CodeContainer(ret));
+		return cc;
 	}
 
 	/*

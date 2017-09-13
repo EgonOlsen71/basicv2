@@ -10,6 +10,7 @@ import com.sixtyfour.elements.Variable;
 import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.VariableAndTerms;
+import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.system.BasicProgramCounter;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
@@ -112,6 +113,14 @@ public class Dim extends AbstractCommand {
 			var.clear();
 		}
 		return null;
+	}
+
+	@Override
+	public List<CodeContainer> evalToCode(Machine machine) {
+		// Just make sure that the machine has access to the arrays...there's no
+		// actual native code needed here.
+		this.execute(machine);
+		return new ArrayList<CodeContainer>();
 	}
 
 }

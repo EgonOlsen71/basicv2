@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import com.sixtyfour.Logger;
 import com.sixtyfour.elements.commands.Command;
 import com.sixtyfour.parser.Line;
 import com.sixtyfour.parser.Term;
@@ -20,7 +21,7 @@ import com.sixtyfour.system.Machine;
  */
 public class NativeCompiler {
 
-  private final static Set<String> SINGLES = new HashSet<String>() {
+	private final static Set<String> SINGLES = new HashSet<String>() {
 		private static final long serialVersionUID = 1L;
 		{
 			this.add("!");
@@ -66,34 +67,37 @@ public class NativeCompiler {
 		}
 	};
 
-	private static NativeCompiler instance=new NativeCompiler();
-	
+	private static NativeCompiler instance = new NativeCompiler();
+
 	public static NativeCompiler getCompiler() {
-	  return instance;
+		return instance;
 	}
-	
+
 	public List<String> compileToPseudeCode(Machine machine, PCode pCode) {
-	  List<String> mCode=new ArrayList<String>();
-	  for (Integer lineNumber:pCode.getLineNumbers()) {
-	    Line line=pCode.getLines().get(lineNumber);
-	    for(Command cmd:line.getCommands()) {
-	      mCode.addAll(compileToPseudoCode(machine, cmd));
-	    }
-	  }
-	  return mCode;
+		long s = System.currentTimeMillis();
+		List<String> mCode = new ArrayList<String>();
+		for (Integer lineNumber : pCode.getLineNumbers()) {
+			Line line = pCode.getLines().get(lineNumber);
+			mCode.add(lineNumber + ":");
+			for (Command cmd : line.getCommands()) {
+				mCode.addAll(compileToPseudoCode(machine, cmd));
+			}
+		}
+		Logger.log("Compiled to pseudo code in: " + (System.currentTimeMillis() - s) + "ms");
+		return mCode;
 	}
-	
+
 	public List<String> compileToPseudoCode(Machine machine, Command command) {
-	  List<String> mCode=new ArrayList<String>();
-	  List<CodeContainer> ccs=command.evalToCode(machine);
-	  for (CodeContainer cc:ccs) {
-	    mCode.addAll(cc.getPseudoBefore());
-	    mCode.addAll(cc.getExpression());
-	    mCode.addAll(cc.getPseudoAfter());
-	  }
-	  return mCode;
+		List<String> mCode = new ArrayList<String>();
+		List<CodeContainer> ccs = command.evalToCode(machine);
+		for (CodeContainer cc : ccs) {
+			mCode.addAll(cc.getPseudoBefore());
+			mCode.addAll(cc.getExpression());
+			mCode.addAll(cc.getPseudoAfter());
+		}
+		return mCode;
 	}
-	
+
 	public List<String> compileToPseudoCode(Machine machine, Term term) {
 		term = TermHelper.linearize(machine, term);
 		String tr = null;

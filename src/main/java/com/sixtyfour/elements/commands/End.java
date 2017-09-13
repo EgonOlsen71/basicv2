@@ -1,7 +1,10 @@
 package com.sixtyfour.elements.commands;
 
-import com.sixtyfour.system.Machine;
+import java.util.List;
+
+import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.system.BasicProgramCounter;
+import com.sixtyfour.system.Machine;
 
 /**
  * The END command.
@@ -52,6 +55,11 @@ public class End extends AbstractCommand {
 		BasicProgramCounter pc = new BasicProgramCounter(this.lineCnt, this.linePos);
 		pc.setEnd(true);
 		return pc;
+	}
+
+	@Override
+	public List<CodeContainer> evalToCode(Machine machine) {
+		return this.createSingleCommand("RTS");
 	}
 
 }
