@@ -9,7 +9,7 @@ package com.sixtyfour.parser.logic;
  */
 public enum Comparator {
 
-	EQUAL("="), NOT_EQUAL("<>"), LARGER_OR_EQUAL(">=", "=>"), SMALLER_OR_EQUAL("<=", "=<"), LARGER(">"), SMALLER("<"), EXISTS();
+	NOT_EQUAL("<>"), LARGER_OR_EQUAL(">=", "=>"), SMALLER_OR_EQUAL("<=", "=<"), EQUAL("="), LARGER(">"), SMALLER("<"), EXISTS();
 
 	/** The term */
 	private String[] term;
@@ -53,6 +53,15 @@ public enum Comparator {
 	 */
 	public int getTermLength() {
 		return term[0].length();
+	}
+
+	/**
+	 * Returns the internal representation that the native compiler uses.
+	 * 
+	 * @return
+	 */
+	public String evalToCode() {
+		return "CMP " + term[0];
 	}
 
 }

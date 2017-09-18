@@ -2,6 +2,7 @@ package com.sixtyfour.elements.commands;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.elements.functions.Function;
@@ -212,8 +213,8 @@ public class Print extends AbstractCommand {
 						PrintPart pp = new PrintPart(part, nc);
 						res.add(pp);
 						if (end && VarUtils.toUpper(part).contains("SPC(") && part.endsWith(")")) {
-							// Special case: SPC(...) at the end of the line act
-							// like a ;
+							// Special case: SPC(...) at the end of the line
+							// acts like a ;
 							line += ";";
 						}
 						// System.out.println("State: " + i + "/" + c + "/" +
@@ -258,11 +259,13 @@ public class Print extends AbstractCommand {
 					}
 				}
 				// Special case where a variable (or some other term) directly
-				// follows something else
+				// follows something else...except for a logical operation
 				if (!splitted) {
+					sub = sub.toLowerCase(Locale.ENGLISH);
 					char cn = line.charAt(i);
 					if ((Character.isDigit(c) || c == '.' || c == ')')
-							&& ((!hadLetter && cn == '(') || Character.isLetter(cn) || (c == '.' && cn == '.') || (c == ')' && Character.isLetterOrDigit(cn))) && cn != 'e') {
+							&& ((!hadLetter && cn == '(') || Character.isLetter(cn) || (c == '.' && cn == '.') || (c == ')' && Character.isLetterOrDigit(cn))) && cn != 'e'
+							&& !sub.startsWith("and") && !sub.startsWith("or")) {
 						line = line.substring(0, i) + ";" + line.substring(i);
 						i++;
 						hadLetter = false;

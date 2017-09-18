@@ -60,9 +60,9 @@ public class Gosub extends AbstractCommand {
 		machine.push(this);
 		return pc;
 	}
-	
+
 	@Override
-  public List<CodeContainer> evalToCode(Machine machine) {
-    return Util.createSingleCommand("JSR "+lineNumber);
-  }
+	public List<CodeContainer> evalToCode(Machine machine) {
+		return Util.createSingleCommand("JSR " + lineNumber);
+	}
 }

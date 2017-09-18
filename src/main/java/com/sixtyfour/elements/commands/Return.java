@@ -58,10 +58,10 @@ public class Return extends AbstractCommand {
 		pc.setLinePos(gosub.linePos);
 		return pc;
 	}
-	
+
 	@Override
-  public List<CodeContainer> evalToCode(Machine machine) {
-    return Util.createSingleCommand("RTS");
-  }
+	public List<CodeContainer> evalToCode(Machine machine) {
+		return Util.createSingleCommand("RTS");
+	}
 
 }

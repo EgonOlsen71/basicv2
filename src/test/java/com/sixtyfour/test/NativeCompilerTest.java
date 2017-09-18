@@ -56,29 +56,29 @@ public class NativeCompilerTest {
 		testSimpleProgram4();
 		testSimpleProgram5();
 		testSimpleProgram6();
-		
+
 		testProgram0();
-		
+
 		testLogicExpression1();
+		testLogicExpression2();
 	}
 
-	private static void testProgram0()
-  {
-	  System.out.println("\n\ntestProgram0");
-    String prg = "10 A=2\n";
-    prg+="20 GOTO 40\n";
-    prg+="30 A=10\n";
-    prg+="40 B=A*A\n";
-    prg+="50 GOSUB 100\n";
-    prg+="60 END\n";
-    prg+="100 A=B:B=1\n";
-    prg+="110 RETURN\n";
-    PseudoCpu pc = compileAndRun(prg);
-    System.out.println("Var: " + pc.getVariableValue("A"));
-    System.out.println("Var: " + pc.getVariableValue("B"));
-  }
+	private static void testProgram0() {
+		System.out.println("\n\ntestProgram0");
+		String prg = "10 A=2\n";
+		prg += "20 GOTO 40\n";
+		prg += "30 A=10\n";
+		prg += "40 B=A*A\n";
+		prg += "50 GOSUB 100\n";
+		prg += "60 END\n";
+		prg += "100 A=B:B=1\n";
+		prg += "110 RETURN\n";
+		PseudoCpu pc = compileAndRun(prg);
+		System.out.println("Var: " + pc.getVariableValue("A"));
+		System.out.println("Var: " + pc.getVariableValue("B"));
+	}
 
-  private static void testSimpleProgram0() {
+	private static void testSimpleProgram0() {
 		System.out.println("\n\ntestSimpleProgram0");
 		String prg = "10 A=56+(77-1)";
 		PseudoCpu pc = compileAndRun(prg);
@@ -116,13 +116,13 @@ public class NativeCompilerTest {
 		System.out.println("Var: A$(3)=" + pc.getVariableValue("A$[]", 3));
 		System.out.println("Var: B$(1,2)=" + pc.getVariableValue("B$[]", 1, 2));
 	}
-	
+
 	private static void testSimpleProgram5() {
 		System.out.println("\n\ntestSimpleProgram5");
 		String prg = "10 A=56+(77-1.45)\n20 B=A-12\n30 DIM J%(20,20)\n40 J%(10,11)=A";
 		PseudoCpu pc = compileAndRun(prg);
 		System.out.println("Var: A=" + pc.getVariableValue("A"));
-		System.out.println("Var: J%(10,11)=" + pc.getVariableValue("J%", 10,11));
+		System.out.println("Var: J%(10,11)=" + pc.getVariableValue("J%", 10, 11));
 	}
 
 	private static void testSimpleProgram6() {
@@ -130,9 +130,9 @@ public class NativeCompilerTest {
 		String prg = "10 A=56+(77-1.45)\n20 B=A-12\n30 DIM J%(20,20)\n40 END:J%(10,11)=A";
 		PseudoCpu pc = compileAndRun(prg);
 		System.out.println("Var: A=" + pc.getVariableValue("A"));
-		System.out.println("Var: J%(10,11)=" + pc.getVariableValue("J%", 10,11));
+		System.out.println("Var: J%(10,11)=" + pc.getVariableValue("J%", 10, 11));
 	}
-	
+
 	private static PseudoCpu compileAndRun(String prg) {
 		Basic basic = new Basic(prg);
 		basic.compile();
@@ -161,15 +161,26 @@ public class NativeCompilerTest {
 		String term = "(A OR B) AND (C AND NOT(B))";
 		testExpr(machine, term);
 	}
-	
+
 	private static void testLogicExpression1() {
-    System.out.println("\n\ntestLoginExpression1");
-    Machine machine = new Machine();
-    machine.add(new Variable("A", 1));
-    machine.add(new Variable("B", 0));
-    String term = "A>B AND A<>B";
-    testExpr(machine, term);
-  }
+		System.out.println("\n\ntestLoginExpression1");
+		Machine machine = new Machine();
+		machine.add(new Variable("A", 1));
+		machine.add(new Variable("B", 0));
+		String term = "NOT(NOT(A>B+2 AND A<>B) OR A<=(B*10))";
+		//String term="A>B";
+		testExpr(machine, term);
+	}
+
+	private static void testLogicExpression2() {
+		System.out.println("\n\ntestLoginExpression2");
+		Machine machine = new Machine();
+		machine.add(new Variable("A$", "hello"));
+		machine.add(new Variable("B$", "world"));
+		// String term = "A$<>B$ AND \"hello world\"<>a$+\" \"+b$";
+		String term = "A$<>B$ AND \"hello world\"<>a$+\" \" and \"b\"=>\"a\"";
+		testExpr(machine, term);
+	}
 
 	private static void testArrayAccessTotal() {
 		System.out.println("\n\ntestArrayAccess1");
@@ -463,8 +474,8 @@ public class NativeCompilerTest {
 		Deque<Number> stack = pc.getStack();
 
 		System.out.println("------------------------------");
-		System.out.println(outString ? pc.getStringFromStack() : stack.pop());
-		System.out.println(t.eval(machine));
+		System.out.println("ASM: " + (outString ? pc.getStringFromStack() : stack.pop()));
+		System.out.println("BAS: " + t.eval(machine));
 		// pc.compactMemory();
 	}
 

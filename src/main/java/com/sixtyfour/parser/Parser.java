@@ -375,7 +375,7 @@ public class Parser {
 	public static Term getTerm(String term, Machine machine, boolean stripAssignment, boolean checkForLogicTerm) {
 		checkForInvalidChars(term);
 		Term ret = getTerm(term, machine, stripAssignment, checkForLogicTerm, null);
-		ret.setInitial(term);
+		ret.setInitial(stripAssignment(term, stripAssignment));
 		return ret;
 	}
 
@@ -395,7 +395,7 @@ public class Parser {
 	 */
 	public static Term getTermWithoutChecks(String term, Machine machine, boolean stripAssignment, boolean checkForLogicTerm) {
 		Term ret = getTerm(term, machine, stripAssignment, checkForLogicTerm, null);
-		ret.setInitial(term);
+		ret.setInitial(stripAssignment(term, stripAssignment));
 		return ret;
 	}
 
@@ -420,17 +420,22 @@ public class Parser {
 		if (termMap == null) {
 			termMap = new HashMap<String, Term>();
 		}
+		term = stripAssignment(term, stripAssignment);
+		term = replaceScientificNotation(term);
+		term = addBrackets(term);
+		Term ret = createTerms(term, termMap, machine, checkForLogicTerm);
+		ret.setInitial(term, termMap);
+		return ret;
+	}
+
+	private static String stripAssignment(String term, boolean stripAssignment) {
 		if (stripAssignment) {
 			int pos = term.indexOf('=');
 			if (pos != -1) {
 				term = term.substring(pos + 1);
 			}
 		}
-		term = replaceScientificNotation(term);
-		term = addBrackets(term);
-		Term ret = createTerms(term, termMap, machine, checkForLogicTerm);
-		ret.setInitial(term, termMap);
-		return ret;
+		return term;
 	}
 
 	/**
@@ -477,7 +482,7 @@ public class Parser {
 			term = "(" + term + ")";
 		}
 		term = term.replace('↑', '^');
-		return addBrackets(addBrackets(handleSigns(replaceLogicOperators(term)), 0), 1);
+		return addBrackets(addBrackets(addBrackets(handleSigns(replaceLogicOperators(term)), 0), 1), 2);
 	}
 
 	/**
@@ -703,7 +708,8 @@ public class Parser {
 	 * @param term
 	 *            the term
 	 * @param level
-	 *            the level, either 0 or 1. Two passes are needed to handle ^
+	 *            the level, either 0,1 or 2. Three passes are needed to handle
+	 *            ^ and <,>,= and combinations
 	 * @return the resulting term
 	 */
 	private static String addBrackets(String term, int level) {
@@ -735,7 +741,7 @@ public class Parser {
 				}
 			}
 
-			if ((level == 1 && (c == '*' || c == '/')) || (level == 0 && c == '^')) {
+			if ((level == 2 && (c == '=' || c == '<' || c == '>')) || (level == 1 && (c == '*' || c == '/')) || (level == 0 && c == '^')) {
 				int start = findStart(term, i);
 				int end = findEnd(term, i);
 				if (start > 0 && term.charAt(start - 1) == '(' && end < term.length() && term.charAt(end) == ')') {
@@ -841,7 +847,11 @@ public class Parser {
 	private static int findEnd(String term, int pos) {
 		int brackets = 0;
 		boolean inString = false;
-		for (int i = pos + 1; i < term.length(); i++) {
+		int st = pos + 1;
+		if (Operator.isComparisonOperator(term.charAt(pos)) && (pos < term.length() - 1) && Operator.isComparisonOperator(term.charAt(pos + 1))) {
+			st++;
+		}
+		for (int i = st; i < term.length(); i++) {
 			char c = term.charAt(i);
 			if (c == '"') {
 				inString = !inString;
@@ -917,7 +927,11 @@ public class Parser {
 	private static int findStart(String term, int pos) {
 		int brackets = 0;
 		boolean inString = false;
-		for (int i = pos - 1; i >= 0; i--) {
+		int st = pos - 1;
+		if (Operator.isComparisonOperator(term.charAt(pos)) && (pos > 1) && Operator.isComparisonOperator(term.charAt(pos - 1))) {
+			st--;
+		}
+		for (int i = st; i >= 0; i--) {
 			char c = term.charAt(i);
 			if (c == '"') {
 				inString = !inString;

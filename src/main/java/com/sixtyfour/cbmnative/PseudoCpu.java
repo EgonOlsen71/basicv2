@@ -68,7 +68,7 @@ public class PseudoCpu {
 	private Function pos = new Pos();
 	private Function tab = new Tab();
 	private Function spc = new Spc();
-	private Map<String, Long> label2line=new HashMap<>();
+	private Map<String, Long> label2line = new HashMap<>();
 
 	/**
 	 * @param code
@@ -79,7 +79,7 @@ public class PseudoCpu {
 		this.machine = machine;
 		stack.clear();
 		label2line.clear();
-		
+
 		halt = false;
 		regs = new Number[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 		memory = new int[MEM_SIZE + MEM_SIZE / 2]; // normal string variable
@@ -97,17 +97,17 @@ public class PseudoCpu {
 		// Writing (string) variables into memory
 		createStringVariables();
 
-		long cnt=0;
-		for (String line:code) {
-		  String[] parts=line.split(" ");
-		  if (parts.length>0) {
-		    if (parts[0].endsWith(":")) {
-		      label2line.put(parts[0], cnt);
-		    }
-		  }
-		  cnt++;
+		long cnt = 0;
+		for (String line : code) {
+			String[] parts = line.split(" ");
+			if (parts.length > 0) {
+				if (parts[0].endsWith(":")) {
+					label2line.put(parts[0], cnt);
+				}
+			}
+			cnt++;
 		}
-		
+
 		addr = 0;
 		do {
 			String line = code.get(addr++);
@@ -194,13 +194,49 @@ public class PseudoCpu {
 						jsr(parts);
 						break;
 					case "JMP":
-	          jmp(parts);
-	          break;
+						jmp(parts);
+						break;
 					case "RTS":
 						rts(parts);
 						break;
 					case "CHGCTX":
 						nop(parts);
+						break;
+					case "EQ":
+						equal(parts);
+						break;
+					case "NEQ":
+						notEqual(parts);
+						break;
+					case "GT":
+						greaterThan(parts);
+						break;
+					case "LT":
+						lowerThan(parts);
+						break;
+					case "GTEQ":
+						greaterThanOrEqual(parts);
+						break;
+					case "LTEQ":
+						lowerThanOrEqual(parts);
+						break;
+					case "SEQ":
+						strEqual(parts);
+						break;
+					case "SNEQ":
+						strNotEqual(parts);
+						break;
+					case "SGT":
+						strGreaterThan(parts);
+						break;
+					case "SLT":
+						strLowerThan(parts);
+						break;
+					case "SGTEQ":
+						strGreaterThanOrEqual(parts);
+						break;
+					case "SLTEQ":
+						strLowerThanOrEqual(parts);
 						break;
 					default:
 						throw new RuntimeException("Unknown instruction: " + parts[0]);
@@ -212,7 +248,7 @@ public class PseudoCpu {
 		} while (!halt && addr < code.size());
 	}
 
-  public void compactMemory() {
+	public void compactMemory() {
 		this.collectGarbage();
 	}
 
@@ -412,16 +448,15 @@ public class PseudoCpu {
 		// Do nothing, just a stub
 	}
 
-	private void jmp(String[] parts)
-  {
-	  String addry=parts[1].trim();
-    try {
-      jumpTo(Long.valueOf(addry));
-    } catch(Exception e) {
-      throw new RuntimeException("Undefined call address: " + parts[1]);
-    }
-  }
-	
+	private void jmp(String[] parts) {
+		String addry = parts[1].trim();
+		try {
+			jumpTo(Long.valueOf(addry));
+		} catch (Exception e) {
+			throw new RuntimeException("Undefined call address: " + parts[1]);
+		}
+	}
+
 	private void jsr(String[] parts) {
 
 		switch (parts[1]) {
@@ -471,22 +506,22 @@ public class PseudoCpu {
 			collectGarbage();
 			return;
 		default:
-		  stack.push(addr);
-		  jmp(parts);
+			stack.push(addr);
+			jmp(parts);
 		}
 	}
 
-	private void jumpTo(Long newAddr)  {
-    String label=newAddr+":";
-    addr=label2line.get(label).intValue();
-  }
+	private void jumpTo(Long newAddr) {
+		String label = newAddr + ":";
+		addr = label2line.get(label).intValue();
+	}
 
-  private void rts(String[] parts) {
-    if (stack.isEmpty()) {
-      halt = true;
-    } else {
-      addr=stack.pop().intValue();
-    }
+	private void rts(String[] parts) {
+		if (stack.isEmpty()) {
+			halt = true;
+		} else {
+			addr = stack.pop().intValue();
+		}
 	}
 
 	private void concat(String[] parts) {
@@ -928,6 +963,126 @@ public class PseudoCpu {
 		});
 	}
 
+	private void lowerThanOrEqual(String[] parts) {
+		calc(parts, new Calc() {
+			@Override
+			public Number calc(Number n1, Number n2) {
+				return (n1.doubleValue() < n2.doubleValue() || n1.equals(n2)) ? -1 : 0;
+			}
+
+			@Override
+			public String op() {
+				return "LTEQ_";
+			}
+		});
+	}
+
+	private void greaterThanOrEqual(String[] parts) {
+		calc(parts, new Calc() {
+			@Override
+			public Number calc(Number n1, Number n2) {
+				return (n1.doubleValue() > n2.doubleValue() || n1.equals(n2)) ? -1 : 0;
+			}
+
+			@Override
+			public String op() {
+				return "GTEQ_";
+			}
+		});
+	}
+
+	private void lowerThan(String[] parts) {
+		calc(parts, new Calc() {
+			@Override
+			public Number calc(Number n1, Number n2) {
+				return n1.doubleValue() < n2.doubleValue() ? -1 : 0;
+			}
+
+			@Override
+			public String op() {
+				return "LT_";
+			}
+		});
+	}
+
+	private void greaterThan(String[] parts) {
+		calc(parts, new Calc() {
+			@Override
+			public Number calc(Number n1, Number n2) {
+				return n1.doubleValue() > n2.doubleValue() ? -1 : 0;
+			}
+
+			@Override
+			public String op() {
+				return "GT_";
+			}
+		});
+	}
+
+	private void notEqual(String[] parts) {
+		calc(parts, new Calc() {
+			@Override
+			public Number calc(Number n1, Number n2) {
+				return n1.equals(n2) ? 0 : -1;
+			}
+
+			@Override
+			public String op() {
+				return "NEQ_";
+			}
+		});
+	}
+
+	private void equal(String[] parts) {
+		calc(parts, new Calc() {
+			@Override
+			public Number calc(Number n1, Number n2) {
+				return n1.equals(n2) ? -1 : 0;
+			}
+
+			@Override
+			public String op() {
+				return "EQ_";
+			}
+		});
+	}
+
+	private void strLowerThanOrEqual(String[] parts) {
+		String n1 = readString(regs[B].intValue());
+		String n2 = readString(regs[A].intValue());
+		regs[X] = n1.compareTo(n2) >= 0 ? -1 : 0;
+	}
+
+	private void strGreaterThanOrEqual(String[] parts) {
+		String n1 = readString(regs[B].intValue());
+		String n2 = readString(regs[A].intValue());
+		regs[X] = n1.compareTo(n2) <= 0 ? -1 : 0;
+	}
+
+	private void strLowerThan(String[] parts) {
+		String n1 = readString(regs[B].intValue());
+		String n2 = readString(regs[A].intValue());
+		regs[X] = n1.compareTo(n2) > 0 ? -1 : 0;
+	}
+
+	private void strGreaterThan(String[] parts) {
+		String n1 = readString(regs[B].intValue());
+		String n2 = readString(regs[A].intValue());
+		regs[X] = n1.compareTo(n2) < 0 ? -1 : 0;
+	}
+
+	private void strNotEqual(String[] parts) {
+		String n1 = readString(regs[B].intValue());
+		String n2 = readString(regs[A].intValue());
+		regs[X] = n1.compareTo(n2) != 0 ? -1 : 0;
+	}
+
+	private void strEqual(String[] parts) {
+		String n1 = readString(regs[B].intValue());
+		String n2 = readString(regs[A].intValue());
+		regs[X] = n1.compareTo(n2) == 0 ? -1 : 0;
+	}
+
 	private void or(String[] parts) {
 		calc(parts, new Calc() {
 			@Override
@@ -1027,16 +1182,19 @@ public class PseudoCpu {
 	}
 
 	private void calc(String[] parts, Calc calc) {
-		String[] ops = split(parts[1], ",");
+		String[] ops = { "X", "Y" };
+		if (parts.length > 1) {
+			ops = split(parts[1], ",");
+		}
 		String target = ops[0];
 		String source = ops[1];
 		int ti = getIndex(target);
 		int si = getIndex(source);
 
-		Number n1 = regs[si];
-		Number n2 = regs[ti];
+		Number n2 = regs[si];
+		Number n1 = regs[ti];
 
-		regs[ti] = calc.calc(n2, n1);
+		regs[ti] = calc.calc(n1, n2);
 
 		/*
 		 * if (n1 instanceof Integer && n2 instanceof Integer) { regs[ti] =
@@ -1044,7 +1202,8 @@ public class PseudoCpu {
 		 */
 
 		// System.out.println(target + "" + calc.op().replace("_", source));
-		System.out.println((calc.op().contains("(") ? "" : n2) + "" + calc.op().replace("_", n1.toString()) + "=" + regs[ti]);
+		// System.out.println((calc.op().contains("(") ? "" : n1) + "" +
+		// calc.op().replace("_", n1.toString()) + "=" + regs[ti]);
 	}
 
 	private void pop(String[] parts) {

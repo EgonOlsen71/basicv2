@@ -15,7 +15,7 @@ public class TermHelper {
 	 * @return
 	 */
 	public static Term linearize(Machine machine, Term term) {
-		return Parser.getTerm(linearize(term.getInitial()), machine, true, true);
+		return Parser.getTerm(linearize(term.getInitial()), machine, false, true);
 	}
 
 	/**
@@ -76,6 +76,7 @@ public class TermHelper {
 				}
 			}
 		}
+		//System.out.println("Term: "+Parser.removeWhiteSpace(new String(ct)));
 		return Parser.removeWhiteSpace(new String(ct));
 	}
 

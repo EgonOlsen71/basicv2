@@ -59,9 +59,9 @@ public class Goto extends AbstractCommand {
 		pc.setLineNumber(lineNumber);
 		return pc;
 	}
-	
+
 	@Override
-  public List<CodeContainer> evalToCode(Machine machine) {
-	  return Util.createSingleCommand("JMP "+lineNumber);
+	public List<CodeContainer> evalToCode(Machine machine) {
+		return Util.createSingleCommand("JMP " + lineNumber);
 	}
 }
