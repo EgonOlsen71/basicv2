@@ -2,6 +2,7 @@ package com.sixtyfour.parser.logic;
 
 import java.util.List;
 
+import com.sixtyfour.cbmnative.Util;
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.parser.Term;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
@@ -68,7 +69,7 @@ public class Comparison implements LogicBlock {
 
 	@Override
 	public List<CodeContainer> evalToCode(Machine machine) {
-		return null;
+    return Util.createSingleCommand("CMP ???");
 	}
 
 	/**

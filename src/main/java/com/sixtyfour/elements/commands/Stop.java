@@ -2,6 +2,7 @@ package com.sixtyfour.elements.commands;
 
 import java.util.List;
 
+import com.sixtyfour.cbmnative.Util;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.system.BasicProgramCounter;
 import com.sixtyfour.system.Machine;
@@ -49,7 +50,7 @@ public class Stop extends AbstractCommand {
 
 	@Override
 	public List<CodeContainer> evalToCode(Machine machine) {
-		return this.createSingleCommand("RTS");
+		return Util.createSingleCommand("RTS");
 	}
 
 }

@@ -112,7 +112,6 @@ public class PseudoCpu {
 		do {
 			String line = code.get(addr++);
 			try {
-				// System.out.println(regs[0]+"/"+regs[1]);
 				String[] parts = split(line, " ");
 				if (parts.length > 0) {
 

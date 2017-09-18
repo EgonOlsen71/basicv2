@@ -4,6 +4,7 @@ import com.sixtyfour.system.Machine;
 
 import java.util.List;
 
+import com.sixtyfour.cbmnative.Util;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.system.BasicProgramCounter;
 import com.sixtyfour.system.StackEntry;
@@ -60,7 +61,7 @@ public class Return extends AbstractCommand {
 	
 	@Override
   public List<CodeContainer> evalToCode(Machine machine) {
-    return createSingleCommand("RTS");
+    return Util.createSingleCommand("RTS");
   }
 
 }

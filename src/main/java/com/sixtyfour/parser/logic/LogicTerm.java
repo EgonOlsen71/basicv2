@@ -51,7 +51,22 @@ public class LogicTerm implements LogicBlock {
 
 	@Override
 	public List<CodeContainer> evalToCode(Machine machine) {
-		return null;
+	  List<CodeContainer> ret=new ArrayList<CodeContainer>();
+	  if (blocks.size() == 0) {
+      return ret;
+    }
+    for (int i = 0; i < blocks.size(); i++) {
+      LogicBlock nextBlock = blocks.get(i);
+      //LogicOp nextOp = ops.get(i);
+      System.out.println("--> "+nextBlock.getClass());
+      ret.addAll(nextBlock.evalToCode(machine));
+    }
+
+    if (not) {
+      //@todo
+      //res = !res;
+    }
+    return ret;
 	}
 
 	/*

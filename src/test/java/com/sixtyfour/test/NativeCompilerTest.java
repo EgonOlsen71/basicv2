@@ -47,7 +47,7 @@ public class NativeCompilerTest {
 		testStringArrayAccess1();
 		testArrayAccessTotal();
 
-		testLoginExpression0();
+		testLogicExpression0();
 
 		testSimpleProgram0();
 		testSimpleProgram1();
@@ -58,6 +58,8 @@ public class NativeCompilerTest {
 		testSimpleProgram6();
 		
 		testProgram0();
+		
+		testLogicExpression1();
 	}
 
 	private static void testProgram0()
@@ -150,7 +152,7 @@ public class NativeCompilerTest {
 		return mCode;
 	}
 
-	private static void testLoginExpression0() {
+	private static void testLogicExpression0() {
 		System.out.println("\n\ntestLoginExpression0");
 		Machine machine = new Machine();
 		machine.add(new Variable("A", 1));
@@ -159,6 +161,15 @@ public class NativeCompilerTest {
 		String term = "(A OR B) AND (C AND NOT(B))";
 		testExpr(machine, term);
 	}
+	
+	private static void testLogicExpression1() {
+    System.out.println("\n\ntestLoginExpression1");
+    Machine machine = new Machine();
+    machine.add(new Variable("A", 1));
+    machine.add(new Variable("B", 0));
+    String term = "A>B AND A<>B";
+    testExpr(machine, term);
+  }
 
 	private static void testArrayAccessTotal() {
 		System.out.println("\n\ntestArrayAccess1");
@@ -460,5 +471,4 @@ public class NativeCompilerTest {
 	private static void testExpr(Machine machine, String term) {
 		testExpr(machine, term, false);
 	}
-
 }

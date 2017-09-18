@@ -10,6 +10,7 @@ import java.util.Set;
 
 import com.sixtyfour.Logger;
 import com.sixtyfour.elements.commands.Command;
+import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Line;
 import com.sixtyfour.parser.Term;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
@@ -88,16 +89,13 @@ public class NativeCompiler {
 	}
 
 	public List<String> compileToPseudoCode(Machine machine, Command command) {
-		List<String> mCode = new ArrayList<String>();
-		List<CodeContainer> ccs = command.evalToCode(machine);
-		for (CodeContainer cc : ccs) {
-			mCode.addAll(cc.getPseudoBefore());
-			mCode.addAll(cc.getExpression());
-			mCode.addAll(cc.getPseudoAfter());
-		}
-		return mCode;
+		return compileToPseudoCodeInternal(machine, command);
 	}
-
+	/*
+	public List<String> compileToPseudoCode(Machine machine, LogicTerm term) {
+	  return compileToPseudoCodeInternal(machine, term);
+	}
+	*/
 	public List<String> compileToPseudoCode(Machine machine, Term term) {
 		term = TermHelper.linearize(machine, term);
 		String tr = null;
@@ -513,50 +511,54 @@ public class NativeCompiler {
 	}
 
 	private List<String> optimize(List<String> code) {
-		List<String> ret = new ArrayList<String>();
-		for (int i = 0; i < code.size() - 1; i++) {
-			String l0 = code.get(i);
-			String l1 = code.get(i + 1);
-			String l2 = null;
-			if (i < code.size() - 2) {
-				l2 = code.get(i + 2);
-			}
-
-			if (l2 != null && l0.equals("PUSH X") && l1.startsWith("MOV C") && l1.contains("[]") && l2.equals("POP Y")) {
-				ret.add(l1);
-				i += 2;
-				continue;
-			}
-
-			if (l0.startsWith("MOV Y,") && l1.equals("MOV X,Y")) {
-				ret.add(l0.replace("MOV Y,", "MOV X,"));
-				i += 1;
-				continue;
-			}
-
-			boolean rep = false;
-			for (char c : new char[] { 'C', 'D' }) {
-				if (l1.startsWith("MOV " + c + ",")) {
-					if (l0.startsWith("MOV ")) {
-						int pos = l0.indexOf(",");
-						String r0 = l0.substring(4, pos).trim();
-						String r1 = l1.substring(6).trim();
-						if (r0.equals(r1)) {
-							String right = l0.substring(pos + 1).trim();
-							ret.add("MOV " + c + "," + right);
-							rep = true;
-							break;
-						}
-					}
-				}
-			}
-			if (!rep) {
-				ret.add(l0);
-			} else {
-				i++;
-			}
-		}
-		ret.add(code.get(code.size() - 1));
+	  List<String> ret = new ArrayList<String>();
+	  if (code.size()>1) {
+  		for (int i = 0; i < code.size() - 1; i++) {
+  			String l0 = code.get(i);
+  			String l1 = code.get(i + 1);
+  			String l2 = null;
+  			if (i < code.size() - 2) {
+  				l2 = code.get(i + 2);
+  			}
+  
+  			if (l2 != null && l0.equals("PUSH X") && l1.startsWith("MOV C") && l1.contains("[]") && l2.equals("POP Y")) {
+  				ret.add(l1);
+  				i += 2;
+  				continue;
+  			}
+  
+  			if (l0.startsWith("MOV Y,") && l1.equals("MOV X,Y")) {
+  				ret.add(l0.replace("MOV Y,", "MOV X,"));
+  				i += 1;
+  				continue;
+  			}
+  
+  			boolean rep = false;
+  			for (char c : new char[] { 'C', 'D' }) {
+  				if (l1.startsWith("MOV " + c + ",")) {
+  					if (l0.startsWith("MOV ")) {
+  						int pos = l0.indexOf(",");
+  						String r0 = l0.substring(4, pos).trim();
+  						String r1 = l1.substring(6).trim();
+  						if (r0.equals(r1)) {
+  							String right = l0.substring(pos + 1).trim();
+  							ret.add("MOV " + c + "," + right);
+  							rep = true;
+  							break;
+  						}
+  					}
+  				}
+  			}
+  			if (!rep) {
+  				ret.add(l0);
+  			} else {
+  				i++;
+  			}
+  		}
+  		ret.add(code.get(code.size() - 1));
+	  } else {
+	    ret.addAll(code);
+	  }
 		return ret;
 	}
 
@@ -618,5 +620,16 @@ public class NativeCompiler {
 	private boolean isParameterRegister(String reg) {
 		return reg.equals("C") || reg.equals("D") || reg.equals("G");
 	}
+	
+	private List<String> compileToPseudoCodeInternal(Machine machine, Atom atom) {
+    List<String> mCode = new ArrayList<String>();
+    List<CodeContainer> ccs = atom.evalToCode(machine);
+    for (CodeContainer cc : ccs) {
+      mCode.addAll(cc.getPseudoBefore());
+      mCode.addAll(cc.getExpression());
+      mCode.addAll(cc.getPseudoAfter());
+    }
+    return mCode;
+  }
 
 }

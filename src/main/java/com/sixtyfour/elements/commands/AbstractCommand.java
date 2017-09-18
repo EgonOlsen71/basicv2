@@ -1,6 +1,5 @@
 package com.sixtyfour.elements.commands;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.sixtyfour.elements.Type;
@@ -266,14 +265,4 @@ public abstract class AbstractCommand implements Command {
 		}
 		return null;
 	}
-
-	protected List<CodeContainer> createSingleCommand(String command) {
-		List<String> after = new ArrayList<String>();
-		after.add(command);
-		CodeContainer cc = new CodeContainer(null, null, after);
-		List<CodeContainer> ccs = new ArrayList<CodeContainer>();
-		ccs.add(cc);
-		return ccs;
-	}
-
 }
