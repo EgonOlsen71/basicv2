@@ -1,5 +1,6 @@
 package com.sixtyfour.parser.logic;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.sixtyfour.cbmnative.Util;
@@ -69,7 +70,11 @@ public class Comparison implements LogicBlock {
 
 	@Override
 	public List<CodeContainer> evalToCode(Machine machine) {
-    return Util.createSingleCommand("CMP ???");
+	  List<CodeContainer> lc=new ArrayList<CodeContainer>();
+	  lc.addAll(left.evalToCode(machine));
+	  lc.addAll(right.evalToCode(machine));
+	  lc.addAll(Util.createSingleCommand("CMP ???"));
+    return lc;
 	}
 
 	/**

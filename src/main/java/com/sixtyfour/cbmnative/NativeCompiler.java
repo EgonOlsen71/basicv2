@@ -113,7 +113,7 @@ public class NativeCompiler {
 
 		List<String> code = new ArrayList<String>();
 		List<String> expr = term.evalToCode(machine).get(0).getExpression();
-
+		
 		Deque<String> stack = new LinkedList<String>();
 		Deque<String> yStack = new LinkedList<String>();
 		Deque<Boolean> stringStack = new LinkedList<Boolean>();

@@ -57,8 +57,8 @@ public class LogicTerm implements LogicBlock {
     }
     for (int i = 0; i < blocks.size(); i++) {
       LogicBlock nextBlock = blocks.get(i);
-      //LogicOp nextOp = ops.get(i);
-      System.out.println("--> "+nextBlock.getClass());
+      LogicOp nextOp = ops.get(i);
+      System.out.println("--> "+nextBlock.getClass()+"/"+nextOp.getClass());
       ret.addAll(nextBlock.evalToCode(machine));
     }
 
