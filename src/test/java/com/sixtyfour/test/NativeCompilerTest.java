@@ -56,9 +56,27 @@ public class NativeCompilerTest {
 		testSimpleProgram4();
 		testSimpleProgram5();
 		testSimpleProgram6();
+		
+		testProgram0();
 	}
 
-	private static void testSimpleProgram0() {
+	private static void testProgram0()
+  {
+	  System.out.println("\n\ntestProgram0");
+    String prg = "10 A=2\n";
+    prg+="20 GOTO 40\n";
+    prg+="30 A=10\n";
+    prg+="40 B=A*A\n";
+    prg+="50 GOSUB 100\n";
+    prg+="60 END\n";
+    prg+="100 A=B:B=1\n";
+    prg+="110 RETURN\n";
+    PseudoCpu pc = compileAndRun(prg);
+    System.out.println("Var: " + pc.getVariableValue("A"));
+    System.out.println("Var: " + pc.getVariableValue("B"));
+  }
+
+  private static void testSimpleProgram0() {
 		System.out.println("\n\ntestSimpleProgram0");
 		String prg = "10 A=56+(77-1)";
 		PseudoCpu pc = compileAndRun(prg);

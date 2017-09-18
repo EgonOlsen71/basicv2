@@ -50,6 +50,7 @@ public class PseudoCpu {
 	private Machine machine;
 	private boolean halt = false;
 	private int[] memory = null;
+	private int addr = 0;
 	private Map<String, Integer> memLocations = new HashMap<String, Integer>();
 	private List<String> stringNames = new ArrayList<String>();
 	private int memPointer = 0;
@@ -67,6 +68,7 @@ public class PseudoCpu {
 	private Function pos = new Pos();
 	private Function tab = new Tab();
 	private Function spc = new Spc();
+	private Map<String, Long> label2line=new HashMap<>();
 
 	/**
 	 * @param code
@@ -76,6 +78,8 @@ public class PseudoCpu {
 		Spc.setLimitedToPrint(false);
 		this.machine = machine;
 		stack.clear();
+		label2line.clear();
+		
 		halt = false;
 		regs = new Number[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 		memory = new int[MEM_SIZE + MEM_SIZE / 2]; // normal string variable
@@ -93,7 +97,18 @@ public class PseudoCpu {
 		// Writing (string) variables into memory
 		createStringVariables();
 
-		int addr = 0;
+		long cnt=0;
+		for (String line:code) {
+		  String[] parts=line.split(" ");
+		  if (parts.length>0) {
+		    if (parts[0].endsWith(":")) {
+		      label2line.put(parts[0], cnt);
+		    }
+		  }
+		  cnt++;
+		}
+		
+		addr = 0;
 		do {
 			String line = code.get(addr++);
 			try {
@@ -179,6 +194,9 @@ public class PseudoCpu {
 					case "JSR":
 						jsr(parts);
 						break;
+					case "JMP":
+	          jmp(parts);
+	          break;
 					case "RTS":
 						rts(parts);
 						break;
@@ -195,7 +213,7 @@ public class PseudoCpu {
 		} while (!halt && addr < code.size());
 	}
 
-	public void compactMemory() {
+  public void compactMemory() {
 		this.collectGarbage();
 	}
 
@@ -395,6 +413,16 @@ public class PseudoCpu {
 		// Do nothing, just a stub
 	}
 
+	private void jmp(String[] parts)
+  {
+	  String addry=parts[1].trim();
+    try {
+      jumpTo(Long.valueOf(addry));
+    } catch(Exception e) {
+      throw new RuntimeException("Undefined call address: " + parts[1]);
+    }
+  }
+	
 	private void jsr(String[] parts) {
 
 		switch (parts[1]) {
@@ -444,12 +472,22 @@ public class PseudoCpu {
 			collectGarbage();
 			return;
 		default:
-			throw new RuntimeException("Undefined call address: " + parts[1]);
+		  stack.push(addr);
+		  jmp(parts);
 		}
 	}
 
-	private void rts(String[] parts) {
-		halt = true;
+	private void jumpTo(Long newAddr)  {
+    String label=newAddr+":";
+    addr=label2line.get(label).intValue();
+  }
+
+  private void rts(String[] parts) {
+    if (stack.isEmpty()) {
+      halt = true;
+    } else {
+      addr=stack.pop().intValue();
+    }
 	}
 
 	private void concat(String[] parts) {

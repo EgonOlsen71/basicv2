@@ -3,6 +3,9 @@
  */
 package com.sixtyfour.elements.commands;
 
+import java.util.List;
+
+import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.system.BasicProgramCounter;
 import com.sixtyfour.system.Machine;
 
@@ -56,4 +59,9 @@ public class Gosub extends AbstractCommand {
 		machine.push(this);
 		return pc;
 	}
+	
+	@Override
+  public List<CodeContainer> evalToCode(Machine machine) {
+    return createSingleCommand("JSR "+lineNumber);
+  }
 }

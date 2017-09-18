@@ -3,6 +3,9 @@
  */
 package com.sixtyfour.elements.commands;
 
+import java.util.List;
+
+import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.system.BasicProgramCounter;
 import com.sixtyfour.system.Machine;
 
@@ -54,5 +57,10 @@ public class Goto extends AbstractCommand {
 	public BasicProgramCounter execute(Machine machine) {
 		pc.setLineNumber(lineNumber);
 		return pc;
+	}
+	
+	@Override
+  public List<CodeContainer> evalToCode(Machine machine) {
+	  return createSingleCommand("JMP "+lineNumber);
 	}
 }
