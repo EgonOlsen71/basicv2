@@ -14,6 +14,7 @@ import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Line;
 import com.sixtyfour.parser.Term;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
+import com.sixtyfour.parser.logic.LogicTerm;
 import com.sixtyfour.system.Machine;
 
 /**
@@ -80,8 +81,16 @@ public class NativeCompiler {
 		for (Integer lineNumber : pCode.getLineNumbers()) {
 			Line line = pCode.getLines().get(lineNumber);
 			mCode.add(lineNumber + ":");
+			boolean condi = false;
 			for (Command cmd : line.getCommands()) {
-				mCode.addAll(compileToPseudoCode(machine, cmd));
+				if (!condi) {
+					mCode.addAll(compileToPseudoCode(machine, cmd));
+				} else {
+					mCode.addAll(mCode.size() - 1, compileToPseudoCode(machine, cmd));
+				}
+				if (cmd.isConditional()) {
+					condi = true;
+				}
 			}
 		}
 		Logger.log("Compiled to pseudo code in: " + (System.currentTimeMillis() - s) + "ms");
@@ -92,12 +101,16 @@ public class NativeCompiler {
 		return compileToPseudoCodeInternal(machine, command);
 	}
 
-	/*
-	 * public List<String> compileToPseudoCode(Machine machine, LogicTerm term)
-	 * { return compileToPseudoCodeInternal(machine, term); }
-	 */
+	public List<String> compileToPseudoCode(Machine machine, LogicTerm term) {
+		return compileToPseudoCode(machine, (Atom) term);
+	}
+
 	public List<String> compileToPseudoCode(Machine machine, Term term) {
-		term = TermHelper.linearize(machine, term);
+		Atom atom = TermHelper.linearize(machine, term);
+		return compileToPseudoCode(machine, atom);
+	}
+
+	public List<String> compileToPseudoCode(Machine machine, Atom term) {
 		String tr = null;
 		String sr = null;
 		boolean pointerMode = false;

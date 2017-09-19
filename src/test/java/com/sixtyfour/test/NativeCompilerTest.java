@@ -61,6 +61,8 @@ public class NativeCompilerTest {
 
 		testLogicExpression1();
 		testLogicExpression2();
+		
+		testProgram1();
 	}
 
 	private static void testProgram0() {
@@ -73,6 +75,21 @@ public class NativeCompilerTest {
 		prg += "60 END\n";
 		prg += "100 A=B:B=1\n";
 		prg += "110 RETURN\n";
+		PseudoCpu pc = compileAndRun(prg);
+		System.out.println("Var: " + pc.getVariableValue("A"));
+		System.out.println("Var: " + pc.getVariableValue("B"));
+	}
+	
+	private static void testProgram1() {
+		System.out.println("\n\ntestProgram1");
+		String prg = "10 A=2:B=3\n";
+		prg += "20 IF A<B THEN 40\n";
+		prg += "30 A=10\n";
+		prg += "40 A=5\n";
+		prg += "50 IF A<>B THEN B=B+A:A=-33\n";
+		prg += "60 IF A<0 THEN END\n";
+		prg += "100 A=4:B=4\n";
+		prg += "110 END\n";
 		PseudoCpu pc = compileAndRun(prg);
 		System.out.println("Var: " + pc.getVariableValue("A"));
 		System.out.println("Var: " + pc.getVariableValue("B"));

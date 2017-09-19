@@ -204,6 +204,11 @@ public abstract class AbstractCommand implements Command {
 		return null;
 	}
 
+	@Override
+	public boolean isConditional() {
+		return false;
+	}
+
 	/**
 	 * Throws a type mismatch error.
 	 * 

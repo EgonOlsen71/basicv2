@@ -48,6 +48,7 @@ public class PseudoCpu {
 	private Deque<Number> stack = new LinkedList<Number>();
 	private Number[] regs = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; // x,y,..,..,..,a,b,...
 	private Machine machine;
+	private boolean zeroFlag = false;
 	private boolean halt = false;
 	private int[] memory = null;
 	private int addr = 0;
@@ -115,7 +116,7 @@ public class PseudoCpu {
 				String[] parts = split(line, " ");
 				if (parts.length > 0) {
 
-					if (parts[0].endsWith(":") && Character.isDigit(parts[0].charAt(0))) {
+					if (parts[0].endsWith(":") && Character.isDigit(parts[0].charAt(parts[0].length()-2))) {
 						// Just a line number label...skip!
 						continue;
 					}
@@ -196,6 +197,9 @@ public class PseudoCpu {
 					case "JMP":
 						jmp(parts);
 						break;
+					case "JE":
+						je(parts);
+						break;
 					case "RTS":
 						rts(parts);
 						break;
@@ -204,6 +208,9 @@ public class PseudoCpu {
 						break;
 					case "EQ":
 						equal(parts);
+						break;
+					case "CMP":
+						compare(parts);
 						break;
 					case "NEQ":
 						notEqual(parts);
@@ -436,6 +443,17 @@ public class PseudoCpu {
 			jumpTo(Long.valueOf(addry));
 		} catch (Exception e) {
 			throw new RuntimeException("Undefined call address: " + parts[1]);
+		}
+	}
+
+	private void je(String[] parts) {
+		if (zeroFlag) {
+			String addry = parts[1].trim();
+			try {
+				jumpTo(Long.valueOf(addry));
+			} catch (Exception e) {
+				throw new RuntimeException("Undefined call address: " + parts[1]);
+			}
 		}
 	}
 
@@ -1047,6 +1065,78 @@ public class PseudoCpu {
 		});
 	}
 
+	private void compare(String[] parts) {
+		String[] ops = split(parts[1], ",");
+		String target = ops[0];
+		String source = ops[1];
+		int ti = 0;
+		int si = 0;
+
+		ti = getIndex(target);
+		si = getIndex(source);
+		Type type = Type.INTEGER;
+
+		Object v0 = null;
+		Object v1 = null;
+
+		if (ti == -1 && si != -1) {
+			// memory with register
+			int pos = target.lastIndexOf("{");
+			if (pos != -1) {
+				String ts = target.substring(pos + 1, target.lastIndexOf("}"));
+				String val = target.substring(0, pos);
+				type = Type.valueOf(ts);
+				if (type == Type.STRING) {
+					throw new RuntimeException("Comparing a string isn't supported!");
+				} else {
+					// a number...
+					v0 = machine.getVariableUpperCase(val).getValue();
+					v1 = regs[si];
+				}
+			} else {
+				throw new RuntimeException("Unknown opcode: " + Arrays.toString(parts));
+			}
+		} else {
+			// register with memory or register
+			int pos = source.lastIndexOf("{");
+			if (pos == -1) {
+				v0 = regs[ti];
+				v1 = regs[si];
+			} else {
+				String ts = source.substring(pos + 1, source.lastIndexOf("}"));
+				String val = source.substring(0, pos);
+				type = Type.valueOf(ts);
+				if (type == Type.STRING) {
+					throw new RuntimeException("Comparing a string isn't supported!");
+				} else {
+					// a number...
+					if (val.startsWith("#")) {
+						Number n = Float.valueOf(val.replace("#", ""));
+						if (type == Type.INTEGER) {
+							n = n.intValue();
+						}
+						v0 = regs[ti];
+						v1 = n;
+					} else {
+						Number n = (Number) machine.getVariableUpperCase(val).eval(machine);
+						v0 = regs[ti];
+						v1 = n;
+					}
+				}
+			}
+		}
+
+		double cmp = 1;
+		if (v0 instanceof Number && v1 instanceof Number) {
+			cmp = ((Number) v0).doubleValue() - ((Number) v1).doubleValue();
+		} else {
+			throw new RuntimeException("Can't compare " + v0.getClass() + " with " + v1.getClass());
+		}
+
+		updateZeroFlag(cmp);
+
+	}
+
 	private void strLowerThanOrEqual(String[] parts) {
 		String n1 = readString(regs[B].intValue());
 		String n2 = readString(regs[A].intValue());
@@ -1195,15 +1285,7 @@ public class PseudoCpu {
 		Number n1 = regs[ti];
 
 		regs[ti] = calc.calc(n1, n2);
-
-		/*
-		 * if (n1 instanceof Integer && n2 instanceof Integer) { regs[ti] =
-		 * regs[ti].intValue(); }
-		 */
-
-		// System.out.println(target + "" + calc.op().replace("_", source));
-		// System.out.println((calc.op().contains("(") ? "" : n1) + "" +
-		// calc.op().replace("_", n1.toString()) + "=" + regs[ti]);
+		updateZeroFlag(regs[ti]);
 	}
 
 	private void pop(String[] parts) {
@@ -1313,6 +1395,13 @@ public class PseudoCpu {
 				}
 			}
 		}
+		if (ti > -1) {
+			updateZeroFlag(regs[ti]);
+		}
+	}
+
+	private void updateZeroFlag(Number value) {
+		zeroFlag = value.doubleValue() == 0;
 	}
 
 	private int getIndex(String target) {

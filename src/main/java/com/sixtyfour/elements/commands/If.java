@@ -1,16 +1,22 @@
 package com.sixtyfour.elements.commands;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.sixtyfour.cbmnative.NativeCompiler;
 import com.sixtyfour.parser.Parser;
+import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.parser.logic.LogicParser;
 import com.sixtyfour.parser.logic.LogicTerm;
-import com.sixtyfour.system.Machine;
 import com.sixtyfour.system.BasicProgramCounter;
+import com.sixtyfour.system.Machine;
 
 /**
  * The IF command.
  */
 public class If extends AbstractCommand {
 
+	private static int ifCount = 0;
 	/** The logic term. */
 	private LogicTerm logicTerm = null;
 
@@ -81,4 +87,31 @@ public class If extends AbstractCommand {
 		return pc;
 	}
 
+	@Override
+	public List<CodeContainer> evalToCode(Machine machine) {
+		NativeCompiler compiler = NativeCompiler.getCompiler();
+		List<String> after = new ArrayList<String>();
+		List<String> expr = compiler.compileToPseudoCode(machine, logicTerm);
+		List<String> before = null;
+
+		String expPush = getPushRegister(expr.get(expr.size() - 1));
+		expr = expr.subList(0, expr.size() - 1); // Remove trailing PUSH
+													// X/PUSH_A
+		int ic = ifCount++;
+		String label = "SKIP" + ic + ":";
+
+		after.add("CMP " + expPush + ",#0{REAL}");
+		after.add("JE " + label);
+		after.add(label);
+
+		CodeContainer cc = new CodeContainer(before, expr, after);
+		List<CodeContainer> ccs = new ArrayList<CodeContainer>();
+		ccs.add(cc);
+		return ccs;
+	}
+
+	@Override
+	public boolean isConditional() {
+		return true;
+	}
 }

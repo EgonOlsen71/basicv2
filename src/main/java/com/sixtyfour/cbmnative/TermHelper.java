@@ -15,6 +15,9 @@ public class TermHelper {
 	 * @return
 	 */
 	public static Term linearize(Machine machine, Term term) {
+		if (term == null) {
+			throw new RuntimeException("Term is null!");
+		}
 		return Parser.getTerm(linearize(term.getInitial()), machine, false, true);
 	}
 
