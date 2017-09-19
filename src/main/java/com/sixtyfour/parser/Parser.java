@@ -709,7 +709,7 @@ public class Parser {
 	 *            the term
 	 * @param level
 	 *            the level, either 0,1 or 2. Three passes are needed to handle
-	 *            ^ and <,>,= and combinations
+	 *            *,/ (level 0), ^(level 1) and <,>,= and combinations (level 2)
 	 * @return the resulting term
 	 */
 	private static String addBrackets(String term, int level) {
@@ -742,8 +742,8 @@ public class Parser {
 			}
 
 			if ((level == 2 && (c == '=' || c == '<' || c == '>')) || (level == 1 && (c == '*' || c == '/')) || (level == 0 && c == '^')) {
-				int start = findStart(term, i, level==2);
-				int end = findEnd(term, i, level==2);
+				int start = findStart(term, i, level == 2);
+				int end = findEnd(term, i, level == 2);
 				if (start > 0 && term.charAt(start - 1) == '(' && end < term.length() && term.charAt(end) == ')') {
 					sb.append(term.substring(0, start)).append(term.substring(start, end));
 				} else {
@@ -836,9 +836,9 @@ public class Parser {
 	}
 
 	private static int findEnd(String term, int pos) {
-	  return findEnd(term, pos, false);
+		return findEnd(term, pos, false);
 	}
-	
+
 	/**
 	 * Finds the end of a term starting at the current position.
 	 * 
@@ -865,7 +865,7 @@ public class Parser {
 					return i;
 				}
 
-				if (brackets == 0 && ((logicCheck?Operator.isLogicOperator(c):Operator.isOperator(c)) || c == ')')) {
+				if (brackets == 0 && ((logicCheck ? Operator.isLogicOperator(c) : Operator.isOperator(c)) || c == ')')) {
 					return i;
 				}
 				if (c == '(') {
@@ -920,9 +920,9 @@ public class Parser {
 	}
 
 	private static int findStart(String term, int pos) {
-	  return findStart(term, pos, false);
+		return findStart(term, pos, false);
 	}
-	
+
 	/**
 	 * Finds the start of a term starting at the current position.
 	 * 
@@ -957,7 +957,8 @@ public class Parser {
 				// the
 				// parser doesn't allow for such numbers here, because they get
 				// resolved much earlier...anyway...
-				if (brackets == 0 && (((logicCheck?Operator.isLogicOperator(c):Operator.isOperator(c)) && (c != '-' || (i > 0 && !Operator.isOperator(pc) && pc != '('))) || c == '(')) {
+				if (brackets == 0
+						&& (((logicCheck ? Operator.isLogicOperator(c) : Operator.isOperator(c)) && (c != '-' || (i > 0 && !Operator.isOperator(pc) && pc != '('))) || c == '(')) {
 					return i + 1;
 				}
 				if (c == ')') {

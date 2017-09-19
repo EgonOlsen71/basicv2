@@ -168,7 +168,7 @@ public class NativeCompilerTest {
 		machine.add(new Variable("A", 1));
 		machine.add(new Variable("B", 0));
 		String term = "NOT(NOT(A>B+2 AND A<>B) OR A<=(B*10))";
-		//String term="A>B";
+		// String term="A>B";
 		testExpr(machine, term);
 	}
 

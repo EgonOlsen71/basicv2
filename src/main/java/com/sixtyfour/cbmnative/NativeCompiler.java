@@ -245,7 +245,7 @@ public class NativeCompiler {
 				}
 
 				boolean isStringArrayAccess = (!stringStack.isEmpty() && stringStack.peek() && contextMode == 1);
-				
+
 				if (!left && !isSingle) {
 					if (code.size() >= 1 && getLastEntry(code).equals("PUSH " + tr)) {
 						code.remove(code.size() - 1);

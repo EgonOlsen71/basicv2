@@ -176,16 +176,17 @@ public class Operator {
 		}
 		return false;
 	}
-	
-	 /**
-	  * Checks if a char is a logic operator (AND or OR).
-	  * 
-	 * @param c the char
+
+	/**
+	 * Checks if a char is a logic operator (AND or OR).
+	 * 
+	 * @param c
+	 *            the char
 	 * @return true, if it's a logic operator
 	 */
 	public static boolean isLogicOperator(char c) {
-	    return c=='&' || c=='°';
-	  }
+		return c == '&' || c == '°';
+	}
 
 	/**
 	 * Checks if a char is a real operator, i.e. not NOP and not a delimiter.

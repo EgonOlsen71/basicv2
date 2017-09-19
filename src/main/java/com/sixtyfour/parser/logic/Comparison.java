@@ -76,7 +76,7 @@ public class Comparison implements LogicBlock {
 		List<String> n2 = right.evalToCode(machine).get(0).getExpression();
 
 		ret.add(0, "_");
-		n2.add(0, ":"+(left.getType()==Type.STRING?"S":"")+this.comparator.evalToCode());
+		n2.add(0, ":" + (left.getType() == Type.STRING ? "S" : "") + this.comparator.evalToCode());
 		ret.addAll(0, n1);
 		ret.addAll(0, n2);
 		cc.add(new CodeContainer(ret));

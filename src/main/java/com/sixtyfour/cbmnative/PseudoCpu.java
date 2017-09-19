@@ -488,23 +488,23 @@ public class PseudoCpu {
 			collectGarbage();
 			return;
 		case "SEQ":
-      strEqual(parts);
-      return;
-    case "SNEQ":
-      strNotEqual(parts);
-      return;
-    case "SGT":
-      strGreaterThan(parts);
-      return;
-    case "SLT":
-      strLowerThan(parts);
-      return;
-    case "SGTEQ":
-      strGreaterThanOrEqual(parts);
-      return;
-    case "SLTEQ":
-      strLowerThanOrEqual(parts);
-      return;
+			strEqual(parts);
+			return;
+		case "SNEQ":
+			strNotEqual(parts);
+			return;
+		case "SGT":
+			strGreaterThan(parts);
+			return;
+		case "SLT":
+			strLowerThan(parts);
+			return;
+		case "SGTEQ":
+			strGreaterThanOrEqual(parts);
+			return;
+		case "SLTEQ":
+			strLowerThanOrEqual(parts);
+			return;
 		default:
 			stack.push(addr);
 			jmp(parts);

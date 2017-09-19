@@ -76,7 +76,7 @@ public class TermHelper {
 				}
 			}
 		}
-		//System.out.println("Term: "+Parser.removeWhiteSpace(new String(ct)));
+		// System.out.println("Term: "+Parser.removeWhiteSpace(new String(ct)));
 		return Parser.removeWhiteSpace(new String(ct));
 	}
 
