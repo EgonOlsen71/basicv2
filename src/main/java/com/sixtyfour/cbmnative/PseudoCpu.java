@@ -220,24 +220,6 @@ public class PseudoCpu {
 					case "LTEQ":
 						lowerThanOrEqual(parts);
 						break;
-					case "SEQ":
-						strEqual(parts);
-						break;
-					case "SNEQ":
-						strNotEqual(parts);
-						break;
-					case "SGT":
-						strGreaterThan(parts);
-						break;
-					case "SLT":
-						strLowerThan(parts);
-						break;
-					case "SGTEQ":
-						strGreaterThanOrEqual(parts);
-						break;
-					case "SLTEQ":
-						strLowerThanOrEqual(parts);
-						break;
 					default:
 						throw new RuntimeException("Unknown instruction: " + parts[0]);
 					}
@@ -505,6 +487,24 @@ public class PseudoCpu {
 		case "COMPACT":
 			collectGarbage();
 			return;
+		case "SEQ":
+      strEqual(parts);
+      return;
+    case "SNEQ":
+      strNotEqual(parts);
+      return;
+    case "SGT":
+      strGreaterThan(parts);
+      return;
+    case "SLT":
+      strLowerThan(parts);
+      return;
+    case "SGTEQ":
+      strGreaterThanOrEqual(parts);
+      return;
+    case "SLTEQ":
+      strLowerThanOrEqual(parts);
+      return;
 		default:
 			stack.push(addr);
 			jmp(parts);

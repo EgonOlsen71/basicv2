@@ -456,40 +456,40 @@ public class NativeCompiler {
 					parReg = 'C';
 					break;
 				case "CMP =":
-					code.add("EQ");
+					code.add("EQ " + regs);
 					break;
 				case "CMP >":
-					code.add("GT");
+					code.add("GT " + regs);
 					break;
 				case "CMP <":
-					code.add("LT");
+					code.add("LT " + regs);
 					break;
 				case "CMP >=":
-					code.add("GTEQ");
+					code.add("GTEQ " + regs);
 					break;
 				case "CMP <=":
-					code.add("LTEQ");
+					code.add("LTEQ " + regs);
 					break;
 				case "CMP <>":
-					code.add("NEQ");
+					code.add("NEQ " + regs);
 					break;
 				case "SCMP =":
-					code.add("SEQ");
+					code.add("JSR SEQ");
 					break;
 				case "SCMP >":
-					code.add("SGT");
+					code.add("JSR SGT");
 					break;
 				case "SCMP <":
-					code.add("SLT");
+					code.add("JSR SLT");
 					break;
 				case "SCMP >=":
-					code.add("SGTEQ");
+					code.add("JSR SGTEQ");
 					break;
 				case "SCMP <=":
-					code.add("SLTEQ");
+					code.add("JSR SLTEQ");
 					break;
 				case "SCMP <>":
-					code.add("SNEQ");
+					code.add("JSR SNEQ");
 					break;
 				case "PAR":
 					if (getLastEntry(code).startsWith("MOV " + sr)) {
