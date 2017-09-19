@@ -184,7 +184,7 @@ public class Operator {
 	 * @return true, if it's a logic operator
 	 */
 	public static boolean isLogicOperator(char c) {
-	    return c=='&' || c=='|';
+	    return c=='&' || c=='°';
 	  }
 
 	/**

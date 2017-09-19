@@ -178,7 +178,7 @@ public class NativeCompilerTest {
 		machine.add(new Variable("A$", "hello"));
 		machine.add(new Variable("B$", "world"));
 		// String term = "A$<>B$ AND \"hello world\"<>a$+\" \"+b$";
-		String term = "A$<>B$ AND \"hello world\"=a$+\" \"+b$ and \"b\"=>\"a\"";
+		String term = "A$<>B$ AND \"hello world\"=a$+\" \"+b$ and \"b\"=>\"a\" or 1=2";
 		testExpr(machine, term);
 	}
 
