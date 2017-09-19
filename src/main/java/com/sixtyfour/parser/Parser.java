@@ -482,7 +482,7 @@ public class Parser {
 			term = "(" + term + ")";
 		}
 		term = term.replace('↑', '^');
-		return addBrackets(addBrackets(addBrackets(handleSigns(replaceLogicOperators(term)), 0), 1), 2);
+		return addBrackets(addBrackets(addBrackets(handleSigns(replaceLogicOperators(term)), 2), 0), 1);
 	}
 
 	/**
@@ -742,8 +742,8 @@ public class Parser {
 			}
 
 			if ((level == 2 && (c == '=' || c == '<' || c == '>')) || (level == 1 && (c == '*' || c == '/')) || (level == 0 && c == '^')) {
-				int start = findStart(term, i);
-				int end = findEnd(term, i);
+				int start = findStart(term, i, level==2);
+				int end = findEnd(term, i, level==2);
 				if (start > 0 && term.charAt(start - 1) == '(' && end < term.length() && term.charAt(end) == ')') {
 					sb.append(term.substring(0, start)).append(term.substring(start, end));
 				} else {
@@ -835,6 +835,10 @@ public class Parser {
 		throw new RuntimeException("Syntax error: " + term);
 	}
 
+	private static int findEnd(String term, int pos) {
+	  return findEnd(term, pos, false);
+	}
+	
 	/**
 	 * Finds the end of a term starting at the current position.
 	 * 
@@ -844,7 +848,7 @@ public class Parser {
 	 *            the current position
 	 * @return the end
 	 */
-	private static int findEnd(String term, int pos) {
+	private static int findEnd(String term, int pos, boolean logicCheck) {
 		int brackets = 0;
 		boolean inString = false;
 		int st = pos + 1;
@@ -861,7 +865,7 @@ public class Parser {
 					return i;
 				}
 
-				if (brackets == 0 && (Operator.isOperator(c) || c == ')')) {
+				if (brackets == 0 && ((logicCheck?Operator.isLogicOperator(c):Operator.isOperator(c)) || c == ')')) {
 					return i;
 				}
 				if (c == '(') {
@@ -915,6 +919,10 @@ public class Parser {
 		return term.length();
 	}
 
+	private static int findStart(String term, int pos) {
+	  return findStart(term, pos, false);
+	}
+	
 	/**
 	 * Finds the start of a term starting at the current position.
 	 * 
@@ -924,7 +932,7 @@ public class Parser {
 	 *            the current position
 	 * @return the start
 	 */
-	private static int findStart(String term, int pos) {
+	private static int findStart(String term, int pos, boolean logicCheck) {
 		int brackets = 0;
 		boolean inString = false;
 		int st = pos - 1;
@@ -949,7 +957,7 @@ public class Parser {
 				// the
 				// parser doesn't allow for such numbers here, because they get
 				// resolved much earlier...anyway...
-				if (brackets == 0 && ((Operator.isOperator(c) && (c != '-' || (i > 0 && !Operator.isOperator(pc) && pc != '('))) || c == '(')) {
+				if (brackets == 0 && (((logicCheck?Operator.isLogicOperator(c):Operator.isOperator(c)) && (c != '-' || (i > 0 && !Operator.isOperator(pc) && pc != '('))) || c == '(')) {
 					return i + 1;
 				}
 				if (c == ')') {
