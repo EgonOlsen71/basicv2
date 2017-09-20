@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import com.sixtyfour.cbmnative.NativeCompiler;
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.elements.functions.Function;
 import com.sixtyfour.elements.functions.FunctionList;
 import com.sixtyfour.parser.Operator;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.Term;
+import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.plugins.PrintConsumer;
 import com.sixtyfour.system.BasicProgramCounter;
 import com.sixtyfour.system.Machine;
@@ -98,9 +100,7 @@ public class Print extends AbstractCommand {
 		for (int i = 0; i < parts.size(); i++) {
 			PrintPart part = parts.get(i);
 			char del = part.delimiter;
-			// System.out.println("Del: " + del);
 			String add = null;
-			// System.out.println(part.term+" - "+part.term.getLeft());
 			Type type = part.term.getType();
 			if (del == ';' || del == ' ') {
 				if (type.equals(Type.INTEGER) || type.equals(Type.REAL)) {
@@ -129,8 +129,6 @@ public class Print extends AbstractCommand {
 				}
 			}
 
-			// System.out.println("prt: ["+toPrint+"]");
-
 			if (("\n").equals(add)) {
 				consumer.println(printId, toPrint);
 			} else {
@@ -140,6 +138,67 @@ public class Print extends AbstractCommand {
 		}
 
 		return null;
+	}
+
+	public List<CodeContainer> evalToCode(Machine machine) {
+		NativeCompiler compiler = NativeCompiler.getCompiler();
+		List<String> after = new ArrayList<String>();
+		List<String> expr = new ArrayList<String>();
+		List<String> before = null;
+
+		for (int i = 0; i < parts.size(); i++) {
+			PrintPart part = parts.get(i);
+			char del = part.delimiter;
+			String add = null;
+			Type type = part.term.getType();
+
+			if (!part.part.replace("\"", "").isEmpty()) {
+				List<String> exprPart = compiler.compileToPseudoCode(machine, part.term);
+				String expPush = getPushRegister(exprPart.get(exprPart.size() - 1));
+				exprPart = exprPart.subList(0, exprPart.size() - 1);
+
+				expr.addAll(exprPart);
+
+				if (expPush.equals("Y")) {
+					expr.add("MOV X,Y");
+				} else if (expPush.equals("B")) {
+					expr.add("MOV A,B");
+				}
+
+				if (type.equals(Type.INTEGER)) {
+					expr.add("JSR INTOUT");
+				} else if (type.equals(Type.REAL)) {
+					expr.add("JSR REALOUT");
+				} else {
+					expr.add("JSR STROUT");
+				}
+			}
+
+			if (del == ';' || del == ' ') {
+				if (type.equals(Type.INTEGER) || type.equals(Type.REAL)) {
+					add = " ";
+				}
+				if (del == ' ' && i == parts.size() - 1) {
+					add = "\n";
+				}
+			} else if (del == ',') {
+				add = "\t";
+			}
+
+			if (("\n").equals(add)) {
+				expr.add("JSR LINEBREAK");
+			} else {
+				if (add != null) {
+					expr.add("MOV A,#" + add + "{STRING}");
+					expr.add("JSR STROUT");
+				}
+			}
+		}
+
+		CodeContainer cc = new CodeContainer(before, expr, after);
+		List<CodeContainer> ccs = new ArrayList<CodeContainer>();
+		ccs.add(cc);
+		return ccs;
 	}
 
 	/**

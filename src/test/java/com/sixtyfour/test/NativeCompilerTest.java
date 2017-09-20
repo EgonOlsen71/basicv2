@@ -6,6 +6,7 @@ import java.util.Deque;
 import java.util.List;
 
 import com.sixtyfour.Basic;
+import com.sixtyfour.Loader;
 import com.sixtyfour.cbmnative.NativeCompiler;
 import com.sixtyfour.cbmnative.PseudoCpu;
 import com.sixtyfour.cbmnative.TermHelper;
@@ -61,8 +62,25 @@ public class NativeCompilerTest {
 
 		testLogicExpression1();
 		testLogicExpression2();
-		
+
 		testProgram1();
+
+		testSimplePrint0();
+		testPrime();
+	}
+
+	private static void testPrime() {
+		System.out.println("\n\ntestPrime");
+		String[] prime = Loader.loadProgram("src/test/resources/basic/prime2.bas");
+		compileAndRun(prime);
+	}
+
+	private static void testSimplePrint0() {
+		System.out.println("\n\ntestSimplePrint0");
+		String prg = "10 A=34.22:A$=\"hello\"+\" \"+\"world\"\n";
+		prg += "20 PRINT A$;\"YEAH:\",A\n";
+		prg += "30 if a<5 and a*a>3 then print a";
+		compileAndRun(prg);
 	}
 
 	private static void testProgram0() {
@@ -79,7 +97,7 @@ public class NativeCompilerTest {
 		System.out.println("Var: " + pc.getVariableValue("A"));
 		System.out.println("Var: " + pc.getVariableValue("B"));
 	}
-	
+
 	private static void testProgram1() {
 		System.out.println("\n\ntestProgram1");
 		String prg = "10 A=2:B=3\n";
@@ -153,6 +171,16 @@ public class NativeCompilerTest {
 	private static PseudoCpu compileAndRun(String prg) {
 		Basic basic = new Basic(prg);
 		basic.compile();
+		return runCompiled(basic);
+	}
+
+	private static PseudoCpu compileAndRun(String[] prg) {
+		Basic basic = new Basic(prg);
+		basic.compile();
+		return runCompiled(basic);
+	}
+
+	private static PseudoCpu runCompiled(Basic basic) {
 		List<String> mCode = testMachineCode(basic);
 		PseudoCpu pc = new PseudoCpu();
 		pc.execute(basic.getMachine(), mCode);
@@ -170,7 +198,7 @@ public class NativeCompilerTest {
 	}
 
 	private static void testLogicExpression0() {
-		System.out.println("\n\ntestLoginExpression0");
+		System.out.println("\n\ntestLogicExpression0");
 		Machine machine = new Machine();
 		machine.add(new Variable("A", 1));
 		machine.add(new Variable("B", 0));
@@ -180,17 +208,18 @@ public class NativeCompilerTest {
 	}
 
 	private static void testLogicExpression1() {
-		System.out.println("\n\ntestLoginExpression1");
+		System.out.println("\n\ntestLogicExpression1");
 		Machine machine = new Machine();
 		machine.add(new Variable("A", 1));
 		machine.add(new Variable("B", 0));
 		String term = "NOT(NOT(A>B+2 AND A<>B) OR A<=(B*10))";
 		// String term="A>B";
+		// String term = "A<B AND F(A)*F(A)>5";
 		testExpr(machine, term);
 	}
 
 	private static void testLogicExpression2() {
-		System.out.println("\n\ntestLoginExpression2");
+		System.out.println("\n\ntestLogicExpression2");
 		Machine machine = new Machine();
 		machine.add(new Variable("A$", "hello"));
 		machine.add(new Variable("B$", "world"));

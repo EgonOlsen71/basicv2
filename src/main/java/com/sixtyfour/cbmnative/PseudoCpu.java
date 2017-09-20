@@ -27,6 +27,7 @@ import com.sixtyfour.elements.functions.Tab;
 import com.sixtyfour.elements.functions.Val;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.system.Machine;
+import com.sixtyfour.util.VarUtils;
 
 /**
  * @author EgonOlsen
@@ -116,7 +117,7 @@ public class PseudoCpu {
 				String[] parts = split(line, " ");
 				if (parts.length > 0) {
 
-					if (parts[0].endsWith(":") && Character.isDigit(parts[0].charAt(parts[0].length()-2))) {
+					if (parts[0].endsWith(":") && Character.isDigit(parts[0].charAt(parts[0].length() - 2))) {
 						// Just a line number label...skip!
 						continue;
 					}
@@ -440,7 +441,7 @@ public class PseudoCpu {
 	private void jmp(String[] parts) {
 		String addry = parts[1].trim();
 		try {
-			jumpTo(Long.valueOf(addry));
+			jumpTo(addry);
 		} catch (Exception e) {
 			throw new RuntimeException("Undefined call address: " + parts[1]);
 		}
@@ -450,9 +451,10 @@ public class PseudoCpu {
 		if (zeroFlag) {
 			String addry = parts[1].trim();
 			try {
-				jumpTo(Long.valueOf(addry));
+				jumpTo(addry);
 			} catch (Exception e) {
-				throw new RuntimeException("Undefined call address: " + parts[1]);
+				e.printStackTrace();
+				throw new RuntimeException("Undefined call address: " + parts[1] + " in " + (addr - 1));
 			}
 		}
 	}
@@ -523,13 +525,51 @@ public class PseudoCpu {
 		case "SLTEQ":
 			strLowerThanOrEqual(parts);
 			return;
+		case "INTOUT":
+			intOut(parts);
+			return;
+		case "REALOUT":
+			realOut(parts);
+			return;
+		case "STROUT":
+			strOut(parts);
+			return;
+		case "LINEBREAK":
+			lineBreak(parts);
+			return;
 		default:
 			stack.push(addr);
 			jmp(parts);
 		}
 	}
 
-	private void jumpTo(Long newAddr) {
+	private void lineBreak(String[] parts) {
+		System.out.println();
+	}
+
+	private void strOut(String[] parts) {
+		System.out.print(readString(regs[A].intValue()));
+	}
+
+	private void realOut(String[] parts) {
+		Number toPrint = regs[X];
+		String out = toPrint.toString();
+		if (VarUtils.getFloat(toPrint) >= 0) {
+			out = " " + out;
+		}
+		System.out.print(out);
+	}
+
+	private void intOut(String[] parts) {
+		Number toPrint = regs[X];
+		String out = String.valueOf(toPrint.intValue());
+		if (VarUtils.getInt(toPrint) >= 0) {
+			out = " " + out;
+		}
+		System.out.print(out);
+	}
+
+	private void jumpTo(String newAddr) {
 		String label = newAddr + ":";
 		addr = label2line.get(label).intValue();
 	}
@@ -756,9 +796,10 @@ public class PseudoCpu {
 		} while (closest < MEM_SIZE);
 
 		if (highest == memPointer) {
-			Logger.log("Memory pointer stays at " + memPointer);
+			// Logger.log("Memory pointer stays at " + memPointer);
 		} else {
-			Logger.log("Moving memory pointer from " + memPointer + " to " + highest);
+			// Logger.log("Moving memory pointer from " + memPointer + " to " +
+			// highest);
 			memPointer = highest;
 		}
 	}
@@ -785,12 +826,13 @@ public class PseudoCpu {
 		int type = memory[addr];
 		int size = memory[addr + 1];
 		if (offset >= size) {
-			throw new RuntimeException("Array index out of bounds: " + offset + "/" + (size - 1));
+			throw new RuntimeException("Array index out of bounds: " + offset + "/" + (size - 1) + " in " + (this.addr - 1));
 		}
 		int pos = addr + offset + 2; // plus 2 because of the type and size
 										// information in the first entries
 
 		if (type == 1) {
+			// System.out.println("Storing: "+val+" in "+(pos-2));
 			memory[pos] = Float.floatToIntBits(val);
 		} else {
 			if (type == 0) {
@@ -813,8 +855,6 @@ public class PseudoCpu {
 		int pos = addr + offset + 2; // plus 2 because of the type and size
 										// information in the first entries
 		int val = memory[pos];
-
-		// System.out.println(pos + "/" + val);
 
 		if (type == 1) {
 			regs[X] = Float.intBitsToFloat(val);
@@ -985,7 +1025,7 @@ public class PseudoCpu {
 		calc(parts, new Calc() {
 			@Override
 			public Number calc(Number n1, Number n2) {
-				return (n1.doubleValue() < n2.doubleValue() || n1.equals(n2)) ? -1 : 0;
+				return (n1.doubleValue() <= n2.doubleValue()) ? -1 : 0;
 			}
 
 			@Override
@@ -999,7 +1039,7 @@ public class PseudoCpu {
 		calc(parts, new Calc() {
 			@Override
 			public Number calc(Number n1, Number n2) {
-				return (n1.doubleValue() > n2.doubleValue() || n1.equals(n2)) ? -1 : 0;
+				return (n1.doubleValue() >= n2.doubleValue()) ? -1 : 0;
 			}
 
 			@Override
@@ -1041,7 +1081,7 @@ public class PseudoCpu {
 		calc(parts, new Calc() {
 			@Override
 			public Number calc(Number n1, Number n2) {
-				return n1.equals(n2) ? 0 : -1;
+				return n1.doubleValue() == n2.doubleValue() ? 0 : -1;
 			}
 
 			@Override
@@ -1055,7 +1095,7 @@ public class PseudoCpu {
 		calc(parts, new Calc() {
 			@Override
 			public Number calc(Number n1, Number n2) {
-				return n1.equals(n2) ? -1 : 0;
+				return n1.doubleValue() == n2.doubleValue() ? -1 : 0;
 			}
 
 			@Override

@@ -133,7 +133,6 @@ public class Let extends AbstractCommand {
 		String expPush = getPushRegister(expr.get(expr.size() - 1));
 		expr = expr.subList(0, expr.size() - 1); // Remove trailing PUSH X/PUSH
 													// A
-
 		if (indexTerm != null) {
 			before = compiler.compileToPseudoCode(machine, Parser.createIndexTerm(machine, pars, var.getDimensions()));
 			if (expPush.equals("X")) {

@@ -120,6 +120,17 @@ public class Dim extends AbstractCommand {
 		// Just make sure that the machine has access to the arrays...there's no
 		// actual native code needed here.
 		this.execute(machine);
+
+		for (int i = 0; i < vars.size(); i++) {
+			Variable var = vars.get(i);
+			List<Atom> pars = terms.get(var.getName());
+			for (Atom par : pars) {
+				if (((Number) par.eval(machine)).intValue() == 0) {
+					throw new RuntimeException("Arrays have to defined static and can't have a zero size!");
+				}
+			}
+		}
+
 		return new ArrayList<CodeContainer>();
 	}
 

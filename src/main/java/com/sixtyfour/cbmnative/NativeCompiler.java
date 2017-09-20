@@ -14,7 +14,6 @@ import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Line;
 import com.sixtyfour.parser.Term;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
-import com.sixtyfour.parser.logic.LogicTerm;
 import com.sixtyfour.system.Machine;
 
 /**
@@ -93,16 +92,13 @@ public class NativeCompiler {
 				}
 			}
 		}
+		mCode=optimize(mCode);
 		Logger.log("Compiled to pseudo code in: " + (System.currentTimeMillis() - s) + "ms");
 		return mCode;
 	}
 
 	public List<String> compileToPseudoCode(Machine machine, Command command) {
 		return compileToPseudoCodeInternal(machine, command);
-	}
-
-	public List<String> compileToPseudoCode(Machine machine, LogicTerm term) {
-		return compileToPseudoCode(machine, (Atom) term);
 	}
 
 	public List<String> compileToPseudoCode(Machine machine, Term term) {
@@ -579,6 +575,12 @@ public class NativeCompiler {
 
 				if (l0.startsWith("MOV Y,") && l1.equals("MOV X,Y")) {
 					ret.add(l0.replace("MOV Y,", "MOV X,"));
+					i += 1;
+					continue;
+				}
+				
+				if (l0.startsWith("MOV B,") && l1.equals("MOV A,B")) {
+					ret.add(l0.replace("MOV B,", "MOV A,"));
 					i += 1;
 					continue;
 				}
