@@ -559,6 +559,9 @@ public class PseudoCpu {
 		if (VarUtils.getFloat(toPrint) >= 0) {
 			out = " " + out;
 		}
+		if (out.endsWith(".0")) {
+		  out=out.substring(0, out.length()-2);
+		}
 		System.out.print(out);
 	}
 
