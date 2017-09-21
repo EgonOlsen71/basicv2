@@ -67,8 +67,15 @@ public class NativeCompilerTest {
 
 		testSimplePrint0();
 		testPrime();
+		testConditions();
 	}
 
+	private static void testConditions() {
+    System.out.println("\n\ntestConditions");
+    String[] prime = Loader.loadProgram("src/test/resources/basic/conditions.bas");
+    compileAndRun(prime);
+  }
+	
 	private static void testPrime() {
 		System.out.println("\n\ntestPrime");
 		String[] prime = Loader.loadProgram("src/test/resources/basic/prime2.bas");

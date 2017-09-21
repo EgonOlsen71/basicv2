@@ -162,6 +162,8 @@ public class PseudoCpu {
 					case "COS":
 						cos(parts);
 						break;
+				  case "NOP":
+            break;
 					case "LOG":
 						log(parts);
 						break;
