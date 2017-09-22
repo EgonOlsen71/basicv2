@@ -68,9 +68,20 @@ public class NativeCompilerTest {
 		testSimplePrint0();
 		testPrime();
 		testConditions();
+		
+		testPeekPoke();
 	}
 
-	private static void testConditions() {
+	private static void testPeekPoke()
+  {
+	  System.out.println("\n\ntestPeekPoke");
+	  String prg="10 A=23:POKE 4096,123-A:PRINT \"PEEK(4096):\",PEEK(4096)\n";
+	  prg+="20 A=PEEK(4096)+A*2";
+	  PseudoCpu pc = compileAndRun(prg);
+    System.out.println("Var: " + pc.getVariableValue("A"));
+  }
+
+  private static void testConditions() {
     System.out.println("\n\ntestConditions");
     String[] prime = Loader.loadProgram("src/test/resources/basic/conditions.bas");
     compileAndRun(prime);

@@ -1404,7 +1404,11 @@ public class PseudoCpu {
 				if (source.startsWith("(") && source.endsWith(")")) {
 					regs[ti] = memory[regs[si].intValue()] & 0xff;
 				} else {
-					regs[ti] = regs[si];
+				  if (target.startsWith("(") && target.endsWith(")")) {
+	          memory[regs[ti].intValue()]=regs[si].intValue() & 0xff;
+	        } else {
+	          regs[ti] = regs[si];
+	        }
 				}
 			} else {
 				String ts = source.substring(pos + 1, source.lastIndexOf("}"));
