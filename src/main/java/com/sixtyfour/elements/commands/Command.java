@@ -93,7 +93,7 @@ public interface Command extends Atom {
 	 * Stops the execution of a command. Only application to commands like WAIT.
 	 */
 	void stopExecution();
-	
+
 	/**
 	 * Returns true, if the command is a conditional one (IF...)
 	 * 

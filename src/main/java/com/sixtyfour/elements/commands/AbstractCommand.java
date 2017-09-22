@@ -67,7 +67,7 @@ public abstract class AbstractCommand implements Command {
 
 	@Override
 	public List<CodeContainer> evalToCode(Machine machine) {
-	  throw new RuntimeException("Command " + this.getName() + " not implemented in native compiler!");
+		throw new RuntimeException("Command " + this.getName() + " not implemented in native compiler!");
 	}
 
 	/*

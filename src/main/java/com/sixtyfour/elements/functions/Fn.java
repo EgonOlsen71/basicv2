@@ -53,26 +53,24 @@ public class Fn extends AbstractFunction {
 		placeHolder.setValue(VarUtils.getFloat(val));
 		return def.eval(machine);
 	}
-	
-	
-	@Override
-  public List<CodeContainer> evalToCode(Machine machine) {
-	  Def def = (Def) machine.getFunction(this.functionName);
-    if (def == null) {
-      throw new RuntimeException("Undef'd function error: " + this + "/" + this.functionName);
-    }
-    List<String> ret = new ArrayList<String>();
-    
-    ret.add("_");
-    List<String> n1 = term.evalToCode(machine).get(0).getExpression();
-    n1.add(":" + this.getClass().getSimpleName().toUpperCase(Locale.ENGLISH)+" DEF"+def.getCount());
-    ret.addAll(0, n1);
-    
-    List<CodeContainer> ccs = new ArrayList<CodeContainer>();
-    ccs.add(new CodeContainer(ret));
-    return ccs;
-  }
 
+	@Override
+	public List<CodeContainer> evalToCode(Machine machine) {
+		Def def = (Def) machine.getFunction(this.functionName);
+		if (def == null) {
+			throw new RuntimeException("Undef'd function error: " + this + "/" + this.functionName);
+		}
+		List<String> ret = new ArrayList<String>();
+
+		ret.add("_");
+		List<String> n1 = term.evalToCode(machine).get(0).getExpression();
+		n1.add(":" + this.getClass().getSimpleName().toUpperCase(Locale.ENGLISH) + " DEF" + def.getCount());
+		ret.addAll(0, n1);
+
+		List<CodeContainer> ccs = new ArrayList<CodeContainer>();
+		ccs.add(new CodeContainer(ret));
+		return ccs;
+	}
 
 	/*
 	 * (non-Javadoc)

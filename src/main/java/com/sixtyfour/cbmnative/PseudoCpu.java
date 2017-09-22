@@ -114,7 +114,7 @@ public class PseudoCpu {
 		addr = 0;
 		do {
 			String line = code.get(addr++);
-			//System.out.println("-_> "+line);
+			// System.out.println("-_> "+line);
 			try {
 				String[] parts = split(line, " ");
 				if (parts.length > 0) {
@@ -164,8 +164,8 @@ public class PseudoCpu {
 					case "COS":
 						cos(parts);
 						break;
-				  case "NOP":
-            break;
+					case "NOP":
+						break;
 					case "LOG":
 						log(parts);
 						break;
@@ -542,7 +542,7 @@ public class PseudoCpu {
 			lineBreak(parts);
 			return;
 		default:
-		  jumpStack.push(addr);
+			jumpStack.push(addr);
 			jmp(parts);
 		}
 	}
@@ -562,7 +562,7 @@ public class PseudoCpu {
 			out = " " + out;
 		}
 		if (out.endsWith(".0")) {
-		  out=out.substring(0, out.length()-2);
+			out = out.substring(0, out.length() - 2);
 		}
 		System.out.print(out);
 	}
@@ -1406,11 +1406,11 @@ public class PseudoCpu {
 				if (source.startsWith("(") && source.endsWith(")")) {
 					regs[ti] = memory[regs[si].intValue()] & 0xff;
 				} else {
-				  if (target.startsWith("(") && target.endsWith(")")) {
-	          memory[regs[ti].intValue()]=regs[si].intValue() & 0xff;
-	        } else {
-	          regs[ti] = regs[si];
-	        }
+					if (target.startsWith("(") && target.endsWith(")")) {
+						memory[regs[ti].intValue()] = regs[si].intValue() & 0xff;
+					} else {
+						regs[ti] = regs[si];
+					}
 				}
 			} else {
 				String ts = source.substring(pos + 1, source.lastIndexOf("}"));

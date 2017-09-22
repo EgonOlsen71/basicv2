@@ -92,7 +92,7 @@ public class NativeCompiler {
 				}
 			}
 		}
-		mCode=optimize(mCode);
+		mCode = optimize(mCode);
 		Logger.log("Compiled to pseudo code in: " + (System.currentTimeMillis() - s) + "ms");
 		return mCode;
 	}
@@ -510,16 +510,16 @@ public class NativeCompiler {
 					dontPush = true;
 					break;
 				default:
-				  if (op.startsWith("FN ")) {
-		          String label=op.substring(2).trim();
-		          code.add("PUSH "+sr);
-		          code.add("JSR "+label);
-		          code.add("POP X");
-		          dontPush = true;
-		          break;
-				  } else {
-				    throw new RuntimeException("Unknown operator: " + op);
-				  }
+					if (op.startsWith("FN ")) {
+						String label = op.substring(2).trim();
+						code.add("PUSH " + sr);
+						yStack.push(null);
+						code.add("JSR " + label);
+						dontPush = true;
+						break;
+					} else {
+						throw new RuntimeException("Unknown operator: " + op);
+					}
 				}
 				if (!dontPush) {
 					if (!isParameterRegister(tr)) {
@@ -587,11 +587,31 @@ public class NativeCompiler {
 					i += 1;
 					continue;
 				}
-				
+
 				if (l0.startsWith("MOV B,") && l1.equals("MOV A,B")) {
 					ret.add(l0.replace("MOV B,", "MOV A,"));
 					i += 1;
 					continue;
+				}
+
+				String[] l0ps = l0.split(" |,");
+				String[] l1ps = l1.split(" |,");
+				if (l0ps.length == 3 && l1ps.length == 3) {
+					if (l0ps[0].equals("MOV") && l0ps[2].equals("X")) {
+						if (l1ps[1].equals("Y") && l0ps[1].equals(l1ps[2]) && l0ps[1].contains("{")) {
+							ret.add(l0);
+							ret.add("MOV Y,X");
+							i += 1;
+							continue;
+						}
+					} else if (l0ps[0].equals("MOV") && l0ps[2].equals("Y")) {
+						if (l1ps[1].equals("X") && l0ps[1].equals(l1ps[2]) && l0ps[1].contains("{")) {
+							ret.add(l0);
+							ret.add("MOV X,Y");
+							i += 1;
+							continue;
+						}
+					}
 				}
 
 				boolean rep = false;
@@ -658,26 +678,26 @@ public class NativeCompiler {
 	}
 
 	private boolean popy(List<String> code, String tr, String sr, String ntr, String nsr, boolean stackEmpty) {
-		if (getLastEntry(code)!=null) {
-  	  if (getLastEntry(code).equals("PUSH " + tr)) {
-  			code.set(code.size() - 1, "MOV " + sr + "," + tr);
-  		} else {
-  			if (getLastEntry(code).equals("PUSH " + nsr)) {
-  				code.remove(code.size() - 1);
-  			} else {
-  				if (!stackEmpty && !isParameterRegister(nsr)) {
-  					code.add("POP " + nsr);
-  				} else {
-  					return false;
-  				}
-  			}
-  		}
+		if (getLastEntry(code) != null) {
+			if (getLastEntry(code).equals("PUSH " + tr)) {
+				code.set(code.size() - 1, "MOV " + sr + "," + tr);
+			} else {
+				if (getLastEntry(code).equals("PUSH " + nsr)) {
+					code.remove(code.size() - 1);
+				} else {
+					if (!stackEmpty && !isParameterRegister(nsr)) {
+						code.add("POP " + nsr);
+					} else {
+						return false;
+					}
+				}
+			}
 		}
 		return true;
 	}
 
 	private boolean isSingle(String op) {
-		return SINGLES.contains(op.toUpperCase(Locale.ENGLISH))|| op.startsWith("FN ");
+		return SINGLES.contains(op.toUpperCase(Locale.ENGLISH)) || op.startsWith("FN ");
 	}
 
 	private boolean isParameterRegister(String reg) {

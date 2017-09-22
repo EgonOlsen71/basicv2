@@ -23,8 +23,8 @@ public class If extends AbstractCommand {
 	/** The pc. */
 	private BasicProgramCounter pc = new BasicProgramCounter(0, 0);
 
-	private String conditionalTerm=null;
-	
+	private String conditionalTerm = null;
+
 	/**
 	 * Instantiates a new if.
 	 */
@@ -59,8 +59,8 @@ public class If extends AbstractCommand {
 			isGoto = true;
 		}
 		String firstTerm = linePart.substring(2, termEnd);
-		conditionalTerm=firstTerm;
-		
+		conditionalTerm = firstTerm;
+
 		logicTerm = LogicParser.getTerm(firstTerm, machine);
 		if (isGoto) {
 			return linePart.substring(termEnd);
@@ -94,7 +94,8 @@ public class If extends AbstractCommand {
 	public List<CodeContainer> evalToCode(Machine machine) {
 		NativeCompiler compiler = NativeCompiler.getCompiler();
 		List<String> after = new ArrayList<String>();
-		//System.out.println(conditionalTerm+"    /    "+Parser.getTerm(conditionalTerm, machine, false, true));
+		// System.out.println(conditionalTerm+"    /    "+Parser.getTerm(conditionalTerm,
+		// machine, false, true));
 		List<String> expr = compiler.compileToPseudoCode(machine, Parser.getTerm(conditionalTerm, machine, false, true));
 		List<String> before = null;
 

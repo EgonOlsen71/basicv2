@@ -155,25 +155,25 @@ public class Print extends AbstractCommand {
 			if (!part.part.replace("\"", "").isEmpty()) {
 				List<String> exprPart = compiler.compileToPseudoCode(machine, part.term);
 				if (!exprPart.isEmpty()) {
-				String expPush = getPushRegister(exprPart.get(exprPart.size() - 1));
-				exprPart = exprPart.subList(0, exprPart.size() - 1);
+					String expPush = getPushRegister(exprPart.get(exprPart.size() - 1));
+					exprPart = exprPart.subList(0, exprPart.size() - 1);
 
-				expr.addAll(exprPart);
+					expr.addAll(exprPart);
 
-				if (expPush.equals("Y")) {
-					expr.add("MOV X,Y");
-				} else if (expPush.equals("B")) {
-					expr.add("MOV A,B");
+					if (expPush.equals("Y")) {
+						expr.add("MOV X,Y");
+					} else if (expPush.equals("B")) {
+						expr.add("MOV A,B");
+					}
+
+					if (type.equals(Type.INTEGER)) {
+						expr.add("JSR INTOUT");
+					} else if (type.equals(Type.REAL)) {
+						expr.add("JSR REALOUT");
+					} else {
+						expr.add("JSR STROUT");
+					}
 				}
-
-				if (type.equals(Type.INTEGER)) {
-					expr.add("JSR INTOUT");
-				} else if (type.equals(Type.REAL)) {
-					expr.add("JSR REALOUT");
-				} else {
-					expr.add("JSR STROUT");
-				}
-			}
 			}
 
 			if (del == ';' || del == ' ') {

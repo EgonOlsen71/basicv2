@@ -221,19 +221,15 @@ public class Parser {
 			isArray = true;
 		}
 		/*
-		for (int i = 0; i < linePart.length(); i++) {
-			char c = linePart.charAt(i);
-			if (i == 0 && !Character.isLetter(c)) {
-				throw new RuntimeException("Invalid variable name: " + linePart);
-			}
-			if (!Character.isLetter(c) && ((i > 0) && (!Character.isDigit(c) && c != '%' && c != '$'))) {
-				throw new RuntimeException("Invalid variable name: " + linePart);
-			}
-			if ((c == '%' || c == '$') && i != linePart.length() - 1) {
-				throw new RuntimeException("Invalid variable name: " + linePart);
-			}
-		}
-		*/
+		 * for (int i = 0; i < linePart.length(); i++) { char c =
+		 * linePart.charAt(i); if (i == 0 && !Character.isLetter(c)) { throw new
+		 * RuntimeException("Invalid variable name: " + linePart); } if
+		 * (!Character.isLetter(c) && ((i > 0) && (!Character.isDigit(c) && c !=
+		 * '%' && c != '$'))) { throw new
+		 * RuntimeException("Invalid variable name: " + linePart); } if ((c ==
+		 * '%' || c == '$') && i != linePart.length() - 1) { throw new
+		 * RuntimeException("Invalid variable name: " + linePart); } }
+		 */
 		String ret = "";
 		if (linePart.length() > 0) {
 			char c = linePart.charAt(linePart.length() - 1);
@@ -1491,8 +1487,8 @@ public class Parser {
 	private static void setPostfix(String linePart, Function fun, int pos) {
 		if (fun.hasPostfix()) {
 			String funcName = VarUtils.toUpper(linePart.substring(fun.getName().length(), pos));
-			if (funcName.length()>2) {
-			  funcName=funcName.substring(0, 2);
+			if (funcName.length() > 2) {
+				funcName = funcName.substring(0, 2);
 			}
 			fun.setFunctionName(funcName);
 		} else {

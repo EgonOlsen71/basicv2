@@ -73,24 +73,24 @@ public class Poke extends AbstractCommand {
 		machine.getMemoryListener().poke(memAddr, vally);
 		return null;
 	}
-	
+
 	@Override
-  public List<CodeContainer> evalToCode(Machine machine) {
-    NativeCompiler compiler = NativeCompiler.getCompiler();
-    List<String> after = new ArrayList<String>();
-    List<String> expr = compiler.compileToPseudoCode(machine, val);
-    List<String> before = null;
+	public List<CodeContainer> evalToCode(Machine machine) {
+		NativeCompiler compiler = NativeCompiler.getCompiler();
+		List<String> after = new ArrayList<String>();
+		List<String> expr = compiler.compileToPseudoCode(machine, val);
+		List<String> before = null;
 
-    expr = expr.subList(0, expr.size() - 1);
-    
-    before = compiler.compileToPseudoCode(machine, addr);
-    
-    after.add("POP Y");
-    after.add("MOV (Y),X");
+		expr = expr.subList(0, expr.size() - 1);
 
-    CodeContainer cc = new CodeContainer(before, expr, after);
-    List<CodeContainer> ccs = new ArrayList<CodeContainer>();
-    ccs.add(cc);
-    return ccs;
-  }
+		before = compiler.compileToPseudoCode(machine, addr);
+
+		after.add("POP Y");
+		after.add("MOV (Y),X");
+
+		CodeContainer cc = new CodeContainer(before, expr, after);
+		List<CodeContainer> ccs = new ArrayList<CodeContainer>();
+		ccs.add(cc);
+		return ccs;
+	}
 }

@@ -68,44 +68,41 @@ public class NativeCompilerTest {
 		testSimplePrint0();
 		testPrime();
 		testConditions();
-		
+
 		testPeekPoke();
 		testDefFn0();
 		testDefFn1();
 	}
 
-	private static void testDefFn0()
-  {
-    System.out.println("\n\ntestDefFn0");
-    String prg="10 A=23:DEF FNTEST(X)=X*A+3\n";
-    prg+="15 C=FN TEST(4):PRINTSIN(3)\"HELLO\"C\n";
-    prg+="20 PRINT\"TEST:\",FN TEST(3):B=4:PRINT FNTEST(B+2)";
-    compileAndRun(prg);
-  }
-	
-	private static void testDefFn1()
-  {
-    System.out.println("\n\ntestDefFn1");
-    String prg="10 A=23:DEF FNTEST(X)=X*A+3:DEF FN YEAH(X)=FNTEST(X)+1\n";
-    prg+="15 PRINT FNTEST(3),FNYEAH(3)\n";
-    compileAndRun(prg);
-  }
-	
-	private static void testPeekPoke()
-  {
-	  System.out.println("\n\ntestPeekPoke");
-	  String prg="10 A=23:POKE 4096,123-A:PRINT \"PEEK(4096):\",PEEK(4096)\n";
-	  prg+="20 A=PEEK(4096)+A*2";
-	  PseudoCpu pc = compileAndRun(prg);
-    System.out.println("Var: " + pc.getVariableValue("A"));
-  }
+	private static void testDefFn0() {
+		System.out.println("\n\ntestDefFn0");
+		String prg = "10 A=23:DEF FNTEST(X)=X*A+3\n";
+		prg += "15 C=FN TEST(4):PRINTSIN(3)\"HELLO\"C\n";
+		prg += "20 PRINT\"TEST:\",FN TEST(3):B=4:PRINT FNTEST(B+2)";
+		compileAndRun(prg);
+	}
 
-  private static void testConditions() {
-    System.out.println("\n\ntestConditions");
-    String[] prime = Loader.loadProgram("src/test/resources/basic/conditions.bas");
-    compileAndRun(prime);
-  }
-	
+	private static void testDefFn1() {
+		System.out.println("\n\ntestDefFn1");
+		String prg = "10 A=23:DEF FNTEST(X)=X*A+3:DEF FN YEAH(X)=FNTEST(X)+1:DEF FN FI(Z)=FNYEAH(Z)+FNTEST(A)/FNYEAH(Z)\n";
+		prg += "15 PRINT FNTEST(3),FNYEAH(3),FNFI(A-20)\n";
+		compileAndRun(prg);
+	}
+
+	private static void testPeekPoke() {
+		System.out.println("\n\ntestPeekPoke");
+		String prg = "10 A=23:POKE 4096,123-A:PRINT \"PEEK(4096):\",PEEK(4096)\n";
+		prg += "20 A=PEEK(4096)+A*2";
+		PseudoCpu pc = compileAndRun(prg);
+		System.out.println("Var: " + pc.getVariableValue("A"));
+	}
+
+	private static void testConditions() {
+		System.out.println("\n\ntestConditions");
+		String[] prime = Loader.loadProgram("src/test/resources/basic/conditions.bas");
+		compileAndRun(prime);
+	}
+
 	private static void testPrime() {
 		System.out.println("\n\ntestPrime");
 		String[] prime = Loader.loadProgram("src/test/resources/basic/prime2.bas");

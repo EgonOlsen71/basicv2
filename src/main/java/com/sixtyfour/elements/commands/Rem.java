@@ -46,9 +46,9 @@ public class Rem extends AbstractCommand {
 	public BasicProgramCounter execute(Machine machine) {
 		return null;
 	}
-	
+
 	@Override
-  public List<CodeContainer> evalToCode(Machine machine) {
-    return Util.createSingleCommand("NOP");
-  }
+	public List<CodeContainer> evalToCode(Machine machine) {
+		return Util.createSingleCommand("NOP");
+	}
 }
