@@ -1489,6 +1489,9 @@ public class Parser {
 	private static void setPostfix(String linePart, Function fun, int pos) {
 		if (fun.hasPostfix()) {
 			String funcName = VarUtils.toUpper(linePart.substring(fun.getName().length(), pos));
+			if (funcName.length()>2) {
+			  funcName=funcName.substring(0, 2);
+			}
 			fun.setFunctionName(funcName);
 		} else {
 			if (pos != fun.getName().length()) {

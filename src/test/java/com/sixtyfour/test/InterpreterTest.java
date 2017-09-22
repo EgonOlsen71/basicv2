@@ -33,9 +33,18 @@ public class InterpreterTest {
 		testSys();
 		testRunStop();
 		testStrings();
+		testDefFn();
 	}
 
-	/**
+	private static void testDefFn()
+  {
+	  System.out.println("testDefFn");
+    String code="10 DEF FN TEST(X)=X*3:PRINT FN TEST(3)";
+    Basic inter = new Basic(code);
+    inter.run();
+  }
+
+  /**
 	 * Test Strings.
 	 */
 	private static void testStrings() {
