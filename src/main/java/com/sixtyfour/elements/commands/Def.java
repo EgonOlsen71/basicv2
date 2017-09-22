@@ -1,8 +1,13 @@
 package com.sixtyfour.elements.commands;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.sixtyfour.cbmnative.NativeCompiler;
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.elements.Variable;
 import com.sixtyfour.parser.Parser;
+import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.system.BasicProgramCounter;
 import com.sixtyfour.util.VarUtils;
@@ -12,11 +17,14 @@ import com.sixtyfour.util.VarUtils;
  */
 public class Def extends AbstractCommand {
 
+  private static int DEF_COUNT=0;
 	/** The var name. */
 	private String varName = null;
 
 	/** The fn name. */
 	private String fnName = null;
+	
+	private int count=0;
 
 	/**
 	 * Instantiates a new def.
@@ -111,6 +119,33 @@ public class Def extends AbstractCommand {
 	public Object eval(Machine machine) {
 		return term.eval(machine);
 	}
+	
+	@Override
+  public List<CodeContainer> evalToCode(Machine machine) {
+	  if (machine.getFunction(fnName)!=null) {
+	    throw new RuntimeException("Redef'd function error: "+fnName);
+	  }
+	  machine.setFunction(fnName, this);
+    NativeCompiler compiler = NativeCompiler.getCompiler();
+    List<String> after = new ArrayList<String>();
+    List<String> expr = compiler.compileToPseudoCode(machine, term);
+    List<String> before = new ArrayList<String>();
+
+    count=DEF_COUNT++;
+    
+    String label="DEF"+count;
+    after.add("RTS");
+    after.add("END"+label+":");
+    before.add("JMP END"+label);
+    before.add(label+":");
+    before.add("POP X");
+    before.add("MOV "+varName+"{"+term.getType()+"},X");
+
+    CodeContainer cc = new CodeContainer(before, expr, after);
+    List<CodeContainer> ccs = new ArrayList<CodeContainer>();
+    ccs.add(cc);
+    return ccs;
+  }
 
 	/**
 	 * Gets the var name.
@@ -133,4 +168,14 @@ public class Def extends AbstractCommand {
 		machine.setFunction(fnName, this);
 		return null;
 	}
+
+  public int getCount()
+  {
+    return count;
+  }
+
+  public void setCount(int count)
+  {
+    this.count = count;
+  }
 }

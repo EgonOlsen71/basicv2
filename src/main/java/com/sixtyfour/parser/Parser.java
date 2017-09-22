@@ -220,6 +220,7 @@ public class Parser {
 			linePart = linePart.substring(0, pos);
 			isArray = true;
 		}
+		/*
 		for (int i = 0; i < linePart.length(); i++) {
 			char c = linePart.charAt(i);
 			if (i == 0 && !Character.isLetter(c)) {
@@ -232,6 +233,7 @@ public class Parser {
 				throw new RuntimeException("Invalid variable name: " + linePart);
 			}
 		}
+		*/
 		String ret = "";
 		if (linePart.length() > 0) {
 			char c = linePart.charAt(linePart.length() - 1);

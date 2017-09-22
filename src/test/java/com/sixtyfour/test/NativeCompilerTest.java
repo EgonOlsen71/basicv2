@@ -70,8 +70,18 @@ public class NativeCompilerTest {
 		testConditions();
 		
 		testPeekPoke();
+		testDefFn();
 	}
 
+	private static void testDefFn()
+  {
+    System.out.println("\n\ntestDefFn");
+    String prg="10 A=23:DEF FNTEST(X)=X*A+3\n";
+    prg+="15 C=FN TEST(4):PRINTSIN(3)\"HELLO\"C\n";
+    prg+="20 PRINT\"TEST:\",FN TEST(3):B=4:PRINT FNTEST(B+2)";
+    compileAndRun(prg);
+  }
+	
 	private static void testPeekPoke()
   {
 	  System.out.println("\n\ntestPeekPoke");

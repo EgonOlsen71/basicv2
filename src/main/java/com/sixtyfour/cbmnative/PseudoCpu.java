@@ -47,6 +47,7 @@ public class PseudoCpu {
 	public final static int Y = 1; // float
 
 	private Deque<Number> stack = new LinkedList<Number>();
+	private Deque<Number> jumpStack = new LinkedList<Number>();
 	private Number[] regs = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; // x,y,..,..,..,a,b,...
 	private Machine machine;
 	private boolean zeroFlag = false;
@@ -113,6 +114,7 @@ public class PseudoCpu {
 		addr = 0;
 		do {
 			String line = code.get(addr++);
+			//System.out.println("-_> "+line);
 			try {
 				String[] parts = split(line, " ");
 				if (parts.length > 0) {
@@ -540,7 +542,7 @@ public class PseudoCpu {
 			lineBreak(parts);
 			return;
 		default:
-			stack.push(addr);
+		  jumpStack.push(addr);
 			jmp(parts);
 		}
 	}
@@ -580,10 +582,10 @@ public class PseudoCpu {
 	}
 
 	private void rts(String[] parts) {
-		if (stack.isEmpty()) {
+		if (jumpStack.isEmpty()) {
 			halt = true;
 		} else {
-			addr = stack.pop().intValue();
+			addr = jumpStack.pop().intValue();
 		}
 	}
 

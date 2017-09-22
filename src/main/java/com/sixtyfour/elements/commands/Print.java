@@ -154,6 +154,7 @@ public class Print extends AbstractCommand {
 
 			if (!part.part.replace("\"", "").isEmpty()) {
 				List<String> exprPart = compiler.compileToPseudoCode(machine, part.term);
+				if (!exprPart.isEmpty()) {
 				String expPush = getPushRegister(exprPart.get(exprPart.size() - 1));
 				exprPart = exprPart.subList(0, exprPart.size() - 1);
 
@@ -172,6 +173,7 @@ public class Print extends AbstractCommand {
 				} else {
 					expr.add("JSR STROUT");
 				}
+			}
 			}
 
 			if (del == ';' || del == ' ') {

@@ -510,7 +510,16 @@ public class NativeCompiler {
 					dontPush = true;
 					break;
 				default:
-					throw new RuntimeException("Unknown operator: " + op);
+				  if (op.startsWith("FN ")) {
+		          String label=op.substring(2).trim();
+		          code.add("PUSH "+sr);
+		          code.add("JSR "+label);
+		          code.add("POP X");
+		          dontPush = true;
+		          break;
+				  } else {
+				    throw new RuntimeException("Unknown operator: " + op);
+				  }
 				}
 				if (!dontPush) {
 					if (!isParameterRegister(tr)) {
@@ -649,24 +658,26 @@ public class NativeCompiler {
 	}
 
 	private boolean popy(List<String> code, String tr, String sr, String ntr, String nsr, boolean stackEmpty) {
-		if (getLastEntry(code).equals("PUSH " + tr)) {
-			code.set(code.size() - 1, "MOV " + sr + "," + tr);
-		} else {
-			if (getLastEntry(code).equals("PUSH " + nsr)) {
-				code.remove(code.size() - 1);
-			} else {
-				if (!stackEmpty && !isParameterRegister(nsr)) {
-					code.add("POP " + nsr);
-				} else {
-					return false;
-				}
-			}
+		if (getLastEntry(code)!=null) {
+  	  if (getLastEntry(code).equals("PUSH " + tr)) {
+  			code.set(code.size() - 1, "MOV " + sr + "," + tr);
+  		} else {
+  			if (getLastEntry(code).equals("PUSH " + nsr)) {
+  				code.remove(code.size() - 1);
+  			} else {
+  				if (!stackEmpty && !isParameterRegister(nsr)) {
+  					code.add("POP " + nsr);
+  				} else {
+  					return false;
+  				}
+  			}
+  		}
 		}
 		return true;
 	}
 
 	private boolean isSingle(String op) {
-		return SINGLES.contains(op.toUpperCase(Locale.ENGLISH));
+		return SINGLES.contains(op.toUpperCase(Locale.ENGLISH))|| op.startsWith("FN ");
 	}
 
 	private boolean isParameterRegister(String reg) {
