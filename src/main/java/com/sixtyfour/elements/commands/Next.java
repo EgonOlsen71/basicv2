@@ -3,7 +3,11 @@
  */
 package com.sixtyfour.elements.commands;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.sixtyfour.parser.Parser;
+import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.system.BasicProgramCounter;
 import com.sixtyfour.util.VarUtils;
@@ -100,5 +104,27 @@ public class Next extends AbstractCommand {
 		}
 		return null;
 	}
+	
+	@Override
+  public List<CodeContainer> evalToCode(Machine machine) {
+    //NativeCompiler compiler = NativeCompiler.getCompiler();
+    List<String> after = new ArrayList<String>();
+    List<String> expr=new ArrayList<String>();
+    List<String> before = null;
+
+    if (varName==null) {
+      after.add("MOV A,#0{INTEGER}");
+    } else {
+      after.add("MOV A,("+varName+"{})");
+    }
+    after.add("JSR NEXT");
+    after.add("CMP A,#0{INTEGER}");
+    after.add("JE (16380)");
+
+    CodeContainer cc = new CodeContainer(before, expr, after);
+    List<CodeContainer> ccs = new ArrayList<CodeContainer>();
+    ccs.add(cc);
+    return ccs;
+  }
 
 }

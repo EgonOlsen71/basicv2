@@ -93,6 +93,9 @@ public class NativeCompiler {
 			}
 		}
 		mCode = optimize(mCode);
+		if (!getLastEntry(mCode).equals("RTS")) {
+		  mCode.add("RTS");
+		}
 		Logger.log("Compiled to pseudo code in: " + (System.currentTimeMillis() - s) + "ms");
 		return mCode;
 	}
