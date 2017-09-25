@@ -56,7 +56,7 @@ public class PseudoCpu {
 	private boolean halt = false;
 	private int[] memory = null;
 	private int addr = 0;
-	private int jumpTargetAddr=MEM_SIZE-4;
+	private int jumpTargetAddr = MEM_SIZE - 4;
 	private Map<String, Integer> memLocations = new HashMap<String, Integer>();
 	private Map<Integer, String> varLocations = new HashMap<Integer, String>();
 	private List<String> stringNames = new ArrayList<String>();
@@ -88,8 +88,8 @@ public class PseudoCpu {
 		label2line.clear();
 		memLocations.clear();
 		varLocations.clear();
-		
-		forStackPos=0;
+
+		forStackPos = 0;
 		halt = false;
 		regs = new Number[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 		memory = new int[MEM_SIZE + MEM_SIZE / 2]; // normal string variable
@@ -98,9 +98,9 @@ public class PseudoCpu {
 		// Copy machine's memory content over to this cpu's
 		System.arraycopy(machine.getRam(), 0, memory, 0, memory.length);
 
-	// Mapping Pseudo-memory addresses to simple typed variables 
-    createVariables();
-		
+		// Mapping Pseudo-memory addresses to simple typed variables
+		createVariables();
+
 		// Writing (string) constants into memory, extracted from actual code
 		createStringConstants(code);
 
@@ -109,7 +109,7 @@ public class PseudoCpu {
 
 		// Writing (string) variables into memory
 		createStringVariables();
-		
+
 		long cnt = 0;
 		for (String line : code) {
 			String[] parts = line.split(" ");
@@ -252,8 +252,7 @@ public class PseudoCpu {
 		} while (!halt && addr < code.size());
 	}
 
-
-  public void compactMemory() {
+	public void compactMemory() {
 		this.collectGarbage();
 	}
 
@@ -290,19 +289,18 @@ public class PseudoCpu {
 		}
 	}
 
-	private void createVariables()
-  {
-    Map<String, Variable> vars = machine.getVariables();
-    for (Entry<String, Variable> entry : vars.entrySet()) {
-      String name = entry.getKey();
-      Variable var = entry.getValue();
-      if (!name.endsWith("$")) {
-        varLocations.put(System.identityHashCode(var), name);
-      }
-    }
-    
-  }
-	
+	private void createVariables() {
+		Map<String, Variable> vars = machine.getVariables();
+		for (Entry<String, Variable> entry : vars.entrySet()) {
+			String name = entry.getKey();
+			Variable var = entry.getValue();
+			if (!name.endsWith("$")) {
+				varLocations.put(System.identityHashCode(var), name);
+			}
+		}
+
+	}
+
 	private void createStringVariables() {
 		stringStart = memPointer;
 		Map<String, Variable> vars = machine.getVariables();
@@ -318,6 +316,7 @@ public class PseudoCpu {
 				storeString(name, val);
 			}
 		}
+		// System.out.println("Mempointer(1): "+memPointer);
 	}
 
 	private void createArrays() {
@@ -479,13 +478,13 @@ public class PseudoCpu {
 		if (zeroFlag) {
 			String addry = parts[1].trim();
 			try {
-			  if (addry.startsWith("(") && addry.endsWith(")")) {
-			    addry=addry.substring(1, addry.length()-1);
-			    int ia=Integer.parseInt(addry);
-			    this.addr=(memory[ia]&0xff)+((memory[ia+1]&0xff)<<8)+((memory[ia+2]&0xff)<<16)+((memory[ia+3]&0xff)<<24);
-			  } else {
-			    jumpTo(addry);
-			  }
+				if (addry.startsWith("(") && addry.endsWith(")")) {
+					addry = addry.substring(1, addry.length() - 1);
+					int ia = Integer.parseInt(addry);
+					this.addr = (memory[ia] & 0xff) + ((memory[ia + 1] & 0xff) << 8) + ((memory[ia + 2] & 0xff) << 16) + ((memory[ia + 3] & 0xff) << 24);
+				} else {
+					jumpTo(addry);
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 				throw new RuntimeException("Undefined call address: " + parts[1] + " in " + (addr - 1));
@@ -572,46 +571,47 @@ public class PseudoCpu {
 			lineBreak(parts);
 			return;
 		case "INITFOR":
-		  initFor(parts);
-		  return;
+			initFor(parts);
+			return;
 		case "NEXT":
-      next(parts);
-      return;
+			next(parts);
+			return;
 		case "GOSUB":
-      gosub(parts);
-      return;
+			gosub(parts);
+			return;
 		case "RETURN":
-      returny(parts);
-      return;
+			returny(parts);
+			return;
+		case "COPYSTR":
+			copyString(parts);
+			return;
 		default:
 			jumpStack.push(addr);
 			jmp(parts);
 		}
 	}
 
-  private void returny(String[] parts)
-  {
-    int fsp=forStackPos;
-    while(fsp>=0) {
-      ForStackEntry fse=new ForStackEntry(fsp);
-      if (fse.type==0) {
-        //System.out.println(forStack[forStackPos-1]);
-        forStackPos=fsp-fse.size;
-        //System.out.println("Stack corrected to "+forStackPos+"/"+fse.size);
-        return;
-      }
-      fsp-=fse.size;
-    }
-    throw new RuntimeException("Stack underflow!");
-  }
+	private void returny(String[] parts) {
+		int fsp = forStackPos;
+		while (fsp >= 0) {
+			ForStackEntry fse = new ForStackEntry(fsp);
+			if (fse.type == 0) {
+				// System.out.println(forStack[forStackPos-1]);
+				forStackPos = fsp - fse.size;
+				// System.out.println("Stack corrected to "+forStackPos+"/"+fse.size);
+				return;
+			}
+			fsp -= fse.size;
+		}
+		throw new RuntimeException("Stack underflow!");
+	}
 
-  private void gosub(String[] parts)
-  {
-    ForStackEntry fse=new ForStackEntry();
-    forStackPos=fse.push(forStackPos);
-  }
+	private void gosub(String[] parts) {
+		ForStackEntry fse = new ForStackEntry();
+		forStackPos = fse.push(forStackPos);
+	}
 
-  private void lineBreak(String[] parts) {
+	private void lineBreak(String[] parts) {
 		System.out.println();
 	}
 
@@ -652,66 +652,67 @@ public class PseudoCpu {
 			addr = jumpStack.pop().intValue();
 		}
 	}
-	
-  private void initFor(String[] parts)
-  {
-    Number stopVal=getStack().pop();
-    Number endVal=getStack().pop();
-    
-    ForStackEntry fse=new ForStackEntry(regs[A].intValue(), this.addr, endVal, stopVal);
-    forStackPos=fse.push(forStackPos);
-  }
-  
-  private void next(String[] parts)
-  {
-    int varAddr=regs[A].intValue();
-    
-    int fsp=forStackPos;
-    while(fsp>=0) {
-      ForStackEntry fse=new ForStackEntry(fsp);
-      if (fse.type==0) {
-        // Still an open GOSUB => error!
-        break;
-      } else if (fse.type==1) {
-        if (varAddr==0 || varAddr==fse.varPointer) {
-          Variable var=machine.getVariableUpperCase(varLocations.get(fse.varPointer));
-          double val=((Number) var.eval(machine)).doubleValue();
-          double to=fse.to.doubleValue();
-          double step=fse.step.doubleValue();
-          val+=step;
-          var.setValue(val);
-          
-          if (step<0) {
-            if (val>=to) {
-              regs[A]=0;
-              memory[jumpTargetAddr]=(byte) (fse.addr&0xff);
-              memory[jumpTargetAddr+1]=(byte) ((fse.addr>>8)&0xff);
-              memory[jumpTargetAddr+2]=(byte) ((fse.addr>>16)&0xff);
-              memory[jumpTargetAddr+3]=(byte) (fse.addr>>24);
-            } else {
-              regs[A]=1;
-              forStackPos=fsp-fse.size;
-            }
-          } else {
-            if (val<=to) {
-              regs[A]=0;
-              memory[jumpTargetAddr]=(byte) (fse.addr&0xff);
-              memory[jumpTargetAddr+1]=(byte) ((fse.addr>>8)&0xff);
-              memory[jumpTargetAddr+2]=(byte) ((fse.addr>>16)&0xff);
-              memory[jumpTargetAddr+3]=(byte) (fse.addr>>24);
-              forStackPos=fsp;
-            } else {
-              regs[A]=1;
-              forStackPos=fsp-fse.size;
-            }
-          }
-          return;
-        }
-      } 
-      fsp-=fse.size;
-    }
-    throw new RuntimeException("Next without for!");
-  }
+
+	private void initFor(String[] parts) {
+		Number stopVal = getStack().pop();
+		Number endVal = getStack().pop();
+
+		ForStackEntry fse = new ForStackEntry(regs[A].intValue(), this.addr, endVal, stopVal);
+		forStackPos = fse.push(forStackPos);
+	}
+
+	private void next(String[] parts) {
+		int varAddr = regs[A].intValue();
+
+		int fsp = forStackPos;
+		while (fsp >= 0) {
+			ForStackEntry fse = new ForStackEntry(fsp);
+			if (fse.type == 0) {
+				// Still an open GOSUB => error!
+				break;
+			} else if (fse.type == 1) {
+				if (varAddr == 0 || varAddr == fse.varPointer) {
+					Variable var = machine.getVariableUpperCase(varLocations.get(fse.varPointer));
+					double val = ((Number) var.eval(machine)).doubleValue();
+					double to = fse.to.doubleValue();
+					double step = fse.step.doubleValue();
+
+					// System.out.println(val+"/"+to+"/"+step);
+
+					val += step;
+					var.setValue(val);
+
+					if (step < 0) {
+						if (val >= to) {
+							regs[A] = 0;
+							memory[jumpTargetAddr] = (byte) (fse.addr & 0xff);
+							memory[jumpTargetAddr + 1] = (byte) ((fse.addr >> 8) & 0xff);
+							memory[jumpTargetAddr + 2] = (byte) ((fse.addr >> 16) & 0xff);
+							memory[jumpTargetAddr + 3] = (byte) (fse.addr >> 24);
+						} else {
+							regs[A] = 1;
+							forStackPos = fsp - fse.size;
+						}
+					} else {
+						if (val <= to) {
+							regs[A] = 0;
+							memory[jumpTargetAddr] = (byte) (fse.addr & 0xff);
+							memory[jumpTargetAddr + 1] = (byte) ((fse.addr >> 8) & 0xff);
+							memory[jumpTargetAddr + 2] = (byte) ((fse.addr >> 16) & 0xff);
+							memory[jumpTargetAddr + 3] = (byte) (fse.addr >> 24);
+							forStackPos = fsp;
+						} else {
+							regs[A] = 1;
+							forStackPos = fsp - fse.size;
+						}
+					}
+					return;
+				}
+			}
+			fsp -= fse.size;
+		}
+		throw new RuntimeException("Next without for!");
+	}
 
 	private void concat(String[] parts) {
 		int sp = regs[A].intValue();
@@ -778,6 +779,18 @@ public class PseudoCpu {
 		pos.setTerm(Parser.getTerm("0", machine, false, false));
 		Number num = (Number) pos.eval(machine);
 		regs[X] = num;
+	}
+
+	private void copyString(String[] parts) {
+		// System.out.println("Mempointer(2): "+memPointer);
+		int fromAddr = regs[A].intValue();
+		if (fromAddr >= MEM_SIZE) {
+			String toCopy = this.readString(fromAddr);
+			copyStringResult(toCopy);
+			// System.out.println("FROM: "+fromAddr+" to "+regs[A]);
+		}
+		this.bufferPos = MEM_SIZE;
+		this.bufferStart = MEM_SIZE;
 	}
 
 	private void copyStringResult(String snum) {
@@ -850,14 +863,18 @@ public class PseudoCpu {
 			highest = 0;
 			for (int i = 0; i < stringNames.size(); i++) {
 				String name = stringNames.get(i);
+				// System.out.println("Checking: "+name+"/"+lookFor);
 				if (!name.endsWith("[]")) {
 					// Handle normal strings
 					int memAddr = memLocations.get(name);
+					// System.out.println("Addr "+name+": "+memAddr+"/"+memory[memAddr]);
 					if (lookFor > highest) {
 						highest = lookFor;
 					}
 					if (lookFor == memAddr) {
-						Logger.log("Memory (" + memory[lookFor] + " Bytes@" + lookFor + ") for " + name + " still in use, skipping!");
+						// Logger.log("Memory (" + memory[lookFor] + " Bytes@" +
+						// lookFor + ") for " + name +
+						// " still in use, skipping!");
 						i = -1;
 						lookFor = memAddr + memory[memAddr] + 1;
 					} else {
@@ -879,7 +896,9 @@ public class PseudoCpu {
 							highest = lookFor;
 						}
 						if (lookFor == memAddr) {
-							Logger.log("Memory (" + memory[lookFor] + " Bytes@" + lookFor + ") for " + name + "[" + p + "] still in use, skipping!");
+							// Logger.log("Memory (" + memory[lookFor] +
+							// " Bytes@" + lookFor + ") for " + name + "[" + p +
+							// "] still in use, skipping!");
 							i = -1;
 							lookFor = memAddr + memory[memAddr] + 1;
 						} else {
@@ -890,21 +909,26 @@ public class PseudoCpu {
 					}
 				}
 			}
+
 			if (closest < MEM_SIZE) {
 				int size = MEM_SIZE - closest;
-				if (lookFor <= closest) {
+				if (lookFor > closest) {
 					throw new RuntimeException("Invalid memory locations: " + closest + "/" + lookFor);
 				}
-				Logger.log("Compacting memory by moving " + size + " bytes from " + lookFor + " to " + closest + "!");
+				// Logger.log("Compacting memory by moving " + size +
+				// " bytes from " + closest + " to " + lookFor + "!");
 				System.arraycopy(memory, closest, memory, lookFor, size);
+				int oldLookFor = lookFor;
 				lookFor = lookFor + memory[lookFor] + 1;
 
-				int dif = lookFor - closest;
+				int dif = closest - oldLookFor;
 				for (String strName : stringNames) {
 					if (!strName.endsWith("[]")) {
 						int memAddr = memLocations.get(strName);
-						if (memAddr >= lookFor) {
-							Logger.log("Correcting address of " + strName + " from " + memAddr + " to " + (memAddr - dif) + "!");
+						if (memAddr >= oldLookFor) {
+							// Logger.log("Correcting address of " + strName +
+							// " from " + memAddr + " to " + (memAddr - dif) +
+							// "!");
 							memLocations.put(strName, memAddr - dif);
 						}
 					} else {
@@ -916,8 +940,10 @@ public class PseudoCpu {
 						}
 						for (int p = 0; p < sz; p++) {
 							int memAddr = memory[addr + p];
-							if (memAddr >= lookFor) {
-								Logger.log("Correcting array address of " + strName + "[" + p + "] from " + memAddr + " to " + (memAddr - dif) + "!");
+							if (memAddr >= oldLookFor) {
+								// Logger.log("Correcting array address of " +
+								// strName + "[" + p + "] from " + memAddr +
+								// " to " + (memAddr - dif) + "!");
 								memory[addr + p] = memAddr - dif;
 							}
 						}
@@ -1539,40 +1565,40 @@ public class PseudoCpu {
 			} else {
 				String ts = source.substring(pos + 1, source.lastIndexOf("}"));
 				String val = source.substring(0, pos);
-				
+
 				if (source.startsWith("(") && source.endsWith(")")) {
-				  val=val.substring(1);
-				  regs[ti]=System.identityHashCode(machine.getVariableUpperCase(val));
+					val = val.substring(1);
+					regs[ti] = System.identityHashCode(machine.getVariableUpperCase(val));
 				} else {
-  				type = Type.valueOf(ts);
-  				if (type == Type.STRING) {
-  					// a string...
-  					Integer addr = memLocations.get(val);
-  					if (addr == null) {
-  						throw new RuntimeException("Unknown string: " + val);
-  					}
-  					regs[ti] = addr;
-  				} else {
-  					// a number...
-  					if (val.startsWith("#")) {
-  						Number n = Float.valueOf(val.replace("#", ""));
-  						if (type == Type.INTEGER) {
-  							n = n.intValue();
-  						}
-  						regs[ti] = n;
-  					} else {
-  						if (val.contains("[]")) {
-  							Integer addr = memLocations.get(val);
-  							if (addr == null) {
-  								throw new RuntimeException("Unknown pointer to: " + val);
-  							}
-  							regs[ti] = addr;
-  						} else {
-  							Number n = (Number) machine.getVariableUpperCase(val).eval(machine);
-  							regs[ti] = n;
-  						}
-  					}
-  				}
+					type = Type.valueOf(ts);
+					if (type == Type.STRING) {
+						// a string...
+						Integer addr = memLocations.get(val);
+						if (addr == null) {
+							throw new RuntimeException("Unknown string: " + val);
+						}
+						regs[ti] = addr;
+					} else {
+						// a number...
+						if (val.startsWith("#")) {
+							Number n = Float.valueOf(val.replace("#", ""));
+							if (type == Type.INTEGER) {
+								n = n.intValue();
+							}
+							regs[ti] = n;
+						} else {
+							if (val.contains("[]")) {
+								Integer addr = memLocations.get(val);
+								if (addr == null) {
+									throw new RuntimeException("Unknown pointer to: " + val);
+								}
+								regs[ti] = addr;
+							} else {
+								Number n = (Number) machine.getVariableUpperCase(val).eval(machine);
+								regs[ti] = n;
+							}
+						}
+					}
 				}
 			}
 		}
@@ -1614,104 +1640,101 @@ public class PseudoCpu {
 
 		String op();
 	}
-	
+
 	private class ForStackEntry {
-	  byte size;
-	  byte type; // 0=gosub, 1=for
-	  int varPointer;
-	  int addr;
-	  Number to;
-	  Number step;
-	  
-	  public ForStackEntry() {
-	    this.type=0;
-	  }
-	  
-	  public ForStackEntry(int varPointer, int addr, Number to, Number step) {
-      this.varPointer=varPointer;
-      this.addr=addr;
-      this.to=to;
-      this.step=step;
-      this.type=1;
-    }
-	  
-	  public ForStackEntry(int stackPos) {
-      size=forStack[stackPos-1];
-      type=forStack[stackPos-2];
-      if (type==0) {
-        return;
-      }
-      
-      int sp=stackPos-size;
-      varPointer=getInt(sp);
-      addr=getInt(sp+4);
-      Number[] sc=getNumbers(sp+8);
-      to=sc[0];
-      step=sc[1];
-    }
-	  
-	  public int push(int stackPos) {
-	    int s=0;
-	    if (type!=0) {
-  	    store(varPointer, stackPos);
-  	    s+=4;
-  	    store(addr, stackPos+s);
-        s+=4;
-  	    int h=0;
-  	    if (to instanceof Integer) {
-  	      h=to.intValue();
-  	      forStack[stackPos+(s++)]=0;
-  	    } else {
-  	      h=Float.floatToIntBits(to.floatValue());
-  	      forStack[stackPos+(s++)]=1;
-  	    }
-  	    store(h, stackPos+s);
-  	    s+=4;
-  	    if (step instanceof Integer) {
-          h=step.intValue();
-          forStack[stackPos+(s++)]=0;
-        } else {
-          h=Float.floatToIntBits(step.floatValue());
-          forStack[stackPos+(s++)]=1;
-        }
-        store(h, stackPos+s);
-        s+=4;
-	    }
-      forStack[stackPos+(s++)]=type;
-      forStack[stackPos+s]=(byte) ++s;
-	    return s+stackPos;
-	  }
-	  
-	  private void store(int h, int sp)
-    {
-	    forStack[sp]=(byte) (h&0xff);
-	    forStack[sp+1]=(byte) ((h>>8)&0xff);
-	    forStack[sp+2]=(byte) ((h>>16)&0xff);
-	    forStack[sp+3]=(byte) (h>>24);
-    }
+		byte size;
+		byte type; // 0=gosub, 1=for
+		int varPointer;
+		int addr;
+		Number to;
+		Number step;
 
-    private Number[] getNumbers(int sp)
-    {
-      Number[] ret=new Number[2];
-      int p=0;
-      do {
-      byte type=forStack[sp];
-      if (type==0) {
-        int h=getInt(sp+1);
-        ret[p]=h;
-        sp+=5;
-      } else {
-        float h=Float.intBitsToFloat(getInt(sp));
-        ret[p]=h;
-        sp+=5;
-      }
-      } while(++p<2);
-      return ret;
-    }
+		public ForStackEntry() {
+			this.type = 0;
+		}
 
-    private int getInt(int sp)
-    {
-      return (forStack[sp]&0xff)+((forStack[sp+1]&0xff)<<8)+((forStack[sp+2]&0xff)<<16)+((forStack[sp+3]&0xff)<<24);
-    }
+		public ForStackEntry(int varPointer, int addr, Number to, Number step) {
+			this.varPointer = varPointer;
+			this.addr = addr;
+			this.to = to;
+			this.step = step;
+			this.type = 1;
+		}
+
+		public ForStackEntry(int stackPos) {
+			size = forStack[stackPos - 1];
+			type = forStack[stackPos - 2];
+			if (type == 0) {
+				return;
+			}
+
+			int sp = stackPos - size;
+			varPointer = getInt(sp);
+			addr = getInt(sp + 4);
+			Number[] sc = getNumbers(sp + 8);
+			to = sc[0];
+			step = sc[1];
+		}
+
+		public int push(int stackPos) {
+			int s = 0;
+			if (type != 0) {
+				store(varPointer, stackPos);
+				s += 4;
+				store(addr, stackPos + s);
+				s += 4;
+				int h = 0;
+				if (to instanceof Integer) {
+					h = to.intValue();
+					forStack[stackPos + (s++)] = 0;
+				} else {
+					h = Float.floatToIntBits(to.floatValue());
+					forStack[stackPos + (s++)] = 1;
+				}
+				store(h, stackPos + s);
+				s += 4;
+				if (step instanceof Integer) {
+					h = step.intValue();
+					forStack[stackPos + (s++)] = 0;
+				} else {
+					h = Float.floatToIntBits(step.floatValue());
+					forStack[stackPos + (s++)] = 1;
+				}
+				store(h, stackPos + s);
+				s += 4;
+			}
+			forStack[stackPos + (s++)] = type;
+			forStack[stackPos + s] = (byte) ++s;
+			return s + stackPos;
+		}
+
+		private void store(int h, int sp) {
+			forStack[sp] = (byte) (h & 0xff);
+			forStack[sp + 1] = (byte) ((h >> 8) & 0xff);
+			forStack[sp + 2] = (byte) ((h >> 16) & 0xff);
+			forStack[sp + 3] = (byte) (h >> 24);
+		}
+
+		private Number[] getNumbers(int sp) {
+			Number[] ret = new Number[2];
+			int p = 0;
+			do {
+				byte type = forStack[sp];
+				if (type == 0) {
+					int h = getInt(sp + 1);
+					ret[p] = h;
+					sp += 5;
+				} else {
+					float h = Float.intBitsToFloat(getInt(sp + 1));
+					ret[p] = h;
+					sp += 5;
+				}
+			} while (++p < 2);
+			return ret;
+		}
+
+		private int getInt(int sp) {
+			return (forStack[sp] & 0xff) + ((forStack[sp + 1] & 0xff) << 8) + ((forStack[sp + 2] & 0xff) << 16) + ((forStack[sp + 3] & 0xff) << 24);
+		}
 	}
 }

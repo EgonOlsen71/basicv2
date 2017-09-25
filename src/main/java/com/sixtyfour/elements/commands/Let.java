@@ -131,8 +131,7 @@ public class Let extends AbstractCommand {
 		List<String> before = null;
 
 		String expPush = getPushRegister(expr.get(expr.size() - 1));
-		expr = expr.subList(0, expr.size() - 1); // Remove trailing PUSH X/PUSH
-													// A
+		expr = expr.subList(0, expr.size() - 1);
 		if (indexTerm != null) {
 			before = compiler.compileToPseudoCode(machine, Parser.createIndexTerm(machine, pars, var.getDimensions()));
 			if (expPush.equals("X")) {
@@ -140,10 +139,29 @@ public class Let extends AbstractCommand {
 			} else if (expPush.equals("B")) {
 				after.add("MOV A,B");
 			}
+
+			if (!expr.get(expr.size() - 1).contains("{STRING}")) {
+				if (var.getType() == Type.STRING) {
+					after.add("JSR COPYSTR");
+				}
+			}
+
 			after.add("POP X");
 			after.add("MOV G," + getVariableLabel(machine, var));
 			after.add("JSR ARRAYSTORE");
 		} else {
+			if (var.getType() == Type.STRING) {
+				if (!expr.get(expr.size() - 1).contains("{STRING}")) {
+					// If it's not a direkt assigment of a constant or a
+					// variable, it might be needed to copy the string from work
+					// into var buffer.
+					if (expPush.equals("B")) {
+						after.add("MOV A,B");
+						expPush = "A";
+					}
+					after.add("JSR COPYSTR");
+				}
+			}
 			after.add("MOV " + getVariableLabel(machine, var) + "," + expPush);
 		}
 

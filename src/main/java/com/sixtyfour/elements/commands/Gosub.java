@@ -63,6 +63,6 @@ public class Gosub extends AbstractCommand {
 
 	@Override
 	public List<CodeContainer> evalToCode(Machine machine) {
-		return Util.createSingleCommand("JSR GOSUB","JSR " + lineNumber);
+		return Util.createSingleCommand("JSR GOSUB", "JSR " + lineNumber);
 	}
 }

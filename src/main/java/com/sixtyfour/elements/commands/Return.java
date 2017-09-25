@@ -61,7 +61,7 @@ public class Return extends AbstractCommand {
 
 	@Override
 	public List<CodeContainer> evalToCode(Machine machine) {
-		return Util.createSingleCommand("JSR RETURN","RTS");
+		return Util.createSingleCommand("JSR RETURN", "RTS");
 	}
 
 }

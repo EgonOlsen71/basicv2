@@ -220,16 +220,20 @@ public class Parser {
 			linePart = linePart.substring(0, pos);
 			isArray = true;
 		}
-		/*
-		 * for (int i = 0; i < linePart.length(); i++) { char c =
-		 * linePart.charAt(i); if (i == 0 && !Character.isLetter(c)) { throw new
-		 * RuntimeException("Invalid variable name: " + linePart); } if
-		 * (!Character.isLetter(c) && ((i > 0) && (!Character.isDigit(c) && c !=
-		 * '%' && c != '$'))) { throw new
-		 * RuntimeException("Invalid variable name: " + linePart); } if ((c ==
-		 * '%' || c == '$') && i != linePart.length() - 1) { throw new
-		 * RuntimeException("Invalid variable name: " + linePart); } }
-		 */
+
+		for (int i = 0; i < linePart.length(); i++) {
+			char c = linePart.charAt(i);
+			if (i == 0 && !Character.isLetter(c)) {
+				throw new RuntimeException("Invalid variable name: " + linePart);
+			}
+			if (!Character.isLetter(c) && ((i > 0) && (!Character.isDigit(c) && c != '%' && c != '$'))) {
+				throw new RuntimeException("Invalid variable name: " + linePart);
+			}
+			if ((c == '%' || c == '$') && i != linePart.length() - 1) {
+				throw new RuntimeException("Invalid variable name: " + linePart);
+			}
+		}
+
 		String ret = "";
 		if (linePart.length() > 0) {
 			char c = linePart.charAt(linePart.length() - 1);

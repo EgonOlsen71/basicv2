@@ -72,31 +72,37 @@ public class NativeCompilerTest {
 		testPeekPoke();
 		testDefFn0();
 		testDefFn1();
-		
+
 		testFor0();
 		testFor1();
+
+		testBeer();
 	}
 
-	private static void testFor0()
-  {
-	  System.out.println("\n\ntestFor0");
-	  String prg = "10 B=2:FOR A=B-1 TO 12 STEP 2\n";
-	  prg+="20 FOR X=1 TO 5:PRINTA,X:NEXT X,A\n";
-	  compileAndRun(prg);
-  }
+	private static void testBeer() {
+		System.out.println("\n\ntestBeer");
+		String[] prime = Loader.loadProgram("src/test/resources/basic/beer.bas");
+		compileAndRun(prime);
+	}
 
-	private static void testFor1()
-  {
-    System.out.println("\n\ntestFor1");
-    String prg = "10 B=2:FOR A=B-1 TO 12 STEP 2\n";
-    prg+="20 FOR X=1 TO 5:PRINTA,X\n";
-    prg+="30 IF X=2 THEN NEXT A:GOTO50\n";
-    prg+="40 NEXT X,A\n";
-    prg+="50 END";
-    compileAndRun(prg);
-  }
-	
-  private static void testDefFn0() {
+	private static void testFor0() {
+		System.out.println("\n\ntestFor0");
+		String prg = "10 B=2:FOR A=B-1 TO 12 STEP 2\n";
+		prg += "20 FOR X=1 TO 5:PRINTA,X:NEXT X,A\n";
+		compileAndRun(prg);
+	}
+
+	private static void testFor1() {
+		System.out.println("\n\ntestFor1");
+		String prg = "10 B=2:FOR A=B-1 TO 12 STEP 2\n";
+		prg += "20 FOR X=1 TO 5:PRINTA,X\n";
+		prg += "30 IF X=2 THEN NEXT A:GOTO50\n";
+		prg += "40 NEXT X,A\n";
+		prg += "50 END";
+		compileAndRun(prg);
+	}
+
+	private static void testDefFn0() {
 		System.out.println("\n\ntestDefFn0");
 		String prg = "10 A=23:DEF FNTEST(X)=X*A+3\n";
 		prg += "15 C=FN TEST(4):PRINTSIN(3)\"HELLO\"C\n";

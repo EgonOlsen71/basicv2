@@ -143,30 +143,30 @@ public class For extends AbstractCommand {
 		running = true;
 		return null;
 	}
-	
+
 	@Override
-  public List<CodeContainer> evalToCode(Machine machine) {
-	  var = machine.add(var);
-    NativeCompiler compiler = NativeCompiler.getCompiler();
-    List<String> after = new ArrayList<String>();
-    List<String> expr = compiler.compileToPseudoCode(machine, endTerm);
-    expr.addAll(compiler.compileToPseudoCode(machine, stepTerm));
-    expr.addAll(compiler.compileToPseudoCode(machine, term));
-    List<String> before = null;
+	public List<CodeContainer> evalToCode(Machine machine) {
+		var = machine.add(var);
+		NativeCompiler compiler = NativeCompiler.getCompiler();
+		List<String> after = new ArrayList<String>();
+		List<String> expr = compiler.compileToPseudoCode(machine, endTerm);
+		expr.addAll(compiler.compileToPseudoCode(machine, stepTerm));
+		expr.addAll(compiler.compileToPseudoCode(machine, term));
+		List<String> before = null;
 
-    String varLabel=var.getName()+"{"+var.getType()+"}";
-    String expPush = getPushRegister(expr.get(expr.size() - 1));
-    expr = expr.subList(0, expr.size() - 1);
-    
-    after.add("MOV "+varLabel+","+expPush);
-    after.add("MOV A,("+varLabel+")");
-    after.add("JSR INITFOR");
+		String varLabel = var.getName() + "{" + var.getType() + "}";
+		String expPush = getPushRegister(expr.get(expr.size() - 1));
+		expr = expr.subList(0, expr.size() - 1);
 
-    CodeContainer cc = new CodeContainer(before, expr, after);
-    List<CodeContainer> ccs = new ArrayList<CodeContainer>();
-    ccs.add(cc);
-    return ccs;
-  }
+		after.add("MOV " + varLabel + "," + expPush);
+		after.add("MOV A,(" + varLabel + ")");
+		after.add("JSR INITFOR");
+
+		CodeContainer cc = new CodeContainer(before, expr, after);
+		List<CodeContainer> ccs = new ArrayList<CodeContainer>();
+		ccs.add(cc);
+		return ccs;
+	}
 
 	/**
 	 * Executes a next call for this for.
