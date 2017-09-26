@@ -255,6 +255,46 @@ public class PseudoCpu {
 	public void compactMemory() {
 		this.collectGarbage();
 	}
+	
+	 /**
+   * @return
+   */
+  public Deque<Number> getStack() {
+    return stack;
+  }
+
+  public String getStringFromStack() {
+    Integer num = (Integer) stack.pop();
+    return readString(num);
+  }
+
+  public Object getVariableValue(String name) {
+    name = name.toUpperCase(Locale.ENGLISH);
+    if (name.contains("$")) {
+      return readString(memLocations.get(name));
+    }
+    return this.machine.getVariable(name).eval(machine);
+  }
+
+  public Object getVariableValue(String name, int... pos) {
+    name = name.toUpperCase(Locale.ENGLISH);
+    if (!name.endsWith("[]")) {
+      name = name + "[]";
+    }
+    Variable var = machine.getVariable(name);
+    int offset = calcArrayOffset(var, pos);
+    int val = memLocations.get(name) + 2 + offset;
+    if (name.contains("$")) {
+      return readString(memory[val]);
+    } else if (name.contains("%")) {
+      return memory[val];
+    }
+    return Float.intBitsToFloat(memory[val]);
+  }
+  
+  public int[] getRam() {
+    return memory;
+  }
 
 	private String[] split(String line, String delimiter) {
 		int pos = line.indexOf(delimiter);
@@ -401,42 +441,6 @@ public class PseudoCpu {
 			ret[i] = chars[i];
 		}
 		return ret;
-	}
-
-	/**
-	 * @return
-	 */
-	public Deque<Number> getStack() {
-		return stack;
-	}
-
-	public String getStringFromStack() {
-		Integer num = (Integer) stack.pop();
-		return readString(num);
-	}
-
-	public Object getVariableValue(String name) {
-		name = name.toUpperCase(Locale.ENGLISH);
-		if (name.contains("$")) {
-			return readString(memLocations.get(name));
-		}
-		return this.machine.getVariable(name).eval(machine);
-	}
-
-	public Object getVariableValue(String name, int... pos) {
-		name = name.toUpperCase(Locale.ENGLISH);
-		if (!name.endsWith("[]")) {
-			name = name + "[]";
-		}
-		Variable var = machine.getVariable(name);
-		int offset = calcArrayOffset(var, pos);
-		int val = memLocations.get(name) + 2 + offset;
-		if (name.contains("$")) {
-			return readString(memory[val]);
-		} else if (name.contains("%")) {
-			return memory[val];
-		}
-		return Float.intBitsToFloat(memory[val]);
 	}
 
 	private int calcArrayOffset(Variable var, int... pos) {

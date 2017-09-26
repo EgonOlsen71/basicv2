@@ -1,5 +1,7 @@
 package com.sixtyfour.test;
 
+import java.awt.image.BufferedImage;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Deque;
@@ -15,11 +17,12 @@ import com.sixtyfour.elements.functions.Spc;
 import com.sixtyfour.elements.functions.Tab;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.Term;
+import com.sixtyfour.system.Graphics;
 import com.sixtyfour.system.Machine;
 
 public class NativeCompilerTest {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception{
 		testExpression0();
 		testExpression1();
 		testExpression2();
@@ -77,7 +80,17 @@ public class NativeCompilerTest {
 		testFor1();
 
 		testBeer();
+		testFractal();
 	}
+	
+	private static void testFractal()  throws Exception {
+    System.out.println("\n\ntestFractal");
+    String[] prime = Loader.loadProgram("src/test/resources/basic/fractal_native.bas");
+    PseudoCpu pc=compileAndRun(prime);
+    BufferedImage bi = Graphics.createImage(pc.getRam(), 8000, 1024, true, false);
+    FileOutputStream fos = new FileOutputStream("fractal_native.png");
+    Graphics.savePng(bi, fos);
+  }
 
 	private static void testBeer() {
 		System.out.println("\n\ntestBeer");

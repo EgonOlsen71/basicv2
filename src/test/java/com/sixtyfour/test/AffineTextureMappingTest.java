@@ -76,7 +76,7 @@ public class AffineTextureMappingTest {
 			@Override
 			public void sys(int addr, Object... params) {
 				if (addr == 832) {
-					Graphics.fillImage(inty.getMachine(), 16384, 24576, true, true, bi);
+					Graphics.fillImage(inty.getMachine().getRam(), 16384, 24576, true, true, bi);
 					o.repaint();
 					Thread.yield();
 				} else {
