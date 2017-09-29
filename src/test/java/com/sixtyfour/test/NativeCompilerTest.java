@@ -81,7 +81,14 @@ public class NativeCompilerTest {
 
 		testBeer();
 		testFractal();
+		testOnSomething();
 	}
+	
+	private static void testOnSomething() {
+    System.out.println("\n\ntestOnSomething");
+    String[] prime = Loader.loadProgram("src/test/resources/basic/onstuff.bas");
+    compileAndRun(prime);
+  }
 	
 	private static void testFractal()  throws Exception {
     System.out.println("\n\ntestFractal");

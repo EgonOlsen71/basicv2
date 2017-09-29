@@ -122,11 +122,16 @@ public class PseudoCpu {
 		}
 
 		addr = 0;
+		
+		List<String[]> splittedCode=new ArrayList<String[]>();
+		for (String line:code) {
+		  splittedCode.add(split(line, " "));
+		}
+		
 		do {
-			String line = code.get(addr++);
+			String[] parts = splittedCode.get(addr++);
 			// System.out.println("-_> "+line);
 			try {
-				String[] parts = split(line, " ");
 				if (parts.length > 0) {
 
 					if (parts[0].endsWith(":") && Character.isDigit(parts[0].charAt(parts[0].length() - 2))) {
@@ -215,6 +220,9 @@ public class PseudoCpu {
 					case "JE":
 						je(parts);
 						break;
+					case "JNE":
+            jne(parts);
+            break;
 					case "RTS":
 						rts(parts);
 						break;
@@ -247,7 +255,7 @@ public class PseudoCpu {
 					}
 				}
 			} catch (Exception e) {
-				throw new RuntimeException("Error while executing: " + line, e);
+				throw new RuntimeException("Error while executing: " + code.get(addr-1), e);
 			}
 		} while (!halt && addr < code.size());
 	}
@@ -480,21 +488,32 @@ public class PseudoCpu {
 
 	private void je(String[] parts) {
 		if (zeroFlag) {
-			String addry = parts[1].trim();
-			try {
-				if (addry.startsWith("(") && addry.endsWith(")")) {
-					addry = addry.substring(1, addry.length() - 1);
-					int ia = Integer.parseInt(addry);
-					this.addr = (memory[ia] & 0xff) + ((memory[ia + 1] & 0xff) << 8) + ((memory[ia + 2] & 0xff) << 16) + ((memory[ia + 3] & 0xff) << 24);
-				} else {
-					jumpTo(addry);
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-				throw new RuntimeException("Undefined call address: " + parts[1] + " in " + (addr - 1));
-			}
+			condJump(parts);
 		}
 	}
+	
+	private void jne(String[] parts) {
+    if (!zeroFlag) {
+      condJump(parts);
+    }
+  }
+
+  private void condJump(String[] parts)
+  {
+    String addry = parts[1].trim();
+    try {
+      if (addry.startsWith("(") && addry.endsWith(")")) {
+        addry = addry.substring(1, addry.length() - 1);
+        int ia = Integer.parseInt(addry);
+        this.addr = (memory[ia] & 0xff) + ((memory[ia + 1] & 0xff) << 8) + ((memory[ia + 2] & 0xff) << 16) + ((memory[ia + 3] & 0xff) << 24);
+      } else {
+        jumpTo(addry);
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new RuntimeException("Undefined call address: " + parts[1] + " in " + (addr - 1));
+    }
+  }
 
 	private void jsr(String[] parts) {
 
