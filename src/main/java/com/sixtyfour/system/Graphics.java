@@ -51,32 +51,31 @@ public class Graphics {
 	public static BufferedImage createImage(Machine machine, int bitmapStartAddress, int textramStartAddress, boolean multiColor, boolean withColors) {
 		return createImage(machine.getRam(), bitmapStartAddress, textramStartAddress, multiColor, withColors);
 	}
-	
-	
+
 	/**
-   * Converts the content of a hires screen from memory into an image. It can
-   * take actual colors into account. Otherwise, it will map the pixels to
-   * default colors.
-   * 
-   * @param ram
-   *            the ram content
-   * @param bitmapStartAddress
-   *            the start address of the graphics memory
-   * @param textramStartAddress
-   *            the start address of the text memory. Only needed, if
-   *            withColors is true.
-   * @param multiColor
-   *            is multicolor mode being used?
-   * @param withColors
-   *            if true, colors from text/color ram will be taken into
-   *            account. If false, default colors will be used.
-   * @return the image (always 320*200)
-   */
+	 * Converts the content of a hires screen from memory into an image. It can
+	 * take actual colors into account. Otherwise, it will map the pixels to
+	 * default colors.
+	 * 
+	 * @param ram
+	 *            the ram content
+	 * @param bitmapStartAddress
+	 *            the start address of the graphics memory
+	 * @param textramStartAddress
+	 *            the start address of the text memory. Only needed, if
+	 *            withColors is true.
+	 * @param multiColor
+	 *            is multicolor mode being used?
+	 * @param withColors
+	 *            if true, colors from text/color ram will be taken into
+	 *            account. If false, default colors will be used.
+	 * @return the image (always 320*200)
+	 */
 	public static BufferedImage createImage(int[] ram, int bitmapStartAddress, int textramStartAddress, boolean multiColor, boolean withColors) {
-    BufferedImage bi = new BufferedImage(320, 200, BufferedImage.TYPE_INT_RGB);
-    fillImage(ram, bitmapStartAddress, textramStartAddress, multiColor, withColors, bi);
-    return bi;
-  }
+		BufferedImage bi = new BufferedImage(320, 200, BufferedImage.TYPE_INT_RGB);
+		fillImage(ram, bitmapStartAddress, textramStartAddress, multiColor, withColors, bi);
+		return bi;
+	}
 
 	/**
 	 * Fills an image with the content of a hires screen from memory. It can

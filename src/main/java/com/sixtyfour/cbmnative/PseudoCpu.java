@@ -35,7 +35,7 @@ import com.sixtyfour.util.VarUtils;
  */
 public class PseudoCpu {
 
-	public final static int MEM_SIZE = 16384;
+	public final static int MEM_SIZE = 32768;
 	public final static int A = 5; // pointer / int
 	public final static int B = 6; // pointer / int
 	public final static int C = 7; // parameter / float
@@ -92,7 +92,7 @@ public class PseudoCpu {
 		forStackPos = 0;
 		halt = false;
 		regs = new Number[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-		memory = new int[MEM_SIZE + MEM_SIZE / 2]; // normal string variable
+		memory = new int[MEM_SIZE * 2]; // normal string variable
 		// memory + work buffer
 
 		// Copy machine's memory content over to this cpu's
@@ -122,12 +122,12 @@ public class PseudoCpu {
 		}
 
 		addr = 0;
-		
-		List<String[]> splittedCode=new ArrayList<String[]>();
-		for (String line:code) {
-		  splittedCode.add(split(line, " "));
+
+		List<String[]> splittedCode = new ArrayList<String[]>();
+		for (String line : code) {
+			splittedCode.add(split(line, " "));
 		}
-		
+
 		do {
 			String[] parts = splittedCode.get(addr++);
 			// System.out.println("-_> "+line);
@@ -221,8 +221,8 @@ public class PseudoCpu {
 						je(parts);
 						break;
 					case "JNE":
-            jne(parts);
-            break;
+						jne(parts);
+						break;
 					case "RTS":
 						rts(parts);
 						break;
@@ -255,7 +255,7 @@ public class PseudoCpu {
 					}
 				}
 			} catch (Exception e) {
-				throw new RuntimeException("Error while executing: " + code.get(addr-1), e);
+				throw new RuntimeException("Error while executing: " + code.get(addr - 1), e);
 			}
 		} while (!halt && addr < code.size());
 	}
@@ -263,46 +263,46 @@ public class PseudoCpu {
 	public void compactMemory() {
 		this.collectGarbage();
 	}
-	
-	 /**
-   * @return
-   */
-  public Deque<Number> getStack() {
-    return stack;
-  }
 
-  public String getStringFromStack() {
-    Integer num = (Integer) stack.pop();
-    return readString(num);
-  }
+	/**
+	 * @return
+	 */
+	public Deque<Number> getStack() {
+		return stack;
+	}
 
-  public Object getVariableValue(String name) {
-    name = name.toUpperCase(Locale.ENGLISH);
-    if (name.contains("$")) {
-      return readString(memLocations.get(name));
-    }
-    return this.machine.getVariable(name).eval(machine);
-  }
+	public String getStringFromStack() {
+		Integer num = (Integer) stack.pop();
+		return readString(num);
+	}
 
-  public Object getVariableValue(String name, int... pos) {
-    name = name.toUpperCase(Locale.ENGLISH);
-    if (!name.endsWith("[]")) {
-      name = name + "[]";
-    }
-    Variable var = machine.getVariable(name);
-    int offset = calcArrayOffset(var, pos);
-    int val = memLocations.get(name) + 2 + offset;
-    if (name.contains("$")) {
-      return readString(memory[val]);
-    } else if (name.contains("%")) {
-      return memory[val];
-    }
-    return Float.intBitsToFloat(memory[val]);
-  }
-  
-  public int[] getRam() {
-    return memory;
-  }
+	public Object getVariableValue(String name) {
+		name = name.toUpperCase(Locale.ENGLISH);
+		if (name.contains("$")) {
+			return readString(memLocations.get(name));
+		}
+		return this.machine.getVariable(name).eval(machine);
+	}
+
+	public Object getVariableValue(String name, int... pos) {
+		name = name.toUpperCase(Locale.ENGLISH);
+		if (!name.endsWith("[]")) {
+			name = name + "[]";
+		}
+		Variable var = machine.getVariable(name);
+		int offset = calcArrayOffset(var, pos);
+		int val = memLocations.get(name) + 2 + offset;
+		if (name.contains("$")) {
+			return readString(memory[val]);
+		} else if (name.contains("%")) {
+			return memory[val];
+		}
+		return Float.intBitsToFloat(memory[val]);
+	}
+
+	public int[] getRam() {
+		return memory;
+	}
 
 	private String[] split(String line, String delimiter) {
 		int pos = line.indexOf(delimiter);
@@ -491,29 +491,32 @@ public class PseudoCpu {
 			condJump(parts);
 		}
 	}
-	
-	private void jne(String[] parts) {
-    if (!zeroFlag) {
-      condJump(parts);
-    }
-  }
 
-  private void condJump(String[] parts)
-  {
-    String addry = parts[1].trim();
-    try {
-      if (addry.startsWith("(") && addry.endsWith(")")) {
-        addry = addry.substring(1, addry.length() - 1);
-        int ia = Integer.parseInt(addry);
-        this.addr = (memory[ia] & 0xff) + ((memory[ia + 1] & 0xff) << 8) + ((memory[ia + 2] & 0xff) << 16) + ((memory[ia + 3] & 0xff) << 24);
-      } else {
-        jumpTo(addry);
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
-      throw new RuntimeException("Undefined call address: " + parts[1] + " in " + (addr - 1));
-    }
-  }
+	private void jne(String[] parts) {
+		if (!zeroFlag) {
+			condJump(parts);
+		}
+	}
+
+	private void condJump(String[] parts) {
+		String addry = parts[1].trim();
+		try {
+			if (addry.startsWith("(") && addry.endsWith(")")) {
+				if (addry.contains("$JUMP")) {
+					addry = String.valueOf(MEM_SIZE - 4);
+				} else {
+					addry = addry.substring(1, addry.length() - 1);
+				}
+				int ia = Integer.parseInt(addry);
+				this.addr = (memory[ia] & 0xff) + ((memory[ia + 1] & 0xff) << 8) + ((memory[ia + 2] & 0xff) << 16) + ((memory[ia + 3] & 0xff) << 24);
+			} else {
+				jumpTo(addry);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException("Undefined call address: " + parts[1] + " in " + (addr - 1));
+		}
+	}
 
 	private void jsr(String[] parts) {
 

@@ -16,9 +16,9 @@ import com.sixtyfour.util.VarUtils;
  */
 public class On extends AbstractCommand {
 
-  private static int onCount=0;
-  
-  /** The pc. */
+	private static int onCount = 0;
+
+	/** The pc. */
 	private BasicProgramCounter pc = new BasicProgramCounter(0, 0); // Recycle
 																	// instance
 
@@ -105,40 +105,40 @@ public class On extends AbstractCommand {
 		}
 		return pc;
 	}
-	
+
 	@Override
-  public List<CodeContainer> evalToCode(Machine machine) {
-    NativeCompiler compiler = NativeCompiler.getCompiler();
-    List<String> after = new ArrayList<String>();
-    List<String> expr = compiler.compileToPseudoCode(machine, term);
-    List<String> before = null;
+	public List<CodeContainer> evalToCode(Machine machine) {
+		NativeCompiler compiler = NativeCompiler.getCompiler();
+		List<String> after = new ArrayList<String>();
+		List<String> expr = compiler.compileToPseudoCode(machine, term);
+		List<String> before = null;
 
-    String expPush = getPushRegister(expr.get(expr.size() - 1));
-    expr = expr.subList(0, expr.size() - 1); 
-    
-    int oc = onCount++;
-    
-    String label = "SKIPON" + oc;
+		String expPush = getPushRegister(expr.get(expr.size() - 1));
+		expr = expr.subList(0, expr.size() - 1);
 
-    after.add("INT "+expPush+","+expPush);
-    for (int i=0; i<lineNumbers.size(); i++) {
-      after.add("ON"+oc+"SUB"+i+":");
-      after.add("CMP " + expPush + ",#"+(i+1)+"{INTEGER}");
-      if (this.gosub) {
-        after.add("JNE "+((i==lineNumbers.size()-1)?label:("ON"+oc+"SUB"+(i+1))));
-        after.add("JSR GOSUB");
-        after.add("JSR "+lineNumbers.get(i));
-        after.add("JMP "+label);
-      } else {
-        after.add("JE " + lineNumbers.get(i));
-      }
-    }
-    after.add(label + ":");
+		int oc = onCount++;
 
-    CodeContainer cc = new CodeContainer(before, expr, after);
-    List<CodeContainer> ccs = new ArrayList<CodeContainer>();
-    ccs.add(cc);
-    return ccs;
-  }
+		String label = "SKIPON" + oc;
+
+		after.add("INT " + expPush + "," + expPush);
+		for (int i = 0; i < lineNumbers.size(); i++) {
+			after.add("ON" + oc + "SUB" + i + ":");
+			after.add("CMP " + expPush + ",#" + (i + 1) + "{INTEGER}");
+			if (this.gosub) {
+				after.add("JNE " + ((i == lineNumbers.size() - 1) ? label : ("ON" + oc + "SUB" + (i + 1))));
+				after.add("JSR GOSUB");
+				after.add("JSR " + lineNumbers.get(i));
+				after.add("JMP " + label);
+			} else {
+				after.add("JE " + lineNumbers.get(i));
+			}
+		}
+		after.add(label + ":");
+
+		CodeContainer cc = new CodeContainer(before, expr, after);
+		List<CodeContainer> ccs = new ArrayList<CodeContainer>();
+		ccs.add(cc);
+		return ccs;
+	}
 
 }

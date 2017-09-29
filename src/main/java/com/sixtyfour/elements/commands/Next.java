@@ -119,7 +119,7 @@ public class Next extends AbstractCommand {
 		}
 		after.add("JSR NEXT");
 		after.add("CMP A,#0{INTEGER}");
-		after.add("JE (16380)");
+		after.add("JE ($JUMP)");
 
 		CodeContainer cc = new CodeContainer(before, expr, after);
 		List<CodeContainer> ccs = new ArrayList<CodeContainer>();

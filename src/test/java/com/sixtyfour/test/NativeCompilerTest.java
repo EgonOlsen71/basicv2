@@ -22,7 +22,7 @@ import com.sixtyfour.system.Machine;
 
 public class NativeCompilerTest {
 
-	public static void main(String[] args) throws Exception{
+	public static void main(String[] args) throws Exception {
 		testExpression0();
 		testExpression1();
 		testExpression2();
@@ -83,21 +83,21 @@ public class NativeCompilerTest {
 		testFractal();
 		testOnSomething();
 	}
-	
+
 	private static void testOnSomething() {
-    System.out.println("\n\ntestOnSomething");
-    String[] prime = Loader.loadProgram("src/test/resources/basic/onstuff.bas");
-    compileAndRun(prime);
-  }
-	
-	private static void testFractal()  throws Exception {
-    System.out.println("\n\ntestFractal");
-    String[] prime = Loader.loadProgram("src/test/resources/basic/fractal_native.bas");
-    PseudoCpu pc=compileAndRun(prime);
-    BufferedImage bi = Graphics.createImage(pc.getRam(), 8000, 1024, true, false);
-    FileOutputStream fos = new FileOutputStream("fractal_native.png");
-    Graphics.savePng(bi, fos);
-  }
+		System.out.println("\n\ntestOnSomething");
+		String[] prime = Loader.loadProgram("src/test/resources/basic/onstuff.bas");
+		compileAndRun(prime);
+	}
+
+	private static void testFractal() throws Exception {
+		System.out.println("\n\ntestFractal");
+		String[] prime = Loader.loadProgram("src/test/resources/basic/fractal_native.bas");
+		PseudoCpu pc = compileAndRun(prime);
+		BufferedImage bi = Graphics.createImage(pc.getRam(), 8000, 1024, true, false);
+		FileOutputStream fos = new FileOutputStream("fractal_native.png");
+		Graphics.savePng(bi, fos);
+	}
 
 	private static void testBeer() {
 		System.out.println("\n\ntestBeer");

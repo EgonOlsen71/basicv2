@@ -48,9 +48,9 @@ public class Lst extends AbstractCommand {
 		pc.setList(true);
 		return pc;
 	}
-	
+
 	@Override
-  public List<CodeContainer> evalToCode(Machine machine) {
-    return Util.createSingleCommand("NOP");
-  }
+	public List<CodeContainer> evalToCode(Machine machine) {
+		return Util.createSingleCommand("NOP");
+	}
 }
