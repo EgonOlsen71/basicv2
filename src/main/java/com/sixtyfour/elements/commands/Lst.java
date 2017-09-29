@@ -1,6 +1,11 @@
 package com.sixtyfour.elements.commands;
 
 import com.sixtyfour.system.Machine;
+
+import java.util.List;
+
+import com.sixtyfour.cbmnative.Util;
+import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.system.BasicProgramCounter;
 
 /**
@@ -43,4 +48,9 @@ public class Lst extends AbstractCommand {
 		pc.setList(true);
 		return pc;
 	}
+	
+	@Override
+  public List<CodeContainer> evalToCode(Machine machine) {
+    return Util.createSingleCommand("NOP");
+  }
 }
