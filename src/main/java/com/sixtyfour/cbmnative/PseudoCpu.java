@@ -98,6 +98,9 @@ public class PseudoCpu {
 		// Copy machine's memory content over to this cpu's
 		System.arraycopy(machine.getRam(), 0, memory, 0, memory.length);
 
+		// Writing datas into ram
+		createDatas(code);
+		
 		// Mapping Pseudo-memory addresses to simple typed variables
 		createVariables();
 
@@ -260,7 +263,7 @@ public class PseudoCpu {
 		} while (!halt && addr < code.size());
 	}
 
-	public void compactMemory() {
+  public void compactMemory() {
 		this.collectGarbage();
 	}
 
@@ -366,6 +369,22 @@ public class PseudoCpu {
 		}
 		// System.out.println("Mempointer(1): "+memPointer);
 	}
+	
+	private void createDatas(List<String> code)
+  {
+    for (String line:code) {
+      line=line.trim();
+      if (line.startsWith("DAT #")) {
+        int pos = line.lastIndexOf("{");
+        if (pos != -1) {
+          String ts = line.substring(pos + 1, line.lastIndexOf("}"));
+          String val = line.substring(0, pos);
+          Type type = Type.valueOf(ts);
+        }
+      }
+    }
+    
+  }
 
 	private void createArrays() {
 		Map<String, Variable> vars = machine.getVariables();

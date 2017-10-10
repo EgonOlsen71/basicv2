@@ -3,6 +3,8 @@ package com.sixtyfour.elements.commands;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sixtyfour.cbmnative.Util;
+import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.system.DataStore;
 import com.sixtyfour.system.Machine;
 
@@ -43,6 +45,11 @@ public class Data extends AbstractCommand {
 	public boolean keepSpaces() {
 		return true;
 	}
+	
+	@Override
+  public List<CodeContainer> evalToCode(Machine machine) {
+    return Util.createNoCommand();
+  }
 
 	/**
 	 * Gets the parts.

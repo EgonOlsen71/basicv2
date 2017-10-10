@@ -19,4 +19,13 @@ public class Util {
 		ccs.add(cc);
 		return ccs;
 	}
+	
+	
+	public static List<CodeContainer> createNoCommand() {
+    List<String> after = new ArrayList<String>();
+    CodeContainer cc = new CodeContainer(null, null, after);
+    List<CodeContainer> ccs = new ArrayList<CodeContainer>();
+    ccs.add(cc);
+    return ccs;
+  }
 }

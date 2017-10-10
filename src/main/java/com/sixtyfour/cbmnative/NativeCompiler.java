@@ -14,6 +14,7 @@ import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Line;
 import com.sixtyfour.parser.Term;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
+import com.sixtyfour.system.DataStore;
 import com.sixtyfour.system.Machine;
 
 /**
@@ -96,6 +97,24 @@ public class NativeCompiler {
 		if (!getLastEntry(mCode).equals("RTS")) {
 			mCode.add("RTS");
 		}
+		
+		DataStore datas=machine.getDataStore();
+		if (datas.size()>0) {
+		  mCode.add("DATA:"); 
+		  mCode.add("DAT #"+datas.size()+"{INTEGER}");
+		  datas.restore();
+		  Object obj=null;
+		  while((obj=datas.read())!=null) {
+		    String type="{STRING}";
+		    if (obj instanceof Integer) {
+		      type="{INTEGER}";
+		    } else if (obj instanceof Float) {
+		      type="{REAL}";
+		    }
+		    mCode.add("DAT #"+obj.toString()+type);
+		  }
+		}
+		
 		Logger.log("Compiled to pseudo code in: " + (System.currentTimeMillis() - s) + "ms");
 		return mCode;
 	}

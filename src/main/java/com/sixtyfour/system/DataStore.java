@@ -23,6 +23,15 @@ public class DataStore {
 	}
 
 	/**
+	 * Returns the size of the current data store.
+	 * 
+	 * @return the size
+	 */
+	public int size() {
+	  return datas.size();
+	}
+	
+	/**
 	 * Adds a date. Internally, this will be converted to either an Integer or a
 	 * Float or it will remain a String.
 	 * 
