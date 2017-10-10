@@ -101,7 +101,6 @@ public class NativeCompiler {
 		DataStore datas=machine.getDataStore();
 		if (datas.size()>0) {
 		  mCode.add("DATA:"); 
-		  mCode.add("DAT #"+datas.size()+"{INTEGER}");
 		  datas.restore();
 		  Object obj=null;
 		  while((obj=datas.read())!=null) {

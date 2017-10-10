@@ -80,10 +80,17 @@ public class NativeCompilerTest {
 		testFor1();
 
 		testBeer();
-		testFractal();
+		//testFractal();
 		testOnSomething();
+		testReadData();
 	}
 
+	private static void testReadData() {
+		System.out.println("\n\ntestReadData");
+		String[] rd = Loader.loadProgram("src/test/resources/basic/readdata.bas");
+		compileAndRun(rd);
+	}
+	
 	private static void testOnSomething() {
 		System.out.println("\n\ntestOnSomething");
 		String[] prime = Loader.loadProgram("src/test/resources/basic/onstuff.bas");

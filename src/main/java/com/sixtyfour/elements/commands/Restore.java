@@ -1,5 +1,9 @@
 package com.sixtyfour.elements.commands;
 
+import java.util.List;
+
+import com.sixtyfour.cbmnative.Util;
+import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.system.BasicProgramCounter;
 
@@ -41,5 +45,10 @@ public class Restore extends AbstractCommand {
 	public BasicProgramCounter execute(Machine machine) {
 		machine.getDataStore().restore();
 		return null;
+	}
+	
+	@Override
+	public List<CodeContainer> evalToCode(Machine machine) {
+		return Util.createSingleCommand("JSR RESTORE");
 	}
 }

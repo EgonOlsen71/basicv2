@@ -56,6 +56,9 @@ public class PseudoCpu {
 	private boolean halt = false;
 	private int[] memory = null;
 	private int addr = 0;
+	private int datasAddr = MEM_SIZE;
+	private int datasPointer = MEM_SIZE;
+	private int datasSize = 0;
 	private int jumpTargetAddr = MEM_SIZE - 4;
 	private Map<String, Integer> memLocations = new HashMap<String, Integer>();
 	private Map<Integer, String> varLocations = new HashMap<Integer, String>();
@@ -100,7 +103,7 @@ public class PseudoCpu {
 
 		// Writing datas into ram
 		createDatas(code);
-		
+
 		// Mapping Pseudo-memory addresses to simple typed variables
 		createVariables();
 
@@ -263,7 +266,7 @@ public class PseudoCpu {
 		} while (!halt && addr < code.size());
 	}
 
-  public void compactMemory() {
+	public void compactMemory() {
 		this.collectGarbage();
 	}
 
@@ -369,22 +372,34 @@ public class PseudoCpu {
 		}
 		// System.out.println("Mempointer(1): "+memPointer);
 	}
-	
-	private void createDatas(List<String> code)
-  {
-    for (String line:code) {
-      line=line.trim();
-      if (line.startsWith("DAT #")) {
-        int pos = line.lastIndexOf("{");
-        if (pos != -1) {
-          String ts = line.substring(pos + 1, line.lastIndexOf("}"));
-          String val = line.substring(0, pos);
-          Type type = Type.valueOf(ts);
-        }
-      }
-    }
-    
-  }
+
+	private void createDatas(List<String> code) {
+		datasAddr = memPointer++;
+		for (String line : code) {
+			line = line.trim();
+			if (line.startsWith("DAT #")) {
+				int pos = line.lastIndexOf("{");
+				if (pos != -1) {
+					String ts = line.substring(pos + 1, line.lastIndexOf("}"));
+					String val = line.substring(5, pos);
+					Type type = Type.valueOf(ts);
+					// System.out.println("Type: " + type + "/" + memPointer);
+					if (type == Type.INTEGER) {
+						memory[memPointer++] = 0;
+						memory[memPointer++] = Integer.valueOf(val);
+					} else if (type == Type.REAL) {
+						memory[memPointer++] = 1;
+						memory[memPointer++] = Float.floatToIntBits(Float.valueOf(val));
+					} else {
+						memory[memPointer++] = 2;
+						this.storeString(null, val);
+					}
+				}
+			}
+		}
+		memory[datasAddr] = memPointer - datasAddr;
+		restore(null);
+	}
 
 	private void createArrays() {
 		Map<String, Variable> vars = machine.getVariables();
@@ -630,6 +645,15 @@ public class PseudoCpu {
 		case "COPYSTR":
 			copyString(parts);
 			return;
+		case "RESTORE":
+			restore(parts);
+			return;
+		case "READSTR":
+			readString(parts);
+			return;
+		case "READNUMBER":
+			readNumber(parts);
+			return;
 		default:
 			jumpStack.push(addr);
 			jmp(parts);
@@ -836,6 +860,47 @@ public class PseudoCpu {
 		}
 		this.bufferPos = MEM_SIZE;
 		this.bufferStart = MEM_SIZE;
+	}
+
+	private void restore(String[] parts) {
+		datasPointer = datasAddr;
+		datasSize = memory[datasPointer++];
+		// System.out.println("DP: " + datasPointer + "/" + datasSize + "/" +
+		// memory[datasPointer]);
+		// for (int i = datasAddr; i < datasAddr + datasSize; i++) {
+		// System.out.print(memory[i] + ",");
+		// }
+		// System.out.println();
+	}
+
+	private void readString(String[] parts) {
+		checkDataPointer();
+		int type = memory[datasPointer++];
+		if (type != 2) {
+			throw new RuntimeException("Type mismatch: " + type);
+		}
+		regs[A] = datasPointer;
+		datasPointer += memory[datasPointer++] + 1;
+	}
+
+	private void readNumber(String[] parts) {
+		checkDataPointer();
+		int type = memory[datasPointer++];
+		if (type == 2) {
+			throw new RuntimeException("Type mismatch: " + type);
+		}
+		if (type == 0) {
+			regs[Y] = memory[datasPointer++];
+		} else {
+			regs[Y] = Float.intBitsToFloat(memory[datasPointer++]);
+		}
+
+	}
+
+	private void checkDataPointer() {
+		if (datasPointer - datasAddr >= datasSize) {
+			throw new RuntimeException("Out of data: " + datasPointer + "/" + datasAddr + "/" + datasSize);
+		}
 	}
 
 	private void copyStringResult(String snum) {

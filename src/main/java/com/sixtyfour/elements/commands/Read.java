@@ -1,12 +1,15 @@
 package com.sixtyfour.elements.commands;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import com.sixtyfour.cbmnative.NativeCompiler;
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.elements.Variable;
 import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.Term;
+import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.system.BasicProgramCounter;
 import com.sixtyfour.system.DataStore;
 import com.sixtyfour.system.Machine;
@@ -122,6 +125,42 @@ public class Read extends MultiVariableCommand {
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public List<CodeContainer> evalToCode(Machine machine) {
+		NativeCompiler compiler = NativeCompiler.getCompiler();
+		List<CodeContainer> ccs = new ArrayList<CodeContainer>();
+
+		for (int i = 0; i < vars.size(); i++) {
+			Term indexTerm = indexTerms.get(i);
+			Variable var = this.getVariable(machine, i);
+			List<String> after = new ArrayList<String>();
+			List<String> expr = new ArrayList<String>();
+			List<String> before = null;
+
+			if (var.getType() == Type.STRING) {
+				expr.add("JSR READSTR");
+			} else if (var.getType() == Type.INTEGER || var.getType() == Type.REAL) {
+				expr.add("JSR READNUMBER");
+			}
+
+			if (indexTerm != null) {
+				List<Atom> pars = Parser.getParameters(indexTerm);
+				before = compiler.compileToPseudoCode(machine, Parser.createIndexTerm(machine, pars, var.getDimensions()));
+
+				after.add("POP X");
+				after.add("MOV G," + getVariableLabel(machine, var));
+				after.add("JSR ARRAYSTORE");
+			} else {
+				after.add("MOV " + getVariableLabel(machine, var) + "," + (var.getType() == Type.STRING ? "A" : "Y"));
+			}
+
+			CodeContainer cc = new CodeContainer(before, expr, after);
+			ccs.add(cc);
+		}
+		return ccs;
+
 	}
 
 	private void typeMismatchRead(Object obj) {
