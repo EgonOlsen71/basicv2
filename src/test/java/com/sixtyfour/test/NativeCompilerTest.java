@@ -80,7 +80,7 @@ public class NativeCompilerTest {
 		testFor1();
 
 		testBeer();
-		//testFractal();
+		testFractal();
 		testOnSomething();
 		testReadData();
 	}
