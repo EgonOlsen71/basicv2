@@ -26,6 +26,7 @@ import com.sixtyfour.elements.functions.Str;
 import com.sixtyfour.elements.functions.Tab;
 import com.sixtyfour.elements.functions.Val;
 import com.sixtyfour.parser.Parser;
+import com.sixtyfour.plugins.SystemCallListener;
 import com.sixtyfour.system.DataStore;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
@@ -83,6 +84,8 @@ public class PseudoCpu {
 	private Function tab = new Tab();
 	private Function spc = new Spc();
 	private Map<String, Long> label2line = new HashMap<>();
+	private SystemCallListener callListener=null;
+	private int memoryLimit=MEM_SIZE;
 
 	/**
 	 * @param code
@@ -99,8 +102,7 @@ public class PseudoCpu {
 		forStackPos = 0;
 		halt = false;
 		regs = new Number[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-		memory = new int[MEM_SIZE * 2]; // normal string variable
-		// memory + work buffer
+		memory = new int[MEM_SIZE * 2]; // normal memory + work buffer
 
 		// Copy machine's memory content over to this cpu's
 		System.arraycopy(machine.getRam(), 0, memory, 0, memory.length);
@@ -143,7 +145,6 @@ public class PseudoCpu {
 
 		do {
 			String[] parts = splittedCode.get(addr++);
-			// System.out.println("-_> "+line);
 			try {
 				if (parts.length > 0) {
 
@@ -316,6 +317,16 @@ public class PseudoCpu {
 	public int[] getRam() {
 		return memory;
 	}
+	
+	public SystemCallListener getSystemCallListener()
+  {
+    return callListener;
+  }
+
+  public void setSystemCallListener(SystemCallListener callListener)
+  {
+    this.callListener = callListener;
+  }
 
 	private String[] split(String line, String delimiter) {
 		int pos = line.indexOf(delimiter);
@@ -531,7 +542,16 @@ public class PseudoCpu {
 		try {
 			jumpTo(addry);
 		} catch (Exception e) {
-			throw new RuntimeException("Undefined call address: " + parts[1]);
+		  if (callListener!=null) {
+		    try {
+		      callListener.sys(Integer.valueOf(addry));
+		      jumpStack.pop();
+		    } catch(Exception e2) {
+		      throw new RuntimeException("Undefined call address: " + parts[1]);
+		    }
+		  } else {
+		    throw new RuntimeException("Undefined call address: " + parts[1]);
+		  }
 		}
 	}
 
@@ -1003,18 +1023,18 @@ public class PseudoCpu {
 	}
 
 	private void checkMemory(int addSize) {
-		if (memPointer + addSize >= MEM_SIZE) {
-			throw new RuntimeException("Out of memory: " + MEM_SIZE + "/" + addSize);
+		if (memPointer + addSize >= memoryLimit) {
+			throw new RuntimeException("Out of memory: " + memoryLimit + "/" + addSize);
 		}
 	}
 
 	private void collectGarbage() {
 		int lookFor = stringStart;
-		int closest = MEM_SIZE;
+		int closest = memoryLimit;
 		int highest = stringStart;
 
 		do {
-			closest = MEM_SIZE;
+			closest = memoryLimit;
 			highest = 0;
 			for (int i = 0; i < stringNames.size(); i++) {
 				String name = stringNames.get(i);
@@ -1065,8 +1085,8 @@ public class PseudoCpu {
 				}
 			}
 
-			if (closest < MEM_SIZE) {
-				int size = MEM_SIZE - closest;
+			if (closest < memoryLimit) {
+				int size = memoryLimit - closest;
 				if (lookFor > closest) {
 					throw new RuntimeException("Invalid memory locations: " + closest + "/" + lookFor);
 				}
@@ -1105,7 +1125,7 @@ public class PseudoCpu {
 					}
 				}
 			}
-		} while (closest < MEM_SIZE);
+		} while (closest < memoryLimit);
 
 		if (highest == memPointer) {
 			// Logger.log("Memory pointer stays at " + memPointer);
@@ -1713,6 +1733,7 @@ public class PseudoCpu {
 				} else {
 					if (target.startsWith("(") && target.endsWith(")")) {
 						memory[regs[ti].intValue()] = regs[si].intValue() & 0xff;
+						//System.out.println(regs[ti].intValue()+"/"+(regs[si].intValue() & 0xff)+"/"+memory[regs[ti].intValue()]);
 					} else {
 						regs[ti] = regs[si];
 					}
@@ -1790,7 +1811,17 @@ public class PseudoCpu {
 		return ti;
 	}
 
-	private static interface Calc {
+  public int getMemoryLimit()
+  {
+    return memoryLimit;
+  }
+
+  public void setMemoryLimit(int memoryLimit)
+  {
+    this.memoryLimit = memoryLimit;
+  }
+
+  private static interface Calc {
 		Number calc(Number n1, Number n2);
 
 		String op();

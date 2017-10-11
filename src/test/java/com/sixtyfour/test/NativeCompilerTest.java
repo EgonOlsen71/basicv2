@@ -1,11 +1,17 @@
 package com.sixtyfour.test;
 
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Deque;
 import java.util.List;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 import com.sixtyfour.Basic;
 import com.sixtyfour.Loader;
@@ -16,7 +22,9 @@ import com.sixtyfour.elements.Variable;
 import com.sixtyfour.elements.functions.Spc;
 import com.sixtyfour.elements.functions.Tab;
 import com.sixtyfour.parser.Parser;
+import com.sixtyfour.parser.Preprocessor;
 import com.sixtyfour.parser.Term;
+import com.sixtyfour.plugins.impl.RamSystemCallListener;
 import com.sixtyfour.system.Graphics;
 import com.sixtyfour.system.Machine;
 
@@ -80,11 +88,70 @@ public class NativeCompilerTest {
 		testFor1();
 
 		testBeer();
-		testFractal();
+		//testFractal();
 		testOnSomething();
 		testReadData();
 		//testGet();
+		testBasicMapper();
 	}
+	
+	private static void testBasicMapper() throws Exception {
+	  System.out.println("\n\ntestBasicMapper");
+    final BufferedImage bi = new BufferedImage(320, 200, BufferedImage.TYPE_INT_RGB);
+    Graphics2D g = bi.createGraphics();
+    g.setColor(Color.RED);
+    g.fillRect(0, 0, 320, 200);
+
+    final JFrame o = new JFrame();
+    JPanel panel = new JPanel() {
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      protected void paintComponent(java.awt.Graphics g) {
+        super.paintComponent(g);
+        g.drawImage(bi, 0, 0, null);
+      }
+    };
+    o.setSize(new Dimension(320, 240));
+    panel.setSize(new Dimension(320, 240));
+    o.add(panel);
+    o.setVisible(true);
+    o.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    g.setColor(Color.BLACK);
+    g.dispose();
+
+    String[] vary = Loader.loadProgram("src/test/resources/basic/affine.bas");
+
+    vary = Preprocessor.convertToLineNumbers(vary);
+    Basic inty = new Basic(vary);
+    final PseudoCpu pc = new PseudoCpu();
+    inty.compile();
+    pc.setSystemCallListener(new RamSystemCallListener(inty.getMachine()) {
+      @Override
+      public void sys(int addr, Object... params) {
+        if (addr == 832) {
+          Graphics.fillImage(pc.getRam(), 16384, 24576, true, true, bi);
+          o.repaint();
+          Thread.yield();
+        } 
+      }
+
+      @Override
+      public float usr(Object params) {
+        return super.usr(params);
+      }
+    });
+    
+    List<String> mCode = testMachineCode(inty);
+    pc.setMemoryLimit(16000);
+    pc.execute(inty.getMachine(), mCode);
+    
+    System.out.println("Saving image!");
+    BufferedImage bi2 = Graphics.createImage(pc.getRam(), 16384, 24576, true, true);
+    FileOutputStream fos = new FileOutputStream("affine_native.png");
+    Graphics.savePng(bi2, fos);
+    System.out.println("Done!");
+  }
 	
 	@SuppressWarnings("unused")
   private static void testGet() {
@@ -105,6 +172,7 @@ public class NativeCompilerTest {
 		compileAndRun(prime);
 	}
 
+	@SuppressWarnings("unused")
 	private static void testFractal() throws Exception {
 		System.out.println("\n\ntestFractal");
 		String[] prime = Loader.loadProgram("src/test/resources/basic/fractal_native.bas");

@@ -2,9 +2,11 @@ package com.sixtyfour.elements.commands;
 
 import java.util.List;
 
+import com.sixtyfour.cbmnative.Util;
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Parser;
+import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.system.BasicProgramCounter;
 import com.sixtyfour.util.VarUtils;
@@ -48,6 +50,15 @@ public class Sys extends AbstractCommand {
 		return null;
 	}
 
+	@Override
+  public List<CodeContainer> evalToCode(Machine machine) {
+	  int memAddr = VarUtils.getInt(addr.eval(machine));
+    if (memAddr < 0 || memAddr > 65535) {
+      throw new RuntimeException("Illegal quantity error: " + this);
+    }
+    return Util.createSingleCommand("JSR "+memAddr);
+  }
+	
 	/*
 	 * (non-Javadoc)
 	 * 
