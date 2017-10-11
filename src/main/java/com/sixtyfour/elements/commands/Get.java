@@ -7,6 +7,7 @@ import com.sixtyfour.elements.Variable;
 import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.Term;
+import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.system.BasicProgramCounter;
 import com.sixtyfour.util.VarUtils;
@@ -61,6 +62,11 @@ public class Get extends MultiVariableCommand {
 		return null;
 	}
 
+  @Override
+  public List<CodeContainer> evalToCode(Machine machine) {
+    return this.evalToCode(machine, "GETSTR", "GETNUMBER");
+  }
+	
 	/*
 	 * (non-Javadoc)
 	 * 

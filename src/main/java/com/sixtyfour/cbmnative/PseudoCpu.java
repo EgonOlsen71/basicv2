@@ -60,6 +60,9 @@ public class PseudoCpu {
 	private int datasAddr = MEM_SIZE;
 	private int datasPointer = MEM_SIZE;
 	private int datasSize = 0;
+	private int emptyReal=0;
+	private int emptyString=0;
+	private int emptyInteger=0;
 	private int jumpTargetAddr = MEM_SIZE - 4;
 	private Map<String, Integer> memLocations = new HashMap<String, Integer>();
 	private Map<Integer, String> varLocations = new HashMap<Integer, String>();
@@ -105,6 +108,9 @@ public class PseudoCpu {
 		// Writing datas into ram
 		createDatas();
 
+		// Create emptry placeholders
+		createEmtpyVariables();
+		
 		// Mapping Pseudo-memory addresses to simple typed variables
 		createVariables();
 
@@ -353,9 +359,17 @@ public class PseudoCpu {
 				varLocations.put(System.identityHashCode(var), name);
 			}
 		}
-
 	}
 
+	private void createEmtpyVariables() {
+	  emptyString=memPointer;
+	  storeString(null, "");
+	  emptyInteger=memPointer++;
+	  memory[emptyInteger]=0;
+	  emptyReal=memPointer++;
+    memory[emptyReal]=Float.floatToIntBits(0f);
+	}
+	
 	private void createStringVariables() {
 		stringStart = memPointer;
 		Map<String, Variable> vars = machine.getVariables();
@@ -655,6 +669,12 @@ public class PseudoCpu {
 		case "READNUMBER":
 			readNumber(parts);
 			return;
+		case "GETSTR":
+      getString(parts);
+      return;
+    case "GETNUMBER":
+      getNumber(parts);
+      return;
 		default:
 			jumpStack.push(addr);
 			jmp(parts);
@@ -852,12 +872,10 @@ public class PseudoCpu {
 	}
 
 	private void copyString(String[] parts) {
-		// System.out.println("Mempointer(2): "+memPointer);
 		int fromAddr = regs[A].intValue();
 		if (fromAddr >= MEM_SIZE) {
 			String toCopy = this.readString(fromAddr);
 			copyStringResult(toCopy);
-			// System.out.println("FROM: "+fromAddr+" to "+regs[A]);
 		}
 		this.bufferPos = MEM_SIZE;
 		this.bufferStart = MEM_SIZE;
@@ -866,12 +884,25 @@ public class PseudoCpu {
 	private void restore(String[] parts) {
 		datasPointer = datasAddr;
 		datasSize = memory[datasPointer++];
-		// System.out.println("DP: " + datasPointer + "/" + datasSize + "/" +
-		// memory[datasPointer]);
-		// for (int i = datasAddr; i < datasAddr + datasSize; i++) {
-		// System.out.print(memory[i] + ",");
-		// }
-		// System.out.println();
+	}
+	
+	private void getString(String[] parts) {
+	    Character c=machine.getInputProvider().readKey();
+	    if (c==null) {
+	      regs[A]=emptyString;
+	    } else {
+	      copyStringResult(c.toString());
+	    }
+	}
+	
+	private void getNumber(String[] parts) {
+    Character c=machine.getInputProvider().readKey();
+    if (c==null) {
+      regs[Y]=emptyReal;
+    } else {
+      c=ensureNumberKey(machine, c, true);
+      regs[Y]=Integer.valueOf(c.toString());
+    }
 	}
 
 	private void readString(String[] parts) {
@@ -884,6 +915,20 @@ public class PseudoCpu {
 		datasPointer += memory[datasPointer++] + 1;
 	}
 
+	private Character ensureNumberKey(Machine machine, Character input, boolean checkColon) {
+    if (input == '+' || input == '-' || input == '.' || input == ',' || input == 'e') {
+      input = '0';
+    }
+    if (checkColon && input == ':') {
+      machine.getOutputChannel().systemPrintln(0, "?Extra ignored:" + this);
+      input = '0';
+    }
+    if (input < '0' || input > '9') {
+      throw new RuntimeException("Invalid key!");
+    }
+    return input;
+  }
+	
 	private void readNumber(String[] parts) {
 		checkDataPointer();
 		int type = memory[datasPointer++];
@@ -895,7 +940,6 @@ public class PseudoCpu {
 		} else {
 			regs[Y] = Float.intBitsToFloat(memory[datasPointer++]);
 		}
-
 	}
 
 	private void checkDataPointer() {

@@ -83,7 +83,15 @@ public class NativeCompilerTest {
 		testFractal();
 		testOnSomething();
 		testReadData();
+		//testGet();
 	}
+	
+	@SuppressWarnings("unused")
+  private static void testGet() {
+    System.out.println("\n\ntestGet");
+    String[] rd = Loader.loadProgram("src/test/resources/basic/testget.bas");
+    compileAndRun(rd);
+  }
 
 	private static void testReadData() {
 		System.out.println("\n\ntestReadData");
