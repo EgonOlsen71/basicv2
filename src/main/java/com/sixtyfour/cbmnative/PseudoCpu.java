@@ -26,6 +26,7 @@ import com.sixtyfour.elements.functions.Str;
 import com.sixtyfour.elements.functions.Tab;
 import com.sixtyfour.elements.functions.Val;
 import com.sixtyfour.parser.Parser;
+import com.sixtyfour.system.DataStore;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
@@ -102,7 +103,7 @@ public class PseudoCpu {
 		System.arraycopy(machine.getRam(), 0, memory, 0, memory.length);
 
 		// Writing datas into ram
-		createDatas(code);
+		createDatas();
 
 		// Mapping Pseudo-memory addresses to simple typed variables
 		createVariables();
@@ -373,29 +374,29 @@ public class PseudoCpu {
 		// System.out.println("Mempointer(1): "+memPointer);
 	}
 
-	private void createDatas(List<String> code) {
+	private void createDatas() {
 		datasAddr = memPointer++;
-		for (String line : code) {
-			line = line.trim();
-			if (line.startsWith("DAT #")) {
-				int pos = line.lastIndexOf("{");
-				if (pos != -1) {
-					String ts = line.substring(pos + 1, line.lastIndexOf("}"));
-					String val = line.substring(5, pos);
-					Type type = Type.valueOf(ts);
+		DataStore datas=machine.getDataStore();
+    datas.restore();
+    Object obj=null;
+    while((obj=datas.read())!=null) {
+					Type type = Type.STRING;
+					if (obj instanceof Integer) {
+	          type=Type.INTEGER;
+	        } else if (obj instanceof Float) {
+	          type=Type.REAL;
+	        }
 					// System.out.println("Type: " + type + "/" + memPointer);
 					if (type == Type.INTEGER) {
 						memory[memPointer++] = 0;
-						memory[memPointer++] = Integer.valueOf(val);
+						memory[memPointer++] = Integer.valueOf(obj.toString());
 					} else if (type == Type.REAL) {
 						memory[memPointer++] = 1;
-						memory[memPointer++] = Float.floatToIntBits(Float.valueOf(val));
+						memory[memPointer++] = Float.floatToIntBits(Float.valueOf(obj.toString()));
 					} else {
 						memory[memPointer++] = 2;
-						this.storeString(null, val);
+						this.storeString(null, obj.toString());
 					}
-				}
-			}
 		}
 		memory[datasAddr] = memPointer - datasAddr;
 		restore(null);
