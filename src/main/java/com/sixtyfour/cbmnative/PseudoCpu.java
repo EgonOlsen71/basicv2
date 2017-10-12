@@ -1033,11 +1033,11 @@ public class PseudoCpu {
 
 	private void collectGarbage() {
 		int lookFor = stringStart;
-		int closest = memoryLimit;
+		int closest = memPointer;
 		int highest = stringStart;
 
 		do {
-			closest = memoryLimit;
+			closest = memPointer;
 			highest = 0;
 			for (int i = 0; i < stringNames.size(); i++) {
 				String name = stringNames.get(i);
@@ -1088,8 +1088,8 @@ public class PseudoCpu {
 				}
 			}
 
-			if (closest < memoryLimit) {
-				int size = memoryLimit - closest;
+			if (closest < memPointer) {
+				int size = memPointer - closest;
 				if (lookFor > closest) {
 					throw new RuntimeException("Invalid memory locations: " + closest + "/" + lookFor);
 				}
@@ -1128,13 +1128,13 @@ public class PseudoCpu {
 					}
 				}
 			}
-		} while (closest < memoryLimit);
+		} while (closest < memPointer);
 
 		if (highest == memPointer) {
-			// Logger.log("Memory pointer stays at " + memPointer);
+			 //Logger.log("Memory pointer stays at " + memPointer);
 		} else {
-			// Logger.log("Moving memory pointer from " + memPointer + " to " +
-			// highest);
+			 //Logger.log("Moving memory pointer from " + memPointer + " to " +
+			 //highest);
 			memPointer = highest;
 		}
 	}
