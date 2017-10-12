@@ -240,6 +240,9 @@ public class PseudoCpu {
 					case "RTS":
 						rts(parts);
 						break;
+					case "BRK":
+					  halt=true;
+	          break;
 					case "CHGCTX":
 						nop(parts);
 						break;
