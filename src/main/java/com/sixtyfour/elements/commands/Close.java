@@ -47,11 +47,11 @@ public class Close extends AbstractCommand {
 	}
 
 	@Override
-  public List<CodeContainer> evalToCode(Machine machine) {
-    Logger.log("WARNING: CLOSE not implemented in native compiler!");
-    return Util.createSingleCommand("NOP");
-  }
-	
+	public List<CodeContainer> evalToCode(Machine machine) {
+		Logger.log("WARNING: CLOSE not implemented in native compiler!");
+		return Util.createSingleCommand("NOP");
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

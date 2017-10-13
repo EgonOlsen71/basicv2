@@ -104,7 +104,7 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 	 * @param machine
 	 *            the machine
 	 * @param consoleType
-	 *             the type of the console, >0 for a visible console, else hidden
+	 *            the type of the console, >0 for a visible console, else hidden
 	 * @param clear
 	 * @param x
 	 *            the width

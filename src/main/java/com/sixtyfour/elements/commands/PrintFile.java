@@ -52,11 +52,11 @@ public class PrintFile extends Print {
 	}
 
 	@Override
-  public List<CodeContainer> evalToCode(Machine machine) {
-    Logger.log("WARNING: PRINT# not implemented in native compiler!");
-    return Util.createSingleCommand("NOP");
-  }
-	
+	public List<CodeContainer> evalToCode(Machine machine) {
+		Logger.log("WARNING: PRINT# not implemented in native compiler!");
+		return Util.createSingleCommand("NOP");
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

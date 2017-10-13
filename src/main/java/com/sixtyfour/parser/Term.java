@@ -525,6 +525,33 @@ public class Term implements Atom {
 	}
 
 	/**
+	 * Gets the initial term, but truncated to first actual parameter.
+	 * 
+	 * @return the truncated term
+	 */
+	public String getTruncatedInitial() {
+		String ini = this.initial;
+		boolean inString = false;
+		int brackets = 0;
+		for (int ii = 0; ii < ini.length(); ii++) {
+			char c = ini.charAt(ii);
+			if (c == '"') {
+				inString = !inString;
+			} else if (!inString) {
+				if (c == '(') {
+					brackets++;
+				} else if (c == ')') {
+					brackets--;
+				} else if (c == ',' && brackets == 0) {
+					ini = ini.substring(0, ii);
+					break;
+				}
+			}
+		}
+		return ini;
+	}
+
+	/**
 	 * Sets the initial term.
 	 * 
 	 * @param initial

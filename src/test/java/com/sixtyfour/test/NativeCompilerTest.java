@@ -89,108 +89,108 @@ public class NativeCompilerTest {
 		testFor1();
 
 		testBeer();
-		//testFractal();
+		// testFractal();
 		testOnSomething();
 		testReadData();
-		//testGet();
-		//testInput();
+		// testGet();
+		// testInput();
 		testBasicMapper();
-		testLyrix();
+		//testLyrix();
 	}
-	
+
 	private static void testBasicMapper() throws Exception {
-	  System.out.println("\n\ntestBasicMapper");
-    final BufferedImage bi = new BufferedImage(320, 200, BufferedImage.TYPE_INT_RGB);
-    Graphics2D g = bi.createGraphics();
-    g.setColor(Color.RED);
-    g.fillRect(0, 0, 320, 200);
+		System.out.println("\n\ntestBasicMapper");
+		final BufferedImage bi = new BufferedImage(320, 200, BufferedImage.TYPE_INT_RGB);
+		Graphics2D g = bi.createGraphics();
+		g.setColor(Color.RED);
+		g.fillRect(0, 0, 320, 200);
 
-    final JFrame o = new JFrame();
-    JPanel panel = new JPanel() {
-      private static final long serialVersionUID = 1L;
+		final JFrame o = new JFrame();
+		JPanel panel = new JPanel() {
+			private static final long serialVersionUID = 1L;
 
-      @Override
-      protected void paintComponent(java.awt.Graphics g) {
-        super.paintComponent(g);
-        g.drawImage(bi, 0, 0, null);
-      }
-    };
-    o.setSize(new Dimension(320, 240));
-    panel.setSize(new Dimension(320, 240));
-    o.add(panel);
-    o.setVisible(true);
-    o.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    g.setColor(Color.BLACK);
-    g.dispose();
+			@Override
+			protected void paintComponent(java.awt.Graphics g) {
+				super.paintComponent(g);
+				g.drawImage(bi, 0, 0, null);
+			}
+		};
+		o.setSize(new Dimension(320, 240));
+		panel.setSize(new Dimension(320, 240));
+		o.add(panel);
+		o.setVisible(true);
+		o.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		g.setColor(Color.BLACK);
+		g.dispose();
 
-    String[] vary = Loader.loadProgram("src/test/resources/basic/affine.bas");
+		String[] vary = Loader.loadProgram("src/test/resources/basic/affine.bas");
 
-    vary = Preprocessor.convertToLineNumbers(vary);
-    Basic inty = new Basic(vary);
-    final PseudoCpu pc = new PseudoCpu();
-    inty.compile();
-    pc.setSystemCallListener(new RamSystemCallListener(inty.getMachine()) {
-      @Override
-      public void sys(int addr, Object... params) {
-        if (addr == 832) {
-          Graphics.fillImage(pc.getRam(), 16384, 24576, true, true, bi);
-          o.repaint();
-          Thread.yield();
-        } 
-      }
+		vary = Preprocessor.convertToLineNumbers(vary);
+		Basic inty = new Basic(vary);
+		final PseudoCpu pc = new PseudoCpu();
+		inty.compile();
+		pc.setSystemCallListener(new RamSystemCallListener(inty.getMachine()) {
+			@Override
+			public void sys(int addr, Object... params) {
+				if (addr == 832) {
+					Graphics.fillImage(pc.getRam(), 16384, 24576, true, true, bi);
+					o.repaint();
+					Thread.yield();
+				}
+			}
 
-      @Override
-      public float usr(Object params) {
-        return super.usr(params);
-      }
-    });
-    
-    List<String> mCode = testMachineCode(inty);
-    pc.setMemoryLimit(16000);
-    pc.execute(inty.getMachine(), mCode);
-    
-    System.out.println("Saving image!");
-    BufferedImage bi2 = Graphics.createImage(pc.getRam(), 16384, 24576, true, true);
-    FileOutputStream fos = new FileOutputStream("affine_native.png");
-    Graphics.savePng(bi2, fos);
-    System.out.println("Done!");
-  }
-	
-	//@SuppressWarnings("unused")
-  private static void testLyrix() {
-    System.out.println("\n\ntestLyrix");
-    String[] rd = Loader.loadProgram("src/test/resources/basic/lyrix_raw.bas");
-    Basic basic = new Basic(rd);
-    basic.compile();
-    ConsoleDevice cd=ConsoleDevice.openDevice(basic.getMachine(), 1, true, 640, 400);
-    runCompiled(basic);
-    cd.dispose();
-  }
-	
+			@Override
+			public float usr(Object params) {
+				return super.usr(params);
+			}
+		});
+
+		List<String> mCode = testMachineCode(inty);
+		pc.setMemoryLimit(16000);
+		pc.execute(inty.getMachine(), mCode);
+
+		System.out.println("Saving image!");
+		BufferedImage bi2 = Graphics.createImage(pc.getRam(), 16384, 24576, true, true);
+		FileOutputStream fos = new FileOutputStream("affine_native.png");
+		Graphics.savePng(bi2, fos);
+		System.out.println("Done!");
+	}
+
 	@SuppressWarnings("unused")
-  private static void testInput() {
-    System.out.println("\n\ntestInput");
-    String[] rd = Loader.loadProgram("src/test/resources/basic/input.bas");
-    Basic basic = new Basic(rd);
-    basic.compile();
-    ConsoleDevice cd=ConsoleDevice.openDevice(basic.getMachine(), 1, true, 640, 400);
-    runCompiled(basic);
-    cd.dispose();
-  }
-	
+	private static void testLyrix() {
+		System.out.println("\n\ntestLyrix");
+		String[] rd = Loader.loadProgram("src/test/resources/basic/lyrix_raw.bas");
+		Basic basic = new Basic(rd);
+		basic.compile();
+		ConsoleDevice cd = ConsoleDevice.openDevice(basic.getMachine(), 1, true, 640, 400);
+		runCompiled(basic);
+		cd.dispose();
+	}
+
 	@SuppressWarnings("unused")
-  private static void testGet() {
-    System.out.println("\n\ntestGet");
-    String[] rd = Loader.loadProgram("src/test/resources/basic/testget.bas");
-    compileAndRun(rd);
-  }
+	private static void testInput() {
+		System.out.println("\n\ntestInput");
+		String[] rd = Loader.loadProgram("src/test/resources/basic/input.bas");
+		Basic basic = new Basic(rd);
+		basic.compile();
+		ConsoleDevice cd = ConsoleDevice.openDevice(basic.getMachine(), 1, true, 640, 400);
+		runCompiled(basic);
+		cd.dispose();
+	}
+
+	@SuppressWarnings("unused")
+	private static void testGet() {
+		System.out.println("\n\ntestGet");
+		String[] rd = Loader.loadProgram("src/test/resources/basic/testget.bas");
+		compileAndRun(rd);
+	}
 
 	private static void testReadData() {
 		System.out.println("\n\ntestReadData");
 		String[] rd = Loader.loadProgram("src/test/resources/basic/readdata.bas");
 		compileAndRun(rd);
 	}
-	
+
 	private static void testOnSomething() {
 		System.out.println("\n\ntestOnSomething");
 		String[] prime = Loader.loadProgram("src/test/resources/basic/onstuff.bas");

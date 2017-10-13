@@ -51,14 +51,14 @@ public class Sys extends AbstractCommand {
 	}
 
 	@Override
-  public List<CodeContainer> evalToCode(Machine machine) {
-	  int memAddr = VarUtils.getInt(addr.eval(machine));
-    if (memAddr < 0 || memAddr > 65535) {
-      throw new RuntimeException("Illegal quantity error: " + this);
-    }
-    return Util.createSingleCommand("JSR "+memAddr);
-  }
-	
+	public List<CodeContainer> evalToCode(Machine machine) {
+		int memAddr = VarUtils.getInt(addr.eval(machine));
+		if (memAddr < 0 || memAddr > 65535) {
+			throw new RuntimeException("Illegal quantity error: " + this);
+		}
+		return Util.createSingleCommand("JSR " + memAddr);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

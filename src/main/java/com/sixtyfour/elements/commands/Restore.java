@@ -46,7 +46,7 @@ public class Restore extends AbstractCommand {
 		machine.getDataStore().restore();
 		return null;
 	}
-	
+
 	@Override
 	public List<CodeContainer> evalToCode(Machine machine) {
 		return Util.createSingleCommand("JSR RESTORE");

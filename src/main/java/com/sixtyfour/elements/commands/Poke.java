@@ -81,14 +81,14 @@ public class Poke extends AbstractCommand {
 		List<String> expr = compiler.compileToPseudoCode(machine, val);
 		List<String> before = null;
 
-    String expPush = getPushRegister(expr.get(expr.size() - 1));
+		String expPush = getPushRegister(expr.get(expr.size() - 1));
 		expr = expr.subList(0, expr.size() - 1);
 
 		before = compiler.compileToPseudoCode(machine, addr);
 
 		if (expPush.equals("Y")) {
-      expr.add("MOV X,Y");
-    }
+			expr.add("MOV X,Y");
+		}
 		after.add("POP Y");
 		after.add("MOV (Y),X");
 

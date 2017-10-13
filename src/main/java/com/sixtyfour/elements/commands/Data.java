@@ -45,11 +45,11 @@ public class Data extends AbstractCommand {
 	public boolean keepSpaces() {
 		return true;
 	}
-	
+
 	@Override
-  public List<CodeContainer> evalToCode(Machine machine) {
-    return Util.createNoCommand();
-  }
+	public List<CodeContainer> evalToCode(Machine machine) {
+		return Util.createNoCommand();
+	}
 
 	/**
 	 * Gets the parts.

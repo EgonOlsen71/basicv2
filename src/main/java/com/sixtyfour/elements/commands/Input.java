@@ -21,8 +21,8 @@ import com.sixtyfour.util.VarUtils;
  */
 public class Input extends MultiVariableCommand {
 
-  private static int inputCount = 0;
-  /** The comment. */
+	private static int inputCount = 0;
+	/** The comment. */
 	protected String comment = "";
 
 	/**
@@ -84,64 +84,64 @@ public class Input extends MultiVariableCommand {
 
 	@Override
 	public List<CodeContainer> evalToCode(Machine machine) {
-    NativeCompiler compiler = NativeCompiler.getCompiler();
-    List<CodeContainer> ccs = new ArrayList<CodeContainer>();
+		NativeCompiler compiler = NativeCompiler.getCompiler();
+		List<CodeContainer> ccs = new ArrayList<CodeContainer>();
 
-    String label="INPUT"+(inputCount++);
-    if (comment!=null) {
-      ccs.addAll(Util.createSingleCommand("MOV A,#"+comment+"{STRING}", "JSR STROUT"));
-    }
-    ccs.addAll(Util.createSingleCommand(label+":", "JSR CLEARQUEUE"));
-    
-    for (int i = 0; i < vars.size(); i++) {
-      Term indexTerm = indexTerms.get(i);
-      Variable var = this.getVariable(machine, i);
-      List<String> after = new ArrayList<String>();
-      List<String> expr = new ArrayList<String>();
-      List<String> before = null;
+		String label = "INPUT" + (inputCount++);
+		if (comment != null) {
+			ccs.addAll(Util.createSingleCommand("MOV A,#" + comment + "{STRING}", "JSR STROUT"));
+		}
+		ccs.addAll(Util.createSingleCommand(label + ":", "JSR CLEARQUEUE"));
 
-      if (i == 0) {
-        expr.add("MOV A,#? {STRING}");
-        expr.add("JSR STROUT");
-      } else {
-        expr.add("JSR QUEUESIZE");
-        expr.add("CMP X,#0{REAL}");
-        expr.add("JNE Q"+label+"_"+i);
-        expr.add("MOV A,#?? {STRING}");
-        expr.add("JSR STROUT");
-        expr.add("Q"+label+"_"+i+":");
-      }
-      
-      if (var.getType() == Type.STRING) {
-        expr.add("JSR INPUTSTR");
-      } else if (var.getType() == Type.INTEGER || var.getType() == Type.REAL) {
-        String label2=label+"_"+i;
-        expr.add("JSR INPUTNUMBER");
-        expr.add("CMP X,#0{REAL}");
-        expr.add("JE "+label2);
-        expr.add("MOV A,#?Redo from start{STRING}");
-        expr.add("JSR STROUT");
-        expr.add("JMP "+label);
-        expr.add(label2+":");
-      }
+		for (int i = 0; i < vars.size(); i++) {
+			Term indexTerm = indexTerms.get(i);
+			Variable var = this.getVariable(machine, i);
+			List<String> after = new ArrayList<String>();
+			List<String> expr = new ArrayList<String>();
+			List<String> before = null;
 
-      if (indexTerm != null) {
-        List<Atom> pars = Parser.getParameters(indexTerm);
-        before = compiler.compileToPseudoCode(machine, Parser.createIndexTerm(machine, pars, var.getDimensions()));
+			if (i == 0) {
+				expr.add("MOV A,#? {STRING}");
+				expr.add("JSR STROUT");
+			} else {
+				expr.add("JSR QUEUESIZE");
+				expr.add("CMP X,#0{REAL}");
+				expr.add("JNE Q" + label + "_" + i);
+				expr.add("MOV A,#?? {STRING}");
+				expr.add("JSR STROUT");
+				expr.add("Q" + label + "_" + i + ":");
+			}
 
-        after.add("POP X");
-        after.add("MOV G," + getVariableLabel(machine, var));
-        after.add("JSR ARRAYSTORE");
-      } else {
-        after.add("MOV " + getVariableLabel(machine, var) + "," + (var.getType() == Type.STRING ? "A" : "Y"));
-      }
+			if (var.getType() == Type.STRING) {
+				expr.add("JSR INPUTSTR");
+			} else if (var.getType() == Type.INTEGER || var.getType() == Type.REAL) {
+				String label2 = label + "_" + i;
+				expr.add("JSR INPUTNUMBER");
+				expr.add("CMP X,#0{REAL}");
+				expr.add("JE " + label2);
+				expr.add("MOV A,#?Redo from start{STRING}");
+				expr.add("JSR STROUT");
+				expr.add("JMP " + label);
+				expr.add(label2 + ":");
+			}
 
-      CodeContainer cc = new CodeContainer(before, expr, after);
-      ccs.add(cc);
-    }
-    return ccs;
-  }
-	
+			if (indexTerm != null) {
+				List<Atom> pars = Parser.getParameters(indexTerm);
+				before = compiler.compileToPseudoCode(machine, Parser.createIndexTerm(machine, pars, var.getDimensions()));
+
+				after.add("POP X");
+				after.add("MOV G," + getVariableLabel(machine, var));
+				after.add("JSR ARRAYSTORE");
+			} else {
+				after.add("MOV " + getVariableLabel(machine, var) + "," + (var.getType() == Type.STRING ? "A" : "Y"));
+			}
+
+			CodeContainer cc = new CodeContainer(before, expr, after);
+			ccs.add(cc);
+		}
+		return ccs;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

@@ -62,11 +62,11 @@ public class Get extends MultiVariableCommand {
 		return null;
 	}
 
-  @Override
-  public List<CodeContainer> evalToCode(Machine machine) {
-    return this.evalToCode(machine, "GETSTR", "GETNUMBER");
-  }
-	
+	@Override
+	public List<CodeContainer> evalToCode(Machine machine) {
+		return this.evalToCode(machine, "GETSTR", "GETNUMBER");
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

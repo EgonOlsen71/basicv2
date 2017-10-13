@@ -46,9 +46,9 @@ public class Cont extends AbstractCommand {
 	public BasicProgramCounter execute(Machine machine) {
 		throw new RuntimeException("Can't continue error: " + this);
 	}
-	
+
 	@Override
-  public List<CodeContainer> evalToCode(Machine machine) {
-    return Util.createSingleCommand("NOP");
-  }
+	public List<CodeContainer> evalToCode(Machine machine) {
+		return Util.createSingleCommand("NOP");
+	}
 }

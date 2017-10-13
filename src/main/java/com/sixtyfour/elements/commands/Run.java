@@ -29,11 +29,11 @@ public class Run extends AbstractCommand {
 	}
 
 	@Override
-  public List<CodeContainer> evalToCode(Machine machine) {
-    Logger.log("WARNING: OPEN not implemented in native compiler!");
-    return Util.createSingleCommand("NOP");
-  }
-	
+	public List<CodeContainer> evalToCode(Machine machine) {
+		Logger.log("WARNING: OPEN not implemented in native compiler!");
+		return Util.createSingleCommand("NOP");
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

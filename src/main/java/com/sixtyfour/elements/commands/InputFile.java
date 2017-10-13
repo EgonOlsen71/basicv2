@@ -57,12 +57,12 @@ public class InputFile extends Input {
 		}
 		return null;
 	}
-	
-	 @Override
-	  public List<CodeContainer> evalToCode(Machine machine) {
-	    Logger.log("WARNING: INPUT# not implemented in native compiler!");
-	    return Util.createSingleCommand("NOP");
-	  }
+
+	@Override
+	public List<CodeContainer> evalToCode(Machine machine) {
+		Logger.log("WARNING: INPUT# not implemented in native compiler!");
+		return Util.createSingleCommand("NOP");
+	}
 
 	/*
 	 * (non-Javadoc)
