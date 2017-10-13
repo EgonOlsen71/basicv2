@@ -2,8 +2,11 @@ package com.sixtyfour.elements.commands;
 
 import java.util.List;
 
+import com.sixtyfour.Logger;
+import com.sixtyfour.cbmnative.Util;
 import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Parser;
+import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.plugins.DeviceProvider;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.system.BasicProgramCounter;
@@ -42,6 +45,12 @@ public class Open extends AbstractCommand {
 
 		return null;
 	}
+	
+	@Override
+  public List<CodeContainer> evalToCode(Machine machine) {
+	  Logger.log("WARNING: OPEN not implemented in native compiler!");
+    return Util.createSingleCommand("NOP");
+  }
 
 	/*
 	 * (non-Javadoc)

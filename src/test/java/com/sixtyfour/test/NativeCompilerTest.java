@@ -21,6 +21,7 @@ import com.sixtyfour.cbmnative.TermHelper;
 import com.sixtyfour.elements.Variable;
 import com.sixtyfour.elements.functions.Spc;
 import com.sixtyfour.elements.functions.Tab;
+import com.sixtyfour.extensions.textmode.ConsoleDevice;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.Preprocessor;
 import com.sixtyfour.parser.Term;
@@ -92,7 +93,9 @@ public class NativeCompilerTest {
 		testOnSomething();
 		testReadData();
 		//testGet();
+		//testInput();
 		testBasicMapper();
+		testLyrix();
 	}
 	
 	private static void testBasicMapper() throws Exception {
@@ -151,6 +154,28 @@ public class NativeCompilerTest {
     FileOutputStream fos = new FileOutputStream("affine_native.png");
     Graphics.savePng(bi2, fos);
     System.out.println("Done!");
+  }
+	
+	//@SuppressWarnings("unused")
+  private static void testLyrix() {
+    System.out.println("\n\ntestLyrix");
+    String[] rd = Loader.loadProgram("src/test/resources/basic/lyrix_raw.bas");
+    Basic basic = new Basic(rd);
+    basic.compile();
+    ConsoleDevice cd=ConsoleDevice.openDevice(basic.getMachine(), 1, true, 640, 400);
+    runCompiled(basic);
+    cd.dispose();
+  }
+	
+	@SuppressWarnings("unused")
+  private static void testInput() {
+    System.out.println("\n\ntestInput");
+    String[] rd = Loader.loadProgram("src/test/resources/basic/input.bas");
+    Basic basic = new Basic(rd);
+    basic.compile();
+    ConsoleDevice cd=ConsoleDevice.openDevice(basic.getMachine(), 1, true, 640, 400);
+    runCompiled(basic);
+    cd.dispose();
   }
 	
 	@SuppressWarnings("unused")

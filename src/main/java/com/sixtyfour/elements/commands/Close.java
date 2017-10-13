@@ -2,9 +2,12 @@ package com.sixtyfour.elements.commands;
 
 import java.util.List;
 
+import com.sixtyfour.Logger;
+import com.sixtyfour.cbmnative.Util;
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Parser;
+import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.system.BasicProgramCounter;
 import com.sixtyfour.util.VarUtils;
@@ -43,6 +46,12 @@ public class Close extends AbstractCommand {
 		return null;
 	}
 
+	@Override
+  public List<CodeContainer> evalToCode(Machine machine) {
+    Logger.log("WARNING: CLOSE not implemented in native compiler!");
+    return Util.createSingleCommand("NOP");
+  }
+	
 	/*
 	 * (non-Javadoc)
 	 * 

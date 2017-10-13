@@ -538,7 +538,7 @@ public class Term implements Atom {
 	 * Sets the initial term after evaluating the potential replacements in the
 	 * term map
 	 * 
-	 * @param initial
+	 * @param term
 	 *            the initial term
 	 * @param termMap
 	 *            the current term mapping

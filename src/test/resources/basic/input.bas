@@ -6,3 +6,4 @@
 70 print: print "und nun 3 mal ist alles moeglich ";
 80 input a$, b$, c$
 90 print: print "sie gaben diesmal ein: "; a1%, b, z, a$, b$, c$
+100 geta$:ifa$=""then100

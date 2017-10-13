@@ -536,9 +536,35 @@ public class Parser {
 			sb.append("(");
 			Atom atom = pars.get(i);
 			if (!(atom instanceof Term)) {
-				sb.append(atom.eval(machine));
+			  if (atom instanceof Variable) {
+			    sb.append(((Variable) atom).getUpperCaseName());
+			  } else {
+			    sb.append(atom.eval(machine));
+			  }
 			} else {
-				sb.append(((Term) atom).getInitial());
+			  // For the first array index term, the initial value is the whole term (i.e. all parameters).
+			  // This hack truncates it properly...not nice, but just pretend that you haven't seen this.
+			  String ini=((Term) atom).getInitial();
+			  if (i==0) {
+  			  boolean inString=false;
+  			  int brackets=0;
+  			  for (int ii=0; ii<ini.length(); ii++) {
+  			    char c=ini.charAt(ii);
+  			    if (c=='"') {
+  			      inString=!inString;
+  			    } else if (!inString) {
+  			      if (c=='(') {
+  			        brackets++;
+  			      } else if (c==')') {
+  			        brackets--;
+  			      } else if (c==',' && brackets==0) {
+  			        ini=ini.substring(0, ii);
+  			        break;
+  			      }
+  			    }
+  			  }
+			  }
+				sb.append(ini);
 			}
 			if (m == 1) {
 				sb.append(")");

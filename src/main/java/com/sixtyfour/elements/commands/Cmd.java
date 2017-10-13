@@ -2,9 +2,11 @@ package com.sixtyfour.elements.commands;
 
 import java.util.List;
 
+import com.sixtyfour.cbmnative.Util;
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Parser;
+import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.system.BasicProgramCounter;
 import com.sixtyfour.util.VarUtils;
@@ -48,6 +50,12 @@ public class Cmd extends AbstractCommand {
 		return "PRINT" + linePart;
 	}
 
+	@Override
+  public List<CodeContainer> evalToCode(Machine machine) {
+	  int fn = VarUtils.getInt(fileNumber.eval(machine));
+    return Util.createSingleCommand("MOV X,"+fn, "JSR CMD");
+  }
+	
 	/*
 	 * (non-Javadoc)
 	 * 

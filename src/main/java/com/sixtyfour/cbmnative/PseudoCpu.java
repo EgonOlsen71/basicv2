@@ -64,6 +64,8 @@ public class PseudoCpu {
 	private int emptyReal=0;
 	private int emptyString=0;
 	private int emptyInteger=0;
+	private int outputChannel=0;
+	private List<String> inputQueue=new ArrayList<String>();
 	private int jumpTargetAddr = MEM_SIZE - 4;
 	private Map<String, Integer> memLocations = new HashMap<String, Integer>();
 	private Map<Integer, String> varLocations = new HashMap<Integer, String>();
@@ -98,8 +100,21 @@ public class PseudoCpu {
 		label2line.clear();
 		memLocations.clear();
 		varLocations.clear();
-
+		inputQueue.clear();
+		outputChannel=0;
+		zeroFlag = false;
+	  addr = 0;
+	  datasAddr = MEM_SIZE;
+	  datasPointer = MEM_SIZE;
+	  datasSize = 0;
+	  emptyReal=0;
+	  emptyString=0;
+	  emptyInteger=0;
 		forStackPos = 0;
+		memPointer = 0;
+	  stringStart = 0;
+	  bufferPos = MEM_SIZE;
+	  bufferStart = MEM_SIZE;
 		halt = false;
 		regs = new Number[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 		memory = new int[MEM_SIZE * 2]; // normal memory + work buffer
@@ -272,7 +287,7 @@ public class PseudoCpu {
 					}
 				}
 			} catch (Exception e) {
-				throw new RuntimeException("Error while executing: " + code.get(addr - 1), e);
+				throw new RuntimeException("Error while executing: " + code.get(addr - 1)+"/"+addr, e);
 			}
 		} while (!halt && addr < code.size());
 	}
@@ -698,13 +713,29 @@ public class PseudoCpu {
     case "GETNUMBER":
       getNumber(parts);
       return;
+    case "CMD":
+      cmd(parts);
+      return;
+    case "INPUTSTR":
+      inputString(parts);
+      return;
+    case "INPUTNUMBER":
+      inputNumber(parts);
+      return;
+    case "QUEUESIZE":
+      queueSize(parts);
+      return;
+    case "CLEARQUEUE":
+      clearQueue(parts);
+      return;
 		default:
 			jumpStack.push(addr);
 			jmp(parts);
 		}
 	}
 
-	private void returny(String[] parts) {
+
+  private void returny(String[] parts) {
 		int fsp = forStackPos;
 		while (fsp >= 0) {
 			ForStackEntry fse = new ForStackEntry(fsp);
@@ -725,11 +756,11 @@ public class PseudoCpu {
 	}
 
 	private void lineBreak(String[] parts) {
-		System.out.println();
+	  machine.getOutputChannel().println(0, "");
 	}
 
 	private void strOut(String[] parts) {
-		System.out.print(readString(regs[A].intValue()));
+	  machine.getOutputChannel().print(0, readString(regs[A].intValue()));
 	}
 
 	private void realOut(String[] parts) {
@@ -741,7 +772,7 @@ public class PseudoCpu {
 		if (out.endsWith(".0")) {
 			out = out.substring(0, out.length() - 2);
 		}
-		System.out.print(out);
+		machine.getOutputChannel().print(0, out);
 	}
 
 	private void intOut(String[] parts) {
@@ -750,8 +781,19 @@ public class PseudoCpu {
 		if (VarUtils.getInt(toPrint) >= 0) {
 			out = " " + out;
 		}
-		System.out.print(out);
+		machine.getOutputChannel().print(0, out);
 	}
+	
+	private void cmd(String[] parts)
+  {
+	  int fn = regs[X].intValue();
+	  if (!machine.getDeviceProvider().isOpen(fn)) {
+      throw new RuntimeException("File not open error: " + this);
+    }
+	  machine.getOutputChannel().setPrintConsumer(machine.getDeviceProvider(), fn);
+	  outputChannel=fn;
+  }
+
 
 	private void jumpTo(String newAddr) {
 		String label = newAddr + ":";
@@ -916,6 +958,7 @@ public class PseudoCpu {
 	    } else {
 	      copyStringResult(c.toString());
 	    }
+	    machine.getOutputChannel().setPrintConsumer(null, 0);
 	}
 	
 	private void getNumber(String[] parts) {
@@ -926,16 +969,75 @@ public class PseudoCpu {
       c=ensureNumberKey(machine, c, true);
       regs[Y]=Integer.valueOf(c.toString());
     }
+    machine.getOutputChannel().setPrintConsumer(null, 0);
 	}
+	
+	private void clearQueue(String[] parts)
+  {
+    inputQueue.clear();
+  }
+
+  private void queueSize(String[] parts)
+  {
+    regs[X]=inputQueue.size();
+  }
+	
+	private void inputNumber(String[] parts)
+  {
+	  String inp=inputNext();
+	  regs[X]=0;  
+	  try {
+        Float num = Float.valueOf(inp);
+        regs[Y]=num;
+    } catch (NumberFormatException nfe) {
+      regs[X]=1;
+      inputQueue.clear();
+    }
+  }
+
+  private void inputString(String[] parts)
+  {
+    String inp=inputNext();
+    copyStringResult(inp);
+    regs[X]=0;
+  }
+  
+  private String inputNext() {
+    String input = null;
+    if (inputQueue.isEmpty()) {
+      input = machine.getInputProvider().readString();
+      machine.getOutputChannel().println(0, "");
+      if (input == null) {
+        input = "";
+      }
+      String[] parts = input.split(",");
+      if (parts.length > 1) {
+        for (int p = 1; p < parts.length; p++) {
+          inputQueue.add(parts[p]);
+        }
+      }
+      input = parts[0];
+    } else {
+      input = inputQueue.remove(0);
+    }
+    return input;
+  }
 
 	private void readString(String[] parts) {
 		checkDataPointer();
 		int type = memory[datasPointer++];
 		if (type != 2) {
-			throw new RuntimeException("Type mismatch: " + type);
+		  Number n=null;
+		  if (type == 0) {
+	      n = memory[datasPointer++];
+	    } else {
+	      n = Float.intBitsToFloat(memory[datasPointer++]);
+	    }
+		  copyStringResult(n.toString());
+		} else {
+		  regs[A] = datasPointer;
+		  datasPointer += memory[datasPointer++] + 1;
 		}
-		regs[A] = datasPointer;
-		datasPointer += memory[datasPointer++] + 1;
 	}
 
 	private Character ensureNumberKey(Machine machine, Character input, boolean checkColon) {
@@ -977,6 +1079,8 @@ public class PseudoCpu {
 		memory[memPointer] = snum.length();
 		System.arraycopy(toIntArray(snum), 0, memory, memPointer + 1, snum.length());
 		memPointer += snum.length() + 1;
+		this.bufferPos = MEM_SIZE;
+    this.bufferStart = MEM_SIZE;
 	}
 
 	private void asc(String[] parts) {
@@ -1021,7 +1125,7 @@ public class PseudoCpu {
 	private void checkBufferSpace(String ss) {
 		int max = bufferPos + ss.length();
 		if (max >= memory.length) {
-			throw new RuntimeException("Out of memory: " + ss);
+			throw new RuntimeException("Out of memory: [" + ss+"] - "+max+"/"+bufferPos+"/"+memory.length);
 		}
 	}
 
@@ -1055,6 +1159,7 @@ public class PseudoCpu {
 						// " still in use, skipping!");
 						i = -1;
 						lookFor = memAddr + memory[memAddr] + 1;
+						closest = memPointer;
 					} else {
 						if (memAddr > lookFor && memAddr < closest) {
 							closest = memAddr;
@@ -1079,6 +1184,7 @@ public class PseudoCpu {
 							// "] still in use, skipping!");
 							i = -1;
 							lookFor = memAddr + memory[memAddr] + 1;
+							closest = memPointer;
 						} else {
 							if (memAddr > lookFor && memAddr < closest) {
 								closest = memAddr;
@@ -1091,7 +1197,7 @@ public class PseudoCpu {
 			if (closest < memPointer) {
 				int size = memPointer - closest;
 				if (lookFor > closest) {
-					throw new RuntimeException("Invalid memory locations: " + closest + "/" + lookFor);
+					throw new RuntimeException("Invalid memory locations: " + closest + "/" + lookFor+"/"+memPointer);
 				}
 				// Logger.log("Compacting memory by moving " + size +
 				// " bytes from " + closest + " to " + lookFor + "!");
