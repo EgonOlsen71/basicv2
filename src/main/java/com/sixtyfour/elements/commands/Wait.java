@@ -95,8 +95,8 @@ public class Wait extends AbstractCommand {
     if (invertFound) {
       after.add("POP C");
     }
-    after.add(label+":");
     after.add("POP Y");
+    after.add(label+":");
     after.add("MOV D,(Y)");
     if (invertFound) {
       after.add("XOR D,C");
