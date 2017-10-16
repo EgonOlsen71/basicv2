@@ -477,7 +477,6 @@ public class PseudoCpu {
 		for (Entry<String, Variable> entry : vars.entrySet()) {
 			String name = entry.getKey();
 			Variable var = entry.getValue();
-			System.out.println("VAR: "+name);
 			if (var.isArray()) {
 				@SuppressWarnings("unchecked")
 				List<Object> vals = (List<Object>) var.getInternalValue();
