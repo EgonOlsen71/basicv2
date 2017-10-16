@@ -94,9 +94,11 @@ public class NativeCompiler {
 		}
 		mCode = optimize(mCode);
 		if (!getLastEntry(mCode).equals("RTS")) {
+		  mCode.add("JSR END");
 			mCode.add("RTS");
 		}
-
+		mCode.add(0, "JSR START");
+		
 		Logger.log("Compiled to pseudo code in: " + (System.currentTimeMillis() - s) + "ms");
 		return mCode;
 	}

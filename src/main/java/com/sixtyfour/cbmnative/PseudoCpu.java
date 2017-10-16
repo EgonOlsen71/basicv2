@@ -67,6 +67,7 @@ public class PseudoCpu {
 	private int emptyString = 0;
 	private int emptyInteger = 0;
 	private int dynamicStart=0;
+	private int initialJumpStackSize=0;
 	@SuppressWarnings("unused")
 	private int outputChannel = 0;
 	private List<String> inputQueue = new ArrayList<String>();
@@ -306,7 +307,7 @@ public class PseudoCpu {
 		} while (!halt && addr < code.size());
 	}
 
-	public void compactMemory() {
+  public void compactMemory() {
 		this.collectGarbage();
 	}
 
@@ -770,6 +771,12 @@ public class PseudoCpu {
 		case "RUN":
       run(parts);
       return;
+		case "END":
+      end(parts);
+      return;
+		case "START":
+      start(parts);
+      return;
 		default:
 			jumpStack.push(addr);
 			jmp(parts);
@@ -846,6 +853,28 @@ public class PseudoCpu {
 			addr = jumpStack.pop().intValue();
 		}
 	}
+	
+	private void xToStack()
+  {
+    int size=initialJumpStackSize;
+    while(jumpStack.size()>size) {
+      jumpStack.pop();
+    }
+  }
+
+  private void stackToX()
+  {
+    initialJumpStackSize=jumpStack.size();
+  }
+  
+  private void start(String[] parts) {
+    stackToX();
+  }
+  
+  private void end(String[] parts) {
+    xToStack();
+  }
+
 
 	private void initFor(String[] parts) {
 		Number stopVal = getStack().pop();
