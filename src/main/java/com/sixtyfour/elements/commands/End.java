@@ -60,7 +60,7 @@ public class End extends AbstractCommand {
 
 	@Override
 	public List<CodeContainer> evalToCode(Machine machine) {
-		return Util.createSingleCommand("RTS");
+		return Util.createSingleCommand("BRK");
 	}
 
 }

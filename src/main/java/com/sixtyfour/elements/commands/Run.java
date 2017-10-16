@@ -4,7 +4,6 @@ import com.sixtyfour.system.Machine;
 
 import java.util.List;
 
-import com.sixtyfour.Logger;
 import com.sixtyfour.cbmnative.Util;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.system.BasicProgramCounter;
@@ -30,8 +29,7 @@ public class Run extends AbstractCommand {
 
 	@Override
 	public List<CodeContainer> evalToCode(Machine machine) {
-		Logger.log("WARNING: OPEN not implemented in native compiler!");
-		return Util.createSingleCommand("NOP");
+		return Util.createSingleCommand("JSR RUN");
 	}
 
 	/*

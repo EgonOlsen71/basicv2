@@ -38,6 +38,8 @@ import com.sixtyfour.util.VarUtils;
 public class PseudoCpu {
 
 	public final static int MEM_SIZE = 32768;
+	public final static int PRG_START=2064;
+	
 	public final static int A = 5; // pointer / int
 	public final static int B = 6; // pointer / int
 	public final static int C = 7; // parameter / float
@@ -64,6 +66,7 @@ public class PseudoCpu {
 	private int emptyReal = 0;
 	private int emptyString = 0;
 	private int emptyInteger = 0;
+	private int dynamicStart=0;
 	@SuppressWarnings("unused")
 	private int outputChannel = 0;
 	private List<String> inputQueue = new ArrayList<String>();
@@ -119,7 +122,7 @@ public class PseudoCpu {
 		halt = false;
 		regs = new Number[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 		memory = new int[MEM_SIZE * 2]; // normal memory + work buffer
-		memPointer = 2064;
+		memPointer = PRG_START;
 
 		// Copy machine's memory content over to this cpu's...
 		if (memory.length == machine.getRam().length) {
@@ -148,6 +151,8 @@ public class PseudoCpu {
 
 		// Writing (string) variables into memory
 		createStringVariables();
+		
+		this.dynamicStart=memPointer;
 
 		long cnt = 0;
 		for (String line : code) {
@@ -391,7 +396,7 @@ public class PseudoCpu {
 		for (Entry<String, Variable> entry : vars.entrySet()) {
 			String name = entry.getKey();
 			Variable var = entry.getValue();
-			if (!name.endsWith("$")) {
+			if (var.getType()!=Type.STRING) {
 				varLocations.put(System.identityHashCode(var), name);
 			}
 		}
@@ -414,11 +419,15 @@ public class PseudoCpu {
 			Variable var = entry.getValue();
 			if (name.endsWith("$") && !name.equals("TI$")) {
 				String val = (String) var.eval(machine);
-				if (memLocations.containsKey(val)) {
+				if (memLocations.containsKey(name)) {
 					throw new RuntimeException("Variable defined twice: " + name);
 				}
 				stringNames.add(name);
-				storeString(name, val);
+				if (val.isEmpty()) {
+				  memLocations.put(name, this.emptyString);
+				} else {
+				  storeString(name, val);
+				}
 			}
 		}
 		// System.out.println("Mempointer(1): "+memPointer);
@@ -468,6 +477,7 @@ public class PseudoCpu {
 		for (Entry<String, Variable> entry : vars.entrySet()) {
 			String name = entry.getKey();
 			Variable var = entry.getValue();
+			System.out.println("VAR: "+name);
 			if (var.isArray()) {
 				@SuppressWarnings("unchecked")
 				List<Object> vals = (List<Object>) var.getInternalValue();
@@ -476,11 +486,18 @@ public class PseudoCpu {
 				int pos = 0;
 				for (Object val : vals) {
 					if (val instanceof String) {
-						mems[pos++] = memPointer;
-						storeString(null, val.toString());
+					  if (!val.toString().isEmpty()) {
+					    mems[pos++] = memPointer;
+					    storeString(null, val.toString());
+					  } else {
+					    mems[pos++]=this.emptyString;
+					  }
 					}
 				}
 
+				if (memLocations.containsKey(name)) {
+          throw new RuntimeException("Variable defined twice: " + name);
+        }
 				memLocations.put(name, memPointer);
 				boolean flagged = false;
 				pos = 0;
@@ -509,9 +526,6 @@ public class PseudoCpu {
 						int addr = mems[pos++];
 						memory[memPointer++] = addr;
 					}
-				}
-				if (memLocations.containsKey(val)) {
-					throw new RuntimeException("Variable defined twice: " + name);
 				}
 			}
 		}
@@ -751,13 +765,19 @@ public class PseudoCpu {
 		case "CLEARQUEUE":
 			clearQueue(parts);
 			return;
+		case "CLR":
+      clearVars(parts);
+      return;
+		case "RUN":
+      run(parts);
+      return;
 		default:
 			jumpStack.push(addr);
 			jmp(parts);
 		}
 	}
 
-	private void returny(String[] parts) {
+  private void returny(String[] parts) {
 		int fsp = forStackPos;
 		while (fsp >= 0) {
 			ForStackEntry fse = new ForStackEntry(fsp);
@@ -965,7 +985,49 @@ public class PseudoCpu {
 		this.bufferPos = MEM_SIZE;
 		this.bufferStart = MEM_SIZE;
 	}
+	
+	 private void run(String[] parts) {
+	   clearVars(parts);
+	   addr=0;
+	}
 
+
+	private void clearVars(String[] parts) {
+	  for (Variable var:machine.getVariables().values()) {
+	    if (var.isArray()) {
+	      int addr=memLocations.get(var.getName());
+	      int type=memory[addr++];
+	      int size=memory[addr++];
+	      for (int i=0; i<size; i++) {
+	        if (type==0) {
+	          memory[addr+i]=0;
+	        } else if (type==1) {
+	          memory[addr+i]=Float.floatToIntBits(0f);
+	        } else if (type==2) {
+	          memory[addr+i]=this.emptyString;
+	        } else {
+	          throw new RuntimeException("Unknown type: "+type);
+	        }
+	      }
+	      
+	    } else {
+        if (var.getType()==Type.INTEGER) {
+          var.setValue(0);
+        } else if (var.getType()==Type.REAL) {
+          var.setValue(0.0f);
+        } else {
+          if (memLocations.containsKey(var.getName())) {
+            memLocations.put(var.getName(), this.emptyString);
+          }
+        }
+	    }
+    }
+	  this.restore(parts);
+	  memPointer = dynamicStart;
+	  bufferPos = MEM_SIZE;
+    bufferStart = MEM_SIZE;
+  }
+	
 	private void restore(String[] parts) {
 		datasPointer = datasAddr;
 		datasSize = memory[datasPointer++];
@@ -991,7 +1053,7 @@ public class PseudoCpu {
 		}
 		machine.getOutputChannel().setPrintConsumer(null, 0);
 	}
-
+	
 	private void clearQueue(String[] parts) {
 		inputQueue.clear();
 	}
