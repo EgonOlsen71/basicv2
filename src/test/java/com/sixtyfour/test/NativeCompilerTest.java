@@ -94,8 +94,8 @@ public class NativeCompilerTest {
 		testReadData();
 		// testGet();
 		// testInput();
-		//testBasicMapper();
-		testLyrix();
+		testBasicMapper();
+		//testLyrix();
 	}
 
 	private static void testBasicMapper() throws Exception {
