@@ -208,6 +208,9 @@ public class PseudoCpu {
 					case "AND":
 						and(parts);
 						break;
+					 case "XOR":
+	          xor(parts);
+	          break;
 					case "NOT":
 						not(parts);
 						break;
@@ -307,6 +310,7 @@ public class PseudoCpu {
 		} while (!halt && addr < code.size());
 	}
 
+ 
   public void compactMemory() {
 		this.collectGarbage();
 	}
@@ -1774,6 +1778,21 @@ public class PseudoCpu {
 		});
 	}
 
+	 private void xor(String[] parts)
+	  {
+	   calc(parts, new Calc() {
+	      @Override
+	      public Number calc(Number n1, Number n2) {
+	        return n1.intValue() ^ n2.intValue();
+	      }
+
+	      @Override
+	      public String op() {
+	        return "~_";
+	      }
+	    });
+	}
+	
 	private void and(String[] parts) {
 		calc(parts, new Calc() {
 			@Override
