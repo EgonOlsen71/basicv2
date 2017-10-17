@@ -2029,6 +2029,9 @@ public class PseudoCpu {
 
 	private int getIndex(String target) {
 		int ti = -1;
+		if (target.length()>3) {
+		  return ti;
+		}
 		if (target.equals("X") || target.equals("(X)")) {
 			ti = 0;
 		} else if (target.equals("Y") || target.equals("(Y)")) {
