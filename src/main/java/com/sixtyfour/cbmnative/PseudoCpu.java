@@ -98,7 +98,7 @@ public class PseudoCpu {
 	/**
 	 * @param code
 	 */
-	public void execute(Machine machine, List<String> code) {
+	public final void execute(Machine machine, List<String> code) {
 		Tab.setLimitedToPrint(false);
 		Spc.setLimitedToPrint(false);
 		this.machine = machine;
@@ -174,141 +174,146 @@ public class PseudoCpu {
 		}
 
 		do {
-			String[] parts = splittedCode.get(addr++);
-			try {
-				if (parts.length > 0) {
-
-					if (parts[0].endsWith(":") && Character.isDigit(parts[0].charAt(parts[0].length() - 2))) {
-						// Just a line number label...skip!
-						continue;
-					}
-
-					switch (parts[0]) {
-					case "MOV":
-						mov(parts);
-						break;
-					case "PUSH":
-						push(parts);
-						break;
-					case "POP":
-						pop(parts);
-						break;
-					case "MUL":
-						mul(parts);
-						break;
-					case "DIV":
-						div(parts);
-						break;
-					case "SUB":
-						sub(parts);
-						break;
-					case "ADD":
-						add(parts);
-						break;
-					case "AND":
-						and(parts);
-						break;
-					 case "XOR":
-	          xor(parts);
-	          break;
-					case "NOT":
-						not(parts);
-						break;
-					case "OR":
-						or(parts);
-						break;
-					case "POW":
-						pow(parts);
-						break;
-					case "SIN":
-						sin(parts);
-						break;
-					case "COS":
-						cos(parts);
-						break;
-					case "NOP":
-						break;
-					case "LOG":
-						log(parts);
-						break;
-					case "SQR":
-						sqr(parts);
-						break;
-					case "INT":
-						inty(parts);
-						break;
-					case "ABS":
-						abs(parts);
-						break;
-					case "SGN":
-						sgn(parts);
-						break;
-					case "TAN":
-						tan(parts);
-						break;
-					case "ATN":
-						atn(parts);
-						break;
-					case "EXP":
-						exp(parts);
-						break;
-					case "RND":
-						rnd(parts);
-						break;
-					case "SWAP":
-						swap(parts);
-						break;
-					case "JSR":
-						jsr(parts);
-						break;
-					case "JMP":
-						jmp(parts);
-						break;
-					case "JE":
-						je(parts);
-						break;
-					case "JNE":
-						jne(parts);
-						break;
-					case "RTS":
-						rts(parts);
-						break;
-					case "BRK":
-						halt = true;
-						break;
-					case "CHGCTX":
-						nop(parts);
-						break;
-					case "EQ":
-						equal(parts);
-						break;
-					case "CMP":
-						compare(parts);
-						break;
-					case "NEQ":
-						notEqual(parts);
-						break;
-					case "GT":
-						greaterThan(parts);
-						break;
-					case "LT":
-						lowerThan(parts);
-						break;
-					case "GTEQ":
-						greaterThanOrEqual(parts);
-						break;
-					case "LTEQ":
-						lowerThanOrEqual(parts);
-						break;
-					default:
-						throw new RuntimeException("Unknown instruction: " + parts[0]);
-					}
-				}
-			} catch (Exception e) {
-				throw new RuntimeException("Error while executing: " + code.get(addr - 1) + "/" + addr, e);
-			}
+			executeCommand(code, splittedCode);
 		} while (!halt && addr < code.size());
 	}
+
+
+  private final void executeCommand(List<String> code, List<String[]> splittedCode)
+  {
+    String[] parts = splittedCode.get(addr++);
+    try {
+    	if (parts.length > 0) {
+
+    		if (parts[0].endsWith(":") && Character.isDigit(parts[0].charAt(parts[0].length() - 2))) {
+    			return;
+    		}
+
+    		switch (parts[0]) {
+    		case "MOV":
+    			mov(parts);
+    			break;
+    		case "PUSH":
+    			push(parts);
+    			break;
+    		case "POP":
+    			pop(parts);
+    			break;
+    		case "MUL":
+    			mul(parts);
+    			break;
+    		case "DIV":
+    			div(parts);
+    			break;
+    		case "SUB":
+    			sub(parts);
+    			break;
+    		case "ADD":
+    			add(parts);
+    			break;
+    		case "AND":
+    			and(parts);
+    			break;
+    		 case "XOR":
+          xor(parts);
+          break;
+    		case "NOT":
+    			not(parts);
+    			break;
+    		case "OR":
+    			or(parts);
+    			break;
+    		case "POW":
+    			pow(parts);
+    			break;
+    		case "SIN":
+    			sin(parts);
+    			break;
+    		case "COS":
+    			cos(parts);
+    			break;
+    		case "NOP":
+    			break;
+    		case "LOG":
+    			log(parts);
+    			break;
+    		case "SQR":
+    			sqr(parts);
+    			break;
+    		case "INT":
+    			inty(parts);
+    			break;
+    		case "ABS":
+    			abs(parts);
+    			break;
+    		case "SGN":
+    			sgn(parts);
+    			break;
+    		case "TAN":
+    			tan(parts);
+    			break;
+    		case "ATN":
+    			atn(parts);
+    			break;
+    		case "EXP":
+    			exp(parts);
+    			break;
+    		case "RND":
+    			rnd(parts);
+    			break;
+    		case "SWAP":
+    			swap(parts);
+    			break;
+    		case "JSR":
+    			jsr(parts);
+    			break;
+    		case "JMP":
+    			jmp(parts);
+    			break;
+    		case "JE":
+    			je(parts);
+    			break;
+    		case "JNE":
+    			jne(parts);
+    			break;
+    		case "RTS":
+    			rts(parts);
+    			break;
+    		case "BRK":
+    			halt = true;
+    			break;
+    		case "CHGCTX":
+    			nop(parts);
+    			break;
+    		case "EQ":
+    			equal(parts);
+    			break;
+    		case "CMP":
+    			compare(parts);
+    			break;
+    		case "NEQ":
+    			notEqual(parts);
+    			break;
+    		case "GT":
+    			greaterThan(parts);
+    			break;
+    		case "LT":
+    			lowerThan(parts);
+    			break;
+    		case "GTEQ":
+    			greaterThanOrEqual(parts);
+    			break;
+    		case "LTEQ":
+    			lowerThanOrEqual(parts);
+    			break;
+    		default:
+    			throw new RuntimeException("Unknown instruction: " + parts[0]);
+    		}
+    	}
+    } catch (Exception e) {
+    	throw new RuntimeException("Error while executing: " + code.get(addr - 1) + "/" + addr, e);
+    }
+  }
 
  
   public void compactMemory() {
