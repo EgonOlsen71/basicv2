@@ -92,7 +92,12 @@ public class NativeCompiler {
 				}
 			}
 		}
+		
+		int os=mCode.size();
 		mCode = optimize(mCode);
+		
+		Logger.log("Code optimized: "+os+" => "+mCode.size()+" lines!");
+		
 		if (!getLastEntry(mCode).equals("RTS")) {
 		  mCode.add("JSR END");
 			mCode.add("RTS");
@@ -582,6 +587,15 @@ public class NativeCompiler {
 					l2 = code.get(i + 2);
 				}
 
+				String[] l0ps = l0.split(" |,");
+        String[] l1ps = l1.split(" |,");
+				
+				if (l0.startsWith("PUSH") && l1.startsWith("POP")) {
+				  ret.add("MOV "+l1ps[1]+","+l0ps[1]);
+				  i+=1;
+				  continue;
+				}
+				
 				if (l2 != null && l0.equals("PUSH X") && l1.startsWith("MOV C") && l1.contains("[]") && l2.equals("POP Y")) {
 					ret.add(l1);
 					i += 2;
@@ -600,8 +614,6 @@ public class NativeCompiler {
 					continue;
 				}
 
-				String[] l0ps = l0.split(" |,");
-				String[] l1ps = l1.split(" |,");
 				if (l0ps.length == 3 && l1ps.length == 3) {
 					if (l0ps[0].equals("MOV") && l0ps[2].equals("X")) {
 						if (l1ps[1].equals("Y") && l0ps[1].equals(l1ps[2]) && l0ps[1].contains("{")) {
