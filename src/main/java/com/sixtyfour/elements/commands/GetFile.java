@@ -1,17 +1,17 @@
 package com.sixtyfour.elements.commands;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import com.sixtyfour.Logger;
-import com.sixtyfour.cbmnative.Util;
+import com.sixtyfour.cbmnative.NativeCompiler;
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.elements.Variable;
 import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.Term;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
-import com.sixtyfour.system.Machine;
 import com.sixtyfour.system.BasicProgramCounter;
+import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
 /**
@@ -55,9 +55,24 @@ public class GetFile extends Get {
 	}
 
 	@Override
-	public List<CodeContainer> evalToCode(Machine machine) {
-		Logger.log("WARNING: GET# not implemented in native compiler!");
-		return Util.createSingleCommand("NOP");
+  public List<CodeContainer> evalToCode(Machine machine) {
+    NativeCompiler compiler = NativeCompiler.getCompiler();
+    List<String> after = new ArrayList<String>();
+    List<String> expr = null;
+    List<String> before = new ArrayList<String>();
+    
+    expr=compiler.compileToPseudoCode(machine, fileNumber);
+    
+    String expPush = expr.get(expr.size() - 1);
+    expr = expr.subList(0, expr.size() - 1);
+    expPush.replace("X", "G").replace("Y", "G");
+    expr.add(expPush);
+
+    CodeContainer cc = new CodeContainer(before, expr, after);
+    List<CodeContainer> ccs=new ArrayList<CodeContainer>();
+    ccs.add(cc);
+    ccs.addAll(this.evalToCodeFile(machine, "GETSTRCHANNEL", "GETNUMBERCHANNEL"));
+    return ccs;
 	}
 
 	/*

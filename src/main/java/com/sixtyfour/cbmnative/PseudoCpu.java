@@ -26,6 +26,7 @@ import com.sixtyfour.elements.functions.Str;
 import com.sixtyfour.elements.functions.Tab;
 import com.sixtyfour.elements.functions.Val;
 import com.sixtyfour.parser.Parser;
+import com.sixtyfour.plugins.DeviceProvider;
 import com.sixtyfour.plugins.SystemCallListener;
 import com.sixtyfour.system.DataStore;
 import com.sixtyfour.system.Machine;
@@ -718,17 +719,29 @@ public class PseudoCpu {
 			strLowerThanOrEqual(parts);
 			return;
 		case "INTOUT":
-			intOut(parts);
+			intOut(parts, 0);
 			return;
 		case "REALOUT":
-			realOut(parts);
+			realOut(parts, 0);
 			return;
 		case "STROUT":
-			strOut(parts);
+			strOut(parts, 0);
 			return;
 		case "LINEBREAK":
-			lineBreak(parts);
+			lineBreak(parts, 0);
 			return;
+		case "INTOUTCHANNEL":
+      intOutChannel(parts);
+      return;
+    case "REALOUTCHANNEL":
+      realOutChannel(parts);
+      return;
+    case "STROUTCHANNEL":
+      strOutChannel(parts);
+      return;
+    case "LINEBREAKCHANNEL":
+      lineBreakChannel(parts);
+      return;
 		case "INITFOR":
 			initFor(parts);
 			return;
@@ -759,15 +772,33 @@ public class PseudoCpu {
 		case "GETNUMBER":
 			getNumber(parts);
 			return;
+	  case "GETSTRCHANNEL":
+      getStringChannel(parts);
+      return;
+    case "GETNUMBERCHANNEL":
+      getNumberChannel(parts);
+      return;
 		case "CMD":
 			cmd(parts);
 			return;
+	  case "OPEN":
+      open(parts);
+      return;
+	  case "CLOSE":
+      close(parts);
+      return;
 		case "INPUTSTR":
 			inputString(parts);
 			return;
 		case "INPUTNUMBER":
 			inputNumber(parts);
 			return;
+	  case "INPUTSTRCHANNEL":
+      inputStringChannel(parts);
+      return;
+    case "INPUTNUMBERCHANNEL":
+      inputNumberChannel(parts);
+      return;
 		case "QUEUESIZE":
 			queueSize(parts);
 			return;
@@ -792,6 +823,7 @@ public class PseudoCpu {
 		}
 	}
 
+
   private void returny(String[] parts) {
 		int fsp = forStackPos;
 		while (fsp >= 0) {
@@ -812,15 +844,23 @@ public class PseudoCpu {
 		forStackPos = fse.push(forStackPos);
 	}
 
-	private void lineBreak(String[] parts) {
-		machine.getOutputChannel().println(0, "");
+	private void lineBreak(String[] parts, int channel) {
+	  if (channel==0) {
+	    machine.getOutputChannel().println(channel, "");
+	  } else {
+	    machine.getDeviceProvider().println(channel, "");
+	  }
 	}
 
-	private void strOut(String[] parts) {
-		machine.getOutputChannel().print(0, readString(regs[A].intValue()));
+	private void strOut(String[] parts, int channel) {
+	  if (channel==0) {
+	    machine.getOutputChannel().print(channel, readString(regs[A].intValue()));
+	  } else {
+	    machine.getDeviceProvider().print(channel, readString(regs[A].intValue()));
+	  }
 	}
 
-	private void realOut(String[] parts) {
+	private void realOut(String[] parts, int channel) {
 		Number toPrint = regs[X];
 		String out = toPrint.toString();
 		if (VarUtils.getFloat(toPrint) >= 0) {
@@ -829,17 +869,41 @@ public class PseudoCpu {
 		if (out.endsWith(".0")) {
 			out = out.substring(0, out.length() - 2);
 		}
-		machine.getOutputChannel().print(0, out);
+		if (channel==0) {
+      machine.getOutputChannel().print(channel, out);
+    } else {
+      machine.getDeviceProvider().print(channel, out);
+    }
 	}
+	
+	private void intOut(String[] parts, int channel) {
+    Number toPrint = regs[X];
+    String out = String.valueOf(toPrint.intValue());
+    if (VarUtils.getInt(toPrint) >= 0) {
+      out = " " + out;
+    }
+    if (channel==0) {
+      machine.getOutputChannel().print(channel, out);
+    } else {
+      machine.getDeviceProvider().print(channel, out);
+    }
+  }
 
-	private void intOut(String[] parts) {
-		Number toPrint = regs[X];
-		String out = String.valueOf(toPrint.intValue());
-		if (VarUtils.getInt(toPrint) >= 0) {
-			out = " " + out;
-		}
-		machine.getOutputChannel().print(0, out);
+	private void intOutChannel(String[] parts) {
+		intOut(parts, regs[G].intValue());
 	}
+	
+	private void lineBreakChannel(String[] parts) {
+    lineBreak(parts, regs[G].intValue());
+  }
+
+  private void strOutChannel(String[] parts) {
+    strOut(parts, regs[G].intValue());
+  }
+
+  private void realOutChannel(String[] parts) {
+    realOut(parts, regs[G].intValue());
+  }
 
 	private void cmd(String[] parts) {
 		int fn = regs[X].intValue();
@@ -849,6 +913,48 @@ public class PseudoCpu {
 		machine.getOutputChannel().setPrintConsumer(machine.getDeviceProvider(), fn);
 		outputChannel = fn;
 	}
+	
+	private void open(String[] parts)
+  {
+	  DeviceProvider device = machine.getDeviceProvider();
+	  int size=regs[Y].intValue();
+	  
+    try {
+      switch (size) {
+      case 1:
+        device.open(VarUtils.getInt(regs[X]));
+        break;
+      case 2:
+        device.open(VarUtils.getInt(regs[X]), VarUtils.getInt(regs[C]));
+        break;
+      case 3:
+        device.open(VarUtils.getInt(regs[X]), VarUtils.getInt(regs[C]), VarUtils.getInt(regs[D]));
+        break;
+      case 4:
+        device.open(VarUtils.getInt(regs[X]), VarUtils.getInt(regs[C]), VarUtils.getInt(regs[D]), readString(regs[G].intValue()));
+        break;
+      default:
+        throw new RuntimeException("Invalid parameter count: "+size);
+      }
+    } catch (ClassCastException e) {
+      throw new RuntimeException("Invalid parameter type!");
+    }
+    
+  }
+
+
+  private void close(String[] parts)
+  {
+    int fn = regs[X].intValue();
+
+    if (machine.getOutputChannel().getPrintConsumer() != null) {
+      if (machine.getOutputChannel().getChannel() == fn) {
+        machine.getOutputChannel().setPrintConsumer(null, 0);
+      }
+    }
+
+    machine.getDeviceProvider().close(fn);
+  }
 
 	private void jumpTo(String newAddr) {
 		String label = newAddr + ":";
@@ -1137,6 +1243,37 @@ public class PseudoCpu {
 		}
 		return input;
 	}
+	
+	private void getStringChannel(String[] parts) {
+	  int fn = regs[G].intValue();
+    DeviceProvider device = machine.getDeviceProvider();
+    Character c = device.getChar(fn);
+    copyStringResult(c.toString());
+  }
+
+  private void getNumberChannel(String[] parts) {
+    int fn = regs[G].intValue();
+    DeviceProvider device = machine.getDeviceProvider();
+    Character c = device.getChar(fn);
+    c = ensureNumberKey(machine, c, true);
+    regs[Y] = Integer.valueOf(c.toString());
+  }
+	
+	
+	private void inputNumberChannel(String[] parts) {
+	  int fn = regs[G].intValue();
+    DeviceProvider device = machine.getDeviceProvider();
+    float num = device.inputNumber(fn);
+    regs[Y] = num;
+  }
+
+  private void inputStringChannel(String[] parts) {
+    int fn = regs[G].intValue();
+    DeviceProvider device = machine.getDeviceProvider();
+    String str = device.inputString(fn);
+    copyStringResult(str);
+  }
+
 
 	private void readString(String[] parts) {
 		checkDataPointer();

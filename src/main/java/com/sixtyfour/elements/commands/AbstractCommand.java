@@ -244,7 +244,26 @@ public abstract class AbstractCommand implements Command {
 	protected void syntaxError(Object obj) {
 		syntaxError(obj.toString());
 	}
+	
+	/**
+	 * @param expr
+	 * @return
+	 */
+	protected List<String> saveG(List<String> expr)
+  {
+    if (expr.size()>0 && expr.get(expr.size()-1).equals("PUSH G")) {
+        expr=expr.subList(0, expr.size() - 1);
+    } else {
+      expr.add("POP G");
+    }
+    return expr;
+  }
 
+	/**
+	 * @param params
+	 * @param msg
+	 * @param types
+	 */
 	protected void checkTypes(List<Atom> params, String msg, Type... types) {
 		if (types == null) {
 			return;
@@ -258,11 +277,20 @@ public abstract class AbstractCommand implements Command {
 		}
 	}
 
+	/**
+	 * @param machine
+	 * @param variable
+	 * @return
+	 */
 	protected String getVariableLabel(Machine machine, Variable variable) {
 		List<CodeContainer> ccs = variable.evalToCode(machine);
 		return ccs.get(0).getExpression().get(0);
 	}
 
+	/**
+	 * @param line
+	 * @return
+	 */
 	protected String getPushRegister(String line) {
 		if (line.startsWith("PUSH")) {
 			line = line.substring(4).trim();

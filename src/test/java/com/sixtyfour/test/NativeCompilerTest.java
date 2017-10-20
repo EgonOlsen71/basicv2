@@ -94,11 +94,19 @@ public class NativeCompilerTest {
 		testReadData();
 		// testGet();
 		// testInput();
-		testBasicMapper();
+		//
 		//testLyrix();
+		testFiles();
+		testBasicMapper();
 	}
 
-	private static void testBasicMapper() throws Exception {
+  private static void testFiles() {
+    System.out.println("\n\ntestFiles");
+    String[] rd = Loader.loadProgram("src/test/resources/basic/files.bas");
+    compileAndRun(rd);
+  }
+	
+  private static void testBasicMapper() throws Exception {
 		System.out.println("\n\ntestBasicMapper");
 		final BufferedImage bi = new BufferedImage(320, 200, BufferedImage.TYPE_INT_RGB);
 		Graphics2D g = bi.createGraphics();

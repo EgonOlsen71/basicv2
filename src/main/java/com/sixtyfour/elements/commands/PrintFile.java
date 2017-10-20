@@ -1,15 +1,15 @@
 package com.sixtyfour.elements.commands;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import com.sixtyfour.Logger;
-import com.sixtyfour.cbmnative.Util;
+import com.sixtyfour.cbmnative.NativeCompiler;
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
-import com.sixtyfour.system.Machine;
 import com.sixtyfour.system.BasicProgramCounter;
+import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
 /**
@@ -53,8 +53,23 @@ public class PrintFile extends Print {
 
 	@Override
 	public List<CodeContainer> evalToCode(Machine machine) {
-		Logger.log("WARNING: PRINT# not implemented in native compiler!");
-		return Util.createSingleCommand("NOP");
+	  NativeCompiler compiler = NativeCompiler.getCompiler();
+    List<String> after = new ArrayList<String>();
+    List<String> expr = null;
+    List<String> before = new ArrayList<String>();
+    
+    expr=compiler.compileToPseudoCode(machine, fileNumber);
+    
+    String expPush = expr.get(expr.size() - 1);
+    expr = expr.subList(0, expr.size() - 1);
+    expPush.replace("X", "G").replace("Y", "G");
+    expr.add(expPush);
+
+    CodeContainer cc = new CodeContainer(before, expr, after);
+    List<CodeContainer> ccs=new ArrayList<CodeContainer>();
+    ccs.add(cc);
+    ccs.addAll(this.evalToCode(machine, "CHANNEL"));
+    return ccs;
 	}
 
 	/*
