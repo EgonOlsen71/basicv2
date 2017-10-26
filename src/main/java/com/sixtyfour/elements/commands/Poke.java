@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.sixtyfour.cbmnative.NativeCompiler;
+import com.sixtyfour.elements.Constant;
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Parser;
@@ -84,13 +85,20 @@ public class Poke extends AbstractCommand {
 		String expPush = getPushRegister(expr.get(expr.size() - 1));
 		expr = expr.subList(0, expr.size() - 1);
 
-		before = compiler.compileToPseudoCode(machine, addr);
-
-		if (expPush.equals("Y")) {
-			expr.add("MOV X,Y");
+		if (addr instanceof Constant) {
+      if (expPush.equals("Y")) {
+        expr.add("MOV X,Y");
+      }
+      after.add("MOV "+addr.eval(machine)+",X");
+		} else {
+  		before = compiler.compileToPseudoCode(machine, addr);
+  
+  		if (expPush.equals("Y")) {
+  			expr.add("MOV X,Y");
+  		}
+  		after.add("POP Y");
+  		after.add("MOV (Y),X");
 		}
-		after.add("POP Y");
-		after.add("MOV (Y),X");
 
 		CodeContainer cc = new CodeContainer(before, expr, after);
 		List<CodeContainer> ccs = new ArrayList<CodeContainer>();

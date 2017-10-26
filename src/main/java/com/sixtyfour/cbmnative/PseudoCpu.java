@@ -2098,7 +2098,13 @@ public class PseudoCpu {
 					}
 				}
 			} else {
-				throw new RuntimeException("Unknown opcode: " + Arrays.toString(parts));
+			  // Fixed memory address given
+				int addr=Integer.parseInt(target);
+				int val = regs[si].intValue() & 0xff;
+				memory[addr] = val;
+        if (sharedRam) {
+          machine.getMemoryListener().poke(addr, val);
+        }
 			}
 		} else {
 			// From memory or register into register

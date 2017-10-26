@@ -95,7 +95,7 @@ public class NativeCompilerTest {
 		// testGet();
 		// testInput();
 		//
-		//testLyrix();
+		// testLyrix();
 		testFiles();
 		testBasicMapper();
 	}
