@@ -2098,7 +2098,7 @@ public class PseudoCpu {
 					}
 				}
 			} else {
-			  // Fixed memory address given
+			  // From register into fixed memory address
 				int addr=Integer.parseInt(target);
 				int val = regs[si].intValue() & 0xff;
 				memory[addr] = val;
@@ -2123,7 +2123,14 @@ public class PseudoCpu {
 						// System.out.println(regs[ti].intValue()+"/"+(regs[si].intValue()
 						// & 0xff)+"/"+memory[regs[ti].intValue()]);
 					} else {
-						regs[ti] = regs[si];
+					  String val = source;
+					  if (isNumber(val)) {
+              // From fixed memory address into register
+              int vally=Integer.parseInt(val);
+              regs[ti]=memory[vally];
+            } else {
+              regs[ti] = regs[si];
+            }
 					}
 				}
 			} else {
@@ -2171,7 +2178,18 @@ public class PseudoCpu {
 		}
 	}
 
-	private void updateZeroFlag(Number value) {
+	private boolean isNumber(String val)
+  {
+    for (int i=0; i<val.length(); i++) {
+      if (!Character.isDigit(val.charAt(i))) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+
+  private void updateZeroFlag(Number value) {
 		zeroFlag = value.doubleValue() == 0;
 	}
 

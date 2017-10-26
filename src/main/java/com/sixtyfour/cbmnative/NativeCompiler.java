@@ -601,6 +601,20 @@ public class NativeCompiler {
 					i += 2;
 					continue;
 				}
+				
+				// MOV Y,#4096{INTEGER}
+				// MOV X,(Y)
+				if (l0.startsWith("MOV Y,#") && l1.equals("MOV X,(Y)")) {
+				  try {
+				    int addr=Integer.parseInt(l0.substring(l0.indexOf("#")+1, l0.indexOf("{")));
+				    ret.add("MOV X,"+addr);
+				    i+=1;
+				    continue;
+				  } catch(Exception e) {
+				    //
+				  }
+				}
+				
 
 				if (l0.startsWith("MOV Y,") && l1.equals("MOV X,Y")) {
 					ret.add(l0.replace("MOV Y,", "MOV X,"));
