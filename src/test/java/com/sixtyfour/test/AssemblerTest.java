@@ -396,6 +396,8 @@ public class AssemblerTest {
 		for (int i=1024; i<1050; i++) {
 			System.out.println(asm.getMachine().getRam()[i]);
 		}
+		int[] bin = asm.getProgram().getParts().get(0).getBytes();
+		System.out.println(Arrays.toString(bin));
 	}
 
 	private static void testCpuRun() {

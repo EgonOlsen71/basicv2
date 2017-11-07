@@ -7,7 +7,7 @@ loop:	sty $0402
 		tya
 		and #$04
 		bne skip
-		ldy #$45
+		ldy #$5
 skip:	dec *-11
 		dex
 		bne loop
