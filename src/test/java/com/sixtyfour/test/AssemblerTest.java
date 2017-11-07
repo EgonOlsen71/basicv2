@@ -42,6 +42,7 @@ public class AssemblerTest {
 		testSelfModify();
 		testCpuCallListener();
 		testConstants();
+		testE46();
 	}
 
 	private static void testConstants() {
@@ -384,6 +385,17 @@ public class AssemblerTest {
 	private static void testAssembler2() {
 		String[] code = Loader.loadProgram("src/test/resources/asm/example2.asm");
 		runAssembler(code);
+	}
+	
+	private static void testE46() {
+		String[] code = Loader.loadProgram("src/test/resources/asm/e46.asm");
+		Assembler asm = new Assembler(code);
+		asm.compile();
+		System.out.println(asm.toString());
+		asm.run();
+		for (int i=1024; i<1050; i++) {
+			System.out.println(asm.getMachine().getRam()[i]);
+		}
 	}
 
 	private static void testCpuRun() {
