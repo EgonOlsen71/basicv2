@@ -1,14 +1,13 @@
 *=$c000
 		ldx #$03
-		ldy #$36
+		ldy #$35
 loop:	sty $0402
-		dey
 		dey
 		tya
 		and #$04
 		bne skip
 		ldy #$5
-skip:	dec *-11
+skip:	dec *-10
 		dex
 		bne loop
 		rts
