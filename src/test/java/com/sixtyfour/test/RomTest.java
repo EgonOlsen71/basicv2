@@ -17,6 +17,7 @@ public class RomTest {
 		testRomAccess();
 		testRomCalc();
 		testRomAndBasicCalc();
+		testRomCalc2();
 	}
 
 	private static void testRomAccess() {
@@ -29,6 +30,17 @@ public class RomTest {
 
 	private static void testRomCalc() {
 		String[] code = Loader.loadProgram("src/test/resources/rom/math.asm");
+		Assembler asm = new Assembler(code);
+		asm.compile();
+		final Machine machine = asm.getMachine();
+		machine.addRoms();
+		asm.run();
+		System.out.println(Conversions.convertFloat(machine, 0x2000));
+		System.out.println(Conversions.convertFloat(machine, 0x2010) + " ~ " + Math.sqrt(Conversions.convertFloat(machine, 0x2000)));
+	}
+	
+	private static void testRomCalc2() {
+		String[] code = Loader.loadProgram("src/test/resources/rom/math2.asm");
 		Assembler asm = new Assembler(code);
 		asm.compile();
 		final Machine machine = asm.getMachine();
