@@ -93,8 +93,7 @@ public class Cpu {
 	 * @return the float value
 	 */
 	public float convertFloat(int addr) {
-		int[] ram = machine.getRam();
-		return convertFloat(ram[addr] & 0xff, ram[addr + 5] & 0xff, ram[addr + 4] & 0xff, ram[addr + 3] & 0xff, ram[addr + 2] & 0xff, ram[addr + 1] & 0xff);
+		return Conversions.convertFloat(machine, addr);
 	}
 
 	/**
@@ -116,9 +115,7 @@ public class Cpu {
 	 * @return the float value
 	 */
 	public float convertFloat(int exp, int neg, int m1, int m2, int m3, int m4) {
-		double expf = exp - 128;
-		double man = ((neg != 0 ? -1d : 1d) * ((m4 | 0x80) * Math.pow(2d, -8d) + m3 * (Math.pow(2d, -16d)) + m2 * (Math.pow(2d, -24d)) + m1 * (Math.pow(2d, -32d))));
-		return (float) (man * Math.pow(2, expf));
+		return Conversions.convertFloat(exp, neg, m1, m2, m3, m4);
 	}
 
 	/**
