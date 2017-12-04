@@ -39,8 +39,8 @@ import com.sixtyfour.util.VarUtils;
 public class PseudoCpu {
 
 	public final static int MEM_SIZE = 32768;
-	public final static int PRG_START=2064;
-	
+	public final static int PRG_START = 2064;
+
 	public final static int A = 5; // pointer / int
 	public final static int B = 6; // pointer / int
 	public final static int C = 7; // parameter / float
@@ -67,8 +67,8 @@ public class PseudoCpu {
 	private int emptyReal = 0;
 	private int emptyString = 0;
 	private int emptyInteger = 0;
-	private int dynamicStart=0;
-	private int initialJumpStackSize=0;
+	private int dynamicStart = 0;
+	private int initialJumpStackSize = 0;
 	@SuppressWarnings("unused")
 	private int outputChannel = 0;
 	private List<String> inputQueue = new ArrayList<String>();
@@ -153,8 +153,8 @@ public class PseudoCpu {
 
 		// Writing (string) variables into memory
 		createStringVariables();
-		
-		this.dynamicStart=memPointer;
+
+		this.dynamicStart = memPointer;
 
 		long cnt = 0;
 		for (String line : code) {
@@ -179,145 +179,142 @@ public class PseudoCpu {
 		} while (!halt && addr < code.size());
 	}
 
+	private final void executeCommand(List<String> code, List<String[]> splittedCode) {
+		String[] parts = splittedCode.get(addr++);
+		try {
+			if (parts.length > 0) {
 
-  private final void executeCommand(List<String> code, List<String[]> splittedCode)
-  {
-    String[] parts = splittedCode.get(addr++);
-    try {
-    	if (parts.length > 0) {
+				if (parts[0].endsWith(":") && Character.isDigit(parts[0].charAt(parts[0].length() - 2))) {
+					return;
+				}
 
-    		if (parts[0].endsWith(":") && Character.isDigit(parts[0].charAt(parts[0].length() - 2))) {
-    			return;
-    		}
+				switch (parts[0]) {
+				case "MOV":
+					mov(parts);
+					break;
+				case "PUSH":
+					push(parts);
+					break;
+				case "POP":
+					pop(parts);
+					break;
+				case "MUL":
+					mul(parts);
+					break;
+				case "DIV":
+					div(parts);
+					break;
+				case "SUB":
+					sub(parts);
+					break;
+				case "ADD":
+					add(parts);
+					break;
+				case "AND":
+					and(parts);
+					break;
+				case "XOR":
+					xor(parts);
+					break;
+				case "NOT":
+					not(parts);
+					break;
+				case "OR":
+					or(parts);
+					break;
+				case "POW":
+					pow(parts);
+					break;
+				case "SIN":
+					sin(parts);
+					break;
+				case "COS":
+					cos(parts);
+					break;
+				case "NOP":
+					break;
+				case "LOG":
+					log(parts);
+					break;
+				case "SQR":
+					sqr(parts);
+					break;
+				case "INT":
+					inty(parts);
+					break;
+				case "ABS":
+					abs(parts);
+					break;
+				case "SGN":
+					sgn(parts);
+					break;
+				case "TAN":
+					tan(parts);
+					break;
+				case "ATN":
+					atn(parts);
+					break;
+				case "EXP":
+					exp(parts);
+					break;
+				case "RND":
+					rnd(parts);
+					break;
+				case "SWAP":
+					swap(parts);
+					break;
+				case "JSR":
+					jsr(parts);
+					break;
+				case "JMP":
+					jmp(parts);
+					break;
+				case "JE":
+					je(parts);
+					break;
+				case "JNE":
+					jne(parts);
+					break;
+				case "RTS":
+					rts(parts);
+					break;
+				case "BRK":
+					halt = true;
+					break;
+				case "CHGCTX":
+					nop(parts);
+					break;
+				case "EQ":
+					equal(parts);
+					break;
+				case "CMP":
+					compare(parts);
+					break;
+				case "NEQ":
+					notEqual(parts);
+					break;
+				case "GT":
+					greaterThan(parts);
+					break;
+				case "LT":
+					lowerThan(parts);
+					break;
+				case "GTEQ":
+					greaterThanOrEqual(parts);
+					break;
+				case "LTEQ":
+					lowerThanOrEqual(parts);
+					break;
+				default:
+					throw new RuntimeException("Unknown instruction: " + parts[0]);
+				}
+			}
+		} catch (Exception e) {
+			throw new RuntimeException("Error while executing: " + code.get(addr - 1) + "/" + addr, e);
+		}
+	}
 
-    		switch (parts[0]) {
-    		case "MOV":
-    			mov(parts);
-    			break;
-    		case "PUSH":
-    			push(parts);
-    			break;
-    		case "POP":
-    			pop(parts);
-    			break;
-    		case "MUL":
-    			mul(parts);
-    			break;
-    		case "DIV":
-    			div(parts);
-    			break;
-    		case "SUB":
-    			sub(parts);
-    			break;
-    		case "ADD":
-    			add(parts);
-    			break;
-    		case "AND":
-    			and(parts);
-    			break;
-    		 case "XOR":
-          xor(parts);
-          break;
-    		case "NOT":
-    			not(parts);
-    			break;
-    		case "OR":
-    			or(parts);
-    			break;
-    		case "POW":
-    			pow(parts);
-    			break;
-    		case "SIN":
-    			sin(parts);
-    			break;
-    		case "COS":
-    			cos(parts);
-    			break;
-    		case "NOP":
-    			break;
-    		case "LOG":
-    			log(parts);
-    			break;
-    		case "SQR":
-    			sqr(parts);
-    			break;
-    		case "INT":
-    			inty(parts);
-    			break;
-    		case "ABS":
-    			abs(parts);
-    			break;
-    		case "SGN":
-    			sgn(parts);
-    			break;
-    		case "TAN":
-    			tan(parts);
-    			break;
-    		case "ATN":
-    			atn(parts);
-    			break;
-    		case "EXP":
-    			exp(parts);
-    			break;
-    		case "RND":
-    			rnd(parts);
-    			break;
-    		case "SWAP":
-    			swap(parts);
-    			break;
-    		case "JSR":
-    			jsr(parts);
-    			break;
-    		case "JMP":
-    			jmp(parts);
-    			break;
-    		case "JE":
-    			je(parts);
-    			break;
-    		case "JNE":
-    			jne(parts);
-    			break;
-    		case "RTS":
-    			rts(parts);
-    			break;
-    		case "BRK":
-    			halt = true;
-    			break;
-    		case "CHGCTX":
-    			nop(parts);
-    			break;
-    		case "EQ":
-    			equal(parts);
-    			break;
-    		case "CMP":
-    			compare(parts);
-    			break;
-    		case "NEQ":
-    			notEqual(parts);
-    			break;
-    		case "GT":
-    			greaterThan(parts);
-    			break;
-    		case "LT":
-    			lowerThan(parts);
-    			break;
-    		case "GTEQ":
-    			greaterThanOrEqual(parts);
-    			break;
-    		case "LTEQ":
-    			lowerThanOrEqual(parts);
-    			break;
-    		default:
-    			throw new RuntimeException("Unknown instruction: " + parts[0]);
-    		}
-    	}
-    } catch (Exception e) {
-    	throw new RuntimeException("Error while executing: " + code.get(addr - 1) + "/" + addr, e);
-    }
-  }
-
- 
-  public void compactMemory() {
+	public void compactMemory() {
 		this.collectGarbage();
 	}
 
@@ -407,7 +404,7 @@ public class PseudoCpu {
 		for (Entry<String, Variable> entry : vars.entrySet()) {
 			String name = entry.getKey();
 			Variable var = entry.getValue();
-			if (var.getType()!=Type.STRING) {
+			if (var.getType() != Type.STRING) {
 				varLocations.put(System.identityHashCode(var), name);
 			}
 		}
@@ -435,9 +432,9 @@ public class PseudoCpu {
 				}
 				stringNames.add(name);
 				if (val.isEmpty()) {
-				  memLocations.put(name, this.emptyString);
+					memLocations.put(name, this.emptyString);
 				} else {
-				  storeString(name, val);
+					storeString(name, val);
 				}
 			}
 		}
@@ -496,18 +493,18 @@ public class PseudoCpu {
 				int pos = 0;
 				for (Object val : vals) {
 					if (val instanceof String) {
-					  if (!val.toString().isEmpty()) {
-					    mems[pos++] = memPointer;
-					    storeString(null, val.toString());
-					  } else {
-					    mems[pos++]=this.emptyString;
-					  }
+						if (!val.toString().isEmpty()) {
+							mems[pos++] = memPointer;
+							storeString(null, val.toString());
+						} else {
+							mems[pos++] = this.emptyString;
+						}
 					}
 				}
 
 				if (memLocations.containsKey(name)) {
-          throw new RuntimeException("Variable defined twice: " + name);
-        }
+					throw new RuntimeException("Variable defined twice: " + name);
+				}
 				memLocations.put(name, memPointer);
 				boolean flagged = false;
 				pos = 0;
@@ -731,17 +728,17 @@ public class PseudoCpu {
 			lineBreak(parts, 0);
 			return;
 		case "INTOUTCHANNEL":
-      intOutChannel(parts);
-      return;
-    case "REALOUTCHANNEL":
-      realOutChannel(parts);
-      return;
-    case "STROUTCHANNEL":
-      strOutChannel(parts);
-      return;
-    case "LINEBREAKCHANNEL":
-      lineBreakChannel(parts);
-      return;
+			intOutChannel(parts);
+			return;
+		case "REALOUTCHANNEL":
+			realOutChannel(parts);
+			return;
+		case "STROUTCHANNEL":
+			strOutChannel(parts);
+			return;
+		case "LINEBREAKCHANNEL":
+			lineBreakChannel(parts);
+			return;
 		case "INITFOR":
 			initFor(parts);
 			return;
@@ -772,33 +769,33 @@ public class PseudoCpu {
 		case "GETNUMBER":
 			getNumber(parts);
 			return;
-	  case "GETSTRCHANNEL":
-      getStringChannel(parts);
-      return;
-    case "GETNUMBERCHANNEL":
-      getNumberChannel(parts);
-      return;
+		case "GETSTRCHANNEL":
+			getStringChannel(parts);
+			return;
+		case "GETNUMBERCHANNEL":
+			getNumberChannel(parts);
+			return;
 		case "CMD":
 			cmd(parts);
 			return;
-	  case "OPEN":
-      open(parts);
-      return;
-	  case "CLOSE":
-      close(parts);
-      return;
+		case "OPEN":
+			open(parts);
+			return;
+		case "CLOSE":
+			close(parts);
+			return;
 		case "INPUTSTR":
 			inputString(parts);
 			return;
 		case "INPUTNUMBER":
 			inputNumber(parts);
 			return;
-	  case "INPUTSTRCHANNEL":
-      inputStringChannel(parts);
-      return;
-    case "INPUTNUMBERCHANNEL":
-      inputNumberChannel(parts);
-      return;
+		case "INPUTSTRCHANNEL":
+			inputStringChannel(parts);
+			return;
+		case "INPUTNUMBERCHANNEL":
+			inputNumberChannel(parts);
+			return;
 		case "QUEUESIZE":
 			queueSize(parts);
 			return;
@@ -806,25 +803,24 @@ public class PseudoCpu {
 			clearQueue(parts);
 			return;
 		case "CLR":
-      clearVars(parts);
-      return;
+			clearVars(parts);
+			return;
 		case "RUN":
-      run(parts);
-      return;
+			run(parts);
+			return;
 		case "END":
-      end(parts);
-      return;
+			end(parts);
+			return;
 		case "START":
-      start(parts);
-      return;
+			start(parts);
+			return;
 		default:
 			jumpStack.push(addr);
 			jmp(parts);
 		}
 	}
 
-
-  private void returny(String[] parts) {
+	private void returny(String[] parts) {
 		int fsp = forStackPos;
 		while (fsp >= 0) {
 			ForStackEntry fse = new ForStackEntry(fsp);
@@ -845,19 +841,19 @@ public class PseudoCpu {
 	}
 
 	private void lineBreak(String[] parts, int channel) {
-	  if (channel==0) {
-	    machine.getOutputChannel().println(channel, "");
-	  } else {
-	    machine.getDeviceProvider().println(channel, "");
-	  }
+		if (channel == 0) {
+			machine.getOutputChannel().println(channel, "");
+		} else {
+			machine.getDeviceProvider().println(channel, "");
+		}
 	}
 
 	private void strOut(String[] parts, int channel) {
-	  if (channel==0) {
-	    machine.getOutputChannel().print(channel, readString(regs[A].intValue()));
-	  } else {
-	    machine.getDeviceProvider().print(channel, readString(regs[A].intValue()));
-	  }
+		if (channel == 0) {
+			machine.getOutputChannel().print(channel, readString(regs[A].intValue()));
+		} else {
+			machine.getDeviceProvider().print(channel, readString(regs[A].intValue()));
+		}
 	}
 
 	private void realOut(String[] parts, int channel) {
@@ -869,41 +865,41 @@ public class PseudoCpu {
 		if (out.endsWith(".0")) {
 			out = out.substring(0, out.length() - 2);
 		}
-		if (channel==0) {
-      machine.getOutputChannel().print(channel, out);
-    } else {
-      machine.getDeviceProvider().print(channel, out);
-    }
+		if (channel == 0) {
+			machine.getOutputChannel().print(channel, out);
+		} else {
+			machine.getDeviceProvider().print(channel, out);
+		}
 	}
-	
+
 	private void intOut(String[] parts, int channel) {
-    Number toPrint = regs[X];
-    String out = String.valueOf(toPrint.intValue());
-    if (VarUtils.getInt(toPrint) >= 0) {
-      out = " " + out;
-    }
-    if (channel==0) {
-      machine.getOutputChannel().print(channel, out);
-    } else {
-      machine.getDeviceProvider().print(channel, out);
-    }
-  }
+		Number toPrint = regs[X];
+		String out = String.valueOf(toPrint.intValue());
+		if (VarUtils.getInt(toPrint) >= 0) {
+			out = " " + out;
+		}
+		if (channel == 0) {
+			machine.getOutputChannel().print(channel, out);
+		} else {
+			machine.getDeviceProvider().print(channel, out);
+		}
+	}
 
 	private void intOutChannel(String[] parts) {
 		intOut(parts, regs[G].intValue());
 	}
-	
+
 	private void lineBreakChannel(String[] parts) {
-    lineBreak(parts, regs[G].intValue());
-  }
+		lineBreak(parts, regs[G].intValue());
+	}
 
-  private void strOutChannel(String[] parts) {
-    strOut(parts, regs[G].intValue());
-  }
+	private void strOutChannel(String[] parts) {
+		strOut(parts, regs[G].intValue());
+	}
 
-  private void realOutChannel(String[] parts) {
-    realOut(parts, regs[G].intValue());
-  }
+	private void realOutChannel(String[] parts) {
+		realOut(parts, regs[G].intValue());
+	}
 
 	private void cmd(String[] parts) {
 		int fn = regs[X].intValue();
@@ -913,48 +909,45 @@ public class PseudoCpu {
 		machine.getOutputChannel().setPrintConsumer(machine.getDeviceProvider(), fn);
 		outputChannel = fn;
 	}
-	
-	private void open(String[] parts)
-  {
-	  DeviceProvider device = machine.getDeviceProvider();
-	  int size=regs[Y].intValue();
-	  
-    try {
-      switch (size) {
-      case 1:
-        device.open(VarUtils.getInt(regs[X]));
-        break;
-      case 2:
-        device.open(VarUtils.getInt(regs[X]), VarUtils.getInt(regs[C]));
-        break;
-      case 3:
-        device.open(VarUtils.getInt(regs[X]), VarUtils.getInt(regs[C]), VarUtils.getInt(regs[D]));
-        break;
-      case 4:
-        device.open(VarUtils.getInt(regs[X]), VarUtils.getInt(regs[C]), VarUtils.getInt(regs[D]), readString(regs[G].intValue()));
-        break;
-      default:
-        throw new RuntimeException("Invalid parameter count: "+size);
-      }
-    } catch (ClassCastException e) {
-      throw new RuntimeException("Invalid parameter type!");
-    }
-    
-  }
 
+	private void open(String[] parts) {
+		DeviceProvider device = machine.getDeviceProvider();
+		int size = regs[Y].intValue();
 
-  private void close(String[] parts)
-  {
-    int fn = regs[X].intValue();
+		try {
+			switch (size) {
+			case 1:
+				device.open(VarUtils.getInt(regs[X]));
+				break;
+			case 2:
+				device.open(VarUtils.getInt(regs[X]), VarUtils.getInt(regs[C]));
+				break;
+			case 3:
+				device.open(VarUtils.getInt(regs[X]), VarUtils.getInt(regs[C]), VarUtils.getInt(regs[D]));
+				break;
+			case 4:
+				device.open(VarUtils.getInt(regs[X]), VarUtils.getInt(regs[C]), VarUtils.getInt(regs[D]), readString(regs[G].intValue()));
+				break;
+			default:
+				throw new RuntimeException("Invalid parameter count: " + size);
+			}
+		} catch (ClassCastException e) {
+			throw new RuntimeException("Invalid parameter type!");
+		}
 
-    if (machine.getOutputChannel().getPrintConsumer() != null) {
-      if (machine.getOutputChannel().getChannel() == fn) {
-        machine.getOutputChannel().setPrintConsumer(null, 0);
-      }
-    }
+	}
 
-    machine.getDeviceProvider().close(fn);
-  }
+	private void close(String[] parts) {
+		int fn = regs[X].intValue();
+
+		if (machine.getOutputChannel().getPrintConsumer() != null) {
+			if (machine.getOutputChannel().getChannel() == fn) {
+				machine.getOutputChannel().setPrintConsumer(null, 0);
+			}
+		}
+
+		machine.getDeviceProvider().close(fn);
+	}
 
 	private void jumpTo(String newAddr) {
 		String label = newAddr + ":";
@@ -968,28 +961,25 @@ public class PseudoCpu {
 			addr = jumpStack.pop().intValue();
 		}
 	}
-	
-	private void xToStack()
-  {
-    int size=initialJumpStackSize;
-    while(jumpStack.size()>size) {
-      jumpStack.pop();
-    }
-  }
 
-  private void stackToX()
-  {
-    initialJumpStackSize=jumpStack.size();
-  }
-  
-  private void start(String[] parts) {
-    stackToX();
-  }
-  
-  private void end(String[] parts) {
-    xToStack();
-  }
+	private void xToStack() {
+		int size = initialJumpStackSize;
+		while (jumpStack.size() > size) {
+			jumpStack.pop();
+		}
+	}
 
+	private void stackToX() {
+		initialJumpStackSize = jumpStack.size();
+	}
+
+	private void start(String[] parts) {
+		stackToX();
+	}
+
+	private void end(String[] parts) {
+		xToStack();
+	}
 
 	private void initFor(String[] parts) {
 		Number stopVal = getStack().pop();
@@ -1128,49 +1118,48 @@ public class PseudoCpu {
 		this.bufferPos = MEM_SIZE;
 		this.bufferStart = MEM_SIZE;
 	}
-	
-	 private void run(String[] parts) {
-	   clearVars(parts);
-	   addr=0;
+
+	private void run(String[] parts) {
+		clearVars(parts);
+		addr = 0;
 	}
 
-
 	private void clearVars(String[] parts) {
-	  for (Variable var:machine.getVariables().values()) {
-	    if (var.isArray()) {
-	      int addr=memLocations.get(var.getName());
-	      int type=memory[addr++];
-	      int size=memory[addr++];
-	      for (int i=0; i<size; i++) {
-	        if (type==0) {
-	          memory[addr+i]=0;
-	        } else if (type==1) {
-	          memory[addr+i]=Float.floatToIntBits(0f);
-	        } else if (type==2) {
-	          memory[addr+i]=this.emptyString;
-	        } else {
-	          throw new RuntimeException("Unknown type: "+type);
-	        }
-	      }
-	      
-	    } else {
-        if (var.getType()==Type.INTEGER) {
-          var.setValue(0);
-        } else if (var.getType()==Type.REAL) {
-          var.setValue(0.0f);
-        } else {
-          if (memLocations.containsKey(var.getName())) {
-            memLocations.put(var.getName(), this.emptyString);
-          }
-        }
-	    }
-    }
-	  this.restore(parts);
-	  memPointer = dynamicStart;
-	  bufferPos = MEM_SIZE;
-    bufferStart = MEM_SIZE;
-  }
-	
+		for (Variable var : machine.getVariables().values()) {
+			if (var.isArray()) {
+				int addr = memLocations.get(var.getName());
+				int type = memory[addr++];
+				int size = memory[addr++];
+				for (int i = 0; i < size; i++) {
+					if (type == 0) {
+						memory[addr + i] = 0;
+					} else if (type == 1) {
+						memory[addr + i] = Float.floatToIntBits(0f);
+					} else if (type == 2) {
+						memory[addr + i] = this.emptyString;
+					} else {
+						throw new RuntimeException("Unknown type: " + type);
+					}
+				}
+
+			} else {
+				if (var.getType() == Type.INTEGER) {
+					var.setValue(0);
+				} else if (var.getType() == Type.REAL) {
+					var.setValue(0.0f);
+				} else {
+					if (memLocations.containsKey(var.getName())) {
+						memLocations.put(var.getName(), this.emptyString);
+					}
+				}
+			}
+		}
+		this.restore(parts);
+		memPointer = dynamicStart;
+		bufferPos = MEM_SIZE;
+		bufferStart = MEM_SIZE;
+	}
+
 	private void restore(String[] parts) {
 		datasPointer = datasAddr;
 		datasSize = memory[datasPointer++];
@@ -1196,7 +1185,7 @@ public class PseudoCpu {
 		}
 		machine.getOutputChannel().setPrintConsumer(null, 0);
 	}
-	
+
 	private void clearQueue(String[] parts) {
 		inputQueue.clear();
 	}
@@ -1243,37 +1232,35 @@ public class PseudoCpu {
 		}
 		return input;
 	}
-	
+
 	private void getStringChannel(String[] parts) {
-	  int fn = regs[G].intValue();
-    DeviceProvider device = machine.getDeviceProvider();
-    Character c = device.getChar(fn);
-    copyStringResult(c.toString());
-  }
+		int fn = regs[G].intValue();
+		DeviceProvider device = machine.getDeviceProvider();
+		Character c = device.getChar(fn);
+		copyStringResult(c.toString());
+	}
 
-  private void getNumberChannel(String[] parts) {
-    int fn = regs[G].intValue();
-    DeviceProvider device = machine.getDeviceProvider();
-    Character c = device.getChar(fn);
-    c = ensureNumberKey(machine, c, true);
-    regs[Y] = Integer.valueOf(c.toString());
-  }
-	
-	
+	private void getNumberChannel(String[] parts) {
+		int fn = regs[G].intValue();
+		DeviceProvider device = machine.getDeviceProvider();
+		Character c = device.getChar(fn);
+		c = ensureNumberKey(machine, c, true);
+		regs[Y] = Integer.valueOf(c.toString());
+	}
+
 	private void inputNumberChannel(String[] parts) {
-	  int fn = regs[G].intValue();
-    DeviceProvider device = machine.getDeviceProvider();
-    float num = device.inputNumber(fn);
-    regs[Y] = num;
-  }
+		int fn = regs[G].intValue();
+		DeviceProvider device = machine.getDeviceProvider();
+		float num = device.inputNumber(fn);
+		regs[Y] = num;
+	}
 
-  private void inputStringChannel(String[] parts) {
-    int fn = regs[G].intValue();
-    DeviceProvider device = machine.getDeviceProvider();
-    String str = device.inputString(fn);
-    copyStringResult(str);
-  }
-
+	private void inputStringChannel(String[] parts) {
+		int fn = regs[G].intValue();
+		DeviceProvider device = machine.getDeviceProvider();
+		String str = device.inputString(fn);
+		copyStringResult(str);
+	}
 
 	private void readString(String[] parts) {
 		checkDataPointer();
@@ -1920,21 +1907,20 @@ public class PseudoCpu {
 		});
 	}
 
-	 private void xor(String[] parts)
-	  {
-	   calc(parts, new Calc() {
-	      @Override
-	      public Number calc(Number n1, Number n2) {
-	        return n1.intValue() ^ n2.intValue();
-	      }
+	private void xor(String[] parts) {
+		calc(parts, new Calc() {
+			@Override
+			public Number calc(Number n1, Number n2) {
+				return n1.intValue() ^ n2.intValue();
+			}
 
-	      @Override
-	      public String op() {
-	        return "~_";
-	      }
-	    });
+			@Override
+			public String op() {
+				return "~_";
+			}
+		});
 	}
-	
+
 	private void and(String[] parts) {
 		calc(parts, new Calc() {
 			@Override
@@ -2098,13 +2084,13 @@ public class PseudoCpu {
 					}
 				}
 			} else {
-			  // From register into fixed memory address
-				int addr=Integer.parseInt(target);
+				// From register into fixed memory address
+				int addr = Integer.parseInt(target);
 				int val = regs[si].intValue() & 0xff;
 				memory[addr] = val;
-        if (sharedRam) {
-          machine.getMemoryListener().poke(addr, val);
-        }
+				if (sharedRam) {
+					machine.getMemoryListener().poke(addr, val);
+				}
 			}
 		} else {
 			// From memory or register into register
@@ -2123,14 +2109,14 @@ public class PseudoCpu {
 						// System.out.println(regs[ti].intValue()+"/"+(regs[si].intValue()
 						// & 0xff)+"/"+memory[regs[ti].intValue()]);
 					} else {
-					  String val = source;
-					  if (isNumber(val)) {
-              // From fixed memory address into register
-              int vally=Integer.parseInt(val);
-              regs[ti]=memory[vally];
-            } else {
-              regs[ti] = regs[si];
-            }
+						String val = source;
+						if (isNumber(val)) {
+							// From fixed memory address into register
+							int vally = Integer.parseInt(val);
+							regs[ti] = memory[vally];
+						} else {
+							regs[ti] = regs[si];
+						}
 					}
 				}
 			} else {
@@ -2178,25 +2164,23 @@ public class PseudoCpu {
 		}
 	}
 
-	private boolean isNumber(String val)
-  {
-    for (int i=0; i<val.length(); i++) {
-      if (!Character.isDigit(val.charAt(i))) {
-        return false;
-      }
-    }
-    return true;
-  }
+	private boolean isNumber(String val) {
+		for (int i = 0; i < val.length(); i++) {
+			if (!Character.isDigit(val.charAt(i))) {
+				return false;
+			}
+		}
+		return true;
+	}
 
-
-  private void updateZeroFlag(Number value) {
+	private void updateZeroFlag(Number value) {
 		zeroFlag = value.doubleValue() == 0;
 	}
 
 	private int getIndex(String target) {
 		int ti = -1;
-		if (target.length()>3) {
-		  return ti;
+		if (target.length() > 3) {
+			return ti;
 		}
 		if (target.equals("X") || target.equals("(X)")) {
 			ti = 0;

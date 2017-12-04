@@ -53,7 +53,7 @@ public class Cmd extends AbstractCommand {
 	@Override
 	public List<CodeContainer> evalToCode(Machine machine) {
 		int fn = VarUtils.getInt(fileNumber.eval(machine));
-		return Util.createSingleCommand("MOV X,#" + fn+"{INTEGER}", "JSR CMD");
+		return Util.createSingleCommand("MOV X,#" + fn + "{INTEGER}", "JSR CMD");
 	}
 
 	/*

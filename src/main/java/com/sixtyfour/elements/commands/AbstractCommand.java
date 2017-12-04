@@ -244,20 +244,19 @@ public abstract class AbstractCommand implements Command {
 	protected void syntaxError(Object obj) {
 		syntaxError(obj.toString());
 	}
-	
+
 	/**
 	 * @param expr
 	 * @return
 	 */
-	protected List<String> saveG(List<String> expr)
-  {
-    if (expr.size()>0 && expr.get(expr.size()-1).equals("PUSH G")) {
-        expr=expr.subList(0, expr.size() - 1);
-    } else {
-      expr.add("POP G");
-    }
-    return expr;
-  }
+	protected List<String> saveG(List<String> expr) {
+		if (expr.size() > 0 && expr.get(expr.size() - 1).equals("PUSH G")) {
+			expr = expr.subList(0, expr.size() - 1);
+		} else {
+			expr.add("POP G");
+		}
+		return expr;
+	}
 
 	/**
 	 * @param params

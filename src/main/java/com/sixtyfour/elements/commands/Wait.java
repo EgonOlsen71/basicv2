@@ -17,8 +17,8 @@ import com.sixtyfour.util.VarUtils;
  */
 public class Wait extends AbstractCommand {
 
-  private static int waitCount = 0;
-  
+	private static int waitCount = 0;
+
 	/** The pars. */
 	private List<Atom> pars;
 
@@ -64,51 +64,50 @@ public class Wait extends AbstractCommand {
 
 	@Override
 	public List<CodeContainer> evalToCode(Machine machine) {
-	  Atom addr = pars.get(0);
-    Atom waitFor = pars.get(1);
-	  NativeCompiler compiler = NativeCompiler.getCompiler();
-    List<String> after = new ArrayList<String>();
-    List<String> expr = new ArrayList<String>();
-    
-    int wc = waitCount++;
-    String label = "WAIT" + wc;
-    
-    boolean invertFound = false;
-    if (pars.size() == 3) {
-      invertFound = true;
-      Atom inverted = pars.get(2);
-      expr.addAll(compiler.compileToPseudoCode(machine, inverted));
-    }
-    
-    expr.addAll(compiler.compileToPseudoCode(machine, waitFor));
-    List<String> before = null;
+		Atom addr = pars.get(0);
+		Atom waitFor = pars.get(1);
+		NativeCompiler compiler = NativeCompiler.getCompiler();
+		List<String> after = new ArrayList<String>();
+		List<String> expr = new ArrayList<String>();
 
-    String expPush = getPushRegister(expr.get(expr.size() - 1));
-    expr = expr.subList(0, expr.size() - 1);
+		int wc = waitCount++;
+		String label = "WAIT" + wc;
 
-    before = compiler.compileToPseudoCode(machine, addr);
-    
-    
-    if (expPush.equals("Y")) {
-      expr.add("MOV X,Y");
-    }
-    if (invertFound) {
-      after.add("POP C");
-    }
-    after.add("POP Y");
-    after.add(label+":");
-    after.add("MOV D,(Y)");
-    if (invertFound) {
-      after.add("XOR D,C");
-    }
-    after.add("AND D,X");
-    after.add("CMP D,#0{INTEGER}");
-    after.add("JE "+label);
+		boolean invertFound = false;
+		if (pars.size() == 3) {
+			invertFound = true;
+			Atom inverted = pars.get(2);
+			expr.addAll(compiler.compileToPseudoCode(machine, inverted));
+		}
 
-    CodeContainer cc = new CodeContainer(before, expr, after);
-    List<CodeContainer> ccs = new ArrayList<CodeContainer>();
-    ccs.add(cc);
-    return ccs;
+		expr.addAll(compiler.compileToPseudoCode(machine, waitFor));
+		List<String> before = null;
+
+		String expPush = getPushRegister(expr.get(expr.size() - 1));
+		expr = expr.subList(0, expr.size() - 1);
+
+		before = compiler.compileToPseudoCode(machine, addr);
+
+		if (expPush.equals("Y")) {
+			expr.add("MOV X,Y");
+		}
+		if (invertFound) {
+			after.add("POP C");
+		}
+		after.add("POP Y");
+		after.add(label + ":");
+		after.add("MOV D,(Y)");
+		if (invertFound) {
+			after.add("XOR D,C");
+		}
+		after.add("AND D,X");
+		after.add("CMP D,#0{INTEGER}");
+		after.add("JE " + label);
+
+		CodeContainer cc = new CodeContainer(before, expr, after);
+		List<CodeContainer> ccs = new ArrayList<CodeContainer>();
+		ccs.add(cc);
+		return ccs;
 	}
 
 	/*

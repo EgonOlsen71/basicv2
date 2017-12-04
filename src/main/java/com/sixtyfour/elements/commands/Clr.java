@@ -48,10 +48,10 @@ public class Clr extends AbstractCommand {
 		machine.getDataStore().restore();
 		return null;
 	}
-	
+
 	@Override
-  public List<CodeContainer> evalToCode(Machine machine) {
-    return Util.createSingleCommand("JSR CLR");
-  }
+	public List<CodeContainer> evalToCode(Machine machine) {
+		return Util.createSingleCommand("JSR CLR");
+	}
 
 }

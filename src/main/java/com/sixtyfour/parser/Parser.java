@@ -548,7 +548,7 @@ public class Parser {
 				// that you haven't seen this.
 				String ini = ((Term) atom).getInitial();
 				if (i == 0) {
-					ini=((Term) atom).getTruncatedInitial();
+					ini = ((Term) atom).getTruncatedInitial();
 				}
 				sb.append(ini);
 			}

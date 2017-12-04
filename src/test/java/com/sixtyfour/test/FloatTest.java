@@ -21,19 +21,19 @@ public class FloatTest {
 		basic.run();
 		System.out.println(Conversions.convertFloat(basic.getMachine(), 97) + "/" + 11879546.0d);
 	}
-	
+
 	public static void testConversions() {
-    int[] num = Conversions.convertFloat(1234.5454433f);
-    float res = Conversions.convertFloat(num[0], num[5], num[4], num[3], num[2], num[1]);
-    System.out.println(res);
-    System.out.println("-------------------------------------");
-    num = Conversions.convertFloat(-237.998f);
-    res = Conversions.convertFloat(num[0], num[5], num[4], num[3], num[2], num[1]);
-    System.out.println(res);
-    System.out.println("-------------------------------------");
-    num = Conversions.extractFloat(Conversions.compactFloat(Conversions.convertFloat(-(float) Math.PI)));
-    res = Conversions.convertFloat(num[0], num[5], num[4], num[3], num[2], num[1]);
-    System.out.println(res);
+		int[] num = Conversions.convertFloat(1234.5454433f);
+		float res = Conversions.convertFloat(num[0], num[5], num[4], num[3], num[2], num[1]);
+		System.out.println(res);
+		System.out.println("-------------------------------------");
+		num = Conversions.convertFloat(-237.998f);
+		res = Conversions.convertFloat(num[0], num[5], num[4], num[3], num[2], num[1]);
+		System.out.println(res);
+		System.out.println("-------------------------------------");
+		num = Conversions.extractFloat(Conversions.compactFloat(Conversions.convertFloat(-(float) Math.PI)));
+		res = Conversions.convertFloat(num[0], num[5], num[4], num[3], num[2], num[1]);
+		System.out.println(res);
 	}
 
 }

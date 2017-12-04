@@ -16,7 +16,7 @@ import com.sixtyfour.system.Machine;
  */
 public class If extends AbstractCommand {
 
-  private static boolean compatibleConditionalBranches=true;
+	private static boolean compatibleConditionalBranches = true;
 	private static int ifCount = 0;
 	/** The logic term. */
 	private LogicTerm logicTerm = null;
@@ -107,17 +107,18 @@ public class If extends AbstractCommand {
 		String label = "SKIP" + ic;
 
 		if (!compatibleConditionalBranches) {
-		  // This combination might not work on a 6502 cpu, because the conditional branch target has to be within +-127/8 bytes 
-  		after.add("CMP " + expPush + ",#0{REAL}");
-  		after.add("JE " + label);
-  		after.add(label + ":");
+			// This combination might not work on a 6502 cpu, because the
+			// conditional branch target has to be within +-127/8 bytes
+			after.add("CMP " + expPush + ",#0{REAL}");
+			after.add("JE " + label);
+			after.add(label + ":");
 		} else {
-		  //...but this version will work. It's slower though. 
-  		after.add("CMP " + expPush + ",#0{REAL}");
-      after.add("JNE N" + label);
-      after.add("JMP "+label);
-      after.add("N"+label+":");
-      after.add(label + ":");
+			// ...but this version will work. It's slower though.
+			after.add("CMP " + expPush + ",#0{REAL}");
+			after.add("JNE N" + label);
+			after.add("JMP " + label);
+			after.add("N" + label + ":");
+			after.add(label + ":");
 		}
 		CodeContainer cc = new CodeContainer(before, expr, after);
 		List<CodeContainer> ccs = new ArrayList<CodeContainer>();

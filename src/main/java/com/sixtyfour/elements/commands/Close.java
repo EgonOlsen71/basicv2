@@ -48,24 +48,24 @@ public class Close extends AbstractCommand {
 
 	@Override
 	public List<CodeContainer> evalToCode(Machine machine) {
-	  NativeCompiler compiler = NativeCompiler.getCompiler();
-    List<String> after = new ArrayList<String>();
-    List<String> expr = null;
-    List<String> before = new ArrayList<String>();
-    
-    expr=compiler.compileToPseudoCode(machine, pars.get(0));
-    
-    String expPush = getPushRegister(expr.get(expr.size() - 1));
-    expr = expr.subList(0, expr.size() - 1);
-    if (expPush.equals("Y")) {
-      expr.add("MOV X,Y");
-    }
-    after.add("JSR CLOSE");
+		NativeCompiler compiler = NativeCompiler.getCompiler();
+		List<String> after = new ArrayList<String>();
+		List<String> expr = null;
+		List<String> before = new ArrayList<String>();
 
-    CodeContainer cc = new CodeContainer(before, expr, after);
-    List<CodeContainer> ccs = new ArrayList<CodeContainer>();
-    ccs.add(cc);
-    return ccs;
+		expr = compiler.compileToPseudoCode(machine, pars.get(0));
+
+		String expPush = getPushRegister(expr.get(expr.size() - 1));
+		expr = expr.subList(0, expr.size() - 1);
+		if (expPush.equals("Y")) {
+			expr.add("MOV X,Y");
+		}
+		after.add("JSR CLOSE");
+
+		CodeContainer cc = new CodeContainer(before, expr, after);
+		List<CodeContainer> ccs = new ArrayList<CodeContainer>();
+		ccs.add(cc);
+		return ccs;
 	}
 
 	/*

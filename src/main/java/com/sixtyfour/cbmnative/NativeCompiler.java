@@ -92,18 +92,18 @@ public class NativeCompiler {
 				}
 			}
 		}
-		
-		int os=mCode.size();
+
+		int os = mCode.size();
 		mCode = optimize(mCode);
-		
-		Logger.log("Code optimized: "+os+" => "+mCode.size()+" lines!");
-		
+
+		Logger.log("Code optimized: " + os + " => " + mCode.size() + " lines!");
+
 		if (!getLastEntry(mCode).equals("RTS")) {
-		  mCode.add("JSR END");
+			mCode.add("JSR END");
 			mCode.add("RTS");
 		}
 		mCode.add(0, "JSR START");
-		
+
 		Logger.log("Compiled to pseudo code in: " + (System.currentTimeMillis() - s) + "ms");
 		return mCode;
 	}
@@ -588,33 +588,32 @@ public class NativeCompiler {
 				}
 
 				String[] l0ps = l0.split(" |,");
-        String[] l1ps = l1.split(" |,");
-				
+				String[] l1ps = l1.split(" |,");
+
 				if (l0.startsWith("PUSH") && l1.startsWith("POP")) {
-				  ret.add("MOV "+l1ps[1]+","+l0ps[1]);
-				  i+=1;
-				  continue;
+					ret.add("MOV " + l1ps[1] + "," + l0ps[1]);
+					i += 1;
+					continue;
 				}
-				
+
 				if (l2 != null && l0.equals("PUSH X") && l1.startsWith("MOV C") && l1.contains("[]") && l2.equals("POP Y")) {
 					ret.add(l1);
 					i += 2;
 					continue;
 				}
-				
+
 				// MOV Y,#4096{INTEGER}
 				// MOV X,(Y)
 				if (l0.startsWith("MOV Y,#") && l1.equals("MOV X,(Y)")) {
-				  try {
-				    int addr=Integer.parseInt(l0.substring(l0.indexOf("#")+1, l0.indexOf("{")));
-				    ret.add("MOV X,"+addr);
-				    i+=1;
-				    continue;
-				  } catch(Exception e) {
-				    //
-				  }
+					try {
+						int addr = Integer.parseInt(l0.substring(l0.indexOf("#") + 1, l0.indexOf("{")));
+						ret.add("MOV X," + addr);
+						i += 1;
+						continue;
+					} catch (Exception e) {
+						//
+					}
 				}
-				
 
 				if (l0.startsWith("MOV Y,") && l1.equals("MOV X,Y")) {
 					ret.add(l0.replace("MOV Y,", "MOV X,"));

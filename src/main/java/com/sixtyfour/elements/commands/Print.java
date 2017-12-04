@@ -141,10 +141,9 @@ public class Print extends AbstractCommand {
 	}
 
 	public List<CodeContainer> evalToCode(Machine machine) {
-	  return evalToCode(machine, "");
+		return evalToCode(machine, "");
 	}
-	
-	
+
 	public List<CodeContainer> evalToCode(Machine machine, String appendix) {
 		NativeCompiler compiler = NativeCompiler.getCompiler();
 		List<String> after = new ArrayList<String>();
@@ -172,21 +171,21 @@ public class Print extends AbstractCommand {
 					}
 
 					if (!appendix.isEmpty()) {
-					  expr = saveG(expr);
+						expr = saveG(expr);
 					}
-					
+
 					if (type.equals(Type.INTEGER)) {
-						expr.add("JSR INTOUT"+appendix);
+						expr.add("JSR INTOUT" + appendix);
 					} else if (type.equals(Type.REAL)) {
-						expr.add("JSR REALOUT"+appendix);
+						expr.add("JSR REALOUT" + appendix);
 					} else {
-						expr.add("JSR STROUT"+appendix);
+						expr.add("JSR STROUT" + appendix);
 					}
-					
-					 if (!appendix.isEmpty()) {
-	            expr.add("PUSH G");
-	          }
-					
+
+					if (!appendix.isEmpty()) {
+						expr.add("PUSH G");
+					}
+
 				}
 			}
 
@@ -202,26 +201,26 @@ public class Print extends AbstractCommand {
 			}
 
 			if (!appendix.isEmpty()) {
-			  expr = saveG(expr);
-      }
-			
+				expr = saveG(expr);
+			}
+
 			if (("\n").equals(add)) {
-				expr.add("JSR LINEBREAK"+appendix);
+				expr.add("JSR LINEBREAK" + appendix);
 			} else {
 				if (add != null) {
 					expr.add("MOV A,#" + add + "{STRING}");
-					expr.add("JSR STROUT"+appendix);
+					expr.add("JSR STROUT" + appendix);
 				}
 			}
-			
-			if (!appendix.isEmpty() && i!=parts.size()-1) {
-        expr.add("PUSH G");
-      }
+
+			if (!appendix.isEmpty() && i != parts.size() - 1) {
+				expr.add("PUSH G");
+			}
 		}
-		
+
 		// Just to be sure...
-		if (expr.size()>0 && expr.get(expr.size()-1).equals("PUSH G")) {
-		  expr=expr.subList(0, expr.size() - 1);
+		if (expr.size() > 0 && expr.get(expr.size() - 1).equals("PUSH G")) {
+			expr = expr.subList(0, expr.size() - 1);
 		}
 
 		CodeContainer cc = new CodeContainer(before, expr, after);
@@ -229,7 +228,6 @@ public class Print extends AbstractCommand {
 		ccs.add(cc);
 		return ccs;
 	}
-
 
 	/**
 	 * Gets the parts.

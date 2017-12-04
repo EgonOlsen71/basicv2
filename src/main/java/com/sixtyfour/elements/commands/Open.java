@@ -48,66 +48,64 @@ public class Open extends AbstractCommand {
 
 	@Override
 	public List<CodeContainer> evalToCode(Machine machine) {
-	    NativeCompiler compiler = NativeCompiler.getCompiler();
-	    List<String> after = new ArrayList<String>();
-	    List<String> expr = new ArrayList<String>();
-	    List<String> before = new ArrayList<String>();
-	    
-	    try {
-	      switch (pars.size()) {
-	      case 1:
-	        expr.addAll(compiler.compileToPseudoCode(machine, pars.get(0)));
-	        String expPush = getPushRegister(expr.get(expr.size() - 1));
-	        expr = expr.subList(0, expr.size() - 1);
-	        if (expPush.equals("Y")) {
-	          expr.add("MOV X,Y");
-	        }
-	        after.add("MOV Y,#1{INTEGER}");
-	        break;
-	      case 2:
-	        expr.addAll(compiler.compileToPseudoCode(machine, pars.get(0)));
-	        expr.addAll(compiler.compileToPseudoCode(machine, pars.get(1)));
-	        expr.add("POP C");
-	        expr.add("POP X");
-	        after.add("MOV Y,#2{INTEGER}");
-	        break;
-	      case 3:
-	        expr.addAll(compiler.compileToPseudoCode(machine, pars.get(0)));
-          expr.addAll(compiler.compileToPseudoCode(machine, pars.get(1)));
-          expr.addAll(compiler.compileToPseudoCode(machine, pars.get(2)));
-          expr.add("POP D");
-          expr.add("POP C");
-          expr.add("POP X");
-          after.add("MOV Y,#3{INTEGER}");
-	        break;
-	      case 4:
-	        expr.addAll(compiler.compileToPseudoCode(machine, pars.get(0)));
-          expr.addAll(compiler.compileToPseudoCode(machine, pars.get(1)));
-          expr.addAll(compiler.compileToPseudoCode(machine, pars.get(2)));
-          expr.addAll(compiler.compileToPseudoCode(machine, pars.get(3)));
-          expr.add("POP G");
-          expr.add("POP D");
-          expr.add("POP C");
-          expr.add("POP X");
-          after.add("MOV Y,#4{INTEGER}");
-	        break;
-	      default:
-	        syntaxError(this);
-	      }
-	    } catch (ClassCastException e) {
-	      syntaxError(this);
-	    }
-	    
-	    
-	    
-	    after.add("JSR OPEN");
+		NativeCompiler compiler = NativeCompiler.getCompiler();
+		List<String> after = new ArrayList<String>();
+		List<String> expr = new ArrayList<String>();
+		List<String> before = new ArrayList<String>();
 
-	    CodeContainer cc = new CodeContainer(before, expr, after);
-	    List<CodeContainer> ccs = new ArrayList<CodeContainer>();
-	    ccs.add(cc);
-	    return ccs;
+		try {
+			switch (pars.size()) {
+			case 1:
+				expr.addAll(compiler.compileToPseudoCode(machine, pars.get(0)));
+				String expPush = getPushRegister(expr.get(expr.size() - 1));
+				expr = expr.subList(0, expr.size() - 1);
+				if (expPush.equals("Y")) {
+					expr.add("MOV X,Y");
+				}
+				after.add("MOV Y,#1{INTEGER}");
+				break;
+			case 2:
+				expr.addAll(compiler.compileToPseudoCode(machine, pars.get(0)));
+				expr.addAll(compiler.compileToPseudoCode(machine, pars.get(1)));
+				expr.add("POP C");
+				expr.add("POP X");
+				after.add("MOV Y,#2{INTEGER}");
+				break;
+			case 3:
+				expr.addAll(compiler.compileToPseudoCode(machine, pars.get(0)));
+				expr.addAll(compiler.compileToPseudoCode(machine, pars.get(1)));
+				expr.addAll(compiler.compileToPseudoCode(machine, pars.get(2)));
+				expr.add("POP D");
+				expr.add("POP C");
+				expr.add("POP X");
+				after.add("MOV Y,#3{INTEGER}");
+				break;
+			case 4:
+				expr.addAll(compiler.compileToPseudoCode(machine, pars.get(0)));
+				expr.addAll(compiler.compileToPseudoCode(machine, pars.get(1)));
+				expr.addAll(compiler.compileToPseudoCode(machine, pars.get(2)));
+				expr.addAll(compiler.compileToPseudoCode(machine, pars.get(3)));
+				expr.add("POP G");
+				expr.add("POP D");
+				expr.add("POP C");
+				expr.add("POP X");
+				after.add("MOV Y,#4{INTEGER}");
+				break;
+			default:
+				syntaxError(this);
+			}
+		} catch (ClassCastException e) {
+			syntaxError(this);
+		}
+
+		after.add("JSR OPEN");
+
+		CodeContainer cc = new CodeContainer(before, expr, after);
+		List<CodeContainer> ccs = new ArrayList<CodeContainer>();
+		ccs.add(cc);
+		return ccs;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 

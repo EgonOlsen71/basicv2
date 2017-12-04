@@ -53,23 +53,23 @@ public class PrintFile extends Print {
 
 	@Override
 	public List<CodeContainer> evalToCode(Machine machine) {
-	  NativeCompiler compiler = NativeCompiler.getCompiler();
-    List<String> after = new ArrayList<String>();
-    List<String> expr = null;
-    List<String> before = new ArrayList<String>();
-    
-    expr=compiler.compileToPseudoCode(machine, fileNumber);
-    
-    String expPush = expr.get(expr.size() - 1);
-    expr = expr.subList(0, expr.size() - 1);
-    expPush.replace("X", "G").replace("Y", "G");
-    expr.add(expPush);
+		NativeCompiler compiler = NativeCompiler.getCompiler();
+		List<String> after = new ArrayList<String>();
+		List<String> expr = null;
+		List<String> before = new ArrayList<String>();
 
-    CodeContainer cc = new CodeContainer(before, expr, after);
-    List<CodeContainer> ccs=new ArrayList<CodeContainer>();
-    ccs.add(cc);
-    ccs.addAll(this.evalToCode(machine, "CHANNEL"));
-    return ccs;
+		expr = compiler.compileToPseudoCode(machine, fileNumber);
+
+		String expPush = expr.get(expr.size() - 1);
+		expr = expr.subList(0, expr.size() - 1);
+		expPush.replace("X", "G").replace("Y", "G");
+		expr.add(expPush);
+
+		CodeContainer cc = new CodeContainer(before, expr, after);
+		List<CodeContainer> ccs = new ArrayList<CodeContainer>();
+		ccs.add(cc);
+		ccs.addAll(this.evalToCode(machine, "CHANNEL"));
+		return ccs;
 	}
 
 	/*

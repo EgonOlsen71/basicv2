@@ -71,46 +71,46 @@ public abstract class MultiVariableCommand extends AbstractCommand {
 		}
 		return ccs;
 	}
-	
-	final protected  List<CodeContainer> evalToCodeFile(Machine machine, String strCall, String numberCall) {
-    NativeCompiler compiler = NativeCompiler.getCompiler();
-    List<CodeContainer> ccs = new ArrayList<CodeContainer>();
 
-    for (int i = 0; i < vars.size(); i++) {
-      Term indexTerm = indexTerms.get(i);
-      Variable var = this.getVariable(machine, i);
-      List<String> after = new ArrayList<String>();
-      List<String> expr = new ArrayList<String>();
-      List<String> before = new ArrayList<String>();
+	final protected List<CodeContainer> evalToCodeFile(Machine machine, String strCall, String numberCall) {
+		NativeCompiler compiler = NativeCompiler.getCompiler();
+		List<CodeContainer> ccs = new ArrayList<CodeContainer>();
 
-      before = saveG(before);
-      
-      if (var.getType() == Type.STRING) {
-        before.add("JSR "+strCall);
-      } else if (var.getType() == Type.INTEGER || var.getType() == Type.REAL) {
-        before.add("JSR "+numberCall);
-      }
-      
-      if (i!=vars.size()-1) {
-        before.add("PUSH G");
-      }
+		for (int i = 0; i < vars.size(); i++) {
+			Term indexTerm = indexTerms.get(i);
+			Variable var = this.getVariable(machine, i);
+			List<String> after = new ArrayList<String>();
+			List<String> expr = new ArrayList<String>();
+			List<String> before = new ArrayList<String>();
 
-      if (indexTerm != null) {
-        List<Atom> pars = Parser.getParameters(indexTerm);
-        expr = compiler.compileToPseudoCode(machine, Parser.createIndexTerm(machine, pars, var.getDimensions()));
+			before = saveG(before);
 
-        after.add("POP X");
-        after.add("MOV G," + getVariableLabel(machine, var));
-        after.add("JSR ARRAYSTORE");
-      } else {
-        after.add("MOV " + getVariableLabel(machine, var) + "," + (var.getType() == Type.STRING ? "A" : "Y"));
-      }
+			if (var.getType() == Type.STRING) {
+				before.add("JSR " + strCall);
+			} else if (var.getType() == Type.INTEGER || var.getType() == Type.REAL) {
+				before.add("JSR " + numberCall);
+			}
 
-      CodeContainer cc = new CodeContainer(before, expr, after);
-      ccs.add(cc);
-    }
-    return ccs;
-  }
+			if (i != vars.size() - 1) {
+				before.add("PUSH G");
+			}
+
+			if (indexTerm != null) {
+				List<Atom> pars = Parser.getParameters(indexTerm);
+				expr = compiler.compileToPseudoCode(machine, Parser.createIndexTerm(machine, pars, var.getDimensions()));
+
+				after.add("POP X");
+				after.add("MOV G," + getVariableLabel(machine, var));
+				after.add("JSR ARRAYSTORE");
+			} else {
+				after.add("MOV " + getVariableLabel(machine, var) + "," + (var.getType() == Type.STRING ? "A" : "Y"));
+			}
+
+			CodeContainer cc = new CodeContainer(before, expr, after);
+			ccs.add(cc);
+		}
+		return ccs;
+	}
 
 	/**
 	 * Gets the variable at a position.

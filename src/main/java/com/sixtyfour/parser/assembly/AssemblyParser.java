@@ -201,23 +201,23 @@ public class AssemblyParser {
 			for (String part : parts) {
 				int val = getLowByte(getValue(part));
 				ram.add(val);
-			} 
+			}
 		} else if (datupper.startsWith(".WORD")) {
-	      String[] parts = data.substring(5).trim().split(" ");
-	      for (String part : parts) {
-	        int val = getValue(part);
-	        ram.add(getLowByte(val));
-	        ram.add(getHighByte(val));
-	      }
+			String[] parts = data.substring(5).trim().split(" ");
+			for (String part : parts) {
+				int val = getValue(part);
+				ram.add(getLowByte(val));
+				ram.add(getHighByte(val));
+			}
 		} else if (datupper.startsWith(".REAL")) {
-      String[] parts = data.substring(5).trim().split(" ");
-      for (String part : parts) {
-        float val = getRealValue(part);
-        int[] res=Conversions.compactFloat(Conversions.convertFloat(val));
-        for (int r:res) {
-          ram.add(getLowByte(r));
-        }
-      }
+			String[] parts = data.substring(5).trim().split(" ");
+			for (String part : parts) {
+				float val = getRealValue(part);
+				int[] res = Conversions.compactFloat(Conversions.convertFloat(val));
+				for (int r : res) {
+					ram.add(getLowByte(r));
+				}
+			}
 		} else {
 			throw new RuntimeException("Invalid data definition: " + data);
 		}
@@ -230,7 +230,7 @@ public class AssemblyParser {
 		return res;
 	}
 
-  /**
+	/**
 	 * Returns the constant that is defined in the given line. It's possible to
 	 * do calculations in the right hand side of the assignment as well.
 	 * 
@@ -374,14 +374,13 @@ public class AssemblyParser {
 			throw new RuntimeException("Invalid number: " + number, e);
 		}
 	}
-	
-	private static float getRealValue(String number)
-  {
-    number = number.trim();
-    try {
-       return Float.parseFloat(number);
-    } catch (Exception e) {
-      throw new RuntimeException("Invalid number: " + number, e);
-    }
-  }
+
+	private static float getRealValue(String number) {
+		number = number.trim();
+		try {
+			return Float.parseFloat(number);
+		} catch (Exception e) {
+			throw new RuntimeException("Invalid number: " + number, e);
+		}
+	}
 }
