@@ -1,6 +1,7 @@
 package com.sixtyfour.plugins.impl;
 
 import com.sixtyfour.plugins.SystemCallListener;
+import com.sixtyfour.system.Conversions;
 import com.sixtyfour.system.Machine;
 
 /**
@@ -34,7 +35,7 @@ public class RamSystemCallListener implements SystemCallListener {
 		int[] ram = machine.getRam();
 		int addr = (ram[786] & 0xff) << 8 | (ram[785] & 0xff);
 		machine.getCpu().execute(addr);
-		return machine.getCpu().convertFloat(97);
+		return Conversions.convertFloat(machine, 97);
 	}
 
 }

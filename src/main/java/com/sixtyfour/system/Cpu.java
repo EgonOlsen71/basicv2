@@ -86,39 +86,6 @@ public class Cpu {
 	}
 
 	/**
-	 * Converts a float from C64 6/7 byte format into Java format.
-	 * 
-	 * @param addr
-	 *            the address, where the float is stored (0x61 for FAC(1))
-	 * @return the float value
-	 */
-	public float convertFloat(int addr) {
-		return Conversions.convertFloat(machine, addr);
-	}
-
-	/**
-	 * Converts a float from C64 format into Java format.
-	 * 
-	 * @param exp
-	 *            the exponent
-	 * @param neg
-	 *            the negative flag (either 0 for positive or 0xFF for negative
-	 *            values)
-	 * @param m1
-	 *            the mantissa, part 1
-	 * @param m2
-	 *            the mantissa, part 2
-	 * @param m3
-	 *            the mantissa, part 3
-	 * @param m4
-	 *            the mantissa, part 4
-	 * @return the float value
-	 */
-	public float convertFloat(int exp, int neg, int m1, int m2, int m3, int m4) {
-		return Conversions.convertFloat(exp, neg, m1, m2, m3, m4);
-	}
-
-	/**
 	 * Returns the number of clock ticks that has passed. Each executed command
 	 * will increase this number by the appropriate amount.
 	 * 

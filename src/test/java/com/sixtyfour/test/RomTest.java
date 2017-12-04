@@ -5,6 +5,7 @@ import com.sixtyfour.Basic;
 import com.sixtyfour.Loader;
 import com.sixtyfour.extensions.textmode.ConsoleSupport;
 import com.sixtyfour.plugins.impl.RamSystemCallListener;
+import com.sixtyfour.system.Conversions;
 import com.sixtyfour.system.Machine;
 
 /**
@@ -33,8 +34,8 @@ public class RomTest {
 		final Machine machine = asm.getMachine();
 		machine.addRoms();
 		asm.run();
-		System.out.println(machine.getCpu().convertFloat(0x2000));
-		System.out.println(machine.getCpu().convertFloat(0x2010) + " ~ " + Math.sqrt(machine.getCpu().convertFloat(0x2000)));
+		System.out.println(Conversions.convertFloat(machine, 0x2000));
+		System.out.println(Conversions.convertFloat(machine, 0x2010) + " ~ " + Math.sqrt(Conversions.convertFloat(machine, 0x2000)));
 	}
 
 	private static void testRomAndBasicCalc() {
@@ -53,6 +54,6 @@ public class RomTest {
 		machine.putProgram(asm.getProgram());
 		inty.run();
 
-		System.out.println(machine.getCpu().convertFloat(0x2010));
+		System.out.println(Conversions.convertFloat(machine, 0x2010));
 	}
 }
