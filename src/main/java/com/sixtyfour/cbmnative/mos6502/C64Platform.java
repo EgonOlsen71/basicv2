@@ -22,4 +22,11 @@ public class C64Platform
     return startAddress;
   }
 
+
+  @Override
+  public int getStackSize()
+  {
+    return 20;
+  }
+
 }

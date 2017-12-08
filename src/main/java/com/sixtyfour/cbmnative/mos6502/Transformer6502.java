@@ -141,13 +141,34 @@ public class Transformer6502
     }
 
     mnems.add("rts");
-    
+
     res.addAll(mnems);
     res.addAll(consts);
     res.addAll(vars);
-    res.add("EMPTYSTR .BYTE 0");
-    res.add("STRBUF .BYTE 0");
+
+    res.add("X_REG\t.REAL 0.0");
+    res.add("Y_REG\t.REAL 0.0");
+    res.add("FPSTACKP\t.WORD FPSTACK");
+    res.add("FPSTACK .ARRAY " + platform.getStackSize() * 5);
+    res.add("EMPTYSTR\t.BYTE 0");
+    res.add("STRBUF\t.BYTE 0");
     return res;
   }
+
+  // MOV X,2
+  // MOV Y,3
+  // DIV X,Y
+  // PUSH X
+  //
+  //
+  // Const_2->X_REG
+  // Const_3->Y_REG
+  //
+  // Y_REG->FAC
+  // X_REG->ARG
+  //
+  // FAC=ARG/FAC
+  // FAC->X_REG
+  // PUSH X_REG
 
 }

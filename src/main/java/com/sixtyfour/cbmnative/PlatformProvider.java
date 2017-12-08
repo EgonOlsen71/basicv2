@@ -16,4 +16,9 @@ public interface PlatformProvider
    * @return
    */
   int getStartAddress();
+
+  /**
+   * @return
+   */
+  int getStackSize();
 }
