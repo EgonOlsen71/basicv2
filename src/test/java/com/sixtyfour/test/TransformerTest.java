@@ -9,6 +9,8 @@ import com.sixtyfour.cbmnative.NativeCompiler;
 import com.sixtyfour.cbmnative.mos6502.C64Platform;
 import com.sixtyfour.cbmnative.mos6502.Transformer6502;
 import com.sixtyfour.parser.Preprocessor;
+import com.sixtyfour.system.Program;
+import com.sixtyfour.system.ProgramPart;
 
 
 /**
@@ -39,9 +41,14 @@ public class TransformerTest
     {
       System.out.println(line);
     }
-    
-    Assembler assy=new Assembler(nCode);
+
+    Assembler assy = new Assembler(nCode);
     assy.compile();
     assy.run();
+    Program prg = assy.getProgram();
+    for (ProgramPart pp : prg.getParts())
+    {
+      System.out.println("Size: " + pp.size());
+    }
   }
 }
