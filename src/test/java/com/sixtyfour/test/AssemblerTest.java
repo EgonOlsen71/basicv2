@@ -388,7 +388,7 @@ public class AssemblerTest {
 	}
 
 	private static void testE46() {
-		String[] code = Loader.loadProgram("src/test/resources/asm/e46.asm");
+		String[] code = Loader.loadProgram("src/test/resources/asm/e45.asm");
 		Assembler asm = new Assembler(code);
 		asm.compile();
 		System.out.println(asm.toString());

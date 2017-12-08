@@ -2,6 +2,7 @@ package com.sixtyfour.test;
 
 import java.util.List;
 
+import com.sixtyfour.Assembler;
 import com.sixtyfour.Basic;
 import com.sixtyfour.Loader;
 import com.sixtyfour.cbmnative.NativeCompiler;
@@ -38,5 +39,9 @@ public class TransformerTest
     {
       System.out.println(line);
     }
+    
+    Assembler assy=new Assembler(nCode);
+    assy.compile();
+    assy.run();
   }
 }

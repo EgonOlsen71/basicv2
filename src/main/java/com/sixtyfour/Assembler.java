@@ -55,12 +55,26 @@ public class Assembler implements ProgramExecutor {
 		this(code, null);
 	}
 
+	
+	/**
+   * Instantiates a new compiler for an assembler program. No
+   * interpretation/compilation will take place at this stage. This
+   * constructor takes an list of code lines as input. Each code line should
+   * represent a line in the assembler program.
+   * 
+   * @param code
+   *            the assembler code
+   */
+  public Assembler(List<String> code) {
+    this(code.toArray(new String[code.size()]), null);
+  }
+	
 	/**
 	 * Instantiates a new compiler for an assembler program. No
 	 * interpretation/compilation will take place at this stage.
 	 * 
 	 * @param code
-	 *            the basic code
+	 *            the assembler code
 	 * @param machine
 	 *            the machine instance that should be used to run the code. If
 	 *            null is given, a new one will be created.
@@ -76,7 +90,7 @@ public class Assembler implements ProgramExecutor {
 	 * represent a line in the assembler program.
 	 * 
 	 * @param code
-	 *            the basic code
+	 *            the assembler code
 	 * @param machine
 	 *            the machine instance that should be used to run the code. If
 	 *            null is given, a new one will be created.
@@ -182,7 +196,7 @@ public class Assembler implements ProgramExecutor {
 				}
 			}
 			if (isData) {
-				int[] data = AssemblyParser.getBinaryData(addr, line);
+				int[] data = AssemblyParser.getBinaryData(addr, line, ccon, lcon);
 				lineBreaks.add(addr);
 				System.arraycopy(data, 0, compileMachine.getRam(), addr, data.length);
 				addr += data.length;

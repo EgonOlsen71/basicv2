@@ -52,7 +52,7 @@ public class Conversions {
 		int[] mem = new int[4];
 
 		if (num == 0) {
-			return mem;
+			return new int[6];
 		}
 
 		if (num < 0) {

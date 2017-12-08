@@ -24,16 +24,14 @@ public class Transformer6502
   public List<String> transform(Machine machine, PlatformProvider platform, List<String> code)
   {
     List<String> res = new ArrayList<>();
+    List<String> consts = new ArrayList<String>();
+    List<String> vars = new ArrayList<String>();
+    List<String> mnems = new ArrayList<String>();
+    consts.add("; ***CONSTANTS***");
+    vars.add("; ***VARIABLES***");
     Map<String, String> name2label = new HashMap<String, String>();
 
     res.add("*=" + platform.getStartAddress());
-
-    List<String> consts = new ArrayList<String>();
-    consts.add("; ***CONSTANTS***");
-
-    List<String> vars = new ArrayList<String>();
-    vars.add("; ***VARIABLES***");
-
     int cnt = 0;
 
     for (String line : code)
@@ -114,7 +112,7 @@ public class Transformer6502
                     sb.append("\t" + ".WORD ");
                     for (int ppp = pp; ppp < vals.size() && ppp < pp + 10; ppp++)
                     {
-                      vars.add("$STRING_START$ ");
+                      vars.add("STRBUF ");
                     }
                     vars.add(sb.toString());
                     sb.setLength(0);
@@ -133,7 +131,7 @@ public class Transformer6502
                 }
                 else if (type == Type.STRING)
                 {
-                  vars.add(label + "\t" + ".WORD $STRING_START$");
+                  vars.add(label + "\t" + ".WORD STRBUF");
                 }
               }
             }
@@ -142,8 +140,12 @@ public class Transformer6502
       }
     }
 
+    mnems.add("rts");
+    
+    res.addAll(mnems);
     res.addAll(consts);
     res.addAll(vars);
+    res.add("STRBUF .BYTE 0");
     return res;
   }
 

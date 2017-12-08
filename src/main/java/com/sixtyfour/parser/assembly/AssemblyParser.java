@@ -210,9 +210,11 @@ public class AssemblyParser
    *          the current address
    * @param data
    *          the data to be parsed
+   * @param lcon 
+   * @param ccon 
    * @return the actual data
    */
-  public static int[] getBinaryData(int addr, String data)
+  public static int[] getBinaryData(int addr, String data, ConstantsContainer ccon, LabelsContainer lcon)
   {
     data = data.trim();
     List<Integer> ram = new ArrayList<Integer>();
@@ -239,7 +241,7 @@ public class AssemblyParser
       String[] parts = data.substring(5).trim().split(" ");
       for (String part : parts)
       {
-        int val = getLowByte(getValue(part));
+        int val = getLowByte(getValue(part, addr, ccon, lcon, true, false));
         ram.add(val);
       }
     }
@@ -248,7 +250,7 @@ public class AssemblyParser
       String[] parts = data.substring(5).trim().split(" ");
       for (String part : parts)
       {
-        int val = getValue(part);
+        int val = getValue(part,addr, ccon, lcon, false, false);
         ram.add(getLowByte(val));
         ram.add(getHighByte(val));
       }
@@ -271,7 +273,7 @@ public class AssemblyParser
       String[] parts = data.substring(6).trim().split(" ");
       for (String part : parts)
       {
-        int val = getValue(part);
+        int val = getValue(part,addr, ccon, lcon, false, false);
         if (val < 0)
         {
           throw new RuntimeException("Value out of range: " + val);
