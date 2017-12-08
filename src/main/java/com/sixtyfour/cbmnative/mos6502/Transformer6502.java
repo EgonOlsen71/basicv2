@@ -146,10 +146,11 @@ public class Transformer6502
     res.addAll(consts);
     res.addAll(vars);
 
+    res.add("; *** INTERNAL ***");
     res.add("X_REG\t.REAL 0.0");
     res.add("Y_REG\t.REAL 0.0");
     res.add("FPSTACKP\t.WORD FPSTACK");
-    res.add("FPSTACK .ARRAY " + platform.getStackSize() * 5);
+    res.add("FPSTACK .ARRAY " + Math.min(255, platform.getStackSize() * 5));
     res.add("EMPTYSTR\t.BYTE 0");
     res.add("STRBUF\t.BYTE 0");
     return res;
