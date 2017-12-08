@@ -112,7 +112,7 @@ public class Transformer6502
                     sb.append("\t" + ".WORD ");
                     for (int ppp = pp; ppp < vals.size() && ppp < pp + 10; ppp++)
                     {
-                      vars.add("STRBUF ");
+                      vars.add("EMPTYSTR ");
                     }
                     vars.add(sb.toString());
                     sb.setLength(0);
@@ -131,7 +131,7 @@ public class Transformer6502
                 }
                 else if (type == Type.STRING)
                 {
-                  vars.add(label + "\t" + ".WORD STRBUF");
+                  vars.add(label + "\t" + ".WORD EMPTYSTR");
                 }
               }
             }
@@ -145,6 +145,7 @@ public class Transformer6502
     res.addAll(mnems);
     res.addAll(consts);
     res.addAll(vars);
+    res.add("EMPTYSTR .BYTE 0");
     res.add("STRBUF .BYTE 0");
     return res;
   }
