@@ -7,6 +7,8 @@ import java.util.Map;
 
 import com.sixtyfour.cbmnative.PlatformProvider;
 import com.sixtyfour.cbmnative.Transformer;
+import com.sixtyfour.cbmnative.mos6502.generators.Generator;
+import com.sixtyfour.cbmnative.mos6502.generators.GeneratorList;
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.elements.Variable;
 import com.sixtyfour.parser.assembly.AssemblyParser;
@@ -27,8 +29,11 @@ public class Transformer6502
     List<String> consts = new ArrayList<String>();
     List<String> vars = new ArrayList<String>();
     List<String> mnems = new ArrayList<String>();
-    consts.add("; ***CONSTANTS***");
-    vars.add("; ***VARIABLES***");
+    List<String> subs = new ArrayList<String>();
+    mnems.add("; *** CODE ***");
+    subs.add("; *** SUBROUTINES ***");
+    consts.add("; *** CONSTANTS ***");
+    vars.add("; *** VARIABLES ***");
     Map<String, String> name2label = new HashMap<String, String>();
 
     res.add("*=" + platform.getStartAddress());
@@ -37,112 +42,26 @@ public class Transformer6502
     for (String line : code)
     {
       line = AssemblyParser.truncateComments(line);
+      String orgLine = line;
+
       int sp = line.indexOf(" ");
       if (sp != -1)
       {
         line = line.substring(sp).trim();
       }
-      String[] parts = line.split(",");
-      for (int p = 0; p < parts.length; p++)
+      cnt = extractData(machine, consts, vars, name2label, cnt, line);
+
+      Generator pm = GeneratorList.getGenerator(orgLine);
+      if (pm != null)
       {
-        String part = parts[p];
-        if (part.contains("{") && part.endsWith("}"))
-        {
-          int pos = part.indexOf("{");
-          String name = part.substring(0, pos);
-          if (name.startsWith("#"))
-          {
-            if (!name2label.containsKey(name))
-            {
-              consts.add("; CONST: " + name);
-              String label = "CONST_" + (cnt++);
-              name2label.put(name, label);
-
-              Type type = Type.valueOf(part.substring(pos + 1, part.length() - 1));
-              name = name.substring(1);
-              if (type == Type.INTEGER)
-              {
-                consts.add(label + "\t" + ".WORD " + name);
-              }
-              else if (type == Type.REAL)
-              {
-                consts.add(label + "\t" + ".REAL " + name);
-              }
-              else if (type == Type.STRING)
-              {
-                consts.add(label + "\t" + ".BYTE " + name.length());
-                consts.add("\t" + ".TEXT \"" + name + "\"");
-              }
-            }
-          }
-          else
-          {
-            if (!name2label.containsKey(name))
-            {
-              vars.add("; VAR: " + name);
-              String label = "VAR_" + name;
-              name2label.put(name, label);
-
-              Type type = Type.valueOf(part.substring(pos + 1, part.length() - 1));
-              if (name.contains("[]"))
-              {
-                Variable var = machine.getVariable(name);
-                @SuppressWarnings("unchecked")
-                List<Object> vals = (List<Object>) var.getInternalValue();
-                if (type == Type.INTEGER)
-                {
-                  vars.add(label + "\t" + ".BYTE 0");
-                  vars.add("\t" + ".WORD " + vals.size() * 2);
-                  vars.add("\t" + ".ARRAY " + vals.size() * 2);
-                }
-                else if (type == Type.REAL)
-                {
-                  vars.add(label + "\t" + ".BYTE 1");
-                  vars.add("\t" + ".WORD " + vals.size() * 5);
-                  vars.add("\t" + ".ARRAY " + vals.size() * 5);
-                }
-                else if (type == Type.STRING)
-                {
-                  vars.add(label + "\t" + ".BYTE 2");
-                  vars.add("\t" + ".WORD " + vals.size() * 2);
-                  vars.add(label);
-                  for (int pp = 0; pp < vals.size(); pp = pp + 10)
-                  {
-                    StringBuilder sb = new StringBuilder();
-                    sb.append("\t" + ".WORD ");
-                    for (int ppp = pp; ppp < vals.size() && ppp < pp + 10; ppp++)
-                    {
-                      vars.add("EMPTYSTR ");
-                    }
-                    vars.add(sb.toString());
-                    sb.setLength(0);
-                  }
-                }
-              }
-              else
-              {
-                if (type == Type.INTEGER)
-                {
-                  vars.add(label + "\t" + ".WORD 0");
-                }
-                else if (type == Type.REAL)
-                {
-                  vars.add(label + "\t" + ".REAL 0.0");
-                }
-                else if (type == Type.STRING)
-                {
-                  vars.add(label + "\t" + ".WORD EMPTYSTR");
-                }
-              }
-            }
-          }
-        }
+        pm.generateCode(orgLine, mnems, subs);
       }
     }
 
     mnems.add("rts");
 
     res.addAll(mnems);
+    res.addAll(subs);
     res.addAll(consts);
     res.addAll(vars);
 
@@ -154,6 +73,108 @@ public class Transformer6502
     res.add("EMPTYSTR\t.BYTE 0");
     res.add("STRBUF\t.BYTE 0");
     return res;
+  }
+
+  private int extractData(Machine machine, List<String> consts, List<String> vars, Map<String, String> name2label,
+      int cnt, String line)
+  {
+    String[] parts = line.split(",");
+    for (int p = 0; p < parts.length; p++)
+    {
+      String part = parts[p];
+      if (part.contains("{") && part.endsWith("}"))
+      {
+        int pos = part.indexOf("{");
+        String name = part.substring(0, pos);
+        if (name.startsWith("#"))
+        {
+          if (!name2label.containsKey(name))
+          {
+            consts.add("; CONST: " + name);
+            String label = "CONST_" + (cnt++);
+            name2label.put(name, label);
+
+            Type type = Type.valueOf(part.substring(pos + 1, part.length() - 1));
+            name = name.substring(1);
+            if (type == Type.INTEGER)
+            {
+              consts.add(label + "\t" + ".WORD " + name);
+            }
+            else if (type == Type.REAL)
+            {
+              consts.add(label + "\t" + ".REAL " + name);
+            }
+            else if (type == Type.STRING)
+            {
+              consts.add(label + "\t" + ".BYTE " + name.length());
+              consts.add("\t" + ".TEXT \"" + name + "\"");
+            }
+          }
+        }
+        else
+        {
+          if (!name2label.containsKey(name))
+          {
+            vars.add("; VAR: " + name);
+            String label = "VAR_" + name;
+            name2label.put(name, label);
+
+            Type type = Type.valueOf(part.substring(pos + 1, part.length() - 1));
+            if (name.contains("[]"))
+            {
+              Variable var = machine.getVariable(name);
+              @SuppressWarnings("unchecked")
+              List<Object> vals = (List<Object>) var.getInternalValue();
+              if (type == Type.INTEGER)
+              {
+                vars.add(label + "\t" + ".BYTE 0");
+                vars.add("\t" + ".WORD " + vals.size() * 2);
+                vars.add("\t" + ".ARRAY " + vals.size() * 2);
+              }
+              else if (type == Type.REAL)
+              {
+                vars.add(label + "\t" + ".BYTE 1");
+                vars.add("\t" + ".WORD " + vals.size() * 5);
+                vars.add("\t" + ".ARRAY " + vals.size() * 5);
+              }
+              else if (type == Type.STRING)
+              {
+                vars.add(label + "\t" + ".BYTE 2");
+                vars.add("\t" + ".WORD " + vals.size() * 2);
+                vars.add(label);
+                for (int pp = 0; pp < vals.size(); pp = pp + 10)
+                {
+                  StringBuilder sb = new StringBuilder();
+                  sb.append("\t" + ".WORD ");
+                  for (int ppp = pp; ppp < vals.size() && ppp < pp + 10; ppp++)
+                  {
+                    vars.add("EMPTYSTR ");
+                  }
+                  vars.add(sb.toString());
+                  sb.setLength(0);
+                }
+              }
+            }
+            else
+            {
+              if (type == Type.INTEGER)
+              {
+                vars.add(label + "\t" + ".WORD 0");
+              }
+              else if (type == Type.REAL)
+              {
+                vars.add(label + "\t" + ".REAL 0.0");
+              }
+              else if (type == Type.STRING)
+              {
+                vars.add(label + "\t" + ".WORD EMPTYSTR");
+              }
+            }
+          }
+        }
+      }
+    }
+    return cnt;
   }
 
   // MOV X,2
