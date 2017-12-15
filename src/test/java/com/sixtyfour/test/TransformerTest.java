@@ -23,6 +23,7 @@ public class TransformerTest
     throws Exception
   {
     testTransformer1();
+    testTransformer2();
   }
 
 
@@ -51,4 +52,29 @@ public class TransformerTest
       System.out.println("Size: " + pp.size());
     }
   }
+  
+  private static void testTransformer2()
+      throws Exception
+    {
+      System.out.println("\n\ntestTransformer2");
+      String[] vary = Loader.loadProgram("src/test/resources/transform/test1.bas");
+
+      Basic basic = new Basic(vary);
+      basic.compile();
+      List<String> mCode = NativeCompiler.getCompiler().compileToPseudeCode(basic.getMachine(), basic.getPCode());
+      List<String> nCode = new Transformer6502().transform(basic.getMachine(), new C64Platform(), mCode);
+      for (String line : nCode)
+      {
+        System.out.println(line);
+      }
+
+      Assembler assy = new Assembler(nCode);
+      assy.compile();
+      assy.run();
+      Program prg = assy.getProgram();
+      for (ProgramPart pp : prg.getParts())
+      {
+        System.out.println("Size: " + pp.size());
+      }
+    }
 }

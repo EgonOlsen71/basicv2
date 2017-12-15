@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.swing.plaf.synth.SynthSeparatorUI;
+
 import com.sixtyfour.elements.mnemonics.Mnemonic;
 import com.sixtyfour.parser.assembly.AssemblyParser;
 import com.sixtyfour.parser.assembly.ConstantValue;

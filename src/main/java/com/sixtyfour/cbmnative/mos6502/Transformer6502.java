@@ -54,7 +54,7 @@ public class Transformer6502
       Generator pm = GeneratorList.getGenerator(orgLine);
       if (pm != null)
       {
-        pm.generateCode(orgLine, mnems, subs);
+        pm.generateCode(orgLine, mnems, subs, name2label);
       }
     }
 
@@ -68,6 +68,14 @@ public class Transformer6502
     res.add("; *** INTERNAL ***");
     res.add("X_REG\t.REAL 0.0");
     res.add("Y_REG\t.REAL 0.0");
+    res.add("C_REG\t.REAL 0.0");
+    res.add("D_REG\t.REAL 0.0");
+    res.add("E_REG\t.REAL 0.0");
+    res.add("F_REG\t.REAL 0.0");
+    res.add("A_REG\t.WORD 0");
+    res.add("B_REG\t.WORD 0");
+    res.add("G_REG\t.WORD 0");
+    res.add("TMP_REG\t.WORD 0");
     res.add("FPSTACKP\t.WORD FPSTACK");
     res.add("FPSTACK .ARRAY " + Math.min(255, platform.getStackSize() * 5));
     res.add("EMPTYSTR\t.BYTE 0");

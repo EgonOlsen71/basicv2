@@ -7,14 +7,14 @@ import com.sixtyfour.Logger;
 import com.sixtyfour.elements.Type;
 
 
-public class Mov
+public class Movb
   implements Generator
 {
 
   @Override
   public String getMnemonic()
   {
-    return "MOV";
+    return "MOVB";
   }
 
 
@@ -29,6 +29,11 @@ public class Mov
 
     if (!source.isIndexed() && !target.isIndexed())
     {
+      if (target.isRegister())
+      {
+        throw new RuntimeException("Target of MOVB can't be a register: " + line);
+      }
+
       if (source.getType() == Type.INTEGER)
       {
         // Source is INTEGER
@@ -46,34 +51,16 @@ public class Mov
 
         if (target.getType() == Type.INTEGER)
         {
-          if (target.isRegister())
-          {
-            nCode.add("STA <" + target.getRegisterName());
-            nCode.add("STY >" + target.getRegisterName());
-          }
-          else
-          {
-            nCode.add("STA <" + target.getAddress());
-            nCode.add("STY >" + target.getAddress());
-          }
+          nCode.add("STA <" + target.getAddress());
         }
         else
         {
           nCode.add("; integer in A/Y to FAC");
           nCode.add("JSR $B391"); // integer in A/Y to FAC
 
-          if (target.isRegister())
-          {
-            nCode.add("STX <" + target.getRegisterName());
-            nCode.add("STY >" + target.getRegisterName());
-          }
-          else
-          {
-            nCode.add("STX <" + target.getAddress());
-            nCode.add("STY >" + target.getAddress());
-          }
-          nCode.add("; FAC to (X/Y)");
-          nCode.add("JSR $BBD7"); // FAC to (X/Y)
+          nCode.add("; FAC to A/Y");
+          nCode.add("JSR $B1AA"); // FAC to A/Y
+          nCode.add("STA <" + target.getAddress());
         }
       }
       else
@@ -93,38 +80,9 @@ public class Mov
         nCode.add("; Real in (A/Y) to FAC");
         nCode.add("JSR $BBA2"); // Real in (A/Y) to FAC
 
-        if (target.getType() == Type.INTEGER)
-        {
-          nCode.add("; FAC to integer in A/Y");
-          nCode.add("JSR $B1AA"); // FAC to integer in A/Y
-
-          if (target.isRegister())
-          {
-            nCode.add("STA <" + target.getRegisterName());
-            nCode.add("STY >" + target.getRegisterName());
-          }
-          else
-          {
-            nCode.add("STA <" + target.getAddress());
-            nCode.add("STY >" + target.getAddress());
-          }
-        }
-        else
-        {
-          if (target.isRegister())
-          {
-            nCode.add("STX <" + target.getRegisterName());
-            nCode.add("STY >" + target.getRegisterName());
-          }
-          else
-          {
-            nCode.add("STX <" + target.getAddress());
-            nCode.add("STY >" + target.getAddress());
-          }
-
-          nCode.add("; FAC to (X/Y)");
-          nCode.add("JSR $BBD7"); // FAC to (X/Y)
-        }
+        nCode.add("; FAC to integer in A/Y");
+        nCode.add("JSR $B1AA"); // FAC to integer in A/Y
+        nCode.add("STA <" + target.getAddress());
       }
     }
     else

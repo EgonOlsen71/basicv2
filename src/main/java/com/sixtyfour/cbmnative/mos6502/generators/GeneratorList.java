@@ -15,6 +15,7 @@ public class GeneratorList
     private static final long serialVersionUID = 1L;
     {
       this.add(new Mov());
+      this.add(new Movb());
     }
   });
 
