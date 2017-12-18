@@ -18,7 +18,8 @@ public class Optimizer6502
   {
     private static final long serialVersionUID = 1L;
     {
-      this.add(new Pattern("FAC into REG?, REG? into FAC", null, "LDX <{REG0}", "LDY >{REG0}", "JSR $BBD7", "LDA <{REG0}", "LDY >{REG0}", "JSR $BBA2"));
+      this.add(new Pattern("FAC into REG?, REG? into FAC", null, "LDX <{REG0}", "LDY >{REG0}", "JSR $BBD7",
+          "LDA <{REG0}", "LDY >{REG0}", "JSR $BBA2"));
     }
   };
 
@@ -26,8 +27,8 @@ public class Optimizer6502
   @Override
   public List<String> optimize(List<String> input)
   {
-    //if (true) return input;
-    
+    // if (true) return input;
+
     boolean optimized = false;
     do
     {
@@ -37,6 +38,10 @@ public class Optimizer6502
         for (int i = 0; i < input.size(); i++)
         {
           String line = input.get(i);
+          if (line.startsWith("; *** SUBROUTINES ***"))
+          {
+            break;
+          }
           boolean matches = pattern.matches(line, i);
           if (matches)
           {
