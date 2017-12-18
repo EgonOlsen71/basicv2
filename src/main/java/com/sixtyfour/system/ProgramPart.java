@@ -48,13 +48,14 @@ public class ProgramPart {
 	public int[] getBytes() {
 		return bytes;
 	}
-	
+
 	/**
 	 * Returns the actual size of the code.
+	 * 
 	 * @return the size
 	 */
 	public int size() {
-	  return bytes.length;
+		return bytes.length;
 	}
 
 	/**

@@ -42,16 +42,23 @@ public class LabelsContainer {
 	 *            its address/value
 	 */
 	public void put(String label, int value) {
+		// System.out.println("HONK: Label stored: " + label + "/" + value);
 		labels2Addr.put(label, value);
 
+		int orgValue = value;
 		// Apply forward-labels
 		List<Integer> toRemove = new ArrayList<Integer>();
 		for (Entry<Integer, DelayedLabel> entry : delayed.entrySet()) {
 			DelayedLabel dl = entry.getValue();
-			if (label.equals(dl.getLabel())) {
-			  value+=dl.getAdd();
+			String name = label;
+			value = orgValue;
+			if (name.equals(dl.getLabel())) {
+				// System.out.println("HONK: Found label " + dl.getLabel() + "/"
+				// + dl.getAdd() + "/" + value);
+				value += dl.getAdd();
 				toRemove.add(entry.getKey());
 				int targetAddr = entry.getKey();
+				// System.out.println("HONK: " + targetAddr + "/" + value);
 				int[] ram = machine.getRam();
 
 				int opcode = ram[targetAddr];
@@ -80,6 +87,14 @@ public class LabelsContainer {
 		for (Integer tr : toRemove) {
 			delayed.remove(tr);
 		}
+	}
+
+	private String truncateAdd(String name) {
+		int pos = name.lastIndexOf("+");
+		if (pos != -1 && name.lastIndexOf("\"") < pos) {
+			name = name.substring(0, pos);
+		}
+		return name;
 	}
 
 	/**
@@ -113,6 +128,7 @@ public class LabelsContainer {
 	 * @return the address or null
 	 */
 	public Integer get(String name) {
+		// System.out.println("HONK: Label from map: " + name);
 		return labels2Addr.get(name);
 	}
 
@@ -129,11 +145,12 @@ public class LabelsContainer {
 	 *            low byte only?
 	 * @param high
 	 *            high byte only?
-	 * @param addrAdd 
+	 * @param addrAdd
+	 *            an optional address offset
 	 */
 	public void addDelayedLabelRef(int addr, String label, boolean low, boolean high, int addrAdd) {
-		//System.out.println("Adding delayed Label: "+label+" @"+addr);
-		delayed.put(addr, new DelayedLabel(label, low, high, addrAdd));
+		// System.out.println("Adding delayed Label: "+label+" @"+addr);
+		delayed.put(addr, new DelayedLabel(truncateAdd(label), low, high, addrAdd));
 	}
 
 }

@@ -4,11 +4,10 @@ import java.util.List;
 
 /**
  * @author EgonOlsen
- *
+ * 
  */
-public interface Optimizer
-{
+public interface Optimizer {
 
-  List<String> optimize(List<String> input);
-  
+	List<String> optimize(List<String> input);
+
 }

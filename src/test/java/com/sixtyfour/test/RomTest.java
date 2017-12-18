@@ -21,6 +21,7 @@ public class RomTest {
 	}
 
 	private static void testRomAccess() {
+		System.out.println("testRomAccess");
 		String[] vary = Loader.loadProgram("src/test/resources/rom/romtest.bas");
 		Basic inty = new Basic(vary);
 		inty.getMachine().addRoms();
@@ -29,28 +30,31 @@ public class RomTest {
 	}
 
 	private static void testRomCalc() {
+		System.out.println("testRomCalc");
 		String[] code = Loader.loadProgram("src/test/resources/rom/math.asm");
 		Assembler asm = new Assembler(code);
 		asm.compile();
 		final Machine machine = asm.getMachine();
 		machine.addRoms();
 		asm.run();
-		System.out.println(Conversions.convertFloat(machine, 0x2000));
-		System.out.println(Conversions.convertFloat(machine, 0x2010) + " ~ " + Math.sqrt(Conversions.convertFloat(machine, 0x2000)));
+		System.out.println(Conversions.convertCompactFloat(machine, 0x2000));
+		System.out.println(Conversions.convertCompactFloat(machine, 0x2010) + " ~ " + Math.sqrt(Conversions.convertCompactFloat(machine, 0x2000)));
 	}
-	
+
 	private static void testRomCalc2() {
+		System.out.println("testRomCalc2");
 		String[] code = Loader.loadProgram("src/test/resources/rom/math2.asm");
 		Assembler asm = new Assembler(code);
 		asm.compile();
 		final Machine machine = asm.getMachine();
 		machine.addRoms();
 		asm.run();
-		System.out.println(Conversions.convertFloat(machine, 0x2000));
-		System.out.println(Conversions.convertFloat(machine, 0x2010) + " ~ " + Math.sqrt(Conversions.convertFloat(machine, 0x2000)));
+		System.out.println(Conversions.convertCompactFloat(machine, 0x2000));
+		System.out.println(Conversions.convertCompactFloat(machine, 0x2010) + " ~ " + Math.sqrt(Conversions.convertCompactFloat(machine, 0x2000)));
 	}
 
 	private static void testRomAndBasicCalc() {
+		System.out.println("testRomAndBasicCalc");
 		String[] code = Loader.loadProgram("src/test/resources/rom/math.asm");
 		Assembler asm = new Assembler(code);
 		asm.compile();

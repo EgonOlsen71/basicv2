@@ -2,23 +2,22 @@ package com.sixtyfour.cbmnative;
 
 /**
  * @author EgonOlsen
- *
+ * 
  */
-public interface PlatformProvider
-{
-  /**
-   * @param line
-   * @return
-   */
-  String getCall(String line);
-  
-  /**
-   * @return
-   */
-  int getStartAddress();
+public interface PlatformProvider {
+	/**
+	 * @param line
+	 * @return
+	 */
+	String getCall(String line);
 
-  /**
-   * @return
-   */
-  int getStackSize();
+	/**
+	 * @return
+	 */
+	int getStartAddress();
+
+	/**
+	 * @return
+	 */
+	int getStackSize();
 }

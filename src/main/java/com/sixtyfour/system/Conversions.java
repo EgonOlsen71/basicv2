@@ -106,7 +106,7 @@ public class Conversions {
 	}
 
 	/**
-	 * Converts a float from C64 5/6 byte format into Java format.
+	 * Converts a float from C64 6 byte format into Java format.
 	 * 
 	 * @param machine
 	 *            the current machine
@@ -117,6 +117,24 @@ public class Conversions {
 	public static float convertFloat(Machine machine, int addr) {
 		int[] ram = machine.getRam();
 		return convertFloat(ram[addr] & 0xff, ram[addr + 5] & 0xff, ram[addr + 4] & 0xff, ram[addr + 3] & 0xff, ram[addr + 2] & 0xff, ram[addr + 1] & 0xff);
+	}
+
+	/**
+	 * Converts a float from C64 5 byte format into Java format.
+	 * 
+	 * @param machine
+	 *            the current machine
+	 * @param addr
+	 *            the address, where the float is stored
+	 * @return the float value
+	 */
+	public static float convertCompactFloat(Machine machine, int addr) {
+		int[] ram = machine.getRam();
+		int[] res = new int[6];
+		System.arraycopy(ram, addr, res, 0, 5);
+		res[5] = (res[1] & 0x80) == 0 ? 0 : 0xff;
+		res[1] = res[1] | 0x80;
+		return convertFloat(res[0] & 0xff, res[5] & 0xff, res[4] & 0xff, res[3] & 0xff, res[2] & 0xff, res[1] & 0xff);
 	}
 
 	/**

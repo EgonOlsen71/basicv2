@@ -27,10 +27,11 @@ public class DelayedLabel {
 	 *            high byte only?
 	 */
 	public DelayedLabel(String label, boolean low, boolean high, int add) {
+		// System.out.println("HONK: Label created: "+label+"/"+add);
 		this.label = label;
 		this.low = low;
 		this.high = high;
-		this.add=add;
+		this.add = add;
 	}
 
 	/**
@@ -95,20 +96,18 @@ public class DelayedLabel {
 		return this.label + "/" + this.high + "/" + this.low;
 	}
 
-  /**
-   * @return
-   */
-  public int getAdd()
-  {
-    return add;
-  }
+	/**
+	 * @return
+	 */
+	public int getAdd() {
+		return add;
+	}
 
-  /**
-   * @param add
-   */
-  public void setAdd(int add)
-  {
-    this.add = add;
-  }
+	/**
+	 * @param add
+	 */
+	public void setAdd(int add) {
+		this.add = add;
+	}
 
 }

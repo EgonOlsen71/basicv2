@@ -193,8 +193,8 @@ public class PseudoCpu {
 					mov(parts);
 					break;
 				case "MOVB":
-          mov(parts);
-          break;
+					mov(parts);
+					break;
 				case "PUSH":
 					push(parts);
 					break;

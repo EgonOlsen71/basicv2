@@ -6,13 +6,12 @@ import com.sixtyfour.system.Machine;
 
 /**
  * @author EgonOlsen
- *
+ * 
  */
-public interface Transformer
-{
-  /**
-   * @param machine
-   * @return
-   */
-  List<String> transform(Machine machine, PlatformProvider romProvider, List<String> code); 
+public interface Transformer {
+	/**
+	 * @param machine
+	 * @return
+	 */
+	List<String> transform(Machine machine, PlatformProvider romProvider, List<String> code);
 }

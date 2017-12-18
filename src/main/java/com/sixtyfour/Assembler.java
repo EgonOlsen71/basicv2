@@ -55,20 +55,19 @@ public class Assembler implements ProgramExecutor {
 		this(code, null);
 	}
 
-	
 	/**
-   * Instantiates a new compiler for an assembler program. No
-   * interpretation/compilation will take place at this stage. This
-   * constructor takes an list of code lines as input. Each code line should
-   * represent a line in the assembler program.
-   * 
-   * @param code
-   *            the assembler code
-   */
-  public Assembler(List<String> code) {
-    this(code.toArray(new String[code.size()]), null);
-  }
-	
+	 * Instantiates a new compiler for an assembler program. No
+	 * interpretation/compilation will take place at this stage. This
+	 * constructor takes an list of code lines as input. Each code line should
+	 * represent a line in the assembler program.
+	 * 
+	 * @param code
+	 *            the assembler code
+	 */
+	public Assembler(List<String> code) {
+		this(code.toArray(new String[code.size()]), null);
+	}
+
 	/**
 	 * Instantiates a new compiler for an assembler program. No
 	 * interpretation/compilation will take place at this stage.
