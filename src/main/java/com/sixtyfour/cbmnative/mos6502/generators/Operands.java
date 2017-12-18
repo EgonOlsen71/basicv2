@@ -7,7 +7,7 @@ import com.sixtyfour.elements.Type;
 
 
 /**
- * @author Foerster-H
+ * @author EgonOlsen
  *
  */
 public class Operands

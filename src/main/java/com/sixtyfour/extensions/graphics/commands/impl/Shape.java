@@ -6,7 +6,7 @@ import java.awt.image.BufferedImage;
 /**
  * A shape is something like a sprite, just more flexible...
  * 
- * @author Foerster-H
+ * @author EgonOlsen
  * 
  */
 public class Shape {

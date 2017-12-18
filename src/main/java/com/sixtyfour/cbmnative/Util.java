@@ -7,7 +7,7 @@ import java.util.List;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
 
 /**
- * @author Foerster-H
+ * @author EgonOlsen
  * 
  */
 public class Util {

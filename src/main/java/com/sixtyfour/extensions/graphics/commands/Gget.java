@@ -17,7 +17,7 @@ import com.sixtyfour.util.VarUtils;
  * The GGET command. This is similar to GET in BASIC V2, but queries the
  * graphics device instead of the input provider.
  * 
- * @author Foerster-H
+ * @author EgonOlsen
  * 
  */
 public class Gget extends AbstractGraphicsCommand {

@@ -1,7 +1,7 @@
 package com.sixtyfour.cbmnative;
 
 /**
- * @author Foerster-H
+ * @author EgonOlsen
  *
  */
 public interface PlatformProvider

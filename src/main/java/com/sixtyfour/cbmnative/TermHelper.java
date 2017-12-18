@@ -5,7 +5,7 @@ import com.sixtyfour.parser.Term;
 import com.sixtyfour.system.Machine;
 
 /**
- * @author Foerster-H
+ * @author EgonOlsen
  * 
  */
 public class TermHelper {

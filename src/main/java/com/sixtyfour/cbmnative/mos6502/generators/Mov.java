@@ -64,13 +64,13 @@ public class Mov
 
           if (target.isRegister())
           {
-            nCode.add("STX <" + target.getRegisterName());
-            nCode.add("STY >" + target.getRegisterName());
+            nCode.add("LDX <" + target.getRegisterName());
+            nCode.add("LDY >" + target.getRegisterName());
           }
           else
           {
-            nCode.add("STX <" + target.getAddress());
-            nCode.add("STY >" + target.getAddress());
+            nCode.add("LDX <" + target.getAddress());
+            nCode.add("LDY >" + target.getAddress());
           }
           nCode.add("; FAC to (X/Y)");
           nCode.add("JSR $BBD7"); // FAC to (X/Y)
@@ -113,13 +113,13 @@ public class Mov
         {
           if (target.isRegister())
           {
-            nCode.add("STX <" + target.getRegisterName());
-            nCode.add("STY >" + target.getRegisterName());
+            nCode.add("LDX <" + target.getRegisterName());
+            nCode.add("LDY >" + target.getRegisterName());
           }
           else
           {
-            nCode.add("STX <" + target.getAddress());
-            nCode.add("STY >" + target.getAddress());
+            nCode.add("LDX <" + target.getAddress());
+            nCode.add("LDY >" + target.getAddress());
           }
 
           nCode.add("; FAC to (X/Y)");

@@ -6,8 +6,6 @@ import com.sixtyfour.Assembler;
 import com.sixtyfour.Basic;
 import com.sixtyfour.Loader;
 import com.sixtyfour.cbmnative.NativeCompiler;
-import com.sixtyfour.cbmnative.mos6502.C64Platform;
-import com.sixtyfour.cbmnative.mos6502.Transformer6502;
 import com.sixtyfour.parser.Preprocessor;
 import com.sixtyfour.system.Program;
 import com.sixtyfour.system.ProgramPart;
@@ -35,9 +33,7 @@ public class TransformerTest
 
     vary = Preprocessor.convertToLineNumbers(vary);
     Basic basic = new Basic(vary);
-    basic.compile();
-    List<String> mCode = NativeCompiler.getCompiler().compileToPseudeCode(basic.getMachine(), basic.getPCode());
-    List<String> nCode = new Transformer6502().transform(basic.getMachine(), new C64Platform(), mCode);
+    List<String> nCode = NativeCompiler.getCompiler().compile(basic);
     for (String line : nCode)
     {
       System.out.println(line);
@@ -60,9 +56,7 @@ public class TransformerTest
       String[] vary = Loader.loadProgram("src/test/resources/transform/test1.bas");
 
       Basic basic = new Basic(vary);
-      basic.compile();
-      List<String> mCode = NativeCompiler.getCompiler().compileToPseudeCode(basic.getMachine(), basic.getPCode());
-      List<String> nCode = new Transformer6502().transform(basic.getMachine(), new C64Platform(), mCode);
+      List<String> nCode = NativeCompiler.getCompiler().compile(basic);
       for (String line : nCode)
       {
         System.out.println(line);

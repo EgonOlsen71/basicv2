@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Foerster-H
+ * @author EgonOlsen
  * 
  */
 public class CodeContainer {

@@ -11,7 +11,7 @@ import com.sixtyfour.util.VarUtils;
  * The ROTATESHAPE command. This is similar to DRAWSHAPE but supports rotation.
  * On the other hand, it's (unlike DRAWSHAPE) limited to uniform scaling.
  * 
- * @author Foerster-H
+ * @author EgonOlsen
  * 
  */
 public class RotateShape extends AbstractGraphicsCommand {

@@ -5,7 +5,7 @@ import java.util.List;
 import com.sixtyfour.system.Machine;
 
 /**
- * @author Foerster-H
+ * @author EgonOlsen
  *
  */
 public interface Transformer

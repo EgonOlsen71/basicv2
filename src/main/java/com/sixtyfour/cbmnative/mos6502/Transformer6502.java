@@ -16,7 +16,7 @@ import com.sixtyfour.system.Machine;
 
 
 /**
- * @author Foerster-H
+ * @author EgonOlsen
  *
  */
 public class Transformer6502

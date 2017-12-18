@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @author Foerster-H
+ * @author EgonOlsen
  *
  */
 public interface Generator
