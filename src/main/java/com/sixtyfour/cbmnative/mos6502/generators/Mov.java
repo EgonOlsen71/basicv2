@@ -35,26 +35,26 @@ public class Mov
 
         if (source.isRegister())
         {
-          nCode.add("LDA #<" + source.getRegisterName());
-          nCode.add("LDY #>" + source.getRegisterName());
+          nCode.add("LDA " + source.getRegisterName());
+          nCode.add("LDY " + source.getRegisterName()+"+1");
         }
         else
         {
-          nCode.add("LDA #<" + source.getAddress());
-          nCode.add("LDY #>" + source.getAddress());
+          nCode.add("LDA " + source.getAddress());
+          nCode.add("LDY " + source.getAddress()+"+1");
         }
 
         if (target.getType() == Type.INTEGER)
         {
           if (target.isRegister())
           {
-            nCode.add("STA <" + target.getRegisterName());
-            nCode.add("STY >" + target.getRegisterName());
+            nCode.add("STA " + target.getRegisterName());
+            nCode.add("STY " + target.getRegisterName()+"+1");
           }
           else
           {
-            nCode.add("STA <" + target.getAddress());
-            nCode.add("STY >" + target.getAddress());
+            nCode.add("STA " + target.getAddress());
+            nCode.add("STY " + target.getAddress()+"+1");
           }
         }
         else
@@ -64,13 +64,13 @@ public class Mov
 
           if (target.isRegister())
           {
-            nCode.add("LDX <" + target.getRegisterName());
-            nCode.add("LDY >" + target.getRegisterName());
+            nCode.add("LDX #<" + target.getRegisterName());
+            nCode.add("LDY #>" + target.getRegisterName());
           }
           else
           {
-            nCode.add("LDX <" + target.getAddress());
-            nCode.add("LDY >" + target.getAddress());
+            nCode.add("LDX #<" + target.getAddress());
+            nCode.add("LDY #>" + target.getAddress());
           }
           nCode.add("; FAC to (X/Y)");
           nCode.add("JSR $BBD7"); // FAC to (X/Y)
@@ -82,13 +82,13 @@ public class Mov
 
         if (source.isRegister())
         {
-          nCode.add("LDA <" + source.getRegisterName());
-          nCode.add("LDY >" + source.getRegisterName());
+          nCode.add("LDA #<" + source.getRegisterName());
+          nCode.add("LDY #>" + source.getRegisterName());
         }
         else
         {
-          nCode.add("LDA <" + source.getAddress());
-          nCode.add("LDY >" + source.getAddress());
+          nCode.add("LDA #<" + source.getAddress());
+          nCode.add("LDY #>" + source.getAddress());
         }
         nCode.add("; Real in (A/Y) to FAC");
         nCode.add("JSR $BBA2"); // Real in (A/Y) to FAC
@@ -100,26 +100,26 @@ public class Mov
 
           if (target.isRegister())
           {
-            nCode.add("STA <" + target.getRegisterName());
-            nCode.add("STY >" + target.getRegisterName());
+            nCode.add("STA " + target.getRegisterName());
+            nCode.add("STY " + target.getRegisterName()+"+1");
           }
           else
           {
-            nCode.add("STA <" + target.getAddress());
-            nCode.add("STY >" + target.getAddress());
+            nCode.add("STA " + target.getAddress());
+            nCode.add("STY " + target.getAddress()+"+1");
           }
         }
         else
         {
           if (target.isRegister())
           {
-            nCode.add("LDX <" + target.getRegisterName());
-            nCode.add("LDY >" + target.getRegisterName());
+            nCode.add("LDX #<" + target.getRegisterName());
+            nCode.add("LDY #>" + target.getRegisterName()+"+1");
           }
           else
           {
-            nCode.add("LDX <" + target.getAddress());
-            nCode.add("LDY >" + target.getAddress());
+            nCode.add("LDX #<" + target.getAddress());
+            nCode.add("LDY #>" + target.getAddress()+"+1");
           }
 
           nCode.add("; FAC to (X/Y)");

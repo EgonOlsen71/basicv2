@@ -49,6 +49,7 @@ public class LabelsContainer {
 		for (Entry<Integer, DelayedLabel> entry : delayed.entrySet()) {
 			DelayedLabel dl = entry.getValue();
 			if (label.equals(dl.getLabel())) {
+			  value+=dl.getAdd();
 				toRemove.add(entry.getKey());
 				int targetAddr = entry.getKey();
 				int[] ram = machine.getRam();
@@ -128,10 +129,11 @@ public class LabelsContainer {
 	 *            low byte only?
 	 * @param high
 	 *            high byte only?
+	 * @param addrAdd 
 	 */
-	public void addDelayedLabelRef(int addr, String label, boolean low, boolean high) {
+	public void addDelayedLabelRef(int addr, String label, boolean low, boolean high, int addrAdd) {
 		//System.out.println("Adding delayed Label: "+label+" @"+addr);
-		delayed.put(addr, new DelayedLabel(label, low, high));
+		delayed.put(addr, new DelayedLabel(label, low, high, addrAdd));
 	}
 
 }

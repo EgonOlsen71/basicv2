@@ -126,7 +126,7 @@ public class AssemblyParser
    * @return the number
    */
   public static int getValue(String number, int addr, ConstantsContainer ccon, LabelsContainer lcon, boolean low,
-      boolean high)
+      boolean high, int addrAdd)
   {
     number = number.trim();
     if (!number.startsWith("$") && !number.startsWith("%") && !Character.isDigit(number.charAt(0))
@@ -167,7 +167,7 @@ public class AssemblyParser
       }
 
       // No constant and no label found...might be a delayed label...
-      lcon.addDelayedLabelRef(addr, number, low, high);
+      lcon.addDelayedLabelRef(addr, number, low, high, addrAdd);
       return addr;
 
     }
@@ -241,7 +241,7 @@ public class AssemblyParser
       String[] parts = data.substring(5).trim().split(" ");
       for (String part : parts)
       {
-        int val = getLowByte(getValue(part, addr, ccon, lcon, true, false));
+        int val = getLowByte(getValue(part, addr, ccon, lcon, true, false, 0));
         ram.add(val);
       }
     }
@@ -250,7 +250,7 @@ public class AssemblyParser
       String[] parts = data.substring(5).trim().split(" ");
       for (String part : parts)
       {
-        int val = getValue(part,addr, ccon, lcon, false, false);
+        int val = getValue(part,addr, ccon, lcon, false, false, 0);
         ram.add(getLowByte(val));
         ram.add(getHighByte(val));
       }
@@ -273,7 +273,7 @@ public class AssemblyParser
       String[] parts = data.substring(6).trim().split(" ");
       for (String part : parts)
       {
-        int val = getValue(part,addr, ccon, lcon, false, false);
+        int val = getValue(part,addr, ccon, lcon, false, false, 0);
         if (val < 0)
         {
           throw new RuntimeException("Value out of range: " + val);

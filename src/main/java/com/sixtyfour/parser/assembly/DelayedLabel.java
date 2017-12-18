@@ -14,6 +14,7 @@ public class DelayedLabel {
 	private String label;
 	private boolean low;
 	private boolean high;
+	private int add;
 
 	/**
 	 * Creates a new instance.
@@ -25,10 +26,11 @@ public class DelayedLabel {
 	 * @param high
 	 *            high byte only?
 	 */
-	public DelayedLabel(String label, boolean low, boolean high) {
+	public DelayedLabel(String label, boolean low, boolean high, int add) {
 		this.label = label;
 		this.low = low;
 		this.high = high;
+		this.add=add;
 	}
 
 	/**
@@ -92,5 +94,21 @@ public class DelayedLabel {
 	public String toString() {
 		return this.label + "/" + this.high + "/" + this.low;
 	}
+
+  /**
+   * @return
+   */
+  public int getAdd()
+  {
+    return add;
+  }
+
+  /**
+   * @param add
+   */
+  public void setAdd(int add)
+  {
+    this.add = add;
+  }
 
 }

@@ -40,18 +40,18 @@ public class Movb
 
         if (source.isRegister())
         {
-          nCode.add("LDA #<" + source.getRegisterName());
-          nCode.add("LDY #>" + source.getRegisterName());
+          nCode.add("LDA " + source.getRegisterName());
+          nCode.add("LDY " + source.getRegisterName()+"+1");
         }
         else
         {
-          nCode.add("LDA #<" + source.getAddress());
-          nCode.add("LDY #>" + source.getAddress());
+          nCode.add("LDA " + source.getAddress());
+          nCode.add("LDY " + source.getAddress()+"+1");
         }
 
         if (target.getType() == Type.INTEGER)
         {
-          nCode.add("STA <" + target.getAddress());
+          nCode.add("STA " + target.getAddress());
         }
         else
         {
@@ -60,7 +60,7 @@ public class Movb
 
           nCode.add("; FAC to A/Y");
           nCode.add("JSR $B1AA"); // FAC to A/Y
-          nCode.add("STA <" + target.getAddress());
+          nCode.add("STA " + target.getAddress());
         }
       }
       else
@@ -69,20 +69,20 @@ public class Movb
 
         if (source.isRegister())
         {
-          nCode.add("LDA <" + source.getRegisterName());
-          nCode.add("LDY >" + source.getRegisterName());
+          nCode.add("LDA #<" + source.getRegisterName());
+          nCode.add("LDY #>" + source.getRegisterName()+"+1");
         }
         else
         {
-          nCode.add("LDA <" + source.getAddress());
-          nCode.add("LDY >" + source.getAddress());
+          nCode.add("LDA #<" + source.getAddress());
+          nCode.add("LDY #>" + source.getAddress()+"+1");
         }
         nCode.add("; Real in (A/Y) to FAC");
         nCode.add("JSR $BBA2"); // Real in (A/Y) to FAC
 
         nCode.add("; FAC to integer in A/Y");
         nCode.add("JSR $B1AA"); // FAC to integer in A/Y
-        nCode.add("STA <" + target.getAddress());
+        nCode.add("STA " + target.getAddress());
       }
     }
     else
