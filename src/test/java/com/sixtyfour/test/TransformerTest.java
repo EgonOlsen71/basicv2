@@ -77,13 +77,12 @@ public class TransformerTest {
 
 		assy.run();
 		System.out.println("...done!");
-		System.out.println("A=" + Conversions.convertCompactFloat(machine, 2141));
-		System.out.println("D=" + Conversions.convertCompactFloat(machine, 2150));
-		System.out.println("B%=" + (machine.getRam()[2146] + 256 * machine.getRam()[2147]));
-		System.out.println("C%=" + (machine.getRam()[2148] + 256 * machine.getRam()[2149]));
+		System.out.println("A=" + Conversions.convertCompactFloat(machine, 0x866));
+		System.out.println("D=" + Conversions.convertCompactFloat(machine, 0x86f));
+		System.out.println("B%=" + (machine.getRam()[0x86b] + 256 * machine.getRam()[0x86c]));
+		System.out.println("C%=" + (machine.getRam()[0x86d] + 256 * machine.getRam()[0x86e]));
 		System.out.println("VIDMEM: " + machine.getRam()[1024]);
-		System.out.println(Arrays.toString(Conversions.compactFloat(Conversions.convertFloat(5))));
-		System.out.println(Arrays.toString(Arrays.copyOfRange(machine.getRam(), 2141, 2146)));
+		System.out.println("VIDMEM2: " + machine.getRam()[1030]);
 	}
 
 	private static void testTransformer3() throws Exception {

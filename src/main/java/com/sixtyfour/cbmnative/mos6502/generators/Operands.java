@@ -84,7 +84,10 @@ public class Operands {
 		if (start != -1 && end != -1 && start + 1 != end) {
 			return Type.valueOf(txt.substring(start + 1, end));
 		}
-		return null;
+		if (txt.contains(".")) {
+		  return Type.REAL;
+		}
+		return Type.INTEGER;
 	}
 
 	private String removeBrackets(String txt) {

@@ -6,7 +6,7 @@ import java.util.Map;
 import com.sixtyfour.Logger;
 import com.sixtyfour.elements.Type;
 
-public class Movb implements Generator {
+public class Movb extends GeneratorBase {
 
 	@Override
 	public String getMnemonic() {
@@ -31,10 +31,10 @@ public class Movb implements Generator {
 
 				if (source.isRegister()) {
 					nCode.add("LDY " + source.getRegisterName());
-					nCode.add("LDA " + source.getRegisterName() + "+1");
+					nCode.add("LDA " + createAddress(source.getRegisterName(), 1));
 				} else {
 					nCode.add("LDY " + source.getAddress());
-					nCode.add("LDA " + source.getAddress() + "+1");
+					nCode.add("LDA " + createAddress(source.getAddress(), 1));
 				}
 
 				if (target.getType() == Type.INTEGER) {

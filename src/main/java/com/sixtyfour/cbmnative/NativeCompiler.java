@@ -11,7 +11,7 @@ import java.util.Set;
 import com.sixtyfour.Basic;
 import com.sixtyfour.Logger;
 import com.sixtyfour.cbmnative.mos6502.C64Platform;
-import com.sixtyfour.cbmnative.mos6502.Optimizer6502;
+import com.sixtyfour.cbmnative.mos6502.Optimizer64;
 import com.sixtyfour.cbmnative.mos6502.Transformer6502;
 import com.sixtyfour.elements.commands.Command;
 import com.sixtyfour.parser.Atom;
@@ -83,7 +83,7 @@ public class NativeCompiler {
 		PCode pCode = basic.getPCode();
 		List<String> mCode = NativeCompiler.getCompiler().compileToPseudeCode(basic.getMachine(), pCode);
 		List<String> nCode = new Transformer6502().transform(basic.getMachine(), new C64Platform(), mCode);
-		nCode = new Optimizer6502().optimize(nCode);
+		nCode = new Optimizer64().optimize(nCode);
 		return nCode;
 	}
 

@@ -6,7 +6,7 @@ import java.util.Map;
 import com.sixtyfour.Logger;
 import com.sixtyfour.elements.Type;
 
-public class Mov implements Generator {
+public class Mov extends GeneratorBase {
 
 	@Override
 	public String getMnemonic() {
@@ -27,19 +27,19 @@ public class Mov implements Generator {
 
 				if (source.isRegister()) {
 					nCode.add("LDY " + source.getRegisterName());
-					nCode.add("LDA " + source.getRegisterName() + "+1");
+					nCode.add("LDA " + createAddress(source.getRegisterName(), 1));
 				} else {
 					nCode.add("LDY " + source.getAddress());
-					nCode.add("LDA " + source.getAddress() + "+1");
+					nCode.add("LDA " + createAddress(source.getAddress(), 1));
 				}
 
 				if (target.getType() == Type.INTEGER) {
 					if (target.isRegister()) {
 						nCode.add("STY " + target.getRegisterName());
-						nCode.add("STA " + target.getRegisterName() + "+1");
+						nCode.add("STA " + createAddress(target.getRegisterName(), 1));
 					} else {
 						nCode.add("STY " + target.getAddress());
-						nCode.add("STA " + target.getAddress() + "+1");
+						nCode.add("STA " + createAddress(target.getAddress(), 1));
 					}
 				} else {
 					nCode.add("; integer in Y/A to FAC");
