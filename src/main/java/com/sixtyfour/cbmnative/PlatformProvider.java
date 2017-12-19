@@ -20,4 +20,15 @@ public interface PlatformProvider {
 	 * @return
 	 */
 	int getStackSize();
+	
+	/**
+	 * @return
+	 */
+	Optimizer getOptimizer();
+	
+	/**
+	 * @return
+	 */
+	Transformer getTransformer();
+	
 }
