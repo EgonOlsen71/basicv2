@@ -79,11 +79,11 @@ public class NativeCompiler {
 	public List<String> compile(Basic basic) {
 		basic.compile();
 		PCode pCode = basic.getPCode();
-		PlatformProvider platform=new C64Platform();
+		PlatformProvider platform = new C64Platform();
 		List<String> mCode = NativeCompiler.getCompiler().compileToPseudeCode(basic.getMachine(), pCode);
 		List<String> nCode = platform.getTransformer().transform(basic.getMachine(), platform, mCode);
-		if (platform.getOptimizer()!=null) {
-		  nCode = platform.getOptimizer().optimize(nCode);
+		if (platform.getOptimizer() != null) {
+			nCode = platform.getOptimizer().optimize(nCode);
 		}
 		return nCode;
 	}
@@ -444,7 +444,7 @@ public class NativeCompiler {
 					code.add("RND " + regs);
 					break;
 				case "PEEK":
-					code.add("MOV " + regs.replace(",", ",(") + ")");
+					code.add("MOVB " + regs.replace(",", ",(") + ")");
 					break;
 				case ".":
 					code.add("JSR CONCAT");
@@ -618,10 +618,14 @@ public class NativeCompiler {
 
 				// MOV Y,#4096{INTEGER}
 				// MOV X,(Y)
-				if (l0.startsWith("MOV Y,#") && l1.equals("MOV X,(Y)")) {
+				if (l0.contains("INTEGER") && l0.startsWith("MOV Y,#") && (l1.equals("MOV X,(Y)") || l1.equals("MOVB X,(Y)"))) {
 					try {
 						int addr = Integer.parseInt(l0.substring(l0.indexOf("#") + 1, l0.indexOf("{")));
-						ret.add("MOV X," + addr);
+						if (l1.equals("MOVB X,(Y)")) {
+							ret.add("MOVB X," + addr);
+						} else {
+							ret.add("MOV X," + addr);
+						}
 						i += 1;
 						continue;
 					} catch (Exception e) {

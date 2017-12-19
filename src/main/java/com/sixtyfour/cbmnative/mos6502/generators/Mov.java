@@ -93,9 +93,26 @@ public class Mov extends GeneratorBase {
 				}
 			}
 		} else {
-			// Not supported yet
+			if (target.getType() == Type.INTEGER) {
+				// MOV A,(I{REAL})
+				if (source.isRegister()) {
+					nCode.add("LDA #<" + source.getRegisterName());
+					nCode.add("LDY #>" + source.getRegisterName());
+				} else {
+					nCode.add("LDA #<" + source.getAddress());
+					nCode.add("LDY #>" + source.getAddress());
+				}
+
+				if (target.isRegister()) {
+					nCode.add("STA " + target.getRegisterName());
+					nCode.add("STY " + createAddress(target.getRegisterName(), 1));
+				} else {
+					nCode.add("STA " + target.getAddress());
+					nCode.add("STY " + createAddress(target.getAddress(), 1));
+				}
+			} else {
+				throw new RuntimeException("Invalid indexing mode: " + line);
+			}
 		}
-
 	}
-
 }

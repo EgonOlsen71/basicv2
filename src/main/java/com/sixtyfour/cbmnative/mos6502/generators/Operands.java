@@ -85,7 +85,7 @@ public class Operands {
 			return Type.valueOf(txt.substring(start + 1, end));
 		}
 		if (txt.contains(".")) {
-		  return Type.REAL;
+			return Type.REAL;
 		}
 		return Type.INTEGER;
 	}

@@ -201,13 +201,13 @@ public class AssemblyParser {
 		} else if (datupper.startsWith(".BYTE")) {
 			String[] parts = data.substring(5).trim().split(" ");
 			for (String part : parts) {
-				int val = getLowByte(getValue(part, addr-1, ccon, lcon, true, false, 0));
+				int val = getLowByte(getValue(part, addr - 1, ccon, lcon, true, false, 0));
 				ram.add(val);
 			}
 		} else if (datupper.startsWith(".WORD")) {
 			String[] parts = data.substring(5).trim().split(" ");
 			for (String part : parts) {
-				int val = getValue(part, addr-1, ccon, lcon, false, false, 0);
+				int val = getValue(part, addr - 1, ccon, lcon, false, false, 0);
 				ram.add(getLowByte(val));
 				ram.add(getHighByte(val));
 			}
@@ -223,7 +223,7 @@ public class AssemblyParser {
 		} else if (datupper.startsWith(".ARRAY")) {
 			String[] parts = data.substring(6).trim().split(" ");
 			for (String part : parts) {
-				int val = getValue(part, addr-1, ccon, lcon, false, false, 0);
+				int val = getValue(part, addr - 1, ccon, lcon, false, false, 0);
 				if (val < 0) {
 					throw new RuntimeException("Value out of range: " + val);
 				}

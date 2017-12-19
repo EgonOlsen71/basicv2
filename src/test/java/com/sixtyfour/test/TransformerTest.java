@@ -49,6 +49,15 @@ public class TransformerTest {
 		String[] vary = Loader.loadProgram("src/test/resources/transform/test1.bas");
 
 		Basic basic = new Basic(vary);
+		
+		basic.compile();
+		List<String> mCode = NativeCompiler.getCompiler().compileToPseudeCode(basic.getMachine(), basic.getPCode());
+		System.out.println("------------------------------");
+		for (String line : mCode) {
+			System.out.println(line);
+		}
+		System.out.println("------------------------------");
+		
 		List<String> nCode = NativeCompiler.getCompiler().compile(basic);
 		for (String line : nCode) {
 			System.out.println(line);
@@ -77,10 +86,10 @@ public class TransformerTest {
 
 		assy.run();
 		System.out.println("...done!");
-		System.out.println("A=" + Conversions.convertCompactFloat(machine, 0x866));
-		System.out.println("D=" + Conversions.convertCompactFloat(machine, 0x86f));
-		System.out.println("B%=" + (machine.getRam()[0x86b] + 256 * machine.getRam()[0x86c]));
-		System.out.println("C%=" + (machine.getRam()[0x86d] + 256 * machine.getRam()[0x86e]));
+		System.out.println("A=" + Conversions.convertCompactFloat(machine, 0x860));
+		System.out.println("D=" + Conversions.convertCompactFloat(machine, 0x869));
+		System.out.println("B%=" + (machine.getRam()[0x865] + 256 * machine.getRam()[0x866]));
+		System.out.println("C%=" + (machine.getRam()[0x867] + 256 * machine.getRam()[0x868]));
 		System.out.println("VIDMEM: " + machine.getRam()[1024]);
 		System.out.println("VIDMEM2: " + machine.getRam()[1030]);
 	}

@@ -22,16 +22,14 @@ public class C64Platform implements PlatformProvider {
 		return 20;
 	}
 
-  @Override
-  public Optimizer getOptimizer()
-  {
-    return new Optimizer64();
-  }
+	@Override
+	public Optimizer getOptimizer() {
+		return new Optimizer64();
+	}
 
-  @Override
-  public Transformer getTransformer()
-  {
-    return new Transformer6502();
-  }
+	@Override
+	public Transformer getTransformer() {
+		return new Transformer6502();
+	}
 
 }
