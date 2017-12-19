@@ -36,14 +36,14 @@ public class Movb extends GeneratorBase {
 				throw new RuntimeException("Invalid index mode (at least one side isn't a register!): " + line);
 			}
 			if (target.isIndexed()) {
-				targetIndexed(nCode, source, target);
+				indexedTarget(nCode, source, target);
 			} else {
-				sourceIndexed(nCode, source, target);
+				indexedSource(nCode, source, target);
 			}
 		}
 	}
 
-	private void sourceIndexed(List<String> nCode, Operand source, Operand target) {
+	private void indexedSource(List<String> nCode, Operand source, Operand target) {
 		if (source.getType() == Type.INTEGER) {
 			nCode.add("LDY " + source.getRegisterName());
 			nCode.add("LDA " + createAddress(source.getRegisterName(), 1));
@@ -80,7 +80,7 @@ public class Movb extends GeneratorBase {
 		}
 	}
 
-	private void targetIndexed(List<String> nCode, Operand source, Operand target) {
+	private void indexedTarget(List<String> nCode, Operand source, Operand target) {
 		if (target.getType() == Type.INTEGER) {
 			nCode.add("LDY " + target.getRegisterName());
 			nCode.add("LDA " + createAddress(target.getRegisterName(), 1));
