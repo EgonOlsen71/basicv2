@@ -63,7 +63,7 @@ public class TransformerTest {
 			System.out.println(line);
 		}
 
-		Assembler assy = new Assembler(nCode);
+		final Assembler assy = new Assembler(nCode);
 		assy.compile();
 		assy.run();
 		Program prg = assy.getProgram();
@@ -74,22 +74,22 @@ public class TransformerTest {
 		System.out.println("Running compiled program...");
 		Machine machine = assy.getMachine();
 		machine.addRoms();
-		/**
-		 * assy.getCpu().setCpuTracer(new CpuTracer() {
-		 * 
-		 * @Override public void commandExecuted(Cpu cpu, int opcode, int
-		 *           opcodePc, int newPc) { System.out.println(opcodePc + " - "
-		 *           + opcode + " -> " + newPc + " / a=" + cpu.getAcc()+ " / x="
-		 *           + cpu.getX()+ " / y=" + cpu.getY()); } });
-		 */
+		/*
+		  assy.getCpu().setCpuTracer(new CpuTracer() {
+		  
+		  @Override public void commandExecuted(Cpu cpu, int opcode, int
+		            opcodePc, int newPc) { System.out.println(opcodePc + " - "
+		            + opcode + " -> " + newPc + " / a=" + cpu.getAcc()+ " / x="
+		           + cpu.getX()+ " / y=" + cpu.getY() +" / 105="+assy.getMachine().getRam()[105]+" / 106="+assy.getMachine().getRam()[106]); } });
+		*/
 		System.out.println(assy.toString());
 
 		assy.run();
 		System.out.println("...done!");
-		System.out.println("A=" + Conversions.convertCompactFloat(machine, 0x860));
-		System.out.println("D=" + Conversions.convertCompactFloat(machine, 0x869));
-		System.out.println("B%=" + (machine.getRam()[0x865] + 256 * machine.getRam()[0x866]));
-		System.out.println("C%=" + (machine.getRam()[0x867] + 256 * machine.getRam()[0x868]));
+		System.out.println("A=" + Conversions.convertCompactFloat(machine, 0x95f));
+		System.out.println("VR=" + Conversions.convertCompactFloat(machine, 0x96f));
+		System.out.println("B%=" + (machine.getRam()[0x964] + 256 * machine.getRam()[0x965]));
+		System.out.println("C%=" + (machine.getRam()[0x966] + 256 * machine.getRam()[0x967]));
 		System.out.println("VIDMEM: " + machine.getRam()[1024]);
 		System.out.println("VIDMEM2: " + machine.getRam()[1030]);
 	}

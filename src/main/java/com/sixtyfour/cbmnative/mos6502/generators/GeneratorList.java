@@ -13,6 +13,8 @@ public class GeneratorList {
 		{
 			this.add(new Mov());
 			this.add(new Movb());
+			this.add(new Pop());
+			this.add(new Push());
 		}
 	});
 

@@ -111,6 +111,7 @@ public class Movb extends GeneratorBase {
 			nCode.add("; FAC to integer in Y/A");
 			nCode.add("JSR $B1AA"); // FAC to integer in Y/A
 			nCode.add("TYA");
+			nCode.add("LDY #0");
 			nCode.add("STA (" + TMP_ZP + "),Y");
 		}
 	}
