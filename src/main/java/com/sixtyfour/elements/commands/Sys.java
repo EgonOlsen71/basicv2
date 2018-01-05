@@ -56,7 +56,7 @@ public class Sys extends AbstractCommand {
 		if (memAddr < 0 || memAddr > 65535) {
 			throw new RuntimeException("Illegal quantity error: " + this);
 		}
-		return Util.createSingleCommand("JSR " + memAddr);
+		return Util.createSingleCommand("JSR $" + Integer.toHexString(memAddr));
 	}
 
 	/*

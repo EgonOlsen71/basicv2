@@ -19,6 +19,8 @@ public class GeneratorList {
 	    this.add(new Pop());
 	    this.add(new Push());
 	    this.add(new Jmp());
+	    this.add(new Jsr());
+	    this.add(new Rts());
 	}
     });
 

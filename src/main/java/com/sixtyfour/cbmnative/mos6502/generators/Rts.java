@@ -9,18 +9,17 @@ import com.sixtyfour.Logger;
  * @author EgonOlsen
  *
  */
-public class Jmp extends GeneratorBase {
+public class Rts extends GeneratorBase {
 
     @Override
     public String getMnemonic() {
-	return "JMP";
+	return "RTS";
     }
 
     @Override
     public void generateCode(String line, List<String> nCode, List<String> subCode, Map<String, String> name2label) {
 	Logger.log(line);
-	String[] parts=line.split(" ");
-	nCode.add("JMP LINE_"+parts[1].trim());
+	nCode.add("RTS");
     }
 
 }

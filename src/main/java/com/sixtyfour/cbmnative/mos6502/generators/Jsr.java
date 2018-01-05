@@ -9,18 +9,23 @@ import com.sixtyfour.Logger;
  * @author EgonOlsen
  *
  */
-public class Jmp extends GeneratorBase {
+public class Jsr extends GeneratorBase {
 
     @Override
     public String getMnemonic() {
-	return "JMP";
+	return "JSR";
     }
 
     @Override
     public void generateCode(String line, List<String> nCode, List<String> subCode, Map<String, String> name2label) {
 	Logger.log(line);
-	String[] parts=line.split(" ");
-	nCode.add("JMP LINE_"+parts[1].trim());
+	String[] parts = line.split(" ");
+	String label = parts[1];
+	if (Character.isDigit(label.charAt(0)) || label.startsWith("SKIP")) {
+	    nCode.add("JSR LINE_" + parts[1].trim());
+	} else {
+	    nCode.add("JSR " + parts[1].trim());
+	}
     }
 
 }

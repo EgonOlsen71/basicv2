@@ -86,11 +86,11 @@ public class TransformerTest {
 
 		assy.run();
 		System.out.println("...done!");
-		System.out.println("A=" + Conversions.convertCompactFloat(machine, 0x976));
-		System.out.println("D=" + Conversions.convertCompactFloat(machine, 0x97f));
-		System.out.println("VR=" + Conversions.convertCompactFloat(machine, 0x986));
-		System.out.println("B%=" + (machine.getRam()[0x97b] + 256 * machine.getRam()[0x97c]));
-		System.out.println("C%=" + (machine.getRam()[0x97d] + 256 * machine.getRam()[0x97e]));
+		System.out.println("A=" + Conversions.convertCompactFloat(machine, 0x9a5));
+		System.out.println("D=" + Conversions.convertCompactFloat(machine, 0x9ae));
+		System.out.println("VR=" + Conversions.convertCompactFloat(machine, 0x9b5));
+		System.out.println("B%=" + (machine.getRam()[0x9aa] + 256 * machine.getRam()[0x9ab]));
+		System.out.println("C%=" + (machine.getRam()[0x9ac] + 256 * machine.getRam()[0x9ad]));
 		System.out.println("VIDMEM: " + machine.getRam()[1024]);
 		System.out.println("VIDMEM2: " + machine.getRam()[1030]);
 	}
