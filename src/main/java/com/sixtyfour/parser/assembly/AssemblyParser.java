@@ -86,8 +86,9 @@ public class AssemblyParser {
 		int pos = linePart2.indexOf(" ");
 		if (pos != -1) {
 			return new LabelAndCode(linePart.substring(0, pos).replace(":", ""), linePart.substring(pos + 1).trim());
+		} else {
+		    return new LabelAndCode(linePart.replace(":", ""), "");
 		}
-		return null;
 	}
 
 	/**
