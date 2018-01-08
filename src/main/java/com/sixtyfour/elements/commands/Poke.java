@@ -89,7 +89,7 @@ public class Poke extends AbstractCommand {
 			if (expPush.equals("Y")) {
 				expr.add("MOV X,Y");
 			}
-			after.add("MOVB " + ((Number)addr.eval(machine)).intValue() + ",X");
+			after.add("MOVB " + ((Number) addr.eval(machine)).intValue() + ",X");
 		} else {
 			before = compiler.compileToPseudoCode(machine, addr);
 

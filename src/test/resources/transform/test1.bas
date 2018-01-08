@@ -7,6 +7,8 @@
 70 gosub 1000:goto 100
 80 a=56.222
 100 a=a
+102 if a=5.123 then poke 1040,b%:if a=2 then poke 1040,123 
+103 if b%=4 then poke 1040,234
 110 end
 1000 d=99.812
 1010 return

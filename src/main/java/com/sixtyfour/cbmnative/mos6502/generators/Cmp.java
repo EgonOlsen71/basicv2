@@ -6,11 +6,13 @@ import java.util.Map;
 import com.sixtyfour.Logger;
 import com.sixtyfour.elements.Type;
 
-public class Mov extends GeneratorBase {
+public class Cmp extends GeneratorBase {
+
+	private static int CNT = 0;
 
 	@Override
 	public String getMnemonic() {
-		return "MOV";
+		return "CMP";
 	}
 
 	@Override
@@ -28,31 +30,10 @@ public class Mov extends GeneratorBase {
 				noIndexRealSource(nCode, source, target);
 			}
 		} else {
-			if (target.getType() == Type.INTEGER) {
-				indexedTargetInteger(nCode, source, target);
-			} else {
-				throw new RuntimeException("Invalid indexing mode: " + line);
-			}
+			throw new RuntimeException("Invalid indexing mode: " + line);
 		}
-	}
-
-	private void indexedTargetInteger(List<String> nCode, Operand source, Operand target) {
-		// MOV A,(I{REAL})
-		if (source.isRegister()) {
-			nCode.add("LDA #<" + source.getRegisterName());
-			nCode.add("LDY #>" + source.getRegisterName());
-		} else {
-			nCode.add("LDA #<" + source.getAddress());
-			nCode.add("LDY #>" + source.getAddress());
-		}
-
-		if (target.isRegister()) {
-			nCode.add("STA " + target.getRegisterName());
-			nCode.add("STY " + createAddress(target.getRegisterName(), 1));
-		} else {
-			nCode.add("STA " + target.getAddress());
-			nCode.add("STY " + createAddress(target.getAddress(), 1));
-		}
+		nCode.add("COMP_SKIP" + CNT + ":");
+		CNT++;
 	}
 
 	private void noIndexRealSource(List<String> nCode, Operand source, Operand target) {
@@ -72,29 +53,31 @@ public class Mov extends GeneratorBase {
 			nCode.add("JSR $B1AA"); // FAC to integer in A/Y
 
 			if (target.isRegister()) {
-				nCode.add("STY " + target.getRegisterName());
-				nCode.add("STA " + createAddress(target.getRegisterName(), 1));
+				nCode.add("CPY " + target.getRegisterName());
+				nCode.add("BNE COMP_SKIP" + CNT);
+				nCode.add("CMP " + createAddress(target.getRegisterName(), 1));
+				nCode.add("BNE COMP_SKIP" + CNT);
+
 			} else {
-				nCode.add("STY " + target.getAddress());
-				nCode.add("STA " + createAddress(target.getAddress(), 1));
+				nCode.add("CPY " + target.getAddress());
+				nCode.add("BNE COMP_SKIP" + CNT);
+				nCode.add("CMP " + createAddress(target.getAddress(), 1));
+				nCode.add("BNE COMP_SKIP" + CNT);
 			}
 		} else {
 			if (target.isRegister()) {
-				nCode.add("LDX #<" + target.getRegisterName());
+				nCode.add("LDA #<" + target.getRegisterName());
 				nCode.add("LDY #>" + target.getRegisterName());
 			} else {
-				nCode.add("LDX #<" + target.getAddress());
+				nCode.add("LDA #<" + target.getAddress());
 				nCode.add("LDY #>" + target.getAddress());
 			}
-
-			nCode.add("; FAC to (X/Y)");
-			nCode.add("JSR $BBD7"); // FAC to (X/Y)
+			nCode.add("; CMPFAC with (A/Y)");
+			nCode.add("JSR $BC5B"); // CMPFAC with (A/Y)
 		}
 	}
 
 	private void noIndexIntegerSource(List<String> nCode, Operand source, Operand target) {
-		// Source is INTEGER
-
 		if (source.isRegister()) {
 			nCode.add("LDY " + source.getRegisterName());
 			nCode.add("LDA " + createAddress(source.getRegisterName(), 1));
@@ -105,25 +88,30 @@ public class Mov extends GeneratorBase {
 
 		if (target.getType() == Type.INTEGER) {
 			if (target.isRegister()) {
-				nCode.add("STY " + target.getRegisterName());
-				nCode.add("STA " + createAddress(target.getRegisterName(), 1));
+				nCode.add("CPY " + target.getRegisterName());
+				nCode.add("BNE COMP_SKIP" + CNT);
+				nCode.add("CMP " + createAddress(target.getRegisterName(), 1));
+				nCode.add("BNE COMP_SKIP" + CNT);
+
 			} else {
-				nCode.add("STY " + target.getAddress());
-				nCode.add("STA " + createAddress(target.getAddress(), 1));
+				nCode.add("CPY " + target.getAddress());
+				nCode.add("BNE COMP_SKIP" + CNT);
+				nCode.add("CMP " + createAddress(target.getAddress(), 1));
+				nCode.add("BNE COMP_SKIP" + CNT);
 			}
 		} else {
 			nCode.add("; integer in Y/A to FAC");
 			nCode.add("JSR $B391"); // integer in A/Y to FAC
 
 			if (target.isRegister()) {
-				nCode.add("LDX #<" + target.getRegisterName());
+				nCode.add("LDA #<" + target.getRegisterName());
 				nCode.add("LDY #>" + target.getRegisterName());
 			} else {
-				nCode.add("LDX #<" + target.getAddress());
+				nCode.add("LDA #<" + target.getAddress());
 				nCode.add("LDY #>" + target.getAddress());
 			}
-			nCode.add("; FAC to (X/Y)");
-			nCode.add("JSR $BBD7"); // FAC to (X/Y)
+			nCode.add("; CMPFAC with (A/Y)");
+			nCode.add("JSR $BC5B"); // CMPFAC with (A/Y)
 		}
 	}
 }

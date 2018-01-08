@@ -1,17 +1,18 @@
 package com.sixtyfour.cbmnative.mos6502.generators;
 
+
 /**
  * @author EgonOlsen
  * 
  */
-public class Jmp extends JumpBase {
+public class Je extends JumpBase {
 
-	public Jmp() {
-		super("JMP", null);
+	public Je() {
+		super("BEQ", "BNE");
 	}
-
+	
 	@Override
 	public String getMnemonic() {
-		return "JMP";
+		return "JE";
 	}
 }

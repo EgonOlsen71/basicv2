@@ -9,17 +9,17 @@ import com.sixtyfour.Logger;
  * @author EgonOlsen
  * 
  */
-public class Rts extends GeneratorBase {
+public class Brk extends GeneratorBase {
 
 	@Override
 	public String getMnemonic() {
-		return "RTS";
+		return "BRK";
 	}
 
 	@Override
 	public void generateCode(String line, List<String> nCode, List<String> subCode, Map<String, String> name2label) {
 		Logger.log(line);
-		nCode.add("RTS");
+		nCode.add("BRK");
 	}
 
 }

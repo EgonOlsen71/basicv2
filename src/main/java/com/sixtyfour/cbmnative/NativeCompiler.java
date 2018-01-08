@@ -99,7 +99,14 @@ public class NativeCompiler {
 				if (!condi) {
 					mCode.addAll(compileToPseudoCode(machine, cmd));
 				} else {
-					mCode.addAll(mCode.size() - 1, compileToPseudoCode(machine, cmd));
+					
+					for (int i=mCode.size()-1; i>=0; i--) {
+						if (!mCode.get(i).startsWith("SKIP")) {
+							mCode.addAll(i+1, compileToPseudoCode(machine, cmd));
+							break;
+						}
+					}
+					//mCode.addAll(mCode.size()-1, compileToPseudoCode(machine, cmd));
 				}
 				if (cmd.isConditional()) {
 					condi = true;

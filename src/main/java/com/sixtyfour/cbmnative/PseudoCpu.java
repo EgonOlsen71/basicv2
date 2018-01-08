@@ -610,9 +610,9 @@ public class PseudoCpu {
 			if (callListener != null) {
 				try {
 					if (addry.startsWith("$")) {
-					    addry=String.valueOf(Integer.parseInt(addry.substring(1, addry.length()), 16));
+						addry = String.valueOf(Integer.parseInt(addry.substring(1, addry.length()), 16));
 					}
-				    	callListener.sys(Integer.valueOf(addry));
+					callListener.sys(Integer.valueOf(addry));
 					jumpStack.pop();
 				} catch (Exception e2) {
 					throw new RuntimeException("Undefined call address: " + parts[1]);

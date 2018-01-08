@@ -5,20 +5,20 @@ import java.util.Map;
 
 /**
  * @author EgonOlsen
- *
+ * 
  */
 public class LineNumberGenerator extends GeneratorBase {
 
-    @Override
-    public String getMnemonic() {
-	return "";
-    }
+	@Override
+	public String getMnemonic() {
+		return "";
+	}
 
-    @Override
-    public void generateCode(String line, List<String> nCode, List<String> subCode, Map<String, String> name2label) {
-	nCode.add(";");
-	nCode.add("LINE_"+line);
-	nCode.add(";");
-    }
+	@Override
+	public void generateCode(String line, List<String> nCode, List<String> subCode, Map<String, String> name2label) {
+		nCode.add(";");
+		nCode.add("LINE_" + line);
+		nCode.add(";");
+	}
 
 }
