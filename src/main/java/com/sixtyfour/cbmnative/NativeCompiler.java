@@ -99,14 +99,16 @@ public class NativeCompiler {
 				if (!condi) {
 					mCode.addAll(compileToPseudoCode(machine, cmd));
 				} else {
-					
-					for (int i=mCode.size()-1; i>=0; i--) {
+					// Place conditional code blocks inside of the conditional
+					// area. This should now handle nested ifs as well.
+					for (int i = mCode.size() - 1; i >= 0; i--) {
 						if (!mCode.get(i).startsWith("SKIP")) {
-							mCode.addAll(i+1, compileToPseudoCode(machine, cmd));
+							mCode.addAll(i + 1, compileToPseudoCode(machine, cmd));
 							break;
 						}
 					}
-					//mCode.addAll(mCode.size()-1, compileToPseudoCode(machine, cmd));
+					// mCode.addAll(mCode.size()-1, compileToPseudoCode(machine,
+					// cmd));
 				}
 				if (cmd.isConditional()) {
 					condi = true;
