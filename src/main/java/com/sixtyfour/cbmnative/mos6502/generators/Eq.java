@@ -69,12 +69,12 @@ public class Eq extends GeneratorBase {
 		}
 		nCode.add("; CMPFAC with (A/Y)");
 		nCode.add("JSR $BC5B"); // CMPFAC with (A/Y)
-		
-		nCode.add("BEQ EQ_EQ"+CNT);
+
+		nCode.add("BEQ EQ_EQ" + CNT);
 		nCode.add("LDA #<REAL_CONST_ZERO");
 		nCode.add("LDY #>REAL_CONST_ZERO");
 		nCode.add("JMP EQ_SKIP" + CNT);
-		nCode.add("EQ_EQ"+CNT+":");
+		nCode.add("EQ_EQ" + CNT + ":");
 		nCode.add("LDA #<REAL_CONST_MINUS_ONE");
 		nCode.add("LDY #>REAL_CONST_MINUS_ONE");
 	}
