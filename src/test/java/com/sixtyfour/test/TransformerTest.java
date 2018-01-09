@@ -9,8 +9,6 @@ import com.sixtyfour.Loader;
 import com.sixtyfour.cbmnative.NativeCompiler;
 import com.sixtyfour.parser.Preprocessor;
 import com.sixtyfour.system.Conversions;
-import com.sixtyfour.system.Cpu;
-import com.sixtyfour.system.CpuTracer;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.system.Program;
 import com.sixtyfour.system.ProgramPart;
@@ -21,8 +19,8 @@ import com.sixtyfour.system.ProgramPart;
  */
 public class TransformerTest {
 	public static void main(String[] args) throws Exception {
-		//testTransformer3();
-		//testTransformer1();
+		testTransformer3();
+		testTransformer1();
 		testTransformer2();
 	}
 
@@ -90,14 +88,15 @@ public class TransformerTest {
 
 		assy.run();
 		System.out.println("...done!");
-		System.out.println("A=" + Conversions.convertCompactFloat(machine, 0x9a5));
-		System.out.println("D=" + Conversions.convertCompactFloat(machine, 0x9ae));
-		System.out.println("VR=" + Conversions.convertCompactFloat(machine, 0x9b5));
-		System.out.println("B%=" + (machine.getRam()[0x9aa] + 256 * machine.getRam()[0x9ab]));
-		System.out.println("C%=" + (machine.getRam()[0x9ac] + 256 * machine.getRam()[0x9ad]));
+		System.out.println("A=" + Conversions.convertCompactFloat(machine, 0xab9));
+		System.out.println("D=" + Conversions.convertCompactFloat(machine, 0xac2));
+		System.out.println("VR=" + Conversions.convertCompactFloat(machine, 0xac9));
+		System.out.println("B%=" + (machine.getRam()[0xabe] + 256 * machine.getRam()[0xabf]));
+		System.out.println("C%=" + (machine.getRam()[0xac0] + 256 * machine.getRam()[0xac1]));
 		System.out.println("VIDMEM: " + machine.getRam()[1024]);
 		System.out.println("VIDMEM2: " + machine.getRam()[1030]);
 		System.out.println("VIDMEM4: " + machine.getRam()[1040]);
+		System.out.println("Ticks: " + machine.getCpu().getClockTicks());
 	}
 
 	private static void testTransformer3() throws Exception {
