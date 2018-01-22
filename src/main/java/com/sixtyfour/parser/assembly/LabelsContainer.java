@@ -68,7 +68,7 @@ public class LabelsContainer {
 					if (offset <= 127 && offset >= -128) {
 						ram[++targetAddr] = AssemblyParser.getLowByte(offset);
 					} else {
-						throw new RuntimeException("Destination address out of range: " + value + "/" + targetAddr + "/" + offset);
+						throw new RuntimeException("Destination address out of range: " + value + "/" + targetAddr + "/" + offset+"/"+label);
 					}
 				} else {
 					// System.out.println("Applied delayed Label: "+entry.getValue()+"@"+Integer.toHexString(targetAddr)+"/"+value);

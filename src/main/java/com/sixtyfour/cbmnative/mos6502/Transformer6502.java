@@ -78,12 +78,17 @@ public class Transformer6502 implements Transformer {
 		res.add("B_REG\t.WORD 0");
 		res.add("G_REG\t.WORD 0");
 		res.add("TMP_REG\t.WORD 0");
+		res.add("TMP2_REG\t.WORD 0");
+		res.add("TMP3_REG\t.WORD 0");
+		res.add("TMP_FLAG\t.BYTE 0");
 		res.add("JUMP_TARGET\t.WORD 0");
 		res.add("REAL_CONST_ONE\t.REAL 1.0");
 		res.add("REAL_CONST_ZERO\t.REAL 0.0");
 		res.add("REAL_CONST_MINUS_ONE\t.REAL -1.0");
 		res.add("FPSTACKP\t.WORD FPSTACK");
 		res.add("FPSTACK .ARRAY " + Math.min(255, platform.getStackSize() * 5));
+		res.add("FORSTACKP\t.WORD FORSTACK");
+		res.add("FORSTACK .ARRAY " + Math.min(1024, platform.getStackSize() * 14));
 		res.add("EMPTYSTR\t.BYTE 0");
 		res.add("STRBUF\t.BYTE 0");
 		return res;

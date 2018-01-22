@@ -746,6 +746,7 @@ public class PseudoCpu {
 			lineBreakChannel(parts);
 			return;
 		case "INITFOR":
+		case "INITFORINT":
 			initFor(parts);
 			return;
 		case "NEXT":
@@ -988,10 +989,10 @@ public class PseudoCpu {
 	}
 
 	private void initFor(String[] parts) {
-		Number stopVal = getStack().pop();
+		Number stepVal = getStack().pop();
 		Number endVal = getStack().pop();
 
-		ForStackEntry fse = new ForStackEntry(regs[A].intValue(), this.addr, endVal, stopVal);
+		ForStackEntry fse = new ForStackEntry(regs[A].intValue(), this.addr, endVal, stepVal);
 		forStackPos = fse.push(forStackPos);
 	}
 

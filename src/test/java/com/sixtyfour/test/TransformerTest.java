@@ -9,6 +9,8 @@ import com.sixtyfour.Loader;
 import com.sixtyfour.cbmnative.NativeCompiler;
 import com.sixtyfour.parser.Preprocessor;
 import com.sixtyfour.system.Conversions;
+import com.sixtyfour.system.Cpu;
+import com.sixtyfour.system.CpuTracer;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.system.Program;
 import com.sixtyfour.system.ProgramPart;
@@ -22,6 +24,54 @@ public class TransformerTest {
 		testTransformer3();
 		testTransformer1();
 		testTransformer2();
+		testTransformer4();
+	}
+
+	private static void testTransformer4() throws Exception {
+		System.out.println("\n\ntestTransformer4");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/test4.bas");
+
+		Basic basic = new Basic(vary);
+
+		basic.compile();
+		List<String> mCode = NativeCompiler.getCompiler().compileToPseudeCode(basic.getMachine(), basic.getPCode());
+		System.out.println("------------------------------");
+		for (String line : mCode) {
+			System.out.println(line);
+		}
+		System.out.println("------------------------------");
+
+		List<String> nCode = NativeCompiler.getCompiler().compile(basic);
+		for (String line : nCode) {
+			System.out.println(line);
+		}
+
+		final Assembler assy = new Assembler(nCode);
+		assy.compile();
+
+		assy.getCpu().setCpuTracer(new CpuTracer() {
+			@Override
+			public void commandExecuted(Cpu cpu, int opcode, int opcodePc, int newPc) {
+				System.out.println(opcodePc + " - " + opcode + " -> " + newPc + " / a=" + cpu.getAcc() + " / x=" + cpu.getX() + " / y=" + cpu.getY() + "/ z="
+						+ (cpu.getStatus() & 0b10) + " / 105=" + assy.getMachine().getRam()[105] + " / 106=" + assy.getMachine().getRam()[106]);
+			}
+		});
+
+		assy.run();
+		Program prg = assy.getProgram();
+		for (ProgramPart pp : prg.getParts()) {
+			System.out.println("Size: " + pp.size());
+		}
+
+		System.out.println("Running compiled program...");
+		Machine machine = assy.getMachine();
+		machine.addRoms();
+
+		System.out.println(assy.toString());
+		assy.run();
+		System.out.println("...done!");
+
+		System.out.println("Ticks: " + machine.getCpu().getClockTicks());
 	}
 
 	private static void testTransformer1() throws Exception {
@@ -74,16 +124,16 @@ public class TransformerTest {
 		System.out.println("Running compiled program...");
 		Machine machine = assy.getMachine();
 		machine.addRoms();
-/*
-		assy.getCpu().setCpuTracer(new CpuTracer() {
-
-			@Override
-			public void commandExecuted(Cpu cpu, int opcode, int opcodePc, int newPc) {
-				System.out.println(opcodePc + " - " + opcode + " -> " + newPc + " / a=" + cpu.getAcc() + " / x=" + cpu.getX() + " / y=" + cpu.getY() + "/ z=" + (cpu.getStatus()&0b10)
-						+ " / 105=" + assy.getMachine().getRam()[105] + " / 106=" + assy.getMachine().getRam()[106]);
-			}
-		});
-*/
+		/*
+		 * assy.getCpu().setCpuTracer(new CpuTracer() {
+		 * 
+		 * @Override public void commandExecuted(Cpu cpu, int opcode, int
+		 * opcodePc, int newPc) { System.out.println(opcodePc + " - " + opcode +
+		 * " -> " + newPc + " / a=" + cpu.getAcc() + " / x=" + cpu.getX() +
+		 * " / y=" + cpu.getY() + "/ z=" + (cpu.getStatus()&0b10) + " / 105=" +
+		 * assy.getMachine().getRam()[105] + " / 106=" +
+		 * assy.getMachine().getRam()[106]); } });
+		 */
 		System.out.println(assy.toString());
 
 		assy.run();

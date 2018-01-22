@@ -21,6 +21,11 @@ public class C64Platform implements PlatformProvider {
 	public int getStackSize() {
 		return 20;
 	}
+	
+	@Override
+	public int getForStackSize() {
+		return 20;
+	}
 
 	@Override
 	public Optimizer getOptimizer() {

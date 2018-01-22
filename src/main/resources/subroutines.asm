@@ -1,27 +1,270 @@
+;###################################
 START		RTS
 
+;###################################
 END			RTS
 
+;###################################
 ARRAYACCESS	RTS
 
+;###################################
 ARRAYSTORE	RTS
 
-INITFOR		RTS
+;###################################
+INITFORINT	LDA #2
+			STA TMP2_REG
+			JMP FORFOR
 
-NEXT		RTS
+INITFOR		LDA #1
+			STA TMP2_REG
+FORFOR		LDA FORSTACKP
+			STA TMP_ZP
+			LDA FORSTACKP+1
+			STA TMP_ZP+1
+			LDY #0
+			LDA A_REG
+			STA (TMP_ZP),Y
+			INY
+			LDA A_REG+1
+			STA (TMP_ZP),Y
+			INY
+			LDA JUMP_TARGET
+			STA (TMP_ZP),Y
+			INY
+			LDA JUMP_TARGET+1
+			STA (TMP_ZP),Y
+			INY
+			STY TMP_REG
+			JSR INCTMPZP
+			JSR POPREAL
+			LDX TMP_ZP
+			LDY TMP_ZP+1
+			; FAC to (X/Y)
+			JSR $BBD7
+			LDY #5
+			STY TMP_REG
+			JSR INCTMPZP
+			JSR POPREAL
+			LDX TMP_ZP
+			LDY TMP_ZP+1
+			; FAC to (X/Y)
+			JSR $BBD7
+			LDY #5
+			STY TMP_REG
+			JSR INCTMPZP
+			LDY #0
+			LDA TMP2_REG
+			STA (TMP_ZP),Y
+			INY
+			LDA #14
+			STA (TMP_ZP),Y
+			LDA TMP_ZP
+			STA FORSTACKP
+			LDA TMP_ZP+1
+			STA FORSTACKP+1
+			RTS
 
-RETURN		RTS
+;###################################
+NEXT		LDA FORSTACKP
+			STA TMP_ZP
+			LDA FORSTACKP+1
+			STA TMP_ZP+1
+SEARCHFOR	LDA TMP_ZP
+			STA TMP3_REG
+			LDA TMP_ZP+1
+			STA TMP3_REG+1
+			LDA #2
+			STA TMP_REG
+			JSR DECTMPZP
+			LDY #0
+			LDA (TMP_ZP),Y
+			BNE NOGOSUB
+			BRK
+NOGOSUB		STA TMP_FLAG
+			INY
+			LDA (TMP_ZP),Y
+			STA TMP_REG
+			JSR DECTMPZP
+			LDY #0
+			LDA A_REG
+			BEQ LOW0
+CMPFOR		CMP (TMP_ZP),Y
+			BNE SEARCHFOR
+			LDA A_REG+1
+			INY
+			CMP (TMP_ZP),Y
+			BEQ FOUNDFOR
+			JMP SEARCHFOR
+LOW0		LDX A_REG+1
+			BEQ FOUNDFOR
+			JMP CMPFOR
+FOUNDFOR	LDA TMP_ZP
+			STA TMP2_REG
+			LDA TMP_ZP+1
+			STA TMP2_REG+1
+			LDA #1
+			CMP TMP_FLAG
+			BEQ VARREAL
+VARINT		LDY #1
+			LDA (TMP_ZP),Y
+			TAX
+			DEY
+			LDA (TMP_ZP),Y
+			TAY
+			TXA
+			JSR $B391
+			JMP CALCNEXT
+VARREAL
+			LDY #0
+			LDA (TMP_ZP),Y
+			TAX
+			INY
+			LDA (TMP_ZP),Y
+			TAY
+			TXA
+			JSR $BBA2
 
-GOSUB		RTS
+CALCNEXT	LDA #4
+			STA TMP_REG
+			JSR INCTMPZP
+			LDA TMP_ZP
+			STA TMP_REG
+			LDA TMP_ZP+1
+			STA TMP_REG+1
+			LDA TMP_REG
+			LDY TMP_REG+1
+			JSR $B867   ;M-ADD
 
+			LDA #1
+			CMP TMP_FLAG
+			BEQ STOREREAL
+STOREINT	JSR $B1AA	; FAC ->INT (A/Y)
+			STY TMP_FLAG
+			LDY #0
+			STA (TMP_ZP),Y
+			INY
+			LDA TMP_FLAG
+			STA (TMP_ZP),Y
+			JMP CMPFOR
+STOREREAL
+			LDY #0
+			LDA (TMP_ZP),Y
+			TAX
+			INY
+			LDA (TMP_ZP),Y
+			TAY
+			JSR $BBD7	;FAC TO (X/Y)
+
+CMPFOR		LDA #5
+			STA TMP_FLAG
+			JSR INCTMPREG
+			LDA TMP_REG
+			LDY TMP_REG+1
+			JSR $BC5B 	;CMPFAC
+			BEQ LOOPING
+
+			STA TMP_FLAG
+			LDA TMP_REG
+			LDY TMP_REG+1
+			JSR $BBA2
+			JSR $BC2B 	;SGNFAC
+			BEQ STEPZERO
+			ROL
+STEPZERO	BCC STEPPOS
+STEPNEG		LDA TMP_FLAG
+			ROL
+			BCC LOOPING
+			JMP EXITLOOP
+
+STEPPOS		LDA TMP_FLAG
+			ROL
+			BCC EXITLOOP
+			JMP LOOPING
+
+LOOPING		LDA TMP3_REG
+			STA FORSTACKP
+			LDA TMP3_REG+1
+			STA FORSTACKP+1
+			LDA #0
+			STA A_REG
+			STA A_REG+1
+			LDA #2
+			STA TMP_FLAG
+			JSR INCTMP2REG
+			LDY #0
+			LDA TMP2_REG
+			STA TMP_ZP
+			LDA TMP2_REG+1
+			STA TMP_ZP+1
+			LDA (TMP_ZP),Y
+			STA JUMP_TARGET
+			INY
+			LDA (TMP_ZP),Y
+			STA JUMP_TARGET+1
+			RTS
+
+EXITLOOP	LDA TMP2_REG
+			STA FORSTACKP
+			LDA TMP2_REG+1
+			STA FORSTACKP+1
+			LDA #1
+			STA A_REG
+			STA A_REG+1
+			RTS
+
+;###################################
+RETURN		LDA FORSTACKP
+			STA TMP_ZP
+			LDA FORSTACKP+1
+			STA TMP_ZP+1
+SEARCHGOSUB	LDA #2
+			STA TMP_REG
+			JSR DECTMPZP
+			LDY #0
+			LDA (TMP_ZP),Y
+			BEQ FOUNDGOSUB
+			INY
+			LDA (TMP_ZP),Y
+			STA TMP_REG
+			JSR DECTMPZP
+			JMP SEARCHGOSUB
+FOUNDGOSUB
+			LDA TMP_ZP
+			STA FORSTACKP
+			LDA TMP_ZP+1
+			STA FORSTACKP+1
+			RTS
+
+;###################################
+GOSUB		LDA FORSTACKP
+			STA TMP_ZP
+			LDA FORSTACKP+1
+			STA TMP_ZP+1
+			LDY #0
+			LDA #0
+			STA (TMP_ZP),Y
+			INY
+			LDA #0
+			STA (TMP_ZP),Y
+			LDA TMP_ZP
+			STA FORSTACKP
+			LDA TMP_ZP+1
+			STA FORSTACKP+1
+			RTS
+
+;###################################
 COMPACT		RTS
 
+;###################################
 GETSTR		RTS
 
+;###################################
 SEQ			RTS
 
+;###################################
 READNUMBER	RTS
 
+;###################################
 PUSHREAL	LDX #<FPSTACKP
 			LDY #>FPSTACKP
 			JSR $BBD7
@@ -34,6 +277,7 @@ PUSHREAL	LDX #<FPSTACKP
 			STA FPSTACKP+1
 			RTS
 
+;###################################
 PUSHINT		LDX FPSTACKP
 			STX TMP2_ZP
 			LDX FPSTACKP+1
@@ -52,7 +296,8 @@ PUSHINT		LDX FPSTACKP
 			ADC #0
 			STA FPSTACKP+1
 			RTS
-			
+
+;###################################
 POPREAL		LDA FPSTACKP
 			SEC
 			SBC #5
@@ -64,7 +309,8 @@ POPREAL		LDA FPSTACKP
 			LDY #>FPSTACKP
 			JSR $BBA2
 			RTS
-			
+
+;###################################
 POPINT		LDA FPSTACKP
 			SEC
 			SBC #2
@@ -84,4 +330,43 @@ POPINT		LDA FPSTACKP
 			STA TMP_ZP+1
 			RTS
 			
-			
+;### HELPER #######################
+;###################################
+DECTMPZP    LDA TMP_ZP
+			SEC
+			SBC TMP_REG
+			STA TMP_ZP
+			LDA TMP_ZP+1
+			SBC #0
+			STA TMP_ZP+1
+			RTS
+
+;###################################
+INCTMPZP	LDA TMP_ZP
+			CLC
+			ADC TMP_REG
+			STA TMP_ZP
+			LDA TMP_ZP+1
+			ADC #0
+			STA TMP_ZP+1
+			RTS
+
+;###################################
+INCTMPREG	LDA TMP_REG
+			CLC
+			ADC TMP_FLAG
+			STA TMP_REG
+			LDA TMP_REG+1
+			ADC #0
+			STA TMP_REG+1
+			RTS
+
+;###################################
+INCTMP2REG	LDA TMP2_REG
+			CLC
+			ADC TMP_FLAG
+			STA TMP2_REG
+			LDA TMP2_REG+1
+			ADC #0
+			STA TMP2_REG+1
+			RTS

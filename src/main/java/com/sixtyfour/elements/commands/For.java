@@ -160,7 +160,11 @@ public class For extends AbstractCommand {
 
 		after.add("MOV " + varLabel + "," + expPush);
 		after.add("MOV A,(" + varLabel + ")");
-		after.add("JSR INITFOR");
+		if (var.getType()==Type.INTEGER) {
+			after.add("JSR INITFORINT");
+		} else {
+			after.add("JSR INITFOR");
+		}
 
 		CodeContainer cc = new CodeContainer(before, expr, after);
 		List<CodeContainer> ccs = new ArrayList<CodeContainer>();
