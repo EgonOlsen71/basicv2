@@ -32,7 +32,7 @@ public class Assembler implements ProgramExecutor {
 	private Machine machine = null;
 	private Program program = null;
 	private boolean running = false;
-	private Map<Integer, String> addr2code=new HashMap<Integer, String>();
+	private Map<Integer, String> addr2code = new HashMap<Integer, String>();
 
 	/**
 	 * Instantiates a new compiler for an assembler program. No
@@ -314,15 +314,16 @@ public class Assembler implements ProgramExecutor {
 	public Program getProgram() {
 		return program;
 	}
-	
+
 	/**
 	 * Returns the code line associated to an address.
 	 * 
-	 * @param addr the address
+	 * @param addr
+	 *            the address
 	 * @return the code line or null if none could be found
 	 */
 	public String getCodeLine(int addr) {
-	    return addr2code.get(addr);
+		return addr2code.get(addr);
 	}
 
 	/**

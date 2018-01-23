@@ -160,7 +160,7 @@ public class For extends AbstractCommand {
 
 		after.add("MOV " + varLabel + "," + expPush);
 		after.add("MOV A,(" + varLabel + ")");
-		if (var.getType()==Type.INTEGER) {
+		if (var.getType() == Type.INTEGER) {
 			after.add("JSR INITFORINT");
 		} else {
 			after.add("JSR INITFOR");

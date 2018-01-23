@@ -86,20 +86,20 @@ public class Operands {
 		int end = txt.lastIndexOf("}");
 		int start = txt.lastIndexOf("{");
 		if (start != -1 && end != -1 && start + 1 != end) {
-		    	String name=txt.substring(0,start);
-		    	Type type= Type.valueOf(txt.substring(start + 1, end));
-		    	// Range check...convert to real if needed
-		    	if (name.startsWith("#")) {
-		    	    	name=name.substring(1);
-        			if (type == Type.INTEGER) {
-        			    int num=Integer.parseInt(name);
-        			    if (num<-32768 || num>32767) {
-        				name=name+".0";
-        				type=Type.REAL;
-        			    }
-        			}
-		    	}
-		    	return type;
+			String name = txt.substring(0, start);
+			Type type = Type.valueOf(txt.substring(start + 1, end));
+			// Range check...convert to real if needed
+			if (name.startsWith("#")) {
+				name = name.substring(1);
+				if (type == Type.INTEGER) {
+					int num = Integer.parseInt(name);
+					if (num < -32768 || num > 32767) {
+						name = name + ".0";
+						type = Type.REAL;
+					}
+				}
+			}
+			return type;
 		}
 		if (txt.contains(".")) {
 			return Type.REAL;

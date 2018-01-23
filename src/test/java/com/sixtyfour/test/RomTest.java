@@ -25,13 +25,13 @@ public class RomTest {
 		System.out.println("testRomCalc3");
 		String[] code = Loader.loadProgram("src/test/resources/rom/math3.asm");
 		Assembler asm = new Assembler(code);
-		
+
 		String[] basic = Loader.loadProgram("src/test/resources/rom/math.bas");
 		Basic.registerExtension(ConsoleSupport.class);
 		Basic inty = new Basic(basic);
 		inty.compile();
 		inty.setSystemCallListener(new RamSystemCallListener(inty.getMachine()));
-		
+
 		asm.compile();
 		Machine machine = inty.getMachine();
 		machine.addRoms();
@@ -41,7 +41,7 @@ public class RomTest {
 		System.out.println(Conversions.convertCompactFloat(machine, 0x2000));
 		System.out.println(Conversions.convertFloat(machine, 0x61));
 	}
-	
+
 	private static void testRomAccess() {
 		System.out.println("testRomAccess");
 		String[] vary = Loader.loadProgram("src/test/resources/rom/romtest.bas");
