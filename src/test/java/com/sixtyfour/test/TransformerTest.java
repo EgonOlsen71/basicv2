@@ -30,7 +30,7 @@ public class TransformerTest {
 
 	private static void testTransformer4() throws Exception {
 		System.out.println("\n\ntestTransformer4");
-		String[] vary = Loader.loadProgram("src/test/resources/transform/test3.bas");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/test4.bas");
 
 		Basic basic = new Basic(vary);
 

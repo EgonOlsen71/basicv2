@@ -116,7 +116,7 @@ public class Conversions {
 	 */
 	public static float convertFloat(Machine machine, int addr) {
 		int[] ram = machine.getRam();
-		return convertFloat(ram[addr] & 0xff, ram[addr + 5] & 0xff, ram[addr + 4] & 0xff, ram[addr + 3] & 0xff, ram[addr + 2] & 0xff, ram[addr + 1] & 0xff);
+		return convertFloat(ram[addr] & 0xff, ram[addr + 5] & 0x80, ram[addr + 4] & 0xff, ram[addr + 3] & 0xff, ram[addr + 2] & 0xff, ram[addr + 1] & 0xff);
 	}
 
 	/**

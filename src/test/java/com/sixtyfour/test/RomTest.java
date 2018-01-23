@@ -14,10 +14,10 @@ import com.sixtyfour.system.Machine;
  */
 public class RomTest {
 	public static void main(String[] args) {
-		//testRomAccess();
-		//testRomCalc();
-		//testRomAndBasicCalc();
-		//testRomCalc2();
+		testRomAccess();
+		testRomCalc();
+		testRomAndBasicCalc();
+		testRomCalc2();
 		testRomCalc3();
 	}
 
