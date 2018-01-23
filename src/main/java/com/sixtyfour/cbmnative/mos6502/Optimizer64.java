@@ -29,6 +29,9 @@ public class Optimizer64 implements Optimizer {
 			this.add(new Pattern("(int) FAC into REG?, REG? into FAC for CMP", new String[] { "{LINE0}", "{LINE1}", "{LINE2}", "{LINE6}", "{LINE7}", "{LINE17}" }, "LDY {MEM0}",
 					"LDA {MEM0}", "JSR $B391", "LDX #<{REG0}", "LDY #>{REG0}", "JSR $BBD7", "LDA #<{MEM1}", "LDY #>{MEM1}", "JSR $BBA2", "LDX #<{REG1}", "LDY #>{REG1}",
 					"JSR $BBD7", "LDA #<{REG0}", "LDY #>{REG0}", "JSR $BBA2", "LDA #<{REG1}", "LDY #>{REG1}", "JSR $BC5B"));
+			this.add(new Pattern("POKE with integer constant@real location", new String[] { "JSR $BBA2", "JSR $B1AA", "STY 105", "STA 106", "{LINE2}", "TYA", "LDY #0", "STA (105),Y" }, "JSR $BBA2",
+					"JSR PUSHREAL", "LDY {MEM0}", "LDA {MEM0}", "JSR $B391", "LDX #<{REG0}", "LDY #>{REG0}", "JSR $BBD7", "JSR POPREAL", "JSR $B1AA", "STY 105", "STA 106",
+					"LDA #<{REG0}", "LDY #>{REG0}", "JSR $BBA2", "JSR $B1AA", "TYA", "LDY #0", "STA (105),Y"));
 		}
 	};
 

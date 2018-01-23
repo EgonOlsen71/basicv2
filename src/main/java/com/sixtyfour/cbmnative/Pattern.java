@@ -76,6 +76,9 @@ public class Pattern {
 		}
 		int p0 = part.indexOf(" ");
 		int p1 = line.indexOf(" ");
+		if (p0==-1 && p1==-1 && part.equalsIgnoreCase(line)) {
+			return inc(ix);
+		}
 		if (p0 != -1 && p1 != -1 && !line.contains("SKIP")) {
 			// System.out.println("Checking: " + line + " / " + part+"/"+pos);
 			if (part.substring(0, p0).equalsIgnoreCase(line.substring(0, p1))) {
