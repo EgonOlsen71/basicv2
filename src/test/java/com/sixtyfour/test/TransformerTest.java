@@ -63,11 +63,15 @@ public class TransformerTest {
 		machine.addRoms();
 
 		System.out.println(assy.toString());
+		try {
 		assy.run();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
 		System.out.println("...done!");
 		
-		for (int i=1000; i<2100; i++) {
-			System.out.println(i+": "+assy.getRam()[i]);
+		for (int i=1000; i<2050; i++) {
+			System.out.println(Integer.toHexString(i)+": "+Integer.toHexString(assy.getRam()[i]));
 		}
 		
 		System.out.println("Ticks: " + machine.getCpu().getClockTicks());
@@ -193,7 +197,7 @@ public class TransformerTest {
 
 				System.out.println(opcodePc + " - " + opcode + " -> " + newPc + " / a=" + cpu.getAcc() + " / x=" + cpu.getX() + " / y=" + cpu.getY() + "/ z="
 						+ (cpu.getStatus() & 0b10) + " / 105=" + assy.getMachine().getRam()[105] + " / 106=" + assy.getMachine().getRam()[106] + "/" + line + " "
-						+ assy.getRam()[opcodePc + 1] + " / FAC=" + fac + " / FAC2=" + fac2+"/"+Conversions.convertCompactFloat(assy.getMachine(), 3149));
+						+ assy.getRam()[opcodePc + 1] + " / FAC=" + fac + " / FAC2=" + fac2);
 			} else {
 				/*
 				 * System.out.println(opcodePc + " - " + opcode + " -> " + newPc

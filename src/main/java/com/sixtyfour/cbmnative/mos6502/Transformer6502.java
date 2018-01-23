@@ -89,7 +89,7 @@ public class Transformer6502 implements Transformer {
 		res.add("FPSTACKP\t.WORD FPSTACK");
 		res.add("FPSTACK .ARRAY " + Math.min(255, platform.getStackSize() * 5));
 		res.add("FORSTACKP\t.WORD FORSTACK");
-		res.add("FORSTACK .ARRAY " + Math.min(1024, platform.getStackSize() * 14));
+		res.add("FORSTACK .ARRAY " + Math.min(1024, platform.getStackSize() * 17));
 		res.add("EMPTYSTR\t.BYTE 0");
 		res.add("STRBUF\t.BYTE 0");
 		return res;

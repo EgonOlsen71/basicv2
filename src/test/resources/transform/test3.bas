@@ -1,1 +1,1 @@
-10 fori=1024to2023:pokei,32:forx=1000to1010:pokex,12:next:nexti
+10 for i=2023to1024step-1:pokei,32:next

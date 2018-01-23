@@ -1031,7 +1031,7 @@ public class Cpu {
 				ticks += 2;
 				break;
 			default:
-				throw new RuntimeException("Illegal opcode @:" + Integer.toHexString(lastPc) + " $" + Integer.toHexString(cmd));
+				throw new RuntimeException(pc+": Illegal opcode @:" + Integer.toHexString(lastPc) + " $" + Integer.toHexString(cmd));
 			}
 
 			if (cpuTracer != null) {
