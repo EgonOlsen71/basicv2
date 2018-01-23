@@ -20,16 +20,17 @@ import com.sixtyfour.system.ProgramPart;
  * 
  */
 public class TransformerTest {
+
 	public static void main(String[] args) throws Exception {
-		testTransformer3();
-		testTransformer1();
-		testTransformer2();
+		//testTransformer3();
+		//testTransformer1();
+		//testTransformer2();
 		testTransformer4();
 	}
 
 	private static void testTransformer4() throws Exception {
 		System.out.println("\n\ntestTransformer4");
-		String[] vary = Loader.loadProgram("src/test/resources/transform/test4.bas");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/test3.bas");
 
 		Basic basic = new Basic(vary);
 
@@ -49,13 +50,7 @@ public class TransformerTest {
 		final Assembler assy = new Assembler(nCode);
 		assy.compile();
 
-		assy.getCpu().setCpuTracer(new CpuTracer() {
-			@Override
-			public void commandExecuted(Cpu cpu, int opcode, int opcodePc, int newPc) {
-				System.out.println(opcodePc + " - " + opcode + " -> " + newPc + " / a=" + cpu.getAcc() + " / x=" + cpu.getX() + " / y=" + cpu.getY() + "/ z="
-						+ (cpu.getStatus() & 0b10) + " / 105=" + assy.getMachine().getRam()[105] + " / 106=" + assy.getMachine().getRam()[106]);
-			}
-		});
+		assy.getCpu().setCpuTracer(new MyTracer(assy));
 
 		assy.run();
 		Program prg = assy.getProgram();
@@ -176,5 +171,27 @@ public class TransformerTest {
 		System.out.println("...done!");
 		System.out.println("A=" + Conversions.convertCompactFloat(machine, 0x824));
 		System.out.println(Arrays.toString(Arrays.copyOfRange(machine.getRam(), 0x824, 0x824 + 5)));
+	}
+	
+	private static class MyTracer implements CpuTracer {
+    	private final Assembler assy;
+    
+    	private MyTracer(Assembler assy) {
+    	    this.assy = assy;
+    	}
+    
+    	@Override
+    	public void commandExecuted(Cpu cpu, int opcode, int opcodePc, int newPc) {
+    	    String line=assy.getCodeLine(opcodePc);
+    	    float fac=Conversions.convertFloat(assy.getMachine(), 0x61);
+    	    if (line!=null) {
+    		
+    		System.out.println(opcodePc + " - " + opcode + " -> " + newPc + " / a=" + cpu.getAcc() + " / x=" + cpu.getX() + " / y=" + cpu.getY() + "/ z="
+    				+ (cpu.getStatus() & 0b10) + " / 105=" + assy.getMachine().getRam()[105] + " / 106=" + assy.getMachine().getRam()[106]+"/"+line+" "+assy.getRam()[opcodePc+1]+" / FAC="+fac);
+    	    } else {
+    		System.out.println(opcodePc + " - " + opcode + " -> " + newPc + " / a=" + cpu.getAcc() + " / x=" + cpu.getX() + " / y=" + cpu.getY() + "/ z="
+    				+ (cpu.getStatus() & 0b10) + " / 105=" + assy.getMachine().getRam()[105] + " / 106=" + assy.getMachine().getRam()[106]+"/"+cpu.getInstruction(opcode)+" "+assy.getRam()[opcodePc+1]+" / FAC="+fac);
+    	    }
+    	}
 	}
 }

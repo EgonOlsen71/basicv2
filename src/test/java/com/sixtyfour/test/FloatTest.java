@@ -23,11 +23,11 @@ public class FloatTest {
 	}
 
 	public static void testConversions() {
-		int[] num = Conversions.convertFloat(1234.5454433f);
+		int[] num = Conversions.convertFloat(11234.5454433f);
 		float res = Conversions.convertFloat(num[0], num[5], num[4], num[3], num[2], num[1]);
 		System.out.println(res);
 		System.out.println("-------------------------------------");
-		num = Conversions.convertFloat(-237.998f);
+		num = Conversions.convertFloat(-2237.998f);
 		res = Conversions.convertFloat(num[0], num[5], num[4], num[3], num[2], num[1]);
 		System.out.println(res);
 		System.out.println("-------------------------------------");

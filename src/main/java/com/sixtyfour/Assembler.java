@@ -2,7 +2,9 @@ package com.sixtyfour;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.sixtyfour.elements.mnemonics.Mnemonic;
 import com.sixtyfour.parser.assembly.AssemblyParser;
@@ -30,6 +32,7 @@ public class Assembler implements ProgramExecutor {
 	private Machine machine = null;
 	private Program program = null;
 	private boolean running = false;
+	private Map<Integer, String> addr2code=new HashMap<Integer, String>();
 
 	/**
 	 * Instantiates a new compiler for an assembler program. No
@@ -183,6 +186,7 @@ public class Assembler implements ProgramExecutor {
 						}
 						try {
 							lineBreaks.add(addr);
+							addr2code.put(addr, line);
 							addr = mne.parse(line, addr, compileMachine, ccon, lcon);
 						} catch (RuntimeException re) {
 							raiseError("Error at line: " + oLine, re, addr, cnt);
@@ -309,6 +313,16 @@ public class Assembler implements ProgramExecutor {
 	 */
 	public Program getProgram() {
 		return program;
+	}
+	
+	/**
+	 * Returns the code line associated to an address.
+	 * 
+	 * @param addr the address
+	 * @return the code line or null if none could be found
+	 */
+	public String getCodeLine(int addr) {
+	    return addr2code.get(addr);
 	}
 
 	/**

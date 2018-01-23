@@ -80,6 +80,7 @@ public class Transformer6502 implements Transformer {
 		res.add("TMP_REG\t.WORD 0");
 		res.add("TMP2_REG\t.WORD 0");
 		res.add("TMP3_REG\t.WORD 0");
+		res.add("TMP4_REG\t.WORD 0");
 		res.add("TMP_FLAG\t.BYTE 0");
 		res.add("JUMP_TARGET\t.WORD 0");
 		res.add("REAL_CONST_ONE\t.REAL 1.0");
@@ -109,6 +110,15 @@ public class Transformer6502 implements Transformer {
 
 						Type type = Type.valueOf(part.substring(pos + 1, part.length() - 1));
 						name = name.substring(1);
+						if (type == Type.INTEGER) {
+						    // Range check...convert to real if needed
+						    int num=Integer.parseInt(name);
+						    if (num<-32768 || num>32767) {
+							name=name+".0";
+							type=Type.REAL;
+						    }
+						}
+						
 						if (type == Type.INTEGER) {
 							consts.add(label + "\t" + ".WORD " + name);
 						} else if (type == Type.REAL) {
