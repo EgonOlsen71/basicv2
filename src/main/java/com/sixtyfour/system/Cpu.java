@@ -1265,7 +1265,7 @@ public class Cpu {
 
 	private void cmp_lly(int yb, int accb) {
 		index = getWord(ram[ram[pc]], ram[(ram[pc++] + 1) & 0xFF]);
-		tmp = accb - ram[index + yb];
+		tmp = accb - ram[(index + yb) & 0xfff];
 		setFlags(tmp, accb, true, true, false, true);
 		ticks += 5;
 		if (index >> 8 != (index + yb) >> 8) {
@@ -1873,7 +1873,7 @@ public class Cpu {
 	}
 
 	private void sta_lly(int accb) {
-		ram[getWord(ram[ram[pc]], ram[(ram[pc++] + 1) & 0xFF]) + y] = accb;
+		ram[(getWord(ram[ram[pc]], ram[(ram[pc++] + 1) & 0xFF]) + y) & 0xfff] = accb;
 		ticks += 6;
 	}
 
@@ -1972,7 +1972,7 @@ public class Cpu {
 
 	private void lda_lly(int yb) {
 		tmp = getWord(ram[ram[pc]], ram[(ram[pc++] + 1) & 0xFF]);
-		acc = ram[tmp + yb];
+		acc = ram[(tmp + yb) & 0xfff];
 		setFlags(acc, true, true);
 		ticks += 5;
 		if (tmp >> 8 != (tmp + yb) >> 8) {

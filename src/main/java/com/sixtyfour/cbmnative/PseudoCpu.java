@@ -746,7 +746,6 @@ public class PseudoCpu {
 			lineBreakChannel(parts);
 			return;
 		case "INITFOR":
-		case "INITFORINT":
 			initFor(parts);
 			return;
 		case "NEXT":

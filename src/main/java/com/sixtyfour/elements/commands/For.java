@@ -94,6 +94,11 @@ public class For extends AbstractCommand {
 		String assignment = linePart.substring(0, posTo);
 		var = Parser.getVariable(assignment, machine);
 		term = Parser.getTerm(assignment, machine, true, true);
+
+		if (var.getType() == Type.INTEGER) {
+			syntaxError(linePart);
+		}
+
 		if (!var.getType().equals(term.getType()) && !(var.getType().equals(Type.REAL) && term.getType().equals(Type.INTEGER))) {
 			typeMismatch(linePart);
 		}
@@ -160,11 +165,7 @@ public class For extends AbstractCommand {
 
 		after.add("MOV " + varLabel + "," + expPush);
 		after.add("MOV A,(" + varLabel + ")");
-		if (var.getType() == Type.INTEGER) {
-			after.add("JSR INITFORINT");
-		} else {
-			after.add("JSR INITFOR");
-		}
+		after.add("JSR INITFOR");
 
 		CodeContainer cc = new CodeContainer(before, expr, after);
 		List<CodeContainer> ccs = new ArrayList<CodeContainer>();
