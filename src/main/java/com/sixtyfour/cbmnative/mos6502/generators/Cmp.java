@@ -32,7 +32,7 @@ public class Cmp extends GeneratorBase {
 		} else {
 			throw new RuntimeException("Invalid indexing mode: " + line);
 		}
-		nCode.add("COMP_SKIP" + CNT + ":");
+		nCode.add("COMP_SKP" + CNT + ":");
 		CNT++;
 	}
 
@@ -54,15 +54,15 @@ public class Cmp extends GeneratorBase {
 
 			if (target.isRegister()) {
 				nCode.add("CPY " + target.getRegisterName());
-				nCode.add("BNE COMP_SKIP" + CNT);
+				nCode.add("BNE COMP_SKP" + CNT);
 				nCode.add("CMP " + createAddress(target.getRegisterName(), 1));
-				nCode.add("BNE COMP_SKIP" + CNT);
+				nCode.add("BNE COMP_SKP" + CNT);
 
 			} else {
 				nCode.add("CPY " + target.getAddress());
-				nCode.add("BNE COMP_SKIP" + CNT);
+				nCode.add("BNE COMP_SKP" + CNT);
 				nCode.add("CMP " + createAddress(target.getAddress(), 1));
-				nCode.add("BNE COMP_SKIP" + CNT);
+				nCode.add("BNE COMP_SKP" + CNT);
 			}
 		} else {
 			if (target.isRegister()) {
@@ -89,15 +89,15 @@ public class Cmp extends GeneratorBase {
 		if (target.getType() == Type.INTEGER) {
 			if (target.isRegister()) {
 				nCode.add("CPY " + target.getRegisterName());
-				nCode.add("BNE COMP_SKIP" + CNT);
+				nCode.add("BNE COMP_SKP" + CNT);
 				nCode.add("CMP " + createAddress(target.getRegisterName(), 1));
-				nCode.add("BNE COMP_SKIP" + CNT);
+				nCode.add("BNE COMP_SKP" + CNT);
 
 			} else {
 				nCode.add("CPY " + target.getAddress());
-				nCode.add("BNE COMP_SKIP" + CNT);
+				nCode.add("BNE COMP_SKP" + CNT);
 				nCode.add("CMP " + createAddress(target.getAddress(), 1));
-				nCode.add("BNE COMP_SKIP" + CNT);
+				nCode.add("BNE COMP_SKP" + CNT);
 			}
 		} else {
 			nCode.add("; integer in Y/A to FAC");

@@ -22,9 +22,9 @@ import com.sixtyfour.system.ProgramPart;
 public class TransformerTest {
 
 	public static void main(String[] args) throws Exception {
-		// testTransformer3();
-		// testTransformer1();
-		// testTransformer2();
+		testTransformer3();
+		testTransformer1();
+		testTransformer2();
 		testTransformer4();
 	}
 
@@ -181,6 +181,7 @@ public class TransformerTest {
 		System.out.println(Arrays.toString(Arrays.copyOfRange(machine.getRam(), 0x824, 0x824 + 5)));
 	}
 
+	@SuppressWarnings("unused")
 	private static class MyTracer implements CpuTracer {
 		private final Assembler assy;
 

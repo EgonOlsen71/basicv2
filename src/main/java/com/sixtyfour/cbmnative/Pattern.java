@@ -76,7 +76,10 @@ public class Pattern {
 		}
 		int p0 = part.indexOf(" ");
 		int p1 = line.indexOf(" ");
-		if (p0==-1 && p1==-1 && part.equalsIgnoreCase(line)) {
+		if (p0 == -1 && p1 == -1 && part.equalsIgnoreCase(line)) {
+			return inc(ix);
+		}
+		if (part.equals("{LABEL}") && line.endsWith(":")) {
 			return inc(ix);
 		}
 		if (p0 != -1 && p1 != -1 && !line.contains("SKIP")) {
