@@ -22,9 +22,9 @@ import com.sixtyfour.system.ProgramPart;
 public class TransformerTest {
 
 	public static void main(String[] args) throws Exception {
-		testTransformer3();
-		testTransformer1();
-		testTransformer2();
+		//testTransformer3();
+		//testTransformer1();
+		//testTransformer2();
 		testTransformer4();
 	}
 
@@ -70,7 +70,7 @@ public class TransformerTest {
 		}
 		System.out.println("...done!");
 		
-		for (int i=1000; i<2050; i++) {
+		for (int i=9000; i<10050; i++) {
 			System.out.println(Integer.toHexString(i)+": "+Integer.toHexString(assy.getRam()[i]));
 		}
 		
@@ -196,9 +196,10 @@ public class TransformerTest {
 			float fac2 = Conversions.convertFloat(assy.getMachine(), 105);
 			if (line != null) {
 
+			    	
 				System.out.println(opcodePc + " - " + opcode + " -> " + newPc + " / a=" + cpu.getAcc() + " / x=" + cpu.getX() + " / y=" + cpu.getY() + "/ z="
 						+ (cpu.getStatus() & 0b10) + " / 105=" + assy.getMachine().getRam()[105] + " / 106=" + assy.getMachine().getRam()[106] + "/" + line + " "
-						+ assy.getRam()[opcodePc + 1] + " / FAC=" + fac + " / FAC2=" + fac2);
+						+ assy.getRam()[opcodePc + 1] + " / FAC=" + fac + " / FAC2=" + fac2+"/"+(assy.getMachine().getRam()[assy.getMachine().getRam()[105]+256*assy.getMachine().getRam()[106]]));
 			} else {
 				/*
 				 * System.out.println(opcodePc + " - " + opcode + " -> " + newPc
