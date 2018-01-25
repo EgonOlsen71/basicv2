@@ -56,7 +56,7 @@ public class Movb extends GeneratorBase {
 			nCode.add("JSR $BBA2"); // Real in (A/Y) to FAC
 
 			nCode.add("; FAC to integer in Y/A");
-			nCode.add("JSR $B1AA"); // FAC to integer in Y/A
+			nCode.add("JSR $B7F7"); // FAC to integer in Y/A
 			nCode.add("STY " + TMP_ZP);
 			nCode.add("STA " + (TMP_ZP + 1));
 		}
@@ -93,7 +93,7 @@ public class Movb extends GeneratorBase {
 			nCode.add("JSR $BBA2"); // Real in (A/Y) to FAC
 
 			nCode.add("; FAC to integer in Y/A");
-			nCode.add("JSR $B1AA"); // FAC to integer in Y/A
+			nCode.add("JSR $B7F7"); // FAC to integer in Y/A
 			nCode.add("STY " + TMP_ZP);
 			nCode.add("STA " + (TMP_ZP + 1));
 		}
@@ -109,7 +109,7 @@ public class Movb extends GeneratorBase {
 			nCode.add("JSR $BBA2"); // Real in (A/Y) to FAC
 
 			nCode.add("; FAC to integer in Y/A");
-			nCode.add("JSR $B1AA"); // FAC to integer in Y/A
+			nCode.add("JSR $B7F7"); // FAC to integer in Y/A
 			nCode.add("TYA");
 			nCode.add("LDY #0");
 			nCode.add("STA (" + TMP_ZP + "),Y");
@@ -130,12 +130,12 @@ public class Movb extends GeneratorBase {
 
 		if (target.isAddress()) {
 			nCode.add("; FAC to integer in Y/A");
-			nCode.add("JSR $B1AA"); // FAC to integer in Y/A
+			nCode.add("JSR $B7F7"); // FAC to integer in Y/A
 			nCode.add("STY " + target.getAddress());
 		} else {
 			if (target.getType() == Type.INTEGER) {
 				nCode.add("; FAC to integer in Y/A");
-				nCode.add("JSR $B1AA"); // FAC to integer in Y/A
+				nCode.add("JSR $B7F7"); // FAC to integer in Y/A
 				nCode.add("STY " + target.getRegisterName());
 				nCode.add("STA " + this.createAddress(target.getRegisterName(), 1));
 			} else {
@@ -165,12 +165,12 @@ public class Movb extends GeneratorBase {
 
 			if (target.isAddress()) {
 				nCode.add("; FAC to integer in Y/A");
-				nCode.add("JSR $B1AA"); // FAC to integer in Y/A
+				nCode.add("JSR $B7F7"); // FAC to integer in Y/A
 				nCode.add("STY " + target.getAddress());
 			} else {
 				if (target.getType() == Type.INTEGER) {
 					nCode.add("; FAC to integer in Y/A");
-					nCode.add("JSR $B1AA"); // FAC to integer in Y/A
+					nCode.add("JSR $B7F7"); // FAC to integer in Y/A
 					nCode.add("STY " + target.getRegisterName());
 					nCode.add("STA " + this.createAddress(target.getRegisterName(), 1));
 				} else {

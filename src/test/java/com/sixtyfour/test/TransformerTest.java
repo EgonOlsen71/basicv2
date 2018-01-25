@@ -70,7 +70,7 @@ public class TransformerTest {
 		}
 		System.out.println("...done!");
 		
-		for (int i=9000; i<10050; i++) {
+		for (int i=49000; i<50050; i++) {
 			System.out.println(Integer.toHexString(i)+": "+Integer.toHexString(assy.getRam()[i]));
 		}
 		
