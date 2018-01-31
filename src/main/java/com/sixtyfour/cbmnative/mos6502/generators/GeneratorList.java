@@ -26,6 +26,10 @@ public class GeneratorList {
 			this.add(new Je());
 			this.add(new Cmp());
 			this.add(new Eq());
+			this.add(new Add());
+			this.add(new Sub());
+			this.add(new Mul());
+			this.add(new Div());
 		}
 	});
 
