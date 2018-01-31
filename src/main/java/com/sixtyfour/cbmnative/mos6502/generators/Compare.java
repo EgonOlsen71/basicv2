@@ -7,23 +7,23 @@ import com.sixtyfour.Logger;
 import com.sixtyfour.elements.Type;
 
 public abstract class Compare implements Generator {
-    
-    protected static int CNT = 0;
-    protected String mnemonic = null;
-    protected String command;
-    
-    protected Compare(String mnemonic, String command) {
-	this.mnemonic=mnemonic;
-	this.command=command;
-    }
-    
-    @Override
+
+	protected static int CNT = 0;
+	protected String mnemonic = null;
+	protected String command;
+
+	protected Compare(String mnemonic, String command) {
+		this.mnemonic = mnemonic;
+		this.command = command;
+	}
+
+	@Override
 	public String getMnemonic() {
 		return mnemonic;
 	}
-    
-    @Override
-    public void generateCode(String line, List<String> nCode, List<String> subCode, Map<String, String> name2label) {
+
+	@Override
+	public void generateCode(String line, List<String> nCode, List<String> subCode, Map<String, String> name2label) {
 		Operands ops = new Operands(line, name2label);
 		Logger.log(line + " -- " + ops.getTarget() + "  |||  " + ops.getSource());
 
@@ -40,7 +40,7 @@ public abstract class Compare implements Generator {
 			throw new RuntimeException("Invalid indexing mode: " + line);
 		}
 
-		nCode.add(mnemonic+"_SKIP" + CNT + ":");
+		nCode.add(mnemonic + "_SKIP" + CNT + ":");
 		nCode.add("; Real in (A/Y) to FAC");
 		nCode.add("JSR $BBA2"); // Real in (A/Y) to FAC
 		if (target.isRegister()) {
@@ -77,17 +77,16 @@ public abstract class Compare implements Generator {
 		nCode.add("; CMPFAC with (A/Y)");
 		nCode.add("JSR $BC5B"); // CMPFAC with (A/Y)
 
-		
 		doCompare(nCode);
 	}
 
 	protected void doCompare(List<String> nCode) {
-	    nCode.add(command+" "+mnemonic+"_"+mnemonic + CNT);
-	    nCode.add("LDA #<REAL_CONST_ZERO");
-	    nCode.add("LDY #>REAL_CONST_ZERO");
-	    nCode.add("JMP "+mnemonic+"_SKIP" + CNT);
-	    nCode.add(mnemonic+"_"+mnemonic + CNT + ":");
-	    nCode.add("LDA #<REAL_CONST_MINUS_ONE");
-	    nCode.add("LDY #>REAL_CONST_MINUS_ONE");
+		nCode.add(command + " " + mnemonic + "_" + mnemonic + CNT);
+		nCode.add("LDA #<REAL_CONST_ZERO");
+		nCode.add("LDY #>REAL_CONST_ZERO");
+		nCode.add("JMP " + mnemonic + "_SKIP" + CNT);
+		nCode.add(mnemonic + "_" + mnemonic + CNT + ":");
+		nCode.add("LDA #<REAL_CONST_MINUS_ONE");
+		nCode.add("LDY #>REAL_CONST_MINUS_ONE");
 	}
 }

@@ -1031,10 +1031,10 @@ public class Cpu {
 				ticks += 2;
 				break;
 			default:
-			    if (cpuTracer != null) {
-				cpuTracer.exception(this, cmd, lastPc, pc);
-			    }
-			    throw new RuntimeException(pc+": Illegal opcode @:" + Integer.toHexString(lastPc)+"/"+ Integer.toHexString(pc) + " $" + Integer.toHexString(cmd));
+				if (cpuTracer != null) {
+					cpuTracer.exception(this, cmd, lastPc, pc);
+				}
+				throw new RuntimeException(pc + ": Illegal opcode @:" + Integer.toHexString(lastPc) + "/" + Integer.toHexString(pc) + " $" + Integer.toHexString(cmd));
 			}
 
 			if (cpuTracer != null) {

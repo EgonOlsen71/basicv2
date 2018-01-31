@@ -430,7 +430,7 @@ public class NativeCompilerTest {
 	}
 
 	private static void testArrayAccessTotal() {
-		System.out.println("\n\ntestArrayAccess1");
+		System.out.println("\n\ntestArrayAccessTotal");
 		Machine machine = new Machine();
 		List<Object> objs = new ArrayList<Object>(Arrays.asList(new Float[] { 93f, 2.3f, 4.5f, 4.1f, 1.1f, .21f, 1.1f, 2.3f, 4.5f, 6.6f, 2.2f, 1.3f, 4.5f, 4.5f, 1f, 2.2f, 3.1f,
 				2.3f, 5.5f, 6.6f }));

@@ -625,6 +625,16 @@ public class NativeCompiler {
 					continue;
 				}
 
+				// MOV Y,#2.0{REAL}
+				// MOV X,#-1{INTEGER}
+				// MUL X,Y
+				if (l0.startsWith("MOV Y,#") && l1.contains("MOV X,#-1{INTEGER}") && l2.contains("MUL X,Y")) {
+					int pos = l0.indexOf("#");
+					ret.add(l0.substring(0, pos + 1).replace("Y,", "X,") + "-" + l0.substring(pos + 1));
+					i += 2;
+					continue;
+				}
+
 				// MOV Y,#4096{INTEGER}
 				// MOV X,(Y)
 				if (l0.contains("INTEGER") && l0.startsWith("MOV Y,#") && (l1.equals("MOV X,(Y)") || l1.equals("MOVB X,(Y)"))) {

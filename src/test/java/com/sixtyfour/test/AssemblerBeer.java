@@ -33,8 +33,8 @@ public class AssemblerBeer {
 
 			@Override
 			public void exception(Cpu cpu, int opcode, int opcodePc, int newPc) {
-			    // TODO Auto-generated method stub
-			    
+				// TODO Auto-generated method stub
+
 			}
 
 		});
