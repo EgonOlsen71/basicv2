@@ -97,7 +97,9 @@ public class NativeCompilerTest {
 		//
 		// testLyrix();
 		testFiles();
+		testArrayAccess01();
 		testBasicMapper();
+		
 	}
 
 	private static void testFiles() {
@@ -534,6 +536,18 @@ public class NativeCompilerTest {
 		testExpr(machine, term, false);
 	}
 
+	private static void testArrayAccess01() {
+		System.out.println("\n\ntestArrayAccess01");
+		Machine machine = new Machine();
+		List<Object> objs = new ArrayList<Object>(Arrays.asList(new Float[] { 1.2f, 2.3f, 4.5f, 4.1f, 1.1f, .21f, 1.1f, 2.3f, 4.5f, 6.6f, 2.2f, 1.3f, 4.5f, 4.5f, 1f, 2.2f, 3.1f,
+				2.3f, 5.5f, 6.6f }));
+		machine.add(new Variable("A[]", objs, 3, 3));
+		machine.add(new Variable("C", 1.8f));
+		String term = "A(C,C)";
+		// term="B(5)+B(1)";
+		testExpr(machine, term, false);
+	}
+	
 	private static void testStringExpression6() {
 		System.out.println("\n\ntestStringExpression6");
 		Machine machine = new Machine();

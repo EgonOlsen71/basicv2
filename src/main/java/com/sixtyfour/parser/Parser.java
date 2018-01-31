@@ -533,7 +533,7 @@ public class Parser {
 			if (sb.length() > 0) {
 				sb.append("+");
 			}
-			sb.append("(");
+			sb.append("int(");
 			Atom atom = pars.get(i);
 			if (!(atom instanceof Term)) {
 				if (atom instanceof Variable) {
