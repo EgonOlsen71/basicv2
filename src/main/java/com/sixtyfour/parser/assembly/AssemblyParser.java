@@ -178,7 +178,7 @@ public class AssemblyParser {
 	 */
 	public static int getLowByteSigned(int val)
 	  {
-	    if (val > 0)
+	    if (val >= 0)
 	    {
 	      return val % 256;
 	    }
@@ -195,7 +195,7 @@ public class AssemblyParser {
 	 */
 	public static int getHighByteSigned(int val)
 	  {
-	    if (val > 0)
+	    if (val >= 0)
 	    {
 	      return val / 256;
 	    }

@@ -56,7 +56,7 @@ public class TransformerTest {
    	final Assembler assy = new Assembler(nCode);
    	assy.compile();
 
-   	assy.getCpu().setCpuTracer(new MyTracer(assy));
+   	//assy.getCpu().setCpuTracer(new MyTracer(assy));
 
    	assy.run();
    	Program prg = assy.getProgram();
@@ -106,7 +106,7 @@ public class TransformerTest {
 	final Assembler assy = new Assembler(nCode);
 	assy.compile();
 
-	assy.getCpu().setCpuTracer(new MySimpleTracer(assy));
+	//assy.getCpu().setCpuTracer(new MySimpleTracer(assy));
 
 	assy.run();
 	Program prg = assy.getProgram();
@@ -146,7 +146,7 @@ public class TransformerTest {
 	System.out.println("...done!");
 	loop[0]=false;
 
-	BufferedImage bi = Graphics.createImage(assy.getMachine(), 16384, 1024, true, false);
+	BufferedImage bi = Graphics.createImage(assy.getMachine(), 16384, 24576, true, true);
 	FileOutputStream fos = new FileOutputStream("fractal_multicolor_native.png");
 	Graphics.savePng(bi, fos);
 
