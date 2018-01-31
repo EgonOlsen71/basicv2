@@ -11,7 +11,7 @@
 200 rem main routine
 205 rem print "{clear}"
 207 gosub 500
-210 for j = 0 to height - 1
+210 for j = 0 to height - 1:rem poke2,j
 215 rem print j
 220 : for i = 0 to width - 1 step 2
 230 :   gosub 300
@@ -33,18 +33,19 @@
 340 : i2z  = 2*rz*iz
 350 : rz  = r2z+nreal
 360 : iz   = i2z +nimg
+361 : 
 365 iters%=k
 370 : if (rz*rz + iz*iz)>4 then ismnd=0:k=reps
 390 next k
 399 return
 500 rem clear screen
 530 poke53272,29:poke53265,59
-540 for r=8192 to 16383:poke r,0:next
+540 for r=16384 to 24576:poke r,0:next
 599 return
 600 rem draw hires
 601 :
 620 if ismnd<>0 then return
-621 p=8192+int(j/8)*320+int(i/8)*8+(jand7)
+621 p=16384+int(j/8)*320+int(i/8)*8+(jand7)
 622 cc%=iters% and 3
 625 if cc%=3 then pokep,peek(p) or int(2^(7-((i/8-int(i/8))*8))) or int(2^(7-(((i+1)/8-int((i+1)/8))*8))):return
 630 if cc%=2 then pokep,peek(p) or int(2^(7-((i/8-int(i/8))*8))):return

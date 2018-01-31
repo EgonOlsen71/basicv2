@@ -29,7 +29,7 @@ public class C64Platform implements PlatformProvider {
 
 	@Override
 	public Optimizer getOptimizer() {
-		return new Optimizer64();
+		return null;//new Optimizer64();
 	}
 
 	@Override

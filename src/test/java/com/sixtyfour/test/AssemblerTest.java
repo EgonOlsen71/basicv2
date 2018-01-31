@@ -415,6 +415,12 @@ public class AssemblerTest {
 				System.out.println("@ ." + Integer.toHexString(lastPc) + "\t" + Integer.toHexString(opcode) + "/" + Integer.toBinaryString(cpu.getStatus()));
 
 			}
+
+			@Override
+			public void exception(Cpu cpu, int opcode, int opcodePc, int newPc) {
+			    // TODO Auto-generated method stub
+			    
+			}
 		});
 		asm.run();
 		outputRunResults(asm.getMachine(), cpu);

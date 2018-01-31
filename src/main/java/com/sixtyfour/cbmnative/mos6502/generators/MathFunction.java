@@ -9,13 +9,13 @@ import com.sixtyfour.Logger;
  * @author Foerster-H
  *
  */
-public abstract class Calculation implements Generator {
+public abstract class MathFunction implements Generator {
 
     private String comment = null;
     private String systemCall = null;
     private String mnemonic = null;
 
-    protected Calculation(String mnemonic, String comment, String systemCall) {
+    protected MathFunction(String mnemonic, String comment, String systemCall) {
 	this.mnemonic = mnemonic;
 	this.comment = comment;
 	this.systemCall = systemCall;
@@ -44,17 +44,7 @@ public abstract class Calculation implements Generator {
 
 	nCode.add("; Real in (A/Y) to FAC");
 	nCode.add("JSR $BBA2"); // Real in (A/Y) to FAC
-
-	if (target.isRegister()) {
-	    nCode.add("LDA #<" + target.getRegisterName());
-	    nCode.add("LDY #>" + target.getRegisterName());
-	} else {
-	    nCode.add("LDA #<" + target.getAddress());
-	    nCode.add("LDY #>" + target.getAddress());
-	}
-
-	nCode.add("; Real in (A/Y) to ARG");
-	nCode.add("JSR $BA8C"); // Real in (A/Y) to FAC
+	
 	nCode.add(comment);
 	nCode.add(systemCall);
 

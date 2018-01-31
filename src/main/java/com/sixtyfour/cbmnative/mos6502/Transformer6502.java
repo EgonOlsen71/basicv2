@@ -44,6 +44,7 @@ public class Transformer6502 implements Transformer {
 		int cnt = 0;
 
 		for (String line : code) {
+		    	String cmd=line;
 			line = AssemblyParser.truncateComments(line);
 			String orgLine = line;
 
@@ -56,6 +57,8 @@ public class Transformer6502 implements Transformer {
 			Generator pm = GeneratorList.getGenerator(orgLine);
 			if (pm != null) {
 				pm.generateCode(orgLine, mnems, subs, name2label);
+			} else {
+			    mnems.add("; not supported: "+cmd);
 			}
 		}
 

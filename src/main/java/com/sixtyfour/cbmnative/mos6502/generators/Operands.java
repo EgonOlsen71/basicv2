@@ -61,7 +61,7 @@ public class Operands {
 		op.setRegister(null);
 		op.setType(getType(txt));
 
-		if (txt.length() == 1) {
+		if (txt.length() == 1 && !Character.isDigit(txt.charAt(0))) {
 			op.setRegister(txt.toUpperCase(Locale.ENGLISH));
 		} else {
 			if (txt.startsWith("(")) {

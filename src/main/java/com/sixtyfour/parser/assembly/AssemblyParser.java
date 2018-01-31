@@ -173,6 +173,41 @@ public class AssemblyParser {
 	}
 
 	/**
+	 * @param val
+	 * @return
+	 */
+	public static int getLowByteSigned(int val)
+	  {
+	    if (val > 0)
+	    {
+	      return val % 256;
+	    }
+	    else
+	    {
+	      return val & 0xff;
+	    }
+	  }
+
+
+	  /**
+	 * @param val
+	 * @return
+	 */
+	public static int getHighByteSigned(int val)
+	  {
+	    if (val > 0)
+	    {
+	      return val / 256;
+	    }
+	    else
+	    {
+	      val=val&0x7fff;
+	      return (val >> 8) | 128;
+	    }
+	  }
+
+	
+	/**
 	 * Returns an array containing the binary data defined in the code. Binary
 	 * data can be defined by either .text or .byte
 	 * 
@@ -209,8 +244,8 @@ public class AssemblyParser {
 			String[] parts = data.substring(5).trim().split(" ");
 			for (String part : parts) {
 				int val = getValue(part, addr - 1, ccon, lcon, false, false, 0);
-				ram.add(getLowByte(val));
-				ram.add(getHighByte(val));
+				ram.add(getLowByteSigned(val));
+				ram.add(getHighByteSigned(val));
 			}
 		} else if (datupper.startsWith(".REAL")) {
 			String[] parts = data.substring(5).trim().split(" ");

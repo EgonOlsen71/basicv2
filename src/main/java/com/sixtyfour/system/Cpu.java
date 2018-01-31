@@ -26,7 +26,7 @@ public class Cpu {
 	private boolean irq = false;
 	private boolean nmi = false;
 	private boolean brk = false;
-	private int ticks = 0;
+	private long ticks = 0;
 	private int pc = 0;
 	private int[] ram = null;
 	private int tmp = 0;
@@ -91,7 +91,7 @@ public class Cpu {
 	 * 
 	 * @return the number of clock ticks
 	 */
-	public int getClockTicks() {
+	public long getClockTicks() {
 		return ticks;
 	}
 
@@ -102,7 +102,7 @@ public class Cpu {
 	 * @param ticks
 	 *            the new number of ticks
 	 */
-	public void setClockTicks(int ticks) {
+	public void setClockTicks(long ticks) {
 		this.ticks = ticks;
 	}
 
@@ -1031,7 +1031,10 @@ public class Cpu {
 				ticks += 2;
 				break;
 			default:
-				throw new RuntimeException(pc+": Illegal opcode @:" + Integer.toHexString(lastPc) + " $" + Integer.toHexString(cmd));
+			    if (cpuTracer != null) {
+				cpuTracer.exception(this, cmd, lastPc, pc);
+			    }
+			    throw new RuntimeException(pc+": Illegal opcode @:" + Integer.toHexString(lastPc)+"/"+ Integer.toHexString(pc) + " $" + Integer.toHexString(cmd));
 			}
 
 			if (cpuTracer != null) {

@@ -31,6 +31,12 @@ public class AssemblerBeer {
 				}
 			}
 
+			@Override
+			public void exception(Cpu cpu, int opcode, int opcodePc, int newPc) {
+			    // TODO Auto-generated method stub
+			    
+			}
+
 		});
 
 		machine.getCpu().setCpuCallListener(new CpuCallListener() {
