@@ -109,7 +109,7 @@ public class Pattern {
 									}
 									int pos = lineRight.indexOf("CONST_");
 									if (lineRight.equals(reg)
-											|| (pos != -1 && const2Value.containsKey(lineRight.substring(pos)) && const2Value.get(lineRight.substring(pos)).equals(val))) {
+											|| (pos != -1 && const2Value.containsKey(lineRight.substring(pos)) && const2Value.get(lineRight.substring(pos)).floatValue()==val.floatValue())) {
 										return inc(ix);
 									}
 									return resetPattern();

@@ -17,7 +17,8 @@ public class Optimizer64 implements Optimizer {
 	private List<Pattern> patterns = new ArrayList<Pattern>() {
 		private static final long serialVersionUID = 1L;
 		{
-			this.add(new Pattern("REG0->REG1, REG1->REG0", new String[] { "{LINE0}", "{LINE1}", "{LINE2}" }, "LDX #<{MEM0}", "LDY #>{MEM0}", "JSR $BBD7", "LDA #<{REG0}",
+		       this.add(new Pattern("Simplified CMP with 0", new String[] { "{LINE0}", "LDA $61" }, "JSR $BBA2", "LDX #<{REG0}","LDY #>{REG0}","JSR $BBD7","LDA #<{#0.0}", "LDY #>{#0.0}", "JSR $BBA2", "LDA #<{REG0}", "LDY #>{REG0}", "JSR $BC5B"));
+		    this.add(new Pattern("REG0->REG1, REG1->REG0", new String[] { "{LINE0}", "{LINE1}", "{LINE2}" }, "LDX #<{MEM0}", "LDY #>{MEM0}", "JSR $BBD7", "LDA #<{REG0}",
 					"LDY #>{REG0}", "JSR $BBA2", "LDX #<{REG1}", "LDY #>{REG1}", "JSR $BBD7", "LDA #<{REG1}", "LDY #>{REG1}", "JSR $BBA2", "LDX #<{REG0}", "LDY #>{REG0}",
 					"JSR $BBD7", "LDA #<{REG0}", "LDY #>{REG0}", "JSR $BBA2"));
 			this.add(new Pattern("REG0->VAR, REG0->REG1", new String[] { "{LINE6}", "{LINE7}", "{LINE8}" }, "LDX #<{REG0}", "LDY #>{REG0}", "JSR $BBD7", "LDA #<{REG0}",
