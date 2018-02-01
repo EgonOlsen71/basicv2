@@ -10,8 +10,6 @@ public class Lt extends Compare {
 
 	@Override
 	protected void doCompare(List<String> nCode) {
-		// Vergleich Konstante (A/Y) mit FAC: A=0 wenn gleich, A=1 wenn FAC
-		// größer, A=$FF wenn FAC kleiner
 		nCode.add("BEQ " + mnemonic + "_" + mnemonic + "_EQ" + CNT);
 		nCode.add("ROL");
 		nCode.add(command + " " + mnemonic + "_" + mnemonic + CNT);

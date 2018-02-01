@@ -28,7 +28,9 @@ public class GeneratorList {
 			this.add(new Eq());
 			this.add(new Neq());
 			this.add(new Gt());
+			this.add(new Gteq());
 			this.add(new Lt());
+			this.add(new Lteq());
 			this.add(new Add());
 			this.add(new Sub());
 			this.add(new Mul());

@@ -32,7 +32,7 @@ public class TransformerTest {
 		// testTransformer4();
 		// testTransformer5();
 		testTransformerFractal();
-		// testTransformer6();
+		 //testTransformer6();
 	}
 
 	private static void testTransformer6() throws Exception {
