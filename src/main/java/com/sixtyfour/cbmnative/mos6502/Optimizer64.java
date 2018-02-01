@@ -17,9 +17,11 @@ public class Optimizer64 implements Optimizer {
 	private List<Pattern> patterns = new ArrayList<Pattern>() {
 		private static final long serialVersionUID = 1L;
 		{
-		    this.add(new Pattern("Simplified CMP with 0", new String[] { "{LINE0}", "LDA $61" }, "JSR $BBA2", "LDX #<{REG0}","LDY #>{REG0}","JSR $BBD7","LDA #<{#0.0}", "LDY #>{#0.0}", "JSR $BBA2", "LDA #<{REG0}", 
-			    "LDY #>{REG0}", "JSR $BC5B"));
-		    this.add(new Pattern("REG0->REG1, REG1->REG0", new String[] { "{LINE0}", "{LINE1}", "{LINE2}" }, "LDX #<{MEM0}", "LDY #>{MEM0}", "JSR $BBD7", "LDA #<{REG0}",
+			this.add(new Pattern("Quick copy into REG", new String[] { "{LINE0}", "{LINE1}", "JSR STORE_AY", "{LINE3}", "{LINE4}", "JSR COPY2_XY" }, "LDA #<{MEM0}",
+					"LDY #>{MEM0}", "JSR $BBA2", "LDX #<{REG0}", "LDY #>{REG0}", "JSR $BBD7"));
+			this.add(new Pattern("Simplified CMP with 0", new String[] { "{LINE0}", "LDA $61" }, "JSR $BBA2", "LDX #<{REG0}", "LDY #>{REG0}", "JSR $BBD7", "LDA #<{#0.0}",
+					"LDY #>{#0.0}", "JSR $BBA2", "LDA #<{REG0}", "LDY #>{REG0}", "JSR $BC5B"));
+			this.add(new Pattern("REG0->REG1, REG1->REG0", new String[] { "{LINE0}", "{LINE1}", "{LINE2}" }, "LDX #<{MEM0}", "LDY #>{MEM0}", "JSR $BBD7", "LDA #<{REG0}",
 					"LDY #>{REG0}", "JSR $BBA2", "LDX #<{REG1}", "LDY #>{REG1}", "JSR $BBD7", "LDA #<{REG1}", "LDY #>{REG1}", "JSR $BBA2", "LDX #<{REG0}", "LDY #>{REG0}",
 					"JSR $BBD7", "LDA #<{REG0}", "LDY #>{REG0}", "JSR $BBA2"));
 			this.add(new Pattern("REG0->VAR, REG0->REG1", new String[] { "{LINE6}", "{LINE7}", "{LINE8}" }, "LDX #<{REG0}", "LDY #>{REG0}", "JSR $BBD7", "LDA #<{REG0}",
@@ -31,19 +33,17 @@ public class Optimizer64 implements Optimizer {
 			this.add(new Pattern("FAC to INT, INT to FAC", null, "JSR $B391", "JSR $B1AA"));
 			this.add(new Pattern("VAR into FAC, FAC into VAR", null, "LDA #<{MEM0}", "LDY #>{MEM0}", "JSR $BBA2", "LDX #<{MEM0}", "LDY #>{MEM0}", "JSR $BBD7"));
 			this.add(new Pattern("CMP with 0", new String[] { "LDA {REG0}" }, "LDA #<{#0.0}", "LDY #>{#0.0}", "JSR $BBA2", "LDA #<{REG0}", "LDY #>{REG0}", "JSR $BC5B"));
-			this.add(new Pattern("FAC into REG?, REG? into FAC for CMP", new String[] { "{LINE0}", "{LINE1}", "{LINE2}", "{LINE6}", "{LINE7}", "{LINE17}" }, "LDA #<{MEM0}",
-					"LDY #>{MEM0}", "JSR $BBA2", "LDX #<{REG0}", "LDY #>{REG0}", "JSR $BBD7", "LDA #<{MEM1}", "LDY #>{MEM1}", "JSR $BBA2", "LDX #<{REG1}", "LDY #>{REG1}",
-					"JSR $BBD7", "LDA #<{REG0}", "LDY #>{REG0}", "JSR $BBA2", "LDA #<{REG1}", "LDY #>{REG1}", "JSR $BC5B"));
-			this.add(new Pattern("(int) FAC into REG?, REG? into FAC for CMP", new String[] { "{LINE0}", "{LINE1}", "{LINE2}", "{LINE6}", "{LINE7}", "{LINE17}" }, "LDY {MEM0}",
-					"LDA {MEM0}", "JSR $B391", "LDX #<{REG0}", "LDY #>{REG0}", "JSR $BBD7", "LDA #<{MEM1}", "LDY #>{MEM1}", "JSR $BBA2", "LDX #<{REG1}", "LDY #>{REG1}",
-					"JSR $BBD7", "LDA #<{REG0}", "LDY #>{REG0}", "JSR $BBA2", "LDA #<{REG1}", "LDY #>{REG1}", "JSR $BC5B"));
 			this.add(new Pattern("POKE with integer constant@real location", new String[] { "JSR $BBA2", "JSR $B7F7", "STY 105", "STA 106", "{LINE2}", "TYA", "LDY #0",
 					"STA (105),Y" }, "JSR $BBA2", "JSR PUSHREAL", "LDY {MEM0}", "LDA {MEM0}", "JSR $B391", "LDX #<{REG0}", "LDY #>{REG0}", "JSR $BBD7", "JSR POPREAL", "JSR $B7F7",
 					"STY 105", "STA 106", "LDA #<{REG0}", "LDY #>{REG0}", "JSR $BBA2", "JSR $B7F7", "TYA", "LDY #0", "STA (105),Y"));
 			this.add(new Pattern("NEXT check simplified", new String[] { "JSR NEXT", "LDA A_REG", "{LINE8}", "JMP (JUMP_TARGET)" }, "JSR NEXT", "LDY {MEM0}", "LDA {MEM0}",
 					"CPY A_REG", "BNE {*}", "CMP A_REG+1", "BNE {*}", "{LABEL}", "BNE {*}", "JMP (JUMP_TARGET)"));
-			this.add(new Pattern("Multiple loads of the same value",new String[]{"{LINE0}","{LINE1}","{LINE2}","{LINE3}","{LINE4}","{LINE5}","{LINE9}","{LINE10}","{LINE11}"}, "LDA #<{MEM0}", "LDY #>{MEM0}",
-				    "JSR $BBA2","LDX #<{REG0}", "LDY #>{REG0}","JSR $BBD7","LDA #<{MEM0}","LDY #>{MEM0}","JSR $BBA2","LDX #<{REG1}","LDY #>{REG1}","JSR $BBD7")); 
+			this.add(new Pattern("Multiple loads of the same value(1)", new String[] { "{LINE0}", "{LINE1}", "{LINE2}", "{LINE3}", "{LINE4}", "{LINE5}", "{LINE9}", "{LINE10}",
+					"{LINE11}" }, "LDA #<{MEM0}", "LDY #>{MEM0}", "JSR $BBA2", "LDX #<{REG0}", "LDY #>{REG0}", "JSR $BBD7", "LDA #<{MEM0}", "LDY #>{MEM0}", "JSR $BBA2",
+					"LDX #<{REG1}", "LDY #>{REG1}", "JSR $BBD7"));
+			this.add(new Pattern("Multiple loads of the same value(2)", new String[] { "{LINE0}", "{LINE1}", "{LINE2}", "{LINE3}", "{LINE4}", "{LINE5}", "{LINE9}", "{LINE10}",
+					"{LINE11}" }, "LDA #<{MEM0}", "LDY #>{MEM0}", "JSR STORE_AY", "LDX #<{REG0}", "LDY #>{REG0}", "JSR COPY2_XY", "LDA #<{MEM0}", "LDY #>{MEM0}", "JSR STORE_AY",
+					"LDX #<{REG1}", "LDY #>{REG1}", "JSR COPY2_XY"));
 		}
 	};
 

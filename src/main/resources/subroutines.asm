@@ -349,3 +349,29 @@ INCTMP2REG	LDA TMP2_REG
 			BCC NOPV4
 			INC TMP2_REG+1
 NOPV4		RTS
+;###################################
+STORE_AY	STA TMP3_ZP
+			STY TMP3_ZP+1
+			RTS
+;###################################
+COPY2_XY	STX TMP_ZP
+			STY TMP_ZP+1
+			LDY #0
+			LDA (TMP3_ZP),Y
+			STA (TMP_ZP),Y
+			INY
+			LDA (TMP3_ZP),Y
+			STA (TMP_ZP),Y
+			INY
+			LDA (TMP3_ZP),Y
+			STA (TMP_ZP),Y
+			INY
+			LDA (TMP3_ZP),Y
+			STA (TMP_ZP),Y
+			INY
+			LDA (TMP3_ZP),Y
+			STA (TMP_ZP),Y
+			RTS
+;###################################
+
+

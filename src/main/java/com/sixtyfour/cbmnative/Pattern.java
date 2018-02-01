@@ -83,7 +83,8 @@ public class Pattern {
 			return inc(ix);
 		}
 		if (p0 != -1 && p1 != -1 && !line.contains("SKIP")) {
-			// System.out.println("Checking: " + line + " / " + part+"/"+pos+"/"+pattern.size());
+			// System.out.println("Checking: " + line + " / " +
+			// part+"/"+pos+"/"+pattern.size());
 			if (part.substring(0, p0).equalsIgnoreCase(line.substring(0, p1))) {
 				String partRight = part.substring(p0 + 1).trim();
 				String lineRight = line.substring(p1 + 1).trim();
@@ -109,7 +110,8 @@ public class Pattern {
 									}
 									int pos = lineRight.indexOf("CONST_");
 									if (lineRight.equals(reg)
-											|| (pos != -1 && const2Value.containsKey(lineRight.substring(pos)) && const2Value.get(lineRight.substring(pos)).floatValue()==val.floatValue())) {
+											|| (pos != -1 && const2Value.containsKey(lineRight.substring(pos)) && const2Value.get(lineRight.substring(pos)).floatValue() == val
+													.floatValue())) {
 										return inc(ix);
 									}
 									return resetPattern();

@@ -99,7 +99,7 @@ public class NativeCompilerTest {
 		testFiles();
 		testArrayAccess01();
 		testBasicMapper();
-		
+
 	}
 
 	private static void testFiles() {
@@ -547,7 +547,7 @@ public class NativeCompilerTest {
 		// term="B(5)+B(1)";
 		testExpr(machine, term, false);
 	}
-	
+
 	private static void testStringExpression6() {
 		System.out.println("\n\ntestStringExpression6");
 		Machine machine = new Machine();
