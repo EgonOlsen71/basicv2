@@ -8,6 +8,7 @@ import java.util.Map;
 import com.sixtyfour.Logger;
 import com.sixtyfour.cbmnative.Optimizer;
 import com.sixtyfour.cbmnative.Pattern;
+import com.sixtyfour.cbmnative.PlatformProvider;
 
 /**
  * @author EgonOlsen
@@ -46,11 +47,12 @@ public class Optimizer64 implements Optimizer {
 					"LDX #<{REG1}", "LDY #>{REG1}", "JSR COPY2_XY"));
 			this.add(new Pattern("Value already in X", new String[]{"{LINE0}","{LINE1}","{LINE2}","TXA","{LINE4}"}, "LDX #<{REG0}","LDY #>{REG0}","JSR COPY2_XY","LDA #<{REG0}","LDY #>{REG0}"));
 			this.add(new Pattern("Multiplication with self", new String[]{"{LINE3}","{LINE4}","{LINE5}","TXA","{LINE10}","{LINE8}","{LINE9}","{LINE10}","{LINE11}","{LINE12}"},"LDX #<{REG0}","LDY #>{REG0}","JSR COPY2_XY","LDX #<{REG1}","LDY #>{REG1}","JSR COPY2_XY","LDA #<{REG0}","LDY #>{REG0}","JSR $BBA2","LDA #<{REG1}","LDY #>{REG1}","JSR $BA8C","JSR $BA30"));
+			this.add(new Pattern("Avoid INTEGER->REAL conversion", true, new String[]{"LDA #<{CONST0}R","LDY #>{CONST0}R","JSR $BBA2"}, "LDY {CONST0}","LDA {CONST0}","JSR $B391"));
 		}
 	};
 
 	@Override
-	public List<String> optimize(List<String> input) {
+	public List<String> optimize(PlatformProvider platform, List<String> input) {
 		// if (true) return input;
 
 	    	Map<String, Integer> type2count=new HashMap<>();
@@ -87,6 +89,9 @@ public class Optimizer64 implements Optimizer {
 		do {
 			optimized = false;
 			for (Pattern pattern : patterns) {
+			    	if (pattern.isLooseTypes() && !platform.useLooseTypes()) {
+			    	    continue;
+			    	}
 				for (int i = 0; i < input.size(); i++) {
 					String line = input.get(i);
 					if (line.startsWith("; *** SUBROUTINES ***")) {

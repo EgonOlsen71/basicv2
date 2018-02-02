@@ -8,6 +8,6 @@ import java.util.List;
  */
 public interface Optimizer {
 
-	List<String> optimize(List<String> input);
+	List<String> optimize(PlatformProvider platform, List<String> input);
 
 }

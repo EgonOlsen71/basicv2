@@ -44,8 +44,8 @@ public class Transformer6502 implements Transformer {
 	int cnt = 0;
 
 	for (String line : code) {
-	    line = convertConstantsToReal(line, platform);
 	    String cmd = line;
+	    line = convertConstantsToReal(line, platform);
 	    line = AssemblyParser.truncateComments(line);
 	    String orgLine = line;
 
@@ -53,7 +53,7 @@ public class Transformer6502 implements Transformer {
 	    if (sp != -1) {
 		line = line.substring(sp).trim();
 	    }
-	    cnt = extractData(machine, consts, vars, name2label, cnt, line);
+	    cnt = extractData(platform, machine, consts, vars, name2label, cnt, line);
 
 	    Generator pm = GeneratorList.getGenerator(orgLine);
 	    if (pm != null) {
@@ -103,8 +103,7 @@ public class Transformer6502 implements Transformer {
     private String convertConstantsToReal(String line, PlatformProvider platform) {
 	if (platform.useLooseTypes()) {
 	    if (line.contains("#") && line.endsWith("{INTEGER}")) {
-		String sval=line.substring(line.indexOf("#")+1, line.indexOf("{INTEGER}"));
-		int val=Integer.parseInt(sval);
+		int val = getConstantValue(line);
 		if (val<0||val>255) {
 		    line = line.replace("{INTEGER}", "{REAL}");
 		}
@@ -113,7 +112,13 @@ public class Transformer6502 implements Transformer {
 	return line;
     }
 
-    private int extractData(Machine machine, List<String> consts, List<String> vars, Map<String, String> name2label,
+    private int getConstantValue(String line) {
+	String sval=line.substring(line.indexOf("#")+1, line.indexOf("{INTEGER}"));
+	int val=Integer.parseInt(sval);
+	return val;
+    }
+
+    private int extractData(PlatformProvider platform, Machine machine, List<String> consts, List<String> vars, Map<String, String> name2label,
 	    int cnt, String line) {
 	String[] parts = line.split(",");
 	for (int p = 0; p < parts.length; p++) {
@@ -140,6 +145,12 @@ public class Transformer6502 implements Transformer {
 
 			if (type == Type.INTEGER) {
 			    consts.add(label + "\t" + ".WORD " + name);
+			    if (platform.useLooseTypes()) {
+        			    int val = getConstantValue(line);
+        			    if (val>=0 || val<256) {
+        				consts.add(label + "R\t" + ".REAL " + name+".0");
+        			    }
+			    }
 			} else if (type == Type.REAL) {
 			    consts.add(label + "\t" + ".REAL " + name);
 			} else if (type == Type.STRING) {

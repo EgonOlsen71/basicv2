@@ -83,7 +83,7 @@ public class NativeCompiler {
 		List<String> mCode = NativeCompiler.getCompiler().compileToPseudeCode(basic.getMachine(), pCode);
 		List<String> nCode = platform.getTransformer().transform(basic.getMachine(), platform, mCode);
 		if (platform.getOptimizer() != null) {
-			nCode = platform.getOptimizer().optimize(nCode);
+			nCode = platform.getOptimizer().optimize(platform, nCode);
 		}
 		return nCode;
 	}
