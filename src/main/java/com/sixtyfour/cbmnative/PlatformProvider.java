@@ -35,5 +35,10 @@ public interface PlatformProvider {
 	 * @return
 	 */
 	Transformer getTransformer();
+	
+	/**
+	 * @return
+	 */
+	boolean useLooseTypes();
 
 }

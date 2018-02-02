@@ -29,10 +29,10 @@ public class TransformerTest {
 		// testTransformer3();
 		// testTransformer1();
 		 //testTransformer2();
-		// testTransformer4();
+		 //testTransformer4();
 		 //testTransformer5();
 		testTransformerFractal();
-		// testTransformer6();
+		 //testTransformer6();
 	}
 
 	private static void testTransformer6() throws Exception {

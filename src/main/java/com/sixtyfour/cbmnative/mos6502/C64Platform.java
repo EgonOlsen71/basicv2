@@ -37,4 +37,10 @@ public class C64Platform implements PlatformProvider {
 		return new Transformer6502();
 	}
 
+	@Override
+	public boolean useLooseTypes() {
+	    return true;
+	}
+	
+
 }
