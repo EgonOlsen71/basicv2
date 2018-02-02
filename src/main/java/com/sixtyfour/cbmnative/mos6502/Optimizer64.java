@@ -44,6 +44,7 @@ public class Optimizer64 implements Optimizer {
 			this.add(new Pattern("Multiple loads of the same value(2)", new String[] { "{LINE0}", "{LINE1}", "{LINE2}", "{LINE3}", "{LINE4}", "{LINE5}", "{LINE6}", "{LINE11}", "{LINE12}",
 					"{LINE13}" }, "LDA #<{MEM0}", "LDY #>{MEM0}", "STA TMP3_ZP", "STY TMP3_ZP+1", "LDX #<{REG0}", "LDY #>{REG0}", "JSR COPY2_XY", "LDA #<{MEM0}", "LDY #>{MEM0}", "STA TMP3_ZP","STY TMP3_ZP+1",
 					"LDX #<{REG1}", "LDY #>{REG1}", "JSR COPY2_XY"));
+			this.add(new Pattern("Value already in X", new String[]{"{LINE0}","{LINE1}","{LINE2}","TXA","{LINE4}"}, "LDX #<{REG0}","LDY #>{REG0}","JSR COPY2_XY","LDA #<{REG0}","LDY #>{REG0}"));
 		}
 	};
 
@@ -51,6 +52,7 @@ public class Optimizer64 implements Optimizer {
 	public List<String> optimize(List<String> input) {
 		// if (true) return input;
 
+	    	Map<String, Integer> type2count=new HashMap<>();
 		Map<String, Number> const2Value = new HashMap<>();
 		for (String line : input) {
 			line = line.replace("\t", " ");
@@ -91,6 +93,13 @@ public class Optimizer64 implements Optimizer {
 					}
 					boolean matches = pattern.matches(line, i, const2Value);
 					if (matches) {
+					    	String name=pattern.getName();
+					    	Integer cnt=type2count.get(name);
+					    	if (cnt==null) {
+					    	    type2count.put(name, 1);
+					    	} else {
+					    	type2count.put(name, cnt+1);
+					    	}
 						input = pattern.apply(input);
 						optimized = true;
 						break;
@@ -101,6 +110,11 @@ public class Optimizer64 implements Optimizer {
 				}
 			}
 		} while (optimized);
+		
+		for(Map.Entry<String, Integer> cnts:type2count.entrySet()) {
+		    Logger.log("Optimization "+cnts.getKey()+" applied "+cnts.getValue()+" times!");
+		}
+		
 		return input;
 	}
 
