@@ -54,7 +54,7 @@ public abstract class Calculation implements Generator {
 		}
 
 		nCode.add("; Real in (A/Y) to ARG");
-		nCode.add("JSR $BA8C"); // Real in (A/Y) to FAC
+		nCode.add("JSR $BA8C"); // Real in (A/Y) to ARG
 		nCode.add(comment);
 		nCode.add(systemCall);
 
