@@ -38,4 +38,14 @@ public class Pos extends AbstractFunction {
 		throw new RuntimeException("Formula too complex error: " + this);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.sixtyfour.elements.functions.AbstractFunction#isDeterministic()
+	 */
+	@Override
+	public boolean isDeterministic() {
+		return false;
+	}
+
 }

@@ -170,6 +170,16 @@ public abstract class AbstractFunction implements Function {
 	/*
 	 * (non-Javadoc)
 	 * 
+	 * @see com.sixtyfour.elements.functions.Function#isDeterministic()
+	 */
+	@Override
+	public boolean isDeterministic() {
+		return true;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see
 	 * sixtyfour.elements.functions.Function#setFunctionName(java.lang.String)
 	 */

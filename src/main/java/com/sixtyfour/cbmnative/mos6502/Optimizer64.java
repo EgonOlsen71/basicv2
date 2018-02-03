@@ -18,8 +18,8 @@ public class Optimizer64 implements Optimizer {
 	private List<Pattern> patterns = new ArrayList<Pattern>() {
 		private static final long serialVersionUID = 1L;
 		{
-			this.add(new Pattern("Quick copy into REG", new String[] { "{LINE0}", "{LINE1}", "STA TMP3_ZP",	"STY TMP3_ZP+1", "{LINE3}", "{LINE4}", "JSR COPY2_XY" }, "LDA #<{MEM0}",
-					"LDY #>{MEM0}", "JSR $BBA2", "LDX #<{REG0}", "LDY #>{REG0}", "JSR $BBD7"));
+			this.add(new Pattern("Quick copy into REG", new String[] { "{LINE0}", "{LINE1}", "STA TMP3_ZP", "STY TMP3_ZP+1", "{LINE3}", "{LINE4}", "JSR COPY2_XY" },
+					"LDA #<{MEM0}", "LDY #>{MEM0}", "JSR $BBA2", "LDX #<{REG0}", "LDY #>{REG0}", "JSR $BBD7"));
 			this.add(new Pattern("Simplified CMP with 0", new String[] { "{LINE0}", "LDA $61" }, "JSR $BBA2", "LDX #<{REG0}", "LDY #>{REG0}", "JSR $BBD7", "LDA #<{#0.0}",
 					"LDY #>{#0.0}", "JSR $BBA2", "LDA #<{REG0}", "LDY #>{REG0}", "JSR $BC5B"));
 			this.add(new Pattern("REG0->REG1, REG1->REG0", new String[] { "{LINE0}", "{LINE1}", "{LINE2}" }, "LDX #<{MEM0}", "LDY #>{MEM0}", "JSR $BBD7", "LDA #<{REG0}",
@@ -42,12 +42,16 @@ public class Optimizer64 implements Optimizer {
 			this.add(new Pattern("Multiple loads of the same value(1)", new String[] { "{LINE0}", "{LINE1}", "{LINE2}", "{LINE3}", "{LINE4}", "{LINE5}", "{LINE9}", "{LINE10}",
 					"{LINE11}" }, "LDA #<{MEM0}", "LDY #>{MEM0}", "JSR $BBA2", "LDX #<{REG0}", "LDY #>{REG0}", "JSR $BBD7", "LDA #<{MEM0}", "LDY #>{MEM0}", "JSR $BBA2",
 					"LDX #<{REG1}", "LDY #>{REG1}", "JSR $BBD7"));
-			this.add(new Pattern("Multiple loads of the same value(2)", new String[] { "{LINE0}", "{LINE1}", "{LINE2}", "{LINE3}", "{LINE4}", "{LINE5}", "{LINE6}", "{LINE11}", "{LINE12}",
-					"{LINE13}" }, "LDA #<{MEM0}", "LDY #>{MEM0}", "STA TMP3_ZP", "STY TMP3_ZP+1", "LDX #<{REG0}", "LDY #>{REG0}", "JSR COPY2_XY", "LDA #<{MEM0}", "LDY #>{MEM0}", "STA TMP3_ZP","STY TMP3_ZP+1",
-					"LDX #<{REG1}", "LDY #>{REG1}", "JSR COPY2_XY"));
-			this.add(new Pattern("Value already in X", new String[]{"{LINE0}","{LINE1}","{LINE2}","TXA","{LINE4}"}, "LDX #<{REG0}","LDY #>{REG0}","JSR COPY2_XY","LDA #<{REG0}","LDY #>{REG0}"));
-			this.add(new Pattern("Multiplication with self", new String[]{"{LINE3}","{LINE4}","{LINE5}","TXA","{LINE10}","{LINE8}","{LINE9}","{LINE10}","{LINE11}","{LINE12}"},"LDX #<{REG0}","LDY #>{REG0}","JSR COPY2_XY","LDX #<{REG1}","LDY #>{REG1}","JSR COPY2_XY","LDA #<{REG0}","LDY #>{REG0}","JSR $BBA2","LDA #<{REG1}","LDY #>{REG1}","JSR $BA8C","JSR $BA30"));
-			this.add(new Pattern("Avoid INTEGER->REAL conversion", true, new String[]{"LDA #<{CONST0}R","LDY #>{CONST0}R","JSR $BBA2"}, "LDY {CONST0}","LDA {CONST0}","JSR $B391"));
+			this.add(new Pattern("Multiple loads of the same value(2)", new String[] { "{LINE0}", "{LINE1}", "{LINE2}", "{LINE3}", "{LINE4}", "{LINE5}", "{LINE6}", "{LINE11}",
+					"{LINE12}", "{LINE13}" }, "LDA #<{MEM0}", "LDY #>{MEM0}", "STA TMP3_ZP", "STY TMP3_ZP+1", "LDX #<{REG0}", "LDY #>{REG0}", "JSR COPY2_XY", "LDA #<{MEM0}",
+					"LDY #>{MEM0}", "STA TMP3_ZP", "STY TMP3_ZP+1", "LDX #<{REG1}", "LDY #>{REG1}", "JSR COPY2_XY"));
+			this.add(new Pattern("Value already in X", new String[] { "{LINE0}", "{LINE1}", "{LINE2}", "TXA", "{LINE4}" }, "LDX #<{REG0}", "LDY #>{REG0}", "JSR COPY2_XY",
+					"LDA #<{REG0}", "LDY #>{REG0}"));
+			this.add(new Pattern("Multiplication with self", new String[] { "{LINE3}", "{LINE4}", "{LINE5}", "TXA", "{LINE10}", "{LINE8}", "{LINE9}", "{LINE10}", "{LINE11}",
+					"{LINE12}" }, "LDX #<{REG0}", "LDY #>{REG0}", "JSR COPY2_XY", "LDX #<{REG1}", "LDY #>{REG1}", "JSR COPY2_XY", "LDA #<{REG0}", "LDY #>{REG0}", "JSR $BBA2",
+					"LDA #<{REG1}", "LDY #>{REG1}", "JSR $BA8C", "JSR $BA30"));
+			this.add(new Pattern("Avoid INTEGER->REAL conversion", true, new String[] { "LDA #<{CONST0}R", "LDY #>{CONST0}R", "JSR $BBA2" }, "LDY {CONST0}", "LDA {CONST0}",
+					"JSR $B391"));
 		}
 	};
 
@@ -55,7 +59,7 @@ public class Optimizer64 implements Optimizer {
 	public List<String> optimize(PlatformProvider platform, List<String> input) {
 		// if (true) return input;
 
-	    	Map<String, Integer> type2count=new HashMap<>();
+		Map<String, Integer> type2count = new HashMap<>();
 		Map<String, Number> const2Value = new HashMap<>();
 		for (String line : input) {
 			line = line.replace("\t", " ");
@@ -89,9 +93,9 @@ public class Optimizer64 implements Optimizer {
 		do {
 			optimized = false;
 			for (Pattern pattern : patterns) {
-			    	if (pattern.isLooseTypes() && !platform.useLooseTypes()) {
-			    	    continue;
-			    	}
+				if (pattern.isLooseTypes() && !platform.useLooseTypes()) {
+					continue;
+				}
 				for (int i = 0; i < input.size(); i++) {
 					String line = input.get(i);
 					if (line.startsWith("; *** SUBROUTINES ***")) {
@@ -99,13 +103,13 @@ public class Optimizer64 implements Optimizer {
 					}
 					boolean matches = pattern.matches(line, i, const2Value);
 					if (matches) {
-					    	String name=pattern.getName();
-					    	Integer cnt=type2count.get(name);
-					    	if (cnt==null) {
-					    	    type2count.put(name, 1);
-					    	} else {
-					    	type2count.put(name, cnt+1);
-					    	}
+						String name = pattern.getName();
+						Integer cnt = type2count.get(name);
+						if (cnt == null) {
+							type2count.put(name, 1);
+						} else {
+							type2count.put(name, cnt + 1);
+						}
 						input = pattern.apply(input);
 						optimized = true;
 						break;
@@ -116,11 +120,11 @@ public class Optimizer64 implements Optimizer {
 				}
 			}
 		} while (optimized);
-		
-		for(Map.Entry<String, Integer> cnts:type2count.entrySet()) {
-		    Logger.log("Optimization "+cnts.getKey()+" applied "+cnts.getValue()+" times!");
+
+		for (Map.Entry<String, Integer> cnts : type2count.entrySet()) {
+			Logger.log("Optimization " + cnts.getKey() + " applied " + cnts.getValue() + " times!");
 		}
-		
+
 		return input;
 	}
 

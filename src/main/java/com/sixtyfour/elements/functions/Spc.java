@@ -92,4 +92,14 @@ public class Spc extends AbstractFunction {
 			}
 		}
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.sixtyfour.elements.functions.AbstractFunction#isDeterministic()
+	 */
+	@Override
+	public boolean isDeterministic() {
+		return false;
+	}
 }

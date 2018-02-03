@@ -44,4 +44,14 @@ public class Peek extends AbstractFunction {
 		}
 		throw new RuntimeException("Type mismatch error: " + getType());
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.sixtyfour.elements.functions.AbstractFunction#isDeterministic()
+	 */
+	@Override
+	public boolean isDeterministic() {
+		return false;
+	}
 }

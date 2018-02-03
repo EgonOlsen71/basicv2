@@ -34,4 +34,14 @@ public class Usr extends AbstractFunction {
 	public Object eval(Machine machine) {
 		return machine.getSystemCallListener().usr(term.eval(machine));
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.sixtyfour.elements.functions.AbstractFunction#isDeterministic()
+	 */
+	@Override
+	public boolean isDeterministic() {
+		return false;
+	}
 }

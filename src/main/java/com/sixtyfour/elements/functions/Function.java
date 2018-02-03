@@ -76,4 +76,13 @@ public interface Function extends Atom {
 	 */
 	void setFunctionName(String functionName);
 
+	/**
+	 * Returns true, if the function call will return the same value every time
+	 * it's called with the same input. This is true for mathematical functions
+	 * and such but false for RND or PEEK.
+	 * 
+	 * @return
+	 */
+	boolean isDeterministic();
+
 }

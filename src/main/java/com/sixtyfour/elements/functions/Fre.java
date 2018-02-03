@@ -34,4 +34,14 @@ public class Fre extends AbstractFunction {
 	public Object eval(Machine machine) {
 		return (int) Runtime.getRuntime().freeMemory();
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.sixtyfour.elements.functions.AbstractFunction#isDeterministic()
+	 */
+	@Override
+	public boolean isDeterministic() {
+		return false;
+	}
 }

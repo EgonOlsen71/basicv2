@@ -50,6 +50,16 @@ public class GetShape extends AbstractFunction {
 		throw new RuntimeException("Graphics mode not enabled!");
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.sixtyfour.elements.functions.Function#isDeterministic()
+	 */
+	@Override
+	public boolean isDeterministic() {
+		return false;
+	}
+
 	private void checkType(Atom x) {
 		if (x.getType().equals(Type.STRING)) {
 			throw new RuntimeException("Type mismatch error: " + this);

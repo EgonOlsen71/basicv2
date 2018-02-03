@@ -25,6 +25,20 @@ import com.sixtyfour.util.VarUtils;
  */
 public class Parser {
 
+	private static boolean optimizeConstantExpressions = true;
+
+	/**
+	 * If set to true, the parser will automatically try to optimize constant
+	 * expression by calculating the actual result beforehand. If false, the
+	 * calculation will be done at runtime. Default is true.
+	 * 
+	 * 
+	 * @param optimizeConstantExpressions
+	 */
+	public static void setOptimizeConstantExpressions(boolean optimizeConstantExpressions) {
+		Parser.optimizeConstantExpressions = optimizeConstantExpressions;
+	}
+
 	/**
 	 * Splits the line into its parts, i.e. into its different command blocks,
 	 * usually separated by a colon.
@@ -426,18 +440,11 @@ public class Parser {
 		term = replaceScientificNotation(term);
 		term = addBrackets(term);
 		Term ret = createTerms(term, termMap, machine, checkForLogicTerm);
+		if (Parser.optimizeConstantExpressions) {
+			ret = optimizeTerm(machine, ret, termMap);
+		}
 		ret.setInitial(term, termMap);
 		return ret;
-	}
-
-	private static String stripAssignment(String term, boolean stripAssignment) {
-		if (stripAssignment) {
-			int pos = term.indexOf('=');
-			if (pos != -1) {
-				term = term.substring(pos + 1);
-			}
-		}
-		return term;
 	}
 
 	/**
@@ -562,6 +569,45 @@ public class Parser {
 
 		Term t = Parser.getTermWithoutChecks(sb.toString(), machine, true, true);
 		return t;
+	}
+
+	/**
+	 * Removes multiple occurances of + from a String concatenation.
+	 * 
+	 * @param line
+	 *            the term
+	 * @return the cleaned up term
+	 */
+	public static String cleanStringConcats(String line) {
+		if (!line.contains("\"") && !line.contains("$")) {
+			return line;
+		}
+		if (line.startsWith("+")) {
+			line = "\"\"" + line;
+		}
+		StringBuilder sb = new StringBuilder();
+		boolean inString = false;
+		int cnt = 0;
+		for (int i = 0; i < line.length(); i++) {
+			char c = line.charAt(i);
+			if (c == '"') {
+				inString = !inString;
+			}
+			if (!inString) {
+				if (c == '+') {
+					cnt++;
+				} else {
+					cnt = 0;
+				}
+				if (cnt <= 1) {
+					sb.append(c);
+				}
+			} else {
+				sb.append(c);
+				cnt = 0;
+			}
+		}
+		return sb.toString();
 	}
 
 	/**
@@ -1451,45 +1497,6 @@ public class Parser {
 	}
 
 	/**
-	 * Removes multiple occurances of + from a String concatenation.
-	 * 
-	 * @param line
-	 *            the term
-	 * @return the cleaned up term
-	 */
-	public static String cleanStringConcats(String line) {
-		if (!line.contains("\"") && !line.contains("$")) {
-			return line;
-		}
-		if (line.startsWith("+")) {
-			line = "\"\"" + line;
-		}
-		StringBuilder sb = new StringBuilder();
-		boolean inString = false;
-		int cnt = 0;
-		for (int i = 0; i < line.length(); i++) {
-			char c = line.charAt(i);
-			if (c == '"') {
-				inString = !inString;
-			}
-			if (!inString) {
-				if (c == '+') {
-					cnt++;
-				} else {
-					cnt = 0;
-				}
-				if (cnt <= 1) {
-					sb.append(c);
-				}
-			} else {
-				sb.append(c);
-				cnt = 0;
-			}
-		}
-		return sb.toString();
-	}
-
-	/**
 	 * Sets the postfix if the function has one. This applies to DEF FN
 	 * functions only.
 	 * 
@@ -1584,6 +1591,105 @@ public class Parser {
 				}
 			}
 		}
+	}
+
+	private static Term optimizeTerm(Machine machine, Term ret, Map<String, Term> termMap) {
+		if (ret.getType() == Type.STRING) {
+			return ret;
+		}
+		if (ret.getOperator().isDelimiter()) {
+			return ret;
+		}
+		if (ret.getLeft() instanceof Constant && ret.getOperator().isNop()) {
+			return ret;
+		}
+		boolean[] isConstant = new boolean[1];
+		isConstant[0] = true;
+		boolean isConst = checkForConstant(ret, isConstant);
+		if (isConst) {
+			//System.out.println("To replace: " + ret);
+			String ts = ret.eval(machine).toString();
+			if (ts.toLowerCase().contains("e")) {
+				return ret;
+			}
+			// System.out.println("TS: "+ts);
+			Term t = new Term(ts, termMap);
+			t = build(t, termMap, machine);
+			if (!t.isComplete()) {
+				t.setOperator(Operator.NOP);
+				t.setRight(new Constant<Integer>(0));
+			}
+			ret = t;
+			//System.out.println("Replaced by: " + ret);
+		}
+		return ret;
+	}
+
+	private static boolean checkForConstant(Term t, boolean[] isConstant) {
+		if (t.getOperator().isDelimiter()) {
+			isConstant[0] = false;
+			return false;
+		}
+		if (t.getType() == Type.STRING) {
+			isConstant[0] = false;
+			return false;
+		}
+		Atom left = t.getLeft();
+		Atom right = t.getRight();
+		if (!isConstant[0]) {
+			return false;
+		}
+		if (left.isTerm()) {
+			Term lt = (Term) left;
+			isConstant[0] &= checkForConstant(lt, isConstant);
+		} else {
+			if (!(left instanceof Constant)) {
+				if (left instanceof Function) {
+					Function func = (Function) left;
+					if (func.isDeterministic()) {
+						isConstant[0] &= checkForConstant(func.getTerm(), isConstant);
+					} else {
+						isConstant[0] = false;
+						return false;
+					}
+				} else {
+					isConstant[0] = false;
+					return false;
+				}
+			}
+		}
+		if (right != null) {
+			if (isConstant[0] && right.isTerm()) {
+				Term rt = (Term) right;
+				isConstant[0] &= checkForConstant(rt, isConstant);
+			} else {
+				if (!(right instanceof Constant)) {
+					if (right instanceof Function) {
+						Function func = (Function) right;
+						if (func.isDeterministic()) {
+							isConstant[0] &= checkForConstant(func.getTerm(), isConstant);
+						} else {
+							isConstant[0] = false;
+							return false;
+						}
+					} else {
+						isConstant[0] = false;
+						return false;
+					}
+				}
+			}
+		}
+		return isConstant[0];
+	}
+
+	private static String stripAssignment(String term, boolean stripAssignment) {
+		if (stripAssignment) {
+			int pos = term.indexOf('=');
+			if (pos != -1) {
+				term = term.substring(pos + 1);
+			}
+		}
+		return term;
 	}
 
 }

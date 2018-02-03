@@ -108,6 +108,16 @@ public class ArrayAccess extends AbstractFunction {
 		this.variableName = VarUtils.toUpper(variable.getName());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.sixtyfour.elements.functions.AbstractFunction#isDeterministic()
+	 */
+	@Override
+	public boolean isDeterministic() {
+		return false;
+	}
+
 	private void fillParameterIndices(Machine machine) {
 		if (pis == null) {
 			pars = Parser.getParameters(term);

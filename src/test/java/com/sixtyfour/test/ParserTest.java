@@ -30,6 +30,18 @@ public class ParserTest {
 		testAbs();
 		testStuff();
 		testMinusPower();
+		testConstants();
+	}
+
+	private static void testConstants() {
+		System.out.println("testConstants");
+		Machine machine = new Machine();
+		String term = "(int(int(4.4+5*2.2)+5.6)) and (8+4)";
+		String s = Parser.addBrackets(term);
+		System.out.println(s);
+		Term t = Parser.getTerm(term, machine, false, true);
+		System.out.println(t);
+		System.out.println(t.eval(machine));
 	}
 
 	private static void testMinusPower() {

@@ -46,4 +46,14 @@ public class LoadShape extends AbstractFunction {
 		throw new RuntimeException("Type mismatch error: " + term.getType());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.sixtyfour.elements.functions.Function#isDeterministic()
+	 */
+	@Override
+	public boolean isDeterministic() {
+		return false;
+	}
+
 }

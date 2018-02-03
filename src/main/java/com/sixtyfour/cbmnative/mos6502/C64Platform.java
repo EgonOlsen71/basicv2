@@ -39,8 +39,7 @@ public class C64Platform implements PlatformProvider {
 
 	@Override
 	public boolean useLooseTypes() {
-	    return true;
+		return true;
 	}
-	
 
 }
