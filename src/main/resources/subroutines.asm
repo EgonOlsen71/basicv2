@@ -5,7 +5,92 @@ START		RTS
 END			RTS
 
 ;###################################
-ARRAYACCESS	RTS
+ARRAYACCESS	LDA G_REG
+			STA TMP_ZP
+			LDA G_REG+1
+			STA TMP_ZP+1
+			LDY #0
+			LDA (TMP_ZP),Y
+			BNE TESTREAL2
+			JMP INTARRAY2
+TESTREAL2	LSR
+			BNE TESTSTR2
+			JMP REALARRAY2
+TESTSTR2	BRK
+; #######
+INTARRAY2	LDA #<X_REG
+			LDY #>X_REG
+			JSR $BBA2
+			JSR $B1AA
+			CLC
+			ROL
+			TAX
+			TYA
+			ROL
+			TAY
+			TXA
+			STA TMP2_ZP
+			STY TMP2_ZP+1
+			LDX #2
+			STA TMP3_ZP
+			JSR INCTMPZP
+			LDA TMP_ZP
+			CLC
+			ADC TMP2_ZP
+			TAY
+			LDA TMP_ZP+1
+			ADC TMP2_ZP+1
+			JSR $B391
+			LDX #>X_REG
+			LDY #<X_REG
+			; FAC to (X/Y)
+			JSR $BBD7
+			RTS
+; #######
+REALARRAY2	LDA #<X_REG
+			LDY #>X_REG
+			JSR $BBA2
+			JSR $B1AA
+			STA TMP_REG
+			STY TMP_REG+1
+			CLC
+			ROL
+			TAX
+			TYA
+			ROL
+			TAY
+			TXA
+			CLC
+			ROL
+			TAX
+			TYA
+			ROL
+			TAY
+			TXA
+			STA TMP2_ZP
+			STY TMP2_ZP+1
+			LDX #2
+			STA TMP3_ZP
+			JSR INCTMPZP
+			LDA TMP_ZP
+			CLC
+			ADC TMP_REG
+			STA TMP_ZP
+			LDA TMP_ZP+1
+			ADC TMP_REG+1
+			STA TMP_ZP+1
+			LDA TMP_ZP
+			CLC
+			ADC TMP2_ZP
+			TAX
+			LDA TMP_ZP+1
+			ADC TMP2_ZP+1
+			TAY
+			LDX #<X_REG
+			LDY #>X_REG
+			; FAC to (X/Y)
+			JSR $BBD7
+			RTS
 
 ;###################################
 ARRAYSTORE	LDA G_REG
