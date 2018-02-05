@@ -1,5 +1,8 @@
 package com.sixtyfour.cbmnative.mos6502.generators;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.sixtyfour.elements.Type;
 
 /**
@@ -7,9 +10,19 @@ import com.sixtyfour.elements.Type;
  * 
  */
 public class Operand {
+
+	private static final Set<String> INT_REGS = new HashSet<String>() {
+		{
+			this.add("A");
+			this.add("B");
+			this.add("G");
+		}
+	};
+
 	private String register;
 	private Type type;
 	private String address;
+	private boolean array;
 	private boolean indexed;
 
 	public String getRegister() {
@@ -46,6 +59,10 @@ public class Operand {
 		this.address = address;
 	}
 
+	public boolean isIntegerRegister() {
+		return INT_REGS.contains(register);
+	}
+
 	public boolean isIndexed() {
 		return indexed;
 	}
@@ -65,5 +82,13 @@ public class Operand {
 	@Override
 	public String toString() {
 		return register + " / " + type + " / " + address + " / " + indexed;
+	}
+
+	public boolean isArray() {
+		return array;
+	}
+
+	public void setArray(boolean array) {
+		this.array = array;
 	}
 }

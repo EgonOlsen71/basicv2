@@ -59,7 +59,17 @@ public class Operands {
 		op.setIndexed(false);
 		op.setAddress(null);
 		op.setRegister(null);
+		op.setArray(false);
 		op.setType(getType(txt));
+
+		String shorty = txt;
+		int start = shorty.lastIndexOf("{");
+		if (start != -1) {
+			shorty = shorty.substring(0, start);
+		}
+		if (shorty.endsWith("[]")) {
+			op.setArray(true);
+		}
 
 		if (txt.length() == 1 && !Character.isDigit(txt.charAt(0))) {
 			op.setRegister(txt.toUpperCase(Locale.ENGLISH));

@@ -22,10 +22,14 @@ public class Mov extends GeneratorBase {
 		Operand target = ops.getTarget();
 
 		if (!source.isIndexed() && !target.isIndexed()) {
-			if (source.getType() == Type.INTEGER) {
-				noIndexIntegerSource(nCode, source, target);
+			if (source.isArray()) {
+				noIndexArraySource(nCode, source, target);
 			} else {
-				noIndexRealSource(nCode, source, target);
+				if (source.getType() == Type.INTEGER) {
+					noIndexIntegerSource(nCode, source, target);
+				} else {
+					noIndexRealSource(nCode, source, target);
+				}
 			}
 		} else {
 			if (target.getType() == Type.INTEGER) {
@@ -33,6 +37,23 @@ public class Mov extends GeneratorBase {
 			} else {
 				throw new RuntimeException("Invalid indexing mode: " + line);
 			}
+		}
+	}
+
+	private void noIndexArraySource(List<String> nCode, Operand source, Operand target) {
+		if (source.isRegister()) {
+			nCode.add("LDA #<" + source.getRegisterName());
+			nCode.add("LDY #>" + source.getRegisterName());
+		} else {
+			nCode.add("LDA #<" + source.getAddress());
+			nCode.add("LDY #>" + source.getAddress());
+		}
+		if (target.isRegister()) {
+			nCode.add("STA " + target.getRegisterName());
+			nCode.add("STY " + createAddress(target.getRegisterName(), 1));
+		} else {
+			nCode.add("STA " + target.getAddress());
+			nCode.add("STY " + createAddress(target.getAddress(), 1));
 		}
 	}
 
