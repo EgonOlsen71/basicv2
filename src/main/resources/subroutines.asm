@@ -22,17 +22,17 @@ INTARRAY2	LDA #<X_REG
 			LDY #>X_REG
 			JSR $BBA2
 			JSR $B1AA
-			CLC
-			ROL
 			TAX
 			TYA
+			CLC
 			ROL
 			TAY
 			TXA
-			STA TMP2_ZP
-			STY TMP2_ZP+1
+			ROL
+			STY TMP2_ZP
+			STA TMP2_ZP+1
 			LDX #2
-			STA TMP3_ZP
+			STX TMP3_ZP
 			JSR INCTMPZP
 			LDA TMP_ZP
 			CLC
@@ -51,26 +51,26 @@ REALARRAY2	LDA #<X_REG
 			LDY #>X_REG
 			JSR $BBA2
 			JSR $B1AA
-			STA TMP_REG
-			STY TMP_REG+1
-			CLC
-			ROL
+			STY TMP_REG
+			STA TMP_REG+1
 			TAX
 			TYA
+			CLC
 			ROL
 			TAY
 			TXA
-			CLC
 			ROL
 			TAX
 			TYA
+			CLC
 			ROL
 			TAY
 			TXA
-			STA TMP2_ZP
-			STY TMP2_ZP+1
+			ROL
+			STY TMP2_ZP
+			STA TMP2_ZP+1
 			LDX #2
-			STA TMP3_ZP
+			STX TMP3_ZP
 			JSR INCTMPZP
 			LDA TMP_ZP
 			CLC
@@ -86,6 +86,8 @@ REALARRAY2	LDA #<X_REG
 			LDA TMP_ZP+1
 			ADC TMP2_ZP+1
 			TAY
+			TXA
+			JSR $BBA2
 			LDX #<X_REG
 			LDY #>X_REG
 			; FAC to (X/Y)
@@ -110,17 +112,17 @@ INTARRAY1	LDA #<X_REG
 			LDY #>X_REG
 			JSR $BBA2
 			JSR $B1AA
-			CLC
-			ROL
 			TAX
 			TYA
+			CLC
 			ROL
 			TAY
 			TXA
-			STA TMP2_ZP
-			STY TMP2_ZP+1
+			ROL
+			STY TMP2_ZP
+			STA TMP2_ZP+1
 			LDX #2
-			STA TMP3_ZP
+			STX TMP3_ZP
 			JSR INCTMPZP
 			LDA TMP_ZP
 			CLC
@@ -145,26 +147,26 @@ REALARRAY1	LDA #<X_REG
 			LDY #>X_REG
 			JSR $BBA2
 			JSR $B1AA
-			STA TMP_REG
-			STY TMP_REG+1
-			CLC
-			ROL
+			STY TMP_REG
+			STA TMP_REG+1
 			TAX
 			TYA
+			CLC
 			ROL
 			TAY
 			TXA
-			CLC
 			ROL
 			TAX
 			TYA
+			CLC
 			ROL
 			TAY
 			TXA
-			STA TMP2_ZP
-			STY TMP2_ZP+1
+			ROL
+			STY TMP2_ZP
+			STA TMP2_ZP+1
 			LDX #2
-			STA TMP3_ZP
+			STX TMP3_ZP
 			JSR INCTMPZP
 			LDA TMP_ZP
 			CLC

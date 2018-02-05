@@ -81,7 +81,6 @@ public class TransformerTest {
 		System.out.println(machine.getRam()[1024]);
 		System.out.println(machine.getRam()[1025]);
 		System.out.println(machine.getRam()[1026]);
-		System.out.println(machine.getRam()[2]);
 
 		System.out.println("Ticks: " + machine.getCpu().getClockTicks());
 	}
