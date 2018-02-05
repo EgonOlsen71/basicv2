@@ -64,7 +64,7 @@ public class If extends AbstractCommand {
 
 		logicTerm = LogicParser.getTerm(firstTerm, machine);
 
-		// System.out.println("Logic term: "+logicTerm+"/"+logicTerm.getFirstOperation());
+		//System.out.println("Logic term: "+logicTerm+"/"+logicTerm.getFirstOperation()+"/"+LogicParser.processLogicOperations(firstTerm));
 
 		if (isGoto) {
 			return linePart.substring(termEnd);
