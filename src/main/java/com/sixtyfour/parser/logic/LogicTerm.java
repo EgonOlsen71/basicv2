@@ -49,6 +49,18 @@ public class LogicTerm implements LogicBlock {
 		ops.add(op);
 	}
 
+	/**
+	 * Returns the first logic operation if there is one.
+	 * 
+	 * @return the operation or null
+	 */
+	public LogicOp getFirstOperation() {
+		if (ops.isEmpty() || blocks.size() < 2) {
+			return null;
+		}
+		return ops.get(0);
+	}
+
 	@Override
 	public List<CodeContainer> evalToCode(Machine machine) {
 		List<CodeContainer> ret = new ArrayList<CodeContainer>();

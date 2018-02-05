@@ -309,7 +309,7 @@ public class TransformerTest {
 	private static Assembler initTestEnvironment(String[] vary) {
 		final Basic basic = new Basic(vary);
 		basic.compile();
-		
+
 		List<String> mCode = NativeCompiler.getCompiler().compileToPseudeCode(basic.getMachine(), basic.getPCode());
 		System.out.println("------------------------------");
 		for (String line : mCode) {
@@ -324,7 +324,7 @@ public class TransformerTest {
 
 		final Assembler assy = new Assembler(nCode);
 		assy.compile();
-		
+
 		return assy;
 	}
 

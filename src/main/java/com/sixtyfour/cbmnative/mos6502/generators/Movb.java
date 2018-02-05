@@ -23,7 +23,7 @@ public class Movb extends GeneratorBase {
 
 		context.setLastMoveSource(source);
 		context.setLastMoveTarget(target);
-		
+
 		if (!source.isIndexed() && !target.isIndexed()) {
 			if (source.getType() == Type.INTEGER) {
 				noIndexIntegerSource(nCode, source, target);

@@ -44,7 +44,7 @@ public class Transformer6502 implements Transformer {
 		res.add("*=" + platform.getStartAddress());
 		int cnt = 0;
 
-		GeneratorContext context=new GeneratorContext();
+		GeneratorContext context = new GeneratorContext();
 		for (String line : code) {
 			String cmd = line;
 			line = convertConstantsToReal(line, platform);
