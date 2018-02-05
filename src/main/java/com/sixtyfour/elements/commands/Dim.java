@@ -104,7 +104,20 @@ public class Dim extends AbstractCommand {
 				}
 				Variable vary = new Variable(var.getName(), null, pis);
 				if (machine.getVariable(vary.getName()) != null) {
-					throw new RuntimeException("Redim'd array error: " + var.getName() + "/" + this);
+				    	Variable av=machine.getVariable(vary.getName());
+				    	if (!av.isArray()) {
+				    	    redimed(var);
+				    	} else {
+				    	    int[] edims=av.getDimensions();
+				    	    if (edims.length!=pis.length) {
+				    		redimed(var);
+				    	    }
+				    	    for (int ii=0; ii<edims.length; ii++) {
+				    		if (edims[ii]!=pis[ii]) {
+				    		    redimed(var);
+				    		}
+				    	    }
+				    	}
 				}
 				machine.add(vary);
 				vars.set(i, vary);
@@ -113,6 +126,10 @@ public class Dim extends AbstractCommand {
 			var.clear();
 		}
 		return null;
+	}
+
+	private void redimed(Variable var) {
+	    throw new RuntimeException("Redim'd array error: " + var.getName() + "/" + this);
 	}
 
 	@Override

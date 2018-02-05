@@ -63,16 +63,16 @@ public class Pattern {
 					} else {
 						int pos = replacement[i].indexOf("{REG");
 						if (pos != -1) {
-							int endi = replacement[i].indexOf("}");
-							int posi = Integer.valueOf(replacement[i].substring(pos + 4, endi));
-							replacement[i] = replacement[i].substring(0, pos) + " " + regs[posi] + ((endi < replacement[i].length() - 1) ? replacement[i].substring(endi + 1) : "");
+						    replace(replacement, i, pos, 4, regs);
 						} else {
 							pos = replacement[i].indexOf("{CONST");
 							if (pos != -1) {
-								int endi = replacement[i].indexOf("}");
-								int posi = Integer.valueOf(replacement[i].substring(pos + 6, endi));
-								replacement[i] = replacement[i].substring(0, pos) + " " + consts[posi]
-										+ ((endi < replacement[i].length() - 1) ? replacement[i].substring(endi + 1) : "");
+								replace(replacement, i, pos, 6, consts);
+							} else {
+							    pos = replacement[i].indexOf("{MEM");
+								if (pos != -1) {
+									replace(replacement, i, pos,4,mems);
+								}
 							}
 						}
 					}
@@ -90,6 +90,17 @@ public class Pattern {
 		return code;
 	}
 
+	private void replace(String[] replacement, int i, int pos, int offset, String[] values) {
+	    int endi = replacement[i].indexOf("}");
+	    int posi = Integer.valueOf(replacement[i].substring(pos + offset, endi));
+	    String fp=replacement[i].substring(0, pos);
+	    if (!fp.endsWith("#<") && !fp.endsWith("#>")) {
+	        fp=fp+" ";
+	    }
+	    replacement[i] =  fp + values[posi]
+	    		+ ((endi < replacement[i].length() - 1) ? replacement[i].substring(endi + 1) : "");
+	}
+
 	public boolean matches(String line, int ix, Map<String, Number> const2Value) {
 		String part = pattern.get(pos);
 		line = line.trim();
@@ -105,8 +116,7 @@ public class Pattern {
 			return inc(ix);
 		}
 		if (p0 != -1 && p1 != -1 && !line.contains("SKIP")) {
-			// System.out.println("Checking: " + line + " / " +
-			// part+"/"+pos+"/"+pattern.size());
+			// System.out.println("Checking: " + line + " / " + part+"/"+pos+"/"+pattern.size());
 			if (part.substring(0, p0).equalsIgnoreCase(line.substring(0, p1))) {
 				String partRight = part.substring(p0 + 1).trim();
 				String lineRight = line.substring(p1 + 1).trim();
@@ -138,8 +148,12 @@ public class Pattern {
 									}
 									return resetPattern();
 								} else {
-									if (lineRight.endsWith("_REG") && reg.startsWith("REG")) {
+									if (lineRight.contains("_REG") && reg.startsWith("REG")) {
 										int num = Integer.parseInt(reg.replace("REG", ""));
+										int pv = value.lastIndexOf("+");
+										if (pv != -1) {
+											value = value.substring(0, pv);
+										}
 										if (regs[num] == null) {
 											regs[num] = value;
 											return inc(ix);

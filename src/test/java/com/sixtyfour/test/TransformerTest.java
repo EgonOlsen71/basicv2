@@ -31,8 +31,59 @@ public class TransformerTest {
 		// testTransformer2();
 		// testTransformer4();
 		// testTransformer5();
-		testTransformerFractal();
+		//testTransformerFractal();
 		// testTransformer6();
+		testTransformer7();
+	}
+	
+	private static void testTransformer7() throws Exception {
+		System.out.println("\n\ntestTransformer7");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/test7.bas");
+
+		Basic basic = new Basic(vary);
+
+		basic.compile();
+		List<String> mCode = NativeCompiler.getCompiler().compileToPseudeCode(basic.getMachine(), basic.getPCode());
+		System.out.println("------------------------------");
+		for (String line : mCode) {
+			System.out.println(line);
+		}
+		System.out.println("------------------------------");
+
+		List<String> nCode = NativeCompiler.getCompiler().compile(basic);
+		for (String line : nCode) {
+			System.out.println(line);
+		}
+
+		final Assembler assy = new Assembler(nCode);
+		assy.compile();
+
+		// assy.getCpu().setCpuTracer(new MyTracer(assy));
+
+		assy.run();
+		Program prg = assy.getProgram();
+		for (ProgramPart pp : prg.getParts()) {
+			System.out.println("Size: " + pp.size());
+		}
+
+		System.out.println("Running compiled program...");
+		Machine machine = assy.getMachine();
+		machine.addRoms();
+
+		System.out.println(assy.toString());
+		try {
+			assy.run();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		System.out.println("...done!");
+
+		System.out.println(machine.getRam()[1024]);
+		System.out.println(machine.getRam()[1025]);
+		System.out.println(machine.getRam()[1026]);
+		System.out.println(machine.getRam()[2]);
+
+		System.out.println("Ticks: " + machine.getCpu().getClockTicks());
 	}
 
 	private static void testTransformer6() throws Exception {
