@@ -12,6 +12,7 @@ import com.sixtyfour.elements.Type;
 public class Operand {
 
 	private static final Set<String> INT_REGS = new HashSet<String>() {
+		private static final long serialVersionUID = 1L;
 		{
 			this.add("A");
 			this.add("B");
