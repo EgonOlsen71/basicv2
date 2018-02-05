@@ -540,7 +540,13 @@ public class Parser {
 			if (sb.length() > 0) {
 				sb.append("+");
 			}
-			sb.append("int(");
+			if (pars.size() > 1) {
+				sb.append("int(");
+			} else {
+				// Not needed for one-dimensional arrays, the value should be
+				// rounded in the compiled code anyway
+				sb.append("(");
+			}
 			Atom atom = pars.get(i);
 			if (!(atom instanceof Term)) {
 				if (atom instanceof Variable) {
@@ -1607,7 +1613,7 @@ public class Parser {
 		isConstant[0] = true;
 		boolean isConst = checkForConstant(ret, isConstant);
 		if (isConst) {
-			//System.out.println("To replace: " + ret);
+			// System.out.println("To replace: " + ret);
 			String ts = ret.eval(machine).toString();
 			if (ts.toLowerCase().contains("e")) {
 				return ret;
@@ -1620,7 +1626,7 @@ public class Parser {
 				t.setRight(new Constant<Integer>(0));
 			}
 			ret = t;
-			//System.out.println("Replaced by: " + ret);
+			// System.out.println("Replaced by: " + ret);
 		}
 		return ret;
 	}
