@@ -8,7 +8,101 @@ END			RTS
 ARRAYACCESS	RTS
 
 ;###################################
-ARRAYSTORE	RTS
+ARRAYSTORE	LDA G_REG
+			STA TMP_ZP
+			LDA G_REG+1
+			STA TMP_ZP+1
+			LDY #0
+			LDA (TMP_ZP),Y
+			BNE TESTREAL1
+			JMP INTARRAY1
+TESTREAL1	LSR
+			BNE TESTSTR1
+			JMP REALARRAY1
+TESTSTR1	BRK
+; #######
+INTARRAY1	LDA #<X_REG
+			LDY #>X_REG
+			JSR $BBA2
+			JSR $B1AA
+			CLC
+			ROL
+			TAX
+			TYA
+			ROL
+			TAY
+			TXA
+			STA TMP2_ZP
+			STY TMP2_ZP+1
+			LDX #2
+			STA TMP3_ZP
+			JSR INCTMPZP
+			LDA TMP_ZP
+			CLC
+			ADC TMP2_ZP
+			STA TMP_ZP
+			LDA TMP_ZP+1
+			ADC TMP2_ZP+1
+			STA TMP_ZP+1
+			LDA #<Y_REG
+			LDY #>Y_REG
+			JSR $BBA2
+			JSR $B1AA
+			STY TMP3_ZP
+			LDY #0
+			STA (TMP_ZP),Y
+			INY
+			LDA TMP3_ZP
+			STA (TMP_ZP),Y
+			RTS
+; #######
+REALARRAY1	LDA #<X_REG
+			LDY #>X_REG
+			JSR $BBA2
+			JSR $B1AA
+			STA TMP_REG
+			STY TMP_REG+1
+			CLC
+			ROL
+			TAX
+			TYA
+			ROL
+			TAY
+			TXA
+			CLC
+			ROL
+			TAX
+			TYA
+			ROL
+			TAY
+			TXA
+			STA TMP2_ZP
+			STY TMP2_ZP+1
+			LDX #2
+			STA TMP3_ZP
+			JSR INCTMPZP
+			LDA TMP_ZP
+			CLC
+			ADC TMP_REG
+			STA TMP_ZP
+			LDA TMP_ZP+1
+			ADC TMP_REG+1
+			STA TMP_ZP+1
+			LDA TMP_ZP
+			CLC
+			ADC TMP2_ZP
+			STA TMP_ZP
+			LDA TMP_ZP+1
+			ADC TMP2_ZP+1
+			STA TMP_ZP+1
+			LDA #<Y_REG
+			LDY #>Y_REG
+			JSR $BBA2
+			LDX TMP_ZP
+			LDY TMP_ZP+1
+			; FAC to (X/Y)
+			JSR $BBD7
+			RTS
 
 ;###################################
 INITFOR		LDA FORSTACKP

@@ -58,7 +58,7 @@ public class TransformerTest {
 		final Assembler assy = new Assembler(nCode);
 		assy.compile();
 
-		// assy.getCpu().setCpuTracer(new MyTracer(assy));
+		 assy.getCpu().setCpuTracer(new MyTracer(assy));
 
 		assy.run();
 		Program prg = assy.getProgram();
