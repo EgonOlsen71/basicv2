@@ -17,7 +17,7 @@ public class Nop extends GeneratorBase {
 	}
 
 	@Override
-	public void generateCode(String line, List<String> nCode, List<String> subCode, Map<String, String> name2label) {
+	public void generateCode(GeneratorContext context, String line, List<String> nCode, List<String> subCode, Map<String, String> name2label) {
 		Logger.log(line);
 	}
 

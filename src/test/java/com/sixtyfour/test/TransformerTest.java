@@ -9,6 +9,8 @@ import com.sixtyfour.Assembler;
 import com.sixtyfour.Basic;
 import com.sixtyfour.Loader;
 import com.sixtyfour.cbmnative.NativeCompiler;
+import com.sixtyfour.extensions.textmode.ConsoleSupport;
+import com.sixtyfour.extensions.textmode.commands.Console;
 import com.sixtyfour.parser.Preprocessor;
 import com.sixtyfour.system.Conversions;
 import com.sixtyfour.system.Cpu;
@@ -31,52 +33,37 @@ public class TransformerTest {
 		// testTransformer2();
 		// testTransformer4();
 		// testTransformer5();
-		//testTransformerFractal();
+		// testTransformerFractal();
 		// testTransformer6();
-		testTransformer7();
+		// testTransformer7();
+		testTransformerPrime();
 	}
-	
+
+	private static void testTransformerPrime() throws Exception {
+		System.out.println("\n\ntestTransformerPrime");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/prime_transform.bas");
+
+		final Assembler assy = initTestEnvironment(vary);
+		FileWriter.writeAsPrg(assy.getProgram(), "++prime.prg");
+
+		Machine machine = executeTest(assy);
+
+		System.out.println(machine.getRam()[1024]);
+		System.out.println(machine.getRam()[1025]);
+		System.out.println(machine.getRam()[1026]);
+
+		System.out.println("Ticks: " + machine.getCpu().getClockTicks());
+	}
+
 	private static void testTransformer7() throws Exception {
 		System.out.println("\n\ntestTransformer7");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/test7.bas");
 
-		Basic basic = new Basic(vary);
+		final Assembler assy = initTestEnvironment(vary);
 
-		basic.compile();
-		List<String> mCode = NativeCompiler.getCompiler().compileToPseudeCode(basic.getMachine(), basic.getPCode());
-		System.out.println("------------------------------");
-		for (String line : mCode) {
-			System.out.println(line);
-		}
-		System.out.println("------------------------------");
+		assy.getCpu().setCpuTracer(new MyTracer(assy));
 
-		List<String> nCode = NativeCompiler.getCompiler().compile(basic);
-		for (String line : nCode) {
-			System.out.println(line);
-		}
-
-		final Assembler assy = new Assembler(nCode);
-		assy.compile();
-
-		 assy.getCpu().setCpuTracer(new MyTracer(assy));
-
-		assy.run();
-		Program prg = assy.getProgram();
-		for (ProgramPart pp : prg.getParts()) {
-			System.out.println("Size: " + pp.size());
-		}
-
-		System.out.println("Running compiled program...");
-		Machine machine = assy.getMachine();
-		machine.addRoms();
-
-		System.out.println(assy.toString());
-		try {
-			assy.run();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		System.out.println("...done!");
+		Machine machine = executeTest(assy);
 
 		System.out.println(machine.getRam()[1024]);
 		System.out.println(machine.getRam()[1025]);
@@ -89,43 +76,11 @@ public class TransformerTest {
 		System.out.println("\n\ntestTransformer6");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/test6.bas");
 
-		Basic basic = new Basic(vary);
-
-		basic.compile();
-		List<String> mCode = NativeCompiler.getCompiler().compileToPseudeCode(basic.getMachine(), basic.getPCode());
-		System.out.println("------------------------------");
-		for (String line : mCode) {
-			System.out.println(line);
-		}
-		System.out.println("------------------------------");
-
-		List<String> nCode = NativeCompiler.getCompiler().compile(basic);
-		for (String line : nCode) {
-			System.out.println(line);
-		}
-
-		final Assembler assy = new Assembler(nCode);
-		assy.compile();
+		final Assembler assy = initTestEnvironment(vary);
 
 		// assy.getCpu().setCpuTracer(new MyTracer(assy));
 
-		assy.run();
-		Program prg = assy.getProgram();
-		for (ProgramPart pp : prg.getParts()) {
-			System.out.println("Size: " + pp.size());
-		}
-
-		System.out.println("Running compiled program...");
-		Machine machine = assy.getMachine();
-		machine.addRoms();
-
-		System.out.println(assy.toString());
-		try {
-			assy.run();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		System.out.println("...done!");
+		Machine machine = executeTest(assy);
 
 		System.out.println(machine.getRam()[1024]);
 		System.out.println(machine.getRam()[1025]);
@@ -139,23 +94,7 @@ public class TransformerTest {
 		System.out.println("\n\ntestTransformerFractal");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/fractal_transform.bas");
 
-		Basic basic = new Basic(vary);
-
-		basic.compile();
-		List<String> mCode = NativeCompiler.getCompiler().compileToPseudeCode(basic.getMachine(), basic.getPCode());
-		System.out.println("------------------------------");
-		for (String line : mCode) {
-			System.out.println(line);
-		}
-		System.out.println("------------------------------");
-
-		List<String> nCode = NativeCompiler.getCompiler().compile(basic);
-		for (String line : nCode) {
-			System.out.println(line);
-		}
-
-		final Assembler assy = new Assembler(nCode);
-		assy.compile();
+		final Assembler assy = initTestEnvironment(vary);
 
 		// assy.getCpu().setCpuTracer(new MySimpleTracer(assy));
 
@@ -210,43 +149,11 @@ public class TransformerTest {
 		System.out.println("\n\ntestTransformer5");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/test5.bas");
 
-		Basic basic = new Basic(vary);
-
-		basic.compile();
-		List<String> mCode = NativeCompiler.getCompiler().compileToPseudeCode(basic.getMachine(), basic.getPCode());
-		System.out.println("------------------------------");
-		for (String line : mCode) {
-			System.out.println(line);
-		}
-		System.out.println("------------------------------");
-
-		List<String> nCode = NativeCompiler.getCompiler().compile(basic);
-		for (String line : nCode) {
-			System.out.println(line);
-		}
-
-		final Assembler assy = new Assembler(nCode);
-		assy.compile();
+		final Assembler assy = initTestEnvironment(vary);
 
 		// assy.getCpu().setCpuTracer(new MyTracer(assy));
 
-		assy.run();
-		Program prg = assy.getProgram();
-		for (ProgramPart pp : prg.getParts()) {
-			System.out.println("Size: " + pp.size());
-		}
-
-		System.out.println("Running compiled program...");
-		Machine machine = assy.getMachine();
-		machine.addRoms();
-
-		System.out.println(assy.toString());
-		try {
-			assy.run();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		System.out.println("...done!");
+		Machine machine = executeTest(assy);
 
 		System.out.println(machine.getRam()[1024]);
 		System.out.println(machine.getRam()[1025]);
@@ -260,43 +167,11 @@ public class TransformerTest {
 		System.out.println("\n\ntestTransformer4");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/test4.bas");
 
-		Basic basic = new Basic(vary);
-
-		basic.compile();
-		List<String> mCode = NativeCompiler.getCompiler().compileToPseudeCode(basic.getMachine(), basic.getPCode());
-		System.out.println("------------------------------");
-		for (String line : mCode) {
-			System.out.println(line);
-		}
-		System.out.println("------------------------------");
-
-		List<String> nCode = NativeCompiler.getCompiler().compile(basic);
-		for (String line : nCode) {
-			System.out.println(line);
-		}
-
-		final Assembler assy = new Assembler(nCode);
-		assy.compile();
+		final Assembler assy = initTestEnvironment(vary);
 
 		// assy.getCpu().setCpuTracer(new MyTracer(assy));
 
-		assy.run();
-		Program prg = assy.getProgram();
-		for (ProgramPart pp : prg.getParts()) {
-			System.out.println("Size: " + pp.size());
-		}
-
-		System.out.println("Running compiled program...");
-		Machine machine = assy.getMachine();
-		machine.addRoms();
-
-		System.out.println(assy.toString());
-		try {
-			assy.run();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		System.out.println("...done!");
+		Machine machine = executeTest(assy);
 
 		for (int i = 49000; i < 50050; i++) {
 			System.out.println(Integer.toHexString(i) + ": " + Integer.toHexString(assy.getRam()[i]));
@@ -329,23 +204,7 @@ public class TransformerTest {
 		System.out.println("\n\ntestTransformer2");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/test1.bas");
 
-		Basic basic = new Basic(vary);
-
-		basic.compile();
-		List<String> mCode = NativeCompiler.getCompiler().compileToPseudeCode(basic.getMachine(), basic.getPCode());
-		System.out.println("------------------------------");
-		for (String line : mCode) {
-			System.out.println(line);
-		}
-		System.out.println("------------------------------");
-
-		List<String> nCode = NativeCompiler.getCompiler().compile(basic);
-		for (String line : nCode) {
-			System.out.println(line);
-		}
-
-		final Assembler assy = new Assembler(nCode);
-		assy.compile();
+		final Assembler assy = initTestEnvironment(vary);
 		assy.run();
 		Program prg = assy.getProgram();
 		for (ProgramPart pp : prg.getParts()) {
@@ -445,6 +304,49 @@ public class TransformerTest {
 			// TODO Auto-generated method stub
 
 		}
+	}
+
+	private static Assembler initTestEnvironment(String[] vary) {
+		final Basic basic = new Basic(vary);
+		basic.compile();
+		
+		List<String> mCode = NativeCompiler.getCompiler().compileToPseudeCode(basic.getMachine(), basic.getPCode());
+		System.out.println("------------------------------");
+		for (String line : mCode) {
+			System.out.println(line);
+		}
+		System.out.println("------------------------------");
+
+		List<String> nCode = NativeCompiler.getCompiler().compile(basic);
+		for (String line : nCode) {
+			System.out.println(line);
+		}
+
+		final Assembler assy = new Assembler(nCode);
+		assy.compile();
+		
+		return assy;
+	}
+
+	private static Machine executeTest(final Assembler assy) {
+		assy.run();
+		Program prg = assy.getProgram();
+		for (ProgramPart pp : prg.getParts()) {
+			System.out.println("Size: " + pp.size());
+		}
+
+		System.out.println("Running compiled program...");
+		Machine machine = assy.getMachine();
+		machine.addRoms();
+
+		System.out.println(assy.toString());
+		try {
+			assy.run();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		System.out.println("...done!");
+		return machine;
 	}
 
 	@SuppressWarnings("unused")

@@ -10,6 +10,7 @@ import com.sixtyfour.Loader;
 import com.sixtyfour.cbmnative.PlatformProvider;
 import com.sixtyfour.cbmnative.Transformer;
 import com.sixtyfour.cbmnative.mos6502.generators.Generator;
+import com.sixtyfour.cbmnative.mos6502.generators.GeneratorContext;
 import com.sixtyfour.cbmnative.mos6502.generators.GeneratorList;
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.elements.Variable;
@@ -43,6 +44,7 @@ public class Transformer6502 implements Transformer {
 		res.add("*=" + platform.getStartAddress());
 		int cnt = 0;
 
+		GeneratorContext context=new GeneratorContext();
 		for (String line : code) {
 			String cmd = line;
 			line = convertConstantsToReal(line, platform);
@@ -57,7 +59,7 @@ public class Transformer6502 implements Transformer {
 
 			Generator pm = GeneratorList.getGenerator(orgLine);
 			if (pm != null) {
-				pm.generateCode(orgLine, mnems, subs, name2label);
+				pm.generateCode(context, orgLine, mnems, subs, name2label);
 			} else {
 				mnems.add("; not supported: " + cmd);
 			}

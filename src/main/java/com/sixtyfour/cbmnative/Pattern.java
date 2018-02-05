@@ -63,15 +63,15 @@ public class Pattern {
 					} else {
 						int pos = replacement[i].indexOf("{REG");
 						if (pos != -1) {
-						    replace(replacement, i, pos, 4, regs);
+							replace(replacement, i, pos, 4, regs);
 						} else {
 							pos = replacement[i].indexOf("{CONST");
 							if (pos != -1) {
 								replace(replacement, i, pos, 6, consts);
 							} else {
-							    pos = replacement[i].indexOf("{MEM");
+								pos = replacement[i].indexOf("{MEM");
 								if (pos != -1) {
-									replace(replacement, i, pos,4,mems);
+									replace(replacement, i, pos, 4, mems);
 								}
 							}
 						}
@@ -91,14 +91,13 @@ public class Pattern {
 	}
 
 	private void replace(String[] replacement, int i, int pos, int offset, String[] values) {
-	    int endi = replacement[i].indexOf("}");
-	    int posi = Integer.valueOf(replacement[i].substring(pos + offset, endi));
-	    String fp=replacement[i].substring(0, pos);
-	    if (!fp.endsWith("#<") && !fp.endsWith("#>")) {
-	        fp=fp+" ";
-	    }
-	    replacement[i] =  fp + values[posi]
-	    		+ ((endi < replacement[i].length() - 1) ? replacement[i].substring(endi + 1) : "");
+		int endi = replacement[i].indexOf("}");
+		int posi = Integer.valueOf(replacement[i].substring(pos + offset, endi));
+		String fp = replacement[i].substring(0, pos);
+		if (!fp.endsWith("#<") && !fp.endsWith("#>")) {
+			fp = fp + " ";
+		}
+		replacement[i] = fp + values[posi] + ((endi < replacement[i].length() - 1) ? replacement[i].substring(endi + 1) : "");
 	}
 
 	public boolean matches(String line, int ix, Map<String, Number> const2Value) {
@@ -115,8 +114,16 @@ public class Pattern {
 		if (part.equals("{LABEL}") && line.endsWith(":")) {
 			return inc(ix);
 		}
+		String ft = part.substring(0, 3);
+		if (ft.equals("JMP") || ft.equals("BEQ") || ft.endsWith("JMP") || ft.equals("BNE") || ft.equals("BCC") || ft.equals("BCS")) {
+			if (part.endsWith("{*}") && line.startsWith(ft)) {
+				return inc(ix);
+			}
+		}
+
 		if (p0 != -1 && p1 != -1 && !line.contains("SKIP")) {
-			// System.out.println("Checking: " + line + " / " + part+"/"+pos+"/"+pattern.size());
+			// System.out.println("Checking: " + line + " / " +
+			// part+"/"+pos+"/"+pattern.size());
 			if (part.substring(0, p0).equalsIgnoreCase(line.substring(0, p1))) {
 				String partRight = part.substring(p0 + 1).trim();
 				String lineRight = line.substring(p1 + 1).trim();

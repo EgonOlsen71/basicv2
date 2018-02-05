@@ -3,6 +3,8 @@ package com.sixtyfour.cbmnative.mos6502.generators;
 import java.util.List;
 import java.util.Map;
 
+import com.sixtyfour.elements.Type;
+
 /**
  * @author EgonOlsen
  * 
@@ -21,17 +23,21 @@ public class Jsr extends JumpBase {
 	}
 
 	@Override
-	public void generateCode(String line, List<String> nCode, List<String> subCode, Map<String, String> name2label) {
+	public void generateCode(GeneratorContext context, String line, List<String> nCode, List<String> subCode, Map<String, String> name2label) {
 		if (line.equals("JSR INITFOR")) {
 			String name = "FORLOOP" + (forCnt++);
 			nCode.add("LDA #<" + name);
 			nCode.add("STA JUMP_TARGET");
 			nCode.add("LDA #>" + name);
 			nCode.add("STA JUMP_TARGET+1");
-			super.generateCode(line, nCode, subCode, name2label);
+			super.generateCode(context, line, nCode, subCode, name2label);
 			nCode.add(name + ":");
+		} else if (line.equals("JSR ARRAYACCESS") || line.equals("JSR ARRAYSTORE")) {
+			Type type = context.getLastMoveSource().getType();
+			line += "_" + type.toString();
+			super.generateCode(context, line, nCode, subCode, name2label);
 		} else {
-			super.generateCode(line, nCode, subCode, name2label);
+			super.generateCode(context, line, nCode, subCode, name2label);
 		}
 	}
 }

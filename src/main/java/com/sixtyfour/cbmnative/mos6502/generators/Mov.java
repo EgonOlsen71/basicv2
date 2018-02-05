@@ -14,13 +14,16 @@ public class Mov extends GeneratorBase {
 	}
 
 	@Override
-	public void generateCode(String line, List<String> nCode, List<String> subCode, Map<String, String> name2label) {
+	public void generateCode(GeneratorContext context, String line, List<String> nCode, List<String> subCode, Map<String, String> name2label) {
 		Operands ops = new Operands(line, name2label);
 		Logger.log(line + " -- " + ops.getTarget() + "  |||  " + ops.getSource());
 
 		Operand source = ops.getSource();
 		Operand target = ops.getTarget();
-
+		
+		context.setLastMoveSource(source);
+		context.setLastMoveTarget(target);
+		
 		if (!source.isIndexed() && !target.isIndexed()) {
 			if (source.isArray()) {
 				noIndexArraySource(nCode, source, target);
