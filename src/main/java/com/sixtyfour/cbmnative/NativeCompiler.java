@@ -624,6 +624,16 @@ public class NativeCompiler {
 					i += 2;
 					continue;
 				}
+				
+				// PUSH Y
+				// MOV Y,A{REAL}
+				// POP X
+				if (l0.endsWith("PUSH Y") && l1.startsWith("MOV Y,") && l2.equals("POP X")) {
+				    ret.add("MOV X,Y");
+				    ret.add(l1);
+				    i+=2;
+				    continue;
+				}
 
 				// MOV Y,#2.0{REAL}
 				// MOV X,#-1{INTEGER}
