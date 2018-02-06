@@ -47,26 +47,29 @@ public class Optimizer64 implements Optimizer {
 					"LDY #>{MEM0}", "STA TMP3_ZP", "STY TMP3_ZP+1", "LDX #<{REG1}", "LDY #>{REG1}", "JSR COPY2_XY"));
 			this.add(new Pattern("Value already in X", new String[] { "{LINE0}", "{LINE1}", "{LINE2}", "TXA", "{LINE4}" }, "LDX #<{REG0}", "LDY #>{REG0}", "JSR COPY2_XY",
 					"LDA #<{REG0}", "LDY #>{REG0}"));
-			this.add(new Pattern("Variable used twice in calculation", new String[] { "{LINE3}", "{LINE4}", "{LINE5}", "TXA", "{LINE10}", "{LINE8}", "{LINE9}", "{LINE10}", "{LINE11}",
-					"{LINE12}" }, "LDX #<{REG0}", "LDY #>{REG0}", "JSR COPY2_XY", "LDX #<{REG1}", "LDY #>{REG1}", "JSR COPY2_XY", "LDA #<{REG0}", "LDY #>{REG0}", "JSR $BBA2",
-					"LDA #<{REG1}", "LDY #>{REG1}", "JSR $BA8C", "JSR {*}"));
+			this.add(new Pattern("Variable used twice in calculation", new String[] { "{LINE3}", "{LINE4}", "{LINE5}", "TXA", "{LINE10}", "{LINE8}", "{LINE9}", "{LINE10}",
+					"{LINE11}", "{LINE12}" }, "LDX #<{REG0}", "LDY #>{REG0}", "JSR COPY2_XY", "LDX #<{REG1}", "LDY #>{REG1}", "JSR COPY2_XY", "LDA #<{REG0}", "LDY #>{REG0}",
+					"JSR $BBA2", "LDA #<{REG1}", "LDY #>{REG1}", "JSR $BA8C", "JSR {*}"));
 			this.add(new Pattern("Avoid INTEGER->REAL conversion", true, new String[] { "LDA #<{CONST0}R", "LDY #>{CONST0}R", "JSR $BBA2" }, "LDY {CONST0}", "LDA {CONST0}",
 					"JSR $B391"));
-			this.add(new Pattern("Array value used twice in calculation",new String[] {"{LINE0}","{LINE1}","{LINE2}","{LINE3}","{LINE4}","{LINE5}","{LINE6}","{LINE7}","{LINE8}","{LINE9}",
-				"{LINE10}","{LINE11}","{LINE12}","{LINE13}","{LINE14}","{LINE12}","{LINE13}","JSR $BA8C"},"LDA #<{MEM0}","LDY #>{MEM0}","STA TMP3_ZP","STY TMP3_ZP+1","LDX #<{REG0}",
-				"LDY #>{REG0}","JSR COPY2_XY","LDA #<{MEM1}","LDY #>{MEM1}","STA {REG1}","STY {REG1}","JSR {*}","LDA #<{REG0}","LDY #>{REG0}",
-				"JSR $BBA2","JSR PUSHREAL","LDA #<{MEM0}","LDY #>{MEM0}","STA TMP3_ZP","STY TMP3_ZP+1","LDX #<{REG0}","LDY #>{REG0}","JSR COPY2_XY","LDA #<{MEM1}",
-				"LDY #>{MEM1}","STA {REG1}","STY {REG1}","JSR {*}","JSR POPREAL","LDA #<{REG0}","LDY #>{REG0}","JSR $BA8C"));
-			this.add(new Pattern("Constant directly into FAC",new String[]{"LDA #0","STA $61","STA $62","STA $63","STA $64","STA $65","STA $66","{LINE2}","{LINE3}","LDA #0","STA $63",
-				"STA $64","STA $65","LDY #128","STY $62","INY","STY $61","LDY #$FF","STY $66","{LINE6}","{LINE8}"},"LDA #<REAL_CONST_ZERO","LDY #>REAL_CONST_ZERO","JMP {*}",
-				"{LABEL}","LDA #<REAL_CONST_MINUS_ONE","LDY #>REAL_CONST_MINUS_ONE","{LABEL}","JSR $BBA2","LDA $61"));
+			this.add(new Pattern("Array value used twice in calculation", new String[] { "{LINE0}", "{LINE1}", "{LINE2}", "{LINE3}", "{LINE4}", "{LINE5}", "{LINE6}", "{LINE7}",
+					"{LINE8}", "{LINE9}", "{LINE10}", "{LINE11}", "{LINE12}", "{LINE13}", "{LINE14}", "{LINE12}", "{LINE13}", "JSR $BA8C" }, "LDA #<{MEM0}", "LDY #>{MEM0}",
+					"STA TMP3_ZP", "STY TMP3_ZP+1", "LDX #<{REG0}", "LDY #>{REG0}", "JSR COPY2_XY", "LDA #<{MEM1}", "LDY #>{MEM1}", "STA {REG1}", "STY {REG1}", "JSR {*}",
+					"LDA #<{REG0}", "LDY #>{REG0}", "JSR $BBA2", "JSR PUSHREAL", "LDA #<{MEM0}", "LDY #>{MEM0}", "STA TMP3_ZP", "STY TMP3_ZP+1", "LDX #<{REG0}", "LDY #>{REG0}",
+					"JSR COPY2_XY", "LDA #<{MEM1}", "LDY #>{MEM1}", "STA {REG1}", "STY {REG1}", "JSR {*}", "JSR POPREAL", "LDA #<{REG0}", "LDY #>{REG0}", "JSR $BA8C"));
+			this.add(new Pattern("Constant directly into FAC", new String[] { "LDA #0", "STA $61", "STA $62", "STA $63", "STA $64", "STA $65", "STA $66", "{LINE2}", "{LINE3}",
+					"LDA #0", "STA $63", "STA $64", "STA $65", "LDY #128", "STY $62", "INY", "STY $61", "LDY #$FF", "STY $66", "{LINE6}", "{LINE8}" }, "LDA #<REAL_CONST_ZERO",
+					"LDY #>REAL_CONST_ZERO", "JMP {*}", "{LABEL}", "LDA #<REAL_CONST_MINUS_ONE", "LDY #>REAL_CONST_MINUS_ONE", "{LABEL}", "JSR $BBA2", "LDA $61"));
+			this.add(new Pattern("Highly simplified loading for CMP", new String[] { "{LINE0}","{LINE1}","JSR $BBA2","{LINE7}","{LINE8}","{LINE19}" }, "LDA #<{MEM0}", "LDY #>{MEM0}",
+					"STA TMP3_ZP", "STY TMP3_ZP+1", "LDX #<{REG0}", "LDY #>{REG0}", "JSR COPY2_XY", "LDA #<{MEM1}", "LDY #>{MEM1}", "STA TMP3_ZP", "STY TMP3_ZP+1", "LDX #<{REG1}",
+					"LDY #>{REG1}", "JSR COPY2_XY", "LDA #<{REG0}", "LDY #>{REG0}", "JSR $BBA2", "LDA #<{REG1}", "LDY #>{REG1}", "JSR $BC5B"));
 		}
 	};
 
 	@Override
 	public List<String> optimize(PlatformProvider platform, List<String> input) {
 		// if (true) return input;
-
+		long s = System.currentTimeMillis();
 		Map<String, Integer> type2count = new HashMap<>();
 		Map<String, Number> const2Value = new HashMap<>();
 		for (String line : input) {
@@ -132,6 +135,7 @@ public class Optimizer64 implements Optimizer {
 		for (Map.Entry<String, Integer> cnts : type2count.entrySet()) {
 			Logger.log("Optimization " + cnts.getKey() + " applied " + cnts.getValue() + " times!");
 		}
+		Logger.log("Assembly code optimized in " + (System.currentTimeMillis() - s) + "ms");
 
 		return input;
 	}
