@@ -47,11 +47,16 @@ public class Optimizer64 implements Optimizer {
 					"LDY #>{MEM0}", "STA TMP3_ZP", "STY TMP3_ZP+1", "LDX #<{REG1}", "LDY #>{REG1}", "JSR COPY2_XY"));
 			this.add(new Pattern("Value already in X", new String[] { "{LINE0}", "{LINE1}", "{LINE2}", "TXA", "{LINE4}" }, "LDX #<{REG0}", "LDY #>{REG0}", "JSR COPY2_XY",
 					"LDA #<{REG0}", "LDY #>{REG0}"));
-			this.add(new Pattern("Multiplication with self", new String[] { "{LINE3}", "{LINE4}", "{LINE5}", "TXA", "{LINE10}", "{LINE8}", "{LINE9}", "{LINE10}", "{LINE11}",
+			this.add(new Pattern("Variable used twice in calculation", new String[] { "{LINE3}", "{LINE4}", "{LINE5}", "TXA", "{LINE10}", "{LINE8}", "{LINE9}", "{LINE10}", "{LINE11}",
 					"{LINE12}" }, "LDX #<{REG0}", "LDY #>{REG0}", "JSR COPY2_XY", "LDX #<{REG1}", "LDY #>{REG1}", "JSR COPY2_XY", "LDA #<{REG0}", "LDY #>{REG0}", "JSR $BBA2",
-					"LDA #<{REG1}", "LDY #>{REG1}", "JSR $BA8C", "JSR $BA30"));
+					"LDA #<{REG1}", "LDY #>{REG1}", "JSR $BA8C", "JSR {*}"));
 			this.add(new Pattern("Avoid INTEGER->REAL conversion", true, new String[] { "LDA #<{CONST0}R", "LDY #>{CONST0}R", "JSR $BBA2" }, "LDY {CONST0}", "LDA {CONST0}",
 					"JSR $B391"));
+			this.add(new Pattern("Array value used twice in calculation",new String[] {"{LINE0}","{LINE1}","{LINE2}","{LINE3}","{LINE4}","{LINE5}","{LINE6}","{LINE7}","{LINE8}","{LINE9}",
+				"{LINE10}","{LINE11}","{LINE12}","{LINE13}","{LINE14}","{LINE12}","{LINE13}","JSR $BA8C"},"LDA #<{MEM0}","LDY #>{MEM0}","STA TMP3_ZP","STY TMP3_ZP+1","LDX #<{REG0}",
+				"LDY #>{REG0}","JSR COPY2_XY","LDA #<{MEM1}","LDY #>{MEM1}","STA {REG1}","STY {REG1}","JSR {*}","LDA #<{REG0}","LDY #>{REG0}",
+				"JSR $BBA2","JSR PUSHREAL","LDA #<{MEM0}","LDY #>{MEM0}","STA TMP3_ZP","STY TMP3_ZP+1","LDX #<{REG0}","LDY #>{REG0}","JSR COPY2_XY","LDA #<{MEM1}",
+				"LDY #>{MEM1}","STA {REG1}","STY {REG1}","JSR {*}","JSR POPREAL","LDA #<{REG0}","LDY #>{REG0}","JSR $BA8C"));
 		}
 	};
 

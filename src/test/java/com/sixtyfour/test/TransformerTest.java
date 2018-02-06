@@ -9,8 +9,6 @@ import com.sixtyfour.Assembler;
 import com.sixtyfour.Basic;
 import com.sixtyfour.Loader;
 import com.sixtyfour.cbmnative.NativeCompiler;
-import com.sixtyfour.extensions.textmode.ConsoleSupport;
-import com.sixtyfour.extensions.textmode.commands.Console;
 import com.sixtyfour.parser.Preprocessor;
 import com.sixtyfour.system.Conversions;
 import com.sixtyfour.system.Cpu;
