@@ -18,6 +18,7 @@ public class Optimizer64 implements Optimizer {
 	private List<Pattern> patterns = new ArrayList<Pattern>() {
 		private static final long serialVersionUID = 1L;
 		{
+			this.add(new Pattern("REALOUT + LINEBRAK", new String[] { "JSR REALOUTBRK" }, "JSR REALOUT", "JSR LINEBREAK"));
 			this.add(new Pattern("Quick copy into REG", new String[] { "{LINE0}", "{LINE1}", "STA TMP3_ZP", "STY TMP3_ZP+1", "{LINE3}", "{LINE4}", "JSR COPY2_XY" },
 					"LDA #<{MEM0}", "LDY #>{MEM0}", "JSR $BBA2", "LDX #<{REG0}", "LDY #>{REG0}", "JSR $BBD7"));
 			this.add(new Pattern("Simplified CMP with 0", new String[] { "{LINE0}", "LDA $61" }, "JSR $BBA2", "LDX #<{REG0}", "LDY #>{REG0}", "JSR $BBD7", "LDA #<{#0.0}",
@@ -34,9 +35,10 @@ public class Optimizer64 implements Optimizer {
 			this.add(new Pattern("FAC to INT, INT to FAC", null, "JSR $B391", "JSR $B1AA"));
 			this.add(new Pattern("VAR into FAC, FAC into VAR", null, "LDA #<{MEM0}", "LDY #>{MEM0}", "JSR $BBA2", "LDX #<{MEM0}", "LDY #>{MEM0}", "JSR $BBD7"));
 			this.add(new Pattern("CMP with 0", new String[] { "LDA {REG0}" }, "LDA #<{#0.0}", "LDY #>{#0.0}", "JSR $BBA2", "LDA #<{REG0}", "LDY #>{REG0}", "JSR $BC5B"));
-			this.add(new Pattern("POKE with integer constant@real location", new String[] { "JSR $BBA2", "JSR $B7F7", "STY 105", "STA 106", "LDA {MEM0}", "LDY #0",
-					"STA (105),Y" }, "JSR $BBA2", "JSR PUSHREAL", "LDY {MEM0}", "LDA {MEM0}", "JSR $B391", "LDX #<{REG0}", "LDY #>{REG0}", "JSR $BBD7", "JSR POPREAL", "JSR $B7F7",
-					"STY 105", "STA 106", "LDA #<{REG0}", "LDY #>{REG0}", "JSR $BBA2", "JSR $B7F7", "TYA", "LDY #0", "STA (105),Y"));
+			this.add(new Pattern("POKE with integer constant@real location",
+					new String[] { "JSR $BBA2", "JSR $B7F7", "STY 105", "STA 106", "LDA {MEM0}", "LDY #0", "STA (105),Y" }, "JSR $BBA2", "JSR PUSHREAL", "LDY {MEM0}",
+					"LDA {MEM0}", "JSR $B391", "LDX #<{REG0}", "LDY #>{REG0}", "JSR $BBD7", "JSR POPREAL", "JSR $B7F7", "STY 105", "STA 106", "LDA #<{REG0}", "LDY #>{REG0}",
+					"JSR $BBA2", "JSR $B7F7", "TYA", "LDY #0", "STA (105),Y"));
 			this.add(new Pattern("NEXT check simplified", new String[] { "JSR NEXT", "LDA A_REG", "{LINE8}", "JMP (JUMP_TARGET)" }, "JSR NEXT", "LDY {MEM0}", "LDA {MEM0}",
 					"CPY A_REG", "BNE {*}", "CMP A_REG+1", "BNE {*}", "{LABEL}", "BNE {*}", "JMP (JUMP_TARGET)"));
 			this.add(new Pattern("Multiple loads of the same value(1)", new String[] { "{LINE0}", "{LINE1}", "{LINE2}", "{LINE3}", "{LINE4}", "{LINE5}", "{LINE9}", "{LINE10}",
@@ -60,12 +62,13 @@ public class Optimizer64 implements Optimizer {
 			this.add(new Pattern("Constant directly into FAC", new String[] { "LDA #0", "STA $61", "STA $62", "STA $63", "STA $64", "STA $65", "STA $66", "{LINE2}", "{LINE3}",
 					"LDA #0", "STA $63", "STA $64", "STA $65", "LDY #128", "STY $62", "INY", "STY $61", "LDY #$FF", "STY $66", "{LINE6}", "{LINE8}" }, "LDA #<REAL_CONST_ZERO",
 					"LDY #>REAL_CONST_ZERO", "JMP {*}", "{LABEL}", "LDA #<REAL_CONST_MINUS_ONE", "LDY #>REAL_CONST_MINUS_ONE", "{LABEL}", "JSR $BBA2", "LDA $61"));
-			this.add(new Pattern("Highly simplified loading for CMP", new String[] { "{LINE0}","{LINE1}","JSR $BBA2","{LINE7}","{LINE8}","{LINE19}" }, "LDA #<{MEM0}", "LDY #>{MEM0}",
-					"STA TMP3_ZP", "STY TMP3_ZP+1", "LDX #<{REG0}", "LDY #>{REG0}", "JSR COPY2_XY", "LDA #<{MEM1}", "LDY #>{MEM1}", "STA TMP3_ZP", "STY TMP3_ZP+1", "LDX #<{REG1}",
-					"LDY #>{REG1}", "JSR COPY2_XY", "LDA #<{REG0}", "LDY #>{REG0}", "JSR $BBA2", "LDA #<{REG1}", "LDY #>{REG1}", "JSR $BC5B"));
-			this.add(new Pattern("Highly simplified loading for calculations", new String[] { "{LINE0}","{LINE1}","JSR $BBA2","{LINE7}","{LINE8}","{LINE19}","{LINE20}" }, "LDA #<{MEM0}", "LDY #>{MEM0}",
-				"STA TMP3_ZP", "STY TMP3_ZP+1", "LDX #<{REG0}", "LDY #>{REG0}", "JSR COPY2_XY", "LDA #<{MEM1}", "LDY #>{MEM1}", "STA TMP3_ZP", "STY TMP3_ZP+1", "LDX #<{REG1}",
-				"LDY #>{REG1}", "JSR COPY2_XY", "LDA #<{REG0}", "LDY #>{REG0}", "JSR $BBA2", "LDA #<{REG1}", "LDY #>{REG1}", "JSR $BA8C", "JSR {*}"));
+			this.add(new Pattern("Highly simplified loading for CMP", new String[] { "{LINE0}", "{LINE1}", "JSR $BBA2", "{LINE7}", "{LINE8}", "{LINE19}" }, "LDA #<{MEM0}",
+					"LDY #>{MEM0}", "STA TMP3_ZP", "STY TMP3_ZP+1", "LDX #<{REG0}", "LDY #>{REG0}", "JSR COPY2_XY", "LDA #<{MEM1}", "LDY #>{MEM1}", "STA TMP3_ZP", "STY TMP3_ZP+1",
+					"LDX #<{REG1}", "LDY #>{REG1}", "JSR COPY2_XY", "LDA #<{REG0}", "LDY #>{REG0}", "JSR $BBA2", "LDA #<{REG1}", "LDY #>{REG1}", "JSR $BC5B"));
+			this.add(new Pattern("Highly simplified loading for calculations", new String[] { "{LINE0}", "{LINE1}", "JSR $BBA2", "{LINE7}", "{LINE8}", "{LINE19}", "{LINE20}" },
+					"LDA #<{MEM0}", "LDY #>{MEM0}", "STA TMP3_ZP", "STY TMP3_ZP+1", "LDX #<{REG0}", "LDY #>{REG0}", "JSR COPY2_XY", "LDA #<{MEM1}", "LDY #>{MEM1}", "STA TMP3_ZP",
+					"STY TMP3_ZP+1", "LDX #<{REG1}", "LDY #>{REG1}", "JSR COPY2_XY", "LDA #<{REG0}", "LDY #>{REG0}", "JSR $BBA2", "LDA #<{REG1}", "LDY #>{REG1}", "JSR $BA8C",
+					"JSR {*}"));
 		}
 	};
 
@@ -103,7 +106,6 @@ public class Optimizer64 implements Optimizer {
 			}
 		}
 
-		
 		boolean optimized = false;
 		do {
 			optimized = false;

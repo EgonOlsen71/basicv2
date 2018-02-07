@@ -5,11 +5,26 @@ START		RTS
 END			RTS
 
 ;###################################
-REALOUT		RTS
+REALOUT		LDA #<X_REG
+			LDY #>X_REG
+			JSR $BBA2
+			JSR $BDDD
+			JSR $B487
+			JSR $AB21
+			JSR $AB3B
+			RTS
 
 ;###################################
-LINEBREAK	RTS
-
+REALOUTBRK  LDA #<X_REG
+			LDY #>X_REG
+			JSR $BBA2
+			JSR $BDDD
+			JSR $B487
+			JSR $AB21
+			JSR $AB3B
+LINEBREAK	LDA #$0D
+			JSR $FFD2
+			RTS
 
 ;###################################
 ARRAYACCESS_INTEGER

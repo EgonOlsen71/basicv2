@@ -31,10 +31,10 @@ public class TransformerTest {
 		// testTransformer2();
 		// testTransformer4();
 		// testTransformer5();
-		 testTransformerFractal();
+		// testTransformerFractal();
 		// testTransformer6();
 		// testTransformer7();
-		//testTransformerPrime();
+		testTransformerPrime();
 	}
 
 	private static void testTransformerPrime() throws Exception {
@@ -44,6 +44,8 @@ public class TransformerTest {
 		final Assembler assy = initTestEnvironment(vary);
 		FileWriter.writeAsPrg(assy.getProgram(), "++prime.prg");
 
+		//assy.getCpu().setCpuTracer(new MyTracer(assy));
+		
 		Machine machine = executeTest(assy);
 
 		System.out.println(machine.getRam()[1024]);
