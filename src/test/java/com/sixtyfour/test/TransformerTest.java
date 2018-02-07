@@ -31,10 +31,10 @@ public class TransformerTest {
 		// testTransformer2();
 		// testTransformer4();
 		// testTransformer5();
-		// testTransformerFractal();
+		 testTransformerFractal();
 		// testTransformer6();
 		// testTransformer7();
-		testTransformerPrime();
+		//testTransformerPrime();
 	}
 
 	private static void testTransformerPrime() throws Exception {
@@ -239,7 +239,7 @@ public class TransformerTest {
 
 	private static void testTransformer3() throws Exception {
 		System.out.println("\n\ntestTransformer3");
-		String[] vary = Loader.loadProgram("src/test/resources/transform/test2.bas");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/test3.bas");
 
 		Basic basic = new Basic(vary);
 		List<String> nCode = NativeCompiler.getCompiler().compile(basic);
@@ -264,6 +264,7 @@ public class TransformerTest {
 		System.out.println("...done!");
 		System.out.println("A=" + Conversions.convertCompactFloat(machine, 0x824));
 		System.out.println(Arrays.toString(Arrays.copyOfRange(machine.getRam(), 0x824, 0x824 + 5)));
+		System.out.println("Ticks: " + machine.getCpu().getClockTicks());
 	}
 
 	@SuppressWarnings("unused")
