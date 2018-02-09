@@ -11,8 +11,7 @@ REALOUT		LDA #<X_REG
 			JSR $BDDD
 			JSR $B487
 			JSR $AB21
-			JSR $AB3B
-			RTS
+			JMP $AB3B	;RTS is implicit
 
 ;###################################
 REALOUTBRK  LDA #<X_REG
@@ -23,8 +22,7 @@ REALOUTBRK  LDA #<X_REG
 			JSR $AB21
 			JSR $AB3B
 LINEBREAK	LDA #$0D
-			JSR $FFD2
-			RTS
+			JMP $FFD2 	;RTS is implicit
 
 ;###################################
 ARRAYACCESS_INTEGER
@@ -65,8 +63,7 @@ NOPV2AAI	CLC
 			LDX #<X_REG
 			LDY #>X_REG
 			; FAC to (X/Y)
-			JSR $BBD7
-			RTS
+			JMP $BBD7	;RTS is implicit
 ; #######
 ARRAYACCESS_REAL
 			LDA G_REG
@@ -114,8 +111,7 @@ NOPV2AAR	CLC
 			STX TMP_ZP
 			LDY #>X_REG
 			STY TMP_ZP+1
-			JSR COPY3_XY
-			RTS
+			JMP COPY3_XY	;RTS is implicit
 
 ;###################################
 ARRAYSTORE_INTEGER
@@ -203,8 +199,7 @@ NOPV2ASR	CLC
 			STA TMP3_ZP
 			LDY #>Y_REG
 			STY TMP3_ZP+1
-			JSR COPY3_XY
-			RTS
+			JMP COPY3_XY	;RTS is implicit
 
 ;###################################
 INITFOR		LDA FORSTACKP
