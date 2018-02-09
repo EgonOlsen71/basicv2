@@ -42,7 +42,7 @@ public class TransformerTest {
 		String[] vary = Loader.loadProgram("src/test/resources/transform/prime_transform.bas");
 
 		final Assembler assy = initTestEnvironment(vary);
-		FileWriter.writeAsPrg(assy.getProgram(), "++prime.prg");
+		FileWriter.writeAsPrg(assy.getProgram(), "++prime.prg", true);
 
 		//assy.getCpu().setCpuTracer(new MyTracer(assy));
 		
@@ -104,7 +104,7 @@ public class TransformerTest {
 			System.out.println("Size: " + pp.size());
 		}
 
-		FileWriter.writeAsPrg(prg, "++fractal.prg");
+		FileWriter.writeAsPrg(prg, "++fractal.prg", true);
 
 		System.out.println("Running compiled program...");
 		Machine machine = assy.getMachine();

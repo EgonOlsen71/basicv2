@@ -5,12 +5,7 @@ import com.sixtyfour.cbmnative.PlatformProvider;
 import com.sixtyfour.cbmnative.Transformer;
 
 public class C64Platform implements PlatformProvider {
-	private int startAddress = 2065;
-
-	@Override
-	public String getCall(String line) {
-		return null;
-	}
+	private int startAddress = 2070;
 
 	@Override
 	public int getStartAddress() {
