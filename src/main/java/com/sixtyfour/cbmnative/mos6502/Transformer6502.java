@@ -173,15 +173,15 @@ public class Transformer6502 implements Transformer {
 							@SuppressWarnings("unchecked")
 							List<Object> vals = (List<Object>) var.getInternalValue();
 							if (type == Type.INTEGER) {
-								vars.add(label + "\t" + ".BYTE 0");
+								vars.add("\t" + ".BYTE 0");
 								vars.add("\t" + ".WORD " + vals.size() * 2);
-								vars.add("\t" + ".ARRAY " + vals.size() * 2);
+								vars.add(label + "\t" + ".ARRAY " + vals.size() * 2);
 							} else if (type == Type.REAL) {
-								vars.add(label + "\t" + ".BYTE 1");
+								vars.add("\t" + ".BYTE 1");
 								vars.add("\t" + ".WORD " + vals.size() * 5);
-								vars.add("\t" + ".ARRAY " + vals.size() * 5);
+								vars.add(label + "\t" + ".ARRAY " + vals.size() * 5);
 							} else if (type == Type.STRING) {
-								vars.add(label + "\t" + ".BYTE 2");
+								vars.add("\t" + ".BYTE 2");
 								vars.add("\t" + ".WORD " + vals.size() * 2);
 								vars.add(label);
 								for (int pp = 0; pp < vals.size(); pp = pp + 10) {
