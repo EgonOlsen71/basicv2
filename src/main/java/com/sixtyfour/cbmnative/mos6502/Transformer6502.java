@@ -41,6 +41,7 @@ public class Transformer6502 implements Transformer {
 		res.add("TMP_ZP = 105");
 		res.add("TMP2_ZP = 107");
 		res.add("TMP3_ZP = 34");
+		res.add(";make sure that JUMP_TARGET's low can't be $ff");
 		res.add("JUMP_TARGET = 69");
 		res.add("*=" + platform.getStartAddress());
 		int cnt = 0;
