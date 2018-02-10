@@ -11,7 +11,8 @@ import java.io.OutputStream;
  */
 public class FileWriter {
 
-	private final static int[] HEADER = new int[] { 0x13, 0x08, 0x00, 0x00, 0x9e, 0x32, 0x30, 0x36, 0x38, 0x20, 0x4d, 0x4f, 0x53, 0x50, 0x45, 0x45, 0x44, 0x00, 0x00, 0x00 };
+	private final static int[] HEADER = new int[] { 0x16, 0x08, 0x00, 0x00, 0x9e, 0x32, 0x30, 0x36, 0x38, 0x3a, 0x8f, 0x20, 0x4d, 0x4f, 0x53, 0x50, 0x45, 0x45, 0x44, 0x00, 0x00,
+			0x00 };
 
 	/**
 	 * @param prg
@@ -31,7 +32,7 @@ public class FileWriter {
 		int codeStart = prg.getCodeStart();
 		int[] header = null;
 		if (withBasicHeader) {
-			if (codeStart >= 2070 && codeStart < 2300) {
+			if (codeStart >= 2072 && codeStart < 2300) {
 				header = new int[codeStart - 2049];
 				System.arraycopy(HEADER, 0, header, 0, HEADER.length);
 				String hss = String.valueOf(codeStart);

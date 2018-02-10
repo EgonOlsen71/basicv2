@@ -147,7 +147,42 @@ public class Optimizer64 implements Optimizer {
 		}
 		Logger.log("Assembly code optimized in " + (System.currentTimeMillis() - s) + "ms");
 
-		return input;
+		return applySpecialRules(input);
 	}
 
+	private List<String> applySpecialRules(List<String> input) {
+		return simplifyBranches(input);
+	}
+
+	private List<String> simplifyBranches(List<String> input) {
+		List<String> ret = new ArrayList<String>();
+		for (int i = 0; i < input.size() - 1; i++) {
+			String line = input.get(i);
+			line = line.replace("\t", " ").trim();
+			String line2 = input.get(i + 1);
+			line2 = line2.replace("\t", " ").trim();
+			if (line.startsWith("; *** SUBROUTINES ***")) {
+				ret.addAll(input.subList(i, input.size()));
+				break;
+			}
+			boolean skip = false;
+			if (line.contains("BNE LINE_NSKIP") && line2.contains("JMP LINE_SKIP")) {
+				for (int p = i + 1; p < Math.min(input.size(), i + 30); p++) {
+					String subLine = input.get(p);
+					if (subLine.startsWith("LINE_SKIP")) {
+						ret.add(line2.replace("JMP LINE_SKIP", "BEQ LINE_SKIP"));
+						ret.add("; Simplified conditional branch");
+						skip = true;
+						i++;
+						break;
+					}
+				}
+			}
+			if (skip) {
+				continue;
+			}
+			ret.add(line);
+		}
+		return ret;
+	}
 }
