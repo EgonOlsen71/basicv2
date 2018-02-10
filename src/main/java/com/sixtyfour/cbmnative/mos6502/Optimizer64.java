@@ -73,6 +73,8 @@ public class Optimizer64 implements Optimizer {
 					"STY A_REG", "STA A_REG+1", "JSR NEXT"));
 			this.add(new Pattern("POKE and NEXT combined", new String[] { "LDY #0", "STA (105),Y", "STY A_REG", "STY A_REG+1" }, "LDY #0", "STA (105),Y", "LDA #0", "STA A_REG",
 					"STA A_REG+1"));
+			this.add(new Pattern("Improved copy from REG0 to REG1", new String[] { "{LINE0}", "{LINE1}", "STA TMP3_ZP", "STY TMP3_ZP+1", "{LINE3}", "{LINE4}", "JSR COPY2_XY" },
+					"LDA #<{REG0}", "LDY #>{REG0}", "JSR $BBA2", "LDX #<{REG1}", "LDY #>{REG1}", "JSR $BBD7"));
 		}
 	};
 

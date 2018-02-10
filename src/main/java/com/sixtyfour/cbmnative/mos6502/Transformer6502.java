@@ -41,6 +41,7 @@ public class Transformer6502 implements Transformer {
 		res.add("TMP_ZP = 105");
 		res.add("TMP2_ZP = 107");
 		res.add("TMP3_ZP = 34");
+		res.add("JUMP_TARGET = 69");
 		res.add("*=" + platform.getStartAddress());
 		int cnt = 0;
 
@@ -89,7 +90,7 @@ public class Transformer6502 implements Transformer {
 		res.add("TMP3_REG\t.WORD 0");
 		res.add("TMP4_REG\t.WORD 0");
 		res.add("TMP_FLAG\t.BYTE 0");
-		res.add("JUMP_TARGET\t.WORD 0");
+		//res.add("JUMP_TARGET\t.WORD 0");
 		res.add("REAL_CONST_ONE\t.REAL 1.0");
 		res.add("REAL_CONST_ZERO\t.REAL 0.0");
 		res.add("REAL_CONST_MINUS_ONE\t.REAL -1.0");
