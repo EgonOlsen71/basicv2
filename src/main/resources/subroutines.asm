@@ -389,10 +389,13 @@ RETURN		LDA FORSTACKP
 			STA TMP_ZP
 			LDA FORSTACKP+1
 			STA TMP_ZP+1
-SEARCHGOSUB	LDA #2
-			STA TMP3_ZP
-			JSR DECTMPZP
-			LDY #0
+SEARCHGOSUB	LDA TMP_ZP
+			SEC
+			SBC #2
+			STA TMP_ZP
+			BCS NOPV1SG
+			DEC TMP_ZP+1
+NOPV1SG		LDY #0
 			LDA (TMP_ZP),Y
 			BEQ FOUNDGOSUB
 			INY
@@ -451,26 +454,6 @@ PUSHREAL	LDX FPSTACKP
 NOPVPUR		RTS
 
 ;###################################
-PUSHINT		LDX FPSTACKP
-			STX TMP2_ZP
-			LDX FPSTACKP+1
-			STX TMP2_ZP+1
-			LDA TMP_ZP
-			LDY #0
-			STA (TMP2_ZP),Y
-			LDA TMP_ZP+1
-			INY
-			STA (TMP2_ZP),Y
-			LDA TMP2_ZP
-			CLC
-			ADC #2
-			STA FPSTACKP
-			LDA TMP2_ZP+1
-			ADC #0
-			STA FPSTACKP+1
-			RTS
-
-;###################################
 POPREAL		LDA FPSTACKP
 			SEC
 			SBC #5
@@ -482,26 +465,6 @@ NOPVPR		LDA FPSTACKP
 			JSR $BBA2
 			RTS
 
-;###################################
-POPINT		LDA FPSTACKP
-			SEC
-			SBC #2
-			STA FPSTACKP
-			LDA FPSTACKP+1
-			SBC #0
-			STA FPSTACKP+1
-			LDX FPSTACKP
-			STX TMP2_ZP
-			LDX FPSTACKP+1
-			STX TMP2_ZP+1
-			LDY #0
-			LDA (TMP2_ZP),Y
-			STA TMP_ZP
-			INY
-			LDA (TMP2_ZP),Y
-			STA TMP_ZP+1
-			RTS
-			
 ;### HELPER #######################
 ;###################################
 DECTMPZP    LDA TMP_ZP

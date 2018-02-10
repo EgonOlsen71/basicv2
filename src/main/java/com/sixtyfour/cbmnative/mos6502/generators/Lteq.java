@@ -10,8 +10,10 @@ public class Lteq extends Compare {
 
 	@Override
 	protected void doCompare(List<String> nCode) {
-		nCode.add("BEQ " + mnemonic + "_" + mnemonic + CNT);
+		int p = nCode.size();
 		super.doCompare(nCode);
+		nCode.add(p + 1, "BEQ " + mnemonic + "_" + mnemonic + CNT);
+		// BCC/BEQ should be better in most cases than BEQ/BCC...
 	}
 
 }
