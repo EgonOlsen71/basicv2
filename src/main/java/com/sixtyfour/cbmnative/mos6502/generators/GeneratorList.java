@@ -40,6 +40,7 @@ public class GeneratorList {
 			this.add(new Int());
 			this.add(new Pow());
 			this.add(new Nop());
+			this.add(new Sqr());
 		}
 	});
 

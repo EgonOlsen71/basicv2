@@ -34,7 +34,8 @@ public class TransformerTest {
 		//testTransformerFractal();
 		// testTransformer6();
 		// testTransformer7();
-		 testTransformerPrime();
+		// testTransformerPrime();
+	    testTransformerSqr();
 	}
 
 	private static void testTransformerPrime() throws Exception {
@@ -51,6 +52,20 @@ public class TransformerTest {
 		System.out.println(machine.getRam()[1024]);
 		System.out.println(machine.getRam()[1025]);
 		System.out.println(machine.getRam()[1026]);
+
+		System.out.println("Ticks: " + machine.getCpu().getClockTicks());
+	}
+	
+	private static void testTransformerSqr() throws Exception {
+		System.out.println("\n\ntestTransformerPrime");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/test_sqr.bas");
+
+		final Assembler assy = initTestEnvironment(vary);
+		FileWriter.writeAsPrg(assy.getProgram(), "++testsqr.prg", true);
+
+		// assy.getCpu().setCpuTracer(new MyTracer(assy));
+
+		Machine machine = executeTest(assy);
 
 		System.out.println("Ticks: " + machine.getCpu().getClockTicks());
 	}
