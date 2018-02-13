@@ -1,1 +1,1 @@
-10 fori=1to1000:printsqr(i):next
+10 fori=1to1000:printsqr(i):printti:next
