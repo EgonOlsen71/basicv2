@@ -210,6 +210,9 @@ public class AssemblyParser {
 	 * @return the actual data
 	 */
 	public static int[] getBinaryData(int addr, String data, ConstantsContainer ccon, LabelsContainer lcon) {
+		// @todo call getValue with a flag that indicates that this is a data definition, not a command call. So that getValue
+		// can create a DelayedLabel that keeps this flag so that later in the process, it doesn't get confused with a conditional branch
+		// should some byte match by accident...
 		data = data.trim();
 		List<Integer> ram = new ArrayList<Integer>();
 		String datupper = VarUtils.toUpper(data);

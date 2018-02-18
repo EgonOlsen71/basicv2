@@ -63,7 +63,7 @@ public class LabelsContainer {
 
 				int opcode = ram[targetAddr];
 				if (MnemonicList.getConditonalBranches().contains(opcode)) {
-					// System.out.println("Applied conditional delayed Label: "+entry.getValue());
+					// System.out.println("Applied conditional delayed Label: "+entry.getValue()+"/"+entry.getKey()+"/"+value);
 					int offset = value - (targetAddr + 2);
 					if (offset <= 127 && offset >= -128) {
 						ram[++targetAddr] = AssemblyParser.getLowByte(offset);
