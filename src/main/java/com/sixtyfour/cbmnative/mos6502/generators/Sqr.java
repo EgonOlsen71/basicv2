@@ -7,6 +7,6 @@ package com.sixtyfour.cbmnative.mos6502.generators;
 public class Sqr extends MathFunction {
 
 	public Sqr() {
-		super("SQR", "; FAC = SQR(FAC)", "JSR SQRT");
+		super("SQR", "; FAC = SQR(FAC)", "JSR $BF71");
 	}
 }
