@@ -18,6 +18,12 @@ STROUT		LDA A_REG
 PRINTSTR	JSR $AB25
 			RTS
 ;###################################
+; Basic idea of how string handling works in this context: Each string assigned will be copied from the source to the target.
+; I.e. assigments happen by value only.
+; If the target can contain the new string, it will be copied into the same memory location, maybe with a shorter length.
+; If it doesn't fit, the new string will be copied into string memory and the target will point to it. This applies to strings
+; in the constant pool as well. Otherwise, an assigment might either be by value or by reference depending on the location and
+; that might not be worth the hassle.
 COPYSTRING	STA TMP2_ZP
 			STY TMP2_ZP+1
 			LDY #0
@@ -54,6 +60,7 @@ STRFITS		LDY #0
 			LDA (TMP_ZP),Y	; Set the new length...
 			STA (TMP3_ZP),Y
 			TAY				; Copy length to Y
+			BEQ	EXITCOPY	; Length 0? nothing to copy then...
 			INC TMP_ZP		; Adjust pointer to reflect that the first byte stores the length
 			BNE NOOV1
 			INC TMP_ZP+1
@@ -63,9 +70,10 @@ NOOV1		INC TMP3_ZP
 LOOP		LDA (TMP_ZP),Y	; Copy the actual string
 			STA (TMP3_ZP),Y
 			DEY
-			CPY #$FF
 			BNE LOOP
-			RTS
+			LDA (TMP_ZP),Y	; Copy the actual string, last byte of it
+			STA (TMP3_ZP),Y
+EXITCOPY	RTS
 
 ;###################################
 REALOUT		LDA #<X_REG
