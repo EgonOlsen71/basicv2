@@ -219,7 +219,7 @@ public class AssemblyParser {
 				data = data.substring(1, data.length() - 1);
 				for (int i = 0; i < data.length(); i++) {
 					int val = getLowByte((int) data.charAt(i));
-					ram.add(val);
+					ram.add(getConvertedChar(val));
 				}
 			} else {
 				throw new RuntimeException("Invalid text data: " + data);
@@ -421,5 +421,14 @@ public class AssemblyParser {
 		} catch (Exception e) {
 			throw new RuntimeException("Invalid number: " + number, e);
 		}
+	}
+
+	private static int getConvertedChar(int c) {
+		if (c >= 'a' && c <= 'z') {
+			c = (char) ((int) c - 32);
+		} else if (c >= 'A' && c <= 'Z') {
+			c = (char) ((int) c + 32);
+		}
+		return c;
 	}
 }

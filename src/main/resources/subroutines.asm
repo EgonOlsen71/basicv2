@@ -5,6 +5,69 @@ START		RTS
 END			RTS
 
 ;###################################
+STROUT		LDA A_REG
+			STA $22
+			LDA A_REG+1
+			STA $23
+			LDY #0
+			LDA ($22),Y
+			TAX
+			INC $22
+			BNE PRINTSTR
+			INC $23
+PRINTSTR	JSR $AB25
+			RTS
+;###################################
+COPYSTRING	STA TMP2_ZP
+			STY TMP2_ZP+1
+			LDY #0
+			LDA (TMP2_ZP),Y
+			STA TMP3_ZP
+			INY
+			LDA (TMP2_ZP),Y
+			STA TMP3_ZP+1
+			DEY
+			LDA (TMP3_ZP),Y
+			STA TMP_REG
+			LDA (TMP_ZP),Y
+			TAX
+			CMP TMP_REG		; Compare the string-to-copy's length (in A) with the variable's current one (in TMP_REG)
+			BEQ STRFITS
+			BCC STRFITS		; does the new string fits into the old memory location?
+			LDA STRBUFP		; no, then copy it into string memory later...
+			STA (TMP2_ZP),Y	; ...but update the string memory pointer now
+			STA TMP3_ZP
+			LDA STRBUFP+1
+			INY
+			STA (TMP2_ZP),Y
+			STA TMP3_ZP+1
+			TXA
+			CLC
+			ADC STRBUFP
+			STA STRBUFP
+			BCC NOCS1
+			INC STRBUFP+1
+NOCS1		INC STRBUFP
+			BNE STRFITS
+			INC STRBUFP+1
+STRFITS		LDY #0
+			LDA (TMP_ZP),Y	; Set the new length...
+			STA (TMP3_ZP),Y
+			TAY				; Copy length to Y
+			INC TMP_ZP		; Adjust pointer to reflect that the first byte stores the length
+			BNE NOOV1
+			INC TMP_ZP+1
+NOOV1		INC TMP3_ZP
+			BNE LOOP
+			INC TMP3_ZP+1
+LOOP		LDA (TMP_ZP),Y	; Copy the actual string
+			STA (TMP3_ZP),Y
+			DEY
+			CPY #$FF
+			BNE LOOP
+			RTS
+
+;###################################
 REALOUT		LDA #<X_REG
 			LDY #>X_REG
 			JSR $BBA2
@@ -256,7 +319,7 @@ SEARCHFOR	LDA TMP_ZP
 			LDY #0
 			LDA (TMP_ZP),Y
 			BNE NOGOSUB
-			BRK
+			JMP ERROR
 NOGOSUB
 			INY
 			LDA (TMP_ZP),Y

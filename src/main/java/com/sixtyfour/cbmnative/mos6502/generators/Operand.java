@@ -56,6 +56,10 @@ public class Operand {
 		return address;
 	}
 
+	public boolean isConstant() {
+		return address != null && address.startsWith("CONST");
+	}
+
 	public void setAddress(String address) {
 		this.address = address;
 	}

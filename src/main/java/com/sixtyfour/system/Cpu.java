@@ -2133,7 +2133,7 @@ public class Cpu {
 				boolean decimal = (status & 0b00001000) > 0;
 				int cf = decimal ? (a > 0b10011001 ? 1 : 0) : (a > 255 ? 1 : 0);
 				status = (status & 0b11111110) | cf;
-			} else if (a < oldA) {
+			} else if (a <= oldA) {
 				int cf = (a < 0 ? 0 : 1);
 				status = (status & 0b11111110) | cf;
 			}

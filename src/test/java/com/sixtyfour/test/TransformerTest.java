@@ -35,7 +35,20 @@ public class TransformerTest {
 		// testTransformer6();
 		// testTransformer7();
 		// testTransformerPrime();
-	    testTransformerSqr();
+	    //testTransformerSqr();
+		testTransformer8();
+	}
+	
+	private static void testTransformer8() throws Exception {
+		System.out.println("\n\ntestTransformer8");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/test8.bas");
+
+		final Assembler assy = initTestEnvironment(vary);
+		FileWriter.writeAsPrg(assy.getProgram(), "++teststrings.prg", true);
+		assy.getCpu().setCpuTracer(new MyTracer(assy));
+		Machine machine = executeTest(assy);
+
+		System.out.println("Ticks: " + machine.getCpu().getClockTicks());
 	}
 
 	private static void testTransformerPrime() throws Exception {

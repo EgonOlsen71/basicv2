@@ -25,7 +25,11 @@ public class Mov extends GeneratorBase {
 		context.setLastMoveTarget(target);
 
 		if (!source.isIndexed() && !target.isIndexed()) {
-			if (source.isArray()) {
+			if (source.getType() == Type.STRING) {
+				sourceString(nCode, source, target);
+			} else if (target.getType() == Type.STRING) {
+				targetString(nCode, source, target);
+			} else if (source.isArray()) {
 				noIndexArraySource(nCode, source, target);
 			} else {
 				if (source.getType() == Type.INTEGER) {
@@ -41,6 +45,39 @@ public class Mov extends GeneratorBase {
 				throw new RuntimeException("Invalid indexing mode: " + line);
 			}
 		}
+	}
+
+	private void targetString(List<String> nCode, Operand source, Operand target) {
+		if (source.isRegister()) {
+			nCode.add("LDA " + source.getRegisterName());
+			nCode.add("LDY " + createAddress(source.getRegisterName(), 1));
+		} else {
+			nCode.add("LDA " + source.getAddress());
+			nCode.add("LDY " + createAddress(source.getAddress(), 1));
+		}
+		nCode.add("STA TMP_ZP");
+		nCode.add("STY TMP_ZP+1");
+
+		if (target.isRegister()) {
+			nCode.add("LDA #<" + target.getRegisterName());
+			nCode.add("LDY #>" + target.getRegisterName());
+		} else {
+			nCode.add("LDA #<" + target.getAddress());
+			nCode.add("LDY #>" + target.getAddress());
+		}
+		nCode.add("JSR COPYSTRING");
+	}
+
+	private void sourceString(List<String> nCode, Operand source, Operand target) {
+		if (source.isConstant()) {
+			nCode.add("LDA #<" + source.getAddress());
+			nCode.add("LDY #>" + source.getAddress());
+		} else {
+			nCode.add("LDA " + source.getAddress());
+			nCode.add("LDY " + createAddress(source.getAddress(), 1));
+		}
+		nCode.add("STA " + target.getRegisterName());
+		nCode.add("STY " + createAddress(target.getRegisterName(), 1));
 	}
 
 	private void noIndexArraySource(List<String> nCode, Operand source, Operand target) {

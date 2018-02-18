@@ -102,6 +102,7 @@ public class Transformer6502 implements Transformer {
 		res.add("FORSTACKP\t.WORD FORSTACK");
 		res.add("FORSTACK .ARRAY " + Math.min(1024, platform.getStackSize() * 17));
 		res.add("EMPTYSTR\t.BYTE 0");
+		res.add("STRBUFP\t.WORD STRBUF");
 		res.add("STRBUF\t.BYTE 0");
 		return res;
 	}
@@ -211,21 +212,4 @@ public class Transformer6502 implements Transformer {
 		}
 		return cnt;
 	}
-
-	// MOV X,2
-	// MOV Y,3
-	// DIV X,Y
-	// PUSH X
-	//
-	//
-	// Const_2->X_REG
-	// Const_3->Y_REG
-	//
-	// Y_REG->FAC
-	// X_REG->ARG
-	//
-	// FAC=ARG/FAC
-	// FAC->X_REG
-	// PUSH X_REG
-
 }

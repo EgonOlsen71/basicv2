@@ -119,7 +119,7 @@ public class Operands {
 
 	private String removeBrackets(String txt) {
 		txt = txt.replace("(", "").replace(")", "");
-		int pos = txt.indexOf("{");
+		int pos = txt.lastIndexOf("{");
 		if (pos != -1) {
 			txt = txt.substring(0, pos);
 		}
