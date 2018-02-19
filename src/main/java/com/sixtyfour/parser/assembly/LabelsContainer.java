@@ -62,7 +62,7 @@ public class LabelsContainer {
 				int[] ram = machine.getRam();
 
 				int opcode = ram[targetAddr];
-				if (MnemonicList.getConditonalBranches().contains(opcode)) {
+				if (!dl.isDataLine() && MnemonicList.getConditonalBranches().contains(opcode)) {
 					// System.out.println("Applied conditional delayed Label: "+entry.getValue()+"/"+entry.getKey()+"/"+value);
 					int offset = value - (targetAddr + 2);
 					if (offset <= 127 && offset >= -128) {
@@ -147,10 +147,12 @@ public class LabelsContainer {
 	 *            high byte only?
 	 * @param addrAdd
 	 *            an optional address offset
+	 * @param isDataLine
+	 * 		does the line contain an actual command or is it some data like .BYTE
 	 */
-	public void addDelayedLabelRef(int addr, String label, boolean low, boolean high, int addrAdd) {
+	public void addDelayedLabelRef(int addr, String label, boolean low, boolean high, int addrAdd, boolean isDataLine) {
 		// System.out.println("Adding delayed Label: "+label+" @"+addr);
-		delayed.put(addr, new DelayedLabel(truncateAdd(label), low, high, addrAdd));
+		delayed.put(addr, new DelayedLabel(truncateAdd(label), low, high, addrAdd, isDataLine));
 	}
 
 }

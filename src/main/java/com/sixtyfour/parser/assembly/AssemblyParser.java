@@ -111,9 +111,11 @@ public class AssemblyParser {
 	 *            do we want the low byte only?
 	 * @param high
 	 *            do we want the high byte only?
+	 * @param isDataLine
+	 * 		does the line contain an actual command or is it some data like .BYTE
 	 * @return the number
 	 */
-	public static int getValue(String number, int addr, ConstantsContainer ccon, LabelsContainer lcon, boolean low, boolean high, int addrAdd) {
+	public static int getValue(String number, int addr, ConstantsContainer ccon, LabelsContainer lcon, boolean low, boolean high, int addrAdd, boolean isDataLine) {
 		number = number.trim();
 		if (!number.startsWith("$") && !number.startsWith("%") && !Character.isDigit(number.charAt(0)) && !(number.startsWith("-"))) {
 			ConstantValue cv = ccon.get(number);
@@ -142,7 +144,7 @@ public class AssemblyParser {
 			}
 
 			// No constant and no label found...might be a delayed label...
-			lcon.addDelayedLabelRef(addr, number, low, high, addrAdd);
+			lcon.addDelayedLabelRef(addr, number, low, high, addrAdd, isDataLine);
 			return addr;
 
 		}
@@ -210,9 +212,6 @@ public class AssemblyParser {
 	 * @return the actual data
 	 */
 	public static int[] getBinaryData(int addr, String data, ConstantsContainer ccon, LabelsContainer lcon) {
-		// @todo call getValue with a flag that indicates that this is a data definition, not a command call. So that getValue
-		// can create a DelayedLabel that keeps this flag so that later in the process, it doesn't get confused with a conditional branch
-		// should some byte match by accident...
 		data = data.trim();
 		List<Integer> ram = new ArrayList<Integer>();
 		String datupper = VarUtils.toUpper(data);
@@ -230,13 +229,13 @@ public class AssemblyParser {
 		} else if (datupper.startsWith(".BYTE")) {
 			String[] parts = data.substring(5).trim().split(" ");
 			for (String part : parts) {
-				int val = getLowByte(getValue(part, addr - 1, ccon, lcon, true, false, 0));
+				int val = getLowByte(getValue(part, addr - 1, ccon, lcon, true, false, 0, true));
 				ram.add(val);
 			}
 		} else if (datupper.startsWith(".WORD")) {
 			String[] parts = data.substring(5).trim().split(" ");
 			for (String part : parts) {
-				int val = getValue(part, addr - 1, ccon, lcon, false, false, 0);
+				int val = getValue(part, addr - 1, ccon, lcon, false, false, 0, true);
 				ram.add(getLowByteSigned(val));
 				ram.add(getHighByteSigned(val));
 			}
@@ -252,7 +251,7 @@ public class AssemblyParser {
 		} else if (datupper.startsWith(".ARRAY")) {
 			String[] parts = data.substring(6).trim().split(" ");
 			for (String part : parts) {
-				int val = getValue(part, addr - 1, ccon, lcon, false, false, 0);
+				int val = getValue(part, addr - 1, ccon, lcon, false, false, 0, true);
 				if (val < 0) {
 					throw new RuntimeException("Value out of range: " + val);
 				}

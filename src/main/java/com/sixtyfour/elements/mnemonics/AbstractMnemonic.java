@@ -274,7 +274,7 @@ public abstract class AbstractMnemonic implements Mnemonic {
 		par.setY(part2.startsWith("Y"));
 		par.setIndirect(isIndirect);
 
-		int val = AssemblyParser.getValue(part1, addr, ccon, lcon, lowByte, highByte, addrAdd);
+		int val = AssemblyParser.getValue(part1, addr, ccon, lcon, lowByte, highByte, addrAdd, false);
 		if (lowByte) {
 			val = AssemblyParser.getLowByte(val);
 		} else if (highByte) {
