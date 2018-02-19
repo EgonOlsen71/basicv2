@@ -31,12 +31,12 @@ public class TransformerTest {
 		// testTransformer2();
 		// testTransformer4();
 		// testTransformer5();
-		//testTransformerFractal();
+		testTransformerFractal();
 		// testTransformer6();
 		// testTransformer7();
 		// testTransformerPrime();
 	    //testTransformerSqr();
-		testTransformer8();
+		//testTransformer8();
 	}
 	
 	private static void testTransformer8() throws Exception {

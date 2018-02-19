@@ -36,7 +36,7 @@ public class DelayedLabel {
 	this.low = low;
 	this.high = high;
 	this.add = add;
-	this.setDataLine(isDataLine);
+	this.dataLine = isDataLine;
     }
 
     /**
