@@ -4,7 +4,22 @@ START		RTS
 ;###################################
 END			RTS
 ;###################################
-CREATETID	LDA #0
+WRITETID	LDY #0
+			LDA (TMP_ZP),Y
+			CMP #$6
+			BEQ FORMATOK
+			JMP ILLEGALQUANTITY
+FORMATOK	INC TMP_ZP
+			BNE WRITE2
+			INC TMP_ZP+1
+WRITE2		LDA TMP_ZP
+			STA $22
+			LDA TMP_ZP+1
+			STA $23
+			JSR $A9E7
+			RTS
+;###################################
+READTID		LDA #0
 			STA $70
 			JSR $AF84 
 			LDY #0
@@ -386,7 +401,7 @@ SEARCHFOR	LDA TMP_ZP+1
 NOPV1N1		LDY #0
 			LDA (TMP_ZP),Y
 			BNE NOGOSUB
-			JMP ERROR
+			JMP NEXTWOFOR
 NOGOSUB
 			INY
 			LDA TMP_ZP
@@ -646,7 +661,7 @@ SQRT		LDX #<TMP_FREG
 			LDY #>TMP_FREG
 			JSR $BBD7
 			LDA TMP_FREG+1
-			BMI ERROR
+			BMI ILLEGALQUANTITY
 			LDA TMP_FREG
 			BEQ DONE
  
@@ -690,8 +705,14 @@ MINUS		LDA #<TMP2_FREG
 			DEC $FB
 			BNE MINUS
 DONE		RTS
+
+NEXTWOFOR	LDX #$0A
+			JMP $A437
+
+ILLEGALQUANTITY
+			JMP $B248
  
-ERROR		BRK
+ERROR		JMP $AF08	;General purpose error, here a syntax error
  
 SQRTTABLE
 	.BYTE 03 11 18 25 32 38 44 50

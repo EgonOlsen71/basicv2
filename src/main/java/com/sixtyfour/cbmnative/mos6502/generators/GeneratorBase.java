@@ -21,7 +21,15 @@ public abstract class GeneratorBase implements Generator {
 		}
 	}
 
-	protected void checkSpecialVars(List<String> nCode, Operand source) {
+	protected boolean checkSpecialWriteVars(List<String> nCode, Operand target) {
+		if (target.getAddress().equals("VAR_TI$")) {
+			nCode.add("JSR WRITETID");
+			return true;
+		}
+		return false;
+	}
+
+	protected void checkSpecialReadVars(List<String> nCode, Operand source) {
 		if (source.getAddress().equals("VAR_ST")) {
 			nCode.add("LDY $90");
 			nCode.add("; Byte in Y to FAC");
@@ -40,7 +48,7 @@ public abstract class GeneratorBase implements Generator {
 			nCode.add("LDY #>" + source.getAddress());
 			nCode.add("JSR $BBD7");
 		} else if (source.getAddress().equals("VAR_TI$")) {
-			nCode.add("JSR CREATETID");
+			nCode.add("JSR READTID");
 		}
 	}
 

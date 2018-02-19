@@ -55,17 +55,20 @@ public class Mov extends GeneratorBase {
 			nCode.add("LDA " + source.getAddress());
 			nCode.add("LDY " + createAddress(source.getAddress(), 1));
 		}
+		
 		nCode.add("STA TMP_ZP");
 		nCode.add("STY TMP_ZP+1");
-
-		if (target.isRegister()) {
-			nCode.add("LDA #<" + target.getRegisterName());
-			nCode.add("LDY #>" + target.getRegisterName());
-		} else {
-			nCode.add("LDA #<" + target.getAddress());
-			nCode.add("LDY #>" + target.getAddress());
+		
+		if (!checkSpecialWriteVars(nCode, target)) {
+			if (target.isRegister()) {
+				nCode.add("LDA #<" + target.getRegisterName());
+				nCode.add("LDY #>" + target.getRegisterName());
+			} else {
+				nCode.add("LDA #<" + target.getAddress());
+				nCode.add("LDY #>" + target.getAddress());
+			}
+			nCode.add("JSR COPYSTRING");
 		}
-		nCode.add("JSR COPYSTRING");
 	}
 
 	private void sourceString(List<String> nCode, Operand source, Operand target) {
@@ -73,7 +76,7 @@ public class Mov extends GeneratorBase {
 			nCode.add("LDA #<" + source.getAddress());
 			nCode.add("LDY #>" + source.getAddress());
 		} else {
-			checkSpecialVars(nCode, source);
+			checkSpecialReadVars(nCode, source);
 			nCode.add("LDA " + source.getAddress());
 			nCode.add("LDY " + createAddress(source.getAddress(), 1));
 		}
@@ -123,7 +126,7 @@ public class Mov extends GeneratorBase {
 			nCode.add("LDA #<" + source.getRegisterName());
 			nCode.add("LDY #>" + source.getRegisterName());
 		} else {
-			checkSpecialVars(nCode, source);
+			checkSpecialReadVars(nCode, source);
 			nCode.add("LDA #<" + source.getAddress());
 			nCode.add("LDY #>" + source.getAddress());
 		}
