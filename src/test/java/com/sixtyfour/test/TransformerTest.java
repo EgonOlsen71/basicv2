@@ -45,7 +45,7 @@ public class TransformerTest {
 
 		final Assembler assy = initTestEnvironment(vary);
 		FileWriter.writeAsPrg(assy.getProgram(), "++teststrings.prg", true);
-		assy.getCpu().setCpuTracer(new MyTracer(assy));
+		//assy.getCpu().setCpuTracer(new MyTracer(assy));
 		Machine machine = executeTest(assy);
 
 		System.out.println("Ticks: " + machine.getCpu().getClockTicks());

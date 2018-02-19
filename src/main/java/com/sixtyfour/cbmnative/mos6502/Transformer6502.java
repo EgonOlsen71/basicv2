@@ -76,6 +76,10 @@ public class Transformer6502 implements Transformer {
 		res.addAll(mnems);
 		res.addAll(subs);
 		res.addAll(consts);
+		if (!vars.contains("; VAR: TI$")) {
+			vars.add("; VAR: A[]");
+			vars.add("VAR_TI$ .WORD EMPTYSTR");
+		}
 		res.addAll(vars);
 
 		res.add("; *** INTERNAL ***");
