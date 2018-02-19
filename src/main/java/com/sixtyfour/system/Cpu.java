@@ -877,7 +877,7 @@ public class Cpu {
 				break;
 			case 0xCD:
 				// CMP $hhll
-				cmp_hhl(accb);
+				cmp_hhll(accb);
 				break;
 			case 0xDD:
 				// CMP $hhll,X
@@ -1259,17 +1259,17 @@ public class Cpu {
 		setFlags(tmp, false, true);
 		ticks += 4;
 	}
-
-	private void cmp_hhll(int xb) {
-		tmp = xb - ram[getWord(ram[pc++], ram[pc++])];
-		setFlags(tmp, xb, true, true, false, true);
+	
+	private void cmp_hhll(int val) {
+		tmp = val - ram[getWord(ram[pc++], ram[pc++])];
+		setFlags(tmp, val, true, true, false, true, false);
 		ticks += 4;
 	}
 
 	private void cmp_lly(int yb, int accb) {
 		index = getWord(ram[ram[pc]], ram[(ram[pc++] + 1) & 0xFF]);
 		tmp = accb - ram[(index + yb) & 0xffff];
-		setFlags(tmp, accb, true, true, false, true);
+		setFlags(tmp, accb, true, true, false, true, false);
 		ticks += 5;
 		if (index >> 8 != (index + yb) >> 8) {
 			ticks++;
@@ -1278,41 +1278,36 @@ public class Cpu {
 
 	private void cmp_llx(int accb) {
 		tmp = accb - ram[getWord(ram[(ram[pc] + x) & 0xFF], ram[(ram[pc++] + x + 1) & 0xFF])];
-		setFlags(tmp, accb, true, true, false, true);
+		setFlags(tmp, accb, true, true, false, true, false);
 		ticks += 6;
 	}
 
 	private void cmp_llx(int xb, int accb) {
 		tmp = accb - ram[((ram[pc++] & 0xff) + xb) & 0xff];
-		setFlags(tmp, accb, true, true, false, true);
+		setFlags(tmp, accb, true, true, false, true, false);
 		ticks += 4;
 	}
 
 	private void cmp_ll(int accb) {
 		tmp = accb - ram[ram[pc++] & 0xff];
-		setFlags(tmp, accb, true, true, false, true);
+		setFlags(tmp, accb, true, true, false, true, false);
 		ticks += 3;
 	}
 
 	private void cmp_hhllx(int xb, int accb) {
 		index = getWord(ram[pc++], ram[pc++]);
 		tmp = accb - ram[index + xb];
-		setFlags(tmp, accb, true, true, false, true);
+		setFlags(tmp, accb, true, true, false, true, false);
 		ticks += 4;
 		if (index >> 8 != (index + xb) >> 8) {
 			ticks++;
 		}
 	}
 
-	private void cmp_hhl(int accb) {
-		tmp = accb - ram[getWord(ram[pc++], ram[pc++])];
-		setFlags(tmp, accb, true, true, false, true);
-		ticks += 2;
-	}
 
 	private void cmp_nn(int accb) {
 		tmp = accb - ram[pc++];
-		setFlags(tmp, accb, true, true, false, true);
+		setFlags(tmp, accb, true, true, false, true, false);
 		ticks += 2;
 	}
 
@@ -1520,7 +1515,7 @@ public class Cpu {
 		} else {
 			acc = subBCD(subBCD(accb, ac), ram[tmp + yb]);
 		}
-		setFlags(acc, accb, true, true, true, true);
+		setFlags(acc, accb, true, true, true, true, false);
 		acc &= 0xff;
 		ticks += 5;
 		if (tmp >> 8 != (tmp + yb) >> 8) {
@@ -1535,7 +1530,7 @@ public class Cpu {
 		} else {
 			acc = subBCD(subBCD(accb, ac), ram[getWord(ram[(ram[pc] + x) & 0xFF], ram[(ram[pc++] + x + 1) & 0xFF])]);
 		}
-		setFlags(acc, accb, true, true, true, true);
+		setFlags(acc, accb, true, true, true, true, false);
 		acc &= 0xff;
 		ticks += 6;
 	}
@@ -1547,7 +1542,7 @@ public class Cpu {
 		} else {
 			acc = subBCD(subBCD(accb, ac), ram[(ram[pc++] & 0xff) + xb]);
 		}
-		setFlags(acc, accb, true, true, true, true);
+		setFlags(acc, accb, true, true, true, true, false);
 		acc &= 0xff;
 		ticks += 4;
 	}
@@ -1559,7 +1554,7 @@ public class Cpu {
 		} else {
 			acc = subBCD(subBCD(accb, ac), ram[ram[pc++] & 0xff]);
 		}
-		setFlags(acc, accb, true, true, true, true);
+		setFlags(acc, accb, true, true, true, true, false);
 		acc &= 0xff;
 		ticks += 3;
 	}
@@ -1572,7 +1567,7 @@ public class Cpu {
 		} else {
 			acc = subBCD(subBCD(accb, ac), ram[tmp + xb]);
 		}
-		setFlags(acc, accb, true, true, true, true);
+		setFlags(acc, accb, true, true, true, true, false);
 		acc &= 0xff;
 		ticks += 4;
 		if (tmp >> 8 != (tmp + xb) >> 8) {
@@ -1587,7 +1582,7 @@ public class Cpu {
 		} else {
 			acc = subBCD(subBCD(accb, ac), ram[getWord(ram[pc++], ram[pc++])]);
 		}
-		setFlags(acc, accb, true, true, true, true);
+		setFlags(acc, accb, true, true, true, true, false);
 		acc &= 0xff;
 		ticks += 4;
 	}
@@ -1599,7 +1594,7 @@ public class Cpu {
 		} else {
 			acc = subBCD(subBCD(accb, ac), ram[pc++]);
 		}
-		setFlags(acc, accb, true, true, true, true);
+		setFlags(acc, accb, true, true, true, true, false);
 		acc &= 0xff;
 		ticks += 2;
 	}
@@ -1612,7 +1607,7 @@ public class Cpu {
 		} else {
 			acc = addBCD(addBCD(accb, ac), ram[tmp + yb]);
 		}
-		setFlags(acc, accb, true, true, true, true);
+		setFlags(acc, accb, true, true, true, true, true);
 		acc &= 0xff;
 		ticks += 5;
 		if (tmp >> 8 != (tmp + yb) >> 8) {
@@ -1627,7 +1622,7 @@ public class Cpu {
 		} else {
 			acc = addBCD(addBCD(accb, ac), ram[getWord(ram[(ram[pc] + x) & 0xFF], ram[(ram[pc++] + x + 1) & 0xFF])]);
 		}
-		setFlags(acc, accb, true, true, true, true);
+		setFlags(acc, accb, true, true, true, true, true);
 		acc &= 0xff;
 		ticks += 6;
 	}
@@ -1639,7 +1634,7 @@ public class Cpu {
 		} else {
 			acc = addBCD(addBCD(accb, ac), ram[(ram[pc++] & 0xff) + xb]);
 		}
-		setFlags(acc, accb, true, true, true, true);
+		setFlags(acc, accb, true, true, true, true, true);
 		acc &= 0xff;
 		ticks += 4;
 	}
@@ -1651,7 +1646,7 @@ public class Cpu {
 		} else {
 			acc = addBCD(addBCD(accb, ac), ram[ram[pc++] & 0xff]);
 		}
-		setFlags(acc, accb, true, true, true, true);
+		setFlags(acc, accb, true, true, true, true, true);
 		acc &= 0xff;
 		ticks += 3;
 	}
@@ -1664,7 +1659,7 @@ public class Cpu {
 		} else {
 			acc = addBCD(addBCD(accb, ac), ram[tmp + xb]);
 		}
-		setFlags(acc, accb, true, true, true, true);
+		setFlags(acc, accb, true, true, true, true, true);
 		acc &= 0xff;
 		ticks += 4;
 		if (tmp >> 8 != (tmp + xb) >> 8) {
@@ -1679,7 +1674,7 @@ public class Cpu {
 		} else {
 			acc = addBCD(addBCD(accb, ac), ram[getWord(ram[pc++], ram[pc++])]);
 		}
-		setFlags(acc, accb, true, true, true, true);
+		setFlags(acc, accb, true, true, true, true, true);
 		acc &= 0xff;
 		ticks += 4;
 	}
@@ -1691,7 +1686,7 @@ public class Cpu {
 		} else {
 			acc = addBCD(addBCD(accb, ac), ram[pc++]);
 		}
-		setFlags(acc, accb, true, true, true, true);
+		setFlags(acc, accb, true, true, true, true, true);
 		acc &= 0xff;
 		ticks += 2;
 	}
@@ -2113,10 +2108,10 @@ public class Cpu {
 	}
 
 	private void setFlags(int a, boolean negative, boolean zero) {
-		setFlags(a, a, negative, zero, false, false);
+		setFlags(a, a, negative, zero, false, false, false);
 	}
 
-	private void setFlags(int a, int oldA, boolean negative, boolean zero, boolean overflow, boolean carry) {
+	private void setFlags(int a, int oldA, boolean negative, boolean zero, boolean overflow, boolean carry, boolean wasAdd) {
 		if (negative) {
 			status = (status & 0b01111111) | (a & 0b10000000);
 		}
@@ -2129,14 +2124,14 @@ public class Cpu {
 			status = (status & 0b10111111) | ov;
 		}
 		if (carry) {
-			if (a > oldA) {
+			if (wasAdd) {
 				boolean decimal = (status & 0b00001000) > 0;
 				int cf = decimal ? (a > 0b10011001 ? 1 : 0) : (a > 255 ? 1 : 0);
 				status = (status & 0b11111110) | cf;
-			} else if (a <= oldA) {
+			} else {
 				int cf = (a < 0 ? 0 : 1);
 				status = (status & 0b11111110) | cf;
-			}
+			} 
 		}
 	}
 
