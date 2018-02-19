@@ -35,6 +35,7 @@ public class Transformer6502 implements Transformer {
 		subs.addAll(Arrays.asList(Loader.loadProgram(this.getClass().getResourceAsStream("/subroutines.asm"))));
 
 		consts.add("; *** CONSTANTS ***");
+		consts.add("CONSTANTS");
 		vars.add("; *** VARIABLES ***");
 		vars.add("VARIABLES");
 		Map<String, String> name2label = new HashMap<String, String>();
@@ -99,10 +100,12 @@ public class Transformer6502 implements Transformer {
 		res.add("REAL_CONST_ZERO\t.REAL 0.0");
 		res.add("REAL_CONST_MINUS_ONE\t.REAL -1.0");
 		res.add("FPSTACKP\t.WORD FPSTACK");
-		res.add("FPSTACK .ARRAY " + Math.min(255, platform.getStackSize() * 5));
+		res.add("FPSTACK .ARRAY " + Math.min(256, platform.getStackSize() * 5));
 		res.add("FORSTACKP\t.WORD FORSTACK");
 		res.add("FORSTACK .ARRAY " + Math.min(1024, platform.getStackSize() * 17));
 		res.add("EMPTYSTR\t.BYTE 0");
+		res.add("WORKBUFP\t.WORD WORKBUF");
+		res.add("WORKBUF\t.ARRAY 256");
 		res.add("STRBUFP\t.WORD STRBUF");
 		res.add("STRBUF\t.BYTE 0");
 		return res;

@@ -3,7 +3,28 @@ START		RTS
 
 ;###################################
 END			RTS
-
+;###################################
+CREATETID	LDA #0
+			STA $70
+			JSR $AF84 
+			LDY #0
+			STY $5E
+			DEY
+			STY $71
+			LDY #$06
+			STY $5D
+			LDY #$24
+			JSR $BE68
+			LDA #$FE
+			STA TMP_ZP
+			LDA #0
+			STA TMP_ZP+1
+			LDA #$6
+			STA $FE
+			LDA #<VAR_TI$
+			LDY #>VAR_TI$
+			JSR COPYSTRING
+TIDDONE		RTS			
 ;###################################
 STROUT		LDA A_REG
 			STA $22
@@ -32,14 +53,25 @@ COPYSTRING	STA TMP2_ZP
 			STA TMP3_ZP+1
 			DEY
 			
-			LDA TMP_ZP+1		; Check if the source is a constant. If so, don't copy it but just point to it
+			LDA TMP_ZP+1		; Check if the source is a constant (upper bound). If so, don't copy it but just point to it
 			CMP #>VARIABLES
 			BEQ CHECKLOW1
 			BCS INVAR
+			JMP CHECKNEXT
 CHECKLOW1	LDA TMP_ZP
 			CMP #<VARIABLES
 			BCS INVAR
-			STA (TMP2_ZP),Y		; Yes, it's a constant...
+			
+CHECKNEXT	LDA TMP_ZP+1		; Check if the source is a constant (lower bound). If so, don't copy it but just point to it
+			CMP #>CONSTANTS
+			BEQ CHECKLOW3
+			BCC INVAR
+			JMP ISCONST
+CHECKLOW3	LDA TMP_ZP
+			CMP #<CONSTANTS
+			BCC INVAR			; No, it's not a constant. It's something from lower memory...
+			
+ISCONST		STA (TMP2_ZP),Y		; Yes, it's a constant...
 			INY
 			LDA TMP_ZP+1
 			STA (TMP2_ZP),Y
@@ -50,6 +82,7 @@ INVAR		INY
 			CMP #>VARIABLES
 			BEQ CHECKLOW2
 			BCS INVAR2
+			JMP UPDATEPTR
 CHECKLOW2	DEY
 			LDA (TMP2_ZP),Y
 			CMP #<VARIABLES
@@ -63,7 +96,8 @@ INVAR2		LDY #0
 			CMP TMP_REG		; Compare the string-to-copy's length (in A) with the variable's current one (in TMP_REG)
 			BEQ STRFITS
 			BCC STRFITS		; does the new string fits into the old memory location?
-UPDATEPTR	LDA STRBUFP		; no, then copy it into string memory later...
+UPDATEPTR	LDY #0
+			LDA STRBUFP		; no, then copy it into string memory later...
 			STA (TMP2_ZP),Y	; ...but update the string memory pointer now
 			STA TMP3_ZP
 			LDA STRBUFP+1

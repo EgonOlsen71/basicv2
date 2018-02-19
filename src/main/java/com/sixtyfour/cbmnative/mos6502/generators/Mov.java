@@ -73,7 +73,8 @@ public class Mov extends GeneratorBase {
 			nCode.add("LDA #<" + source.getAddress());
 			nCode.add("LDY #>" + source.getAddress());
 		} else {
-			nCode.add("LDA " + source.getAddress());
+		    	checkSpecialVars(nCode, source); 
+		    	nCode.add("LDA " + source.getAddress());
 			nCode.add("LDY " + createAddress(source.getAddress(), 1));
 		}
 		nCode.add("STA " + target.getRegisterName());
