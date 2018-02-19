@@ -36,6 +36,7 @@ public class Transformer6502 implements Transformer {
 
 		consts.add("; *** CONSTANTS ***");
 		vars.add("; *** VARIABLES ***");
+		vars.add("VARIABLES");
 		Map<String, String> name2label = new HashMap<String, String>();
 
 		res.add("TMP_ZP = 105");

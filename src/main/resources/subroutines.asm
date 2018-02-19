@@ -18,12 +18,10 @@ STROUT		LDA A_REG
 PRINTSTR	JSR $AB25
 			RTS
 ;###################################
-; Basic idea of how string handling works in this context: Each string assigned will be copied from the source to the target.
-; I.e. assigments happen by value only.
+; Basic idea of how string handling works in this context: Each string assigned will be copied from the source to the target, except those in the constant pool.
 ; If the target can contain the new string, it will be copied into the same memory location, maybe with a shorter length.
-; If it doesn't fit, the new string will be copied into string memory and the target will point to it. This applies to strings
-; in the constant pool as well. Otherwise, an assigment might either be by value or by reference depending on the location and
-; that might not be worth the hassle.
+; If it doesn't fit, the new string will be copied into string memory and the target will point to it. Strings from the constant pool
+; will be referenced only and not copied.
 COPYSTRING	STA TMP2_ZP
 			STY TMP2_ZP+1
 			LDY #0
@@ -33,6 +31,31 @@ COPYSTRING	STA TMP2_ZP
 			LDA (TMP2_ZP),Y
 			STA TMP3_ZP+1
 			DEY
+			
+			LDA TMP_ZP+1		; Check if the source is a constant. If so, don't copy it but just point to it
+			CMP #>VARIABLES
+			BEQ CHECKLOW1
+			BCS INVAR
+CHECKLOW1	LDA TMP_ZP
+			CMP #<VARIABLES
+			BCS INVAR
+			STA (TMP2_ZP),Y		; Yes, it's a constant...
+			INY
+			LDA TMP_ZP+1
+			STA (TMP2_ZP),Y
+			RTS
+						
+INVAR		INY
+			LDA (TMP2_ZP),Y		; Check if the target is currently pointing into the constant pool. If so, don't update that memory by accident
+			CMP #>VARIABLES
+			BEQ CHECKLOW2
+			BCS INVAR2
+CHECKLOW2	DEY
+			LDA (TMP2_ZP),Y
+			CMP #<VARIABLES
+			BCS INVAR2
+			JMP UPDATEPTR
+INVAR2		LDY #0
 			LDA (TMP3_ZP),Y
 			STA TMP_REG
 			LDA (TMP_ZP),Y
@@ -40,7 +63,7 @@ COPYSTRING	STA TMP2_ZP
 			CMP TMP_REG		; Compare the string-to-copy's length (in A) with the variable's current one (in TMP_REG)
 			BEQ STRFITS
 			BCC STRFITS		; does the new string fits into the old memory location?
-			LDA STRBUFP		; no, then copy it into string memory later...
+UPDATEPTR	LDA STRBUFP		; no, then copy it into string memory later...
 			STA (TMP2_ZP),Y	; ...but update the string memory pointer now
 			STA TMP3_ZP
 			LDA STRBUFP+1
