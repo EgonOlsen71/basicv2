@@ -73,8 +73,8 @@ public class Mov extends GeneratorBase {
 			nCode.add("LDA #<" + source.getAddress());
 			nCode.add("LDY #>" + source.getAddress());
 		} else {
-		    	checkSpecialVars(nCode, source); 
-		    	nCode.add("LDA " + source.getAddress());
+			checkSpecialVars(nCode, source);
+			nCode.add("LDA " + source.getAddress());
 			nCode.add("LDY " + createAddress(source.getAddress(), 1));
 		}
 		nCode.add("STA " + target.getRegisterName());
@@ -123,9 +123,9 @@ public class Mov extends GeneratorBase {
 			nCode.add("LDA #<" + source.getRegisterName());
 			nCode.add("LDY #>" + source.getRegisterName());
 		} else {
-			checkSpecialVars(nCode, source); 
+			checkSpecialVars(nCode, source);
 			nCode.add("LDA #<" + source.getAddress());
-		    	nCode.add("LDY #>" + source.getAddress());
+			nCode.add("LDY #>" + source.getAddress());
 		}
 		nCode.add("; Real in (A/Y) to FAC");
 		nCode.add("JSR $BBA2"); // Real in (A/Y) to FAC
@@ -189,5 +189,5 @@ public class Mov extends GeneratorBase {
 			nCode.add("JSR $BBD7"); // FAC to (X/Y)
 		}
 	}
-	
+
 }

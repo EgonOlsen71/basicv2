@@ -95,7 +95,7 @@ public class Transformer6502 implements Transformer {
 		res.add("TMP_FREG\t.REAL 0");
 		res.add("TMP2_FREG\t.REAL 0");
 		res.add("TMP_FLAG\t.BYTE 0");
-		//res.add("JUMP_TARGET\t.WORD 0");
+		// res.add("JUMP_TARGET\t.WORD 0");
 		res.add("REAL_CONST_ONE\t.REAL 1.0");
 		res.add("REAL_CONST_ZERO\t.REAL 0.0");
 		res.add("REAL_CONST_MINUS_ONE\t.REAL -1.0");

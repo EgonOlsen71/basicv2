@@ -125,8 +125,8 @@ public class Movb extends GeneratorBase {
 			nCode.add("LDA #<" + source.getRegisterName());
 			nCode.add("LDY #>" + source.getRegisterName());
 		} else {
-		    checkSpecialVars(nCode, source); 
-		    nCode.add("LDA #<" + source.getAddress());
+			checkSpecialVars(nCode, source);
+			nCode.add("LDA #<" + source.getAddress());
 			nCode.add("LDY #>" + source.getAddress());
 		}
 		nCode.add("; Real in (A/Y) to FAC");

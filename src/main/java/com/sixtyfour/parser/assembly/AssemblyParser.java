@@ -112,7 +112,8 @@ public class AssemblyParser {
 	 * @param high
 	 *            do we want the high byte only?
 	 * @param isDataLine
-	 * 		does the line contain an actual command or is it some data like .BYTE
+	 *            does the line contain an actual command or is it some data
+	 *            like .BYTE
 	 * @return the number
 	 */
 	public static int getValue(String number, int addr, ConstantsContainer ccon, LabelsContainer lcon, boolean low, boolean high, int addrAdd, boolean isDataLine) {

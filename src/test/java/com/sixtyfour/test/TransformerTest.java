@@ -31,14 +31,14 @@ public class TransformerTest {
 		// testTransformer2();
 		// testTransformer4();
 		// testTransformer5();
-		//testTransformerFractal();
+		// testTransformerFractal();
 		// testTransformer6();
 		// testTransformer7();
 		// testTransformerPrime();
-	    //testTransformerSqr();
+		// testTransformerSqr();
 		testTransformer8();
 	}
-	
+
 	private static void testTransformer8() throws Exception {
 		System.out.println("\n\ntestTransformer8");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/test8.bas");
@@ -68,7 +68,7 @@ public class TransformerTest {
 
 		System.out.println("Ticks: " + machine.getCpu().getClockTicks());
 	}
-	
+
 	private static void testTransformerSqr() throws Exception {
 		System.out.println("\n\ntestTransformerPrime");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/test_sqr.bas");

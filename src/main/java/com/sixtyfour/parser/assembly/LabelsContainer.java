@@ -148,7 +148,8 @@ public class LabelsContainer {
 	 * @param addrAdd
 	 *            an optional address offset
 	 * @param isDataLine
-	 * 		does the line contain an actual command or is it some data like .BYTE
+	 *            does the line contain an actual command or is it some data
+	 *            like .BYTE
 	 */
 	public void addDelayedLabelRef(int addr, String label, boolean low, boolean high, int addrAdd, boolean isDataLine) {
 		// System.out.println("Adding delayed Label: "+label+" @"+addr);

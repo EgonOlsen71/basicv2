@@ -20,28 +20,28 @@ public abstract class GeneratorBase implements Generator {
 			return addr + "+" + offset;
 		}
 	}
-	
+
 	protected void checkSpecialVars(List<String> nCode, Operand source) {
-	    if (source.getAddress().equals("VAR_ST")) {
-	        nCode.add("LDY $90");
-	        nCode.add("; Byte in Y to FAC");
-	        nCode.add("JSR $B3A2");
-	        nCode.add("LDX #<" + source.getAddress());
-	        nCode.add("LDY #>" + source.getAddress());
-	        nCode.add("JSR $BBD7");
-	    } else if (source.getAddress().equals("VAR_TI")) {
-		nCode.add("LDY $A0");
-		nCode.add("LDX $A1");
-		nCode.add("LDA $A2");
-		nCode.add("SEC");
-		nCode.add("JSR $AF87");
-		nCode.add("JSR $AF7E");
-		nCode.add("LDX #<" + source.getAddress());
-	        nCode.add("LDY #>" + source.getAddress());
-	        nCode.add("JSR $BBD7");
-	    } else if (source.getAddress().equals("VAR_TI$")) {
-		nCode.add("JSR CREATETID");
-	    }
+		if (source.getAddress().equals("VAR_ST")) {
+			nCode.add("LDY $90");
+			nCode.add("; Byte in Y to FAC");
+			nCode.add("JSR $B3A2");
+			nCode.add("LDX #<" + source.getAddress());
+			nCode.add("LDY #>" + source.getAddress());
+			nCode.add("JSR $BBD7");
+		} else if (source.getAddress().equals("VAR_TI")) {
+			nCode.add("LDY $A0");
+			nCode.add("LDX $A1");
+			nCode.add("LDA $A2");
+			nCode.add("SEC");
+			nCode.add("JSR $AF87");
+			nCode.add("JSR $AF7E");
+			nCode.add("LDX #<" + source.getAddress());
+			nCode.add("LDY #>" + source.getAddress());
+			nCode.add("JSR $BBD7");
+		} else if (source.getAddress().equals("VAR_TI$")) {
+			nCode.add("JSR CREATETID");
+		}
 	}
 
 }

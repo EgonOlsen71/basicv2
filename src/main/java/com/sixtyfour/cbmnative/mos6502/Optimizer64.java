@@ -78,7 +78,7 @@ public class Optimizer64 implements Optimizer {
 			this.add(new Pattern("FAST SQRT", new String[] { "JSR SQRT" }, "JSR $BF71"));
 			this.add(new Pattern("Simplified loading of Strings", new String[] { "{LINE4}", "{LINE5}", "{LINE6}", "{LINE7}", "{LINE8}" }, "STA {REG0}", "STY {REG0}", "LDA {REG0}",
 					"LDY {REG0}", "STA TMP_ZP", "STY TMP_ZP+1", "LDA #<{MEM0}", "LDY #>{MEM0}", "JSR COPYSTRING"));
-		} 
+		}
 	};
 
 	@Override

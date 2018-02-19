@@ -1259,7 +1259,7 @@ public class Cpu {
 		setFlags(tmp, false, true);
 		ticks += 4;
 	}
-	
+
 	private void cmp_hhll(int val) {
 		tmp = val - ram[getWord(ram[pc++], ram[pc++])];
 		setFlags(tmp, val, true, true, false, true, false);
@@ -1303,7 +1303,6 @@ public class Cpu {
 			ticks++;
 		}
 	}
-
 
 	private void cmp_nn(int accb) {
 		tmp = accb - ram[pc++];
@@ -2131,7 +2130,7 @@ public class Cpu {
 			} else {
 				int cf = (a < 0 ? 0 : 1);
 				status = (status & 0b11111110) | cf;
-			} 
+			}
 		}
 	}
 
