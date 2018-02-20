@@ -36,8 +36,10 @@ public class Jsr extends JumpBase {
 			Type type = context.getLastMoveSource().getType();
 			line += "_" + type.toString();
 			super.generateCode(context, line, nCode, subCode, name2label);
+		} else if (line.equals("JSR COPYSTR")) {
+		    	nCode.add(";ignored: JSR COPYSTR");
 		} else {
-			super.generateCode(context, line, nCode, subCode, name2label);
+		    super.generateCode(context, line, nCode, subCode, name2label);
 		}
 	}
 }

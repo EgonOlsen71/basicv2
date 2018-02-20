@@ -1062,7 +1062,7 @@ public class PseudoCpu {
 		}
 
 		checkBufferSpace(s2);
-		regs[5] = bufferStart;
+		regs[A] = bufferStart;
 		System.arraycopy(toIntArray(s2), 0, memory, bufferStart + 1 + memory[bufferStart], s2.length());
 		memory[bufferStart] = memory[bufferStart] + s2.length();
 		bufferPos += s2.length() + 1;
