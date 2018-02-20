@@ -231,12 +231,14 @@ public class AssemblyParser {
 			String[] parts = data.substring(5).trim().split(" ");
 			for (String part : parts) {
 				int val = getLowByte(getValue(part, addr - 1, ccon, lcon, true, false, 0, true));
+				addr++;
 				ram.add(val);
 			}
 		} else if (datupper.startsWith(".WORD")) {
 			String[] parts = data.substring(5).trim().split(" ");
 			for (String part : parts) {
 				int val = getValue(part, addr - 1, ccon, lcon, false, false, 0, true);
+				addr+=2;
 				ram.add(getLowByteSigned(val));
 				ram.add(getHighByteSigned(val));
 			}

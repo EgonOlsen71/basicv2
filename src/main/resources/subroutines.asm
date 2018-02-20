@@ -39,7 +39,7 @@ READTID		LDA #0
 			LDA #<VAR_TI$
 			LDY #>VAR_TI$
 			JSR COPYSTRING
-TIDDONE		RTS			
+			RTS			
 ;###################################
 STROUT		LDA A_REG
 			STA $22
@@ -86,7 +86,8 @@ CHECKLOW3	LDA TMP_ZP
 			CMP #<CONSTANTS
 			BCC INVAR			; No, it's not a constant. It's something from lower memory...
 			
-ISCONST		STA (TMP2_ZP),Y		; Yes, it's a constant...
+ISCONST		LDA TMP_ZP
+			STA (TMP2_ZP),Y		; Yes, it's a constant...
 			INY
 			LDA TMP_ZP+1
 			STA (TMP2_ZP),Y
@@ -168,12 +169,43 @@ LINEBREAK	LDA #$0D
 			JMP $FFD2 	;RTS is implicit
 
 ;###################################
+ARRAYACCESS_STRING
+			LDA G_REG
+			STA TMP_ZP
+			LDA G_REG+1
+			STA TMP_ZP+1
+			LDA #<X_REG
+			LDY #>X_REG
+			JSR $BBA2
+			JSR $B1AA
+			TAX
+			TYA
+			ASL
+			STA TMP2_ZP
+			TXA
+			ROL
+			STA TMP2_ZP+1
+			LDA TMP_ZP
+			CLC
+			ADC TMP2_ZP
+			STA TMP_ZP
+			LDA TMP_ZP+1
+			ADC TMP2_ZP+1
+			STA TMP_ZP+1
+			LDY #0
+			LDA (TMP_ZP),Y
+			STA A_REG
+			INY
+			LDA (TMP_ZP),Y
+			STA A_REG+1
+			RTS
+; #######
 ARRAYACCESS_INTEGER
 			LDA G_REG
 			STA TMP_ZP
 			LDA G_REG+1
 			STA TMP_ZP+1
-INTARRAY2	LDA #<X_REG
+			LDA #<X_REG
 			LDY #>X_REG
 			JSR $BBA2
 			JSR $B1AA
@@ -209,7 +241,7 @@ ARRAYACCESS_REAL
 			STA TMP_ZP
 			LDA G_REG+1
 			STA TMP_ZP+1
-REALARRAY2	LDA #<X_REG
+			LDA #<X_REG
 			LDY #>X_REG
 			JSR $BBA2
 			JSR $B1AA
@@ -249,12 +281,42 @@ REALARRAY2	LDA #<X_REG
 			JMP COPY3_XY	;RTS is implicit
 
 ;###################################
+ARRAYSTORE_STRING
+			LDA G_REG
+			STA TMP_ZP
+			LDA G_REG+1
+			STA TMP_ZP+1
+			LDA #<X_REG
+			LDY #>X_REG
+			JSR $BBA2
+			JSR $B1AA
+			TAX
+			TYA
+			ASL
+			STA TMP2_ZP
+			TXA
+			ROL
+			STA TMP2_ZP+1
+			LDA TMP_ZP
+			CLC
+			ADC TMP2_ZP
+			TAX
+			LDA TMP_ZP+1
+			ADC TMP2_ZP+1
+			TAY
+			LDA A_REG
+			STA TMP_ZP
+			LDA A_REG+1
+			STA TMP_ZP+1
+			TXA
+			JMP COPYSTRING	; RTS is implicit
+; #######
 ARRAYSTORE_INTEGER
 			LDA G_REG
 			STA TMP_ZP
 			LDA G_REG+1
 			STA TMP_ZP+1
-INTARRAY1	LDA #<X_REG
+			LDA #<X_REG
 			LDY #>X_REG
 			JSR $BBA2
 			JSR $B1AA
@@ -289,7 +351,7 @@ ARRAYSTORE_REAL
 			STA TMP_ZP
 			LDA G_REG+1
 			STA TMP_ZP+1
-REALARRAY1	LDA #<X_REG
+			LDA #<X_REG
 			LDY #>X_REG
 			JSR $BBA2
 			JSR $B1AA

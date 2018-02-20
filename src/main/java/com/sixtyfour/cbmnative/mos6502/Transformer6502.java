@@ -77,7 +77,7 @@ public class Transformer6502 implements Transformer {
 		res.addAll(subs);
 		res.addAll(consts);
 		if (!vars.contains("; VAR: TI$")) {
-			vars.add("; VAR: A[]");
+			vars.add("; VAR: TI$");
 			vars.add("VAR_TI$ .WORD EMPTYSTR");
 		}
 		res.addAll(vars);
@@ -199,7 +199,7 @@ public class Transformer6502 implements Transformer {
 									StringBuilder sb = new StringBuilder();
 									sb.append("\t" + ".WORD ");
 									for (int ppp = pp; ppp < vals.size() && ppp < pp + 10; ppp++) {
-										vars.add("EMPTYSTR ");
+										sb.append("EMPTYSTR ");
 									}
 									vars.add(sb.toString());
 									sb.setLength(0);

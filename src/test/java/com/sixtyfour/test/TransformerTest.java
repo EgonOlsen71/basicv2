@@ -5,6 +5,8 @@ import java.io.FileOutputStream;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.swing.plaf.synth.SynthSpinnerUI;
+
 import com.sixtyfour.Assembler;
 import com.sixtyfour.Basic;
 import com.sixtyfour.Loader;
@@ -36,9 +38,30 @@ public class TransformerTest {
 		// testTransformer7();
 		// testTransformerPrime();
 		// testTransformerSqr();
-		testTransformer8();
+		//testTransformer8();
+		testTransformer9();
 	}
 
+	private static void testTransformer9() throws Exception {
+		System.out.println("\n\ntestTransformer9");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/test9.bas");
+
+		final Assembler assy = initTestEnvironment(vary);
+		FileWriter.writeAsPrg(assy.getProgram(), "++testarrays.prg", true);
+		assy.getCpu().setCpuTracer(new MyTracer(assy));
+		Machine machine = executeTest(assy);
+		
+		int[] ram=machine.getRam();
+		System.out.println();
+		System.out.print("[");
+		for (int i=0xe0f; i<(0xe0f)+22; i++) {
+		    System.out.print(Integer.toHexString(ram[i])+" ");
+		}
+		System.out.println("]");
+
+		System.out.println("Ticks: " + machine.getCpu().getClockTicks());
+	}
+	
 	private static void testTransformer8() throws Exception {
 		System.out.println("\n\ntestTransformer8");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/test8.bas");
