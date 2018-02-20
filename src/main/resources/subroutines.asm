@@ -4,6 +4,19 @@ START		RTS
 ;###################################
 END			RTS
 ;###################################
+CHR			LDA #1
+			STA WORKBUF
+			LDA #<Y_REG
+			LDY #>Y_REG
+			JSR $BBA2
+			JSR $B1AA
+			STY WORKBUF+1
+			LDA #<WORKBUF
+			STA A_REG
+			LDA #>WORKBUF
+			STA A_REG+1
+			RTS
+;###################################
 WRITETID	LDY #0
 			LDA (TMP_ZP),Y
 			CMP #$6
@@ -40,19 +53,6 @@ READTID		LDA #0
 			LDY #>VAR_TI$
 			JSR COPYSTRING
 			RTS			
-;###################################
-STROUT		LDA A_REG
-			STA $22
-			LDA A_REG+1
-			STA $23
-			LDY #0
-			LDA ($22),Y
-			TAX
-			INC $22
-			BNE PRINTSTR
-			INC $23
-PRINTSTR	JSR $AB25
-			RTS
 ;###################################
 ; Basic idea of how string handling works in this context: Each string assigned will be copied from the source to the target, except those in the constant pool.
 ; If the target can contain the new string, it will be copied into the same memory location, maybe with a shorter length.
@@ -156,7 +156,6 @@ REALOUT		LDA #<X_REG
 			JSR $B487
 			JSR $AB21
 			JMP $AB3B	;RTS is implicit
-
 ;###################################
 REALOUTBRK  LDA #<X_REG
 			LDY #>X_REG
@@ -167,7 +166,32 @@ REALOUTBRK  LDA #<X_REG
 			JSR $AB3B
 LINEBREAK	LDA #$0D
 			JMP $FFD2 	;RTS is implicit
-
+;###################################
+STROUT		LDA A_REG
+			STA $22
+			LDA A_REG+1
+			STA $23
+			LDY #0
+			LDA ($22),Y
+			TAX
+			INC $22
+			BNE PRINTSTR
+			INC $23
+PRINTSTR	JMP $AB25	;RTS is implicit
+;###################################
+STROUTBRK	LDA A_REG
+			STA $22
+			LDA A_REG+1
+			STA $23
+			LDY #0
+			LDA ($22),Y
+			TAX
+			INC $22
+			BNE PRINTSTR2
+			INC $23
+PRINTSTR2	JSR $AB25
+			LDA #$0D
+			JMP $FFD2 	;RTS is implicit
 ;###################################
 ARRAYACCESS_STRING
 			LDA G_REG
