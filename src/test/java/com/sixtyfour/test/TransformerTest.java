@@ -48,13 +48,13 @@ public class TransformerTest {
 
 		final Assembler assy = initTestEnvironment(vary);
 		FileWriter.writeAsPrg(assy.getProgram(), "++testarrays.prg", true);
-		assy.getCpu().setCpuTracer(new MyTracer(assy));
+		//assy.getCpu().setCpuTracer(new MyTracer(assy));
 		Machine machine = executeTest(assy);
 		
 		int[] ram=machine.getRam();
 		System.out.println();
 		System.out.print("[");
-		for (int i=0xe0f; i<(0xe0f)+22; i++) {
+		for (int i=0xfff; i<(0xfff)+22; i++) {
 		    System.out.print(Integer.toHexString(ram[i])+" ");
 		}
 		System.out.println("]");
