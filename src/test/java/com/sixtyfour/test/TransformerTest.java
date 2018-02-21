@@ -5,8 +5,6 @@ import java.io.FileOutputStream;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.swing.plaf.synth.SynthSpinnerUI;
-
 import com.sixtyfour.Assembler;
 import com.sixtyfour.Basic;
 import com.sixtyfour.Loader;
@@ -36,9 +34,9 @@ public class TransformerTest {
 		// testTransformerFractal();
 		// testTransformer6();
 		// testTransformer7();
-		// testTransformerPrime();
+		testTransformerPrime();
 		// testTransformerSqr();
-		//testTransformer8();
+		testTransformer8();
 		testTransformer9();
 	}
 
