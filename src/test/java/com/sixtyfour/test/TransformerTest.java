@@ -67,13 +67,20 @@ public class TransformerTest {
 
 		final Assembler assy = initTestEnvironment(vary);
 		FileWriter.writeAsPrg(assy.getProgram(), "++testacc.prg", true);
-		//assy.getCpu().setCpuTracer(new MyTracer(assy));
+		assy.getCpu().setCpuTracer(new MyTracer(assy));
 		Machine machine = executeTest(assy);
 		
 		int[] ram=machine.getRam();
 		System.out.println();
 
 		System.out.println("Ticks: " + machine.getCpu().getClockTicks());
+		
+		System.out.println();
+		System.out.print("[");
+		for (int i=0xf00; i<(0xf00)+5; i++) {
+		    System.out.print(Integer.toHexString(ram[i])+" ");
+		}
+		System.out.println("]");
 		
 		System.out.println("----------------------------------------");
 		Basic basy=new Basic(vary);

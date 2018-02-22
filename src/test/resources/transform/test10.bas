@@ -1,1 +1,2 @@
-10 c=0.202929221:print str$(c):print c
+10 c=0.20292921:printstr$(c):printc
+20 a$="0.20292921":printval(a$):printa$:c=val(a$)

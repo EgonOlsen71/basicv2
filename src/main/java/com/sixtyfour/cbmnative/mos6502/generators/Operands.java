@@ -70,7 +70,7 @@ public class Operands {
 		if (shorty.endsWith("[]")) {
 			op.setArray(true);
 		}
-
+		
 		if (txt.length() == 1 && !Character.isDigit(txt.charAt(0))) {
 			op.setRegister(txt.toUpperCase(Locale.ENGLISH));
 		} else {
@@ -78,6 +78,9 @@ public class Operands {
 				op.setIndexed(true);
 				if (txt.endsWith("})")) {
 					txt = removeBrackets(txt);
+					if (op.getType()==Type.STRING && txt.startsWith("#")) {
+					    txt="$"+txt.substring(1);
+					}
 					String label = name2label.get(txt);
 					op.setAddress(label == null ? txt : label);
 				} else {
@@ -86,6 +89,9 @@ public class Operands {
 				}
 			} else {
 				txt = removeBrackets(txt);
+				if (op.getType()==Type.STRING && txt.startsWith("#")) {
+				    txt="$"+txt.substring(1);
+				}
 				String label = name2label.get(txt);
 				op.setAddress(label == null ? txt : label);
 			}

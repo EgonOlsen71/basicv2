@@ -144,12 +144,16 @@ public class Transformer6502 implements Transformer {
 				int pos = part.indexOf("{");
 				String name = part.substring(0, pos);
 				if (name.startsWith("#")) {
+				    	Type type = Type.valueOf(part.substring(pos + 1, part.length() - 1));
+				    	if (type==Type.STRING) {
+				    	    name="$"+name.substring(1);
+				    	}
 					if (!name2label.containsKey(name)) {
 						consts.add("; CONST: " + name);
 						String label = "CONST_" + (cnt++);
 						name2label.put(name, label);
 
-						Type type = Type.valueOf(part.substring(pos + 1, part.length() - 1));
+						
 						name = name.substring(1);
 						if (type == Type.INTEGER) {
 							// Range check...convert to real if needed
