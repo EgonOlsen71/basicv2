@@ -1618,6 +1618,10 @@ public class Parser {
 			if (ts.toLowerCase().contains("e")) {
 				return ret;
 			}
+			if (ts.endsWith(".0")) {
+				// If it can be an integer...then is should be one
+				ts=ts.substring(0, ts.length()-2);
+			}
 			// System.out.println("TS: "+ts);
 			Term t = new Term(ts, termMap);
 			t = build(t, termMap, machine);

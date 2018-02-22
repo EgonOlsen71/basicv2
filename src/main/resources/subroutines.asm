@@ -7,7 +7,7 @@ END			RTS
 STR			LDA #<Y_REG
 			LDY #>Y_REG
 			JSR $BBA2
-			LDY #$00
+			LDY #0
 			JSR $BDDF
 			LDY #0
 			STY TMP_ZP+1
@@ -60,6 +60,15 @@ CHR			LDA #1
 			JSR $BBA2
 			JSR $B1AA
 			STY WORKBUF+1
+			LDA #<WORKBUF
+			STA A_REG
+			LDA #>WORKBUF
+			STA A_REG+1
+			RTS
+;###################################
+CHRINT		LDY #1
+			STY WORKBUF
+			STA WORKBUF+1
 			LDA #<WORKBUF
 			STA A_REG
 			LDA #>WORKBUF
@@ -182,18 +191,10 @@ STRFITS		LDY #0
 			STA (TMP3_ZP),Y
 			TAY				; Copy length to Y
 			BEQ	EXITCOPY	; Length 0? nothing to copy then...
-			INC TMP_ZP		; Adjust pointer to reflect that the first byte stores the length
-			BNE NOOV1
-			INC TMP_ZP+1
-NOOV1		INC TMP3_ZP
-			BNE LOOP
-			INC TMP3_ZP+1
 LOOP		LDA (TMP_ZP),Y	; Copy the actual string
 			STA (TMP3_ZP),Y
 			DEY
 			BNE LOOP
-			LDA (TMP_ZP),Y	; Copy the actual string, last byte of it
-			STA (TMP3_ZP),Y
 EXITCOPY	RTS
 
 ;###################################
@@ -201,7 +202,7 @@ INTOUT		JMP REALOUT
 ;###################################
 INTOUTBRK  	JMP REALOUTBRK
 ;###################################
-REALOUT		LDA #<X_REG
+REALOUT_OLD LDA #<X_REG
 			LDY #>X_REG
 			JSR $BBA2
 			JSR $BDDD
@@ -209,15 +210,43 @@ REALOUT		LDA #<X_REG
 			JSR $AB21
 			JMP $AB3B	;RTS is implicit
 ;###################################
+REALOUT		LDA #<X_REG
+			LDY #>X_REG
+			JSR $BBA2
+			LDY #0
+			JSR $BDDF
+			LDY #0
+			STY $23
+			LDA #$FF
+			STA $22
+			DEY
+STRLOOPRO	INY
+			LDA ($22),Y
+			BNE STRLOOPRO
+			INY
+			TYA
+			TAX
+			JMP $AB25	;RTS is implicit
+;###################################
 REALOUTBRK  LDA #<X_REG
 			LDY #>X_REG
 			JSR $BBA2
-			JSR $BDDD
-			JSR $B487
-			JSR $AB21
-			JSR $AB3B
+			LDY #0
+			JSR $BDDF
+			LDY #0
+			STY $23
+			LDA #$FF
+			STA $22
+			DEY
+STRLOOPROB	INY
+			LDA ($22),Y
+			BNE STRLOOPROB
+			INY
+			TYA
+			TAX
+			JSR $AB25
 LINEBREAK	LDA #$0D
-			JMP $FFD2 	;RTS is implicit
+			JMP $FFD2
 ;###################################
 STROUT		LDA A_REG
 			STA $22
@@ -246,14 +275,15 @@ PRINTSTR2	JSR $AB25
 			JMP $FFD2 	;RTS is implicit
 ;###################################
 ARRAYACCESS_STRING
-			LDA G_REG
-			STA TMP_ZP
-			LDA G_REG+1
-			STA TMP_ZP+1
 			LDA #<X_REG
 			LDY #>X_REG
 			JSR $BBA2
 			JSR $B1AA
+ARRAYACCESS_STRING_INT
+			LDX G_REG
+			STX TMP_ZP
+			LDX G_REG+1
+			STX TMP_ZP+1
 			TAX
 			TYA
 			ASL
@@ -277,14 +307,15 @@ ARRAYACCESS_STRING
 			RTS
 ; #######
 ARRAYACCESS_INTEGER
-			LDA G_REG
-			STA TMP_ZP
-			LDA G_REG+1
-			STA TMP_ZP+1
 			LDA #<X_REG
 			LDY #>X_REG
 			JSR $BBA2
 			JSR $B1AA
+ARRAYACCESS_INTEGER_INT
+			LDX G_REG
+			STX TMP_ZP
+			LDX G_REG+1
+			STX TMP_ZP+1
 			TAX
 			TYA
 			ASL
@@ -313,14 +344,15 @@ ARRAYACCESS_INTEGER
 			JMP $BBD7	;RTS is implicit
 ; #######
 ARRAYACCESS_REAL
-			LDA G_REG
-			STA TMP_ZP
-			LDA G_REG+1
-			STA TMP_ZP+1
 			LDA #<X_REG
 			LDY #>X_REG
 			JSR $BBA2
 			JSR $B1AA
+ARRAYACCESS_REAL_INT
+			LDX G_REG
+			STX TMP_ZP
+			LDX G_REG+1
+			STX TMP_ZP+1
 			STY TMP3_ZP
 			STA TMP3_ZP+1
 			TAX
@@ -355,17 +387,17 @@ ARRAYACCESS_REAL
 			LDY #>X_REG
 			STY TMP_ZP+1
 			JMP COPY3_XY	;RTS is implicit
-
 ;###################################
 ARRAYSTORE_STRING
-			LDA G_REG
-			STA TMP_ZP
-			LDA G_REG+1
-			STA TMP_ZP+1
 			LDA #<X_REG
 			LDY #>X_REG
 			JSR $BBA2
 			JSR $B1AA
+ARRAYSTORE_STRING_INT
+			LDX G_REG
+			STX TMP_ZP
+			LDX G_REG+1
+			STX TMP_ZP+1
 			TAX
 			TYA
 			ASL
@@ -388,14 +420,15 @@ ARRAYSTORE_STRING
 			JMP COPYSTRING	; RTS is implicit
 ; #######
 ARRAYSTORE_INTEGER
-			LDA G_REG
-			STA TMP_ZP
-			LDA G_REG+1
-			STA TMP_ZP+1
 			LDA #<X_REG
 			LDY #>X_REG
 			JSR $BBA2
 			JSR $B1AA
+ARRAYSTORE_INTEGER_INT
+			LDX G_REG
+			STX TMP_ZP
+			LDX G_REG+1
+			STX TMP_ZP+1
 			TAX
 			TYA
 			ASL
@@ -423,14 +456,15 @@ ARRAYSTORE_INTEGER
 			RTS
 ; #######
 ARRAYSTORE_REAL
-			LDA G_REG
-			STA TMP_ZP
-			LDA G_REG+1
-			STA TMP_ZP+1
 			LDA #<X_REG
 			LDY #>X_REG
 			JSR $BBA2
 			JSR $B1AA
+ARRAYSTORE_REAL_INT
+			LDX G_REG
+			STX TMP_ZP
+			LDX G_REG+1
+			STX TMP_ZP+1
 			STY TMP3_ZP
 			STA TMP3_ZP+1
 			TAX
@@ -602,9 +636,13 @@ STOREREAL
 
 CMPFOR		LDA #5
 			STA TMP3_ZP
-			JSR INCTMPREG
 			LDA TMP_REG
-			LDY TMP_REG+1
+			CLC
+			ADC #5
+			STA TMP_REG
+			BCC NOPV3
+			INC TMP_REG+1
+NOPV3		LDY TMP_REG+1
 			JSR $BC5B 	;CMPFAC
 			BEQ LOOPING
 
@@ -671,8 +709,13 @@ NOPV1SG		LDY #0
 			INY
 			LDA (TMP_ZP),Y
 			STA TMP3_ZP
-			JSR DECTMPZP
-			JMP SEARCHGOSUB
+			LDA TMP_ZP
+			SEC
+			SBC (TMP_ZP),Y
+			STA TMP_ZP
+			BCS NOPV1GS
+			DEC TMP_ZP+1
+NOPV1GS		JMP SEARCHGOSUB
 FOUNDGOSUB
 			LDA TMP_ZP
 			STA FORSTACKP
@@ -737,15 +780,6 @@ NOPVPR		LDA FPSTACKP
 
 ;### HELPER #######################
 ;###################################
-DECTMPZP    LDA TMP_ZP
-			SEC
-			SBC TMP3_ZP
-			STA TMP_ZP
-			BCS NOPV1
-			DEC TMP_ZP+1
-NOPV1		RTS
-
-;###################################
 INCTMPZP	LDA TMP_ZP
 			CLC
 			ADC TMP3_ZP
@@ -753,28 +787,6 @@ INCTMPZP	LDA TMP_ZP
 			BCC NOPV2
 			INC TMP_ZP+1
 NOPV2		RTS
-
-;###################################
-INCTMPREG	LDA TMP_REG
-			CLC
-			ADC TMP3_ZP
-			STA TMP_REG
-			BCC NOPV3
-			INC TMP_REG+1
-NOPV3		RTS
-
-;###################################
-INCTMP2REG	LDA TMP2_REG
-			CLC
-			ADC TMP3_ZP
-			STA TMP2_REG
-			BCC NOPV4
-			INC TMP2_REG+1
-NOPV4		RTS
-;###################################
-STORE_AY	STA TMP3_ZP
-			STY TMP3_ZP+1
-			RTS
 ;###################################
 COPY2_XY	STX TMP_ZP
 			STY TMP_ZP+1

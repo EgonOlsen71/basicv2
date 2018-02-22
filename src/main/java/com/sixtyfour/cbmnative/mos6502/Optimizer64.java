@@ -21,6 +21,13 @@ public class Optimizer64 implements Optimizer {
 			this.add(new Pattern("REALOUT + LINEBRK", new String[] { "JSR REALOUTBRK" }, "JSR REALOUT", "JSR LINEBREAK"));
 			this.add(new Pattern("STROUT + LINEBRK", new String[] { "JSR STROUTBRK" }, "JSR STROUT", "JSR LINEBREAK"));
 			this.add(new Pattern("INTOUT + LINEBRK", new String[] { "JSR INTOUTBRK" }, "JSR INTOUT", "JSR LINEBREAK"));
+			this.add(new Pattern("Array index is integer (store)", new String[] { "{LINE10}", "{LINE11}", "{LINE12}", "{LINE13}", "{LINE18}", "{LINE19}", "{LINE20}",
+					"{LINE21}", "{LINE0}", "{LINE1}", "{LINE22}_INT" }, "LDY {MEM0}", "LDA {MEM0}", "JSR $B391", "LDX #<{REG0}", "LDY #>{REG0}", "JSR $BBD7",
+					"LDA #<{REG0}", "LDY #>{REG0}", "JSR $BBA2", "JSR PUSHREAL", "LDA {*}", "LDY {*}", "STA {REG1}", "STY {REG1}", "JSR POPREAL", "LDX #<{REG2}", "LDY #>{REG2}",
+					"JSR $BBD7", "LDA #<{MEM2}", "LDY #>{MEM2}", "STA G_REG", "STY G_REG+1", "JSR ARRAYSTORE{*}"));
+			this.add(new Pattern("Array index is integer (load)", new String[] { "{LINE6}", "{LINE7}", "{LINE8}", "{LINE9}", "{LINE0}", "{LINE1}",
+					"{LINE10}_INT" }, "LDY {MEM0}", "LDA {MEM0}", "JSR $B391", "LDX #<{REG0}", "LDY #>{REG0}", "JSR $BBD7", "LDA #<{MEM1}", "LDY #>{MEM1}", "STA G_REG",
+					"STY G_REG+1", "JSR ARRAYACCESS{*}"));
 			this.add(new Pattern("Quick copy into REG", new String[] { "{LINE0}", "{LINE1}", "STA TMP3_ZP", "STY TMP3_ZP+1", "{LINE3}", "{LINE4}", "JSR COPY2_XY" },
 					"LDA #<{MEM0}", "LDY #>{MEM0}", "JSR $BBA2", "LDX #<{REG0}", "LDY #>{REG0}", "JSR $BBD7"));
 			this.add(new Pattern("Simplified CMP with 0", new String[] { "{LINE0}", "LDA $61" }, "JSR $BBA2", "LDX #<{REG0}", "LDY #>{REG0}", "JSR $BBD7", "LDA #<{#0.0}",
@@ -41,6 +48,8 @@ public class Optimizer64 implements Optimizer {
 					new String[] { "JSR $BBA2", "JSR $B7F7", "STY 105", "STA 106", "LDA {MEM0}", "LDY #0", "STA (105),Y" }, "JSR $BBA2", "JSR PUSHREAL", "LDY {MEM0}",
 					"LDA {MEM0}", "JSR $B391", "LDX #<{REG0}", "LDY #>{REG0}", "JSR $BBD7", "JSR POPREAL", "JSR $B7F7", "STY 105", "STA 106", "LDA #<{REG0}", "LDY #>{REG0}",
 					"JSR $BBA2", "JSR $B7F7", "TYA", "LDY #0", "STA (105),Y"));
+			this.add(new Pattern("CHR with integer constant", new String[] { "LDA{MEM0}", "JSR CHRINT" }, "LDY {MEM0}", "LDA {MEM0}", "JSR $B391", "LDX #<{REG0}", "LDY #>{REG0}",
+					"JSR $BBD7", "JSR CHR"));
 			this.add(new Pattern("NEXT check simplified", new String[] { "JSR NEXT", "LDA A_REG", "{LINE8}", "JMP (JUMP_TARGET)" }, "JSR NEXT", "LDY {MEM0}", "LDA {MEM0}",
 					"CPY A_REG", "BNE {*}", "CMP A_REG+1", "BNE {*}", "{LABEL}", "BNE {*}", "JMP (JUMP_TARGET)"));
 			this.add(new Pattern("Multiple loads of the same value(1)", new String[] { "{LINE0}", "{LINE1}", "{LINE2}", "{LINE3}", "{LINE4}", "{LINE5}", "{LINE9}", "{LINE10}",

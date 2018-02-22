@@ -47,7 +47,7 @@ public class TransformerTest {
 
 		final Assembler assy = initTestEnvironment(vary);
 		FileWriter.writeAsPrg(assy.getProgram(), "++testarrays.prg", true);
-		assy.getCpu().setCpuTracer(new MyTracer(assy));
+		//assy.getCpu().setCpuTracer(new MyTracer(assy));
 		Machine machine = executeTest(assy);
 		
 		int[] ram=machine.getRam();
@@ -363,7 +363,8 @@ public class TransformerTest {
 
 				System.out.println(opcodePc + " - " + opcode + " -> " + newPc + " / a=" + cpu.getAcc() + " / x=" + cpu.getX() + " / y=" + cpu.getY() + "/ z="
 						+ (cpu.getStatus() & 0b10) + " / 105=" + assy.getMachine().getRam()[105] + " / 106=" + assy.getMachine().getRam()[106] + "/" + line + " "
-						+ assy.getRam()[opcodePc + 1] + " / FAC=" + fac + " / FAC2=" + fac2 + "/" + Integer.toHexString(assy.getMachine().getRam()[0x1410+12])+"-"+Integer.toHexString(assy.getMachine().getRam()[0x1410+13]));
+						+ assy.getRam()[opcodePc + 1] + " / FAC=" + fac + " / FAC2=" + fac2);
+					
 			} else {
 				/*
 				 * System.out.println(opcodePc + " - " + opcode + " -> " + newPc

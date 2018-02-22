@@ -49,8 +49,8 @@ public class Pattern {
 						String postFix = "";
 						if (!replacement[i].endsWith("}")) {
 							int pos = replacement[i].indexOf("}");
-							replacement[i] = replacement[i].substring(0, pos);
 							postFix = replacement[i].substring(pos + 1);
+							replacement[i] = replacement[i].substring(0, pos+1);
 						}
 						int num = Integer.parseInt(replacement[i].substring(5, replacement[i].length() - 1));
 						List<String> sub = new ArrayList<String>(code.subList(index, end + 1));
@@ -115,7 +115,7 @@ public class Pattern {
 			return inc(ix);
 		}
 		String ft = part.substring(0, 3);
-		if (ft.equals("JMP") || ft.equals("BEQ") || ft.endsWith("JMP") || ft.equals("BNE") || ft.equals("BCC") || ft.equals("BCS")) {
+		if (ft.equals("JSR") || ft.equals("JMP") || ft.equals("BEQ") || ft.endsWith("JMP") || ft.equals("BNE") || ft.equals("BCC") || ft.equals("BCS")) {
 			if (part.endsWith("{*}") && line.startsWith(ft)) {
 				return inc(ix);
 			}
