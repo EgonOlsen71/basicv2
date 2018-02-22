@@ -4,6 +4,19 @@ START		RTS
 ;###################################
 END			RTS
 ;###################################
+LEN			LDA B_REG
+			STA TMP_ZP
+			LDA B_REG+1
+			STA TMP_ZP+1
+			LDY #0
+			LDA (TMP_ZP),Y
+			TAY
+			LDA #0
+			JSR $B391
+			LDX #<X_REG
+			LDY #>X_REG
+			JMP $BBD7	;RTS is implicit
+;###################################
 CHR			LDA #1
 			STA WORKBUF
 			LDA #<Y_REG
@@ -148,6 +161,10 @@ LOOP		LDA (TMP_ZP),Y	; Copy the actual string
 			STA (TMP3_ZP),Y
 EXITCOPY	RTS
 
+;###################################
+INTOUT		JMP REALOUT
+;###################################
+INTOUTBRK  	JMP REALOUTBRK
 ;###################################
 REALOUT		LDA #<X_REG
 			LDY #>X_REG
