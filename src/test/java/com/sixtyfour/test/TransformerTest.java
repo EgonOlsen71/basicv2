@@ -37,8 +37,8 @@ public class TransformerTest {
 		//testTransformerPrime();
 		// testTransformerSqr();
 		//testTransformer8();
-		//testTransformer9();
-	    testTransformer10();
+		testTransformer9();
+	    //testTransformer10();
 	}
 
 	private static void testTransformer9() throws Exception {

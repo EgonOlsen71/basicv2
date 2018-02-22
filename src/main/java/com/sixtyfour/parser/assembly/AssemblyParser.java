@@ -245,8 +245,8 @@ public class AssemblyParser {
 		} else if (datupper.startsWith(".REAL")) {
 			String[] parts = data.substring(5).trim().split(" ");
 			for (String part : parts) {
-				float val = getRealValue(part);
-				int[] res = Conversions.compactFloat(Conversions.convertFloat(val));
+				double val = getRealValue(part);
+				int[] res = Conversions.compactFloat(Conversions.convertDouble(val));
 				for (int r : res) {
 					ram.add(getLowByte(r));
 				}
@@ -419,10 +419,10 @@ public class AssemblyParser {
 		}
 	}
 
-	private static float getRealValue(String number) {
+	private static double getRealValue(String number) {
 		number = number.trim();
 		try {
-			return Float.parseFloat(number);
+			return Double.parseDouble(number);
 		} catch (Exception e) {
 			throw new RuntimeException("Invalid number: " + number, e);
 		}
