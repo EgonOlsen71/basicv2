@@ -7,6 +7,7 @@ END			RTS
 STR			LDA #<Y_REG
 			LDY #>Y_REG
 			JSR $BBA2
+			LDY #$00
 			JSR $BDDF
 			LDY #0
 			STY TMP_ZP+1
@@ -18,10 +19,7 @@ STRLOOP		INY
 			BNE STRLOOP
 			INY
 			STY $FE
-			LDA #$FE
-			STA TMP_ZP
-			LDA #0
-			STA TMP_ZP+1
+			DEC TMP_ZP
 			LDA #<A_REG
 			LDY #>A_REG
 			JMP COPYSTRING ;RTS is implicit

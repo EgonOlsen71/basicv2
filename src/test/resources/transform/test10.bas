@@ -1,0 +1,1 @@
+10 c=0.202929221:print str$(c):print c
