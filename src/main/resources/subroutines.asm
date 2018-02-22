@@ -4,6 +4,44 @@ START		RTS
 ;###################################
 END			RTS
 ;###################################
+STR			LDA #<Y_REG
+			LDY #>Y_REG
+			JSR $BBA2
+			JSR $BDDF
+			LDY #0
+			STY TMP_ZP+1
+			LDA #$FF
+			STA TMP_ZP
+			DEY
+STRLOOP		INY
+			LDA (TMP_ZP),Y
+			BNE STRLOOP
+			INY
+			STY $FE
+			LDA #$FE
+			STA TMP_ZP
+			LDA #0
+			STA TMP_ZP+1
+			LDA #<A_REG
+			LDY #>A_REG
+			JMP COPYSTRING ;RTS is implicit
+;###################################
+VAL			LDA B_REG
+			STA $22
+			LDA B_REG+1
+			STA $23
+			LDY #0
+			STY $0D
+			LDA ($22),Y
+			TAY
+			INC $22
+			BNE VALSTR
+			INC $23
+VALSTR		JSR $B7B0
+			LDX #<X_REG
+			LDY #>X_REG
+			JMP $BBD7	;RTS is implicit
+;###################################
 LEN			LDA B_REG
 			STA TMP_ZP
 			LDA B_REG+1
@@ -64,8 +102,7 @@ READTID		LDA #0
 			STA $FE
 			LDA #<VAR_TI$
 			LDY #>VAR_TI$
-			JSR COPYSTRING
-			RTS			
+			JMP COPYSTRING	;RTS is implicit
 ;###################################
 ; Basic idea of how string handling works in this context: Each string assigned will be copied from the source to the target, except those in the constant pool.
 ; If the target can contain the new string, it will be copied into the same memory location, maybe with a shorter length.
