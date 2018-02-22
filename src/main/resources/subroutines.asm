@@ -69,12 +69,12 @@ COPYSTRING	STA TMP2_ZP
 			DEY
 			
 			LDA TMP_ZP+1		; Check if the source is a constant (upper bound). If so, don't copy it but just point to it
-			CMP #>VARIABLES
+			CMP #>CONSTANTS_END
 			BEQ CHECKLOW1
 			BCS INVAR
 			JMP CHECKNEXT
 CHECKLOW1	LDA TMP_ZP
-			CMP #<VARIABLES
+			CMP #<CONSTANTS_END
 			BCS INVAR
 			
 CHECKNEXT	LDA TMP_ZP+1		; Check if the source is a constant (lower bound). If so, don't copy it but just point to it
@@ -95,13 +95,13 @@ ISCONST		LDA TMP_ZP
 						
 INVAR		INY
 			LDA (TMP2_ZP),Y		; Check if the target is currently pointing into the constant pool. If so, don't update that memory by accident
-			CMP #>VARIABLES
+			CMP #>CONSTANTS_END
 			BEQ CHECKLOW2
 			BCS INVAR2
 			JMP UPDATEPTR
 CHECKLOW2	DEY
 			LDA (TMP2_ZP),Y
-			CMP #<VARIABLES
+			CMP #<CONSTANTS_END
 			BCS INVAR2
 			JMP UPDATEPTR
 INVAR2		LDY #0
