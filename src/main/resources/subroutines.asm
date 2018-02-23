@@ -15,8 +15,6 @@ START		LDA #<FPSTACK
 			LDY #>STRBUF
 			STA STRBUFP
 			STY STRBUFP+1
-			LDA #0
-			STA WORKBUFP
 			JSR INITVARS
 			RTS
 ;###################################
@@ -108,10 +106,14 @@ STRLOOP		INY
 			BNE STRLOOP
 			INY
 			STY $FE
+			TYA
+			TAX			; Length in X
 			DEC TMP_ZP
 			LDA #<A_REG
 			LDY #>A_REG
-			JMP COPYSTRING ;RTS is implicit
+			STA TMP2_ZP
+			STY TMP2_ZP+1
+			JMP COPYONLY ;RTS is implicit
 ;###################################
 VAL			LDA B_REG
 			STA $22
@@ -142,31 +144,50 @@ LEN			LDA B_REG
 			LDY #>X_REG
 			JMP $BBD7	;RTS is implicit
 ;###################################
-CHR			LDA #1
-			STA WORKBUF
+CHR			LDA STRBUFP
+			STA TMP_ZP
+			STA A_REG
+			LDA STRBUFP+1
+			STA TMP_ZP+1
+			STA A_REG+1
+			LDA #1
+			LDY #0
+			STA (TMP_ZP),Y
 			LDA #<Y_REG
 			LDY #>Y_REG
 			JSR $BBA2
 			JSR $B1AA
-			STY WORKBUF+1
-			LDA #<WORKBUF
-			STA TMP_ZP
-			LDA #>WORKBUF
-			STA TMP_ZP+1
-			LDA #<A_REG
-			LDY #>A_REG
-			JMP COPYSTRING ;RTS is implicit
+			TYA
+			LDY #1
+			STA (TMP_ZP),Y
+			LDA STRBUFP
+			CLC
+			ADC #2
+			STA STRBUFP
+			BCC NOCHR1
+			INC STRBUF+1
+NOCHR1		RTS
 ;###################################
-CHRINT		LDY #1
-			STY WORKBUF
-			STA WORKBUF+1
-			LDA #<WORKBUF
+CHRINT		TAX
+			LDA STRBUFP
 			STA TMP_ZP
-			LDA #>WORKBUF
+			STA A_REG
+			LDA STRBUFP+1
 			STA TMP_ZP+1
-			LDA #<A_REG
-			LDY #>A_REG
-			JMP COPYSTRING ;RTS is implicit
+			STA A_REG+1
+			LDA #1
+			LDY #0
+			STA (TMP_ZP),Y
+			TXA
+			INY
+			STA (TMP_ZP),Y
+			LDA STRBUFP
+			CLC
+			ADC #2
+			STA STRBUFP
+			BCC NOCHR2
+			INC STRBUF+1
+NOCHR2		RTS
 ;###################################
 WRITETID	LDY #0
 			LDA (TMP_ZP),Y
@@ -204,13 +225,17 @@ READTID		LDA #0
 			LDY #>VAR_TI$
 			JMP COPYSTRING	;RTS is implicit
 ;###################################
-; Basic idea of how string handling works in this context: Each string assigned will be copied from the source to the target, except those in the constant pool.
-; If the target can contain the new string, it will be copied into the same memory location, maybe with a shorter length.
-; If it doesn't fit, the new string will be copied into string memory and the target will point to it. Strings from the constant pool
-; will be referenced only and not copied.
+; Basic idea of how string handling works in this runtime: Each string assigned will be copied from the source to the target, except those in the constant pool.
+; If the target memory location can contain the new string, it will be copied into the same memory location, maybe with a shorter length.
+; If it doesn't fit, the new string will be copied into "fresh" string memory and the target will point to it. Strings from the constant pool
+; will be referenced only and not copied. The pointer into the string memory will then point "behind" the newly inserted string (if...).
+; If a new memory location for an actual string is being used, a second pointer will be updated to the next free location behind it. All temp strings (function calls, prints...)
+; will be stored behind this location, but won't update the pointer. Once an assignment goes into an existing string's memory location or into the constant pool,
+; the actual memory pointer can savely be reset to that pointer, discarding all the temp string after it.
 COPYSTRING	STA TMP2_ZP
 			STY TMP2_ZP+1
 			LDY #0
+			STY TMP_FLAG
 			LDA (TMP2_ZP),Y
 			STA TMP3_ZP
 			INY
@@ -241,6 +266,10 @@ ISCONST		LDA TMP_ZP
 			INY
 			LDA TMP_ZP+1
 			STA (TMP2_ZP),Y
+			LDA HIGHP			; Update the memory pointer to last actually assigned one
+			STA STRBUFP
+			LDA HIGHP+1
+			STA STRBUFP+1
 			RTS
 						
 INVAR		INY
@@ -248,20 +277,33 @@ INVAR		INY
 			CMP #>CONSTANTS_END
 			BEQ CHECKLOW2
 			BCS INVAR2
-			JMP UPDATEPTR
+			JMP PUPDATEPTR
 CHECKLOW2	DEY
 			LDA (TMP2_ZP),Y
 			CMP #<CONSTANTS_END
 			BCS INVAR2
-			JMP UPDATEPTR
+			JMP PUPDATEPTR
 INVAR2		LDY #0
 			LDA (TMP3_ZP),Y
 			STA TMP_REG
 			LDA (TMP_ZP),Y
 			TAX
 			CMP TMP_REG		; Compare the string-to-copy's length (in A) with the variable's current one (in TMP_REG)
-			BEQ STRFITS
-			BCC STRFITS		; does the new string fits into the old memory location?
+			BEQ UPDATEHP2
+			BCC UPDATEHP2	; does the new string fits into the old memory location?
+
+PUPDATEPTR	LDY #1			; No? Then new memory has to be used. Update the "highest memory position" in the process
+			STY TMP_FLAG	; to regain temp. memory used for non-assigned strings like for printing and such...
+			JMP UPDATEPTR	; ...we set a flag here to handle this case later
+
+UPDATEHP2	LDA HIGHP		; Update the memory pointer to last actually assigned one
+			STA STRBUFP
+			LDA HIGHP+1
+			STA STRBUFP+1
+			JMP STRFITS
+
+COPYONLY	LDY #0
+			STY TMP_FLAG
 UPDATEPTR	LDY #0
 			LDA STRBUFP		; no, then copy it into string memory later...
 			STA (TMP2_ZP),Y	; ...but update the string memory pointer now
@@ -279,15 +321,32 @@ UPDATEPTR	LDY #0
 NOCS1		INC STRBUFP
 			BNE STRFITS
 			INC STRBUFP+1
-STRFITS		LDY #0
+STRFITS		LDY TMP_FLAG	; Check if the pointer to the highest mem addr used by an actual string
+			BEQ NOHPUPDATE	; has to be update and do that...
+			LDA HIGHP+1
+			CMP STRBUFP+1
+			BCC UPDATEHIGHP
+			BEQ CHECKNEXTHP
+			JMP NOHPUPDATE
+CHECKNEXTHP	LDA HIGHP
+			CMP	STRBUFP
+			BCC UPDATEHIGHP
+			JMP NOHPUPDATE
+UPDATEHIGHP	LDA STRBUFP
+			STA HIGHP
+			LDA STRBUFP+1
+			STA HIGHP+1		; new pointer has been set
+NOHPUPDATE	LDY #0
 			LDA (TMP_ZP),Y	; Set the new length...
 			STA (TMP3_ZP),Y
 			TAY				; Copy length to Y
-			BEQ	EXITCOPY	; Length 0? nothing to copy then...
+			BEQ	ALMOSTEX	; Length 0? nothing to copy then...
 LOOP		LDA (TMP_ZP),Y	; Copy the actual string
 			STA (TMP3_ZP),Y
 			DEY
 			BNE LOOP
+ALMOSTEX	LDY TMP_FLAG
+			BNE	EXITCOPY
 EXITCOPY	RTS
 
 ;###################################
@@ -834,10 +893,6 @@ GOSUB		LDA FORSTACKP
 			LDA TMP_ZP+1
 			STA FORSTACKP+1
 			RTS
-
-;###################################
-COMPACT		RTS
-
 ;###################################
 GETSTR		RTS
 

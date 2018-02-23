@@ -34,11 +34,11 @@ public class TransformerTest {
 		// testTransformerFractal();
 		// testTransformer6();
 		// testTransformer7();
-		testTransformerPrime();
+		// testTransformerPrime();
 		// testTransformerSqr();
-		//testTransformer8();
+		// testTransformer8();
 		testTransformer9();
-	    //testTransformer10();
+		// testTransformer10();
 	}
 
 	private static void testTransformer9() throws Exception {
@@ -49,18 +49,18 @@ public class TransformerTest {
 		FileWriter.writeAsPrg(assy.getProgram(), "++testarrays.prg", true);
 		//assy.getCpu().setCpuTracer(new MyTracer(assy));
 		Machine machine = executeTest(assy);
-		
-		int[] ram=machine.getRam();
+
+		int[] ram = machine.getRam();
 		System.out.println();
 		System.out.print("[");
-		for (int i=0xfff; i<(0xfff)+22; i++) {
-		    System.out.print(Integer.toHexString(ram[i])+" ");
+		for (int i = 0xfff; i < (0xfff) + 22; i++) {
+			System.out.print(Integer.toHexString(ram[i]) + " ");
 		}
 		System.out.println("]");
 
 		System.out.println("Ticks: " + machine.getCpu().getClockTicks());
 	}
-	
+
 	private static void testTransformer10() throws Exception {
 		System.out.println("\n\ntestTransformer10");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/test10.bas");
@@ -69,32 +69,32 @@ public class TransformerTest {
 		FileWriter.writeAsPrg(assy.getProgram(), "++testacc.prg", true);
 		assy.getCpu().setCpuTracer(new MyTracer(assy));
 		Machine machine = executeTest(assy);
-		
-		int[] ram=machine.getRam();
+
+		int[] ram = machine.getRam();
 		System.out.println();
 
 		System.out.println("Ticks: " + machine.getCpu().getClockTicks());
-		
+
 		System.out.println();
 		System.out.print("[");
-		for (int i=0xf00; i<(0xf00)+5; i++) {
-		    System.out.print(Integer.toHexString(ram[i])+" ");
+		for (int i = 0xf00; i < (0xf00) + 5; i++) {
+			System.out.print(Integer.toHexString(ram[i]) + " ");
 		}
 		System.out.println("]");
-		
+
 		System.out.println("----------------------------------------");
-		Basic basy=new Basic(vary);
+		Basic basy = new Basic(vary);
 		basy.run();
 		System.out.println("----------------------------------------");
 	}
-	
+
 	private static void testTransformer8() throws Exception {
 		System.out.println("\n\ntestTransformer8");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/test8.bas");
 
 		final Assembler assy = initTestEnvironment(vary);
 		FileWriter.writeAsPrg(assy.getProgram(), "++teststrings.prg", true);
-		//assy.getCpu().setCpuTracer(new MyTracer(assy));
+		// assy.getCpu().setCpuTracer(new MyTracer(assy));
 		Machine machine = executeTest(assy);
 
 		System.out.println("Ticks: " + machine.getCpu().getClockTicks());
@@ -360,11 +360,13 @@ public class TransformerTest {
 			float fac = Conversions.convertFloat(assy.getMachine(), 97);
 			float fac2 = Conversions.convertFloat(assy.getMachine(), 105);
 			if (line != null) {
-
+				int addr=0x18b5;
+				int strBufPtr = assy.getRam()[addr] + 256 * assy.getRam()[addr+1];
+				int strBufPtr2 = assy.getRam()[addr+2] + 256 * assy.getRam()[addr+3];
 				System.out.println(opcodePc + " - " + opcode + " -> " + newPc + " / a=" + cpu.getAcc() + " / x=" + cpu.getX() + " / y=" + cpu.getY() + "/ z="
 						+ (cpu.getStatus() & 0b10) + " / 105=" + assy.getMachine().getRam()[105] + " / 106=" + assy.getMachine().getRam()[106] + "/" + line + " "
-						+ assy.getRam()[opcodePc + 1] + " / FAC=" + fac + " / FAC2=" + fac2);
-					
+						+ assy.getRam()[opcodePc + 1] + " / FAC=" + fac + " / FAC2=" + fac2 + " / " + strBufPtr + " / " + strBufPtr2);
+
 			} else {
 				/*
 				 * System.out.println(opcodePc + " - " + opcode + " -> " + newPc
