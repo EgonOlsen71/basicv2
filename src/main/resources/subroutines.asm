@@ -15,6 +15,8 @@ START		LDA #<FPSTACK
 			LDY #>STRBUF
 			STA STRBUFP
 			STY STRBUFP+1
+			LDA #0
+			STA MEMCHUNK
 			JSR INITVARS
 			RTS
 ;###################################
@@ -232,9 +234,13 @@ READTID		LDA #0
 ; If a new memory location for an actual string is being used, a second pointer will be updated to the next free location behind it. All temp strings (function calls, prints...)
 ; will be stored behind this location, but won't update the pointer. Once an assignment goes into an existing string's memory location or into the constant pool,
 ; the actual memory pointer can savely be reset to that pointer, discarding all the temp string after it.
+; In addition, the routine keeps track of one additional block of free memory between the "last" pointer and the new one. This memory can be assigned as well, if a new
+; string fits into it. It's size is max. 256 bytes and it decreases when parts of it are being used.
 COPYSTRING	STA TMP2_ZP
 			STY TMP2_ZP+1
 			LDY #0
+			LDA (TMP_ZP),Y
+			TAX					; Store the length of the source in X...this is valid until right to the end, where it's not longer used anyway
 			STY TMP_FLAG
 			LDA (TMP2_ZP),Y
 			STA TMP3_ZP
@@ -266,7 +272,7 @@ ISCONST		LDA TMP_ZP
 			INY
 			LDA TMP_ZP+1
 			STA (TMP2_ZP),Y
-			LDA HIGHP			; Update the memory pointer to last actually assigned one
+			LDA HIGHP			; Update the memory pointer to the last actually assigned one
 			STA STRBUFP
 			LDA HIGHP+1
 			STA STRBUFP+1
@@ -286,17 +292,42 @@ CHECKLOW2	DEY
 INVAR2		LDY #0
 			LDA (TMP3_ZP),Y
 			STA TMP_REG
-			LDA (TMP_ZP),Y
-			TAX
+			TXA
 			CMP TMP_REG		; Compare the string-to-copy's length (in A) with the variable's current one (in TMP_REG)
 			BEQ UPDATEHP2
 			BCC UPDATEHP2	; does the new string fits into the old memory location?
 
-PUPDATEPTR	LDY #1			; No? Then new memory has to be used. Update the "highest memory position" in the process
+PUPDATEPTR	TXA
+			CMP MEMCHUNK	; No? Then test, if the MEMCHUNK pointer hold a chunk of memory that fits...
+			BEQ CHUNKEQ
+			BCS NOCHUNK
+CHUNKEQ		LDA MEMCHUNK+1	; yes, it fits. Move the target pointer to the start of the free chunk...
+			LDY #0
+			STA (TMP2_ZP),Y
+			STA TMP3_ZP
+			INY
+			LDA MEMCHUNK+2
+			STA (TMP2_ZP),Y
+			STA TMP3_ZP+1
+			SEC
+			STX TMP_REG
+			LDA MEMCHUNK	; ...and adjust the size of the chunk
+			SEC
+			SBC TMP_REG
+			STA MEMCHUNK
+			CLC
+			LDA MEMCHUNK+1
+			ADC TMP_REG
+			STA MEMCHUNK+1
+			BCC NOOVCHUNK1
+			INC MEMCHUNK+2
+NOOVCHUNK1	JMP	NOHPUPDATE	; Chunk assigned and adjusted
+
+NOCHUNK		LDY #1			; No? Then new memory has to be used. Update the "highest memory position" in the process
 			STY TMP_FLAG	; to regain temp. memory used for non-assigned strings like for printing and such...
 			JMP UPDATEPTR	; ...we set a flag here to handle this case later
 
-UPDATEHP2	LDA HIGHP		; Update the memory pointer to last actually assigned one
+UPDATEHP2	LDA HIGHP		; Update the memory pointer to the last assigned one
 			STA STRBUFP
 			LDA HIGHP+1
 			STA STRBUFP+1
@@ -332,7 +363,20 @@ CHECKNEXTHP	LDA HIGHP
 			CMP	STRBUFP
 			BCC UPDATEHIGHP
 			JMP NOHPUPDATE
-UPDATEHIGHP	LDA STRBUFP
+UPDATEHIGHP	SEC
+			LDA TMP3_ZP		; Store the location and the size of the skipped memory part for later use
+			SBC HIGHP
+			TAX
+			LDA TMP3_ZP+1
+			SBC HIGHP+1
+			BEQ STORELEN
+			LDX #$FF		; While the chunk might be larger than 256 byte, we use only the first 256 bytes here.
+STORELEN	STX MEMCHUNK	; Store the chunk's length....X doesn't store the source's length anymore from here on
+			LDA HIGHP
+			STA MEMCHUNK+1
+			LDA HIGHP+1
+			STA MEMCHUNK+2	; ...and the address
+			LDA STRBUFP
 			STA HIGHP
 			LDA STRBUFP+1
 			STA HIGHP+1		; new pointer has been set

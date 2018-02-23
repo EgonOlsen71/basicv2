@@ -47,7 +47,7 @@ public class TransformerTest {
 
 		final Assembler assy = initTestEnvironment(vary);
 		FileWriter.writeAsPrg(assy.getProgram(), "++testarrays.prg", true);
-		//assy.getCpu().setCpuTracer(new MyTracer(assy));
+		assy.getCpu().setCpuTracer(new MyTracer(assy));
 		Machine machine = executeTest(assy);
 
 		int[] ram = machine.getRam();
@@ -360,12 +360,13 @@ public class TransformerTest {
 			float fac = Conversions.convertFloat(assy.getMachine(), 97);
 			float fac2 = Conversions.convertFloat(assy.getMachine(), 105);
 			if (line != null) {
-				int addr=0x18b5;
-				int strBufPtr = assy.getRam()[addr] + 256 * assy.getRam()[addr+1];
-				int strBufPtr2 = assy.getRam()[addr+2] + 256 * assy.getRam()[addr+3];
+				int addr = 0x194a;
+				int strBufPtr = assy.getRam()[addr] + 256 * assy.getRam()[addr + 1];
+				int strBufPtr2 = assy.getRam()[addr + 2] + 256 * assy.getRam()[addr + 3];
+				String memChunk = assy.getRam()[addr - 3] + ":" + (assy.getRam()[addr - 2] + 256 * assy.getRam()[addr - 1]);
 				System.out.println(opcodePc + " - " + opcode + " -> " + newPc + " / a=" + cpu.getAcc() + " / x=" + cpu.getX() + " / y=" + cpu.getY() + "/ z="
 						+ (cpu.getStatus() & 0b10) + " / 105=" + assy.getMachine().getRam()[105] + " / 106=" + assy.getMachine().getRam()[106] + "/" + line + " "
-						+ assy.getRam()[opcodePc + 1] + " / FAC=" + fac + " / FAC2=" + fac2 + " / " + strBufPtr + " / " + strBufPtr2);
+						+ assy.getRam()[opcodePc + 1] + " / FAC=" + fac + " / FAC2=" + fac2 + " / " + strBufPtr + " / " + strBufPtr2 + " # " + memChunk);
 
 			} else {
 				/*

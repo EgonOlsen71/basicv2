@@ -5,7 +5,7 @@
 30 print a$(2);a$(5);a$(7)
 40 print a$(6):printti$:printg$(1,2):print len(a$(2))+len(a$(5))
 45 a=1+len(a$(2)):printa+35
-50 a$="128.2223":b$="12 3 45 66":print val(a$);val(b$)
+50 a$="128.2223":b$="12 2 3 4 545":print val(a$);val(b$)
 60 print"c: ";str$(c);:printc:c=c+0.202929221
-70 printstr$(c):printc:print"time: ";:printti
+70 printstr$(c):printc:b$=str$(c):printa$:print"time: ";:printti
 80 nextx
