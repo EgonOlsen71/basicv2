@@ -1,6 +1,95 @@
 ;###################################
-START		RTS
-
+START		LDA #<FPSTACK
+			LDY #>FPSTACK
+			STA FPSTACKP
+			STY FPSTACKP+1
+			LDA #<FORSTACK
+			LDY #>FORSTACK
+			STA FORSTACKP
+			STY FORSTACKP+1
+			LDA #<CONCATBUF
+			LDY #>CONCATBUF
+			STA CONCATBUFP
+			STY CONCATBUFP+1
+			LDA #<STRBUF
+			LDY #>STRBUF
+			STA STRBUFP
+			STY STRBUFP+1
+			LDA #0
+			STA WORKBUFP
+			JSR INITVARS
+			RTS
+;###################################
+INITNARRAY 
+			STA TMP_ZP
+			STY TMP_ZP+1
+			LDY #0
+			LDA #0
+NINITLOOP	STA (TMP_ZP),Y
+			LDA TMP3_ZP+1
+			CLC
+			LDA TMP_ZP
+			ADC #1
+			STA TMP_ZP
+			LDA TMP_ZP+1
+			ADC #0
+			STA TMP_ZP+1
+			SEC
+			LDA TMP2_ZP
+			SBC #1
+			STA TMP2_ZP
+			LDA TMP2_ZP+1
+			SBC #0
+			STA TMP2_ZP+1
+			LDA TMP2_ZP
+			BNE NINITLOOP
+			LDA TMP2_ZP+1
+			BNE NINITLOOP
+			RTS
+;###################################
+INITSTRARRAY 
+			STA TMP_ZP
+			STY TMP_ZP+1
+			LDY #0
+SINITLOOP	LDA #<EMPTYSTR
+			STA (TMP_ZP),Y
+			LDA #>EMPTYSTR
+			INY
+			STA (TMP_ZP),Y
+			CLC
+			LDA TMP_ZP
+			ADC #2
+			STA TMP_ZP
+			LDA TMP_ZP+1
+			ADC #0
+			STA TMP_ZP+1
+			SEC
+			LDA TMP2_ZP
+			SBC #2
+			STA TMP2_ZP
+			LDA TMP2_ZP+1
+			SBC #0
+			STA TMP2_ZP+1
+			LDA TMP2_ZP
+			BNE SINITLOOP
+			LDA TMP2_ZP+1
+			BNE SINITLOOP
+			RTS
+;###################################
+INITSPARAMS	STY TMP_ZP+1
+			SEC
+			SBC #2
+			STA TMP_ZP
+			TYA
+			SBC #0
+			STA TMP_ZP+1
+			LDY #0
+			LDA (TMP_ZP),Y
+			STA TMP2_ZP
+			INY
+			LDA (TMP_ZP),Y
+			STA TMP2_ZP+1
+			RTS
 ;###################################
 END			RTS
 ;###################################
@@ -61,19 +150,23 @@ CHR			LDA #1
 			JSR $B1AA
 			STY WORKBUF+1
 			LDA #<WORKBUF
-			STA A_REG
+			STA TMP_ZP
 			LDA #>WORKBUF
-			STA A_REG+1
-			RTS
+			STA TMP_ZP+1
+			LDA #<A_REG
+			LDY #>A_REG
+			JMP COPYSTRING ;RTS is implicit
 ;###################################
 CHRINT		LDY #1
 			STY WORKBUF
 			STA WORKBUF+1
 			LDA #<WORKBUF
-			STA A_REG
+			STA TMP_ZP
 			LDA #>WORKBUF
-			STA A_REG+1
-			RTS
+			STA TMP_ZP+1
+			LDA #<A_REG
+			LDY #>A_REG
+			JMP COPYSTRING ;RTS is implicit
 ;###################################
 WRITETID	LDY #0
 			LDA (TMP_ZP),Y
