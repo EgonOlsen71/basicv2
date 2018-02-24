@@ -37,4 +37,9 @@ public class C64Platform implements PlatformProvider {
 		return true;
 	}
 
+	@Override
+	public int getStringMemoryEnd() {
+		return 0xa000;
+	}
+
 }

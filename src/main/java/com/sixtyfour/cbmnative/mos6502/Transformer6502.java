@@ -116,6 +116,7 @@ public class Transformer6502 implements Transformer {
 	res.add("CONCATBUF\t.ARRAY 256");
 	res.add("MEMCHUNK\t.BYTE 0 0 0");
 	res.add("HIGHP\t.WORD STRBUF");
+	res.add("ENDSTRBUF\t.WORD "+platform.getStringMemoryEnd());
 	res.add("STRBUFP\t.WORD STRBUF");
 	res.add("STRBUF\t.BYTE 0");
 	return res;

@@ -15,6 +15,8 @@ START		LDA #<FPSTACK
 			LDY #>STRBUF
 			STA STRBUFP
 			STY STRBUFP+1
+			STA HIGHP
+			STY HIGHP+1
 			LDA #0
 			STA MEMCHUNK
 			JSR INITVARS
@@ -298,10 +300,9 @@ INVAR2		LDY #0
 			BCC UPDATEHP2	; does the new string fits into the old memory location?
 
 PUPDATEPTR	TXA
-			CMP MEMCHUNK	; No? Then test, if the MEMCHUNK pointer hold a chunk of memory that fits...
-			BEQ CHUNKEQ
+			CMP MEMCHUNK	; No? Then test, if the MEMCHUNK pointer hold a chunk of memory that fits... (+1 for the length)
 			BCS NOCHUNK
-CHUNKEQ		LDA MEMCHUNK+1	; yes, it fits. Move the target pointer to the start of the free chunk...
+			LDA MEMCHUNK+1	; yes, it fits. Move the target pointer to the start of the free chunk...
 			LDY #0
 			STA (TMP2_ZP),Y
 			STA TMP3_ZP
@@ -315,6 +316,7 @@ CHUNKEQ		LDA MEMCHUNK+1	; yes, it fits. Move the target pointer to the start of 
 			SEC
 			SBC TMP_REG
 			STA MEMCHUNK
+			INC TMP_REG		; +1, because the length has to be stored as well
 			CLC
 			LDA MEMCHUNK+1
 			ADC TMP_REG
@@ -335,7 +337,16 @@ UPDATEHP2	LDA HIGHP		; Update the memory pointer to the last assigned one
 
 COPYONLY	LDY #0
 			STY TMP_FLAG
-UPDATEPTR	LDY #0
+UPDATEPTR	LDY	ENDSTRBUF+1	; Check, if enough memory is available. This is a rough check, it requires at least 256 bytes to be free or otherwise,
+			DEY				; it will fail. This isn't very memory efficient, but it's faster to check this way...
+			CPY STRBUFP+1
+			BEQ CHECKLOWMEM
+			BCS MEMOK
+CHECKLOWMEM LDA ENDSTRBUF
+			CMP STRBUFP
+			BCS MEMOK
+			JMP OUTOFMEMORY
+MEMOK		LDY #0
 			LDA STRBUFP		; no, then copy it into string memory later...
 			STA (TMP2_ZP),Y	; ...but update the string memory pointer now
 			STA TMP3_ZP
@@ -353,7 +364,7 @@ NOCS1		INC STRBUFP
 			BNE STRFITS
 			INC STRBUFP+1
 STRFITS		LDY TMP_FLAG	; Check if the pointer to the highest mem addr used by an actual string
-			BEQ NOHPUPDATE	; has to be update and do that...
+			BEQ NOHPUPDATE	; has to be updated and do that...
 			LDA HIGHP+1
 			CMP STRBUFP+1
 			BCC UPDATEHIGHP
@@ -370,7 +381,7 @@ UPDATEHIGHP	SEC
 			LDA TMP3_ZP+1
 			SBC HIGHP+1
 			BEQ STORELEN
-			LDX #$FF		; While the chunk might be larger than 256 byte, we use only the first 256 bytes here.
+			LDX #$FF		; While the chunk might be larger than 25% byte, we use only the first 255 bytes here (+1 for length).
 STORELEN	STX MEMCHUNK	; Store the chunk's length....X doesn't store the source's length anymore from here on
 			LDA HIGHP
 			STA MEMCHUNK+1
@@ -1050,6 +1061,8 @@ DONE		RTS
 
 NEXTWOFOR	LDX #$0A
 			JMP $A437
+
+OUTOFMEMORY	JMP $A435
 
 ILLEGALQUANTITY
 			JMP $B248
