@@ -432,13 +432,11 @@ NOHPUPDATE	LDY #0
 			LDA (TMP_ZP),Y	; Set the new length...
 			STA (TMP3_ZP),Y
 			TAY				; Copy length to Y
-			BEQ	ALMOSTEX	; Length 0? nothing to copy then...
+			BEQ	EXITCOPY	; Length 0? nothing to copy then...
 LOOP		LDA (TMP_ZP),Y	; Copy the actual string
 			STA (TMP3_ZP),Y
 			DEY
 			BNE LOOP
-ALMOSTEX	LDY TMP_FLAG
-			BNE	EXITCOPY
 EXITCOPY	RTS
 
 ;###################################
@@ -502,7 +500,12 @@ STROUT		LDA A_REG
 			INC $22
 			BNE PRINTSTR
 			INC $23
-PRINTSTR	JMP $AB25	;RTS is implicit
+PRINTSTR	JSR $AB25
+			LDA HIGHP			; Update the memory pointer to the last actually assigned one
+			STA STRBUFP
+			LDA HIGHP+1
+			STA STRBUFP+1
+			RTS
 ;###################################
 STROUTBRK	LDA A_REG
 			STA $22
@@ -515,6 +518,10 @@ STROUTBRK	LDA A_REG
 			BNE PRINTSTR2
 			INC $23
 PRINTSTR2	JSR $AB25
+			LDA HIGHP			; Update the memory pointer to the last actually assigned one
+			STA STRBUFP
+			LDA HIGHP+1
+			STA STRBUFP+1
 			LDA #$0D
 			JMP $FFD2 	;RTS is implicit
 ;###################################
