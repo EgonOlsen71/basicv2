@@ -40,5 +40,10 @@ public interface PlatformProvider {
 	 * @return
 	 */
 	int getStringMemoryEnd();
+	
+	/**
+	 * @return
+	 */
+	int getMemoryStackSize();
 
 }

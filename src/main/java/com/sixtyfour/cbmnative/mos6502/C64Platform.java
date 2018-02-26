@@ -42,4 +42,9 @@ public class C64Platform implements PlatformProvider {
 		return 0xa000;
 	}
 
+	@Override
+	public int getMemoryStackSize() {
+	    return 10;
+	}
+
 }

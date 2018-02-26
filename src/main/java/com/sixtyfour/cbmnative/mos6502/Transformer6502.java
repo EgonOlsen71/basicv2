@@ -40,6 +40,8 @@ public class Transformer6502 implements Transformer {
 	vars.add("VARIABLES");
 	Map<String, String> name2label = new HashMap<String, String>();
 
+	int memStackSize=Math.min(255,platform.getMemoryStackSize()*3);
+	res.add("MEMORY_STACK_SIZE = "+memStackSize);
 	res.add("TMP_ZP = 105");
 	res.add("TMP2_ZP = 107");
 	res.add("TMP3_ZP = 34");
@@ -114,6 +116,8 @@ public class Transformer6502 implements Transformer {
 	res.add("EMPTYSTR\t.BYTE 0");
 	res.add("CONCATBUFP\t.WORD CONCATBUF");
 	res.add("CONCATBUF\t.ARRAY 256");
+	res.add("MEMORYSTACKP\t.BYTE 0");
+	res.add("MEMORYSTACK\t.ARRAY "+memStackSize);
 	res.add("MEMCHUNK\t.BYTE 0 0 0");
 	res.add("HIGHP\t.WORD STRBUF");
 	res.add("STRBUFP\t.WORD STRBUF");

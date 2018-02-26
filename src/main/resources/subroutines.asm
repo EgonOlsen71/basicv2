@@ -19,6 +19,7 @@ START		LDA #<FPSTACK
 			STY HIGHP+1
 			LDA #0
 			STA MEMCHUNK
+			STA MEMORYSTACKP
 			JSR INITVARS
 			RTS
 ;###################################
@@ -325,7 +326,23 @@ PUPDATEPTR	TXA
 			INC MEMCHUNK+2
 NOOVCHUNK1	JMP	NOHPUPDATE	; Chunk assigned and adjusted
 
-NOCHUNK		LDY #1			; No? Then new memory has to be used. Update the "highest memory position" in the process
+NOCHUNK		LDA MEMORYSTACKP		; No? Then walk the memory stack backwards to see if there is something that fits...
+			BEQ NOTONSTACK			; If the stack is empty, exit here. If not, check against the stack...
+			DEC MEMORYSTACKP		; For that, move the next block on the stack into the chunk pointer...
+			DEC MEMORYSTACKP
+			DEC MEMORYSTACKP
+			LDY MEMORYSTACKP
+			LDA MEMORYSTACK,Y
+			;STA 53280
+			STA MEMCHUNK
+			INY
+			LDA MEMORYSTACK,Y
+			STA MEMCHUNK+1
+			INY
+			LDA MEMORYSTACK,Y
+			STA MEMCHUNK+2
+			JMP PUPDATEPTR	; ...and check again
+NOTONSTACK	LDY #1			; No? Then new memory has to be used. Update the "highest memory position" in the process
 			STY TMP_FLAG	; to regain temp. memory used for non-assigned strings like for printing and such...
 			JMP UPDATEPTR	; ...we set a flag here to handle this case later
 
@@ -381,8 +398,27 @@ UPDATEHIGHP	SEC
 			LDA TMP3_ZP+1
 			SBC HIGHP+1
 			BEQ STORELEN
-			LDX #$FF		; While the chunk might be larger than 255 byte, we use only the first 255 bytes here (+1 for length).
-STORELEN	STX MEMCHUNK	; Store the chunk's length....X doesn't contain the source's length anymore from here on
+			LDX #$FF			; While the chunk might be larger than 255 byte, we use only the first 255 bytes here (+1 for length).
+STORELEN	LDA MEMORYSTACKP	; Put the "old" chunk on the memory stack, if there's still room left
+			CMP #MEMORY_STACK_SIZE
+			BCS NOSPACELEFT
+			LDA MEMCHUNK
+			BEQ NOSPACELEFT
+			CMP #10
+			BCC NOSPACELEFT		; If the "old" chunk is rather small, then ignore it
+			;STA 53281
+			LDY MEMORYSTACKP
+			STA MEMORYSTACK,Y
+			LDA MEMCHUNK+1
+			INY
+			STA MEMORYSTACK,Y
+			LDA MEMCHUNK+2
+			INY
+			STA MEMORYSTACK,Y
+			INC MEMORYSTACKP
+			INC MEMORYSTACKP
+			INC MEMORYSTACKP	; Update memory stack pointer to the next position
+NOSPACELEFT	STX MEMCHUNK	; Store the chunk's length....X doesn't contain the source's length anymore from here on
 			LDA HIGHP
 			STA MEMCHUNK+1
 			LDA HIGHP+1
