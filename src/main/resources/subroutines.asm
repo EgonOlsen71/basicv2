@@ -300,7 +300,7 @@ INVAR2		LDY #0
 			BCC UPDATEHP2	; does the new string fits into the old memory location?
 
 PUPDATEPTR	TXA
-			CMP MEMCHUNK	; No? Then test, if the MEMCHUNK pointer hold a chunk of memory that fits... (+1 for the length)
+			CMP MEMCHUNK	; No? Then test, if the MEMCHUNK pointer holds a chunk of memory that fits... (+1 for the length)
 			BCS NOCHUNK
 			LDA MEMCHUNK+1	; yes, it fits. Move the target pointer to the start of the free chunk...
 			LDY #0
@@ -381,8 +381,8 @@ UPDATEHIGHP	SEC
 			LDA TMP3_ZP+1
 			SBC HIGHP+1
 			BEQ STORELEN
-			LDX #$FF		; While the chunk might be larger than 25% byte, we use only the first 255 bytes here (+1 for length).
-STORELEN	STX MEMCHUNK	; Store the chunk's length....X doesn't store the source's length anymore from here on
+			LDX #$FF		; While the chunk might be larger than 255 byte, we use only the first 255 bytes here (+1 for length).
+STORELEN	STX MEMCHUNK	; Store the chunk's length....X doesn't contain the source's length anymore from here on
 			LDA HIGHP
 			STA MEMCHUNK+1
 			LDA HIGHP+1
