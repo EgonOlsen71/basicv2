@@ -18,8 +18,8 @@ START		LDA #<FPSTACK
 			STA HIGHP
 			STY HIGHP+1
 			LDA #0
-			STA MEMCHUNK
-			STA MEMORYSTACKP
+			STA LASTVAR
+			STA LASTVAR+1
 			JSR INITVARS
 			RTS
 ;###################################
@@ -230,22 +230,18 @@ READTID		LDA #0
 			LDY #>VAR_TI$
 			JMP COPYSTRING	;RTS is implicit
 ;###################################
-; Basic idea of how string handling works in this runtime: Each string assigned will be copied from the source to the target, except those in the constant pool.
-; If the target memory location can contain the new string, it will be copied into the same memory location, maybe with a shorter length.
-; If it doesn't fit, the new string will be copied into "fresh" string memory and the target will point to it. Strings from the constant pool
-; will be referenced only and not copied. The pointer into the string memory will then point "behind" the newly inserted string (if...).
-; If a new memory location for an actual string is being used, a second pointer will be updated to the next free location behind it. All temp strings (function calls, prints...)
-; will be stored behind this location, but won't update the pointer. Once an assignment goes into an existing string's memory location or into the constant pool,
-; the actual memory pointer can savely be reset to that pointer, discarding all the temp string after it.
-; In addition, the routine keeps track of one additional block of free memory between the "last" pointer and the new one. This memory can be assigned as well, if a new
-; string fits into it. It's size is max. 256 bytes and it decreases when parts of it are being used.
-; If a new additional block is created, the old one (if it's still large enough) will be stored on a stack and used again if the new block doesn't have space anymore.
 COPYSTRING	STA TMP2_ZP
 			STY TMP2_ZP+1
-			LDY #0
+			CPY TMP_ZP+1
+			BNE CONTCOPY
+			LDA TMP2_ZP
+			CMP TMP_ZP
+			BNE CONTCOPY
+			RTS					; A copy from a variable into the same instance is pointless an will be ignored.
+CONTCOPY	LDY #0
+			STY TMP_FLAG
 			LDA (TMP_ZP),Y
 			TAX					; Store the length of the source in X...this is valid until right to the end, where it's not longer used anyway
-			STY TMP_FLAG
 			LDA (TMP2_ZP),Y
 			STA TMP3_ZP
 			INY
@@ -276,7 +272,7 @@ ISCONST		LDA TMP_ZP
 			INY
 			LDA TMP_ZP+1
 			STA (TMP2_ZP),Y
-			LDA HIGHP			; Update the memory pointer to the last actually assigned one
+			LDA HIGHP			; Reset the memory pointer to the last assigned one. Everything that came later has to be temp. data
 			STA STRBUFP
 			LDA HIGHP+1
 			STA STRBUFP+1
@@ -293,61 +289,20 @@ CHECKLOW2	DEY
 			CMP #<CONSTANTS_END
 			BCS INVAR2
 			JMP PUPDATEPTR
-INVAR2		LDY #0
+INVAR2		LDY #0			; The target is somewhere in var memory (i.e. not in constant memory)
 			LDA (TMP3_ZP),Y
 			STA TMP_REG
 			TXA
 			CMP TMP_REG		; Compare the string-to-copy's length (in A) with the variable's current one (in TMP_REG)
 			BEQ UPDATEHP2
-			BCC UPDATEHP2	; does the new string fits into the old memory location?
+			BCC UPDATEHP2	; does the new string fit into the old memory location?
 
-PUPDATEPTR	TXA
-			CMP MEMCHUNK	; No? Then test, if the MEMCHUNK pointer holds a chunk of memory that fits... (+1 for the length)
-			BCS NOCHUNK
-			LDA MEMCHUNK+1	; yes, it fits. Move the target pointer to the start of the free chunk...
-			LDY #0
-			STA (TMP2_ZP),Y
-			STA TMP3_ZP
-			INY
-			LDA MEMCHUNK+2
-			STA (TMP2_ZP),Y
-			STA TMP3_ZP+1
-			SEC
-			STX TMP_REG
-			LDA MEMCHUNK	; ...and adjust the size of the chunk
-			SEC
-			SBC TMP_REG
-			STA MEMCHUNK
-			INC TMP_REG		; +1, because the length has to be stored as well
-			CLC
-			LDA MEMCHUNK+1
-			ADC TMP_REG
-			STA MEMCHUNK+1
-			BCC NOOVCHUNK1
-			INC MEMCHUNK+2
-NOOVCHUNK1	JMP	NOHPUPDATE	; Chunk assigned and adjusted
-
-NOCHUNK		LDA MEMORYSTACKP		; No? Then walk the memory stack backwards to see if there is something that fits...
-			BEQ NOTONSTACK			; If the stack is empty, exit here. If not, check against the stack...
-			DEC MEMORYSTACKP		; For that, move the next block on the stack into the chunk pointer...
-			DEC MEMORYSTACKP
-			DEC MEMORYSTACKP
-			LDY MEMORYSTACKP
-			LDA MEMORYSTACK,Y
-			;STA 53280
-			STA MEMCHUNK
-			INY
-			LDA MEMORYSTACK,Y
-			STA MEMCHUNK+1
-			INY
-			LDA MEMORYSTACK,Y
-			STA MEMCHUNK+2
-			JMP PUPDATEPTR	; ...and check again
-NOTONSTACK	LDY #1			; No? Then new memory has to be used. Update the "highest memory position" in the process
+PUPDATEPTR	JSR CHECKLASTVAR
+			LDY #1			; No? Then new memory has to be used. Update the "highest memory position" in the process
 			STY TMP_FLAG	; to regain temp. memory used for non-assigned strings like for printing and such...
 			JMP UPDATEPTR	; ...we set a flag here to handle this case later
 
-UPDATEHP2	LDA HIGHP		; Update the memory pointer to the last assigned one
+UPDATEHP2	LDA HIGHP		; Update the memory pointer to the last assigned position, reclaim some memory this way
 			STA STRBUFP
 			LDA HIGHP+1
 			STA STRBUFP+1
@@ -355,7 +310,20 @@ UPDATEHP2	LDA HIGHP		; Update the memory pointer to the last assigned one
 
 COPYONLY	LDY #0
 			STY TMP_FLAG
-UPDATEPTR	LDY	ENDSTRBUF+1	; Check, if enough memory is available. This is a rough check, it requires at least 256 bytes to be free or otherwise,
+			JMP CHECKMEM
+
+ALTCOPY		JMP COPYSTRING2
+
+UPDATEPTR	LDA TMP_ZP+1	; Check if the new string comes after or equals highp, which indicates that it can be
+			CMP HIGHP+1		; "copied down". This is another routine, because of reaons...
+			BEQ CHECKXT1
+			BCS ALTCOPY
+			JMP CHECKMEM
+CHECKXT1	LDA TMP_ZP
+			CMP HIGHP
+			BCS ALTCOPY
+
+CHECKMEM	LDY	ENDSTRBUF+1	; Check, if enough memory is available. This is a rough check, it requires at least 256 bytes to be free or otherwise,
 			DEY				; it will fail. This isn't very memory efficient, but it's faster to check this way...
 			CPY STRBUFP+1
 			BEQ CHECKLOWMEM
@@ -392,42 +360,11 @@ CHECKNEXTHP	LDA HIGHP
 			CMP	STRBUFP
 			BCC UPDATEHIGHP
 			JMP NOHPUPDATE
-UPDATEHIGHP	SEC
-			LDA TMP3_ZP		; Store the location and the size of the skipped memory part for later use
-			SBC HIGHP
-			TAX
-			LDA TMP3_ZP+1
-			SBC HIGHP+1
-			BEQ STORELEN
-			LDX #$FF			; While the chunk might be larger than 255 byte, we use only the first 255 bytes here (+1 for length).
-STORELEN	LDA MEMORYSTACKP	; Put the "old" chunk on the memory stack, if there's still room left
-			CMP #MEMORY_STACK_SIZE
-			BCS NOSPACELEFT
-			LDA MEMCHUNK
-			BEQ NOSPACELEFT
-			CMP #10
-			BCC NOSPACELEFT		; If the "old" chunk is rather small, then ignore it
-			;STA 53281
-			LDY MEMORYSTACKP
-			STA MEMORYSTACK,Y
-			LDA MEMCHUNK+1
-			INY
-			STA MEMORYSTACK,Y
-			LDA MEMCHUNK+2
-			INY
-			STA MEMORYSTACK,Y
-			INC MEMORYSTACKP
-			INC MEMORYSTACKP
-			INC MEMORYSTACKP	; Update memory stack pointer to the next position
-NOSPACELEFT	STX MEMCHUNK	; Store the chunk's length....X doesn't contain the source's length anymore from here on
-			LDA HIGHP
-			STA MEMCHUNK+1
-			LDA HIGHP+1
-			STA MEMCHUNK+2	; ...and the address
-			LDA STRBUFP
+UPDATEHIGHP	LDA STRBUFP
 			STA HIGHP
 			LDA STRBUFP+1
-			STA HIGHP+1		; new pointer has been set
+			STA HIGHP+1		; set new pointer
+			JSR REMEMBERLASTVAR
 NOHPUPDATE	LDY #0
 			LDA (TMP_ZP),Y	; Set the new length...
 			STA (TMP3_ZP),Y
@@ -438,7 +375,86 @@ LOOP		LDA (TMP_ZP),Y	; Copy the actual string
 			DEY
 			BNE LOOP
 EXITCOPY	RTS
+;###################################
+; Special copy routine that handles the case that a string is >highp but might interleave with the temp data that has to be copied into it.
+; Therefor, this routine copies from lower to higher addresses and not vice versa like the simpler one above.
+COPYSTRING2	LDY #0
+			LDA (TMP_ZP),Y
+			STA TMP_REG
+			TAX
+			LDA HIGHP
+			STA TMP3_ZP
+			STA (TMP2_ZP),Y
+			LDA HIGHP+1
+			STA TMP3_ZP+1
+			INY
+			STA (TMP2_ZP),Y
+			JSR REMEMBERLASTVAR
 
+			; Do a quick test, if a real copy is needed or if the memory addrs are equal anyway?
+			; This introduces some overhead but according to my tests, its actually faster this way.
+			LDA TMP_ZP
+			CMP TMP3_ZP
+			BNE DOLOOP
+			LDA TMP_ZP+1
+			CMP TMP3_ZP+1
+			BEQ SKIPCP2
+
+DOLOOP		DEY
+			TXA
+			STA (TMP3_ZP),Y
+			INY
+ASLOOP		LDA (TMP_ZP),Y
+			STA (TMP3_ZP),Y
+			INY
+			DEX
+			BNE	ASLOOP
+
+SKIPCP2		LDA HIGHP
+			CLC
+			ADC TMP_REG
+			STA HIGHP
+			BCC SKIPLOWAS1
+			INC HIGHP+1
+SKIPLOWAS1	INC HIGHP
+			BNE SKIPLOWAS2
+			INC HIGHP+1
+SKIPLOWAS2	LDA HIGHP
+			STA STRBUFP
+			LDA HIGHP+1
+			STA STRBUFP+1
+			RTS
+;###################################
+; Checks if this variable is the same one that has been stored last. If so, we can reclaim its memory first.
+CHECKLASTVAR
+			LDY #0
+			LDA TMP2_ZP
+			CMP LASTVAR
+			BNE NOTSAMEVAR
+			LDA TMP2_ZP+1
+			CMP LASTVAR+1
+			BNE NOTSAMEVAR
+			LDA LASTVARP			; The target is the last string that has been added. We can free it's currently used memory then.
+			STA HIGHP
+			STA STRBUFP
+			LDA LASTVARP+1
+			STA HIGHP+1
+			STA STRBUFP+1
+			LDA #0				; Set the current value's length to 0, so that nothing new fits and a copy always happens later
+			STA (TMP3_ZP),Y
+NOTSAMEVAR	RTS
+;###################################
+; Stores the last variable reference that has been stored in string memory
+REMEMBERLASTVAR
+			LDA TMP2_ZP
+			STA LASTVAR
+			LDA TMP2_ZP+1
+			STA LASTVAR+1
+			LDA TMP3_ZP
+			STA LASTVARP
+			LDA TMP3_ZP+1
+			STA LASTVARP+1	; Remember this variable as the last written one
+			RTS
 ;###################################
 INTOUT		JMP REALOUT
 ;###################################

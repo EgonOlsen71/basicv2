@@ -22,7 +22,7 @@ import com.sixtyfour.system.Machine;
  * 
  */
 public class Transformer6502 implements Transformer {
-    @Override
+	@Override
     public List<String> transform(Machine machine, PlatformProvider platform, List<String> code) {
 	List<String> res = new ArrayList<>();
 	List<String> consts = new ArrayList<String>();
@@ -116,9 +116,8 @@ public class Transformer6502 implements Transformer {
 	res.add("EMPTYSTR\t.BYTE 0");
 	res.add("CONCATBUFP\t.WORD CONCATBUF");
 	res.add("CONCATBUF\t.ARRAY 256");
-	res.add("MEMORYSTACKP\t.BYTE 0");
-	res.add("MEMORYSTACK\t.ARRAY "+memStackSize);
-	res.add("MEMCHUNK\t.BYTE 0 0 0");
+	res.add("LASTVAR\t.WORD 0");
+	res.add("LASTVARP\t.WORD 0");
 	res.add("HIGHP\t.WORD STRBUF");
 	res.add("STRBUFP\t.WORD STRBUF");
 	res.add("ENDSTRBUF\t.WORD "+platform.getStringMemoryEnd());
