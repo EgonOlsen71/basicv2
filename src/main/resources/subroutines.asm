@@ -239,6 +239,7 @@ READTID		LDA #0
 ; the actual memory pointer can savely be reset to that pointer, discarding all the temp string after it.
 ; In addition, the routine keeps track of one additional block of free memory between the "last" pointer and the new one. This memory can be assigned as well, if a new
 ; string fits into it. It's size is max. 256 bytes and it decreases when parts of it are being used.
+; If a new additional block is created, the old one (if it's still large enough) will be stored on a stack and used again if the new block doesn't have space anymore.
 COPYSTRING	STA TMP2_ZP
 			STY TMP2_ZP+1
 			LDY #0
