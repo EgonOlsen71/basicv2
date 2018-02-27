@@ -267,7 +267,8 @@ CHECKLOW3	LDA TMP_ZP
 			CMP #<CONSTANTS
 			BCC INVAR			; No, it's not a constant. It's something from lower memory...
 			
-ISCONST		LDA TMP_ZP
+ISCONST		JSR CHECKLASTCONST	; Reclaim formerly used memory if possible
+			LDA TMP_ZP
 			STA (TMP2_ZP),Y		; Yes, it's a constant...
 			INY
 			LDA TMP_ZP+1
@@ -423,6 +424,24 @@ SKIPLOWAS2	LDA HIGHP
 			STA STRBUFP
 			LDA HIGHP+1
 			STA STRBUFP+1
+			RTS
+;###################################
+; Checks if this variable is the same one that has been stored last. If so, we can reclaim its memory first.
+CHECKLASTCONST
+			LDY #0
+			LDA TMP2_ZP
+			CMP LASTVAR
+			BNE NOTSAMECONST
+			LDA TMP2_ZP+1
+			CMP LASTVAR+1
+			BNE NOTSAMECONST
+			LDA LASTVARP			; The target is the last string that has been added. We can free it's currently used memory then.
+			STA HIGHP
+			STA STRBUFP
+			LDA LASTVARP+1
+			STA HIGHP+1
+			STA STRBUFP+1
+NOTSAMECONST	
 			RTS
 ;###################################
 ; Checks if this variable is the same one that has been stored last. If so, we can reclaim its memory first.
