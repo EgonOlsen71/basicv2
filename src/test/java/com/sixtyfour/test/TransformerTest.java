@@ -360,7 +360,7 @@ public class TransformerTest {
 			float fac = Conversions.convertFloat(assy.getMachine(), 97);
 			float fac2 = Conversions.convertFloat(assy.getMachine(), 105);
 			if (line != null) {
-				int addr = 0x1ac0;
+				int addr = 0x1abf;
 				int strBufPtr = assy.getRam()[addr] + 256 * assy.getRam()[addr + 1];
 				int strBufPtr2 = assy.getRam()[addr + 2] + 256 * assy.getRam()[addr + 3];
 				String memChunk = assy.getRam()[addr - 3] + ":" + (assy.getRam()[addr - 2] + 256 * assy.getRam()[addr - 1]);

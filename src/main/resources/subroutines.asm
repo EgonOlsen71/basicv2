@@ -295,8 +295,9 @@ INVAR2		LDY #0			; The target is somewhere in var memory (i.e. not in constant m
 			STA TMP_REG
 			TXA
 			CMP TMP_REG		; Compare the string-to-copy's length (in A) with the variable's current one (in TMP_REG)
-			BEQ UPDATEHP2
-			BCC UPDATEHP2	; does the new string fit into the old memory location?
+			BEQ UPDATEHP2	; does the new string fit into the old memory location (i.e. is it the same length)?
+							; Shorter strings would fit as well, but aren't stored this way or otherwise, the result would
+							; be some stray memory chunk that none could identify properly when doing a GC
 
 PUPDATEPTR	JSR CHECKLASTVAR
 			LDY #1			; No? Then new memory has to be used. Update the "highest memory position" in the process
@@ -342,14 +343,19 @@ MEMOK		LDY #0
 			STA (TMP2_ZP),Y
 			STA TMP3_ZP+1
 			TXA
+			
 			CLC
 			ADC STRBUFP
+			PHP
+			CLC
+			ADC #1
 			STA STRBUFP
 			BCC NOCS1
 			INC STRBUFP+1
-NOCS1		INC STRBUFP
-			BNE STRFITS
+NOCS1		PLP
+			BCC STRFITS
 			INC STRBUFP+1
+			
 STRFITS		LDY TMP_FLAG	; Check if the pointer to the highest mem addr used by an actual string
 			BEQ NOHPUPDATE	; has to be updated and do that...
 			LDA HIGHP+1
@@ -414,15 +420,17 @@ ASLOOP		LDA (TMP_ZP),Y
 SKIPCP2		LDA HIGHP
 			CLC
 			ADC TMP_REG
+			PHP
+			CLC
+			ADC #1
 			STA HIGHP
+			STA STRBUFP
 			BCC SKIPLOWAS1
 			INC HIGHP+1
-SKIPLOWAS1	INC HIGHP
-			BNE SKIPLOWAS2
+SKIPLOWAS1	PLP
+			BCC SKIPLOWAS2
 			INC HIGHP+1
-SKIPLOWAS2	LDA HIGHP
-			STA STRBUFP
-			LDA HIGHP+1
+SKIPLOWAS2	LDA HIGHP+1
 			STA STRBUFP+1
 			RTS
 ;###################################
