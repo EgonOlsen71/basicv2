@@ -47,7 +47,7 @@ public class TransformerTest {
 
 		final Assembler assy = initTestEnvironment(vary);
 		FileWriter.writeAsPrg(assy.getProgram(), "++testarrays.prg", true);
-		assy.getCpu().setCpuTracer(new MyTracer(assy));
+		//assy.getCpu().setCpuTracer(new MyTracer(assy));
 		Machine machine = executeTest(assy);
 
 		int[] ram = machine.getRam();

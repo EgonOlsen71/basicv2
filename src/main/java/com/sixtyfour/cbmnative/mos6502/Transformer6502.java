@@ -22,7 +22,7 @@ import com.sixtyfour.system.Machine;
  * 
  */
 public class Transformer6502 implements Transformer {
-	@Override
+    @Override
     public List<String> transform(Machine machine, PlatformProvider platform, List<String> code) {
 	List<String> res = new ArrayList<>();
 	List<String> consts = new ArrayList<String>();
@@ -40,8 +40,8 @@ public class Transformer6502 implements Transformer {
 	vars.add("VARIABLES");
 	Map<String, String> name2label = new HashMap<String, String>();
 
-	int memStackSize=Math.min(255,platform.getMemoryStackSize()*3);
-	res.add("MEMORY_STACK_SIZE = "+memStackSize);
+	int memStackSize = Math.min(255, platform.getMemoryStackSize() * 3);
+	res.add("MEMORY_STACK_SIZE = " + memStackSize);
 	res.add("TMP_ZP = 105");
 	res.add("TMP2_ZP = 107");
 	res.add("TMP3_ZP = 34");
@@ -50,6 +50,8 @@ public class Transformer6502 implements Transformer {
 	res.add("*=" + platform.getStartAddress());
 	int cnt = 0;
 
+	List<String> strVars = new ArrayList<String>();
+	List<String> strArrayVars = new ArrayList<String>();
 	GeneratorContext context = new GeneratorContext();
 	for (String line : code) {
 	    String cmd = line;
@@ -61,7 +63,7 @@ public class Transformer6502 implements Transformer {
 	    if (sp != -1) {
 		line = line.substring(sp).trim();
 	    }
-	    cnt = extractData(platform, machine, consts, vars, name2label, cnt, line);
+	    cnt = extractData(platform, machine, consts, vars, strVars, strArrayVars, name2label, cnt, line);
 
 	    Generator pm = GeneratorList.getGenerator(orgLine);
 	    if (pm != null) {
@@ -82,10 +84,18 @@ public class Transformer6502 implements Transformer {
 	res.addAll(subs);
 	res.addAll(consts);
 	res.add("CONSTANTS_END");
-	if (!vars.contains("; VAR: TI$")) {
-	    vars.add("; VAR: TI$");
-	    vars.add("VAR_TI$ .WORD EMPTYSTR");
+	if (!strVars.contains("; VAR: TI$")) {
+	    strVars.add("; VAR: TI$");
+	    strVars.add("VAR_TI$ .WORD EMPTYSTR");
 	}
+	
+	vars.add("STRINGVARS_START");
+	vars.addAll(strVars);
+	vars.add("STRINGVARS_END");
+	vars.add("STRINGARRAYS_START");
+	vars.addAll(strArrayVars);
+	vars.add("STRINGARRAYS_END");
+	
 	res.addAll(vars);
 	res.add("VARIABLES_END");
 	res.add("; *** INTERNAL ***");
@@ -120,7 +130,7 @@ public class Transformer6502 implements Transformer {
 	res.add("LASTVARP\t.WORD 0");
 	res.add("HIGHP\t.WORD STRBUF");
 	res.add("STRBUFP\t.WORD STRBUF");
-	res.add("ENDSTRBUF\t.WORD "+platform.getStringMemoryEnd());
+	res.add("ENDSTRBUF\t.WORD " + platform.getStringMemoryEnd());
 	res.add("STRBUF\t.BYTE 0");
 	return res;
     }
@@ -129,33 +139,9 @@ public class Transformer6502 implements Transformer {
 	List<String> inits = new ArrayList<String>();
 	inits.add("; ******* INITVARS ********");
 	inits.add("INITVARS");
-	inits.add("LDA #<EMPTYSTR");
-	inits.add("LDX #>EMPTYSTR");
-	for (String var : vars) {
-	    var = var.trim().replace("\t", " ");
-	    System.out.println(var);
-	    if (var.startsWith("VAR_")) {
-		String[] parts = var.split(" ");
-		boolean isArray = var.contains("[]");
-		if (parts[0].contains("$")) {
-		    // String
-		    if (isArray) {
-			inits.add("LDA #<" + parts[0]);
-			inits.add("LDY #>" + parts[0]);
-			inits.add("JSR INITSPARAMS");
-			inits.add("LDA #<" + parts[0]);
-			inits.add("LDY #>" + parts[0]);
-			inits.add("JSR INITSTRARRAY");
-			inits.add("LDA #<EMPTYSTR");
-			inits.add("LDX #>EMPTYSTR");
-		    } else {
-			inits.add("STA " + parts[0]);
-			inits.add("STX " + parts[0] + "+1");
-		    }
-		}
-	    }
-	}
 
+	inits.add("JSR INITSTRVARS");
+	
 	inits.add("LDA #0");
 	for (String var : vars) {
 	    var = var.trim().replace("\t", " ");
@@ -213,8 +199,9 @@ public class Transformer6502 implements Transformer {
     }
 
     private int extractData(PlatformProvider platform, Machine machine, List<String> consts, List<String> vars,
-	    Map<String, String> name2label, int cnt, String line) {
+	    List<String> strVars, List<String> strArrayVars, Map<String, String> name2label, int cnt, String line) {
 	String[] parts = line.split(",");
+	List<String> tmp = new ArrayList<String>();
 	for (int p = 0; p < parts.length; p++) {
 	    String part = parts[p];
 	    if (part.contains("{") && part.endsWith("}")) {
@@ -257,7 +244,8 @@ public class Transformer6502 implements Transformer {
 		    }
 		} else {
 		    if (!name2label.containsKey(name)) {
-			vars.add("; VAR: " + name);
+			tmp.clear();
+			tmp.add("; VAR: " + name);
 			String label = "VAR_" + name;
 			name2label.put(name, label);
 
@@ -267,40 +255,50 @@ public class Transformer6502 implements Transformer {
 			    @SuppressWarnings("unchecked")
 			    List<Object> vals = (List<Object>) var.getInternalValue();
 			    if (type == Type.INTEGER) {
-				vars.add("\t" + ".BYTE 0");
-				vars.add("\t" + ".WORD " + vals.size() * 2);
-				vars.add(label + "\t" + ".ARRAY " + vals.size() * 2);
+				tmp.add("\t" + ".BYTE 0");
+				tmp.add("\t" + ".WORD " + vals.size() * 2);
+				tmp.add(label + "\t" + ".ARRAY " + vals.size() * 2);
 			    } else if (type == Type.REAL) {
-				vars.add("\t" + ".BYTE 1");
-				vars.add("\t" + ".WORD " + vals.size() * 5);
-				vars.add(label + "\t" + ".ARRAY " + vals.size() * 5);
+				tmp.add("\t" + ".BYTE 1");
+				tmp.add("\t" + ".WORD " + vals.size() * 5);
+				tmp.add(label + "\t" + ".ARRAY " + vals.size() * 5);
 			    } else if (type == Type.STRING) {
-				vars.add("\t" + ".BYTE 2");
-				vars.add("\t" + ".WORD " + vals.size() * 2);
-				vars.add(label);
+				tmp.add("\t" + ".BYTE 2");
+				tmp.add("\t" + ".WORD " + vals.size() * 2);
+				tmp.add(label);
 				for (int pp = 0; pp < vals.size(); pp = pp + 10) {
 				    StringBuilder sb = new StringBuilder();
 				    sb.append("\t" + ".WORD ");
 				    for (int ppp = pp; ppp < vals.size() && ppp < pp + 10; ppp++) {
 					sb.append("EMPTYSTR ");
 				    }
-				    vars.add(sb.toString());
+				    tmp.add(sb.toString());
 				    sb.setLength(0);
 				}
 			    }
 			} else {
 			    if (type == Type.INTEGER) {
-				vars.add(label + "\t" + ".WORD 0");
+				tmp.add(label + "\t" + ".WORD 0");
 			    } else if (type == Type.REAL) {
-				vars.add(label + "\t" + ".REAL 0.0");
+				tmp.add(label + "\t" + ".REAL 0.0");
 			    } else if (type == Type.STRING) {
-				vars.add(label + "\t" + ".WORD EMPTYSTR");
+				tmp.add(label + "\t" + ".WORD EMPTYSTR");
 			    }
+			}
+			if (name.contains("$")) {
+			    if (name.contains("[]")) {
+				strArrayVars.addAll(tmp);
+			    } else {
+				strVars.addAll(tmp);
+			    }
+			} else {
+			    vars.addAll(tmp);
 			}
 		    }
 		}
 	    }
 	}
+
 	return cnt;
     }
 }
