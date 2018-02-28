@@ -118,6 +118,9 @@ public class AssemblyParser {
 	 */
 	public static int getValue(String number, int addr, ConstantsContainer ccon, LabelsContainer lcon, boolean low, boolean high, int addrAdd, boolean isDataLine) {
 		number = number.trim();
+		if (number.endsWith("\\")) {
+		    number=number.substring(0, number.length()-1);
+		}
 		if (!number.startsWith("$") && !number.startsWith("%") && !Character.isDigit(number.charAt(0)) && !(number.startsWith("-"))) {
 			ConstantValue cv = ccon.get(number);
 			if (cv != null) {
