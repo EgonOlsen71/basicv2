@@ -15,7 +15,7 @@ import com.sixtyfour.cbmnative.PlatformProvider;
  * 
  */
 public class Optimizer64 implements Optimizer {
-	private List<Pattern> patterns = new ArrayList<Pattern>() {
+    private List<Pattern> patterns = new ArrayList<Pattern>() {
 		private static final long serialVersionUID = 1L;
 		{
 			this.add(new Pattern("REALOUT + LINEBRK", new String[] { "JSR REALOUTBRK" }, "JSR REALOUT", "JSR LINEBREAK"));
@@ -89,116 +89,117 @@ public class Optimizer64 implements Optimizer {
 			this.add(new Pattern("FAST SQRT", new String[] { "JSR SQRT" }, "JSR $BF71"));
 			this.add(new Pattern("Simplified loading of Strings", new String[] { "{LINE4}", "{LINE5}", "{LINE6}", "{LINE7}", "{LINE8}" }, "STA {REG0}", "STY {REG0}", "LDA {REG0}",
 					"LDY {REG0}", "STA TMP_ZP", "STY TMP_ZP+1", "LDA #<{MEM0}", "LDY #>{MEM0}", "JSR COPYSTRING"));
+			this.add(new Pattern("MEM->REG, REG->TMP_ZP", new String[]{"{LINE0}", "{LINE1}", "{LINE6}", "{LINE7}"}, "LDA #<{MEM0}","LDY #>{MEM0}","STA {REG0}","STY {REG0}","LDA {REG0}","LDY {REG0}","STA TMP_ZP","STY TMP_ZP+1"));
 		}
 	};
 
-	@Override
-	public List<String> optimize(PlatformProvider platform, List<String> input) {
-		// if (true) return input;
-		long s = System.currentTimeMillis();
-		Map<String, Integer> type2count = new HashMap<>();
-		Map<String, Number> const2Value = new HashMap<>();
-		for (String line : input) {
-			line = line.replace("\t", " ");
-			if (line.startsWith("CONST_")) {
-				int pos = line.indexOf(" ");
-				if (pos != -1) {
-					String name = line.substring(0, pos).trim();
-					String right = line.substring(pos + 1).trim();
-					pos = right.indexOf(" ");
-					if (pos != -1) {
-						String type = right.substring(0, pos).trim();
-						String number = right.substring(pos + 1).trim();
-						if (type.equals(".REAL") || type.equals(".WORD")) {
-							try {
-								Float num = Float.valueOf(number);
-								if (type.equals(".REAL")) {
-									const2Value.put(name, num);
-								} else {
-									const2Value.put(name, num.intValue());
-								}
-							} catch (Exception e) {
-								Logger.log("Failed to parse " + number + " as a number!");
-							}
-						}
-					}
+    @Override
+    public List<String> optimize(PlatformProvider platform, List<String> input) {
+	// if (true) return input;
+	long s = System.currentTimeMillis();
+	Map<String, Integer> type2count = new HashMap<>();
+	Map<String, Number> const2Value = new HashMap<>();
+	for (String line : input) {
+	    line = line.replace("\t", " ");
+	    if (line.startsWith("CONST_")) {
+		int pos = line.indexOf(" ");
+		if (pos != -1) {
+		    String name = line.substring(0, pos).trim();
+		    String right = line.substring(pos + 1).trim();
+		    pos = right.indexOf(" ");
+		    if (pos != -1) {
+			String type = right.substring(0, pos).trim();
+			String number = right.substring(pos + 1).trim();
+			if (type.equals(".REAL") || type.equals(".WORD")) {
+			    try {
+				Float num = Float.valueOf(number);
+				if (type.equals(".REAL")) {
+				    const2Value.put(name, num);
+				} else {
+				    const2Value.put(name, num.intValue());
 				}
+			    } catch (Exception e) {
+				Logger.log("Failed to parse " + number + " as a number!");
+			    }
 			}
+		    }
 		}
-
-		boolean optimized = false;
-		do {
-			optimized = false;
-			for (Pattern pattern : patterns) {
-				if (pattern.isLooseTypes() && !platform.useLooseTypes()) {
-					continue;
-				}
-				for (int i = 0; i < input.size(); i++) {
-					String line = input.get(i);
-					if (line.startsWith("; *** SUBROUTINES ***")) {
-						break;
-					}
-					boolean matches = pattern.matches(line, i, const2Value);
-					if (matches) {
-						String name = pattern.getName();
-						Integer cnt = type2count.get(name);
-						if (cnt == null) {
-							type2count.put(name, 1);
-						} else {
-							type2count.put(name, cnt + 1);
-						}
-						input = pattern.apply(input);
-						optimized = true;
-						break;
-					}
-				}
-				if (optimized) {
-					break;
-				}
-			}
-		} while (optimized);
-
-		for (Map.Entry<String, Integer> cnts : type2count.entrySet()) {
-			Logger.log("Optimization " + cnts.getKey() + " applied " + cnts.getValue() + " times!");
-		}
-		Logger.log("Assembly code optimized in " + (System.currentTimeMillis() - s) + "ms");
-
-		return applySpecialRules(input);
+	    }
 	}
 
-	private List<String> applySpecialRules(List<String> input) {
-		return simplifyBranches(input);
-	}
-
-	private List<String> simplifyBranches(List<String> input) {
-		List<String> ret = new ArrayList<String>();
-		for (int i = 0; i < input.size() - 1; i++) {
-			String line = input.get(i);
-			line = line.replace("\t", " ").trim();
-			String line2 = input.get(i + 1);
-			line2 = line2.replace("\t", " ").trim();
-			if (line.startsWith("; *** SUBROUTINES ***")) {
-				ret.addAll(input.subList(i, input.size()));
-				break;
-			}
-			boolean skip = false;
-			if (line.contains("BNE LINE_NSKIP") && line2.contains("JMP LINE_SKIP")) {
-				for (int p = i + 1; p < Math.min(input.size(), i + 30); p++) {
-					String subLine = input.get(p);
-					if (subLine.startsWith("LINE_SKIP")) {
-						ret.add(line2.replace("JMP LINE_SKIP", "BEQ LINE_SKIP"));
-						ret.add("; Simplified conditional branch");
-						skip = true;
-						i++;
-						break;
-					}
-				}
-			}
-			if (skip) {
-				continue;
-			}
-			ret.add(line);
+	boolean optimized = false;
+	do {
+	    optimized = false;
+	    for (Pattern pattern : patterns) {
+		if (pattern.isLooseTypes() && !platform.useLooseTypes()) {
+		    continue;
 		}
-		return ret;
+		for (int i = 0; i < input.size(); i++) {
+		    String line = input.get(i);
+		    if (line.startsWith("; *** SUBROUTINES ***")) {
+			break;
+		    }
+		    boolean matches = pattern.matches(line, i, const2Value);
+		    if (matches) {
+			String name = pattern.getName();
+			Integer cnt = type2count.get(name);
+			if (cnt == null) {
+			    type2count.put(name, 1);
+			} else {
+			    type2count.put(name, cnt + 1);
+			}
+			input = pattern.apply(input);
+			optimized = true;
+			break;
+		    }
+		}
+		if (optimized) {
+		    break;
+		}
+	    }
+	} while (optimized);
+
+	for (Map.Entry<String, Integer> cnts : type2count.entrySet()) {
+	    Logger.log("Optimization " + cnts.getKey() + " applied " + cnts.getValue() + " times!");
 	}
+	Logger.log("Assembly code optimized in " + (System.currentTimeMillis() - s) + "ms");
+
+	return applySpecialRules(input);
+    }
+
+    private List<String> applySpecialRules(List<String> input) {
+	return simplifyBranches(input);
+    }
+
+    private List<String> simplifyBranches(List<String> input) {
+	List<String> ret = new ArrayList<String>();
+	for (int i = 0; i < input.size() - 1; i++) {
+	    String line = input.get(i);
+	    line = line.replace("\t", " ").trim();
+	    String line2 = input.get(i + 1);
+	    line2 = line2.replace("\t", " ").trim();
+	    if (line.startsWith("; *** SUBROUTINES ***")) {
+		ret.addAll(input.subList(i, input.size()));
+		break;
+	    }
+	    boolean skip = false;
+	    if (line.contains("BNE LINE_NSKIP") && line2.contains("JMP LINE_SKIP")) {
+		for (int p = i + 1; p < Math.min(input.size(), i + 30); p++) {
+		    String subLine = input.get(p);
+		    if (subLine.startsWith("LINE_SKIP")) {
+			ret.add(line2.replace("JMP LINE_SKIP", "BEQ LINE_SKIP"));
+			ret.add("; Simplified conditional branch");
+			skip = true;
+			i++;
+			break;
+		    }
+		}
+	    }
+	    if (skip) {
+		continue;
+	    }
+	    ret.add(line);
+	}
+	return ret;
+    }
 }
