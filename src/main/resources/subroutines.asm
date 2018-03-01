@@ -141,7 +141,7 @@ STR			LDA #<Y_REG
 			JSR $BDDF
 			LDY #0
 			STY TMP_ZP+1
-			LDA #$FF
+			LDA #$FE
 			STA TMP_ZP
 			DEY
 STRLOOP		INY
@@ -151,7 +151,6 @@ STRLOOP		INY
 			STY $FE
 			TYA
 			TAX			; Length in X
-			DEC TMP_ZP
 			LDA #<A_REG
 			LDY #>A_REG
 			STA TMP2_ZP
