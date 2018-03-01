@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * An optimizer for the native code in pseudo assembly language. This one is
+ * much less sophisticated than for example the one for 6502-code and should be
+ * re-done at one time. But that time isn't now...
+ * 
  * @author Foerster-H
  *
  */
@@ -15,7 +19,7 @@ public class NativeOptimizer {
 	return code;
     }
 
-    public static List<String> optimizeNative1(List<String> code) {
+    private static List<String> optimizeNative1(List<String> code) {
 	List<String> ret = new ArrayList<String>();
 	if (code.size() > 1) {
 	    for (int i = 0; i < code.size() - 1; i++) {
@@ -139,7 +143,7 @@ public class NativeOptimizer {
 	return ret;
     }
 
-    public static List<String> optimizeNative2(List<String> code) {
+    private static List<String> optimizeNative2(List<String> code) {
 	List<String> ret = new ArrayList<String>();
 	if (code.size() > 1) {
 	    for (int i = 0; i < code.size() - 1; i++) {
