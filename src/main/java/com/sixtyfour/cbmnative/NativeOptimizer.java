@@ -8,14 +8,14 @@ import java.util.List;
  *
  */
 public class NativeOptimizer {
-    
+
     public static List<String> optimizeNative(List<String> code) {
-	code=_optimizeNative(code);
-	//code=_optimizeNative(code);
+	code = optimizeNative1(code);
+	code = optimizeNative2(code);
 	return code;
     }
-    
-    public static List<String> _optimizeNative(List<String> code) {
+
+    public static List<String> optimizeNative1(List<String> code) {
 	List<String> ret = new ArrayList<String>();
 	if (code.size() > 1) {
 	    for (int i = 0; i < code.size() - 1; i++) {
@@ -24,14 +24,6 @@ public class NativeOptimizer {
 		String l2 = null;
 		if (i < code.size() - 2) {
 		    l2 = code.get(i + 2);
-		}
-		String l3 = null;
-		if (i < code.size() - 3) {
-		    l3 = code.get(i + 3);
-		}
-		String l4 = null;
-		if (i < code.size() - 4) {
-		    l4 = code.get(i + 4);
 		}
 
 		String[] l0ps = l0.split(" |,");
@@ -49,21 +41,6 @@ public class NativeOptimizer {
 		    i += 2;
 		    continue;
 		}
-/*
-		// MOV Y,#2{INTEGER}
-		// PUSH Y
-		// JSR COMPACT
-		// MOV A,#hello{STRING}
-		// POP X
-		if (l2 != null && l3 != null && l4 != null && l0.startsWith("PUSH Y") && l1.equals("JSR COMPACT")
-			&& l2.equals("MOV B") && l3.startsWith("MOV A,B") && l4.equals("POP X")) {
-		    ret.add(l1);
-		    ret.add(l2.replace("MOV B", "MOV A"));
-		    ret.add("MOV X,Y");
-		    i += 5;
-		    continue;
-		}
-		*/
 
 		// PUSH Y
 		// MOV Y,A{REAL}
@@ -154,6 +131,48 @@ public class NativeOptimizer {
 		} else {
 		    i++;
 		}
+	    }
+	    ret.add(code.get(code.size() - 1));
+	} else {
+	    ret.addAll(code);
+	}
+	return ret;
+    }
+
+    public static List<String> optimizeNative2(List<String> code) {
+	List<String> ret = new ArrayList<String>();
+	if (code.size() > 1) {
+	    for (int i = 0; i < code.size() - 1; i++) {
+		String l0 = code.get(i);
+		String l1 = code.get(i + 1);
+		String l2 = null;
+		if (i < code.size() - 2) {
+		    l2 = code.get(i + 2);
+		}
+		String l3 = null;
+		if (i < code.size() - 3) {
+		    l3 = code.get(i + 3);
+		}
+		String l4 = null;
+		if (i < code.size() - 4) {
+		    l4 = code.get(i + 4);
+		}
+
+		// MOV Y,#2{INTEGER}
+		// PUSH Y
+		// JSR COMPACT
+		// MOV A,#hello{STRING}
+		// POP X
+		if (l2 != null && l3 != null && l4 != null && l0.startsWith("MOV Y") && l1.equals("PUSH Y")
+			&& l2.equals("JSR COMPACT") && l3.startsWith("MOV A") && l4.equals("POP X")) {
+		    ret.add(l2);
+		    ret.add(l3);
+		    ret.add(l0.replace("MOV Y,", "MOV X,"));
+		    i += 4;
+		    continue;
+		}
+
+		ret.add(l0);
 	    }
 	    ret.add(code.get(code.size() - 1));
 	} else {
