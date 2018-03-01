@@ -473,7 +473,6 @@ SKIPLOWAS2	LDA HIGHP+1
 ;###################################
 ; Checks if this variable is the same one that has been stored last. If so, we can reclaim its memory first.
 CHECKLASTCONST
-			LDY #0
 			LDA TMP2_ZP
 			CMP LASTVAR
 			BNE NOTSAMECONST
@@ -491,7 +490,6 @@ NOTSAMECONST
 ;###################################
 ; Checks if this variable is the same one that has been stored last. If so, we can reclaim its memory first.
 CHECKLASTVAR
-			LDY #0
 			LDA TMP2_ZP
 			CMP LASTVAR
 			BNE NOTSAMEVAR
@@ -505,6 +503,7 @@ CHECKLASTVAR
 			STA HIGHP+1
 			STA STRBUFP+1
 			LDA #0				; Set the current value's length to 0, so that nothing new fits and a copy always happens later
+			TAY
 			STA (TMP3_ZP),Y
 NOTSAMEVAR	RTS
 ;###################################
