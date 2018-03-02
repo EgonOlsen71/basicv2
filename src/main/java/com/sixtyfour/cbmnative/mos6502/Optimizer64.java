@@ -90,6 +90,7 @@ public class Optimizer64 implements Optimizer {
 			this.add(new Pattern("Simplified loading of Strings", new String[] { "{LINE4}", "{LINE5}", "{LINE6}", "{LINE7}", "{LINE8}" }, "STA {REG0}", "STY {REG0}", "LDA {REG0}",
 					"LDY {REG0}", "STA TMP_ZP", "STY TMP_ZP+1", "LDA #<{MEM0}", "LDY #>{MEM0}", "JSR COPYSTRING"));
 			this.add(new Pattern("MEM->REG, REG->TMP_ZP", new String[]{"{LINE0}", "{LINE1}", "{LINE6}", "{LINE7}"}, "LDA #<{MEM0}","LDY #>{MEM0}","STA {REG0}","STY {REG0}","LDA {REG0}","LDY {REG0}","STA TMP_ZP","STY TMP_ZP+1"));
+			this.add(new Pattern("Direct loading of values into FAC",new String[]{"{LINE0}","{LINE1}","{LINE9}"},"LDA #<{MEM0}", "LDY #>{MEM0}","STA TMP3_ZP","STY TMP3_ZP+1","LDX #<Y_REG","LDY #>Y_REG","JSR COPY2_XY","TXA","LDY #>Y_REG","JSR $BBA2"));
 		}
 	};
 
