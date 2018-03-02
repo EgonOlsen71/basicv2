@@ -540,8 +540,7 @@ REALOUT		LDA #<X_REG
 			STY $23
 			LDA #$FF
 			STA $22
-			DEY
-STRLOOPRO	INY
+STRLOOPRO	INY				; The string is always at least 1 char in length, so we can start with y=1
 			LDA $00FF,Y
 			BNE STRLOOPRO
 			INY
@@ -558,8 +557,7 @@ REALOUTBRK  LDA #<X_REG
 			STY $23
 			LDA #$FF
 			STA $22
-			DEY
-STRLOOPROB	INY
+STRLOOPROB	INY				; The string is always at least 1 char in length, so we can start with y=1
 			LDA $00FF,Y
 			BNE STRLOOPROB
 			INY
