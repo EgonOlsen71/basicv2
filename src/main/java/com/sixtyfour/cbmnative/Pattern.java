@@ -21,11 +21,17 @@ public class Pattern {
 	private int end = -1;
 	private String name;
 	private boolean looseTypes = false;
+	private boolean simple=true;
 
 	public Pattern(String name, String[] replacement, String... parts) {
 		pattern = new ArrayList<>(Arrays.asList(parts));
 		this.replacement = replacement;
 		this.name = name;
+	}
+	
+	public Pattern(boolean simple, String name, String[] replacement, String... parts) {
+	    this(name, replacement, parts);
+	    this.simple=simple;
 	}
 
 	public Pattern(String name, boolean looseTypes, String[] replacement, String... parts) {
@@ -256,6 +262,14 @@ public class Pattern {
 
 	public void setLooseTypes(boolean looseTypes) {
 		this.looseTypes = looseTypes;
+	}
+
+	public boolean isSimple() {
+	    return simple;
+	}
+
+	public void setSimple(boolean simple) {
+	    this.simple = simple;
 	}
 
 }

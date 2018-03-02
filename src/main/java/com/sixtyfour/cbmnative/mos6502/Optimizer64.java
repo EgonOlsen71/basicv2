@@ -2,8 +2,10 @@ package com.sixtyfour.cbmnative.mos6502;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.sixtyfour.Logger;
 import com.sixtyfour.cbmnative.Optimizer;
@@ -16,83 +18,135 @@ import com.sixtyfour.cbmnative.PlatformProvider;
  */
 public class Optimizer64 implements Optimizer {
     private List<Pattern> patterns = new ArrayList<Pattern>() {
-		private static final long serialVersionUID = 1L;
-		{
-			this.add(new Pattern("REALOUT + LINEBRK", new String[] { "JSR REALOUTBRK" }, "JSR REALOUT", "JSR LINEBREAK"));
-			this.add(new Pattern("STROUT + LINEBRK", new String[] { "JSR STROUTBRK" }, "JSR STROUT", "JSR LINEBREAK"));
-			this.add(new Pattern("INTOUT + LINEBRK", new String[] { "JSR INTOUTBRK" }, "JSR INTOUT", "JSR LINEBREAK"));
-			this.add(new Pattern("Array index is integer (store)", new String[] { "{LINE10}", "{LINE11}", "{LINE12}", "{LINE13}", "{LINE18}", "{LINE19}", "{LINE20}",
-					"{LINE21}", "{LINE0}", "{LINE1}", "{LINE22}_INT" }, "LDY {MEM0}", "LDA {MEM0}", "JSR $B391", "LDX #<{REG0}", "LDY #>{REG0}", "JSR $BBD7",
-					"LDA #<{REG0}", "LDY #>{REG0}", "JSR $BBA2", "JSR PUSHREAL", "LDA {*}", "LDY {*}", "STA {REG1}", "STY {REG1}", "JSR POPREAL", "LDX #<{REG2}", "LDY #>{REG2}",
-					"JSR $BBD7", "LDA #<{MEM2}", "LDY #>{MEM2}", "STA G_REG", "STY G_REG+1", "JSR ARRAYSTORE{*}"));
-			this.add(new Pattern("Array index is integer (load)", new String[] { "{LINE6}", "{LINE7}", "{LINE8}", "{LINE9}", "{LINE0}", "{LINE1}",
-					"{LINE10}_INT" }, "LDY {MEM0}", "LDA {MEM0}", "JSR $B391", "LDX #<{REG0}", "LDY #>{REG0}", "JSR $BBD7", "LDA #<{MEM1}", "LDY #>{MEM1}", "STA G_REG",
-					"STY G_REG+1", "JSR ARRAYACCESS{*}"));
-			this.add(new Pattern("Quick copy into REG", new String[] { "{LINE0}", "{LINE1}", "STA TMP3_ZP", "STY TMP3_ZP+1", "{LINE3}", "{LINE4}", "JSR COPY2_XY" },
-					"LDA #<{MEM0}", "LDY #>{MEM0}", "JSR $BBA2", "LDX #<{REG0}", "LDY #>{REG0}", "JSR $BBD7"));
-			this.add(new Pattern("Simplified CMP with 0", new String[] { "{LINE0}", "LDA $61" }, "JSR $BBA2", "LDX #<{REG0}", "LDY #>{REG0}", "JSR $BBD7", "LDA #<{#0.0}",
-					"LDY #>{#0.0}", "JSR $BBA2", "LDA #<{REG0}", "LDY #>{REG0}", "JSR $BC5B"));
-			this.add(new Pattern("REG0->REG1, REG1->REG0", new String[] { "{LINE0}", "{LINE1}", "{LINE2}" }, "LDX #<{MEM0}", "LDY #>{MEM0}", "JSR $BBD7", "LDA #<{REG0}",
-					"LDY #>{REG0}", "JSR $BBA2", "LDX #<{REG1}", "LDY #>{REG1}", "JSR $BBD7", "LDA #<{REG1}", "LDY #>{REG1}", "JSR $BBA2", "LDX #<{REG0}", "LDY #>{REG0}",
-					"JSR $BBD7", "LDA #<{REG0}", "LDY #>{REG0}", "JSR $BBA2"));
-			this.add(new Pattern("REG0->VAR, REG0->REG1", new String[] { "{LINE6}", "{LINE7}", "{LINE8}" }, "LDX #<{REG0}", "LDY #>{REG0}", "JSR $BBD7", "LDA #<{REG0}",
-					"LDY #>{REG0}", "JSR $BBA2", "LDX #<{MEM0}", "LDY #>{MEM0}", "JSR $BBD7", "LDA #<{REG0}", "LDY #>{REG0}", "JSR $BBA2", "LDX #<{REG1}", "LDY #>{REG1}",
-					"JSR $BBD7", "LDA #<{REG1}", "LDY #>{REG1}", "JSR $BBA2"));
-			this.add(new Pattern("FAC into REG?, REG? into FAC", null, "LDX #<{REG0}", "LDY #>{REG0}", "JSR $BBD7", "LDA #<{REG0}", "LDY #>{REG0}", "JSR $BBA2"));
-			this.add(new Pattern("INT to FAC, FAC to INT", new String[] { "{LINE0}", "{LINE1}" }, "LDY {*}", "LDA {*}", "JSR $B391", "JSR $B1AA"));
-			this.add(new Pattern("STY A...LDY A...STY B", new String[] { "{LINE0}", "{LINE3}" }, "STY {MEM0}", "LDY {MEM0}", "LDA #0", "STY {*}"));
-			this.add(new Pattern("FAC to INT, INT to FAC", null, "JSR $B391", "JSR $B1AA"));
-			this.add(new Pattern("VAR into FAC, FAC into VAR", null, "LDA #<{MEM0}", "LDY #>{MEM0}", "JSR $BBA2", "LDX #<{MEM0}", "LDY #>{MEM0}", "JSR $BBD7"));
-			this.add(new Pattern("CMP with 0", new String[] { "LDA {REG0}" }, "LDA #<{#0.0}", "LDY #>{#0.0}", "JSR $BBA2", "LDA #<{REG0}", "LDY #>{REG0}", "JSR $BC5B"));
-			this.add(new Pattern("POKE with integer constant@real location",
-					new String[] { "JSR $BBA2", "JSR $B7F7", "STY 105", "STA 106", "LDA {MEM0}", "LDY #0", "STA (105),Y" }, "JSR $BBA2", "JSR PUSHREAL", "LDY {MEM0}",
-					"LDA {MEM0}", "JSR $B391", "LDX #<{REG0}", "LDY #>{REG0}", "JSR $BBD7", "JSR POPREAL", "JSR $B7F7", "STY 105", "STA 106", "LDA #<{REG0}", "LDY #>{REG0}",
-					"JSR $BBA2", "JSR $B7F7", "TYA", "LDY #0", "STA (105),Y"));
-			this.add(new Pattern("CHR with integer constant", new String[] { "LDA{MEM0}", "JSR CHRINT" }, "LDY {MEM0}", "LDA {MEM0}", "JSR $B391", "LDX #<{REG0}", "LDY #>{REG0}",
-					"JSR $BBD7", "JSR CHR"));
-			this.add(new Pattern("NEXT check simplified", new String[] { "JSR NEXT", "LDA A_REG", "{LINE8}", "JMP (JUMP_TARGET)" }, "JSR NEXT", "LDY {MEM0}", "LDA {MEM0}",
-					"CPY A_REG", "BNE {*}", "CMP A_REG+1", "BNE {*}", "{LABEL}", "BNE {*}", "JMP (JUMP_TARGET)"));
-			this.add(new Pattern("Multiple loads of the same value(1)", new String[] { "{LINE0}", "{LINE1}", "{LINE2}", "{LINE3}", "{LINE4}", "{LINE5}", "{LINE9}", "{LINE10}",
-					"{LINE11}" }, "LDA #<{MEM0}", "LDY #>{MEM0}", "JSR $BBA2", "LDX #<{REG0}", "LDY #>{REG0}", "JSR $BBD7", "LDA #<{MEM0}", "LDY #>{MEM0}", "JSR $BBA2",
-					"LDX #<{REG1}", "LDY #>{REG1}", "JSR $BBD7"));
-			this.add(new Pattern("Multiple loads of the same value(2)", new String[] { "{LINE0}", "{LINE1}", "{LINE2}", "{LINE3}", "{LINE4}", "{LINE5}", "{LINE6}", "{LINE11}",
-					"{LINE12}", "{LINE13}" }, "LDA #<{MEM0}", "LDY #>{MEM0}", "STA TMP3_ZP", "STY TMP3_ZP+1", "LDX #<{REG0}", "LDY #>{REG0}", "JSR COPY2_XY", "LDA #<{MEM0}",
-					"LDY #>{MEM0}", "STA TMP3_ZP", "STY TMP3_ZP+1", "LDX #<{REG1}", "LDY #>{REG1}", "JSR COPY2_XY"));
-			this.add(new Pattern("Value already in X", new String[] { "{LINE0}", "{LINE1}", "{LINE2}", "TXA", "{LINE4}" }, "LDX #<{REG0}", "LDY #>{REG0}", "JSR COPY2_XY",
-					"LDA #<{REG0}", "LDY #>{REG0}"));
-			this.add(new Pattern("Variable used twice in calculation", new String[] { "{LINE3}", "{LINE4}", "{LINE5}", "TXA", "{LINE10}", "{LINE8}", "{LINE9}", "{LINE10}",
-					"{LINE11}", "{LINE12}" }, "LDX #<{REG0}", "LDY #>{REG0}", "JSR COPY2_XY", "LDX #<{REG1}", "LDY #>{REG1}", "JSR COPY2_XY", "LDA #<{REG0}", "LDY #>{REG0}",
-					"JSR $BBA2", "LDA #<{REG1}", "LDY #>{REG1}", "JSR $BA8C", "JSR {*}"));
-			this.add(new Pattern("Avoid INTEGER->REAL conversion", true, new String[] { "LDA #<{CONST0}R", "LDY #>{CONST0}R", "JSR $BBA2" }, "LDY {CONST0}", "LDA {CONST0}",
-					"JSR $B391"));
-			this.add(new Pattern("Array value used twice in calculation", new String[] { "{LINE0}", "{LINE1}", "{LINE2}", "{LINE3}", "{LINE4}", "{LINE5}", "{LINE6}", "{LINE7}",
-					"{LINE8}", "{LINE9}", "{LINE10}", "{LINE11}", "{LINE12}", "{LINE13}", "{LINE14}", "{LINE12}", "{LINE13}", "JSR $BA8C" }, "LDA #<{MEM0}", "LDY #>{MEM0}",
-					"STA TMP3_ZP", "STY TMP3_ZP+1", "LDX #<{REG0}", "LDY #>{REG0}", "JSR COPY2_XY", "LDA #<{MEM1}", "LDY #>{MEM1}", "STA {REG1}", "STY {REG1}", "JSR {*}",
-					"LDA #<{REG0}", "LDY #>{REG0}", "JSR $BBA2", "JSR PUSHREAL", "LDA #<{MEM0}", "LDY #>{MEM0}", "STA TMP3_ZP", "STY TMP3_ZP+1", "LDX #<{REG0}", "LDY #>{REG0}",
-					"JSR COPY2_XY", "LDA #<{MEM1}", "LDY #>{MEM1}", "STA {REG1}", "STY {REG1}", "JSR {*}", "JSR POPREAL", "LDA #<{REG0}", "LDY #>{REG0}", "JSR $BA8C"));
-			this.add(new Pattern("Constant directly into FAC", new String[] { "LDA #0", "STA $61", "STA $62", "STA $63", "STA $64", "STA $65", "STA $66", "{LINE2}", "{LINE3}",
-					"LDA #0", "STA $63", "STA $64", "STA $65", "LDY #128", "STY $62", "INY", "STY $61", "LDY #$FF", "STY $66", "{LINE6}", "{LINE8}" }, "LDA #<REAL_CONST_ZERO",
-					"LDY #>REAL_CONST_ZERO", "JMP {*}", "{LABEL}", "LDA #<REAL_CONST_MINUS_ONE", "LDY #>REAL_CONST_MINUS_ONE", "{LABEL}", "JSR $BBA2", "LDA $61"));
-			this.add(new Pattern("Highly simplified loading for CMP", new String[] { "{LINE0}", "{LINE1}", "JSR $BBA2", "{LINE7}", "{LINE8}", "{LINE19}" }, "LDA #<{MEM0}",
-					"LDY #>{MEM0}", "STA TMP3_ZP", "STY TMP3_ZP+1", "LDX #<{REG0}", "LDY #>{REG0}", "JSR COPY2_XY", "LDA #<{MEM1}", "LDY #>{MEM1}", "STA TMP3_ZP", "STY TMP3_ZP+1",
-					"LDX #<{REG1}", "LDY #>{REG1}", "JSR COPY2_XY", "LDA #<{REG0}", "LDY #>{REG0}", "JSR $BBA2", "LDA #<{REG1}", "LDY #>{REG1}", "JSR $BC5B"));
-			this.add(new Pattern("Highly simplified loading for calculations", new String[] { "{LINE0}", "{LINE1}", "JSR $BBA2", "{LINE7}", "{LINE8}", "{LINE19}", "{LINE20}" },
-					"LDA #<{MEM0}", "LDY #>{MEM0}", "STA TMP3_ZP", "STY TMP3_ZP+1", "LDX #<{REG0}", "LDY #>{REG0}", "JSR COPY2_XY", "LDA #<{MEM1}", "LDY #>{MEM1}", "STA TMP3_ZP",
-					"STY TMP3_ZP+1", "LDX #<{REG1}", "LDY #>{REG1}", "JSR COPY2_XY", "LDA #<{REG0}", "LDY #>{REG0}", "JSR $BBA2", "LDA #<{REG1}", "LDY #>{REG1}", "JSR $BA8C",
-					"JSR {*}"));
-			this.add(new Pattern("NEXT with no variable name simplified", new String[] { "LDA #0", "STA A_REG", "STA A_REG+1", "JSR NEXT" }, "LDY {CONST0}", "LDA {CONST0}",
-					"STY A_REG", "STA A_REG+1", "JSR NEXT"));
-			this.add(new Pattern("POKE and NEXT combined", new String[] { "LDY #0", "STA (105),Y", "STY A_REG", "STY A_REG+1" }, "LDY #0", "STA (105),Y", "LDA #0", "STA A_REG",
-					"STA A_REG+1"));
-			this.add(new Pattern("Improved copy from REG0 to REG1", new String[] { "{LINE0}", "{LINE1}", "STA TMP3_ZP", "STY TMP3_ZP+1", "{LINE3}", "{LINE4}", "JSR COPY2_XY" },
-					"LDA #<{REG0}", "LDY #>{REG0}", "JSR $BBA2", "LDX #<{REG1}", "LDY #>{REG1}", "JSR $BBD7"));
-			this.add(new Pattern("FAST SQRT", new String[] { "JSR SQRT" }, "JSR $BF71"));
-			this.add(new Pattern("Simplified loading of Strings", new String[] { "{LINE4}", "{LINE5}", "{LINE6}", "{LINE7}", "{LINE8}" }, "STA {REG0}", "STY {REG0}", "LDA {REG0}",
-					"LDY {REG0}", "STA TMP_ZP", "STY TMP_ZP+1", "LDA #<{MEM0}", "LDY #>{MEM0}", "JSR COPYSTRING"));
-			this.add(new Pattern("MEM->REG, REG->TMP_ZP", new String[]{"{LINE0}", "{LINE1}", "{LINE6}", "{LINE7}"}, "LDA #<{MEM0}","LDY #>{MEM0}","STA {REG0}","STY {REG0}","LDA {REG0}","LDY {REG0}","STA TMP_ZP","STY TMP_ZP+1"));
-			this.add(new Pattern("Direct loading of values into FAC",new String[]{"{LINE0}","{LINE1}","{LINE9}"},"LDA #<{MEM0}", "LDY #>{MEM0}","STA TMP3_ZP","STY TMP3_ZP+1","LDX #<Y_REG","LDY #>Y_REG","JSR COPY2_XY","TXA","LDY #>Y_REG","JSR $BBA2"));
-		}
-	};
+	private static final long serialVersionUID = 1L;
+	{
+	    this.add(new Pattern("REALOUT + LINEBRK", new String[] { "JSR REALOUTBRK" }, "JSR REALOUT",
+		    "JSR LINEBREAK"));
+	    this.add(new Pattern("STROUT + LINEBRK", new String[] { "JSR STROUTBRK" }, "JSR STROUT", "JSR LINEBREAK"));
+	    this.add(new Pattern("INTOUT + LINEBRK", new String[] { "JSR INTOUTBRK" }, "JSR INTOUT", "JSR LINEBREAK"));
+	    this.add(new Pattern(false,"Array index is integer (store)",
+		    new String[] { "{LINE10}", "{LINE11}", "{LINE12}", "{LINE13}", "{LINE18}", "{LINE19}", "{LINE20}",
+			    "{LINE21}", "{LINE0}", "{LINE1}", "{LINE22}_INT" },
+		    "LDY {MEM0}", "LDA {MEM0}", "JSR $B391", "LDX #<{REG0}", "LDY #>{REG0}", "JSR $BBD7",
+		    "LDA #<{REG0}", "LDY #>{REG0}", "JSR $BBA2", "JSR PUSHREAL", "LDA {*}", "LDY {*}", "STA {REG1}",
+		    "STY {REG1}", "JSR POPREAL", "LDX #<{REG2}", "LDY #>{REG2}", "JSR $BBD7", "LDA #<{MEM2}",
+		    "LDY #>{MEM2}", "STA G_REG", "STY G_REG+1", "JSR ARRAYSTORE{*}"));
+	    this.add(new Pattern(false,"Array index is integer (load)",
+		    new String[] { "{LINE6}", "{LINE7}", "{LINE8}", "{LINE9}", "{LINE0}", "{LINE1}", "{LINE10}_INT" },
+		    "LDY {MEM0}", "LDA {MEM0}", "JSR $B391", "LDX #<{REG0}", "LDY #>{REG0}", "JSR $BBD7",
+		    "LDA #<{MEM1}", "LDY #>{MEM1}", "STA G_REG", "STY G_REG+1", "JSR ARRAYACCESS{*}"));
+	    this.add(new Pattern("Quick copy into REG",
+		    new String[] { "{LINE0}", "{LINE1}", "STA TMP3_ZP", "STY TMP3_ZP+1", "{LINE3}", "{LINE4}",
+			    "JSR COPY2_XY" },
+		    "LDA #<{MEM0}", "LDY #>{MEM0}", "JSR $BBA2", "LDX #<{REG0}", "LDY #>{REG0}", "JSR $BBD7"));
+	    this.add(new Pattern(false,"Simplified CMP with 0", new String[] { "{LINE0}", "LDA $61" }, "JSR $BBA2",
+		    "LDX #<{REG0}", "LDY #>{REG0}", "JSR $BBD7", "LDA #<{#0.0}", "LDY #>{#0.0}", "JSR $BBA2",
+		    "LDA #<{REG0}", "LDY #>{REG0}", "JSR $BC5B"));
+	    this.add(new Pattern("REG0->REG1, REG1->REG0", new String[] { "{LINE0}", "{LINE1}", "{LINE2}" },
+		    "LDX #<{MEM0}", "LDY #>{MEM0}", "JSR $BBD7", "LDA #<{REG0}", "LDY #>{REG0}", "JSR $BBA2",
+		    "LDX #<{REG1}", "LDY #>{REG1}", "JSR $BBD7", "LDA #<{REG1}", "LDY #>{REG1}", "JSR $BBA2",
+		    "LDX #<{REG0}", "LDY #>{REG0}", "JSR $BBD7", "LDA #<{REG0}", "LDY #>{REG0}", "JSR $BBA2"));
+	    this.add(new Pattern("REG0->VAR, REG0->REG1", new String[] { "{LINE6}", "{LINE7}", "{LINE8}" },
+		    "LDX #<{REG0}", "LDY #>{REG0}", "JSR $BBD7", "LDA #<{REG0}", "LDY #>{REG0}", "JSR $BBA2",
+		    "LDX #<{MEM0}", "LDY #>{MEM0}", "JSR $BBD7", "LDA #<{REG0}", "LDY #>{REG0}", "JSR $BBA2",
+		    "LDX #<{REG1}", "LDY #>{REG1}", "JSR $BBD7", "LDA #<{REG1}", "LDY #>{REG1}", "JSR $BBA2"));
+	    this.add(new Pattern("FAC into REG?, REG? into FAC", null, "LDX #<{REG0}", "LDY #>{REG0}", "JSR $BBD7",
+		    "LDA #<{REG0}", "LDY #>{REG0}", "JSR $BBA2"));
+	    this.add(new Pattern("INT to FAC, FAC to INT", new String[] { "{LINE0}", "{LINE1}" }, "LDY {*}", "LDA {*}",
+		    "JSR $B391", "JSR $B1AA"));
+	    this.add(new Pattern("STY A...LDY A...STY B", new String[] { "{LINE0}", "{LINE3}" }, "STY {MEM0}",
+		    "LDY {MEM0}", "LDA #0", "STY {*}"));
+	    this.add(new Pattern("FAC to INT, INT to FAC", null, "JSR $B391", "JSR $B1AA"));
+	    this.add(new Pattern("VAR into FAC, FAC into VAR", null, "LDA #<{MEM0}", "LDY #>{MEM0}", "JSR $BBA2",
+		    "LDX #<{MEM0}", "LDY #>{MEM0}", "JSR $BBD7"));
+	    this.add(new Pattern("CMP with 0", new String[] { "LDA {REG0}" }, "LDA #<{#0.0}", "LDY #>{#0.0}",
+		    "JSR $BBA2", "LDA #<{REG0}", "LDY #>{REG0}", "JSR $BC5B"));
+	    this.add(new Pattern(false,"POKE with integer constant@real location",
+		    new String[] { "JSR $BBA2", "JSR $B7F7", "STY 105", "STA 106", "LDA {MEM0}", "LDY #0",
+			    "STA (105),Y" },
+		    "JSR $BBA2", "JSR PUSHREAL", "LDY {MEM0}", "LDA {MEM0}", "JSR $B391", "LDX #<{REG0}",
+		    "LDY #>{REG0}", "JSR $BBD7", "JSR POPREAL", "JSR $B7F7", "STY 105", "STA 106", "LDA #<{REG0}",
+		    "LDY #>{REG0}", "JSR $BBA2", "JSR $B7F7", "TYA", "LDY #0", "STA (105),Y"));
+	    this.add(new Pattern(false,"CHR with integer constant", new String[] { "LDA{MEM0}", "JSR CHRINT" }, "LDY {MEM0}",
+		    "LDA {MEM0}", "JSR $B391", "LDX #<{REG0}", "LDY #>{REG0}", "JSR $BBD7", "JSR CHR"));
+	    this.add(new Pattern(false,"NEXT check simplified",
+		    new String[] { "JSR NEXT", "LDA A_REG", "{LINE8}", "JMP (JUMP_TARGET)" }, "JSR NEXT", "LDY {MEM0}",
+		    "LDA {MEM0}", "CPY A_REG", "BNE {*}", "CMP A_REG+1", "BNE {*}", "{LABEL}", "BNE {*}",
+		    "JMP (JUMP_TARGET)"));
+	    this.add(new Pattern(false,"Multiple loads of the same value(1)",
+		    new String[] { "{LINE0}", "{LINE1}", "{LINE2}", "{LINE3}", "{LINE4}", "{LINE5}", "{LINE9}",
+			    "{LINE10}", "{LINE11}" },
+		    "LDA #<{MEM0}", "LDY #>{MEM0}", "JSR $BBA2", "LDX #<{REG0}", "LDY #>{REG0}", "JSR $BBD7",
+		    "LDA #<{MEM0}", "LDY #>{MEM0}", "JSR $BBA2", "LDX #<{REG1}", "LDY #>{REG1}", "JSR $BBD7"));
+	    this.add(new Pattern(false,"Multiple loads of the same value(2)",
+		    new String[] { "{LINE0}", "{LINE1}", "{LINE2}", "{LINE3}", "{LINE4}", "{LINE5}", "{LINE6}",
+			    "{LINE11}", "{LINE12}", "{LINE13}" },
+		    "LDA #<{MEM0}", "LDY #>{MEM0}", "STA TMP3_ZP", "STY TMP3_ZP+1", "LDX #<{REG0}", "LDY #>{REG0}",
+		    "JSR COPY2_XY", "LDA #<{MEM0}", "LDY #>{MEM0}", "STA TMP3_ZP", "STY TMP3_ZP+1", "LDX #<{REG1}",
+		    "LDY #>{REG1}", "JSR COPY2_XY"));
+	    this.add(new Pattern("Value already in X",
+		    new String[] { "{LINE0}", "{LINE1}", "{LINE2}", "TXA", "{LINE4}" }, "LDX #<{REG0}", "LDY #>{REG0}",
+		    "JSR COPY2_XY", "LDA #<{REG0}", "LDY #>{REG0}"));
+	    this.add(new Pattern(false,"Variable used twice in calculation",
+		    new String[] { "{LINE3}", "{LINE4}", "{LINE5}", "TXA", "{LINE10}", "{LINE8}", "{LINE9}", "{LINE10}",
+			    "{LINE11}", "{LINE12}" },
+		    "LDX #<{REG0}", "LDY #>{REG0}", "JSR COPY2_XY", "LDX #<{REG1}", "LDY #>{REG1}", "JSR COPY2_XY",
+		    "LDA #<{REG0}", "LDY #>{REG0}", "JSR $BBA2", "LDA #<{REG1}", "LDY #>{REG1}", "JSR $BA8C",
+		    "JSR {*}"));
+	    this.add(new Pattern("Avoid INTEGER->REAL conversion", true,
+		    new String[] { "LDA #<{CONST0}R", "LDY #>{CONST0}R", "JSR $BBA2" }, "LDY {CONST0}", "LDA {CONST0}",
+		    "JSR $B391"));
+	    this.add(new Pattern(false,"Array value used twice in calculation",
+		    new String[] { "{LINE0}", "{LINE1}", "{LINE2}", "{LINE3}", "{LINE4}", "{LINE5}", "{LINE6}",
+			    "{LINE7}", "{LINE8}", "{LINE9}", "{LINE10}", "{LINE11}", "{LINE12}", "{LINE13}", "{LINE14}",
+			    "{LINE12}", "{LINE13}", "JSR $BA8C" },
+		    "LDA #<{MEM0}", "LDY #>{MEM0}", "STA TMP3_ZP", "STY TMP3_ZP+1", "LDX #<{REG0}", "LDY #>{REG0}",
+		    "JSR COPY2_XY", "LDA #<{MEM1}", "LDY #>{MEM1}", "STA {REG1}", "STY {REG1}", "JSR {*}",
+		    "LDA #<{REG0}", "LDY #>{REG0}", "JSR $BBA2", "JSR PUSHREAL", "LDA #<{MEM0}", "LDY #>{MEM0}",
+		    "STA TMP3_ZP", "STY TMP3_ZP+1", "LDX #<{REG0}", "LDY #>{REG0}", "JSR COPY2_XY", "LDA #<{MEM1}",
+		    "LDY #>{MEM1}", "STA {REG1}", "STY {REG1}", "JSR {*}", "JSR POPREAL", "LDA #<{REG0}",
+		    "LDY #>{REG0}", "JSR $BA8C"));
+	    this.add(new Pattern("Constant directly into FAC",
+		    new String[] { "LDA #0", "STA $61", "STA $62", "STA $63", "STA $64", "STA $65", "STA $66",
+			    "{LINE2}", "{LINE3}", "LDA #0", "STA $63", "STA $64", "STA $65", "LDY #128", "STY $62",
+			    "INY", "STY $61", "LDY #$FF", "STY $66", "{LINE6}", "{LINE8}" },
+		    "LDA #<REAL_CONST_ZERO", "LDY #>REAL_CONST_ZERO", "JMP {*}", "{LABEL}",
+		    "LDA #<REAL_CONST_MINUS_ONE", "LDY #>REAL_CONST_MINUS_ONE", "{LABEL}", "JSR $BBA2", "LDA $61"));
+	    this.add(new Pattern(false,"Highly simplified loading for CMP",
+		    new String[] { "{LINE0}", "{LINE1}", "JSR $BBA2", "{LINE7}", "{LINE8}", "{LINE19}" },
+		    "LDA #<{MEM0}", "LDY #>{MEM0}", "STA TMP3_ZP", "STY TMP3_ZP+1", "LDX #<{REG0}", "LDY #>{REG0}",
+		    "JSR COPY2_XY", "LDA #<{MEM1}", "LDY #>{MEM1}", "STA TMP3_ZP", "STY TMP3_ZP+1", "LDX #<{REG1}",
+		    "LDY #>{REG1}", "JSR COPY2_XY", "LDA #<{REG0}", "LDY #>{REG0}", "JSR $BBA2", "LDA #<{REG1}",
+		    "LDY #>{REG1}", "JSR $BC5B"));
+	    this.add(new Pattern(false,"Highly simplified loading for calculations",
+		    new String[] { "{LINE0}", "{LINE1}", "JSR $BBA2", "{LINE7}", "{LINE8}", "{LINE19}", "{LINE20}" },
+		    "LDA #<{MEM0}", "LDY #>{MEM0}", "STA TMP3_ZP", "STY TMP3_ZP+1", "LDX #<{REG0}", "LDY #>{REG0}",
+		    "JSR COPY2_XY", "LDA #<{MEM1}", "LDY #>{MEM1}", "STA TMP3_ZP", "STY TMP3_ZP+1", "LDX #<{REG1}",
+		    "LDY #>{REG1}", "JSR COPY2_XY", "LDA #<{REG0}", "LDY #>{REG0}", "JSR $BBA2", "LDA #<{REG1}",
+		    "LDY #>{REG1}", "JSR $BA8C", "JSR {*}"));
+	    this.add(new Pattern(false,"NEXT with no variable name simplified",
+		    new String[] { "LDA #0", "STA A_REG", "STA A_REG+1", "JSR NEXT" }, "LDY {CONST0}", "LDA {CONST0}",
+		    "STY A_REG", "STA A_REG+1", "JSR NEXT"));
+	    this.add(new Pattern(false,"POKE and NEXT combined",
+		    new String[] { "LDY #0", "STA (105),Y", "STY A_REG", "STY A_REG+1" }, "LDY #0", "STA (105),Y",
+		    "LDA #0", "STA A_REG", "STA A_REG+1"));
+	    this.add(new Pattern("Improved copy from REG0 to REG1",
+		    new String[] { "{LINE0}", "{LINE1}", "STA TMP3_ZP", "STY TMP3_ZP+1", "{LINE3}", "{LINE4}",
+			    "JSR COPY2_XY" },
+		    "LDA #<{REG0}", "LDY #>{REG0}", "JSR $BBA2", "LDX #<{REG1}", "LDY #>{REG1}", "JSR $BBD7"));
+	    this.add(new Pattern(false,"FAST SQRT", new String[] { "JSR SQRT" }, "JSR $BF71"));
+	    this.add(new Pattern(false,"Simplified loading of Strings",
+		    new String[] { "{LINE4}", "{LINE5}", "{LINE6}", "{LINE7}", "{LINE8}" }, "STA {REG0}", "STY {REG0}",
+		    "LDA {REG0}", "LDY {REG0}", "STA TMP_ZP", "STY TMP_ZP+1", "LDA #<{MEM0}", "LDY #>{MEM0}",
+		    "JSR COPYSTRING"));
+	    this.add(new Pattern("MEM->REG, REG->TMP_ZP", new String[] { "{LINE0}", "{LINE1}", "{LINE6}", "{LINE7}" },
+		    "LDA #<{MEM0}", "LDY #>{MEM0}", "STA {REG0}", "STY {REG0}", "LDA {REG0}", "LDY {REG0}",
+		    "STA TMP_ZP", "STY TMP_ZP+1"));
+	    this.add(new Pattern("Direct loading of values into FAC", new String[] { "{LINE0}", "{LINE1}", "{LINE9}" },
+		    "LDA #<{MEM0}", "LDY #>{MEM0}", "STA TMP3_ZP", "STY TMP3_ZP+1", "LDX #<Y_REG", "LDY #>Y_REG",
+		    "JSR COPY2_XY", "TXA", "LDY #>Y_REG", "JSR $BBA2"));
+	}
+    };
 
     @Override
     public List<String> optimize(PlatformProvider platform, List<String> input) {
@@ -128,11 +182,15 @@ public class Optimizer64 implements Optimizer {
 	    }
 	}
 
+	Set<Pattern> used = new HashSet<Pattern>();
 	boolean optimized = false;
 	do {
 	    optimized = false;
 	    for (Pattern pattern : patterns) {
 		if (pattern.isLooseTypes() && !platform.useLooseTypes()) {
+		    continue;
+		}
+		if (used.contains(pattern)) {
 		    continue;
 		}
 		for (int i = 0; i < input.size(); i++) {
@@ -156,6 +214,10 @@ public class Optimizer64 implements Optimizer {
 		}
 		if (optimized) {
 		    break;
+		} else {
+		    if (!pattern.isSimple()) {
+			used.add(pattern);
+		    }
 		}
 	    }
 	} while (optimized);
