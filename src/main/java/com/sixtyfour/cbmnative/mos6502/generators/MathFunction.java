@@ -6,7 +6,7 @@ import java.util.Map;
 import com.sixtyfour.Logger;
 
 /**
- * @author Foerster-H
+ * @author EgonOlsen
  * 
  */
 public abstract class MathFunction implements Generator {

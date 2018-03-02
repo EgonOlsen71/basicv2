@@ -8,7 +8,7 @@ import java.util.List;
  * much less sophisticated than for example the one for 6502-code and should be
  * re-done at one time. But that time isn't now...
  * 
- * @author Foerster-H
+ * @author EgonOlsen
  *
  */
 public class NativeOptimizer {

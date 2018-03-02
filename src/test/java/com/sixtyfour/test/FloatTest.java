@@ -8,7 +8,7 @@ import com.sixtyfour.system.Conversions;
 /**
  * Test for floating point conversions
  * 
- * @author Foerster-H
+ * @author EgonOlsen
  * 
  */
 public class FloatTest {
