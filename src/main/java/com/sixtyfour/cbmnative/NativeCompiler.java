@@ -603,8 +603,6 @@ public class NativeCompiler {
 		return NativeOptimizer.optimizeNative(code);
 	}
 
-	
-
 	private String getLastMoveTarget(List<String> code, int offset) {
 		for (int i = code.size() - offset; i >= 0; i--) {
 			if (code.get(i).startsWith("MOV ")) {

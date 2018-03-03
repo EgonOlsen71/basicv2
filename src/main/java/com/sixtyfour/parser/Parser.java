@@ -1620,7 +1620,7 @@ public class Parser {
 			}
 			if (ts.endsWith(".0")) {
 				// If it can be an integer...then is should be one
-				ts=ts.substring(0, ts.length()-2);
+				ts = ts.substring(0, ts.length() - 2);
 			}
 			// System.out.println("TS: "+ts);
 			Term t = new Term(ts, termMap);
@@ -1632,6 +1632,7 @@ public class Parser {
 			ret = t;
 			// System.out.println("Replaced by: " + ret);
 		}
+
 		return ret;
 	}
 

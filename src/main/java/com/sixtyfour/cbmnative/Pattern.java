@@ -21,17 +21,17 @@ public class Pattern {
 	private int end = -1;
 	private String name;
 	private boolean looseTypes = false;
-	private boolean simple=true;
+	private boolean simple = true;
 
 	public Pattern(String name, String[] replacement, String... parts) {
 		pattern = new ArrayList<>(Arrays.asList(parts));
 		this.replacement = replacement;
 		this.name = name;
 	}
-	
+
 	public Pattern(boolean simple, String name, String[] replacement, String... parts) {
-	    this(name, replacement, parts);
-	    this.simple=simple;
+		this(name, replacement, parts);
+		this.simple = simple;
 	}
 
 	public Pattern(String name, boolean looseTypes, String[] replacement, String... parts) {
@@ -56,7 +56,7 @@ public class Pattern {
 						if (!replacement[i].endsWith("}")) {
 							int pos = replacement[i].indexOf("}");
 							postFix = replacement[i].substring(pos + 1);
-							replacement[i] = replacement[i].substring(0, pos+1);
+							replacement[i] = replacement[i].substring(0, pos + 1);
 						}
 						int num = Integer.parseInt(replacement[i].substring(5, replacement[i].length() - 1));
 						List<String> sub = new ArrayList<String>(code.subList(index, end + 1));
@@ -265,11 +265,11 @@ public class Pattern {
 	}
 
 	public boolean isSimple() {
-	    return simple;
+		return simple;
 	}
 
 	public void setSimple(boolean simple) {
-	    this.simple = simple;
+		this.simple = simple;
 	}
 
 }

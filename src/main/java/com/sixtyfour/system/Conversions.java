@@ -47,9 +47,9 @@ public class Conversions {
 	 * @return the result
 	 */
 	public static int[] convertFloat(float number) {
-	    return convertDouble(number);
+		return convertDouble(number);
 	}
-	
+
 	/**
 	 * Converts a double from Java into C64 format (extended, i.e. 6 bytes)
 	 * 
@@ -99,7 +99,7 @@ public class Conversions {
 				if (count > 7) {
 					count = 0;
 					beit++;
-				} 
+				}
 				num = num - a * bit;
 			}
 			a = a / 2d;
@@ -171,7 +171,7 @@ public class Conversions {
 		double man = ((neg != 0 ? -1d : 1d) * ((m4 | 0x80) * Math.pow(2d, -8d) + m3 * (Math.pow(2d, -16d)) + m2 * (Math.pow(2d, -24d)) + m1 * (Math.pow(2d, -32d))));
 		return (float) (man * Math.pow(2, expf));
 	}
-	
+
 	/**
 	 * Converts a float from C64 format into Java format as a double.
 	 * 

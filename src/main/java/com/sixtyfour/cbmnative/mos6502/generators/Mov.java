@@ -26,11 +26,11 @@ public class Mov extends GeneratorBase {
 
 		if (!source.isIndexed() && !target.isIndexed()) {
 			if (source.getType() == Type.STRING) {
-			    	if (source.isArray()) {
-			    		sourceStringArray(nCode, source, target);
-			    	} else {
-			    	    sourceString(nCode, source, target);
-			    	}
+				if (source.isArray()) {
+					sourceStringArray(nCode, source, target);
+				} else {
+					sourceString(nCode, source, target);
+				}
 			} else if (target.getType() == Type.STRING) {
 				targetString(nCode, source, target);
 			} else if (source.isArray()) {
@@ -59,10 +59,10 @@ public class Mov extends GeneratorBase {
 			nCode.add("LDA " + source.getAddress());
 			nCode.add("LDY " + createAddress(source.getAddress(), 1));
 		}
-		
+
 		nCode.add("STA TMP_ZP");
 		nCode.add("STY TMP_ZP+1");
-		
+
 		if (!checkSpecialWriteVars(nCode, target)) {
 			if (target.isRegister()) {
 				nCode.add("LDA #<" + target.getRegisterName());
@@ -87,7 +87,7 @@ public class Mov extends GeneratorBase {
 		nCode.add("STA " + target.getRegisterName());
 		nCode.add("STY " + createAddress(target.getRegisterName(), 1));
 	}
-	
+
 	private void sourceStringArray(List<String> nCode, Operand source, Operand target) {
 		if (source.isConstant()) {
 			nCode.add("LDA #<" + source.getAddress());

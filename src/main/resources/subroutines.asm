@@ -304,7 +304,7 @@ CHECKLOW3	LDA TMP_ZP
 			CMP #<CONSTANTS
 			BCC INVAR			; No, it's not a constant. It's something from lower memory...
 			
-ISCONST		JSR CHECKLASTCONST	; Reclaim formerly used memory if possible
+ISCONST		JSR CHECKLASTVAR	; Reclaim formerly used memory if possible
 			LDA TMP_ZP
 			STA (TMP2_ZP),Y		; Yes, it's a constant...
 			INY
@@ -354,7 +354,7 @@ COPYONLY	LDY #0
 ALTCOPY		JMP COPYSTRING2
 
 UPDATEPTR	LDA TMP_ZP+1	; Check if the new string comes after or equals highp, which indicates that it can be
-			CMP HIGHP+1		; "copied down". This is another routine, because of reaons...
+			CMP HIGHP+1		; "copied down". This is another routine, because of...reasons...
 			BEQ CHECKXT1
 			BCS ALTCOPY
 			JMP CHECKMEM
@@ -472,23 +472,6 @@ SKIPLOWAS2	LDA HIGHP+1
 			RTS
 ;###################################
 ; Checks if this variable is the same one that has been stored last. If so, we can reclaim its memory first.
-CHECKLASTCONST
-			LDA TMP2_ZP
-			CMP LASTVAR
-			BNE NOTSAMECONST
-			LDA TMP2_ZP+1
-			CMP LASTVAR+1
-			BNE NOTSAMECONST
-			LDA LASTVARP			; The target is the last string that has been added. We can free it's currently used memory then.
-			STA HIGHP
-			STA STRBUFP
-			LDA LASTVARP+1
-			STA HIGHP+1
-			STA STRBUFP+1
-NOTSAMECONST	
-			RTS
-;###################################
-; Checks if this variable is the same one that has been stored last. If so, we can reclaim its memory first.
 CHECKLASTVAR
 			LDA TMP2_ZP
 			CMP LASTVAR
@@ -502,9 +485,6 @@ CHECKLASTVAR
 			LDA LASTVARP+1
 			STA HIGHP+1
 			STA STRBUFP+1
-			LDA #0				; Set the current value's length to 0, so that nothing new fits and a copy always happens later
-			TAY
-			STA (TMP3_ZP),Y
 NOTSAMEVAR	RTS
 ;###################################
 ; Stores the last variable reference that has been stored in string memory

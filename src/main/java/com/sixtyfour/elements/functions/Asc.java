@@ -50,4 +50,5 @@ public class Asc extends AbstractFunction {
 		}
 		return c;
 	}
+
 }

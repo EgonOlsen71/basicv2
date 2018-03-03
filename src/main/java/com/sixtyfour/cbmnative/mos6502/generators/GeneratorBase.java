@@ -38,7 +38,7 @@ public abstract class GeneratorBase implements Generator {
 			nCode.add("LDY #>" + source.getAddress());
 			nCode.add("JSR $BBD7");
 		} else if (source.getAddress().equals("VAR_TI")) {
-		    	nCode.add("SEI");
+			nCode.add("SEI");
 			nCode.add("LDY $A0");
 			nCode.add("LDX $A1");
 			nCode.add("LDA $A2");

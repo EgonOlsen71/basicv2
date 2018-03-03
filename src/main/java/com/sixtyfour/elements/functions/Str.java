@@ -46,4 +46,5 @@ public class Str extends AbstractFunction {
 		}
 		return str;
 	}
+
 }
