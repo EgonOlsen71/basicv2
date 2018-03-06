@@ -168,7 +168,7 @@ VAL			LDA B_REG
 			INC $22
 			BNE VALSTR
 			INC $23
-VALSTR		JSR $B7B0
+VALSTR		JSR $B7B5
 			LDX #<X_REG
 			LDY #>X_REG
 			JMP $BBD7	;RTS is implicit
