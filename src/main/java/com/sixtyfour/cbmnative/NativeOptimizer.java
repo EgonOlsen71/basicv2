@@ -192,6 +192,17 @@ public class NativeOptimizer {
 		    continue;
 		}
 		
+		//MOV Y,X
+		//MOV X,#7.2{REAL}
+		//ADD X,Y
+		
+		if (l0.equals("MOV Y,X") && l1.startsWith("MOV X") && l2.equals("ADD X,Y")) {
+		    ret.add(l1.replace("MOV X,", "MOV Y,"));
+		    ret.add(l2);
+		    i+=2;
+		    continue;
+		}
+		
 		ret.add(l0);
 	    }
 	    ret.add(code.get(code.size() - 1));
