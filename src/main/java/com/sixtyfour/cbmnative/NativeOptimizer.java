@@ -20,7 +20,7 @@ public class NativeOptimizer {
 	    code = optimizeNative1(code);
 	    code = optimizeNative2(code);
 	} while (oldCode != code.size());
-	
+
 	return code;
     }
 
@@ -167,6 +167,13 @@ public class NativeOptimizer {
 		    l4 = code.get(i + 4);
 		}
 
+		String[] l0ps = l0.split(" |,");
+		String[] l2ps = null;
+
+		if (l2 != null) {
+		    l2ps = l2.split(" |,");
+		}
+
 		// MOV Y,#2{INTEGER}
 		// PUSH Y
 		// JSR COMPACT
@@ -180,29 +187,45 @@ public class NativeOptimizer {
 		    i += 4;
 		    continue;
 		}
-		
-		//PUSH X
-		//JSR COMPACT
-		//MOV A,#world!{STRING}
-		//POP X
-		if (l0.equals("PUSH X") && l1.equals("JSR COMPACT") && l2.startsWith("MOV A") && l3.equals("POP X")) {
+
+		// PUSH X
+		// JSR COMPACT
+		// MOV A,#world!{STRING}
+		// POP X
+		if (l2 != null && l3 != null && l0.equals("PUSH X") && l1.equals("JSR COMPACT")
+			&& l2.startsWith("MOV A") && l3.equals("POP X")) {
 		    ret.add(l1);
 		    ret.add(l2);
-		    i+=3;
+		    i += 3;
 		    continue;
 		}
-		
-		//MOV Y,X
-		//MOV X,#7.2{REAL}
-		//ADD X,Y
-		
-		if (l0.equals("MOV Y,X") && l1.startsWith("MOV X") && l2.equals("ADD X,Y")) {
+
+		// MOV Y,X
+		// MOV X,#7.2{REAL}
+		// ADD X,Y
+		if (l2 != null && l0.equals("MOV Y,X") && l1.startsWith("MOV X")
+			&& (l2.equals("ADD X,Y") || l2.equals("MUL X,Y"))) {
 		    ret.add(l1.replace("MOV X,", "MOV Y,"));
 		    ret.add(l2);
-		    i+=2;
+		    i += 2;
 		    continue;
 		}
-		
+
+		// MOV A{REAL},X
+		// MOV Y,#35{INTEGER}
+		// MOV X,A{REAL}
+		// ADD X,Y
+		if (l2ps != null && l2ps.length > 2 && l0ps.length > 2 && l3 != null && l0ps[0].equals("MOV")
+			&& l0ps[2].equals("X") && l2ps[2].equals(l0ps[1]) && l1.startsWith("MOV Y")
+			&& (l3.equals("ADD X,Y") || l3.equals("SUB X,Y") || l3.equals("MUL X,Y")
+				|| l3.equals("DIV X,Y"))) {
+		    ret.add(l0);
+		    ret.add(l1);
+		    ret.add(l3);
+		    i += 3;
+		    continue;
+		}
+
 		ret.add(l0);
 	    }
 	    ret.add(code.get(code.size() - 1));
