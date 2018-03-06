@@ -278,7 +278,14 @@ COPYSTRING	STA TMP2_ZP
 CONTCOPY	LDY #0
 			STY TMP_FLAG
 			LDA (TMP_ZP),Y
-			TAX					; Store the length of the source in X...this is valid until right to the end, where it's not longer used anyway
+			BNE NOTEMPTYSTR
+			LDA #<EMPTYSTR		; The source is empty? Then assign the empty string constant instead
+			STA TMP_ZP
+			LDA #>EMPTYSTR
+			STA TMP_ZP+1
+			JMP ISCONST
+			
+NOTEMPTYSTR	TAX					; Store the length of the source in X...this is valid until right to the end, where it's not longer used anyway
 			LDA (TMP2_ZP),Y
 			STA TMP3_ZP
 			INY
