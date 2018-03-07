@@ -89,7 +89,12 @@ INITSPARAMS	STY TMP_ZP+1
 ;##################################
 INITSTRVARS	LDA #<STRINGVARS_START		; Reset all string variables...
 			LDY #>STRINGVARS_START
-			STA TMP_ZP
+			CMP #<STRINGVARS_END
+			BNE INITIT1
+			CPY #>STRINGVARS_END
+			BNE INITIT1
+			JMP INITSA2					; No string variables at all
+INITIT1		STA TMP_ZP
 			STY TMP_ZP+1
 			LDY #0
 INITSTRLOOP	LDA #<EMPTYSTR
@@ -111,8 +116,13 @@ INITSTRLOOP	LDA #<EMPTYSTR
 			CMP #<STRINGVARS_END
 			BNE INITSTRLOOP
 			
-			LDA #<STRINGARRAYS_START	; ...and all string arrays
+INITSA2		LDA #<STRINGARRAYS_START	; ...and all string arrays
 			LDY #>STRINGARRAYS_START
+			CMP #<STRINGARRAYS_END
+			BNE ARRAYLOOP
+			CPY #>STRINGARRAYS_END
+			BNE ARRAYLOOP
+			RTS							;...no string array at all
 ARRAYLOOP	CLC
 			ADC #3
 			BCC ARRAYSKIP1
@@ -510,15 +520,10 @@ INTOUT		JMP REALOUT
 ;###################################
 INTOUTBRK  	JMP REALOUTBRK
 ;###################################
-REALOUT_OLD LDA #<X_REG
-			LDY #>X_REG
-			JSR $BBA2
-			JSR $BDDD
-			JSR $B487
-			JSR $AB21
-			JMP $AB3B	;RTS is implicit
-;###################################
-REALOUT		LDA #<X_REG
+REALOUT		LDA X_REG
+			BNE RNOTNULL
+			JMP PRINTNULL
+RNOTNULL	LDA #<X_REG
 			LDY #>X_REG
 			JSR $BBA2
 			LDY #0
@@ -535,7 +540,10 @@ STRLOOPRO	INY				; The string is always at least 1 char in length, so we can sta
 			TAX
 			JMP $AB25	;RTS is implicit
 ;###################################
-REALOUTBRK  LDA #<X_REG
+REALOUTBRK  LDA X_REG
+			BNE RNOTNULLBRK
+			JMP PRINTNULLBRK
+RNOTNULLBRK	LDA #<X_REG
 			LDY #>X_REG
 			JSR $BBA2
 			LDY #0
@@ -550,8 +558,27 @@ STRLOOPROB	INY				; The string is always at least 1 char in length, so we can st
 			INY
 			TYA
 			TAX
-			JSR $AB25
+			INX
+			LDA #$0D
+			STA $00FF,Y
+			JMP $AB25
+
+;###################################
 LINEBREAK	LDA #$0D
+			JMP $FFD2
+
+;###################################
+PRINTNULL	LDA #$20
+			JSR $FFD2
+			LDA #$30
+			JMP $FFD2
+;###################################
+PRINTNULLBRK
+			LDA #$20
+			JSR $FFD2
+			LDA #$30
+			JSR $FFD2
+			LDA #$0D
 			JMP $FFD2
 ;###################################
 STROUT		LDA A_REG
@@ -1070,13 +1097,9 @@ SGTEQ		JSR CMPSTRGTEQ
 			LDX #<X_REG
 			LDY #>X_REG
 			JMP COPY2_XY
-NOTSGTEQ	LDA #<REAL_CONST_ZERO
-			STA TMP3_ZP
-			LDA #>REAL_CONST_ZERO
-			STA TMP3_ZP+1
-			LDX #<X_REG
-			LDY #>X_REG
-			JMP COPY2_XY
+NOTSGTEQ	LDA #0
+			STA X_REG
+			RTS
 
 ;###################################
 SLTEQ		LDA A_REG
@@ -1100,7 +1123,16 @@ CMPSTRGTEQ	LDY #0				;Returns 0 if A>=B, something else otherwise
 			STA TMP2_ZP
 			LDA B_REG+1
 			STA TMP2_ZP+1
-			LDA (TMP2_ZP),Y
+
+			CMP TMP_ZP+1
+			BNE CMPSTRSK3
+			LDA TMP2_ZP
+			CMP TMP_ZP
+			BNE CMPSTRSK3
+			LDX #0
+			JMP STRSGTEQRES
+
+CMPSTRSK3	LDA (TMP2_ZP),Y
 			STA TMP3_ZP+1
 			LDA (TMP_ZP),Y
 			STA TMP3_ZP
@@ -1124,8 +1156,8 @@ SCGTEQSKP1	INC TMP2_ZP
 CMPSGTEQLOOP	
 			LDA (TMP_ZP),Y
 			CMP (TMP2_ZP),Y
-			BCC STRSGTEQRES
 			BEQ SGTEQCONT2
+			BCC STRSGTEQRES
 			LDX #0
 			JMP STRSGTEQRES
 SGTEQCONT2	INY
@@ -1161,14 +1193,10 @@ SGT			JSR CMPSTRGT
 			LDX #<X_REG
 			LDY #>X_REG
 			JMP COPY2_XY
-NOTSGT		LDA #<REAL_CONST_ZERO
-			STA TMP3_ZP
-			LDA #>REAL_CONST_ZERO
-			STA TMP3_ZP+1
-			LDX #<X_REG
-			LDY #>X_REG
-			JMP COPY2_XY
-						
+NOTSGT		LDA #0				; If the exponent is 0, the whole number is...
+			STA X_REG
+			RTS
+
 ;###################################
 CMPSTRGT	LDY #0				;Returns 0 if A>B, something else otherwise
 			LDX #1
@@ -1180,7 +1208,15 @@ CMPSTRGT	LDY #0				;Returns 0 if A>B, something else otherwise
 			STA TMP2_ZP
 			LDA B_REG+1
 			STA TMP2_ZP+1
-			LDA (TMP2_ZP),Y
+
+			CMP TMP_ZP+1
+			BNE CMPSTRSK2
+			LDA TMP2_ZP
+			CMP TMP_ZP
+			BNE CMPSTRSK2
+			JMP STRSGTRES
+
+CMPSTRSK2	LDA (TMP2_ZP),Y
 			STA TMP3_ZP+1
 			LDA (TMP_ZP),Y
 			STA TMP3_ZP
@@ -1229,13 +1265,9 @@ SEQ			JSR CMPSTR
 			LDX #<X_REG
 			LDY #>X_REG
 			JMP COPY2_XY
-NOTSEQ		LDA #<REAL_CONST_ZERO
-			STA TMP3_ZP
-			LDA #>REAL_CONST_ZERO
-			STA TMP3_ZP+1
-			LDX #<X_REG
-			LDY #>X_REG
-			JMP COPY2_XY			
+NOTSEQ		LDA #0
+			STA X_REG
+			RTS
 
 ;###################################
 SNEQ		JSR CMPSTR
@@ -1260,7 +1292,14 @@ CMPSTR		LDY #0			;Returns 0 if strings are equal, something else otherwise
 			STA TMP2_ZP
 			LDA B_REG+1
 			STA TMP2_ZP+1
-			LDA (TMP_ZP),Y
+			CMP TMP_ZP+1
+			BNE CMPSTRSK1
+			LDA TMP2_ZP
+			CMP TMP_ZP
+			BNE CMPSTRSK1
+			LDX #0
+			JMP STRCMPRES
+CMPSTRSK1	LDA (TMP_ZP),Y
 			CMP (TMP2_ZP),Y
 			BNE STRCMPRES
 			TAX

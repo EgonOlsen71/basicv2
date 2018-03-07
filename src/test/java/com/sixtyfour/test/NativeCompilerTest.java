@@ -98,7 +98,8 @@ public class NativeCompilerTest {
 		// testLyrix();
 		testFiles();
 		testArrayAccess01();
-		testBasicMapper();
+		//testBasicMapper();
+		testLogicExpression3();
 
 	}
 
@@ -108,6 +109,7 @@ public class NativeCompilerTest {
 		compileAndRun(rd);
 	}
 
+	@SuppressWarnings("unused")
 	private static void testBasicMapper() throws Exception {
 		System.out.println("\n\ntestBasicMapper");
 		final BufferedImage bi = new BufferedImage(320, 200, BufferedImage.TYPE_INT_RGB);
@@ -428,6 +430,21 @@ public class NativeCompilerTest {
 		machine.add(new Variable("B$", "world"));
 		// String term = "A$<>B$ AND \"hello world\"<>a$+\" \"+b$";
 		String term = "A$<>B$ AND \"hello world\"=a$+\" \"+b$ and \"b\"=>\"a\" or 1=2";
+		testExpr(machine, term);
+	}
+	
+	private static void testLogicExpression3() {
+		System.out.println("\n\ntestLogicExpression3");
+		Machine machine = new Machine();
+		machine.add(new Variable("A$", "a"));
+		machine.add(new Variable("B$", "0"));
+		String term = "(A$>B$)+1.2";
+		testExpr(machine, term);
+		
+		machine = new Machine();
+		machine.add(new Variable("A", 2));
+		machine.add(new Variable("B", 1));
+		term = "(A>B)+1.2";
 		testExpr(machine, term);
 	}
 

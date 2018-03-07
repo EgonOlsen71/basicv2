@@ -19,6 +19,14 @@ public interface Atom {
 	 * @return the type
 	 */
 	Type getType();
+	
+	/**
+	 * Returns the Type that this Atom is supposed to return when calling the
+	 * eval() method. This method ignores mismatching types and returns REAL instead.
+	 * 
+	 * @return the type
+	 */
+	Type getType(boolean ignoreTM);
 
 	/**
 	 * Evaluates this Atom in the context of the current machine state.

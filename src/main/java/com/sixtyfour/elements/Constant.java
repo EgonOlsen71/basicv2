@@ -60,6 +60,11 @@ public class Constant<T> implements Atom {
 		return type;
 	}
 
+	@Override
+	public Type getType(boolean ignoreMt) {
+		return type;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

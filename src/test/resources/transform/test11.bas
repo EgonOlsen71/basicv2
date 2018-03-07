@@ -15,5 +15,5 @@
 97 print"all"
 100 print a$>h$:print a$<h$:print a$=h$:print a$>=h$:print a$<=h$
 105 print"h"
-110 print h$>h$:print h$<h$:print h$=h$:print h$>=h$:print h$<=h$
+110 print h$>h$:print h$<h$:print h$=h$:print h$>=h$:print (h$<=h$)+3.4
 120 print ti

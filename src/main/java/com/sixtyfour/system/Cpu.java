@@ -425,7 +425,7 @@ public class Cpu {
 				}
 			}
 
-			// System.out.println("cmd: "+Integer.toHexString(cmd)+"/"+pc);
+			//System.out.println("cmd: "+Integer.toHexString(cmd)+"/"+ram[pc]+"/"+ram[pc-1]+"/"+pc+"/"+ram[3448]);
 
 			switch (cmd) {
 
@@ -1038,6 +1038,7 @@ public class Cpu {
 			}
 
 			if (cpuTracer != null) {
+				//System.out.println(lastPc+"/"+pc+"/"+cmd);
 				cpuTracer.commandExecuted(this, cmd, lastPc, pc);
 			}
 

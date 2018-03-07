@@ -31,6 +31,7 @@ public class TermHelper {
 		int start = -1;
 		int end = -1;
 		char[] ct = term.toCharArray();
+
 		for (int i = 0; i < term.length(); i++) {
 			char c = t.charAt(i);
 			if (c == '"') {
@@ -40,12 +41,28 @@ public class TermHelper {
 				}
 				inString = !inString;
 			}
+
+			boolean isLogic = false;
 			if (!inString && c == '$') {
 				start = findStart(t, i);
 				end = findEnd(t, i);
 			}
 
 			while (start != -1 && end != -1) {
+				
+				// Handle a combination of logic with strings and normal calculations
+				boolean iss = false;
+				for (int p = start; p < end; p++) {
+					char c2 = t.charAt(p);
+					if (c2 == '"') {
+						iss = !iss;
+					}
+					if (!iss && (c2 == '=' || c2 == '<' || c2 == '>')) {
+						isLogic = true;
+						break;
+					}
+				}
+				
 				boolean rep = false;
 				// System.out
 				// .println(start + "/" + end + "/" + (start >= 0 ? ct[start] :
@@ -60,13 +77,13 @@ public class TermHelper {
 						}
 					}
 
-					ct[start] = ' ';
-					rep = true;
+					ct[start] = (isLogic ? '(' : ' ');
+					rep = !isLogic;
 				}
 				if (end < term.length()) {
 					if (ct[end] == ')') {
-						ct[end] = ' ';
-						rep = true;
+						ct[end] = (isLogic ? ')' : ' ');
+						rep = !isLogic;
 					}
 				}
 				start = -1;
@@ -79,7 +96,7 @@ public class TermHelper {
 				}
 			}
 		}
-		// System.out.println("Term: "+Parser.removeWhiteSpace(new String(ct)));
+		//System.out.println("Term: " + new String(ct));
 		return Parser.removeWhiteSpace(new String(ct));
 	}
 

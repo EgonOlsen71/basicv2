@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import com.sixtyfour.elements.Type;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.Term;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
@@ -32,6 +33,11 @@ public abstract class AbstractFunction implements Function {
 		//
 	}
 
+	@Override
+	public Type getType(boolean ignoreMt) {
+		return getType();
+	}
+	
 	/**
 	 * Instantiates a new abstract function.
 	 * 

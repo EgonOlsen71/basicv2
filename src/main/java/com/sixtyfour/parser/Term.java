@@ -202,13 +202,17 @@ public class Term implements Atom {
 		return "([" + key + "]\\l:" + left + "/" + this.operator + "\\r:" + right + ")";
 	}
 
+	@Override
+	public Type getType() {
+		return getType(false);
+	}
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see sixtyfour.parser.Atom#getType()
 	 */
 	@Override
-	public Type getType() {
+	public Type getType(boolean ignoreMT) {
 		if (type != null) {
 			return type;
 		}
@@ -230,6 +234,9 @@ public class Term implements Atom {
 			return t1;
 		}
 		if (!t1.equals(t2)) {
+			if (ignoreMT) {
+				return Type.INTEGER;
+			}
 			throw new RuntimeException("Type mismatch error: " + this.toString() + " | " + left + " | " + right + " | " + t1 + "/" + t2 + "/" + operator.getType());
 		}
 		type = t1;
@@ -240,13 +247,14 @@ public class Term implements Atom {
 	public List<CodeContainer> evalToCode(Machine machine) {
 		List<String> ret = new ArrayList<String>();
 		List<CodeContainer> cc = new ArrayList<CodeContainer>();
+		
 		if (operator.isNop()) {
 			if (left == null) {
 				throw new RuntimeException("Syntax error!");
 			}
 			return left.evalToCode(machine);
 		}
-		Type type = getType();
+		Type type = getType(true);
 		if (type == Type.STRING) {
 			if (operator.isPlus()) {
 				List<String> s1 = left.evalToCode(machine).get(0).getExpression();
@@ -265,7 +273,7 @@ public class Term implements Atom {
 			if (n1 == null || n2 == null) {
 				throw new RuntimeException("Unknown function name: " + this.getExpression());
 			}
-
+			
 			switch (operator.getType()) {
 			case 0:
 				ret.add(0, "_");

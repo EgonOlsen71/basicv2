@@ -64,6 +64,11 @@ public abstract class AbstractCommand implements Command {
 		}
 
 	}
+	
+	@Override
+	public Type getType(boolean ignoreMt) {
+		return getType();
+	}
 
 	@Override
 	public List<CodeContainer> evalToCode(Machine machine) {

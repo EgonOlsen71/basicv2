@@ -1600,7 +1600,7 @@ public class Parser {
 	}
 
 	private static Term optimizeTerm(Machine machine, Term ret, Map<String, Term> termMap) {
-		if (ret.getType() == Type.STRING) {
+		if (ret.getType(true) == Type.STRING) {
 			return ret;
 		}
 		if (ret.getOperator().isDelimiter()) {
@@ -1641,7 +1641,7 @@ public class Parser {
 			isConstant[0] = false;
 			return false;
 		}
-		if (t.getType() == Type.STRING) {
+		if (t.getType(true) == Type.STRING) {
 			isConstant[0] = false;
 			return false;
 		}
