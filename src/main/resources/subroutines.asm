@@ -1060,7 +1060,209 @@ GOSUB		LDA FORSTACKP
 GETSTR		RTS
 
 ;###################################
-SEQ			RTS
+SGTEQ		JSR CMPSTRGTEQ
+			LDA TMP3_ZP
+			BNE NOTSGTEQ
+			LDA #<REAL_CONST_MINUS_ONE
+			STA TMP3_ZP
+			LDA #>REAL_CONST_MINUS_ONE
+			STA TMP3_ZP+1
+			LDX #<X_REG
+			LDY #>X_REG
+			JMP COPY2_XY
+NOTSGTEQ	LDA #<REAL_CONST_ZERO
+			STA TMP3_ZP
+			LDA #>REAL_CONST_ZERO
+			STA TMP3_ZP+1
+			LDX #<X_REG
+			LDY #>X_REG
+			JMP COPY2_XY
+
+;###################################
+SLTEQ		LDA A_REG
+			LDX B_REG
+			STX A_REG
+			STA B_REG
+			LDA A_REG+1
+			LDX B_REG+1
+			STX A_REG+1
+			STA B_REG+1
+			JMP SGTEQ
+
+;###################################
+CMPSTRGTEQ	LDY #0				;Returns 0 if A>=B, something else otherwise
+			LDX #1
+			LDA A_REG
+			STA TMP_ZP
+			LDA A_REG+1
+			STA TMP_ZP+1
+			LDA B_REG
+			STA TMP2_ZP
+			LDA B_REG+1
+			STA TMP2_ZP+1
+			LDA (TMP2_ZP),Y
+			STA TMP3_ZP+1
+			LDA (TMP_ZP),Y
+			STA TMP3_ZP
+			CMP TMP3_ZP+1
+			BCC DONTSWAPEQ
+			LDA TMP3_ZP+1
+DONTSWAPEQ	TAX
+			INC TMP_ZP
+			BNE SCGTEQSKP1
+			INC TMP_ZP+1
+SCGTEQSKP1	INC TMP2_ZP
+			BNE CMPSGTEQLOOP
+			INC TMP2_ZP+1	
+CMPSGTEQLOOP	
+			LDA (TMP_ZP),Y
+			CMP (TMP2_ZP),Y
+			BCC STRSGTEQRES
+			BEQ SGTEQCONT2
+			LDX #0
+			JMP STRSGTEQRES
+SGTEQCONT2	INY
+			DEX
+			BNE CMPSGTEQLOOP
+			LDA TMP3_ZP+1					; All equal so far...decide based on the length then
+			CMP TMP3_ZP
+			BEQ STRSGTEQRES
+			BCC STRSGTEQRES
+			LDX #1 
+STRSGTEQRES	STX TMP3_ZP
+			RTS	
+			
+;###################################
+SLT			LDA A_REG
+			LDX B_REG
+			STX A_REG
+			STA B_REG
+			LDA A_REG+1
+			LDX B_REG+1
+			STX A_REG+1
+			STA B_REG+1
+			JMP SGT
+
+;###################################
+SGT			JSR CMPSTRGT
+			LDA TMP3_ZP
+			BNE NOTSGT
+			LDA #<REAL_CONST_MINUS_ONE
+			STA TMP3_ZP
+			LDA #>REAL_CONST_MINUS_ONE
+			STA TMP3_ZP+1
+			LDX #<X_REG
+			LDY #>X_REG
+			JMP COPY2_XY
+NOTSGT		LDA #<REAL_CONST_ZERO
+			STA TMP3_ZP
+			LDA #>REAL_CONST_ZERO
+			STA TMP3_ZP+1
+			LDX #<X_REG
+			LDY #>X_REG
+			JMP COPY2_XY
+						
+;###################################
+CMPSTRGT	LDY #0				;Returns 0 if A>B, something else otherwise
+			LDX #1
+			LDA A_REG
+			STA TMP_ZP
+			LDA A_REG+1
+			STA TMP_ZP+1
+			LDA B_REG
+			STA TMP2_ZP
+			LDA B_REG+1
+			STA TMP2_ZP+1
+			LDA (TMP2_ZP),Y
+			STA TMP3_ZP+1
+			LDA (TMP_ZP),Y
+			STA TMP3_ZP
+			CMP TMP3_ZP+1
+			BCC DONTSWAP
+			LDA TMP3_ZP+1
+DONTSWAP	TAX
+			INC TMP_ZP
+			BNE SCGTSKP1
+			INC TMP_ZP+1
+SCGTSKP1	INC TMP2_ZP
+			BNE CMPSGTLOOP
+			INC TMP2_ZP+1	
+CMPSGTLOOP	LDA (TMP_ZP),Y
+			CMP (TMP2_ZP),Y
+			BCC STRSGTRES
+			BEQ SGTEQCONT
+			LDX #0
+			JMP STRSGTRES
+SGTEQCONT	INY
+			DEX
+			BNE CMPSGTLOOP
+			LDA TMP3_ZP+1					; All equal so far...decide based on the length then
+			CMP TMP3_ZP
+			BCC STRSGTRES
+			LDX #1 
+STRSGTRES	STX TMP3_ZP
+			RTS	
+			
+;###################################
+SEQ			JSR CMPSTR
+			LDA TMP3_ZP
+			BNE NOTSEQ
+			LDA #<REAL_CONST_MINUS_ONE
+			STA TMP3_ZP
+			LDA #>REAL_CONST_MINUS_ONE
+			STA TMP3_ZP+1
+			LDX #<X_REG
+			LDY #>X_REG
+			JMP COPY2_XY
+NOTSEQ		LDA #<REAL_CONST_ZERO
+			STA TMP3_ZP
+			LDA #>REAL_CONST_ZERO
+			STA TMP3_ZP+1
+			LDX #<X_REG
+			LDY #>X_REG
+			JMP COPY2_XY			
+
+;###################################
+SNEQ		JSR CMPSTR
+			LDA TMP3_ZP
+			BEQ NOTSEQ
+			LDA #<REAL_CONST_MINUS_ONE
+			STA TMP3_ZP
+			LDA #>REAL_CONST_MINUS_ONE
+			STA TMP3_ZP+1
+			LDX #<X_REG
+			LDY #>X_REG
+			JMP COPY2_XY
+
+;###################################
+CMPSTR		LDY #0			;Returns 0 if strings are equal, something else otherwise
+			LDX #1
+			LDA A_REG
+			STA TMP_ZP
+			LDA A_REG+1
+			STA TMP_ZP+1
+			LDA B_REG
+			STA TMP2_ZP
+			LDA B_REG+1
+			STA TMP2_ZP+1
+			LDA (TMP_ZP),Y
+			CMP (TMP2_ZP),Y
+			BNE STRCMPRES
+			TAX
+			INC TMP_ZP
+			BNE SCSKP1
+			INC TMP_ZP+1
+SCSKP1		INC TMP2_ZP
+			BNE CMPSTRLOOP
+			INC TMP2_ZP+1	
+CMPSTRLOOP	LDA (TMP_ZP),Y
+			CMP (TMP2_ZP),Y
+			BNE STRCMPRES
+			INY
+			DEX
+			BNE CMPSTRLOOP
+STRCMPRES	STX TMP3_ZP
+			RTS					
 
 ;###################################
 READNUMBER	RTS

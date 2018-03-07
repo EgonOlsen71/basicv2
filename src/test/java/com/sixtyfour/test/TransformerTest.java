@@ -39,10 +39,32 @@ public class TransformerTest {
 		// testTransformerPrime();
 		// testTransformerSqr();
 		// testTransformer8();
-		testTransformer9();
+		//testTransformer9();
 		// testTransformer10();
+	    	testTransformer11();
 	}
 
+	private static void testTransformer11() throws Exception {
+		System.out.println("\n\ntestTransformer9");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/test11.bas");
+
+		final Assembler assy = initTestEnvironment(vary);
+		FileWriter.writeAsPrg(assy.getProgram(), "++teststrcmp.prg", true);
+		JsrProfiler profiler = new JsrProfiler(assy);
+		assy.getCpu().setCpuTracer(profiler/*new MyTracer(assy)*/);
+		Machine machine = executeTest(assy);
+
+		System.out.println("Ticks: " + machine.getCpu().getClockTicks());
+
+		
+		List<ProfilerData> profs = profiler.getCollectedData();
+		for (ProfilerData prof : profs) {
+			System.out.println(prof);
+		}
+		
+		
+	}
+	
 	private static void testTransformer9() throws Exception {
 		System.out.println("\n\ntestTransformer9");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/test9.bas");
