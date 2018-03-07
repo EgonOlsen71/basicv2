@@ -12,3 +12,7 @@
 90 print a$<=b$:printb$<=a$:printb$<=c$:printa$<=d$:printd$<=a$
 92 print"gteq"
 95 print a$>=b$:printb$>=a$:printb$>=c$:printa$>=d$:printd$>=a$
+97 print"all"
+100 print a$>h$:print a$<h$:print a$=h$:print a$>=h$:print a$<=h$
+105 print"h"
+110 print h$>h$:print h$<h$:print h$=h$:print h$>=h$:print h$<=h$
