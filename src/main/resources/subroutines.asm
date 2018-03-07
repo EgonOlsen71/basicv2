@@ -1264,7 +1264,10 @@ CMPSTR		LDY #0			;Returns 0 if strings are equal, something else otherwise
 			CMP (TMP2_ZP),Y
 			BNE STRCMPRES
 			TAX
-			INC TMP_ZP
+			BNE NOTZCTR
+			LDX #0
+			JMP STRCMPRES
+NOTZCTR		INC TMP_ZP
 			BNE SCSKP1
 			INC TMP_ZP+1
 SCSKP1		INC TMP2_ZP
