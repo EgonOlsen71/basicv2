@@ -1,4 +1,4 @@
-10 a$="hello":b$="world":c$="world":d$="hello1"
+10 a$="hello":b$="world":c$="world":d$="hello1":ti$="000000"
 20 print a$=b$
 30 print a$<>b$
 40 print c$=b$:printb$<>c$:print b$=b$
@@ -16,3 +16,4 @@
 100 print a$>h$:print a$<h$:print a$=h$:print a$>=h$:print a$<=h$
 105 print"h"
 110 print h$>h$:print h$<h$:print h$=h$:print h$>=h$:print h$<=h$
+120 print ti
