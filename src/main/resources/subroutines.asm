@@ -529,16 +529,12 @@ RNOTNULL	LDA #<X_REG
 			LDY #0
 			JSR $BDDF
 			LDY #0
-			STY $23
-			LDA #$FF
-			STA $22
-STRLOOPRO	INY				; The string is always at least 1 char in length, so we can start with y=1
+			LDA $00FF,Y
+STRLOOPRO	JSR $FFD2
+			INY
 			LDA $00FF,Y
 			BNE STRLOOPRO
-			INY
-			TYA
-			TAX
-			JMP $AB25	;RTS is implicit
+			RTS
 ;###################################
 REALOUTBRK  LDA X_REG
 			BNE RNOTNULLBRK
@@ -549,19 +545,13 @@ RNOTNULLBRK	LDA #<X_REG
 			LDY #0
 			JSR $BDDF
 			LDY #0
-			STY $23
-			LDA #$FF
-			STA $22
-STRLOOPROB	INY				; The string is always at least 1 char in length, so we can start with y=1
+			LDA $00FF,Y
+STRLOOPROB	JSR $FFD2
+			INY
 			LDA $00FF,Y
 			BNE STRLOOPROB
-			INY
-			TYA
-			TAX
-			INX
 			LDA #$0D
-			STA $00FF,Y
-			JMP $AB25
+			JMP $FFD2
 
 ;###################################
 LINEBREAK	LDA #$0D
