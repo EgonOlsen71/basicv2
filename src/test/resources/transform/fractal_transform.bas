@@ -1,7 +1,7 @@
 90 rem **to change the shape, change**
 91 rem **xl,xu,yl,yu. reps changes  **
 92 rem **the resolution**
-100 xl = -2.000:xu = 0.500
+100 xl = -2.000:xu = 0.500:ti$="000000"
 110 yl = -1.100:yu = 1.100
 115 reps = 20
 116 iters% = 0
@@ -62,5 +62,5 @@
 741 poke 53272, (peek(53272) and (255-8)) or 1
 742 poke 53272,(peek(53272) and 15) or 16
 743 poke 53265,peek(53265) and 223
-744 poke 53270,peek(53270) and 239
+744 poke 53270,peek(53270) and 239:print ti
 750 end
