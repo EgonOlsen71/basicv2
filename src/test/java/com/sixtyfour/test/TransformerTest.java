@@ -28,18 +28,18 @@ import com.sixtyfour.test.helper.ProfilerData;
 public class TransformerTest {
 
 	public static void main(String[] args) throws Exception {
-		// testTransformer3();
+	    	//testTransformer3();
 		// testTransformer1();
 		// testTransformer2();
 		// testTransformer4();
 		// testTransformer5();
-		// testTransformerFractal();
-		// testTransformer6();
-		// testTransformer7();
-		// testTransformerPrime();
+		testTransformerFractal();
+		 testTransformer6();
+		 testTransformer7();
+		 testTransformerPrime();
 		// testTransformerSqr();
-		// testTransformer8();
-		//testTransformer9();
+		 testTransformer8();
+		testTransformer9();
 		// testTransformer10();
 	    	testTransformer11();
 		testTransformer12();
