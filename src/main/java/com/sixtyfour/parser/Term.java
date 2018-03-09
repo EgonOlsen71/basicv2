@@ -206,6 +206,7 @@ public class Term implements Atom {
 	public Type getType() {
 		return getType(false);
 	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -247,7 +248,7 @@ public class Term implements Atom {
 	public List<CodeContainer> evalToCode(Machine machine) {
 		List<String> ret = new ArrayList<String>();
 		List<CodeContainer> cc = new ArrayList<CodeContainer>();
-		
+
 		if (operator.isNop()) {
 			if (left == null) {
 				throw new RuntimeException("Syntax error!");
@@ -273,7 +274,7 @@ public class Term implements Atom {
 			if (n1 == null || n2 == null) {
 				throw new RuntimeException("Unknown function name: " + this.getExpression());
 			}
-			
+
 			switch (operator.getType()) {
 			case 0:
 				ret.add(0, "_");

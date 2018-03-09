@@ -79,7 +79,7 @@ public class Comparison implements LogicBlock {
 		n2.add(0, ":" + (left.getType() == Type.STRING ? "S" : "") + this.comparator.evalToCode());
 		ret.addAll(0, n1);
 		ret.addAll(0, n2);
-		
+
 		cc.add(new CodeContainer(ret));
 		return cc;
 	}
@@ -170,7 +170,7 @@ public class Comparison implements LogicBlock {
 	public Type getType() {
 		return Type.INTEGER;
 	}
-	
+
 	public Type getType(boolean ignoreMT) {
 		return Type.INTEGER;
 	}

@@ -64,7 +64,7 @@ public abstract class AbstractCommand implements Command {
 		}
 
 	}
-	
+
 	@Override
 	public Type getType(boolean ignoreMt) {
 		return getType();

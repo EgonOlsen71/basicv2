@@ -170,7 +170,7 @@ public class LogicTerm implements LogicBlock {
 	public Type getType() {
 		return Type.INTEGER;
 	}
-	
+
 	@Override
 	public Type getType(boolean ignoreMT) {
 		return Type.INTEGER;

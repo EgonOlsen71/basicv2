@@ -64,7 +64,7 @@ public class Constant<T> implements Atom {
 	public Type getType(boolean ignoreMt) {
 		return type;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 

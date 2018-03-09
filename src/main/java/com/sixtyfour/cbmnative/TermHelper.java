@@ -49,8 +49,9 @@ public class TermHelper {
 			}
 
 			while (start != -1 && end != -1) {
-				
-				// Handle a combination of logic with strings and normal calculations
+
+				// Handle a combination of logic with strings and normal
+				// calculations
 				boolean iss = false;
 				for (int p = start; p < end; p++) {
 					char c2 = t.charAt(p);
@@ -62,7 +63,7 @@ public class TermHelper {
 						break;
 					}
 				}
-				
+
 				boolean rep = false;
 				// System.out
 				// .println(start + "/" + end + "/" + (start >= 0 ? ct[start] :
@@ -96,7 +97,7 @@ public class TermHelper {
 				}
 			}
 		}
-		//System.out.println("Term: " + new String(ct));
+		// System.out.println("Term: " + new String(ct));
 		return Parser.removeWhiteSpace(new String(ct));
 	}
 

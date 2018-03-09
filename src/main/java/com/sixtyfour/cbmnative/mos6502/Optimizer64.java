@@ -46,7 +46,13 @@ public class Optimizer64 implements Optimizer {
 			this.add(new Pattern("FAC to INT, INT to FAC", null, "JSR $B391", "JSR $B1AA"));
 			this.add(new Pattern("VAR into FAC, FAC into VAR", null, "LDA #<{MEM0}", "LDY #>{MEM0}", "JSR $BBA2", "LDX #<{MEM0}", "LDY #>{MEM0}", "JSR $BBD7"));
 			this.add(new Pattern("CMP with 0", new String[] { "LDA {REG0}" }, "LDA #<{#0.0}", "LDY #>{#0.0}", "JSR $BBA2", "LDA #<{REG0}", "LDY #>{REG0}", "JSR $BC5B"));
-			this.add(new Pattern(false, "POKE with integer constant@real location", new String[] { "JSR $BBA2", "JSR $B7F7", "STY 105", "STA 106", "LDA {MEM0}", "LDY #0",
+
+			// Note: This optimization relies on the former stage to create an
+			// actually unneeded PUSH/POP sequence in for loops. But if I
+			// optimize that away, this will
+			// fail and I can't be bothered to fix this instead...so deal with
+			// it...
+			this.add(new Pattern(false, "POKE with integer constant(1)@real location", new String[] { "JSR $BBA2", "JSR $B7F7", "STY 105", "STA 106", "LDA {MEM0}", "LDY #0",
 					"STA (105),Y" }, "JSR $BBA2", "JSR PUSHREAL", "LDY {MEM0}", "LDA {MEM0}", "JSR $B391", "LDX #<{REG0}", "LDY #>{REG0}", "JSR $BBD7", "JSR POPREAL", "JSR $B7F7",
 					"STY 105", "STA 106", "LDA #<{REG0}", "LDY #>{REG0}", "JSR $BBA2", "JSR $B7F7", "TYA", "LDY #0", "STA (105),Y"));
 			this.add(new Pattern(false, "CHR with integer constant", new String[] { "LDA{MEM0}", "JSR CHRINT" }, "LDY {MEM0}", "LDA {MEM0}", "JSR $B391", "LDX #<{REG0}",

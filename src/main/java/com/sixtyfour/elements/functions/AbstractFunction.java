@@ -37,7 +37,7 @@ public abstract class AbstractFunction implements Function {
 	public Type getType(boolean ignoreMt) {
 		return getType();
 	}
-	
+
 	/**
 	 * Instantiates a new abstract function.
 	 * 

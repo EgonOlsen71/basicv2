@@ -197,7 +197,7 @@ public class Variable implements Atom {
 	public Type getType() {
 		return type;
 	}
-	
+
 	public Type getType(boolean ignoreMT) {
 		return type;
 	}

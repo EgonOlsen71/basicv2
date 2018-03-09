@@ -28,21 +28,22 @@ import com.sixtyfour.test.helper.ProfilerData;
 public class TransformerTest {
 
 	public static void main(String[] args) throws Exception {
-	    	//testTransformer3();
+		// testTransformer3();
 		// testTransformer1();
 		// testTransformer2();
 		// testTransformer4();
 		// testTransformer5();
 		testTransformerFractal();
-		 testTransformer6();
-		 testTransformer7();
-		 testTransformerPrime();
+		// testTransformer6();
+		// testTransformer7();
+		// testTransformerPrime();
 		// testTransformerSqr();
-		 testTransformer8();
-		testTransformer9();
+		// testTransformer8();
+		// testTransformer9();
 		// testTransformer10();
-	    	testTransformer11();
-		testTransformer12();
+		// testTransformer11();
+		// testTransformer12();
+		// testTransformer13();
 	}
 
 	private static void testTransformer11() throws Exception {
@@ -52,18 +53,36 @@ public class TransformerTest {
 		final Assembler assy = initTestEnvironment(vary);
 		FileWriter.writeAsPrg(assy.getProgram(), "++teststrcmp.prg", true);
 		JsrProfiler profiler = new JsrProfiler(assy);
-		assy.getCpu().setCpuTracer(profiler /*new MyTracer(assy)*/);
+		assy.getCpu().setCpuTracer(profiler /* new MyTracer(assy) */);
 		Machine machine = executeTest(assy);
 
+		printStats(profiler, machine);
+	}
+
+	private static void printStats(JsrProfiler profiler, Machine machine) {
 		System.out.println("Ticks: " + machine.getCpu().getClockTicks());
 
-		
-		List<ProfilerData> profs = profiler.getCollectedData();
-		for (ProfilerData prof : profs) {
-			System.out.println(prof);
+		if (profiler != null) {
+			List<ProfilerData> profs = profiler.getCollectedData();
+			for (ProfilerData prof : profs) {
+				System.out.println(prof);
+			}
 		}
 	}
-	
+
+	private static void testTransformer13() throws Exception {
+		System.out.println("\n\ntestTransformer13");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/test13.bas");
+
+		final Assembler assy = initTestEnvironment(vary);
+		FileWriter.writeAsPrg(assy.getProgram(), "++testforpoke.prg", true);
+		JsrProfiler profiler = new JsrProfiler(assy);
+		assy.getCpu().setCpuTracer(profiler /* new MyTracer(assy) */);
+		Machine machine = executeTest(assy);
+
+		printStats(profiler, machine);
+	}
+
 	private static void testTransformer12() throws Exception {
 		System.out.println("\n\ntestTransformer12");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/test12.bas");
@@ -71,17 +90,12 @@ public class TransformerTest {
 		final Assembler assy = initTestEnvironment(vary);
 		FileWriter.writeAsPrg(assy.getProgram(), "++testoutput.prg", true);
 		JsrProfiler profiler = new JsrProfiler(assy);
-		assy.getCpu().setCpuTracer(profiler /*new MyTracer(assy)*/);
+		assy.getCpu().setCpuTracer(profiler /* new MyTracer(assy) */);
 		Machine machine = executeTest(assy);
 
-		System.out.println("Ticks: " + machine.getCpu().getClockTicks());
-		
-		List<ProfilerData> profs = profiler.getCollectedData();
-		for (ProfilerData prof : profs) {
-			System.out.println(prof);
-		}
+		printStats(profiler, machine);
 	}
-	
+
 	private static void testTransformer9() throws Exception {
 		System.out.println("\n\ntestTransformer9");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/test9.bas");
@@ -100,12 +114,7 @@ public class TransformerTest {
 		}
 		System.out.println("]");
 
-		System.out.println("Ticks: " + machine.getCpu().getClockTicks());
-
-		List<ProfilerData> profs = profiler.getCollectedData();
-		for (ProfilerData prof : profs) {
-			System.out.println(prof);
-		}
+		printStats(profiler, machine);
 	}
 
 	private static void testTransformer10() throws Exception {
@@ -404,8 +413,8 @@ public class TransformerTest {
 		@Override
 		public void commandExecuted(Cpu cpu, int opcode, int opcodePc, int newPc) {
 			String line = assy.getCodeLine(opcodePc);
-			float fac = 0;//Conversions.convertFloat(assy.getMachine(), 97);
-			float fac2 = 0;//Conversions.convertFloat(assy.getMachine(), 105);
+			float fac = 0;// Conversions.convertFloat(assy.getMachine(), 97);
+			float fac2 = 0;// Conversions.convertFloat(assy.getMachine(), 105);
 			if (line != null) {
 				int addr = 0x1abf;
 				int strBufPtr = assy.getRam()[addr] + 256 * assy.getRam()[addr + 1];
