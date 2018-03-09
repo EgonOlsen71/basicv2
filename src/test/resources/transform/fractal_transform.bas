@@ -43,7 +43,7 @@
 532 poke 53272,(peek(53272) and 15) or 128
 533 poke 53265,peek(53265) or 32
 534 poke 53270,peek(53270) or 16
-540 for r=16384 to 24576:poke r,0:next
+540 jj=0:for r=16384 to 24576:poke r,jj:next
 550 for r=24576 to 25575:poke r,207:next
 560 for r=55296to56295:poke r,14:next
 599 return

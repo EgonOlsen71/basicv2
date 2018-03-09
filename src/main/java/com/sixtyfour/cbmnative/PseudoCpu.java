@@ -748,6 +748,9 @@ public class PseudoCpu {
 		case "INITFOR":
 			initFor(parts);
 			return;
+		case "FASTFOR":
+			fastFor(parts);
+			return;
 		case "NEXT":
 			next(parts);
 			return;
@@ -993,6 +996,23 @@ public class PseudoCpu {
 
 		ForStackEntry fse = new ForStackEntry(regs[A].intValue(), this.addr, endVal, stepVal);
 		forStackPos = fse.push(forStackPos);
+	}
+	
+	private void fastFor(String[] parts) {
+		Number stepVal = getStack().pop();
+		Number endVal = getStack().pop();
+		int varAddr = regs[A].intValue();
+
+		ForStackEntry fse =  new ForStackEntry(varAddr, this.addr, endVal, stepVal);
+		Variable var = machine.getVariableUpperCase(varLocations.get(fse.varPointer));
+		int val = ((Number) var.eval(machine)).intValue();
+		int to = fse.to.intValue();
+		int step = fse.step.intValue();
+		int pval=regs[X].intValue();
+		for (int i=val; i<=to; i+=step) {
+			memory[i]=pval&0xff;
+		}
+		var.setValue(to+step);
 	}
 
 	private void next(String[] parts) {

@@ -144,6 +144,96 @@ ARRAYQUIT	RTS
 ;###################################
 END			RTS
 ;###################################
+; Special loop to handle the common for-poke-next-case
+; used to clear the screen and such...
+FASTFOR		JSR POPREAL
+			JSR $BC2B
+			STA TMP_REG		; store sign
+			BCC FFPOSSTEP
+			LDA #<REAL_CONST_MINUS_ONE	; negative...negate it
+			LDY #>REAL_CONST_MINUS_ONE
+			JSR $BA8C	; to ARG
+			JSR $BA30	; MUL
+FFPOSSTEP	JSR $B7F7	; to WORD
+			STY TMP2_ZP
+			STA TMP2_ZP+1	; step
+
+			LDA A_REG
+			LDY A_REG+1
+			JSR $BBA2
+			JSR $B7F7
+			STY TMP_ZP
+			STA TMP_ZP+1	; from
+
+			JSR POPREAL
+			JSR $B7F7
+			STY TMP2_ZP+2
+			STA TMP2_ZP+3	; end
+
+			LDA #<X_REG
+			LDY #>X_REG
+			JSR $BBA2
+			JSR $B1AA
+			STY TMP3_ZP		; value
+
+			LDA TMP_REG
+			BEQ FFSTEPZERO
+			ROL
+FFSTEPZERO	BCC FFSTEPPOS
+FFSTEPNEG	LDY #0
+			LDA TMP3_ZP
+			TAX
+FFNEGLOOP	TXA
+			STA (TMP_ZP),Y
+			LDA TMP_ZP
+			SEC
+			SBC TMP2_ZP
+			STA TMP_ZP
+			LDA TMP_ZP+1
+			BCS	FFNEGSKIP
+			SBC TMP2_ZP+1
+			STA TMP_ZP+1
+FFNEGSKIP	CMP TMP2_ZP+3
+			BEQ FFNEGCHECK2
+			BCS FFNEGLOOP
+			JMP FFDONE
+FFNEGCHECK2	LDA TMP_ZP
+			CMP TMP2_ZP+2
+			BCS FFNEGLOOP
+			JMP FFDONE
+
+FFSTEPPOS	LDY #0
+			LDA TMP3_ZP
+			TAX
+FFPOSLOOP	TXA
+			STA (TMP_ZP),Y
+			LDA TMP_ZP
+			CLC
+			ADC TMP2_ZP
+			STA TMP_ZP
+			LDA TMP_ZP+1
+			BCC	FFPOSSKIP
+			ADC TMP2_ZP+1
+			STA TMP_ZP+1
+FFPOSSKIP	CMP TMP2_ZP+3
+			BCC FFPOSLOOP
+			BEQ FFPOSCHECK2
+			JMP FFDONE
+FFPOSCHECK2	LDA TMP_ZP
+			CMP TMP2_ZP+2
+			BCC FFPOSLOOP
+			BEQ FFPOSLOOP
+
+FFDONE		LDY TMP_ZP
+			LDA TMP_ZP+1
+			JSR $B391
+			LDX A_REG
+			LDY A_REG+1
+			LDA #1
+			STA A_REG
+			JMP $BBD7		; Store end value in loop variable
+
+;###################################
 STR			LDA #<Y_REG
 			LDY #>Y_REG
 			JSR $BBA2

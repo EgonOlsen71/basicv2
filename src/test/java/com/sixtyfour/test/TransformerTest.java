@@ -9,6 +9,7 @@ import com.sixtyfour.Assembler;
 import com.sixtyfour.Basic;
 import com.sixtyfour.Loader;
 import com.sixtyfour.cbmnative.NativeCompiler;
+import com.sixtyfour.cbmnative.PseudoCpu;
 import com.sixtyfour.parser.Preprocessor;
 import com.sixtyfour.system.Conversions;
 import com.sixtyfour.system.Cpu;
@@ -33,7 +34,7 @@ public class TransformerTest {
 		// testTransformer2();
 		// testTransformer4();
 		// testTransformer5();
-		testTransformerFractal();
+		// testTransformerFractal();
 		// testTransformer6();
 		// testTransformer7();
 		// testTransformerPrime();
@@ -43,7 +44,7 @@ public class TransformerTest {
 		// testTransformer10();
 		// testTransformer11();
 		// testTransformer12();
-		// testTransformer13();
+		testTransformer13();
 	}
 
 	private static void testTransformer11() throws Exception {
@@ -74,9 +75,10 @@ public class TransformerTest {
 		System.out.println("\n\ntestTransformer13");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/test13.bas");
 
-		final Assembler assy = initTestEnvironment(vary);
+		final Assembler assy = initTestEnvironment(vary, true);
 		FileWriter.writeAsPrg(assy.getProgram(), "++testforpoke.prg", true);
 		JsrProfiler profiler = new JsrProfiler(assy);
+		//assy.getCpu().setCpuTracer(new MyTracer(assy));
 		assy.getCpu().setCpuTracer(profiler /* new MyTracer(assy) */);
 		Machine machine = executeTest(assy);
 
@@ -445,6 +447,10 @@ public class TransformerTest {
 	}
 
 	private static Assembler initTestEnvironment(String[] vary) {
+		return initTestEnvironment(vary, false);
+	}
+
+	private static Assembler initTestEnvironment(String[] vary, boolean executePseudo) {
 		final Basic basic = new Basic(vary);
 		basic.compile();
 
@@ -452,6 +458,13 @@ public class TransformerTest {
 		System.out.println("------------------------------");
 		for (String line : mCode) {
 			System.out.println(line);
+		}
+		System.out.println("------------------------------");
+
+		if (executePseudo) {
+			System.out.println("Running pseudo code...");
+			PseudoCpu pc = new PseudoCpu();
+			pc.execute(basic.getMachine(), mCode);
 		}
 		System.out.println("------------------------------");
 
