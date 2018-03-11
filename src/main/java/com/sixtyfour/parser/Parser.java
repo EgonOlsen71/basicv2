@@ -1603,6 +1603,7 @@ public class Parser {
 		if (ret.getType(true) == Type.STRING) {
 			return ret;
 		}
+
 		if (ret.getOperator().isDelimiter()) {
 			return ret;
 		}
@@ -1611,7 +1612,7 @@ public class Parser {
 		}
 		boolean[] isConstant = new boolean[1];
 		isConstant[0] = true;
-		boolean isConst = checkForConstant(ret, isConstant);
+		boolean isConst = checkForConstant(machine, ret, isConstant);
 		if (isConst) {
 			// System.out.println("To replace: " + ret);
 			String ts = ret.eval(machine).toString();
@@ -1636,7 +1637,11 @@ public class Parser {
 		return ret;
 	}
 
-	private static boolean checkForConstant(Term t, boolean[] isConstant) {
+	private static boolean checkForConstant(Machine machine, Term t, boolean[] isConstant) {
+		
+		// Value up to which divisions by <value> will be converted into *1/<value>
+		double thresHold = 1000;
+
 		if (t.getOperator().isDelimiter()) {
 			isConstant[0] = false;
 			return false;
@@ -1645,20 +1650,32 @@ public class Parser {
 			isConstant[0] = false;
 			return false;
 		}
+
 		Atom left = t.getLeft();
 		Atom right = t.getRight();
+
+		// While we are at it: Optimize some divisions to multiplications by 1/...
+		if (t.getOperator().isDivision()) {
+			double val = 0;
+			if (right instanceof Constant && (val = ((Number) right.eval(machine)).doubleValue()) < thresHold && val > -thresHold) {
+				t.setOperator(new Operator('*'));
+				right = new Constant<Float>((float) (1d / val));
+				t.setRight(right);
+			}
+		}
+
 		if (!isConstant[0]) {
 			return false;
 		}
 		if (left.isTerm()) {
 			Term lt = (Term) left;
-			isConstant[0] &= checkForConstant(lt, isConstant);
+			isConstant[0] &= checkForConstant(machine, lt, isConstant);
 		} else {
 			if (!(left instanceof Constant)) {
 				if (left instanceof Function) {
 					Function func = (Function) left;
 					if (func.isDeterministic()) {
-						isConstant[0] &= checkForConstant(func.getTerm(), isConstant);
+						isConstant[0] &= checkForConstant(machine, func.getTerm(), isConstant);
 					} else {
 						isConstant[0] = false;
 						return false;
@@ -1672,13 +1689,13 @@ public class Parser {
 		if (right != null) {
 			if (isConstant[0] && right.isTerm()) {
 				Term rt = (Term) right;
-				isConstant[0] &= checkForConstant(rt, isConstant);
+				isConstant[0] &= checkForConstant(machine, rt, isConstant);
 			} else {
 				if (!(right instanceof Constant)) {
 					if (right instanceof Function) {
 						Function func = (Function) right;
 						if (func.isDeterministic()) {
-							isConstant[0] &= checkForConstant(func.getTerm(), isConstant);
+							isConstant[0] &= checkForConstant(machine, func.getTerm(), isConstant);
 						} else {
 							isConstant[0] = false;
 							return false;
