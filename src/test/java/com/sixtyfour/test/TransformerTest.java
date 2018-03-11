@@ -34,7 +34,7 @@ public class TransformerTest {
 		// testTransformer2();
 		// testTransformer4();
 		// testTransformer5();
-		testTransformerFractal();
+		//testTransformerFractal();
 		// testTransformer6();
 		// testTransformer7();
 		// testTransformerPrime();
@@ -44,8 +44,8 @@ public class TransformerTest {
 		// testTransformer10();
 		// testTransformer11();
 		// testTransformer12();
-		//testTransformer13();
-		//testTransformer14();
+		testTransformer13();
+		testTransformer14();
 	}
 
 	private static void testTransformer11() throws Exception {
