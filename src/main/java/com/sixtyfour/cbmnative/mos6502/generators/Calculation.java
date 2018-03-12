@@ -43,7 +43,7 @@ public abstract class Calculation implements Generator {
 		}
 
 		nCode.add("; Real in (A/Y) to FAC");
-		nCode.add("JSR $BBA2"); // Real in (A/Y) to FAC
+		nCode.add("JSR REALFAC"); // Real in (A/Y) to FAC
 
 		if (target.isRegister()) {
 			nCode.add("LDA #<" + target.getRegisterName());
@@ -54,7 +54,7 @@ public abstract class Calculation implements Generator {
 		}
 
 		nCode.add("; Real in (A/Y) to ARG");
-		nCode.add("JSR $BA8C"); // Real in (A/Y) to ARG
+		nCode.add("JSR MEMARG"); // Real in (A/Y) to ARG
 		nCode.add(comment);
 		nCode.add(systemCall);
 
@@ -67,7 +67,7 @@ public abstract class Calculation implements Generator {
 		}
 
 		nCode.add("; FAC to (X/Y)");
-		nCode.add("JSR $BBD7"); // FAC to (X/Y)
+		nCode.add("JSR FACMEM"); // FAC to (X/Y)
 	}
 
 }

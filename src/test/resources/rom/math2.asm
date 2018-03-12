@@ -1,7 +1,7 @@
 *=$c000
 		lda #<NUMBER
 		ldy #>NUMBER
-		jsr $BBA2
+		jsr REALFAC
 		ldx #00
 		ldy #$20
 		jsr 48087

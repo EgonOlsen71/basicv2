@@ -147,33 +147,33 @@ END			RTS
 ; Special loop to handle the common for-poke-next-case
 ; used to clear the screen and such...
 FASTFOR		JSR POPREAL
-			JSR $BC2B
+			JSR SGNFAC
 			STA TMP_REG		; store sign
 			BCC FFPOSSTEP
 			LDA #<REAL_CONST_MINUS_ONE	; negative...negate it
 			LDY #>REAL_CONST_MINUS_ONE
-			JSR $BA8C	; to ARG
-			JSR $BA30	; MUL
-FFPOSSTEP	JSR $B7F7	; to WORD
+			JSR MEMARG	; to ARG
+			JSR FACMUL	; MUL
+FFPOSSTEP	JSR FACWORD	; to WORD
 			STY TMP2_ZP
 			STA TMP2_ZP+1	; step
 
 			LDA A_REG
 			LDY A_REG+1
-			JSR $BBA2
-			JSR $B7F7
+			JSR REALFAC
+			JSR FACWORD
 			STY TMP_ZP
 			STA TMP_ZP+1	; from
 
 			JSR POPREAL
-			JSR $B7F7
+			JSR FACWORD
 			STY TMP2_ZP+2
 			STA TMP2_ZP+3	; end
 
 			LDA #<X_REG
 			LDY #>X_REG
-			JSR $BBA2
-			JSR $B1AA
+			JSR REALFAC
+			JSR FACINT
 			STY TMP3_ZP		; value
 
 			LDA TMP2_ZP+1
@@ -233,12 +233,12 @@ FFPOSCHECK2	LDA TMP_ZP
 
 FFDONE		LDY TMP_ZP
 			LDA TMP_ZP+1
-			JSR $B391
+			JSR INTFAC
 			LDX A_REG
 			LDY A_REG+1
 			LDA #1
 			STA A_REG
-			JMP $BBD7		; Store end value in loop variable
+			JMP FACMEM		; Store end value in loop variable
 
 ; Special routine for step=1/-1
 STEPONE	LDA TMP_REG
@@ -289,9 +289,9 @@ OFFPOSCHECK2
 ;###################################
 STR			LDA #<Y_REG
 			LDY #>Y_REG
-			JSR $BBA2
+			JSR REALFAC
 			LDY #0
-			JSR $BDDF
+			JSR FACSTR
 			LDY #0
 			STY TMP_ZP+1
 			LDA #$FE
@@ -321,10 +321,10 @@ VAL			LDA B_REG
 			INC $22
 			BNE VALSTR
 			INC $23
-VALSTR		JSR $B7B5
+VALSTR		JSR VALS
 			LDX #<X_REG
 			LDY #>X_REG
-			JMP $BBD7	;RTS is implicit
+			JMP FACMEM	;RTS is implicit
 ;###################################
 LEN			LDA B_REG
 			STA TMP_ZP
@@ -334,10 +334,10 @@ LEN			LDA B_REG
 			LDA (TMP_ZP),Y
 			TAY
 			LDA #0
-			JSR $B391
+			JSR INTFAC
 			LDX #<X_REG
 			LDY #>X_REG
-			JMP $BBD7	;RTS is implicit
+			JMP FACMEM	;RTS is implicit
 ;###################################
 CHR			LDA STRBUFP
 			STA TMP_ZP
@@ -350,8 +350,8 @@ CHR			LDA STRBUFP
 			STA (TMP_ZP),Y
 			LDA #<Y_REG
 			LDY #>Y_REG
-			JSR $BBA2
-			JSR $B1AA
+			JSR REALFAC
+			JSR FACINT
 			TYA
 			LDY #1
 			STA (TMP_ZP),Y
@@ -396,12 +396,12 @@ WRITE2		LDA TMP_ZP
 			STA $22
 			LDA TMP_ZP+1
 			STA $23
-			JSR $A9E7
+			JSR WRITETIS
 			RTS
 ;###################################
 READTID		LDA #0
 			STA $70
-			JSR $AF84 
+			JSR TI2FAC 
 			LDY #0
 			STY $5E
 			DEY
@@ -409,7 +409,7 @@ READTID		LDA #0
 			LDY #$06
 			STY $5D
 			LDY #$24
-			JSR $BE68
+			JSR GETTI
 			LDA #$FE
 			STA TMP_ZP
 			LDA #0
@@ -668,12 +668,12 @@ REALOUT		LDA X_REG
 			JMP PRINTNULL
 RNOTNULL	LDA #<X_REG
 			LDY #>X_REG
-			JSR $BBA2
+			JSR REALFAC
 			LDY #0
-			JSR $BDDF
+			JSR FACSTR
 			LDY #0
 			LDA $00FF,Y
-STRLOOPRO	JSR $FFD2
+STRLOOPRO	JSR CHROUT
 			INY
 			LDA $00FF,Y
 			BNE STRLOOPRO
@@ -684,35 +684,35 @@ REALOUTBRK  LDA X_REG
 			JMP PRINTNULLBRK
 RNOTNULLBRK	LDA #<X_REG
 			LDY #>X_REG
-			JSR $BBA2
+			JSR REALFAC
 			LDY #0
-			JSR $BDDF
+			JSR FACSTR
 			LDY #0
 			LDA $00FF,Y
-STRLOOPROB	JSR $FFD2
+STRLOOPROB	JSR CHROUT
 			INY
 			LDA $00FF,Y
 			BNE STRLOOPROB
 			LDA #$0D
-			JMP $FFD2
+			JMP CHROUT
 
 ;###################################
 LINEBREAK	LDA #$0D
-			JMP $FFD2
+			JMP CHROUT
 
 ;###################################
 PRINTNULL	LDA #$20
-			JSR $FFD2
+			JSR CHROUT
 			LDA #$30
-			JMP $FFD2
+			JMP CHROUT
 ;###################################
 PRINTNULLBRK
 			LDA #$20
-			JSR $FFD2
+			JSR CHROUT
 			LDA #$30
-			JSR $FFD2
+			JSR CHROUT
 			LDA #$0D
-			JMP $FFD2
+			JMP CHROUT
 ;###################################
 STROUT		LDA A_REG
 			STA $22
@@ -724,7 +724,7 @@ STROUT		LDA A_REG
 			INC $22
 			BNE PRINTSTR
 			INC $23
-PRINTSTR	JSR $AB25
+PRINTSTR	JSR PRINTSTRS
 			LDA HIGHP			; Update the memory pointer to the last actually assigned one
 			STA STRBUFP
 			LDA HIGHP+1
@@ -741,19 +741,19 @@ STROUTBRK	LDA A_REG
 			INC $22
 			BNE PRINTSTR2
 			INC $23
-PRINTSTR2	JSR $AB25
+PRINTSTR2	JSR PRINTSTRS
 			LDA HIGHP			; Update the memory pointer to the last actually assigned one
 			STA STRBUFP
 			LDA HIGHP+1
 			STA STRBUFP+1
 			LDA #$0D
-			JMP $FFD2 	;RTS is implicit
+			JMP CHROUT 	;RTS is implicit
 ;###################################
 ARRAYACCESS_STRING
 			LDA #<X_REG
 			LDY #>X_REG
-			JSR $BBA2
-			JSR $B1AA
+			JSR REALFAC
+			JSR FACINT
 ARRAYACCESS_STRING_INT
 			LDX G_REG
 			STX TMP_ZP
@@ -784,8 +784,8 @@ ARRAYACCESS_STRING_INT
 ARRAYACCESS_INTEGER
 			LDA #<X_REG
 			LDY #>X_REG
-			JSR $BBA2
-			JSR $B1AA
+			JSR REALFAC
+			JSR FACINT
 ARRAYACCESS_INTEGER_INT
 			LDX G_REG
 			STX TMP_ZP
@@ -812,17 +812,17 @@ ARRAYACCESS_INTEGER_INT
 			LDA (TMP_ZP),Y
 			TAY
 			TXA
-			JSR $B391
+			JSR INTFAC
 			LDX #<X_REG
 			LDY #>X_REG
 			; FAC to (X/Y)
-			JMP $BBD7	;RTS is implicit
+			JMP FACMEM	;RTS is implicit
 ; #######
 ARRAYACCESS_REAL
 			LDA #<X_REG
 			LDY #>X_REG
-			JSR $BBA2
-			JSR $B1AA
+			JSR REALFAC
+			JSR FACINT
 ARRAYACCESS_REAL_INT
 			LDX G_REG
 			STX TMP_ZP
@@ -866,8 +866,8 @@ ARRAYACCESS_REAL_INT
 ARRAYSTORE_STRING
 			LDA #<X_REG
 			LDY #>X_REG
-			JSR $BBA2
-			JSR $B1AA
+			JSR REALFAC
+			JSR FACINT
 ARRAYSTORE_STRING_INT
 			LDX G_REG
 			STX TMP_ZP
@@ -897,8 +897,8 @@ ARRAYSTORE_STRING_INT
 ARRAYSTORE_INTEGER
 			LDA #<X_REG
 			LDY #>X_REG
-			JSR $BBA2
-			JSR $B1AA
+			JSR REALFAC
+			JSR FACINT
 ARRAYSTORE_INTEGER_INT
 			LDX G_REG
 			STX TMP_ZP
@@ -920,8 +920,8 @@ ARRAYSTORE_INTEGER_INT
 			STA TMP_ZP+1
 			LDA #<Y_REG
 			LDY #>Y_REG
-			JSR $BBA2
-			JSR $B1AA
+			JSR REALFAC
+			JSR FACINT
 			STY TMP3_ZP
 			LDY #1
 			STA (TMP_ZP),Y
@@ -933,8 +933,8 @@ ARRAYSTORE_INTEGER_INT
 ARRAYSTORE_REAL
 			LDA #<X_REG
 			LDY #>X_REG
-			JSR $BBA2
-			JSR $B1AA
+			JSR REALFAC
+			JSR FACINT
 ARRAYSTORE_REAL_INT
 			LDX G_REG
 			STX TMP_ZP
@@ -999,8 +999,8 @@ INITFOR		LDA FORSTACKP
 			LDX TMP_ZP
 			LDY TMP_ZP+1
 			; FAC to (X/Y)
-			JSR $BBD7
-			JSR $BC2B
+			JSR FACMEM
+			JSR SGNFAC
 			STA TMP_FLAG
 			LDY #5
 			STY TMP3_ZP
@@ -1009,7 +1009,7 @@ INITFOR		LDA FORSTACKP
 			LDX TMP_ZP
 			LDY TMP_ZP+1
 			; FAC to (X/Y)
-			JSR $BBD7
+			JSR FACMEM
 			LDY #5
 			STY TMP3_ZP
 			JSR INCTMPZP
@@ -1083,7 +1083,7 @@ VARREAL
 			LDA (TMP_ZP),Y
 			TAY
 			TXA
-			JSR $BBA2
+			JSR REALFAC
 
 CALCNEXT	LDA TMP_ZP
 			CLC
@@ -1094,7 +1094,7 @@ CALCNEXT	LDA TMP_ZP
 NOPV2IN		STA TMP_REG
 			LDY TMP_ZP+1
 			STY TMP_REG+1
-			JSR $B867   ;M-ADD
+			JSR FACADD   ;M-ADD
 
 			LDA TMP2_REG
 			STA TMP_ZP
@@ -1107,7 +1107,7 @@ STOREREAL
 			INY
 			LDA (TMP_ZP),Y
 			TAY
-			JSR $BBD7	;FAC TO (X/Y)
+			JSR FACMEM	;FAC TO (X/Y)
 
 CMPFOR		LDA #5
 			STA TMP3_ZP
@@ -1118,7 +1118,7 @@ CMPFOR		LDA #5
 			BCC NOPV3
 			INC TMP_REG+1
 NOPV3		LDY TMP_REG+1
-			JSR $BC5B 	;CMPFAC
+			JSR CMPFAC 	;CMPFAC
 			BEQ LOOPING
 
 			PHA
@@ -1460,7 +1460,7 @@ READNUMBER	RTS
 ;###################################
 PUSHREAL	LDX FPSTACKP
 			LDY FPSTACKP+1
-			JSR $BBD7
+			JSR FACMEM
 			LDA FPSTACKP
 			CLC
 			ADC #5
@@ -1478,7 +1478,7 @@ POPREAL		LDA FPSTACKP
 			DEC FPSTACKP+1
 NOPVPR		LDA FPSTACKP
 			LDY FPSTACKP+1
-			JSR $BBA2
+			JSR REALFAC
 			RTS
 
 ;### HELPER #######################
@@ -1512,7 +1512,7 @@ COPY3_XY	LDY #0
 ;###################################
 SQRT		LDX #<TMP_FREG
 			LDY #>TMP_FREG
-			JSR $BBD7
+			JSR FACMEM
 			LDA TMP_FREG+1
 			BMI ILLEGALQUANTITY
 			LDA TMP_FREG
@@ -1544,17 +1544,17 @@ SQRTADD 	ADC #$40
 			STA $FB
 MINUS		LDA #<TMP2_FREG
 			LDY #>TMP2_FREG
-			JSR $BBA2
+			JSR REALFAC
 			LDA #<TMP_FREG
 			LDY #>TMP_FREG
-			JSR $BB0F 
+			JSR FACDIV 
 			LDA #<TMP2_FREG
 			LDY #>TMP2_FREG
-			JSR $B867
+			JSR FACADD
 			DEC $61
 			LDX #<TMP2_FREG
 			LDY #>TMP2_FREG
-			JSR $BBD7
+			JSR FACMEM
 			DEC $FB
 			BNE MINUS
 DONE		RTS

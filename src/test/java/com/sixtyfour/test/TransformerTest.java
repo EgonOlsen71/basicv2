@@ -34,16 +34,16 @@ public class TransformerTest {
 		// testTransformer2();
 		// testTransformer4();
 		// testTransformer5();
-		//testTransformerFractal();
+		testTransformerFractal();
 		// testTransformer6();
 		// testTransformer7();
 		// testTransformerPrime();
 		// testTransformerSqr();
 		// testTransformer8();
 		// testTransformer9();
-		// testTransformer10();
+		 testTransformer10();
 		// testTransformer11();
-		// testTransformer12();
+		 testTransformer12();
 		testTransformer13();
 		testTransformer14();
 	}

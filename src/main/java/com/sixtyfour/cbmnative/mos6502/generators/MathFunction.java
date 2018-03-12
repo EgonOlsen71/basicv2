@@ -43,7 +43,7 @@ public abstract class MathFunction implements Generator {
 		}
 
 		nCode.add("; Real in (A/Y) to FAC");
-		nCode.add("JSR $BBA2"); // Real in (A/Y) to FAC
+		nCode.add("JSR REALFAC"); // Real in (A/Y) to FAC
 
 		nCode.add(comment);
 		nCode.add(systemCall);
@@ -57,7 +57,7 @@ public abstract class MathFunction implements Generator {
 		}
 
 		nCode.add("; FAC to (X/Y)");
-		nCode.add("JSR $BBD7"); // FAC to (X/Y)
+		nCode.add("JSR FACMEM"); // FAC to (X/Y)
 	}
 
 }

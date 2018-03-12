@@ -33,10 +33,10 @@ public abstract class GeneratorBase implements Generator {
 		if (source.getAddress().equals("VAR_ST")) {
 			nCode.add("LDY $90");
 			nCode.add("; Byte in Y to FAC");
-			nCode.add("JSR $B3A2");
+			nCode.add("JSR BYTEFAC");
 			nCode.add("LDX #<" + source.getAddress());
 			nCode.add("LDY #>" + source.getAddress());
-			nCode.add("JSR $BBD7");
+			nCode.add("JSR FACMEM");
 		} else if (source.getAddress().equals("VAR_TI")) {
 			nCode.add("SEI");
 			nCode.add("LDY $A0");
@@ -44,11 +44,11 @@ public abstract class GeneratorBase implements Generator {
 			nCode.add("LDA $A2");
 			nCode.add("CLI");
 			nCode.add("SEC");
-			nCode.add("JSR $AF87");
+			nCode.add("JSR GETTIME");
 			nCode.add("JSR $AF7E");
 			nCode.add("LDX #<" + source.getAddress());
 			nCode.add("LDY #>" + source.getAddress());
-			nCode.add("JSR $BBD7");
+			nCode.add("JSR FACMEM");
 		} else if (source.getAddress().equals("VAR_TI$")) {
 			nCode.add("JSR READTID");
 		}

@@ -46,11 +46,11 @@ public class Cmp extends GeneratorBase {
 			nCode.add("LDY #>" + source.getAddress());
 		}
 		nCode.add("; Real in (A/Y) to FAC");
-		nCode.add("JSR $BBA2"); // Real in (A/Y) to FAC
+		nCode.add("JSR REALFAC"); // Real in (A/Y) to FAC
 
 		if (target.getType() == Type.INTEGER) {
 			nCode.add("; FAC to integer in Y/A");
-			nCode.add("JSR $B1AA"); // FAC to integer in A/Y
+			nCode.add("JSR FACINT"); // FAC to integer in A/Y
 
 			if (target.isRegister()) {
 				nCode.add("CPY " + target.getRegisterName());
@@ -73,7 +73,7 @@ public class Cmp extends GeneratorBase {
 				nCode.add("LDY #>" + target.getAddress());
 			}
 			nCode.add("; CMPFAC with (A/Y)");
-			nCode.add("JSR $BC5B"); // CMPFAC with (A/Y)
+			nCode.add("JSR CMPFAC"); // CMPFAC with (A/Y)
 		}
 	}
 
@@ -101,7 +101,7 @@ public class Cmp extends GeneratorBase {
 			}
 		} else {
 			nCode.add("; integer in Y/A to FAC");
-			nCode.add("JSR $B391"); // integer in A/Y to FAC
+			nCode.add("JSR INTFAC"); // integer in A/Y to FAC
 
 			if (target.isRegister()) {
 				nCode.add("LDA #<" + target.getRegisterName());
@@ -111,7 +111,7 @@ public class Cmp extends GeneratorBase {
 				nCode.add("LDY #>" + target.getAddress());
 			}
 			nCode.add("; CMPFAC with (A/Y)");
-			nCode.add("JSR $BC5B"); // CMPFAC with (A/Y)
+			nCode.add("JSR CMPFAC"); // CMPFAC with (A/Y)
 		}
 	}
 }

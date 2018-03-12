@@ -42,7 +42,7 @@ public class Pop extends GeneratorBase {
 				nCode.add("LDY #>" + target.getAddress());
 			}
 			nCode.add("; FAC to (X/Y)");
-			nCode.add("JSR $BBD7"); // FAC to (X/Y)
+			nCode.add("JSR FACMEM"); // FAC to (X/Y)
 		}
 	}
 }

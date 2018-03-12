@@ -7,6 +7,6 @@ package com.sixtyfour.cbmnative.mos6502.generators;
 public class Div extends Calculation {
 
 	public Div() {
-		super("DIV", "; FAC = ARG / FAC", "JSR $BB14");
+		super("DIV", "; FAC = ARG / FAC", "JSR ARGDIV");
 	}
 }

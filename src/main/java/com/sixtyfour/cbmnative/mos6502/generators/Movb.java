@@ -56,10 +56,10 @@ public class Movb extends GeneratorBase {
 			nCode.add("LDA #<" + source.getRegisterName());
 			nCode.add("LDY #>" + source.getRegisterName());
 			nCode.add("; Real in (A/Y) to FAC");
-			nCode.add("JSR $BBA2"); // Real in (A/Y) to FAC
+			nCode.add("JSR REALFAC"); // Real in (A/Y) to FAC
 
 			nCode.add("; FAC to integer in Y/A");
-			nCode.add("JSR $B7F7"); // FAC to integer in Y/A
+			nCode.add("JSR FACWORD"); // FAC to integer in Y/A
 			nCode.add("STY " + TMP_ZP);
 			nCode.add("STA " + (TMP_ZP + 1));
 		}
@@ -74,12 +74,12 @@ public class Movb extends GeneratorBase {
 			nCode.add("TAY");
 			nCode.add("LDA #0");
 			nCode.add("; integer in Y/A to FAC");
-			nCode.add("JSR $B391"); // integer in A/Y to FAC
+			nCode.add("JSR INTFAC"); // integer in A/Y to FAC
 
 			nCode.add("LDX #<" + target.getRegisterName());
 			nCode.add("LDY #>" + target.getRegisterName());
 			nCode.add("; FAC to (X/Y)");
-			nCode.add("JSR $BBD7"); // FAC to (X/Y)
+			nCode.add("JSR FACMEM"); // FAC to (X/Y)
 		}
 	}
 
@@ -93,10 +93,10 @@ public class Movb extends GeneratorBase {
 			nCode.add("LDA #<" + target.getRegisterName());
 			nCode.add("LDY #>" + target.getRegisterName());
 			nCode.add("; Real in (A/Y) to FAC");
-			nCode.add("JSR $BBA2"); // Real in (A/Y) to FAC
+			nCode.add("JSR REALFAC"); // Real in (A/Y) to FAC
 
 			nCode.add("; FAC to integer in Y/A");
-			nCode.add("JSR $B7F7"); // FAC to integer in Y/A
+			nCode.add("JSR FACWORD"); // FAC to integer in Y/A
 			nCode.add("STY " + TMP_ZP);
 			nCode.add("STA " + (TMP_ZP + 1));
 		}
@@ -109,10 +109,10 @@ public class Movb extends GeneratorBase {
 			nCode.add("LDA #<" + source.getRegisterName());
 			nCode.add("LDY #>" + source.getRegisterName());
 			nCode.add("; Real in (A/Y) to FAC");
-			nCode.add("JSR $BBA2"); // Real in (A/Y) to FAC
+			nCode.add("JSR REALFAC"); // Real in (A/Y) to FAC
 
 			nCode.add("; FAC to integer in Y/A");
-			nCode.add("JSR $B7F7"); // FAC to integer in Y/A
+			nCode.add("JSR FACWORD"); // FAC to integer in Y/A
 			nCode.add("TYA");
 			nCode.add("LDY #0");
 			nCode.add("STA (" + TMP_ZP + "),Y");
@@ -130,23 +130,23 @@ public class Movb extends GeneratorBase {
 			nCode.add("LDY #>" + source.getAddress());
 		}
 		nCode.add("; Real in (A/Y) to FAC");
-		nCode.add("JSR $BBA2"); // Real in (A/Y) to FAC
+		nCode.add("JSR REALFAC"); // Real in (A/Y) to FAC
 
 		if (target.isAddress()) {
 			nCode.add("; FAC to integer in Y/A");
-			nCode.add("JSR $B7F7"); // FAC to integer in Y/A
+			nCode.add("JSR FACWORD"); // FAC to integer in Y/A
 			nCode.add("STY " + target.getAddress());
 		} else {
 			if (target.getType() == Type.INTEGER) {
 				nCode.add("; FAC to integer in Y/A");
-				nCode.add("JSR $B7F7"); // FAC to integer in Y/A
+				nCode.add("JSR FACWORD"); // FAC to integer in Y/A
 				nCode.add("STY " + target.getRegisterName());
 				nCode.add("STA " + this.createAddress(target.getRegisterName(), 1));
 			} else {
 				nCode.add("LDX #<" + target.getRegisterName());
 				nCode.add("LDY #>" + target.getRegisterName());
 				nCode.add("; FAC to (X/Y)");
-				nCode.add("JSR $BBD7"); // FAC to (X/Y)
+				nCode.add("JSR FACMEM"); // FAC to (X/Y)
 			}
 		}
 	}
@@ -165,23 +165,23 @@ public class Movb extends GeneratorBase {
 			nCode.add("STY " + target.getAddress());
 		} else {
 			nCode.add("; integer in Y/A to FAC");
-			nCode.add("JSR $B391"); // integer in Y/A to FAC
+			nCode.add("JSR INTFAC"); // integer in Y/A to FAC
 
 			if (target.isAddress()) {
 				nCode.add("; FAC to integer in Y/A");
-				nCode.add("JSR $B7F7"); // FAC to integer in Y/A
+				nCode.add("JSR FACWORD"); // FAC to integer in Y/A
 				nCode.add("STY " + target.getAddress());
 			} else {
 				if (target.getType() == Type.INTEGER) {
 					nCode.add("; FAC to integer in Y/A");
-					nCode.add("JSR $B7F7"); // FAC to integer in Y/A
+					nCode.add("JSR FACWORD"); // FAC to integer in Y/A
 					nCode.add("STY " + target.getRegisterName());
 					nCode.add("STA " + this.createAddress(target.getRegisterName(), 1));
 				} else {
 					nCode.add("LDX #<" + target.getRegisterName());
 					nCode.add("LDY #>" + target.getRegisterName());
 					nCode.add("; FAC to (X/Y)");
-					nCode.add("JSR $BBD7"); // FAC to (X/Y)
+					nCode.add("JSR FACMEM"); // FAC to (X/Y)
 				}
 			}
 		}

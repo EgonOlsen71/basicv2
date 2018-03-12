@@ -42,7 +42,7 @@ public abstract class Compare implements Generator {
 
 		nCode.add(mnemonic + "_SKIP" + CNT + ":");
 		nCode.add("; Real in (A/Y) to FAC");
-		nCode.add("JSR $BBA2"); // Real in (A/Y) to FAC
+		nCode.add("JSR REALFAC"); // Real in (A/Y) to FAC
 		if (target.isRegister()) {
 			nCode.add("LDX #<" + target.getRegisterName());
 			nCode.add("LDY #>" + target.getRegisterName());
@@ -51,7 +51,7 @@ public abstract class Compare implements Generator {
 			nCode.add("LDY #>" + target.getAddress());
 		}
 		nCode.add("; FAC to (X/Y)");
-		nCode.add("JSR $BBD7"); // FAC to (X/Y)
+		nCode.add("JSR FACMEM"); // FAC to (X/Y)
 		CNT++;
 	}
 
@@ -65,7 +65,7 @@ public abstract class Compare implements Generator {
 			nCode.add("LDY #>" + source.getAddress());
 		}
 		nCode.add("; Real in (A/Y) to FAC");
-		nCode.add("JSR $BBA2"); // Real in (A/Y) to FAC
+		nCode.add("JSR REALFAC"); // Real in (A/Y) to FAC
 
 		if (target.isRegister()) {
 			nCode.add("LDA #<" + target.getRegisterName());
@@ -75,7 +75,7 @@ public abstract class Compare implements Generator {
 			nCode.add("LDY #>" + target.getAddress());
 		}
 		nCode.add("; CMPFAC with (A/Y)");
-		nCode.add("JSR $BC5B"); // CMPFAC with (A/Y)
+		nCode.add("JSR CMPFAC"); // CMPFAC with (A/Y)
 
 		doCompare(nCode);
 	}

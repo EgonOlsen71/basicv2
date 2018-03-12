@@ -41,7 +41,7 @@ public class Push extends GeneratorBase {
 				nCode.add("LDY #>" + target.getAddress());
 			}
 			nCode.add("; Real in (A/Y) to FAC");
-			nCode.add("JSR $BBA2"); // Real in (A/Y) to FAC
+			nCode.add("JSR REALFAC"); // Real in (A/Y) to FAC
 			nCode.add("JSR PUSHREAL");
 		}
 	}

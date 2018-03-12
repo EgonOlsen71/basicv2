@@ -42,6 +42,29 @@ public class Transformer6502 implements Transformer {
 
 		int memStackSize = Math.min(255, platform.getMemoryStackSize() * 3);
 		res.add("MEMORY_STACK_SIZE = " + memStackSize);
+		res.add("SGNFAC = $BC2B");
+		res.add("MEMARG = $BA8C");
+		res.add("FACMUL = $BA30");
+		res.add("FACADD = $B867");
+		res.add("FACSQR = $BF71");
+		res.add("FACWORD = $B7F7");
+		res.add("FACDIV = $BB0F");
+		res.add("ARGDIV = $BB14");
+		res.add("REALFAC = $BBA2");
+		res.add("FACINT = $B1AA");
+		res.add("INTFAC = $B391");
+		res.add("FACMEM = $BBD7");
+		res.add("FACSTR = $BDDF");
+		res.add("WRITETIS = $A9E7");
+		res.add("GETTI = $BE68");
+		res.add("GETTIME = $AF87");
+		res.add("TI2FAC = $AF84");
+		res.add("CHROUT = $FFD2");
+		res.add("PRINTSTRS = $AB25");
+		res.add("VALS = $B7B5");
+		res.add("CMPFAC = $BC5B");
+		res.add("BYTEFAC = $B3A2");
+		
 		res.add("TMP_ZP = 105");
 		res.add("TMP2_ZP = 107");
 		res.add("TMP3_ZP = 34");
