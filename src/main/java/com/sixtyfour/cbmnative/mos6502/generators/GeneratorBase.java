@@ -44,8 +44,8 @@ public abstract class GeneratorBase implements Generator {
 			nCode.add("LDA $A2");
 			nCode.add("CLI");
 			nCode.add("SEC");
+			nCode.add("JSR COPYTIME");
 			nCode.add("JSR GETTIME");
-			nCode.add("JSR $AF7E");
 			nCode.add("LDX #<" + source.getAddress());
 			nCode.add("LDY #>" + source.getAddress());
 			nCode.add("JSR FACMEM");

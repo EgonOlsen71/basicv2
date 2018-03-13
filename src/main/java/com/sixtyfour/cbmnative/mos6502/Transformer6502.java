@@ -46,9 +46,15 @@ public class Transformer6502 implements Transformer {
 		res.add("MEMARG = $BA8C");
 		res.add("FACMUL = $BA30");
 		res.add("FACADD = $B867");
+		res.add("ARGADD = $B86A");
+		res.add("ARGAND = $AFE9");
 		res.add("FACSQR = $BF71");
 		res.add("FACWORD = $B7F7");
 		res.add("FACDIV = $BB0F");
+		res.add("FACINT = $BCCC");
+		res.add("FACPOW = $BF7B");
+		res.add("FACSUB = $B853");
+		res.add("FACOR = $AFE6");
 		res.add("ARGDIV = $BB14");
 		res.add("REALFAC = $BBA2");
 		res.add("FACINT = $B1AA");
@@ -57,14 +63,15 @@ public class Transformer6502 implements Transformer {
 		res.add("FACSTR = $BDDF");
 		res.add("WRITETIS = $A9E7");
 		res.add("GETTI = $BE68");
-		res.add("GETTIME = $AF87");
+		res.add("GETTIME = $AF7E");
+		res.add("COPYTIME = $AF87");
 		res.add("TI2FAC = $AF84");
 		res.add("CHROUT = $FFD2");
 		res.add("PRINTSTRS = $AB25");
 		res.add("VALS = $B7B5");
 		res.add("CMPFAC = $BC5B");
 		res.add("BYTEFAC = $B3A2");
-		
+
 		res.add("TMP_ZP = 105");
 		res.add("TMP2_ZP = 107");
 		res.add("TMP3_ZP = 34");

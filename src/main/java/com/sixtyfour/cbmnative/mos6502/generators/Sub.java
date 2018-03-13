@@ -7,6 +7,6 @@ package com.sixtyfour.cbmnative.mos6502.generators;
 public class Sub extends Calculation {
 
 	public Sub() {
-		super("SUB", "; FAC = ARG - FAC", "JSR $B853");
+		super("SUB", "; FAC = ARG - FAC", "JSR FACSUB");
 	}
 }

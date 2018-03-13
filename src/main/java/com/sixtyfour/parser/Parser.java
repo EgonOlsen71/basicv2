@@ -1638,8 +1638,9 @@ public class Parser {
 	}
 
 	private static boolean checkForConstant(Machine machine, Term t, boolean[] isConstant) {
-		
-		// Value up to which divisions by <value> will be converted into *1/<value>
+
+		// Value up to which divisions by <value> will be converted into
+		// *1/<value>
 		double thresHold = 1000;
 
 		if (t.getOperator().isDelimiter()) {
@@ -1654,7 +1655,8 @@ public class Parser {
 		Atom left = t.getLeft();
 		Atom right = t.getRight();
 
-		// While we are at it: Optimize some divisions to multiplications by 1/...
+		// While we are at it: Optimize some divisions to multiplications by
+		// 1/...
 		if (t.getOperator().isDivision()) {
 			double val = 0;
 			if (right instanceof Constant && (val = ((Number) right.eval(machine)).doubleValue()) < thresHold && val > -thresHold) {

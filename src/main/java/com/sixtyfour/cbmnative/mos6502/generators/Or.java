@@ -7,6 +7,6 @@ package com.sixtyfour.cbmnative.mos6502.generators;
 public class Or extends Calculation {
 
 	public Or() {
-		super("OR", "; FAC = ARG | FAC", "JSR $AFE6");
+		super("OR", "; FAC = ARG | FAC", "JSR FACOR");
 	}
 }

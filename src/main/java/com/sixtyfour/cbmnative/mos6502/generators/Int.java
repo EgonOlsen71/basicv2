@@ -7,6 +7,6 @@ package com.sixtyfour.cbmnative.mos6502.generators;
 public class Int extends MathFunction {
 
 	public Int() {
-		super("INT", "; FAC = INT(FAC)", "JSR $BCCC");
+		super("INT", "; FAC = INT(FAC)", "JSR FACINT");
 	}
 }

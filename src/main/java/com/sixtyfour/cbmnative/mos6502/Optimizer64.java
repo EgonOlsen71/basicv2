@@ -32,8 +32,8 @@ public class Optimizer64 implements Optimizer {
 					"JSR ARRAYACCESS{*}"));
 			this.add(new Pattern("Quick copy into REG", new String[] { "{LINE0}", "{LINE1}", "STA TMP3_ZP", "STY TMP3_ZP+1", "{LINE3}", "{LINE4}", "JSR COPY2_XY" },
 					"LDA #<{MEM0}", "LDY #>{MEM0}", "JSR REALFAC", "LDX #<{REG0}", "LDY #>{REG0}", "JSR FACMEM"));
-			this.add(new Pattern(false, "Simplified CMP with 0", new String[] { "{LINE0}", "LDA $61" }, "JSR REALFAC", "LDX #<{REG0}", "LDY #>{REG0}", "JSR FACMEM", "LDA #<{#0.0}",
-					"LDY #>{#0.0}", "JSR REALFAC", "LDA #<{REG0}", "LDY #>{REG0}", "JSR CMPFAC"));
+			this.add(new Pattern(false, "Simplified CMP with 0", new String[] { "{LINE0}", "LDA $61" }, "JSR REALFAC", "LDX #<{REG0}", "LDY #>{REG0}", "JSR FACMEM",
+					"LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC", "LDA #<{REG0}", "LDY #>{REG0}", "JSR CMPFAC"));
 			this.add(new Pattern("REG0->REG1, REG1->REG0", new String[] { "{LINE0}", "{LINE1}", "{LINE2}" }, "LDX #<{MEM0}", "LDY #>{MEM0}", "JSR FACMEM", "LDA #<{REG0}",
 					"LDY #>{REG0}", "JSR REALFAC", "LDX #<{REG1}", "LDY #>{REG1}", "JSR FACMEM", "LDA #<{REG1}", "LDY #>{REG1}", "JSR REALFAC", "LDX #<{REG0}", "LDY #>{REG0}",
 					"JSR FACMEM", "LDA #<{REG0}", "LDY #>{REG0}", "JSR REALFAC"));
@@ -53,8 +53,8 @@ public class Optimizer64 implements Optimizer {
 			// fail and I can't be bothered to fix this instead...so deal with
 			// it...
 			this.add(new Pattern(false, "POKE with integer constant(1)@real location", new String[] { "JSR REALFAC", "JSR FACWORD", "STY 105", "STA 106", "LDA {MEM0}", "LDY #0",
-					"STA (105),Y" }, "JSR REALFAC", "JSR PUSHREAL", "LDY {MEM0}", "LDA {MEM0}", "JSR INTFAC", "LDX #<{REG0}", "LDY #>{REG0}", "JSR FACMEM", "JSR POPREAL", "JSR FACWORD",
-					"STY 105", "STA 106", "LDA #<{REG0}", "LDY #>{REG0}", "JSR REALFAC", "JSR FACWORD", "TYA", "LDY #0", "STA (105),Y"));
+					"STA (105),Y" }, "JSR REALFAC", "JSR PUSHREAL", "LDY {MEM0}", "LDA {MEM0}", "JSR INTFAC", "LDX #<{REG0}", "LDY #>{REG0}", "JSR FACMEM", "JSR POPREAL",
+					"JSR FACWORD", "STY 105", "STA 106", "LDA #<{REG0}", "LDY #>{REG0}", "JSR REALFAC", "JSR FACWORD", "TYA", "LDY #0", "STA (105),Y"));
 			this.add(new Pattern(false, "CHR with integer constant", new String[] { "LDA{MEM0}", "JSR CHRINT" }, "LDY {MEM0}", "LDA {MEM0}", "JSR INTFAC", "LDX #<{REG0}",
 					"LDY #>{REG0}", "JSR FACMEM", "JSR CHR"));
 			this.add(new Pattern(false, "NEXT check simplified", new String[] { "JSR NEXT", "LDA A_REG", "{LINE8}", "JMP (JUMP_TARGET)" }, "JSR NEXT", "LDY {MEM0}", "LDA {MEM0}",
@@ -81,9 +81,9 @@ public class Optimizer64 implements Optimizer {
 			this.add(new Pattern("Constant directly into FAC", new String[] { "LDA #0", "STA $61", "STA $62", "STA $63", "STA $64", "STA $65", "STA $66", "{LINE2}", "{LINE3}",
 					"LDA #0", "STA $63", "STA $64", "STA $65", "LDY #128", "STY $62", "INY", "STY $61", "LDY #$FF", "STY $66", "{LINE6}", "{LINE8}" }, "LDA #<REAL_CONST_ZERO",
 					"LDY #>REAL_CONST_ZERO", "JMP {*}", "{LABEL}", "LDA #<REAL_CONST_MINUS_ONE", "LDY #>REAL_CONST_MINUS_ONE", "{LABEL}", "JSR REALFAC", "LDA $61"));
-			this.add(new Pattern(false, "Highly simplified loading for CMP", new String[] { "{LINE0}", "{LINE1}", "JSR REALFAC", "{LINE7}", "{LINE8}", "{LINE19}" }, "LDA #<{MEM0}",
-					"LDY #>{MEM0}", "STA TMP3_ZP", "STY TMP3_ZP+1", "LDX #<{REG0}", "LDY #>{REG0}", "JSR COPY2_XY", "LDA #<{MEM1}", "LDY #>{MEM1}", "STA TMP3_ZP", "STY TMP3_ZP+1",
-					"LDX #<{REG1}", "LDY #>{REG1}", "JSR COPY2_XY", "LDA #<{REG0}", "LDY #>{REG0}", "JSR REALFAC", "LDA #<{REG1}", "LDY #>{REG1}", "JSR CMPFAC"));
+			this.add(new Pattern(false, "Highly simplified loading for CMP", new String[] { "{LINE0}", "{LINE1}", "JSR REALFAC", "{LINE7}", "{LINE8}", "{LINE19}" },
+					"LDA #<{MEM0}", "LDY #>{MEM0}", "STA TMP3_ZP", "STY TMP3_ZP+1", "LDX #<{REG0}", "LDY #>{REG0}", "JSR COPY2_XY", "LDA #<{MEM1}", "LDY #>{MEM1}", "STA TMP3_ZP",
+					"STY TMP3_ZP+1", "LDX #<{REG1}", "LDY #>{REG1}", "JSR COPY2_XY", "LDA #<{REG0}", "LDY #>{REG0}", "JSR REALFAC", "LDA #<{REG1}", "LDY #>{REG1}", "JSR CMPFAC"));
 			this.add(new Pattern(false, "Highly simplified loading for calculations", new String[] { "{LINE0}", "{LINE1}", "JSR REALFAC", "{LINE7}", "{LINE8}", "{LINE19}",
 					"{LINE20}" }, "LDA #<{MEM0}", "LDY #>{MEM0}", "STA TMP3_ZP", "STY TMP3_ZP+1", "LDX #<{REG0}", "LDY #>{REG0}", "JSR COPY2_XY", "LDA #<{MEM1}", "LDY #>{MEM1}",
 					"STA TMP3_ZP", "STY TMP3_ZP+1", "LDX #<{REG1}", "LDY #>{REG1}", "JSR COPY2_XY", "LDA #<{REG0}", "LDY #>{REG0}", "JSR REALFAC", "LDA #<{REG1}", "LDY #>{REG1}",

@@ -41,9 +41,9 @@ public class TransformerTest {
 		// testTransformerSqr();
 		// testTransformer8();
 		// testTransformer9();
-		 testTransformer10();
+		testTransformer10();
 		// testTransformer11();
-		 testTransformer12();
+		testTransformer12();
 		testTransformer13();
 		testTransformer14();
 	}
@@ -60,7 +60,7 @@ public class TransformerTest {
 
 		printStats(profiler, machine);
 	}
-	
+
 	private static void testTransformer14() throws Exception {
 		System.out.println("\n\ntestTransformer13");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/test14.bas");
@@ -68,7 +68,7 @@ public class TransformerTest {
 		final Assembler assy = initTestEnvironment(vary, true);
 		FileWriter.writeAsPrg(assy.getProgram(), "++testdivs.prg", true);
 		JsrProfiler profiler = new JsrProfiler(assy);
-		//assy.getCpu().setCpuTracer(new MyTracer(assy));
+		// assy.getCpu().setCpuTracer(new MyTracer(assy));
 		assy.getCpu().setCpuTracer(profiler /* new MyTracer(assy) */);
 		Machine machine = executeTest(assy);
 
@@ -93,12 +93,13 @@ public class TransformerTest {
 		final Assembler assy = initTestEnvironment(vary, true);
 		FileWriter.writeAsPrg(assy.getProgram(), "++testforpoke.prg", true);
 		JsrProfiler profiler = new JsrProfiler(assy);
-		//assy.getCpu().setCpuTracer(new MyTracer(assy));
+		// assy.getCpu().setCpuTracer(new MyTracer(assy));
 		assy.getCpu().setCpuTracer(profiler /* new MyTracer(assy) */);
 		Machine machine = executeTest(assy);
 
 		printStats(profiler, machine);
 	}
+
 	private static void testTransformer12() throws Exception {
 		System.out.println("\n\ntestTransformer12");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/test12.bas");

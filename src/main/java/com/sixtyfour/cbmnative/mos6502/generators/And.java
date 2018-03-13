@@ -7,6 +7,6 @@ package com.sixtyfour.cbmnative.mos6502.generators;
 public class And extends Calculation {
 
 	public And() {
-		super("AND", "; FAC = ARG & FAC", "JSR $AFE9");
+		super("AND", "; FAC = ARG & FAC", "JSR ARGAND");
 	}
 }
