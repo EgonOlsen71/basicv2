@@ -7,10 +7,8 @@ START		LDA #<FPSTACK
 			LDY #>FORSTACK
 			STA FORSTACKP
 			STY FORSTACKP+1
-			LDA #<CONCATBUF
-			LDY #>CONCATBUF
+			LDA #0
 			STA CONCATBUFP
-			STY CONCATBUFP+1
 			LDA #<STRBUF
 			LDY #>STRBUF
 			STA STRBUFP
@@ -143,6 +141,8 @@ ARRAYSKIP2	STA TMP_REG
 ARRAYQUIT	RTS
 ;###################################
 END			RTS
+;###################################
+CONCAT		RTS
 ;###################################
 ; Special loop to handle the common for-poke-next-case
 ; used to clear the screen and such...
@@ -1135,7 +1135,6 @@ STEPNEG		PLA
 STEPPOS		PLA
 			ROL
 			BCC EXITLOOP
-			JMP LOOPING
 
 LOOPING		LDA TMP3_REG
 			STA FORSTACKP

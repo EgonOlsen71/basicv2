@@ -154,7 +154,7 @@ public class Transformer6502 implements Transformer {
 		res.add("FORSTACKP\t.WORD FORSTACK");
 		res.add("FORSTACK .ARRAY " + Math.min(1024, platform.getStackSize() * 17));
 		res.add("EMPTYSTR\t.BYTE 0");
-		res.add("CONCATBUFP\t.WORD CONCATBUF");
+		res.add("CONCATBUFP\t.BYTE 0");
 		res.add("CONCATBUF\t.ARRAY 256");
 		res.add("LASTVAR\t.WORD 0");
 		res.add("LASTVARP\t.WORD 0");
