@@ -142,7 +142,41 @@ ARRAYQUIT	RTS
 ;###################################
 END			RTS
 ;###################################
-CONCAT		RTS
+CONCAT		LDX CONCATBUFP
+			BNE BUFFERUSED		;Checks if the buffer already contains some data
+			LDA A_REG			;No? Then the first content is stored in A_REG
+			STA TMP_ZP
+			LDA A_REG+1
+			STA TMP_ZP+1
+			JSR COPY2CONCAT		;...copy into the buffer
+BUFFERUSED	LDA B_REG			;copy the content to append
+			STA TMP_ZP
+			LDA B_REG+1
+			STA TMP_ZP+1
+			JSR COPY2CONCAT		;..and copy it
+			LDA #<CONCATBUFP	; adjust A_REG so that it points to the buffer
+			STA A_REG
+			LDA #>CONCATBUFP
+			STA A_REG+1
+			RTS
+;###################################
+COPY2CONCAT	LDY #0
+			LDA (TMP_ZP),Y
+			STA TMP2_ZP
+			INC TMP_ZP
+			BNE COPY2CONT
+			INC TMP_ZP+1
+COPY2CONT	LDX CONCATBUFP
+COPY2LOOP	LDA (TMP_ZP),Y
+			STA CONCATBUF,X
+			INY
+			INX
+			BNE MEMORYOK
+			JMP OUTOFMEMORY
+MEMORYOK	CPY TMP2_ZP
+			BNE COPY2LOOP
+			STX CONCATBUFP
+			RTS
 ;###################################
 ; Special loop to handle the common for-poke-next-case
 ; used to clear the screen and such...
@@ -578,7 +612,9 @@ LOOP		LDA (TMP_ZP),Y	; Copy the actual string
 			STA (TMP3_ZP),Y
 			DEY
 			BNE LOOP
-EXITCOPY	RTS
+EXITCOPY	LDA #0
+			STA CONCATBUFP	; Reset the work buffer
+			RTS
 ;###################################
 ; Special copy routine that handles the case that a string is >highp but might interleave with the temp data that has to be copied into it.
 ; Therefor, this routine copies from lower to higher addresses and not vice versa like the simpler one above.
@@ -629,6 +665,8 @@ SKIPLOWAS1	PLP
 			INC HIGHP+1
 SKIPLOWAS2	LDA HIGHP+1
 			STA STRBUFP+1
+			LDA #0
+			STA CONCATBUFP	; Reset the work buffer
 			RTS
 ;###################################
 ; Checks if this variable is the same one that has been stored last. If so, we can reclaim its memory first.
@@ -729,6 +767,8 @@ PRINTSTR	JSR PRINTSTRS
 			STA STRBUFP
 			LDA HIGHP+1
 			STA STRBUFP+1
+			LDA #0
+			STA CONCATBUFP	; Reset the work buffer
 			RTS
 ;###################################
 STROUTBRK	LDA A_REG
@@ -746,6 +786,8 @@ PRINTSTR2	JSR PRINTSTRS
 			STA STRBUFP
 			LDA HIGHP+1
 			STA STRBUFP+1
+			LDA #0
+			STA CONCATBUFP	; Reset the work buffer
 			LDA #$0D
 			JMP CHROUT 	;RTS is implicit
 ;###################################
@@ -1456,6 +1498,44 @@ STRCMPRES	STX TMP3_ZP
 ;###################################
 READNUMBER	RTS
 
+;###################################
+PUSHINT		LDX FPSTACKP
+			STX TMP2_ZP
+			LDX FPSTACKP+1
+			STX TMP2_ZP+1
+			LDA TMP_ZP
+			LDY #0
+			STA (TMP2_ZP),Y
+			LDA TMP_ZP+1
+			INY
+			STA (TMP2_ZP),Y
+			LDA TMP2_ZP
+			CLC
+			ADC #2
+			STA FPSTACKP
+			LDA TMP2_ZP+1
+			ADC #0
+			STA FPSTACKP+1
+			RTS
+;###################################
+POPINT		LDA FPSTACKP
+			SEC
+			SBC #2
+			STA FPSTACKP
+			LDA FPSTACKP+1
+			SBC #0
+			STA FPSTACKP+1
+			LDX FPSTACKP
+			STX TMP2_ZP
+			LDX FPSTACKP+1
+			STX TMP2_ZP+1
+			LDY #0
+			LDA (TMP2_ZP),Y
+			STA TMP_ZP
+			INY
+			LDA (TMP2_ZP),Y
+			STA TMP_ZP+1
+			RTS
 ;###################################
 PUSHREAL	LDX FPSTACKP
 			LDY FPSTACKP+1

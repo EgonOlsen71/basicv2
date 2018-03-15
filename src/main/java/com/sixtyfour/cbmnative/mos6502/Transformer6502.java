@@ -230,7 +230,7 @@ public class Transformer6502 implements Transformer {
 
 	private int extractData(PlatformProvider platform, Machine machine, List<String> consts, List<String> vars, List<String> strVars, List<String> strArrayVars,
 			Map<String, String> name2label, int cnt, String line) {
-		String[] parts = line.split(",");
+		String[] parts = line.split(",", 2);
 		List<String> tmp = new ArrayList<String>();
 		for (int p = 0; p < parts.length; p++) {
 			String part = parts[p];

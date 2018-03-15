@@ -45,8 +45,12 @@ public class Optimizer64 implements Optimizer {
 			this.add(new Pattern("STY A...LDY A...STY B", new String[] { "{LINE0}", "{LINE3}" }, "STY {MEM0}", "LDY {MEM0}", "LDA #0", "STY {*}"));
 			this.add(new Pattern("FAC to INT, INT to FAC", null, "JSR INTFAC", "JSR FACINT"));
 			this.add(new Pattern("VAR into FAC, FAC into VAR", null, "LDA #<{MEM0}", "LDY #>{MEM0}", "JSR REALFAC", "LDX #<{MEM0}", "LDY #>{MEM0}", "JSR FACMEM"));
-			this.add(new Pattern("CMP with 0", new String[] { "LDA {REG0}" }, "LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC", "LDA #<{REG0}", "LDY #>{REG0}", "JSR CMPFAC"));
+			this.add(new Pattern("CMP (REG) = 0", new String[] { "LDA {REG0}","{LINE6}","{LINE7}" }, "LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC", "LDA #<{REG0}", "LDY #>{REG0}", "JSR CMPFAC", "BEQ {*}", "LDA #0"));
+			this.add(new Pattern("CMP (REG) != 0", new String[] { "LDA {REG0}","{LINE6}","{LINE7}" }, "LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC", "LDA #<{REG0}", "LDY #>{REG0}", "JSR CMPFAC", "BNE {*}", "LDA #0"));
+			this.add(new Pattern("CMP (MEM) = 0", new String[] { "LDA {MEM0}","{LINE6}","{LINE7}" }, "LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC", "LDA #<{MEM0}", "LDY #>{MEM0}", "JSR CMPFAC", "BEQ {*}", "LDA #0"));
+			this.add(new Pattern("CMP (MEM) != 0", new String[] { "LDA {MEM0}","{LINE6}","{LINE7}" }, "LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC", "LDA #<{MEM0}", "LDY #>{MEM0}", "JSR CMPFAC", "BNE {*}", "LDA #0"));
 
+			
 			// Note: This optimization relies on the former stage to create an
 			// actually unneeded PUSH/POP sequence in for loops. But if I
 			// optimize that away, this will
@@ -94,7 +98,9 @@ public class Optimizer64 implements Optimizer {
 					"STA A_REG", "STA A_REG+1"));
 			this.add(new Pattern("Improved copy from REG0 to REG1", new String[] { "{LINE0}", "{LINE1}", "STA TMP3_ZP", "STY TMP3_ZP+1", "{LINE3}", "{LINE4}", "JSR COPY2_XY" },
 					"LDA #<{REG0}", "LDY #>{REG0}", "JSR REALFAC", "LDX #<{REG1}", "LDY #>{REG1}", "JSR FACMEM"));
-			this.add(new Pattern(false, "FAST SQRT", new String[] { "JSR SQRT" }, "JSR FACSQR"));
+			this.add(new Pattern(false, "Fast SQRT", new String[] { "JSR SQRT" }, "JSR FACSQR"));
+			this.add(new Pattern(false, "Fast address push", new String[] { "{LINE4}", "{LINE5}", "{LINE6}" }, "STA {REG0}", "STY {REG0}", "LDA {REG0}", "LDY {REG0}",
+					"STA TMP_ZP", "STY TMP_ZP+1", "JSR PUSHINT"));
 			this.add(new Pattern(false, "Simplified loading of Strings", new String[] { "{LINE4}", "{LINE5}", "{LINE6}", "{LINE7}", "{LINE8}" }, "STA {REG0}", "STY {REG0}",
 					"LDA {REG0}", "LDY {REG0}", "STA TMP_ZP", "STY TMP_ZP+1", "LDA #<{MEM0}", "LDY #>{MEM0}", "JSR COPYSTRING"));
 			this.add(new Pattern("MEM->REG, REG->TMP_ZP", new String[] { "{LINE0}", "{LINE1}", "{LINE6}", "{LINE7}" }, "LDA #<{MEM0}", "LDY #>{MEM0}", "STA {REG0}", "STY {REG0}",

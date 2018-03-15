@@ -37,7 +37,7 @@ public class TransformerTest {
 		//testTransformerFractal();
 		// testTransformer6();
 		// testTransformer7();
-		// testTransformerPrime();
+		 testTransformerPrime();
 		// testTransformerSqr();
 		// testTransformer8();
 		// testTransformer9();
@@ -45,20 +45,20 @@ public class TransformerTest {
 		// testTransformer11();
 		//testTransformer12();
 		//testTransformer13();
-		//testTransformer14();
+		testTransformer14();
 	    	testTransformer15();
 	}
 
 	
 	private static void testTransformer15() throws Exception {
 		System.out.println("\n\ntestTransformer15");
-		String[] vary = Loader.loadProgram("src/test/resources/transform/test15.bas");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/beer_transform.bas");
 
-		final Assembler assy = initTestEnvironment(vary, true);
+		final Assembler assy = initTestEnvironment(vary, false);
 		FileWriter.writeAsPrg(assy.getProgram(), "++teststrconc.prg", true);
 		JsrProfiler profiler = new JsrProfiler(assy);
 		// assy.getCpu().setCpuTracer(new MyTracer(assy));
-		assy.getCpu().setCpuTracer(profiler /* new MyTracer(assy) */);
+		assy.getCpu().setCpuTracer(profiler);
 		Machine machine = executeTest(assy);
 
 		printStats(profiler, machine);
