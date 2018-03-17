@@ -50,6 +50,7 @@ public class NativeCompiler {
 			this.add("PEEK");
 			this.add("MID");
 			this.add("PAR");
+			this.add("SINGLEPAR");
 			this.add("LEFT");
 			this.add("RIGHT");
 			this.add("ARRAYACCESS");
@@ -165,7 +166,6 @@ public class NativeCompiler {
 		boolean right = false;
 		boolean isArrayAccess = false;
 		Set<Integer> fromAbove = new HashSet<Integer>();
-		char parReg = 'C';
 
 		for (String exp : expr) {
 			boolean isOp = exp.startsWith(":");
@@ -487,16 +487,17 @@ public class NativeCompiler {
 					stringStack.pop();
 					break;
 				case "MID":
+					code.add("POP D");
+					code.add("POP C");
 					code.add("JSR MID");
-					parReg = 'C';
 					break;
 				case "LEFT":
+					code.add("POP C");
 					code.add("JSR LEFT");
-					parReg = 'C';
 					break;
 				case "RIGHT":
+					code.add("POP C");
 					code.add("JSR RIGHT");
-					parReg = 'C';
 					break;
 				case "CMP =":
 					code.add("EQ " + regs);
@@ -536,10 +537,11 @@ public class NativeCompiler {
 					break;
 				case "PAR":
 					if (getLastEntry(code).startsWith("MOV " + sr)) {
-						code.add("MOV " + (parReg++) + "," + sr);
+						code.add("MOV C," + sr);
 					} else {
-						code.add("MOV " + (parReg++) + "," + tr);
+						code.add("MOV C," + tr);
 					}
+					code.add("PUSH C");
 					// yStack.push(null);
 					dontPush = true;
 					break;

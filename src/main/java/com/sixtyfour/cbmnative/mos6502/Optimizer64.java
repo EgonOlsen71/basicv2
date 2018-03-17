@@ -45,12 +45,15 @@ public class Optimizer64 implements Optimizer {
 			this.add(new Pattern("STY A...LDY A...STY B", new String[] { "{LINE0}", "{LINE3}" }, "STY {MEM0}", "LDY {MEM0}", "LDA #0", "STY {*}"));
 			this.add(new Pattern("FAC to INT, INT to FAC", null, "JSR INTFAC", "JSR FACINT"));
 			this.add(new Pattern("VAR into FAC, FAC into VAR", null, "LDA #<{MEM0}", "LDY #>{MEM0}", "JSR REALFAC", "LDX #<{MEM0}", "LDY #>{MEM0}", "JSR FACMEM"));
-			this.add(new Pattern("CMP (REG) = 0", new String[] { "LDA {REG0}","{LINE6}","{LINE7}" }, "LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC", "LDA #<{REG0}", "LDY #>{REG0}", "JSR CMPFAC", "BEQ {*}", "LDA #0"));
-			this.add(new Pattern("CMP (REG) != 0", new String[] { "LDA {REG0}","{LINE6}","{LINE7}" }, "LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC", "LDA #<{REG0}", "LDY #>{REG0}", "JSR CMPFAC", "BNE {*}", "LDA #0"));
-			this.add(new Pattern("CMP (MEM) = 0", new String[] { "LDA {MEM0}","{LINE6}","{LINE7}" }, "LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC", "LDA #<{MEM0}", "LDY #>{MEM0}", "JSR CMPFAC", "BEQ {*}", "LDA #0"));
-			this.add(new Pattern("CMP (MEM) != 0", new String[] { "LDA {MEM0}","{LINE6}","{LINE7}" }, "LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC", "LDA #<{MEM0}", "LDY #>{MEM0}", "JSR CMPFAC", "BNE {*}", "LDA #0"));
+			this.add(new Pattern(false, "CMP (REG) = 0", new String[] { "LDA {REG0}", "{LINE6}", "{LINE7}" }, "LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC", "LDA #<{REG0}",
+					"LDY #>{REG0}", "JSR CMPFAC", "BEQ {*}", "LDA #0"));
+			this.add(new Pattern(false, "CMP (REG) != 0", new String[] { "LDA {REG0}", "{LINE6}", "{LINE7}" }, "LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC", "LDA #<{REG0}",
+					"LDY #>{REG0}", "JSR CMPFAC", "BNE {*}", "LDA #0"));
+			this.add(new Pattern(false, "CMP (MEM) = 0", new String[] { "LDA {MEM0}", "{LINE6}", "{LINE7}" }, "LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC", "LDA #<{MEM0}",
+					"LDY #>{MEM0}", "JSR CMPFAC", "BEQ {*}", "LDA #0"));
+			this.add(new Pattern(false, "CMP (MEM) != 0", new String[] { "LDA {MEM0}", "{LINE6}", "{LINE7}" }, "LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC", "LDA #<{MEM0}",
+					"LDY #>{MEM0}", "JSR CMPFAC", "BNE {*}", "LDA #0"));
 
-			
 			// Note: This optimization relies on the former stage to create an
 			// actually unneeded PUSH/POP sequence in for loops. But if I
 			// optimize that away, this will

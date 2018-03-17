@@ -97,7 +97,6 @@ public class TermHelper {
 				}
 			}
 		}
-		// System.out.println("Term: " + new String(ct));
 		return Parser.removeWhiteSpace(new String(ct));
 	}
 

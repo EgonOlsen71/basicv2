@@ -142,6 +142,77 @@ ARRAYQUIT	RTS
 ;###################################
 END			RTS
 ;###################################
+RIGHT		LDA B_REG			;the source string
+			STA TMP_ZP
+			LDA B_REG+1
+			STA TMP_ZP+1
+			LDA #<C_REG
+			LDY #>C_REG
+			JSR REALFAC
+			JSR FACWORD
+			STY TMP_REG			; store the parameter
+			LDY #0
+			LDA (TMP_ZP),Y
+			TAX
+			CMP TMP_REG			; compare the source string's length with the parameter
+			BCS RIGHTBELOW
+			STA TMP_REG			; length>source length? -> clamp to source length
+RIGHTBELOW	TXA
+			SEC
+			SBC TMP_REG
+			BCS RIGHTNOV
+			LDA #0
+RIGHTNOV	STA TMP_REG+1
+			JMP STRFUNC
+;###################################
+LEFT		LDA B_REG			;the source string
+			STA TMP_ZP
+			LDA B_REG+1
+			STA TMP_ZP+1
+			LDA #<C_REG
+			LDY #>C_REG
+			JSR REALFAC
+			JSR FACWORD
+			STY TMP_REG			; store the parameter
+			LDY #0
+			STY TMP_REG+1		; store the start position (always 0 for left$)
+			LDA (TMP_ZP),Y
+			CMP TMP_REG			; compare the source string's length with the parameter
+			BCS LEFTBELOW
+			STA TMP_REG			; length>source length? -> clamp to source length
+LEFTBELOW	JMP STRFUNC
+;###################################
+; Generic function for string function like for left$, right$ and mid$. It reuses the actual code to
+; copy strings for an assignment but it jumps into it at a "copy only" stage. However, it still assumes
+; that the source pointer points towards the length of the source string and it resets the concat buffer pointer.
+; These are both behaviours that we have to adapt to, so we are adjusting and/or saving/restoring some values here.
+STRFUNC		LDA TMP_REG+1
+			BEQ STARTATZERO
+			LDA TMP_ZP
+			CLC
+			ADC TMP_REG+1
+			STA TMP_ZP
+			BCC STARTATZERO
+			INC TMP_ZP+1
+STARTATZERO	LDY #0
+			LDA (TMP_ZP),Y
+			PHA					; save the first byte of the source string on the stack
+			LDA CONCATBUFP		; save the current concatbuffer position...
+			PHA
+			LDA TMP_REG
+			STA (TMP_ZP),Y
+			LDA #<A_REG
+			LDY #>A_REG
+			STA TMP2_ZP
+			STY TMP2_ZP+1
+			JSR COPYONLY
+			PLA
+			STA CONCATBUFP		; and restore it (because COPYONLY nulls it)
+			PLA
+			LDY #0
+			STA (TMP_ZP),Y		; restore the first byte of the source string on the stack
+			RTS
+;###################################
 CONCAT		LDX CONCATBUFP
 			BNE BUFFERUSED		;Checks if the buffer already contains some data
 			LDA A_REG			;No? Then the first content is stored in A_REG
@@ -342,7 +413,12 @@ STRLOOP		INY
 			LDY #>A_REG
 			STA TMP2_ZP
 			STY TMP2_ZP+1
-			JMP COPYONLY ;RTS is implicit
+			LDA CONCATBUFP	; save the current concatbuffer position...
+			PHA
+			JSR COPYONLY
+			PLA
+			STA CONCATBUFP	; and restore it (because COPYONLY nulls it)
+			RTS
 ;###################################
 VAL			LDA B_REG
 			STA $22
@@ -385,7 +461,7 @@ CHR			LDA STRBUFP
 			LDA #<Y_REG
 			LDY #>Y_REG
 			JSR REALFAC
-			JSR FACINT
+			JSR FACWORD
 			TYA
 			LDY #1
 			STA (TMP_ZP),Y

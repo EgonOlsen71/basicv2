@@ -100,7 +100,8 @@ public class NativeCompilerTest {
 		testArrayAccess01();
 		// testBasicMapper();
 		testLogicExpression3();
-
+		testStringExpression10();
+		testStringExpression11();
 	}
 
 	private static void testFiles() {
@@ -500,17 +501,26 @@ public class NativeCompilerTest {
 		testExpr(machine, term, true);
 	}
 
-	private static void testStringExpression9() {
-		System.out.println("\n\ntestStringExpression9");
+	private static void testStringExpression11() {
+		System.out.println("\n\ntestStringExpression11");
 		Tab.setLimitedToPrint(false);
 		Spc.setLimitedToPrint(false);
 		Machine machine = new Machine();
-		machine.add(new Variable("A$", "I hate you!"));
-		machine.add(new Variable("B$", "I love me!"));
-		String term = "A$+TAB(20)+B$+SPC(10)+\"!!!\"";
+		machine.add(new Variable("A$", "hello world"));
+		machine.add(new Variable("B$", "52"));
+		String term = "LEFT$(MID$(MID$(A$,2,5),1,2),1)+MID$(A$,2,VAL(LEFT$(B$,1)))";
 		testExpr(machine, term, true);
-		term = "POS(35)";
-		testExpr(machine, term);
+	}
+	
+	private static void testStringExpression10() {
+		System.out.println("\n\ntestStringExpression10");
+		Tab.setLimitedToPrint(false);
+		Spc.setLimitedToPrint(false);
+		Machine machine = new Machine();
+		machine.add(new Variable("A$", "hello"));
+		machine.add(new Variable("B$", "world"));
+		String term = "RIGHT$(LEFT$(A$,4),2)";
+		testExpr(machine, term, true);
 	}
 
 	private static void testExpression7() {
@@ -530,6 +540,15 @@ public class NativeCompilerTest {
 		testExpr(machine, term, true);
 	}
 
+	private static void testStringExpression9() {
+		System.out.println("\n\ntestStringExpression9");
+		Machine machine = new Machine();
+		machine.add(new Variable("A$", "Hello World"));
+		machine.add(new Variable("BB$", "YEAH!!!"));
+		String term = "LEFT$(A$,4)+\" \"+LEFT$(BB$, 5)";
+		testExpr(machine, term, true);
+	}
+	
 	private static void testStringExpression7() {
 		System.out.println("\n\ntestStringExpression7");
 		Machine machine = new Machine();
