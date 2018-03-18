@@ -142,16 +142,53 @@ ARRAYQUIT	RTS
 ;###################################
 END			RTS
 ;###################################
-RIGHT		LDA B_REG			;the source string
-			STA TMP_ZP
-			LDA B_REG+1
-			STA TMP_ZP+1
-			LDA #<C_REG
-			LDY #>C_REG
+MID			LDA #<D_REG
+			LDY #>D_REG
 			JSR REALFAC
-			JSR FACWORD
-			STY TMP_REG			; store the parameter
-			LDY #0
+			JSR SGNFAC
+			ROL
+			BCC MIDLENGTH		; an actual length was given...
+			JSR STRFUNCINT		; ...no, it wasn't.
+			LDA TMP_REG			; copy start position from TMP_REG into TMP_REG+1
+			STA TMP_REG+1
+			BNE MIDOK2
+			JMP ILLEGALQUANTITY	; start has to be larger than 0
+MIDOK2		DEC TMP_REG+1		; BASIC starts at 1, we start at 0
+			LDA (TMP_ZP),Y
+			SEC
+			SBC TMP_REG+1
+			STA TMP_REG			; store the calculated length
+			BCS	MIDNOV
+			STY TMP_REG			; Set length to 0, if start>string length
+			JMP MIDNOV
+MIDLENGTH	JSR FACWORD
+			STY TMP2_REG		; save the length in TMP2_REG
+			JSR STRFUNCINT
+			LDA TMP_REG			; copy start position from TMP_REG into TMP_REG+1
+			BNE MIDOK
+			JMP ILLEGALQUANTITY	; start has to be larger than 0
+MIDOK		LDX TMP2_REG
+			STX TMP_REG			; store the length saved above in TMP_REG
+			STA TMP_REG+1
+			DEC TMP_REG+1		; BASIC starts at 1, we start at 0
+MIDNOV		LDA TMP_REG+1		; the starting position
+			CLC
+			ADC TMP_REG			; add the length
+			BCS MIDCLAMP
+			CMP (TMP_ZP),Y
+			BCS	MIDCLAMP
+MIDCOPY		JMP STRFUNC
+
+MIDCLAMP	LDA (TMP_ZP),Y		; Clamp to the string's length, if needed...
+			SEC
+			SBC TMP_REG+1
+			STA TMP_REG
+			BCS MIDCOPY
+			STY TMP_REG
+			JMP MIDCOPY
+
+;###################################
+RIGHT		JSR STRFUNCINT
 			LDA (TMP_ZP),Y
 			TAX
 			CMP TMP_REG			; compare the source string's length with the parameter
@@ -165,7 +202,15 @@ RIGHTBELOW	TXA
 RIGHTNOV	STA TMP_REG+1
 			JMP STRFUNC
 ;###################################
-LEFT		LDA B_REG			;the source string
+LEFT		JSR STRFUNCINT
+			STY TMP_REG+1		; store the start position (always 0 for left$)
+			LDA (TMP_ZP),Y
+			CMP TMP_REG			; compare the source string's length with the parameter
+			BCS LEFTBELOW
+			STA TMP_REG			; length>source length? -> clamp to source length
+LEFTBELOW	JMP STRFUNC
+;###################################
+STRFUNCINT 	LDA B_REG			;the source string
 			STA TMP_ZP
 			LDA B_REG+1
 			STA TMP_ZP+1
@@ -175,12 +220,7 @@ LEFT		LDA B_REG			;the source string
 			JSR FACWORD
 			STY TMP_REG			; store the parameter
 			LDY #0
-			STY TMP_REG+1		; store the start position (always 0 for left$)
-			LDA (TMP_ZP),Y
-			CMP TMP_REG			; compare the source string's length with the parameter
-			BCS LEFTBELOW
-			STA TMP_REG			; length>source length? -> clamp to source length
-LEFTBELOW	JMP STRFUNC
+			RTS
 ;###################################
 ; Generic function for string function like for left$, right$ and mid$. It reuses the actual code to
 ; copy strings for an assignment but it jumps into it at a "copy only" stage. However, it still assumes
@@ -200,13 +240,19 @@ STARTATZERO	LDY #0
 			LDA CONCATBUFP		; save the current concatbuffer position...
 			PHA
 			LDA TMP_REG
-			STA (TMP_ZP),Y
+			BNE STRFUNCNZ
+			LDA #<EMPTYSTR
+			STA A_REG
+			LDA #>EMPTYSTR
+			STA A_REG+1
+			JMP EXITSTRFUNC
+STRFUNCNZ	STA (TMP_ZP),Y
 			LDA #<A_REG
 			LDY #>A_REG
 			STA TMP2_ZP
 			STY TMP2_ZP+1
 			JSR COPYONLY
-			PLA
+EXITSTRFUNC	PLA
 			STA CONCATBUFP		; and restore it (because COPYONLY nulls it)
 			PLA
 			LDY #0
