@@ -208,8 +208,12 @@ public class Print extends AbstractCommand {
 				expr.add("JSR LINEBREAK" + appendix);
 			} else {
 				if (add != null) {
-					expr.add("MOV A,#" + add + "{STRING}");
-					expr.add("JSR STROUT" + appendix);
+					if (add.equals("\t")) {
+						expr.add("JSR TABOUT");
+					} else {
+						expr.add("MOV A,#" + add + "{STRING}");
+						expr.add("JSR STROUT" + appendix);
+					}
 				}
 			}
 

@@ -49,7 +49,16 @@ public class Transformer6502 implements Transformer {
 		res.add("ARGDIV = $BB14");
 		res.add("FACMUL = $BA30");
 		res.add("FACADD = $B867");
+		res.add("FACLOG = $B9EA");
 		res.add("FACSQR = $BF71");
+		res.add("FACEXP = $BFED");
+		res.add("FACABS = $BC58");
+		res.add("FACSIN = $E26B");
+		res.add("FACCOS = $E264");
+		res.add("FACTAN = $E2B4");
+		res.add("FACATN = $E30E");
+		res.add("FACSGN = $BC39");
+		res.add("FACRND = $E097");
 		res.add("FACWORD = $B7F7");
 		res.add("FACDIV = $BB0F");
 		res.add("BASINT = $BCCC");

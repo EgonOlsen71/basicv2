@@ -913,6 +913,9 @@ PRINTSTR2	JSR PRINTSTRS
 			LDA #$0D
 			JMP CHROUT 	;RTS is implicit
 ;###################################
+; todo implement this...
+TABOUT		RTS
+;###################################
 ARRAYACCESS_STRING
 			LDA #<X_REG
 			LDY #>X_REG
@@ -1724,12 +1727,13 @@ SQRT		LDX #<TMP_FREG
 			STY TMP2_FREG+2
 			STY TMP2_FREG+3
 			STY TMP2_FREG+4
- 
+
 			LDA TMP_FREG
+			CLC
 			ROR
 			BCS SQRTADD
 			LDX #$80
-			STA TMP2_FREG+1
+			STX TMP2_FREG+1
 SQRTADD 	ADC #$40
 			STA TMP2_FREG
 			LDA TMP_FREG+1
@@ -1743,10 +1747,10 @@ SQRTADD 	ADC #$40
 			STA TMP2_FREG+1
 			LDA #04
 			STA $FB
-MINUS		LDA #<TMP2_FREG
+			LDA #<TMP2_FREG
 			LDY #>TMP2_FREG
 			JSR REALFAC
-			LDA #<TMP_FREG
+MINUS		LDA #<TMP_FREG
 			LDY #>TMP_FREG
 			JSR FACDIV 
 			LDA #<TMP2_FREG

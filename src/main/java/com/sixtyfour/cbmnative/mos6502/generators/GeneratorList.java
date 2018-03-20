@@ -41,6 +41,15 @@ public class GeneratorList {
 			this.add(new Pow());
 			this.add(new Nop());
 			this.add(new Sqr());
+			this.add(new Exp());
+			this.add(new Abs());
+			this.add(new Sgn());
+			this.add(new Sin());
+			this.add(new Cos());
+			this.add(new Tan());
+			this.add(new Atn());
+			this.add(new Log());
+			this.add(new Rnd());
 		}
 	});
 
