@@ -39,6 +39,10 @@ public class Pattern {
 		this.looseTypes = looseTypes;
 	}
 
+	public int getPos() {
+		return pos;
+	}
+	
 	public String getName() {
 		return name;
 	}
@@ -120,6 +124,7 @@ public class Pattern {
 		if (part.equals("{LABEL}") && line.endsWith(":")) {
 			return inc(ix);
 		}
+
 		String ft = part.substring(0, 3);
 		if (ft.equals("JSR") || ft.equals("JMP") || ft.equals("BEQ") || ft.endsWith("JMP") || ft.equals("BNE") || ft.equals("BCC") || ft.equals("BCS")) {
 			if (part.endsWith("{*}") && line.startsWith(ft)) {
@@ -128,8 +133,6 @@ public class Pattern {
 		}
 
 		if (p0 != -1 && p1 != -1 && !line.contains("SKIP")) {
-			// System.out.println("Checking: " + line + " / " +
-			// part+"/"+pos+"/"+pattern.size()+"/"+this.name);
 			if (part.substring(0, p0).equalsIgnoreCase(line.substring(0, p1))) {
 				String partRight = part.substring(p0 + 1).trim();
 				String lineRight = line.substring(p1 + 1).trim();

@@ -167,7 +167,9 @@ public class NativeCompiler {
 		boolean isArrayAccess = false;
 		Set<Integer> fromAbove = new HashSet<Integer>();
 
+		int expCnt = 0;
 		for (String exp : expr) {
+			expCnt++;
 			boolean isOp = exp.startsWith(":");
 			boolean isBreak = exp.equals("_");
 			isArrayAccess = false;
@@ -554,7 +556,12 @@ public class NativeCompiler {
 						code.add("PUSH " + sr);
 						yStack.push(null);
 						code.add("JSR " + label);
-						code.add("POP " + tr);
+						if (expCnt >= expr.size()) {
+							// POP the last result from the fn call, if that's
+							// needed...Am I sure, that this is 100% water
+							// proof...? Well...no, actually not...
+							code.add("POP " + tr);
+						}
 						dontPush = true;
 						break;
 					} else {
@@ -601,7 +608,9 @@ public class NativeCompiler {
 		if (withStrings) {
 			code.add(0, "JSR COMPACT");
 		}
-
+		/*
+		 * if (!yStack.isEmpty()) { code.add("POP X"); }
+		 */
 		return optimize(code);
 	}
 

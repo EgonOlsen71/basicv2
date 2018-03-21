@@ -4,5 +4,6 @@
 40 next i:print"hhhhh";pos(0)
 50 a=fre(0): if a<0 then a=a+65536
 60 print "free:",a
-70 y=5:def fn test(x)=x*x*y+2
-80 printfntest(23)
+65 def fn yt(x)=x+2
+70 y=5:def fn test(x)=x*x*fnyt(y)
+80 d=fntest(23):printd

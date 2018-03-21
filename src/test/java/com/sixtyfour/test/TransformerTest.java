@@ -34,7 +34,7 @@ public class TransformerTest {
 		// testTransformer2();
 		// testTransformer4();
 		// testTransformer5();
-		// testTransformerFractal();
+		 testTransformerFractal();
 		// testTransformer6();
 		// testTransformer7();
 		// testTransformerPrime();
@@ -59,8 +59,8 @@ public class TransformerTest {
 		final Assembler assy = initTestEnvironment(vary, false);
 		FileWriter.writeAsPrg(assy.getProgram(), "++testmath.prg", true);
 		JsrProfiler profiler = new JsrProfiler(assy);
-		assy.getCpu().setCpuTracer(new MyTracer(assy));
-		// assy.getCpu().setCpuTracer(profiler);
+		//assy.getCpu().setCpuTracer(new MyTracer(assy));
+		 assy.getCpu().setCpuTracer(profiler);
 		Machine machine = executeTest(assy);
 
 		printStats(profiler, machine);

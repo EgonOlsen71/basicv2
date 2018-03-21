@@ -23,8 +23,8 @@ public class Optimizer64 implements Optimizer {
 			this.add(new Pattern("REALOUT + LINEBRK", new String[] { "JSR REALOUTBRK" }, "JSR REALOUT", "JSR LINEBREAK"));
 			this.add(new Pattern("STROUT + LINEBRK", new String[] { "JSR STROUTBRK" }, "JSR STROUT", "JSR LINEBREAK"));
 			this.add(new Pattern("INTOUT + LINEBRK", new String[] { "JSR INTOUTBRK" }, "JSR INTOUT", "JSR LINEBREAK"));
-			this.add(new Pattern("POP, REG0, VAR0", new String[] { "{LINE0}", "{LINE1}", "{LINE2}", "{LINE3}", "{LINE7}", "{LINE8}" }, "JSR POPREAL", "LDX #<{REG0}",
-					"LDY #>{REG0}", "JSR FACMEM", "LDA #<{REG0}", "LDY #>{REG0}", "JSR REALFAC", "LDX #<{MEM0}", "LDY #>{MEM0}"));
+			this.add(new Pattern("POP, REG0, VAR0", new String[] { "{LINE0}", "{LINE1}", "{LINE2}", "{LINE3}" }, "JSR POPREAL", "LDX #<{REG0}", "LDY #>{REG0}", "JSR FACMEM",
+					"LDA #<{REG0}", "LDY #>{REG0}", "JSR REALFAC"));
 			this.add(new Pattern(false, "Array index is integer (store)", new String[] { "{LINE10}", "{LINE11}", "{LINE12}", "{LINE13}", "{LINE18}", "{LINE19}", "{LINE20}",
 					"{LINE21}", "{LINE0}", "{LINE1}", "{LINE22}_INT" }, "LDY {MEM0}", "LDA {MEM0}", "JSR INTFAC", "LDX #<{REG0}", "LDY #>{REG0}", "JSR FACMEM", "LDA #<{REG0}",
 					"LDY #>{REG0}", "JSR REALFAC", "JSR PUSHREAL", "LDA {*}", "LDY {*}", "STA {REG1}", "STY {REG1}", "JSR POPREAL", "LDX #<{REG2}", "LDY #>{REG2}", "JSR FACMEM",
@@ -42,6 +42,9 @@ public class Optimizer64 implements Optimizer {
 			this.add(new Pattern("REG0->VAR, REG0->REG1", new String[] { "{LINE6}", "{LINE7}", "{LINE8}" }, "LDX #<{REG0}", "LDY #>{REG0}", "JSR FACMEM", "LDA #<{REG0}",
 					"LDY #>{REG0}", "JSR REALFAC", "LDX #<{MEM0}", "LDY #>{MEM0}", "JSR FACMEM", "LDA #<{REG0}", "LDY #>{REG0}", "JSR REALFAC", "LDX #<{REG1}", "LDY #>{REG1}",
 					"JSR FACMEM", "LDA #<{REG1}", "LDY #>{REG1}", "JSR REALFAC"));
+			this.add(new Pattern("FAC into REG?, REG? into FAC, REG into...", new String[] { "{LINE0}", "{LINE1}", "{LINE2}", "{LINE6}", "{LINE7}", "{LINE8}", "{LINE9}",
+					"{LINE10}", "{LINE11}" }, "LDX #<{REG0}", "LDY #>{REG0}", "JSR FACMEM", "LDA #<{REG0}", "LDY #>{REG0}", "JSR REALFAC", "LDX #<{MEM0}", "LDY #>{MEM0}",
+					"JSR FACMEM", "LDA #<{REG0}", "LDY #>{REG0}", "JSR REALFAC"));
 			this.add(new Pattern("FAC into REG?, REG? into FAC", null, "LDX #<{REG0}", "LDY #>{REG0}", "JSR FACMEM", "LDA #<{REG0}", "LDY #>{REG0}", "JSR REALFAC"));
 			this.add(new Pattern("INT to FAC, FAC to INT", new String[] { "{LINE0}", "{LINE1}" }, "LDY {*}", "LDA {*}", "JSR INTFAC", "JSR FACINT"));
 			this.add(new Pattern("STY A...LDY A...STY B", new String[] { "{LINE0}", "{LINE3}" }, "STY {MEM0}", "LDY {MEM0}", "LDA #0", "STY {*}"));
@@ -165,6 +168,7 @@ public class Optimizer64 implements Optimizer {
 					if (line.startsWith("; *** SUBROUTINES ***")) {
 						break;
 					}
+					int sp = pattern.getPos();
 					boolean matches = pattern.matches(line, i, const2Value);
 					if (matches) {
 						String name = pattern.getName();
@@ -177,6 +181,9 @@ public class Optimizer64 implements Optimizer {
 						input = pattern.apply(input);
 						optimized = true;
 						break;
+					}
+					if (pattern.getPos() == 0 && sp > 1) {
+						i--;
 					}
 				}
 				if (optimized) {

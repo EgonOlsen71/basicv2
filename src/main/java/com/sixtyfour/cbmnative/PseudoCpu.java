@@ -670,8 +670,14 @@ public class PseudoCpu {
 		case "STR":
 			str(parts);
 			return;
+		case "FRE":
+			intOut(parts, 0);
+			return;
 		case "VAL":
 			val(parts);
+			return;
+		case "TABOUT":
+			tab(parts);
 			return;
 		case "LEN":
 			len(parts);
