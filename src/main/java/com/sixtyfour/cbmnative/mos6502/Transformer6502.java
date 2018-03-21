@@ -80,6 +80,8 @@ public class Transformer6502 implements Transformer {
 		res.add("VALS = $B7B5");
 		res.add("CMPFAC = $BC5B");
 		res.add("BYTEFAC = $B3A2");
+		res.add("CRSRPOS = $FFF0");
+		res.add("CRSRRIGHT = $AB3B");
 
 		res.add("TMP_ZP = 105");
 		res.add("TMP2_ZP = 107");

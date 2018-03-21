@@ -913,8 +913,15 @@ PRINTSTR2	JSR PRINTSTRS
 			LDA #$0D
 			JMP CHROUT 	;RTS is implicit
 ;###################################
+POS			SEC 
+			JSR CRSRPOS
+			JSR BYTEFAC
+			LDX #<X_REG
+			LDY #>X_REG
+			JMP FACMEM
+;###################################
 TABOUT		SEC 
-			JSR $FFF0
+			JSR CRSRPOS
 			TYA
 			SEC
 TABSUB 		SBC #$0A
@@ -926,7 +933,7 @@ TABSUB 		SBC #$0A
 TABLOOP 	DEX
 			BNE TABRIGHT
 			RTS
-TABRIGHT	JSR $AB3B
+TABRIGHT	JSR CRSRRIGHT
 			JMP TABLOOP
 ;###################################
 ARRAYACCESS_STRING
