@@ -129,10 +129,10 @@ public class TermEnhancer {
 	}
 
 	/**
-	 * Removes the assignment part of the term, i.e. everything before the =
+	 * Removes the assignment part of the "term", i.e. everything before the =
 	 * 
 	 * @param term
-	 *            the term
+	 *            the "term"
 	 * @param stripAssignment
 	 *            if true, the assignment will be removed (if any). If false,
 	 *            the string will be returned unchanged.
