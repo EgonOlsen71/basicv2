@@ -110,7 +110,11 @@ public class Transformer6502 implements Transformer {
 			if (pm != null) {
 				pm.generateCode(context, orgLine, mnems, subs, name2label);
 			} else {
-				mnems.add("; not supported: " + cmd);
+				if (cmd.endsWith(":")) {
+					mnems.add(cmd);
+				} else {
+					mnems.add("; not supported: " + cmd);
+				}
 			}
 		}
 

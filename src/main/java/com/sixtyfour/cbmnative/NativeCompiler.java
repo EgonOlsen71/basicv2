@@ -554,6 +554,7 @@ public class NativeCompiler {
 						code.add("PUSH " + sr);
 						yStack.push(null);
 						code.add("JSR " + label);
+						code.add("POP " + tr);
 						dontPush = true;
 						break;
 					} else {

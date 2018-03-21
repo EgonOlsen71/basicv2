@@ -94,7 +94,7 @@ public class Def extends AbstractCommand {
 						String add = "_" + varName + fnName;
 						term = term.substring(0, i - varName.length()) + add + term.substring(i);
 						modTerm = modTerm.substring(0, i - varName.length()) + add + modTerm.substring(i);
-						i += add.length();
+						i += add.length() - 1;
 					}
 					sb.setLength(0);
 				}
@@ -123,7 +123,8 @@ public class Def extends AbstractCommand {
 
 	@Override
 	public List<CodeContainer> evalToCode(Machine machine) {
-		if (machine.getFunction(fnName) != null) {
+		Command cmd = machine.getFunction(fnName);
+		if (cmd != null && !cmd.getTerm().toString().equals(this.getTerm().toString())) {
 			throw new RuntimeException("Redef'd function error: " + fnName);
 		}
 		machine.setFunction(fnName, this);
