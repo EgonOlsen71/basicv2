@@ -482,6 +482,9 @@ public class NativeCompiler {
 				case "POS":
 					code.add("JSR POS");
 					break;
+				case "FRE":
+					code.add("JSR FRE");
+					break;
 				case "ARRAYACCESS":
 					code.add("JSR ARRAYACCESS");
 					stringStack.pop();

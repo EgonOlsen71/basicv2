@@ -920,6 +920,17 @@ POS			SEC
 			LDY #>X_REG
 			JMP FACMEM
 ;###################################
+FRE			LDA ENDSTRBUF
+			SEC
+			SBC STRBUFP
+			TAY
+			LDA ENDSTRBUF+1
+			SBC STRBUFP+1
+			JSR INTFAC
+			LDX #<X_REG
+			LDY #>X_REG
+			JMP FACMEM
+;###################################
 TABOUT		SEC 
 			JSR CRSRPOS
 			TYA
