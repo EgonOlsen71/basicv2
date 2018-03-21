@@ -110,7 +110,10 @@ public class Print extends AbstractCommand {
 					add = "\n";
 				}
 			} else if (del == ',') {
-				add = "\t";
+			    add = "\t";
+			    if (type.equals(Type.INTEGER) || type.equals(Type.REAL)) {
+				add=" "+add;
+			    }
 			}
 			Object obj = part.term.eval(machine);
 			if (VarUtils.isFloat(obj)) {
@@ -209,7 +212,11 @@ public class Print extends AbstractCommand {
 			} else {
 				if (add != null) {
 					if (add.equals("\t")) {
-						expr.add("JSR TABOUT");
+					    if (type.equals(Type.INTEGER) || type.equals(Type.REAL)) {
+						expr.add("MOV A,# {STRING}");
+						expr.add("JSR STROUT" + appendix);
+					    }
+					    expr.add("JSR TABOUT");
 					} else {
 						expr.add("MOV A,#" + add + "{STRING}");
 						expr.add("JSR STROUT" + appendix);
