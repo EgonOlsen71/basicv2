@@ -6,6 +6,7 @@ import com.sixtyfour.elements.Variable;
 import com.sixtyfour.extensions.graphics.GraphicsBasic;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.Term;
+import com.sixtyfour.parser.TermEnhancer;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.Jit;
 
@@ -39,7 +40,7 @@ public class JitTest {
 		machine.add(new Variable("O", 45));
 		machine.add(new Variable("I", 67));
 		String term = "a * b * (-c*f+(t*r+-f*(g-z)-f*g/z^4)) + (-(d*u))*(p+(o*i*z))*z+u";
-		String wbres = Parser.addBrackets(term);
+		String wbres = TermEnhancer.addBrackets(term);
 		System.out.println(wbres);
 
 		Term res = Parser.getTerm(term, machine, false, true);

@@ -7,6 +7,7 @@ import com.sixtyfour.cbmnative.NativeCompiler;
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.elements.Variable;
 import com.sixtyfour.parser.Parser;
+import com.sixtyfour.parser.TermEnhancer;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.system.BasicProgramCounter;
@@ -52,7 +53,7 @@ public class Def extends AbstractCommand {
 	@Override
 	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
 		super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine);
-		linePart = Parser.removeWhiteSpace(linePart);
+		linePart = TermEnhancer.removeWhiteSpace(linePart);
 		int pos = linePart.indexOf('(');
 		int pos2 = linePart.indexOf(')');
 		if (pos == -1 || pos2 == -1 || pos > pos2) {

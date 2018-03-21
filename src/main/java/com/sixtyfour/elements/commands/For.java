@@ -8,6 +8,7 @@ import com.sixtyfour.elements.Type;
 import com.sixtyfour.elements.Variable;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.Term;
+import com.sixtyfour.parser.TermEnhancer;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.system.BasicProgramCounter;
 import com.sixtyfour.system.Machine;
@@ -81,7 +82,7 @@ public class For extends AbstractCommand {
 	@Override
 	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
 		super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine);
-		linePart = Parser.removeWhiteSpace(linePart.substring(this.name.length()));
+		linePart = TermEnhancer.removeWhiteSpace(linePart.substring(this.name.length()));
 		String uLinePart = VarUtils.toUpper(linePart);
 
 		int posTo = uLinePart.indexOf("TO");

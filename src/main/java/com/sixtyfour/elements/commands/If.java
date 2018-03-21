@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.sixtyfour.cbmnative.NativeCompiler;
 import com.sixtyfour.parser.Parser;
+import com.sixtyfour.parser.TermEnhancer;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.parser.logic.LogicParser;
 import com.sixtyfour.parser.logic.LogicTerm;
@@ -42,7 +43,7 @@ public class If extends AbstractCommand {
 	@Override
 	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
 		super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine);
-		linePart = Parser.removeWhiteSpace(linePart);
+		linePart = TermEnhancer.removeWhiteSpace(linePart);
 
 		String uPart = Parser.replaceStrings(linePart, '.');
 		int tp = uPart.indexOf("THEN");

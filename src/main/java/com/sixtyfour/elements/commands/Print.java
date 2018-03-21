@@ -11,6 +11,7 @@ import com.sixtyfour.elements.functions.FunctionList;
 import com.sixtyfour.parser.Operator;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.Term;
+import com.sixtyfour.parser.TermEnhancer;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.plugins.PrintConsumer;
 import com.sixtyfour.system.BasicProgramCounter;
@@ -110,10 +111,10 @@ public class Print extends AbstractCommand {
 					add = "\n";
 				}
 			} else if (del == ',') {
-			    add = "\t";
-			    if (type.equals(Type.INTEGER) || type.equals(Type.REAL)) {
-				add=" "+add;
-			    }
+				add = "\t";
+				if (type.equals(Type.INTEGER) || type.equals(Type.REAL)) {
+					add = " " + add;
+				}
 			}
 			Object obj = part.term.eval(machine);
 			if (VarUtils.isFloat(obj)) {
@@ -212,11 +213,11 @@ public class Print extends AbstractCommand {
 			} else {
 				if (add != null) {
 					if (add.equals("\t")) {
-					    if (type.equals(Type.INTEGER) || type.equals(Type.REAL)) {
-						expr.add("MOV A,# {STRING}");
-						expr.add("JSR STROUT" + appendix);
-					    }
-					    expr.add("JSR TABOUT");
+						if (type.equals(Type.INTEGER) || type.equals(Type.REAL)) {
+							expr.add("MOV A,# {STRING}");
+							expr.add("JSR STROUT" + appendix);
+						}
+						expr.add("JSR TABOUT");
 					} else {
 						expr.add("MOV A,#" + add + "{STRING}");
 						expr.add("JSR STROUT" + appendix);
@@ -248,7 +249,7 @@ public class Print extends AbstractCommand {
 	 * @return the parts
 	 */
 	protected List<PrintPart> getParts(String line) {
-		line = Parser.removeWhiteSpace(line);
+		line = TermEnhancer.removeWhiteSpace(line);
 		List<PrintPart> res = new ArrayList<PrintPart>();
 		boolean inString = false;
 		int brackets = 0;

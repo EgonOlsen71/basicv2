@@ -2,6 +2,7 @@ package com.sixtyfour.cbmnative;
 
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.Term;
+import com.sixtyfour.parser.TermEnhancer;
 import com.sixtyfour.system.Machine;
 
 /**
@@ -97,7 +98,7 @@ public class TermHelper {
 				}
 			}
 		}
-		return Parser.removeWhiteSpace(new String(ct));
+		return TermEnhancer.removeWhiteSpace(new String(ct));
 	}
 
 	private static int findEnd(String term, int pos) {

@@ -25,6 +25,7 @@ import com.sixtyfour.extensions.textmode.ConsoleDevice;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.Preprocessor;
 import com.sixtyfour.parser.Term;
+import com.sixtyfour.parser.TermEnhancer;
 import com.sixtyfour.plugins.impl.RamSystemCallListener;
 import com.sixtyfour.system.Graphics;
 import com.sixtyfour.system.Machine;
@@ -511,7 +512,7 @@ public class NativeCompilerTest {
 		String term = "LEFT$(MID$(MID$(A$,2,5),1,2),1)+MID$(A$,2,VAL(LEFT$(B$,1)))";
 		testExpr(machine, term, true);
 	}
-	
+
 	private static void testStringExpression10() {
 		System.out.println("\n\ntestStringExpression10");
 		Tab.setLimitedToPrint(false);
@@ -548,7 +549,7 @@ public class NativeCompilerTest {
 		String term = "LEFT$(A$,4)+\" \"+LEFT$(BB$, 5)";
 		testExpr(machine, term, true);
 	}
-	
+
 	private static void testStringExpression7() {
 		System.out.println("\n\ntestStringExpression7");
 		Machine machine = new Machine();
@@ -748,7 +749,7 @@ public class NativeCompilerTest {
 	}
 
 	private static void testExpr(Machine machine, String term, boolean outString) {
-		String s = Parser.addBrackets(term);
+		String s = TermEnhancer.addBrackets(term);
 		System.out.println("w/o brackets: " + term);
 		System.out.println("With brackets: " + s);
 

@@ -5,6 +5,7 @@ import com.sixtyfour.elements.commands.Command;
 import com.sixtyfour.parser.Line;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.Term;
+import com.sixtyfour.parser.TermEnhancer;
 import com.sixtyfour.system.Machine;
 
 /**
@@ -37,7 +38,7 @@ public class ParserTest {
 		System.out.println("testConstants");
 		Machine machine = new Machine();
 		String term = "(int(int(4.4+5*2.2)+5.6)) and (8+4)";
-		String s = Parser.addBrackets(term);
+		String s = TermEnhancer.addBrackets(term);
 		System.out.println(s);
 		Term t = Parser.getTerm(term, machine, false, true);
 		System.out.println(t);
@@ -47,7 +48,7 @@ public class ParserTest {
 	private static void testMinusPower() {
 		System.out.println("testMinusPower");
 		String term = "2+-(32-30)^10";
-		String s = Parser.addBrackets(term);
+		String s = TermEnhancer.addBrackets(term);
 		System.out.println(s);
 		Machine machine = new Machine();
 		Term t = Parser.getTerm(term, machine, false, true);
@@ -55,7 +56,7 @@ public class ParserTest {
 		System.out.println(t.eval(machine));
 
 		term = "1*-3^2e1";
-		s = Parser.addBrackets(term);
+		s = TermEnhancer.addBrackets(term);
 		System.out.println(s);
 		t = Parser.getTerm(term, machine, false, true);
 		System.out.println(t);
@@ -68,19 +69,19 @@ public class ParserTest {
 		Machine machine = new Machine();
 		Term t = Parser.getTerm(term, machine, false, true);
 		System.out.println(t);
-		System.out.println(Parser.addBrackets(term));
+		System.out.println(TermEnhancer.addBrackets(term));
 		System.out.println();
 		term = "10+b(1,1)";
 		t = Parser.getTerm(term, machine, false, true);
 		System.out.println(t);
-		System.out.println(Parser.addBrackets(term));
+		System.out.println(TermEnhancer.addBrackets(term));
 		System.out.println();
 		term = "a=a*2+4+b(1,1)";
 		t = Parser.getTerm(term, machine, true, true);
 		System.out.println(t);
 		System.out.println(t.getOperator());
 		System.out.println(t.eval(machine));
-		System.out.println(Parser.addBrackets(term));
+		System.out.println(TermEnhancer.addBrackets(term));
 	}
 
 	/**
@@ -102,7 +103,7 @@ public class ParserTest {
 		machine.add(new Variable("O", 45));
 		machine.add(new Variable("I", 67));
 		String term = "a * b * (-c*f+(t*r+-f*(g-z)-f*g/z^4)) + abs(-(d*u))*(p+(o*i*z))*z+u";
-		String wbres = Parser.addBrackets(term);
+		String wbres = TermEnhancer.addBrackets(term);
 		System.out.println(wbres);
 
 		Term res = Parser.getTerm(term, machine, false, true);
@@ -120,7 +121,7 @@ public class ParserTest {
 		machine.add(new Variable("P", 41));
 		String term = "(ABS(Z-P)-2)*(ABS(Z-P)-18)";
 
-		String wbres = Parser.addBrackets(term);
+		String wbres = TermEnhancer.addBrackets(term);
 		System.out.println(wbres);
 
 		Term res = Parser.getTerm(term, machine, false, true);
@@ -145,7 +146,7 @@ public class ParserTest {
 		// String term="((x1-x)^2+(y1-y)^2+(z1-z)^2)";
 		String term = "((x1-x)^2+(y1-y)^2+(z1-z)^2)^(1/2)";
 
-		String wbres = Parser.addBrackets(term);
+		String wbres = TermEnhancer.addBrackets(term);
 		System.out.println(wbres);
 
 		Term res = Parser.getTerm(term, machine, false, true);
@@ -162,7 +163,7 @@ public class ParserTest {
 		machine.add(new Variable("A%", 5));
 		machine.add(new Variable("B%", 32));
 		String term = "NOT 1 OR NOT (110+10)";
-		String wbres = Parser.addBrackets(term);
+		String wbres = TermEnhancer.addBrackets(term);
 		System.out.println(wbres);
 
 		Term res = Parser.getTerm(term, machine, false, true);
@@ -181,7 +182,7 @@ public class ParserTest {
 		machine.add(new Variable("A", 1));
 		String term = "\"hallo\"+\" \"+mid$(A$+a$,1*5+3*5,13)+\" \"+mid$(\"1234567\", 3)+\" \"+mid$(B$+\"hallo\", 1+1+(1*1), 5)+\" \"+mid$(B$+\"hallo\", 1+2+(1*1)-a)";
 
-		String wbres = Parser.addBrackets(term);
+		String wbres = TermEnhancer.addBrackets(term);
 		System.out.println(wbres);
 
 		Term res = Parser.getTerm(term, machine, false, true);
@@ -222,40 +223,40 @@ public class ParserTest {
 	private static void testTermCompletion() {
 		System.out.println("testTermCompletion");
 		String term = "a ++++++ b + c *-- d";
-		String res = Parser.addBrackets(term);
+		String res = TermEnhancer.addBrackets(term);
 		System.out.println(term + " is actually " + res);
 		term = "a * b + c * d * -2";
-		res = Parser.addBrackets(term);
+		res = TermEnhancer.addBrackets(term);
 		System.out.println(term + " is actually " + res);
 		term = "f-18*a * b * -c + d";
-		res = Parser.addBrackets(term);
+		res = TermEnhancer.addBrackets(term);
 		System.out.println(term + " is actually " + res);
 		term = "a * b * c * d";
-		res = Parser.addBrackets(term);
+		res = TermEnhancer.addBrackets(term);
 		System.out.println(term + " is actually " + res);
 		term = "a * b * -c + -d";
-		res = Parser.addBrackets(term);
+		res = TermEnhancer.addBrackets(term);
 		System.out.println(term + " is actually " + res);
 		term = "a + b - c + d^e*r";
-		res = Parser.addBrackets(term);
+		res = TermEnhancer.addBrackets(term);
 		System.out.println(term + " is actually " + res);
 		term = "a * b * (-c*f+(t*r+-f*(g-z)-f*g/z^4)) + -(d*u)*(p+(o*i*z))*z+u";
-		res = Parser.addBrackets(term);
+		res = TermEnhancer.addBrackets(term);
 		System.out.println(term + " is actually " + res);
 		term = "a + (b + c / (z+u))";
-		res = Parser.addBrackets(term);
+		res = TermEnhancer.addBrackets(term);
 		System.out.println(term + " is actually " + res);
 		term = "a * (b + c / (z+-u))";
-		res = Parser.addBrackets(term);
+		res = TermEnhancer.addBrackets(term);
 		System.out.println(term + " is actually " + res);
 		term = "a * (b + c / (z+-sin(u+z*k))) * d/cos(i) + (cos(88)+(a*(-b)))";
-		res = Parser.addBrackets(term);
+		res = TermEnhancer.addBrackets(term);
 		System.out.println(term + " is actually " + res);
 		term = "\"ha a*b*c+d llo \"+\"welt!\"";
-		res = Parser.addBrackets(term);
+		res = TermEnhancer.addBrackets(term);
 		System.out.println(term + " is actually " + res);
 		term = "+++++++\"ha a*b*c+d llo \"+++++++\"welt!\"";
-		res = Parser.addBrackets(term);
+		res = TermEnhancer.addBrackets(term);
 		System.out.println(term + " is actually " + res);
 	}
 

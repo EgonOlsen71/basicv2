@@ -8,6 +8,7 @@ import java.util.Map;
 
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.Term;
+import com.sixtyfour.parser.TermEnhancer;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
@@ -56,8 +57,8 @@ public class LogicParser {
 		Map<String, LogicTerm> blocks = new HashMap<String, LogicTerm>();
 		term = processLogicOperations(term);
 		boolean inString = false;
-		term = "(" + Parser.removeWhiteSpace(term) + ")";
-		Parser.checkBrackets(term);
+		term = "(" + TermEnhancer.removeWhiteSpace(term) + ")";
+		TermEnhancer.checkBrackets(term);
 		String lastPart = term;
 		int lastStart = 0;
 
@@ -140,7 +141,7 @@ public class LogicParser {
 								brackets++;
 								if (brackets == 0) {
 									String part = term.substring(i, pos + 1);
-									String partn = Parser.replaceLogicOperators(part);
+									String partn = TermEnhancer.replaceLogicOperators(part);
 									term = term.substring(0, i) + partn + term.substring(pos + 1);
 									pos = pos - (part.length() - partn.length());
 									break;
@@ -172,7 +173,7 @@ public class LogicParser {
 								brackets--;
 								if (brackets == 0) {
 									String part = term.substring(pos, i + 1);
-									String partn = Parser.replaceLogicOperators(part);
+									String partn = TermEnhancer.replaceLogicOperators(part);
 									term = term.substring(0, pos) + partn + term.substring(i + 1);
 									pos = pos - (part.length() - partn.length());
 									break;

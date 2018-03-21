@@ -17,6 +17,7 @@ import com.sixtyfour.elements.functions.FunctionList;
 import com.sixtyfour.extensions.BasicExtension;
 import com.sixtyfour.parser.Line;
 import com.sixtyfour.parser.Parser;
+import com.sixtyfour.parser.TermEnhancer;
 import com.sixtyfour.plugins.CodeEnhancer;
 import com.sixtyfour.plugins.InputProvider;
 import com.sixtyfour.plugins.MemoryListener;
@@ -400,7 +401,7 @@ public class Basic implements ProgramExecutor {
 								throw new RuntimeException("Syntax error: " + cl.getNumber() + " " + cl.getLine());
 							}
 							if (!command.keepSpaces()) {
-								part = Parser.removeWhiteSpace(part);
+								part = TermEnhancer.removeWhiteSpace(part);
 							}
 							part = command.parse(part, lineCnt, cl.getNumber(), pos, (pos == parts.length - 1), machine);
 
@@ -485,7 +486,7 @@ public class Basic implements ProgramExecutor {
 			throw new RuntimeException("Syntax error: " + cmd);
 		}
 		if (!command.keepSpaces()) {
-			cmd = Parser.removeWhiteSpace(cmd);
+			cmd = TermEnhancer.removeWhiteSpace(cmd);
 		}
 		command.parse(cmd, 0, 0, 0, false, machine);
 		command.execute(machine);

@@ -34,21 +34,21 @@ public class TransformerTest {
 		// testTransformer2();
 		// testTransformer4();
 		// testTransformer5();
-		//testTransformerFractal();
+		// testTransformerFractal();
 		// testTransformer6();
 		// testTransformer7();
 		// testTransformerPrime();
 		// testTransformerSqr();
 		// testTransformer8();
 		// testTransformer9();
-		//testTransformer10();
+		// testTransformer10();
 		// testTransformer11();
-		//testTransformer12();
-		//testTransformer13();
-		//testTransformer14();
-		//testTransformerBeer();
-	    //testTransformer15();
-		//testTransformerSqr();
+		// testTransformer12();
+		// testTransformer13();
+		// testTransformer14();
+		// testTransformerBeer();
+		// testTransformer15();
+		// testTransformerSqr();
 		testTransformer16();
 	}
 
@@ -60,12 +60,12 @@ public class TransformerTest {
 		FileWriter.writeAsPrg(assy.getProgram(), "++testmath.prg", true);
 		JsrProfiler profiler = new JsrProfiler(assy);
 		assy.getCpu().setCpuTracer(new MyTracer(assy));
-		//assy.getCpu().setCpuTracer(profiler);
+		// assy.getCpu().setCpuTracer(profiler);
 		Machine machine = executeTest(assy);
 
 		printStats(profiler, machine);
 	}
-	
+
 	private static void testTransformer15() throws Exception {
 		System.out.println("\n\ntestTransformer15");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/test15.bas");
@@ -79,8 +79,7 @@ public class TransformerTest {
 
 		printStats(profiler, machine);
 	}
-	
-	
+
 	private static void testTransformerBeer() throws Exception {
 		System.out.println("\n\ntestTransformerBeer");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/beer_transform.bas");
@@ -94,7 +93,7 @@ public class TransformerTest {
 
 		printStats(profiler, machine);
 	}
-	
+
 	private static void testTransformer11() throws Exception {
 		System.out.println("\n\ntestTransformer11");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/test11.bas");

@@ -1,6 +1,6 @@
 package com.sixtyfour.elements.mnemonics;
 
-import com.sixtyfour.parser.Parser;
+import com.sixtyfour.parser.TermEnhancer;
 import com.sixtyfour.parser.assembly.AssemblyParser;
 import com.sixtyfour.parser.assembly.ConstantsContainer;
 import com.sixtyfour.parser.assembly.LabelsContainer;
@@ -233,7 +233,7 @@ public abstract class AbstractMnemonic implements Mnemonic {
 	}
 
 	protected Parameters parseParameters(String pars, int addr, ConstantsContainer ccon, LabelsContainer lcon) {
-		pars = Parser.removeWhiteSpace(pars);
+		pars = TermEnhancer.removeWhiteSpace(pars);
 
 		if (pars.isEmpty()) {
 			return null;

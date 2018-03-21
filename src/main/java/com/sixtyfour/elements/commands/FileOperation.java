@@ -5,6 +5,7 @@ import java.util.List;
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Parser;
+import com.sixtyfour.parser.TermEnhancer;
 import com.sixtyfour.system.Machine;
 
 /**
@@ -34,7 +35,7 @@ public abstract class FileOperation extends AbstractCommand {
 	@Override
 	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
 		super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine);
-		linePart = Parser.removeWhiteSpace(linePart);
+		linePart = TermEnhancer.removeWhiteSpace(linePart);
 		linePart = linePart.substring(this.name.length());
 		term = Parser.getTerm(linePart, machine, false, true);
 		pars = Parser.getParameters(term);

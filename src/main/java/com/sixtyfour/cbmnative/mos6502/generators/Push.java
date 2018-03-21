@@ -24,10 +24,10 @@ public class Push extends GeneratorBase {
 		if (target.getType() == Type.INTEGER) {
 			if (target.isRegister()) {
 				nCode.add("LDA " + target.getRegisterName());
-				nCode.add("LDY " + target.getRegisterName()+"+1");
+				nCode.add("LDY " + target.getRegisterName() + "+1");
 			} else {
 				nCode.add("LDA " + target.getAddress());
-				nCode.add("LDY " + target.getAddress()+"+1");
+				nCode.add("LDY " + target.getAddress() + "+1");
 			}
 			nCode.add("STA TMP_ZP");
 			nCode.add("STY TMP_ZP+1");

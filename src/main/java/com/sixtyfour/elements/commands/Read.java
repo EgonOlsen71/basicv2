@@ -7,6 +7,7 @@ import com.sixtyfour.elements.Variable;
 import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.Term;
+import com.sixtyfour.parser.TermEnhancer;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.system.BasicProgramCounter;
 import com.sixtyfour.system.DataStore;
@@ -44,7 +45,7 @@ public class Read extends MultiVariableCommand {
 	@Override
 	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
 		super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine);
-		linePart = Parser.removeWhiteSpace(linePart);
+		linePart = TermEnhancer.removeWhiteSpace(linePart);
 		linePart = linePart.substring(4).trim();
 		if (linePart.length() == 0) {
 			syntaxError(this);
