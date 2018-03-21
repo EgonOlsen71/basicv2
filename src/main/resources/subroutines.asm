@@ -913,8 +913,21 @@ PRINTSTR2	JSR PRINTSTRS
 			LDA #$0D
 			JMP CHROUT 	;RTS is implicit
 ;###################################
-; todo implement this...
-TABOUT		RTS
+TABOUT		SEC 
+			JSR $FFF0
+			TYA
+			SEC
+TABSUB 		SBC #$0A
+			BCS TABSUB
+			EOR #$FF
+			ADC #$01
+			TAX
+			INX
+TABLOOP 	DEX
+			BNE TABRIGHT
+			RTS
+TABRIGHT	JSR $AB3B
+			JMP TABLOOP
 ;###################################
 ARRAYACCESS_STRING
 			LDA #<X_REG
