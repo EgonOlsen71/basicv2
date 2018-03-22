@@ -115,6 +115,8 @@ public class Optimizer64 implements Optimizer {
 					"LDA {REG0}", "LDY {REG0}", "STA TMP_ZP", "STY TMP_ZP+1"));
 			this.add(new Pattern("Direct loading of values into FAC", new String[] { "{LINE0}", "{LINE1}", "{LINE9}" }, "LDA #<{MEM0}", "LDY #>{MEM0}", "STA TMP3_ZP",
 					"STY TMP3_ZP+1", "LDX #<Y_REG", "LDY #>Y_REG", "JSR COPY2_XY", "TXA", "LDY #>Y_REG", "JSR REALFAC"));
+			this.add(new Pattern(false, "POP, REG0, VAR0 -> direct calc", new String[] { "{LINE0}","{LINE4}","{LINE5}","{LINE6}","{LINE7}"}, "JSR POPREAL", "LDX #<{REG0}","LDY #>{REG0}","JSR FACMEM","LDA #<{REG1}","LDY #>{REG1}","JSR MEMARG","JSR {*}"));
+			this.add(new Pattern(false, "POP, REG0, VAR0 -> to WORD", new String[] { "{LINE0}","{LINE4}"}, "JSR POPREAL", "LDX #<{REG0}","LDY #>{REG0}","JSR FACMEM","JSR FACWORD"));
 		}
 	};
 
