@@ -482,6 +482,37 @@ VALSTR		JSR VALS
 			LDY #>X_REG
 			JMP FACMEM	;RTS is implicit
 ;###################################
+TAB			JSR TABSPCINIT
+			SEC
+			JMP TABSPC
+;###################################
+SPC			JSR TABSPCINIT
+			CLC
+			JMP TABSPC
+;###################################
+TABSPCINIT	SEC
+			JSR CRSRPOS
+			STY $09
+			LDA #<Y_REG
+			LDY #>Y_REG
+			JSR REALFAC
+			JSR FACWORD
+			TYA
+			TAX
+			RTS
+;###################################
+TABSPC	    BCC DOSPC
+			TXA
+			SBC $09
+			BCC TABSPCQUIT
+			TAX
+DOSPC		INX
+TABSPCLOOP  DEX
+			BNE TABSPCRIGHT
+TABSPCQUIT	RTS
+TABSPCRIGHT	JSR CRSRRIGHT
+			JMP TABSPCLOOP
+;###################################
 LEN			LDA B_REG
 			STA TMP_ZP
 			LDA B_REG+1

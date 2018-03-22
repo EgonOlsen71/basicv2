@@ -7,3 +7,7 @@
 65 def fn yt(x)=x+2
 70 y=5:def fn test(x)=x*x*fnyt(y)
 80 d=fntest(23):printd
+90 print tab(1)"tab"tab(4)"spc"spc(10)"!!!"
+110 for i=0 to 10
+120 print 2^i;tab(10);i
+130 next i

@@ -178,12 +178,15 @@ public class Print extends AbstractCommand {
 						expr = saveG(expr);
 					}
 
-					if (type.equals(Type.INTEGER)) {
-						expr.add("JSR INTOUT" + appendix);
-					} else if (type.equals(Type.REAL)) {
-						expr.add("JSR REALOUT" + appendix);
-					} else {
-						expr.add("JSR STROUT" + appendix);
+					String lastCmd = expr.get(expr.size() - 1);
+					if (!lastCmd.equals("JSR TAB") && !lastCmd.equals("JSR SPC")) {
+						if (type.equals(Type.INTEGER)) {
+							expr.add("JSR INTOUT" + appendix);
+						} else if (type.equals(Type.REAL)) {
+							expr.add("JSR REALOUT" + appendix);
+						} else {
+							expr.add("JSR STROUT" + appendix);
+						}
 					}
 
 					if (!appendix.isEmpty()) {
