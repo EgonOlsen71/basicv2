@@ -49,9 +49,23 @@ public class TransformerTest {
 		// testTransformerBeer();
 		// testTransformer15();
 		// testTransformerSqr();
-		testTransformer16();
+		// testTransformer16();
+	    	testTransformer17();
 	}
 
+	private static void testTransformer17() throws Exception {
+		System.out.println("\n\ntestTransformer17");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/test17.bas");
+
+		final Assembler assy = initTestEnvironment(vary, true);
+		FileWriter.writeAsPrg(assy.getProgram(), "++testusr.prg", true);
+		JsrProfiler profiler = new JsrProfiler(assy);
+		 assy.getCpu().setCpuTracer(profiler);
+		Machine machine = executeTest(assy);
+
+		printStats(profiler, machine);
+	}
+	
 	private static void testTransformer16() throws Exception {
 		System.out.println("\n\ntestTransformer16");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/test16.bas");

@@ -1,6 +1,11 @@
 package com.sixtyfour.elements.functions;
 
+import java.util.List;
+
 import com.sixtyfour.elements.Type;
+import com.sixtyfour.parser.Atom;
+import com.sixtyfour.parser.Parser;
+import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.system.Machine;
 
 /**
@@ -35,6 +40,22 @@ public class Usr extends AbstractFunction {
 		return machine.getSystemCallListener().usr(term.eval(machine));
 	}
 
+	/* (non-Javadoc)
+	 * @see com.sixtyfour.elements.functions.AbstractFunction#evalToCode(com.sixtyfour.system.Machine)
+	 */
+	@Override
+	public List<CodeContainer> evalToCode(Machine machine) {
+	    List<Atom> pars = Parser.getParameters(term);
+	    if (pars.size() !=1) {
+		throw new RuntimeException("USR in compiled code only supports 1 numeric parameter!");
+	    }
+	    if (pars.get(0).getType()==Type.STRING) {
+		throw new RuntimeException("Parameter for USR in compiled has to be numeric!");
+	    }
+	    
+	    return super.evalToCode(machine);
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

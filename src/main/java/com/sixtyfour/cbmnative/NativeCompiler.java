@@ -47,6 +47,7 @@ public class NativeCompiler {
 			this.add("TAB");
 			this.add("SPC");
 			this.add("LEN");
+			this.add("USR");
 			this.add("PEEK");
 			this.add("MID");
 			this.add("PAR");
@@ -459,6 +460,9 @@ public class NativeCompiler {
 					break;
 				case ".":
 					code.add("JSR CONCAT");
+					break;
+				case "USR":
+					code.add("JSR USR");
 					break;
 				case "CHR":
 					code.add("JSR CHR");

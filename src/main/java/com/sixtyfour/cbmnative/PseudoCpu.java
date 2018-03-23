@@ -664,6 +664,9 @@ public class PseudoCpu {
 		case "CHR":
 			chr(parts);
 			return;
+		case "USR":
+			usr(parts);
+			return;
 		case "ASC":
 			asc(parts);
 			return;
@@ -833,6 +836,10 @@ public class PseudoCpu {
 			jumpStack.push(addr);
 			jmp(parts);
 		}
+	}
+
+	private void usr(String[] parts) {
+	    // do nothing...who uses this anyway...
 	}
 
 	private void returny(String[] parts) {

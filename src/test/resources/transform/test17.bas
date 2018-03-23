@@ -1,0 +1,1 @@
+10 a=usr(3):a=val("0"):print tab(3)

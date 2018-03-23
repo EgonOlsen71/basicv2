@@ -466,6 +466,14 @@ STRLOOP		INY
 			STA CONCATBUFP	; and restore it (because COPYONLY nulls it)
 			RTS
 ;###################################
+USR			LDA #<Y_REG
+			LDY #>Y_REG
+			JSR REALFAC
+			JMP ($0311)
+			LDX #<X_REG
+			LDY #>X_REG
+			JMP FACMEM	;RTS is implicit
+;###################################
 VAL			LDA B_REG
 			STA $22
 			LDA B_REG+1
