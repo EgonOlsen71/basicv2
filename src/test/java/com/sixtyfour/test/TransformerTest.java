@@ -50,9 +50,22 @@ public class TransformerTest {
 		// testTransformer15();
 		// testTransformerSqr();
 		// testTransformer16();
-	    	testTransformer17();
+	    	// testTransformer17();
+	    	testTransformer18();
 	}
 
+	private static void testTransformer18() throws Exception {
+		System.out.println("\n\ntestTransformer18");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/test18.bas");
+
+		Assembler assy = initTestEnvironment(vary, false);
+		FileWriter.writeAsPrg(assy.getProgram(), "++testget.prg", true);
+		
+		vary = Loader.loadProgram("src/test/resources/transform/test19.bas");
+		assy = initTestEnvironment(vary, false);
+		FileWriter.writeAsPrg(assy.getProgram(), "++testgetnum.prg", true);
+	}
+	
 	private static void testTransformer17() throws Exception {
 		System.out.println("\n\ntestTransformer17");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/test17.bas");
