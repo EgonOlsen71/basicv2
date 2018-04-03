@@ -202,6 +202,7 @@ public class Assembler implements ProgramExecutor {
 				int[] data = AssemblyParser.getBinaryData(addr, line, ccon, lcon);
 				lineBreaks.add(addr);
 				System.arraycopy(data, 0, compileMachine.getRam(), addr, data.length);
+				//compileMachine.getRam()[addr-1]=data.length;
 				addr += data.length;
 			}
 

@@ -252,7 +252,7 @@ public class Transformer6502 implements Transformer {
 		for (int p = 0; p < parts.length; p++) {
 			String part = parts[p];
 			if (part.contains("{") && part.endsWith("}")) {
-				int pos = part.indexOf("{");
+				int pos = part.lastIndexOf("{");
 				String name = part.substring(0, pos);
 				if (name.startsWith("#")) {
 					Type type = Type.valueOf(part.substring(pos + 1, part.length() - 1));
