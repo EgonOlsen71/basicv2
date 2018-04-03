@@ -27,8 +27,16 @@ public class NativeOptimizer {
 		patterns.add(new NativePattern(new String[] { "MOV Y,X", "MOV X*", "ADD X,Y" }, new String[] { "{1:MOV X,>MOV Y,}", "{2}" }));
 		patterns.add(new NativePattern(new String[] { "MOV Y,X", "MOV X*", "MUL X,Y" }, new String[] { "{1:MOV X,>MOV Y,}", "{2}" }));
 		patterns.add(new NativePattern(new String[] { "PUSH C", "CHGCTX #1", "MOV B*", "POP C" }, new String[] { "{1}", "{2}" }));
-		patterns.add(new NativePattern(new String[] { "MOV X,X"}, new String[] { }));
-		patterns.add(new NativePattern(new String[] { "MOV Y,Y"}, new String[] { }));
+		patterns.add(new NativePattern(new String[] { "MOV X,X" }, new String[] {}));
+		patterns.add(new NativePattern(new String[] { "MOV Y,Y" }, new String[] {}));
+		patterns.add(new NativePattern(new String[] { "PUSH X", "MOV X,#*", "POP Y" }, new String[] { "MOV Y,X", "{1}" }));
+		patterns.add(new NativePattern(new String[] { "PUSH Y", "MOV X,#*", "POP Y" }, new String[] { "{1}" }));
+		patterns.add(new NativePattern(new String[] { "MOV X,#*", "MOVB (Y),X" }, new String[] { "{0:MOV X,>MOVB (Y),}" }));
+		// Don't do this...it actually deoptimizes things by killing some
+		// 6502-optimizations later in the process.
+		// patterns.add(new NativePattern(new String[] { "MOV Y,*", "PUSH Y",
+		// "MOV Y,*", "* X,Y", "POP Y" }, new String[] { "{2}", "{3}", "{0}"
+		// }));
 		patterns.add(new NativePattern(new String[] { "PUSH C", "MOV C*", "PUSH C", "CHGCTX #1", "MOV B*", "POP D", "POP C" }, new String[] { "{1:MOV C,>MOV D,}", "{3}", "{4}" }));
 	}
 
@@ -130,6 +138,14 @@ public class NativeOptimizer {
 				}
 
 				// Special optimizations without a pattern definition...
+
+				// MOV X,#6{INTEGER}
+				// MOVB 53280,X
+				if (lines[0].startsWith("MOV X,#") && lines[1].startsWith("MOVB") && lines[1].endsWith(",X") && !lines[1].contains("(")) {
+					ret.add(lines[1].replace(",X", lines[0].substring(lines[0].indexOf(","))));
+					i += 1;
+					continue;
+				}
 
 				if (lines[0].contains("INTEGER") && lines[0].startsWith("MOV Y,#") && (lines[1].equals("MOV X,(Y)") || lines[1].equals("MOVB X,(Y)"))) {
 					try {

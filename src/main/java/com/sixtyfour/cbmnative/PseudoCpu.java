@@ -839,7 +839,7 @@ public class PseudoCpu {
 	}
 
 	private void usr(String[] parts) {
-	    // do nothing...who uses this anyway...
+		// do nothing...who uses this anyway...
 	}
 
 	private void returny(String[] parts) {

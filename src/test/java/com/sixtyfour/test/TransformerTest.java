@@ -50,22 +50,26 @@ public class TransformerTest {
 		// testTransformer15();
 		// testTransformerSqr();
 		// testTransformer16();
-	    	// testTransformer17();
-	    	testTransformer18();
+		// testTransformer17();
+		testTransformer18();
 	}
 
 	private static void testTransformer18() throws Exception {
 		System.out.println("\n\ntestTransformer18");
+		/*
 		String[] vary = Loader.loadProgram("src/test/resources/transform/test18.bas");
-
 		Assembler assy = initTestEnvironment(vary, false);
 		FileWriter.writeAsPrg(assy.getProgram(), "++testget.prg", true);
-		
+
 		vary = Loader.loadProgram("src/test/resources/transform/test19.bas");
 		assy = initTestEnvironment(vary, false);
 		FileWriter.writeAsPrg(assy.getProgram(), "++testgetnum.prg", true);
+		*/
+		String[] vary = Loader.loadProgram("src/test/resources/transform/game.bas");
+		Assembler assy = initTestEnvironment(vary, false);
+		FileWriter.writeAsPrg(assy.getProgram(), "++testgame.prg", true);
 	}
-	
+
 	private static void testTransformer17() throws Exception {
 		System.out.println("\n\ntestTransformer17");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/test17.bas");
@@ -73,12 +77,12 @@ public class TransformerTest {
 		final Assembler assy = initTestEnvironment(vary, true);
 		FileWriter.writeAsPrg(assy.getProgram(), "++testusr.prg", true);
 		JsrProfiler profiler = new JsrProfiler(assy);
-		 assy.getCpu().setCpuTracer(profiler);
+		assy.getCpu().setCpuTracer(profiler);
 		Machine machine = executeTest(assy);
 
 		printStats(profiler, machine);
 	}
-	
+
 	private static void testTransformer16() throws Exception {
 		System.out.println("\n\ntestTransformer16");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/test16.bas");
@@ -86,8 +90,8 @@ public class TransformerTest {
 		final Assembler assy = initTestEnvironment(vary, false);
 		FileWriter.writeAsPrg(assy.getProgram(), "++testmath.prg", true);
 		JsrProfiler profiler = new JsrProfiler(assy);
-		//assy.getCpu().setCpuTracer(new MyTracer(assy));
-		 assy.getCpu().setCpuTracer(profiler);
+		// assy.getCpu().setCpuTracer(new MyTracer(assy));
+		assy.getCpu().setCpuTracer(profiler);
 		Machine machine = executeTest(assy);
 
 		printStats(profiler, machine);

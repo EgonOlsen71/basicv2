@@ -16,6 +16,7 @@ import com.sixtyfour.system.Cpu;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.system.Program;
 import com.sixtyfour.system.ProgramPart;
+import com.sixtyfour.util.VarUtils;
 
 /**
  * Assembler is for parsing/compiling and executing 6502 assembler programs. The
@@ -199,10 +200,15 @@ public class Assembler implements ProgramExecutor {
 				}
 			}
 			if (isData) {
+				String lineUpper = VarUtils.toUpper(line.trim());
 				int[] data = AssemblyParser.getBinaryData(addr, line, ccon, lcon);
 				lineBreaks.add(addr);
 				System.arraycopy(data, 0, compileMachine.getRam(), addr, data.length);
-				//compileMachine.getRam()[addr-1]=data.length;
+				if (lineUpper.startsWith(".TEXT")) {
+					// If it's a string, the length might have changed due to
+					// place holder conversions to control codes. So we set the actual length here.
+					compileMachine.getRam()[addr - 1] = data.length;
+				}
 				addr += data.length;
 			}
 

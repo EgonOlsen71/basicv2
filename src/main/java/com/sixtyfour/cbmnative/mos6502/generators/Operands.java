@@ -83,6 +83,7 @@ public class Operands {
 					}
 					String label = name2label.get(txt);
 					op.setAddress(label == null ? txt : label);
+					op.setValue(txt);
 				} else {
 					txt = removeBrackets(txt);
 					op.setRegister(txt);
@@ -94,6 +95,7 @@ public class Operands {
 				}
 				String label = name2label.get(txt);
 				op.setAddress(label == null ? txt : label);
+				op.setValue(txt);
 			}
 		}
 	}

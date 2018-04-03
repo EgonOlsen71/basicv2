@@ -1,5 +1,9 @@
 ;###################################
-START		LDA #<FPSTACK
+START
+			LDA #11
+			STA 2
+
+			LDA #<FPSTACK
 			LDY #>FPSTACK
 			STA FPSTACKP
 			STY FPSTACKP+1
@@ -19,6 +23,15 @@ START		LDA #<FPSTACK
 			STA LASTVAR
 			STA LASTVAR+1
 			JSR INITVARS
+			LDA #0
+			TAY
+			TAX
+			STA $C6
+			CLC
+
+			LDA #12
+			STA 2
+
 			RTS
 ;###################################
 INITNARRAY 
@@ -1453,8 +1466,7 @@ GOSUB		LDA FORSTACKP
 			STA FORSTACKP+1
 			RTS
 ;###################################
-GETNUMBER	JSR SCNKEY
-			JSR GETIN
+GETNUMBER	JSR GETIN
 			BEQ IGNOREKEY
 			CMP #$2B
 			BEQ IGNOREKEY
@@ -1487,10 +1499,9 @@ SOMENUMKEY	SEC
 			JMP FACMEM
 NUMERROR	JMP	SYNTAXERROR		
 ;###################################
-GETSTR		JSR SCNKEY
-			JSR GETIN
+GETSTR		JSR GETIN
 			BNE SOMEKEY
-			LDA #<EMPTYSTR
+NOKEY		LDA #<EMPTYSTR
 			STA A_REG
 			LDA #>EMPTYSTR
 			STA A_REG+1

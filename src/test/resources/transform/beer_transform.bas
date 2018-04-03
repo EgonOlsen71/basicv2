@@ -1,4 +1,4 @@
-10 ti$="000000":for b=99 to 1 step -1
+10 print "{clr}{white}":ti$="000000":for b=99 to 1 step -1
 20 gosub 100
 30 t$=t$+" of beer on the wall"
 40 print t$;", ";t$

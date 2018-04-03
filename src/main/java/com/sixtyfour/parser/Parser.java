@@ -25,13 +25,13 @@ import com.sixtyfour.util.VarUtils;
  */
 public class Parser {
 
-	private static TermBuilder builder=new TermBuilder() {
+	private static TermBuilder builder = new TermBuilder() {
 		@Override
 		public Term build(Term t, Map<String, Term> termMap, Machine machine) {
 			return Parser.build(t, termMap, machine);
 		}
 	};
-	
+
 	private static boolean optimizeConstantExpressions = true;
 
 	/**

@@ -23,6 +23,7 @@ public class Operand {
 	private String register;
 	private Type type;
 	private String address;
+	private String value;
 	private boolean array;
 	private boolean indexed;
 
@@ -95,5 +96,13 @@ public class Operand {
 
 	public void setArray(boolean array) {
 		this.array = array;
+	}
+
+	public String getValue() {
+		return value;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
 	}
 }

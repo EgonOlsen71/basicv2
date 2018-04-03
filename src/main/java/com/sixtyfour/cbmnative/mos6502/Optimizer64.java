@@ -20,6 +20,7 @@ public class Optimizer64 implements Optimizer {
 	private List<Pattern> patterns = new ArrayList<Pattern>() {
 		private static final long serialVersionUID = 1L;
 		{
+			this.add(new Pattern(false, "Simple POKE", new String[] { "{LINE0}", "{LINE2}" }, "LDY {MEM0}", "LDA #0", "STY {*}"));
 			this.add(new Pattern("REALOUT + LINEBRK", new String[] { "JSR REALOUTBRK" }, "JSR REALOUT", "JSR LINEBREAK"));
 			this.add(new Pattern("STROUT + LINEBRK", new String[] { "JSR STROUTBRK" }, "JSR STROUT", "JSR LINEBREAK"));
 			this.add(new Pattern("INTOUT + LINEBRK", new String[] { "JSR INTOUTBRK" }, "JSR INTOUT", "JSR LINEBREAK"));
@@ -50,6 +51,7 @@ public class Optimizer64 implements Optimizer {
 			this.add(new Pattern("STY A...LDY A...STY B", new String[] { "{LINE0}", "{LINE3}" }, "STY {MEM0}", "LDY {MEM0}", "LDA #0", "STY {*}"));
 			this.add(new Pattern("FAC to INT, INT to FAC", null, "JSR INTFAC", "JSR FACINT"));
 			this.add(new Pattern("VAR into FAC, FAC into VAR", null, "LDA #<{MEM0}", "LDY #>{MEM0}", "JSR REALFAC", "LDX #<{MEM0}", "LDY #>{MEM0}", "JSR FACMEM"));
+
 			this.add(new Pattern(false, "CMP (REG) = 0", new String[] { "LDA {REG0}", "{LINE6}", "{LINE7}" }, "LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC", "LDA #<{REG0}",
 					"LDY #>{REG0}", "JSR CMPFAC", "BEQ {*}", "LDA #0"));
 			this.add(new Pattern(false, "CMP (REG) != 0", new String[] { "LDA {REG0}", "{LINE6}", "{LINE7}" }, "LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC", "LDA #<{REG0}",
@@ -58,6 +60,15 @@ public class Optimizer64 implements Optimizer {
 					"LDY #>{MEM0}", "JSR CMPFAC", "BEQ {*}", "LDA #0"));
 			this.add(new Pattern(false, "CMP (MEM) != 0", new String[] { "LDA {MEM0}", "{LINE6}", "{LINE7}" }, "LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC", "LDA #<{MEM0}",
 					"LDY #>{MEM0}", "JSR CMPFAC", "BNE {*}", "LDA #0"));
+
+			this.add(new Pattern(false, "CMP (REG) = 0(2)", new String[] { "LDA {REG0}", "{LINE6}", "{LINE7}" }, "LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC", "LDA #<{REG0}",
+					"LDY #>{REG0}", "JSR CMPFAC", "{LABEL}", "BEQ {*}"));
+			this.add(new Pattern(false, "CMP (REG) != 0(2)", new String[] { "LDA {REG0}", "{LINE6}", "{LINE7}" }, "LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC", "LDA #<{REG0}",
+					"LDY #>{REG0}", "JSR CMPFAC", "{LABEL}", "BNE {*}"));
+			this.add(new Pattern(false, "CMP (MEM) = 0(2)", new String[] { "LDA {MEM0}", "{LINE6}", "{LINE7}" }, "LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC", "LDA #<{MEM0}",
+					"LDY #>{MEM0}", "JSR CMPFAC", "{LABEL}", "BEQ {*}"));
+			this.add(new Pattern(false, "CMP (MEM) != 0(2)", new String[] { "LDA {MEM0}", "{LINE6}", "{LINE7}" }, "LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC", "LDA #<{MEM0}",
+					"LDY #>{MEM0}", "JSR CMPFAC", "{LABEL}", "BNE {*}"));
 
 			// Note: This optimization relies on the former stage to create an
 			// actually unneeded PUSH/POP sequence in for loops. But if I
@@ -115,8 +126,10 @@ public class Optimizer64 implements Optimizer {
 					"LDA {REG0}", "LDY {REG0}", "STA TMP_ZP", "STY TMP_ZP+1"));
 			this.add(new Pattern("Direct loading of values into FAC", new String[] { "{LINE0}", "{LINE1}", "{LINE9}" }, "LDA #<{MEM0}", "LDY #>{MEM0}", "STA TMP3_ZP",
 					"STY TMP3_ZP+1", "LDX #<Y_REG", "LDY #>Y_REG", "JSR COPY2_XY", "TXA", "LDY #>Y_REG", "JSR REALFAC"));
-			this.add(new Pattern(false, "POP, REG0, VAR0 -> direct calc", new String[] { "{LINE0}","{LINE4}","{LINE5}","{LINE6}","{LINE7}"}, "JSR POPREAL", "LDX #<{REG0}","LDY #>{REG0}","JSR FACMEM","LDA #<{REG1}","LDY #>{REG1}","JSR MEMARG","JSR {*}"));
-			this.add(new Pattern(false, "POP, REG0, VAR0 -> to WORD", new String[] { "{LINE0}","{LINE4}"}, "JSR POPREAL", "LDX #<{REG0}","LDY #>{REG0}","JSR FACMEM","JSR FACWORD"));
+			this.add(new Pattern(false, "POP, REG0, VAR0 -> direct calc", new String[] { "{LINE0}", "{LINE4}", "{LINE5}", "{LINE6}", "{LINE7}" }, "JSR POPREAL", "LDX #<{REG0}",
+					"LDY #>{REG0}", "JSR FACMEM", "LDA #<{REG1}", "LDY #>{REG1}", "JSR MEMARG", "JSR {*}"));
+			this.add(new Pattern(false, "POP, REG0, VAR0 -> to WORD", new String[] { "{LINE0}", "{LINE4}" }, "JSR POPREAL", "LDX #<{REG0}", "LDY #>{REG0}", "JSR FACMEM",
+					"JSR FACWORD"));
 		}
 	};
 

@@ -1,6 +1,7 @@
 package com.sixtyfour.cbmnative.mos6502.generators;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import com.sixtyfour.Logger;
@@ -36,25 +37,39 @@ public class Movb extends GeneratorBase {
 			}
 
 			if (!target.isRegister() || !source.isRegister()) {
-				throw new RuntimeException("Invalid index mode (at least one side isn't a register!): " + line);
-			}
-			if (target.isIndexed()) {
-				indexedTarget(nCode, source, target);
+				if (target.isRegister() && source.isConstant()) {
+					indexedTargetWithConstant(nCode, source, target);
+				} else {
+					throw new RuntimeException("Invalid index mode (at least one side isn't a register and source isn't a constant value either!): " + line);
+				}
 			} else {
-				indexedSource(nCode, source, target);
+				if (target.isIndexed()) {
+					indexedTarget(nCode, source, target);
+				} else {
+					indexedSource(nCode, source, target);
+				}
 			}
 		}
 	}
 
-	private void indexedSource(List<String> nCode, Operand source, Operand target) {
-		if (source.getType() == Type.INTEGER) {
-			nCode.add("LDY " + source.getRegisterName());
-			nCode.add("LDA " + createAddress(source.getRegisterName(), 1));
+	private void indexedTargetWithConstant(List<String> nCode, Operand source, Operand target) {
+		createIndexedTargetCode(nCode, target);
+		
+		nCode.add("LDY #0");
+		nCode.add("LDA #$" + Integer.toHexString(Integer.parseInt(source.getValue().substring(1))).toUpperCase(Locale.ENGLISH));
+		nCode.add("STA (" + TMP_ZP + "),Y");
+
+	}
+
+	private void createIndexedTargetCode(List<String> nCode, Operand target) {
+		if (target.getType() == Type.INTEGER) {
+			nCode.add("LDY " + target.getRegisterName());
+			nCode.add("LDA " + createAddress(target.getRegisterName(), 1));
 			nCode.add("STY TMP_REG");
 			nCode.add("STA TMP_REG+1");
 		} else {
-			nCode.add("LDA #<" + source.getRegisterName());
-			nCode.add("LDY #>" + source.getRegisterName());
+			nCode.add("LDA #<" + target.getRegisterName());
+			nCode.add("LDY #>" + target.getRegisterName());
 			nCode.add("; Real in (A/Y) to FAC");
 			nCode.add("JSR REALFAC"); // Real in (A/Y) to FAC
 
@@ -63,6 +78,10 @@ public class Movb extends GeneratorBase {
 			nCode.add("STY " + TMP_ZP);
 			nCode.add("STA " + (TMP_ZP + 1));
 		}
+	}
+
+	private void indexedSource(List<String> nCode, Operand source, Operand target) {
+		createIndexedTargetCode(nCode, source);
 
 		nCode.add("LDY #0");
 		if (target.getType() == Type.INTEGER) {
@@ -84,22 +103,7 @@ public class Movb extends GeneratorBase {
 	}
 
 	private void indexedTarget(List<String> nCode, Operand source, Operand target) {
-		if (target.getType() == Type.INTEGER) {
-			nCode.add("LDY " + target.getRegisterName());
-			nCode.add("LDA " + createAddress(target.getRegisterName(), 1));
-			nCode.add("STY TMP_REG");
-			nCode.add("STA TMP_REG+1");
-		} else {
-			nCode.add("LDA #<" + target.getRegisterName());
-			nCode.add("LDY #>" + target.getRegisterName());
-			nCode.add("; Real in (A/Y) to FAC");
-			nCode.add("JSR REALFAC"); // Real in (A/Y) to FAC
-
-			nCode.add("; FAC to integer in Y/A");
-			nCode.add("JSR FACWORD"); // FAC to integer in Y/A
-			nCode.add("STY " + TMP_ZP);
-			nCode.add("STA " + (TMP_ZP + 1));
-		}
+		createIndexedTargetCode(nCode, target);
 
 		if (source.getType() == Type.INTEGER) {
 			nCode.add("LDA " + source.getRegisterName());
