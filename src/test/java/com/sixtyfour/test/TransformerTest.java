@@ -22,7 +22,7 @@ import com.sixtyfour.system.ProgramPart;
 import com.sixtyfour.test.helper.JsrProfiler;
 import com.sixtyfour.test.helper.ProfilerData;
 
-/**
+/*
  * @author EgonOlsen
  * 
  */
@@ -34,7 +34,7 @@ public class TransformerTest {
 		// testTransformer2();
 		// testTransformer4();
 		// testTransformer5();
-		// testTransformerFractal();
+		//testTransformerFractal();
 		// testTransformer6();
 		// testTransformer7();
 		// testTransformerPrime();
@@ -74,6 +74,7 @@ public class TransformerTest {
 		Machine machine = executeTest(assy);
 
 		printStats(profiler, machine);*/
+		//System.out.println(machine.getRam()[2]);
 	}
 
 	private static void testTransformer17() throws Exception {

@@ -1,8 +1,8 @@
 10 poke53280,6:print "{clr}{white}"
 20 for i=1984 to 2023:poke i,160:next i
 30 a=20:x=-1:y=-1:pu=20
-40 poke 1944+a,94
-50 get a$
+40 poke 1944+a,94:remcn=0
+50 get a$:remcn=cn+1:if cn=20000thenend
 51 gosub 1000
 52 if a$=""then goto 50
 55 poke 1944+a,32

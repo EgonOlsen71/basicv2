@@ -1856,6 +1856,41 @@ COPY3_XY	LDY #0
 			STA (TMP_ZP),Y
 			RTS
 ;###################################
+FASTAND		LDA $61			; Check if there's a -1 in FAC1
+			CMP #$81
+			BNE NORMALAND
+			LDA $62
+			CMP #$80
+			BNE NORMALAND
+			LDA $63
+			BNE NORMALAND
+			LDA $64
+			BNE NORMALAND
+			LDA $65
+			BNE NORMALAND
+			LDA $66
+			AND #$80
+			CMP #$80
+			BNE NORMALAND
+			LDA $69			; Check if there's a -1 in ARG
+			CMP #$81
+			BNE NORMALAND
+			LDA $6A
+			CMP #$80
+			BNE NORMALAND
+			LDA $6B
+			BNE NORMALAND
+			LDA $6C
+			BNE NORMALAND
+			LDA $6D
+			BNE NORMALAND
+			LDA $6E
+			AND #$80
+			CMP #$80
+			BNE NORMALAND
+			RTS				; both, FAC1 and ARG contain -1...then we leave FAC1 untouched and return
+NORMALAND	JMP ARGAND
+;###################################
 SQRT		LDX #<TMP_FREG
 			LDY #>TMP_FREG
 			JSR FACMEM
