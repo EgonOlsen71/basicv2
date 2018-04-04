@@ -68,6 +68,12 @@ public class TransformerTest {
 		String[] vary = Loader.loadProgram("src/test/resources/transform/game.bas");
 		Assembler assy = initTestEnvironment(vary, false);
 		FileWriter.writeAsPrg(assy.getProgram(), "++testgame.prg", true);
+		/*
+		JsrProfiler profiler = new JsrProfiler(assy);
+		assy.getCpu().setCpuTracer(profiler);
+		Machine machine = executeTest(assy);
+
+		printStats(profiler, machine);*/
 	}
 
 	private static void testTransformer17() throws Exception {
