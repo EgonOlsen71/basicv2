@@ -1796,6 +1796,35 @@ POPINT		LDA FPSTACKP
 			LDA (TMP2_ZP),Y
 			STA TMP_ZP+1
 			RTS
+;##################################
+REALFACPUSH	STA TMP_ZP
+			STY	TMP_ZP+1
+			LDX FPSTACKP
+			LDY FPSTACKP+1
+			STX TMP2_ZP
+			STY TMP2_ZP+1
+			LDY #0
+			LDA (TMP_ZP),Y
+			STA (TMP2_ZP),Y
+			INY
+			LDA (TMP_ZP),Y
+			STA (TMP2_ZP),Y
+			INY
+			LDA (TMP_ZP),Y
+			STA (TMP2_ZP),Y
+			INY
+			LDA (TMP_ZP),Y
+			STA (TMP2_ZP),Y
+			INY
+			LDA (TMP_ZP),Y
+			STA (TMP2_ZP),Y
+			LDA FPSTACKP
+			CLC
+			ADC #5
+			STA FPSTACKP
+			BCC NOPVRFPXX
+			INC FPSTACKP+1
+NOPVRFPXX	RTS
 ;###################################
 PUSHREAL	LDX FPSTACKP
 			LDY FPSTACKP+1
@@ -1889,6 +1918,48 @@ FACNOTNULL	CMP #$81
 			BNE NORMALAND
 			RTS				; both, FAC1 and ARG contain -1...then we leave FAC1 untouched and return
 NORMALAND	JMP ARGAND
+;###################################
+FASTOR		LDA $61			; Check FAC for 0
+			BNE CHECKFACOR
+			LDA $69			; if so, is ARG = 0 as well?
+			BNE CHECKARGOR	; no, continue with ARG (FAC is still 0 here)
+			RTS				; yes? Then we leave FAC untouched
+CHECKFACOR	LDA $61			; Check if there's a -1 in FAC1
+			CMP #$81
+			BNE NORMALOR
+			LDA $62
+			CMP #$80
+			BNE NORMALOR
+			LDA $63
+			BNE NORMALOR
+			LDA $64
+			BNE NORMALOR
+			LDA $65
+			BNE NORMALOR
+			LDA $66
+			AND #$80
+			CMP #$80
+			BNE NORMALOR
+CHECKARGOR	LDA $69			; Check if there's a -1 in ARG
+			BNE CHECKARGOR2
+			RTS 			; ARG is actually 0? Then the value of FAC doesn't change. We can exit here
+CHECKARGOR2	CMP #$81
+			BNE NORMALOR
+			LDA $6A
+			CMP #$80
+			BNE NORMALOR
+			LDA $6B
+			BNE NORMALOR
+			LDA $6C
+			BNE NORMALOR
+			LDA $6D
+			BNE NORMALOR
+			LDA $6E
+			AND #$80
+			CMP #$80
+			BNE NORMALOR
+			JMP ARGFAC		; ARG is 1, so just copy it to FAC and exit (implicit)
+NORMALOR	JMP FACOR
 ;###################################
 SQRT		LDX #<TMP_FREG
 			LDY #>TMP_FREG

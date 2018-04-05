@@ -66,6 +66,7 @@ public class Transformer6502 implements Transformer {
 		res.add("FACSUB = $B853");
 		res.add("FACOR = $AFE6");
 		res.add("FACMEM = $BBD7");
+		res.add("ARGFAC = $BBFC");
 		res.add("FACSTR = $BDDF");
 		res.add("FACINT = $B1AA");
 		res.add("REALFAC = $BBA2");
