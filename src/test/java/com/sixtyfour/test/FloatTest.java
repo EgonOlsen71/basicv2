@@ -17,7 +17,7 @@ public class FloatTest {
 		testFloat();
 		testConversions();
 		testConversions2();
-		
+
 		int[] num = Conversions.convertDouble(-1d);
 		System.out.println("-1: " + Arrays.toString(num));
 	}

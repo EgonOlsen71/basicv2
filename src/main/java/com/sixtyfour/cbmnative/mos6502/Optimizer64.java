@@ -20,9 +20,9 @@ public class Optimizer64 implements Optimizer {
 	private List<Pattern> patterns = new ArrayList<Pattern>() {
 		private static final long serialVersionUID = 1L;
 		{
-			this.add(new Pattern(false, "Faster logic OR", new String[]{"JSR FASTOR"}, "JSR FACOR"));
-			this.add(new Pattern(false, "Faster logic AND", new String[]{"JSR FASTAND"}, "JSR ARGAND"));
-		    this.add(new Pattern(false, "Simple POKE", new String[] { "{LINE0}", "{LINE2}" }, "LDY {MEM0}", "LDA #0", "STY {*}"));
+			this.add(new Pattern(false, "Faster logic OR", new String[] { "JSR FASTOR" }, "JSR FACOR"));
+			this.add(new Pattern(false, "Faster logic AND", new String[] { "JSR FASTAND" }, "JSR ARGAND"));
+			this.add(new Pattern(false, "Simple POKE", new String[] { "{LINE0}", "{LINE2}" }, "LDY {MEM0}", "LDA #0", "STY {*}"));
 			this.add(new Pattern("REALOUT + LINEBRK", new String[] { "JSR REALOUTBRK" }, "JSR REALOUT", "JSR LINEBREAK"));
 			this.add(new Pattern("STROUT + LINEBRK", new String[] { "JSR STROUTBRK" }, "JSR STROUT", "JSR LINEBREAK"));
 			this.add(new Pattern("INTOUT + LINEBRK", new String[] { "JSR INTOUTBRK" }, "JSR INTOUT", "JSR LINEBREAK"));
@@ -132,7 +132,7 @@ public class Optimizer64 implements Optimizer {
 					"LDY #>{REG0}", "JSR FACMEM", "LDA #<{REG1}", "LDY #>{REG1}", "JSR MEMARG", "JSR {*}"));
 			this.add(new Pattern(false, "POP, REG0, VAR0 -> to WORD", new String[] { "{LINE0}", "{LINE4}" }, "JSR POPREAL", "LDX #<{REG0}", "LDY #>{REG0}", "JSR FACMEM",
 					"JSR FACWORD"));
-			this.add(new Pattern(false, "Load and PUSH combined", new String[]{"JSR REALFACPUSH"} ,"JSR REALFAC", "JSR PUSHREAL"));
+			this.add(new Pattern(false, "Load and PUSH combined", new String[] { "JSR REALFACPUSH" }, "JSR REALFAC", "JSR PUSHREAL"));
 		}
 	};
 

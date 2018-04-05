@@ -35,7 +35,7 @@ public interface PlatformProvider {
 	 * @return
 	 */
 	Unlinker getUnlinker();
-	
+
 	/**
 	 * @return
 	 */

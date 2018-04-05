@@ -34,7 +34,7 @@ public class TransformerTest {
 		// testTransformer2();
 		// testTransformer4();
 		// testTransformer5();
-		//testTransformerFractal();
+		// testTransformerFractal();
 		// testTransformer6();
 		// testTransformer7();
 		// testTransformerPrime();
@@ -67,28 +67,30 @@ public class TransformerTest {
 
 		printStats(profiler, machine);
 	}
-	
+
 	private static void testTransformer18() throws Exception {
 		System.out.println("\n\ntestTransformer18");
 		/*
-		String[] vary = Loader.loadProgram("src/test/resources/transform/test18.bas");
-		Assembler assy = initTestEnvironment(vary, false);
-		FileWriter.writeAsPrg(assy.getProgram(), "++testget.prg", true);
-
-		vary = Loader.loadProgram("src/test/resources/transform/test19.bas");
-		assy = initTestEnvironment(vary, false);
-		FileWriter.writeAsPrg(assy.getProgram(), "++testgetnum.prg", true);
-		*/
+		 * String[] vary =
+		 * Loader.loadProgram("src/test/resources/transform/test18.bas");
+		 * Assembler assy = initTestEnvironment(vary, false);
+		 * FileWriter.writeAsPrg(assy.getProgram(), "++testget.prg", true);
+		 * 
+		 * vary = Loader.loadProgram("src/test/resources/transform/test19.bas");
+		 * assy = initTestEnvironment(vary, false);
+		 * FileWriter.writeAsPrg(assy.getProgram(), "++testgetnum.prg", true);
+		 */
 		String[] vary = Loader.loadProgram("src/test/resources/transform/game.bas");
 		Assembler assy = initTestEnvironment(vary, false);
 		FileWriter.writeAsPrg(assy.getProgram(), "++testgame.prg", true);
 		/*
-		JsrProfiler profiler = new JsrProfiler(assy);
-		assy.getCpu().setCpuTracer(profiler);
-		Machine machine = executeTest(assy);
-
-		printStats(profiler, machine);*/
-		//System.out.println(machine.getRam()[2]);
+		 * JsrProfiler profiler = new JsrProfiler(assy);
+		 * assy.getCpu().setCpuTracer(profiler); Machine machine =
+		 * executeTest(assy);
+		 * 
+		 * printStats(profiler, machine);
+		 */
+		// System.out.println(machine.getRam()[2]);
 	}
 
 	private static void testTransformer17() throws Exception {

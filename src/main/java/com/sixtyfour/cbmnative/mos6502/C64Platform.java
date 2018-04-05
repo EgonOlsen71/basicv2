@@ -32,7 +32,7 @@ public class C64Platform implements PlatformProvider {
 	public Transformer getTransformer() {
 		return new Transformer6502();
 	}
-	
+
 	@Override
 	public Unlinker getUnlinker() {
 		return new Unlinker64();

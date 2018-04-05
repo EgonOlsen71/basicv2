@@ -207,7 +207,8 @@ public class Assembler implements ProgramExecutor {
 				System.arraycopy(data, 0, compileMachine.getRam(), addr, data.length);
 				if (lineUpper.startsWith(".TEXT")) {
 					// If it's a string, the length might have changed due to
-					// place holder conversions to control codes. So we set the actual length here.
+					// place holder conversions to control codes. So we set the
+					// actual length here.
 					compileMachine.getRam()[addr - 1] = data.length;
 				}
 				addr += data.length;

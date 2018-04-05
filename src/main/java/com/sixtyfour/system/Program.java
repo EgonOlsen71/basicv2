@@ -71,14 +71,14 @@ public class Program {
 	 * @return
 	 */
 	public LabelsContainer getLabelsContainer() {
-	    return labelsContainer;
+		return labelsContainer;
 	}
 
 	/**
 	 * @param labelsContainer
 	 */
 	public void setLabelsContainer(LabelsContainer labelsContainer) {
-	    this.labelsContainer = labelsContainer;
+		this.labelsContainer = labelsContainer;
 	}
 
 }
