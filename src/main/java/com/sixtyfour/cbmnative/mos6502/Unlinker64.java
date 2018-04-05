@@ -34,20 +34,25 @@ public class Unlinker64 implements Unlinker {
 
 	// Find all jumps in code blocks of the runtime routines that are
 	// referenced from the generated code
-	int cnt = 0;
-	for (String line : subs) {
-	    line = findLabel(line);
-	    if (codeJumps.contains(line)) {
-		int start = find(subs, cnt, -1);
-		int end = find(subs, cnt, 1);
-		if (start == -1 || end == -1) {
-		    throw new RuntimeException("Failed to find block delimiter @ " + cnt + "/" + subs.get(cnt));
+
+	int codeLength = 0;
+	do {
+	    codeLength = codeJumps.size();
+	    int cnt = 0;
+	    for (String line : subs) {
+		line = findLabel(line);
+		if (codeJumps.contains(line)) {
+		    int start = find(subs, cnt, -1);
+		    int end = find(subs, cnt, 1);
+		    if (start == -1 || end == -1) {
+			throw new RuntimeException("Failed to find block delimiter @ " + cnt + "/" + subs.get(cnt));
+		    }
+		    List<String> subSubs = subs.subList(start, end + 1);
+		    codeJumps.addAll(findJumps(subSubs));
 		}
-		List<String> subSubs = subs.subList(start, end + 1);
-		codeJumps.addAll(findJumps(subSubs));
+		cnt++;
 	    }
-	    cnt++;
-	}
+	} while (codeJumps.size() > codeLength);
 
 	// remove unused blocks from the runtime code
 	for (int i = 0; i < subs.size(); i++) {
@@ -58,7 +63,13 @@ public class Unlinker64 implements Unlinker {
 	    int start = find(subs, i, -1);
 	    int end = find(subs, i, 1);
 	    List<String> subSubs = subs.subList(start, end + 1);
-	    
+
+	    /*
+	     * System.out.println("----------------------------------------");
+	     * System.out.println("found: "); for (String ss:subSubs) {
+	     * System.out.println(ss); }
+	     */
+
 	    boolean used = false;
 	    for (String subLine : subSubs) {
 		subLine = findLabel(subLine);
@@ -69,9 +80,10 @@ public class Unlinker64 implements Unlinker {
 	    }
 	    if (used) {
 		ret.addAll(subSubs);
-	    } /*else {
-		System.out.println("Block from " + subSubs.get(1) + " not used, removing it!");
-	    }*/
+	    } /*
+	       * else { System.out.println("Block from " + subSubs.get(1) +
+	       * " not used, removing it!"); }
+	       */
 	    i = end;
 	}
 
