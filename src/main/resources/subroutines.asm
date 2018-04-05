@@ -1,8 +1,5 @@
 ;###################################
 START
-			LDA #11
-			STA 2
-
 			LDA #<FPSTACK
 			LDY #>FPSTACK
 			STA FPSTACKP
@@ -28,10 +25,6 @@ START
 			TAX
 			STA $C6
 			CLC
-
-			LDA #12
-			STA 2
-
 			RTS
 ;###################################
 INITNARRAY 
@@ -1856,8 +1849,14 @@ COPY3_XY	LDY #0
 			STA (TMP_ZP),Y
 			RTS
 ;###################################
-FASTAND		LDA $61			; Check if there's a -1 in FAC1
-			CMP #$81
+FASTAND		LDA $69			; Check ARG for 0
+			BNE CHECKFAC	
+			STA $61			; if so, set FAC to 0 and exit
+			RTS
+CHECKFAC	LDA $61			; Check if there's a -1 in FAC1
+			BNE FACNOTNULL
+			RTS				; FAC is 0, then exit
+FACNOTNULL	CMP #$81
 			BNE NORMALAND
 			LDA $62
 			CMP #$80
