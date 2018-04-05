@@ -165,18 +165,19 @@ public class Transformer6502 implements Transformer {
 		res.add("REAL_CONST_ONE\t.REAL 1.0");
 		res.add("REAL_CONST_ZERO\t.REAL 0.0");
 		res.add("REAL_CONST_MINUS_ONE\t.REAL -1.0");
-		res.add("FPSTACKP\t.WORD FPSTACK");
-		res.add("FPSTACK .ARRAY " + Math.min(256, platform.getStackSize() * 5));
-		res.add("FORSTACKP\t.WORD FORSTACK");
-		res.add("FORSTACK .ARRAY " + Math.min(1024, platform.getStackSize() * 17));
 		res.add("EMPTYSTR\t.BYTE 0");
-		res.add("CONCATBUFP\t.BYTE 0");
-		res.add("CONCATBUF\t.ARRAY 256");
+		res.add("FPSTACKP\t.WORD FPSTACK");
+		res.add("FORSTACKP\t.WORD FORSTACK");
 		res.add("LASTVAR\t.WORD 0");
 		res.add("LASTVARP\t.WORD 0");
 		res.add("HIGHP\t.WORD STRBUF");
 		res.add("STRBUFP\t.WORD STRBUF");
 		res.add("ENDSTRBUF\t.WORD " + platform.getStringMemoryEnd());
+		res.add("CONCATBUFP\t.BYTE 0");
+		res.add("PROGRAMEND");
+		res.add("CONCATBUF\t.ARRAY 256");
+		res.add("FPSTACK .ARRAY " + Math.min(256, platform.getStackSize() * 5));
+		res.add("FORSTACK .ARRAY " + Math.min(1024, platform.getStackSize() * 17));
 		res.add("STRBUF\t.BYTE 0");
 		return res;
 	}

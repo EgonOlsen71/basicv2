@@ -3,6 +3,8 @@ package com.sixtyfour.system;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sixtyfour.parser.assembly.LabelsContainer;
+
 /**
  * A Program is a compiled assembler program. If has a starting address and a
  * list of parts.
@@ -15,6 +17,7 @@ public class Program {
 
 	private int codeStart;
 	private List<ProgramPart> parts = new ArrayList<ProgramPart>();
+	private LabelsContainer labelsContainer = null;
 
 	/**
 	 * Creates a new program instance.
@@ -62,6 +65,20 @@ public class Program {
 	 */
 	public void setCodeStart(int codeStart) {
 		this.codeStart = codeStart;
+	}
+
+	/**
+	 * @return
+	 */
+	public LabelsContainer getLabelsContainer() {
+	    return labelsContainer;
+	}
+
+	/**
+	 * @param labelsContainer
+	 */
+	public void setLabelsContainer(LabelsContainer labelsContainer) {
+	    this.labelsContainer = labelsContainer;
 	}
 
 }

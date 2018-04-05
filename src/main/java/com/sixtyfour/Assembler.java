@@ -127,6 +127,7 @@ public class Assembler implements ProgramExecutor {
 		long startTime = System.nanoTime();
 		List<Integer> lineBreaks = new ArrayList<Integer>();
 		Program prg = new Program();
+		prg.setLabelsContainer(lcon);
 		boolean initial = true;
 
 		for (String line : code) {
