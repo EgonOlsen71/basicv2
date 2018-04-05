@@ -126,6 +126,10 @@ public class Transformer6502 implements Transformer {
 		List<String> inits = createInitScript(vars);
 
 		subs.addAll(inits);
+		subs.add("; *** SUBROUTINES END ***");
+		subs.add("SQRTTABLE");
+		subs.add(".BYTE 03 11 18 25 32 38 44 50");
+		subs.add(".BYTE 58 69 79 89 98 107 115 123");
 		res.addAll(mnems);
 		res.addAll(subs);
 		res.addAll(consts);
@@ -185,6 +189,7 @@ public class Transformer6502 implements Transformer {
 	private List<String> createInitScript(List<String> vars) {
 		List<String> inits = new ArrayList<String>();
 		inits.add("; ******* INITVARS ********");
+		inits.add(";###############################");
 		inits.add("INITVARS");
 
 		inits.add("JSR INITSTRVARS");
@@ -223,7 +228,7 @@ public class Transformer6502 implements Transformer {
 			}
 		}
 		inits.add("RTS");
-
+		inits.add(";###############################");
 		return inits;
 	}
 

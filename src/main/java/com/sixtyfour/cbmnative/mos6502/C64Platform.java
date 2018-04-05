@@ -3,6 +3,7 @@ package com.sixtyfour.cbmnative.mos6502;
 import com.sixtyfour.cbmnative.Optimizer;
 import com.sixtyfour.cbmnative.PlatformProvider;
 import com.sixtyfour.cbmnative.Transformer;
+import com.sixtyfour.cbmnative.Unlinker;
 
 public class C64Platform implements PlatformProvider {
 	private int startAddress = 2072;
@@ -30,6 +31,11 @@ public class C64Platform implements PlatformProvider {
 	@Override
 	public Transformer getTransformer() {
 		return new Transformer6502();
+	}
+	
+	@Override
+	public Unlinker getUnlinker() {
+		return new Unlinker64();
 	}
 
 	@Override

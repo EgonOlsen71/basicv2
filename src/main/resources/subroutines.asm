@@ -1939,19 +1939,17 @@ MINUS		LDA #<TMP_FREG
 			DEC $FB
 			BNE MINUS
 DONE		RTS
-
+;###################################
 NEXTWOFOR	LDX #$0A
 			JMP $A437
-
-OUTOFMEMORY	JMP $A435
-
+;###################################
+OUTOFMEMORY	
+			JMP $A435
+;###################################
 ILLEGALQUANTITY
 			JMP $B248
-
+;###################################
 SYNTAXERROR 
 ERROR		JMP $AF08	;General purpose error, here a syntax error
- 
-SQRTTABLE
-	.BYTE 03 11 18 25 32 38 44 50
-	.BYTE 58 69 79 89 98 107 115 123
+;###################################
 

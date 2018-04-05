@@ -1,5 +1,7 @@
 package com.sixtyfour.cbmnative;
 
+import com.sixtyfour.cbmnative.mos6502.Unlinker64;
+
 /**
  * @author EgonOlsen
  * 
@@ -31,6 +33,11 @@ public interface PlatformProvider {
 	 */
 	Transformer getTransformer();
 
+	/**
+	 * @return
+	 */
+	Unlinker getUnlinker();
+	
 	/**
 	 * @return
 	 */
