@@ -91,6 +91,9 @@ public class Transformer6502 implements Transformer {
 		res.add(";make sure that JUMP_TARGET's low can't be $ff");
 		res.add("JUMP_TARGET = 69");
 		res.add("*=" + platform.getStartAddress());
+		res.add("TSX");
+		res.add("STX SP_SAVE");
+		
 		int cnt = 0;
 
 		List<String> strVars = new ArrayList<String>();
@@ -159,6 +162,7 @@ public class Transformer6502 implements Transformer {
 		res.add("A_REG\t.WORD 0");
 		res.add("B_REG\t.WORD 0");
 		res.add("G_REG\t.WORD 0");
+		res.add("SP_SAVE\t.BYTE 0");
 		res.add("TMP_REG\t.WORD 0");
 		res.add("TMP2_REG\t.WORD 0");
 		res.add("TMP3_REG\t.WORD 0");

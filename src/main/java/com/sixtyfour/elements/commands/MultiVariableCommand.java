@@ -195,6 +195,7 @@ public abstract class MultiVariableCommand extends AbstractCommand {
 			var = vai.getVariable();
 			indexTerms.add(vai.getIndexTerm());
 			vars.add(var);
+			machine.trackVariableUsage(var, false);
 		}
 	}
 

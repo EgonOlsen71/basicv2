@@ -96,6 +96,7 @@ public class Let extends AbstractCommand {
 			pars = Parser.getParameters(indexTerm);
 			pis = new int[pars.size()];
 		}
+		machine.trackVariableUsage(var, true);
 		return null;
 	}
 

@@ -128,6 +128,8 @@ public class For extends AbstractCommand {
 		if (!Parser.isNumberType(stepTerm)) {
 			typeMismatch(stepTerm);
 		}
+		
+		machine.trackVariableUsage(var, false);
 		return null;
 	}
 

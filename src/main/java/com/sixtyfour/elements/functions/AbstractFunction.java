@@ -223,4 +223,12 @@ public abstract class AbstractFunction implements Function {
 	public String toCode(Machine machine) {
 		return null;
 	}
+	
+	/* (non-Javadoc)
+	 * @see com.sixtyfour.parser.Atom#isConstant()
+	 */
+	@Override
+	public boolean isConstant() {
+		return false;
+	}
 }

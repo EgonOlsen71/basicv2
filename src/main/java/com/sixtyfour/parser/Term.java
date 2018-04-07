@@ -622,6 +622,16 @@ public class Term implements Atom {
 		this.jittedMethod = jitted;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.sixtyfour.parser.Atom#isConstant()
+	 */
+	@Override
+	public boolean isConstant() {
+		return false;
+	}
+
 	private String filterCode(String code) {
 		// TODO stuff?
 		return code;

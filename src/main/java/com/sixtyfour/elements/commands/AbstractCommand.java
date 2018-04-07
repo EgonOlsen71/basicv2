@@ -199,6 +199,14 @@ public abstract class AbstractCommand implements Command {
 		return false;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.sixtyfour.parser.Atom#isConstant()
+	 */
+	@Override
+	public boolean isConstant() {
+		return false;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

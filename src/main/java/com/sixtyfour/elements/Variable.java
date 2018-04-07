@@ -41,6 +41,8 @@ public class Variable implements Atom {
 
 	private boolean persistent = false;
 
+	private boolean constant = false;
+
 	/**
 	 * Instantiates a new array variable.
 	 * 
@@ -506,6 +508,20 @@ public class Variable implements Atom {
 			return "((Number) " + nam + ".evalFromCode()).intValue()";
 		}
 		return nam + ".evalFromCode()";
+	}
+
+	public void setConstant(boolean constant) {
+		this.constant = constant;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.sixtyfour.parser.Atom#isConstant()
+	 */
+	@Override
+	public boolean isConstant() {
+		return constant;
 	}
 
 	/**

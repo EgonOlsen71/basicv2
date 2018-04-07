@@ -63,4 +63,14 @@ public interface Atom {
 	 */
 	String toCode(Machine machine);
 
+	/**
+	 * Returns is this atom is safe to be considered constant, i.e. it's known
+	 * not to change during execution. If this returns false, that doesn't mean
+	 * that the actual atom isn't constant. It just means that we don't know for
+	 * sure or maybe just don't care for this particular type.
+	 * 
+	 * @return is it constant?
+	 */
+	boolean isConstant();
+
 }

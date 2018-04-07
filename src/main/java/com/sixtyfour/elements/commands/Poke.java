@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.sixtyfour.cbmnative.NativeCompiler;
-import com.sixtyfour.elements.Constant;
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Parser;
@@ -85,7 +84,7 @@ public class Poke extends AbstractCommand {
 		String expPush = getPushRegister(expr.get(expr.size() - 1));
 		expr = expr.subList(0, expr.size() - 1);
 
-		if (addr instanceof Constant) {
+		if (addr.isConstant()) {
 			if (expPush.equals("Y")) {
 				expr.add("MOV X,Y");
 			}

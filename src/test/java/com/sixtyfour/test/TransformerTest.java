@@ -37,7 +37,7 @@ public class TransformerTest {
 		// testTransformerFractal();
 		// testTransformer6();
 		// testTransformer7();
-		// testTransformerPrime();
+		 testTransformerPrime();
 		// testTransformerSqr();
 		// testTransformer8();
 		// testTransformer9();

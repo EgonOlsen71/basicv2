@@ -85,6 +85,8 @@ public class Machine {
 
 	private List<RomInfo> roms;
 
+	private Map<String, Integer> usageIndicator = new HashMap<String, Integer>();
+
 	/**
 	 * Instantiates a new machine.
 	 */
@@ -311,9 +313,11 @@ public class Machine {
 		for (Variable var : vars.values()) {
 			var.setPersistent(false);
 			var.clear();
+			var.setConstant(false);
 		}
 		addDefaults();
 		stack.clear();
+		usageIndicator.clear();
 	}
 
 	/**
@@ -358,6 +362,27 @@ public class Machine {
 	}
 
 	/**
+	 * Tracks variable usage at compile time to determine, if a variable can be
+	 * propagated to a constant later.
+	 * 
+	 * @param var
+	 *            the variable
+	 * @param assigment
+	 *            track an assignment (true)/something else (false)
+	 */
+	public void trackVariableUsage(Variable var, boolean assignment) {
+		if (var.isArray()) {
+			return;
+		}
+		String name = var.getUpperCaseName();
+		Integer indicator = usageIndicator.get(name);
+		if (indicator == null) {
+			indicator = 0;
+		}
+		usageIndicator.put(name, assignment ? (indicator + 1) : (indicator + 10));
+	}
+
+	/**
 	 * Returns the variable with the given name. Case doesn't matter.
 	 * 
 	 * @param name
@@ -370,6 +395,22 @@ public class Machine {
 		}
 		name = VarUtils.toUpper(name);
 		return vars.get(name);
+	}
+
+	/**
+	 * Returns true, if the variable is assigned once in the program run and
+	 * then never changed again.
+	 * 
+	 * @param var
+	 *            the variable
+	 * @return is it?
+	 */
+	public boolean isAssignedOnce(Variable var) {
+		if (var.isArray()) {
+			return false;
+		}
+		Integer cnt = this.usageIndicator.get(var.getUpperCaseName());
+		return cnt != null && cnt == 1;
 	}
 
 	/**

@@ -16,6 +16,8 @@ import com.sixtyfour.elements.functions.Function;
 import com.sixtyfour.elements.functions.FunctionList;
 import com.sixtyfour.parser.logic.LogicParser;
 import com.sixtyfour.parser.logic.LogicTerm;
+import com.sixtyfour.parser.optimize.ConstantFolder;
+import com.sixtyfour.parser.optimize.TermOptimizer;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
@@ -730,7 +732,7 @@ public class Parser {
 				finalTerm.setOperator(Operator.NOP);
 				finalTerm.setRight(new Constant<Integer>(0));
 			}
-			finalTerm = TermOptimizer.optimizeConstants(TermOptimizer.optimizeTermTree(finalTerm, machine), machine);
+			finalTerm = ConstantFolder.foldConstants(TermOptimizer.optimizeTermTree(finalTerm, machine), machine);
 			return finalTerm;
 		} catch (NumberFormatException nfe) {
 			nfe.printStackTrace();

@@ -27,6 +27,10 @@ START
 			CLC
 			RTS
 ;###################################
+RUN			LDX SP_SAVE
+			TXS
+			JMP PROGRAMSTART
+;###################################
 INITNARRAY 
 			STA TMP_ZP
 			STY TMP_ZP+1

@@ -16,6 +16,8 @@ import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Line;
 import com.sixtyfour.parser.Term;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
+import com.sixtyfour.parser.optimize.ConstantFolder;
+import com.sixtyfour.parser.optimize.ConstantPropagator;
 import com.sixtyfour.system.Machine;
 
 /**
@@ -131,6 +133,7 @@ public class NativeCompiler {
 			mCode.add("RTS");
 		}
 		mCode.add(0, "JSR START");
+		mCode.add(0, "PROGRAMSTART:");
 
 		Logger.log("Compiled to pseudo code in: " + (System.currentTimeMillis() - s) + "ms");
 		return mCode;
@@ -142,6 +145,8 @@ public class NativeCompiler {
 
 	public List<String> compileToPseudoCode(Machine machine, Term term) {
 		Atom atom = TermHelper.linearize(machine, term);
+		ConstantPropagator.propagateConstants(machine);
+		term = ConstantFolder.foldConstants(term, machine);
 		return compileToPseudoCode(machine, atom);
 	}
 
