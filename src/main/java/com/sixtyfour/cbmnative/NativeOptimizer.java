@@ -3,6 +3,8 @@ package com.sixtyfour.cbmnative;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sixtyfour.system.CompilerConfig;
+
 /**
  * An optimizer for the native code in pseudo assembly language.
  * 
@@ -41,12 +43,13 @@ public class NativeOptimizer {
 	}
 
 	public static List<String> optimizeNative(List<String> code) {
-		int oldCode = 0;
-		do {
-			oldCode = code.size();
-			code = applyPatterns(code);
-		} while (oldCode != code.size());
-
+		if (CompilerConfig.getConfig().isIntermediateLanguageOptimizations()) {
+			int oldCode = 0;
+			do {
+				oldCode = code.size();
+				code = applyPatterns(code);
+			} while (oldCode != code.size());
+		}
 		return code;
 	}
 

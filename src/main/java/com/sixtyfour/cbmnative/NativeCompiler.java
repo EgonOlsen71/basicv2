@@ -18,6 +18,7 @@ import com.sixtyfour.parser.Term;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.parser.optimize.ConstantFolder;
 import com.sixtyfour.parser.optimize.ConstantPropagator;
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Machine;
 
 /**
@@ -86,10 +87,10 @@ public class NativeCompiler {
 		PlatformProvider platform = new C64Platform();
 		List<String> mCode = NativeCompiler.getCompiler().compileToPseudeCode(basic.getMachine(), pCode);
 		List<String> nCode = platform.getTransformer().transform(basic.getMachine(), platform, mCode);
-		if (platform.getOptimizer() != null) {
+		if (platform.getOptimizer() != null && CompilerConfig.getConfig().isNativeLanguageOptimizations()) {
 			nCode = platform.getOptimizer().optimize(platform, nCode);
 		}
-		if (platform.getUnlinker() != null) {
+		if (platform.getUnlinker() != null && CompilerConfig.getConfig().isOptimizedLinker()) {
 			nCode = platform.getUnlinker().unlink(nCode);
 		}
 		return nCode;

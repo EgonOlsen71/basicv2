@@ -10,6 +10,7 @@ import com.sixtyfour.elements.functions.Function;
 import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Operator;
 import com.sixtyfour.parser.Term;
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Machine;
 
 /**
@@ -21,29 +22,31 @@ public class ConstantPropagator {
 	public static boolean propagateConstants(Machine machine) {
 		boolean found = false;
 		boolean doneSomething = false;
-		do {
-			found = false;
-			for (Command cmd : machine.getCommandList()) {
-				if (cmd.isCommand("LET")) {
-					Let let = (Let) cmd;
-					Variable var = let.getVar();
-					if (machine.isAssignedOnce(var)) {
-						if (var.isConstant()) {
-							continue;
-						}
-						Term term = let.getTerm();
-						boolean termIsConstant = ConstantPropagator.checkForConstant(machine, term);
-						if (termIsConstant) {
-							var.setValue(term.eval(machine));
-							var.setConstant(true);
-							Logger.log(var + " can be considered constant!");
-							doneSomething = true;
-							found = true;
+		if (CompilerConfig.getConfig().isConstantPropagation()) {
+			do {
+				found = false;
+				for (Command cmd : machine.getCommandList()) {
+					if (cmd.isCommand("LET")) {
+						Let let = (Let) cmd;
+						Variable var = let.getVar();
+						if (machine.isAssignedOnce(var)) {
+							if (var.isConstant()) {
+								continue;
+							}
+							Term term = let.getTerm();
+							boolean termIsConstant = ConstantPropagator.checkForConstant(machine, term);
+							if (termIsConstant) {
+								var.setValue(term.eval(machine));
+								var.setConstant(true);
+								Logger.log(var + " can be considered constant!");
+								doneSomething = true;
+								found = true;
+							}
 						}
 					}
 				}
-			}
-		} while (found);
+			} while (found);
+		}
 		return doneSomething;
 	}
 

@@ -11,6 +11,7 @@ import com.sixtyfour.Loader;
 import com.sixtyfour.cbmnative.NativeCompiler;
 import com.sixtyfour.cbmnative.PseudoCpu;
 import com.sixtyfour.parser.Preprocessor;
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Conversions;
 import com.sixtyfour.system.Cpu;
 import com.sixtyfour.system.CpuTracer;
@@ -34,10 +35,10 @@ public class TransformerTest {
 		// testTransformer2();
 		// testTransformer4();
 		// testTransformer5();
-		// testTransformerFractal();
+		 testTransformerFractal();
 		// testTransformer6();
 		// testTransformer7();
-		 testTransformerPrime();
+		// testTransformerPrime();
 		// testTransformerSqr();
 		// testTransformer8();
 		// testTransformer9();
@@ -566,6 +567,12 @@ public class TransformerTest {
 	}
 
 	private static Assembler initTestEnvironment(String[] vary, boolean executePseudo) {
+		//CompilerConfig conf=CompilerConfig.getConfig();
+		//conf.setConstantFolding(false);
+		//conf.setConstantPropagation(false);
+		//conf.setIntermediateLanguageOptimizations(false);
+		//conf.setNativeLanguageOptimizations(false);
+		
 		final Basic basic = new Basic(vary);
 		basic.compile();
 
