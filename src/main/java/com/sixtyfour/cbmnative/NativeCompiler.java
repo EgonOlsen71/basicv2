@@ -100,9 +100,20 @@ public class NativeCompiler {
 		long s = System.currentTimeMillis();
 		Machine machine = basic.getMachine();
 		PCode pCode = basic.getPCode();
-		ConstantPropagator.propagateConstants(machine);
-		DeadStoreEliminator.eliminateDeadStores(basic);
-		
+		CompilerConfig config = CompilerConfig.getConfig();
+		if (!config.isConstantFolding()) {
+			// If no folding is being used, we must not run dead store
+			// elimination after a potential propagation or otherwise, we might
+			// remove actually needed assignments.
+			DeadStoreEliminator.eliminateDeadStores(basic);
+		} else {
+			// If it's enabled, we are save to proceed the usual way, i.e.
+			// propagate first, then eliminate based on the results, because folding
+			// will take care of the unused expressions later anyway.
+			ConstantPropagator.propagateConstants(machine);
+			DeadStoreEliminator.eliminateDeadStores(basic);
+		}
+
 		List<String> mCode = new ArrayList<String>();
 		for (Integer lineNumber : pCode.getLineNumbers()) {
 			Line line = pCode.getLines().get(lineNumber);
