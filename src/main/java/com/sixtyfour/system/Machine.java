@@ -3,14 +3,17 @@ package com.sixtyfour.system;
 import java.io.BufferedInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.sixtyfour.Basic;
 import com.sixtyfour.elements.Variable;
 import com.sixtyfour.elements.commands.Command;
 import com.sixtyfour.elements.commands.For;
+import com.sixtyfour.elements.commands.Rem;
 import com.sixtyfour.elements.systemvars.Pie;
 import com.sixtyfour.elements.systemvars.Status;
 import com.sixtyfour.elements.systemvars.Time;
@@ -371,7 +374,7 @@ public class Machine {
 	 *            track an assignment (true)/something else (false)
 	 */
 	public void trackVariableUsage(Variable var, boolean assignment) {
-		if (var.isArray()) {
+		if (var.isSupposedToBeArray()) {
 			return;
 		}
 		String name = var.getUpperCaseName();
@@ -406,7 +409,7 @@ public class Machine {
 	 * @return is it?
 	 */
 	public boolean isAssignedOnce(Variable var) {
-		if (var.isArray()) {
+		if (var.isSupposedToBeArray()) {
 			return false;
 		}
 		Integer cnt = this.usageIndicator.get(var.getUpperCaseName());
@@ -469,6 +472,23 @@ public class Machine {
 	 */
 	public void clearCommandList() {
 		this.commandList.clear();
+	}
+
+	/**
+	 * Removes all the commands in the list from the program by replacing them
+	 * with NOPs (i.e. instances of REM).
+	 * 
+	 * @param toRemove
+	 *            the commands to remove
+	 */
+	public void removeCommands(List<Command> toRemove) {
+		Set<Command> remSet=new HashSet<Command>(toRemove);
+		for (int i=0; i<commandList.size(); i++) {
+			Command cmd=commandList.get(i);
+			if (remSet.contains(cmd)) {
+				commandList.set(i, new Rem());
+			}
+		}
 	}
 
 	/**

@@ -183,12 +183,25 @@ public class Variable implements Atom {
 	}
 
 	/**
-	 * Checks if the variable is an array.
+	 * Checks if the variable is an actual array. This method is allowed to
+	 * return false an array variables that are supposed to be arrays but
+	 * haven't been initialized yet.
 	 * 
 	 * @return true, if it is an array
 	 */
 	public boolean isArray() {
 		return array;
+	}
+
+	/**
+	 * Checks if the variable is supposed to be an array, but might not have
+	 * been initialized as such yet. This will return true an all array
+	 * variables, initialized or not.
+	 * 
+	 * @return true, if it is supposed to be an array
+	 */
+	public boolean isSupposedToBeArray() {
+		return array || name.endsWith("[]");
 	}
 
 	/*
@@ -280,7 +293,7 @@ public class Variable implements Atom {
 	@SuppressWarnings("unchecked")
 	@Override
 	public String toString() {
-		if (!array) {
+		if (!array || value == null) {
 			return name + "{" + value + "}";
 		} else {
 			return name + "{" + Arrays.toString(((List<Object>) value).toArray()) + "}";

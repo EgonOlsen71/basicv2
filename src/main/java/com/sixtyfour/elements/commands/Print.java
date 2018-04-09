@@ -77,6 +77,21 @@ public class Print extends AbstractCommand {
 	/*
 	 * (non-Javadoc)
 	 * 
+	 * @see com.sixtyfour.elements.commands.Command#getAllTerms()
+	 */
+	@Override
+	public List<Term> getAllTerms() {
+		List<Term> ret = new ArrayList<Term>();
+		ret.add(term);
+		for (PrintPart part : parts) {
+			ret.add(part.term);
+		}
+		return ret;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see
 	 * sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.
 	 * Machine)

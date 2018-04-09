@@ -1,5 +1,7 @@
 package com.sixtyfour.elements.commands;
 
+import java.util.List;
+
 import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Term;
 import com.sixtyfour.system.Machine;
@@ -49,6 +51,15 @@ public interface Command extends Atom {
 	 * @return the term
 	 */
 	Term getTerm();
+
+	/**
+	 * Gets all terms in case that the command uses more than one (for example
+	 * FOR, which has up to 3). For a normal command, the has one element, which
+	 * is the same one as getTerm() would return.
+	 * 
+	 * @return a list of terms
+	 */
+	List<Term> getAllTerms();
 
 	/**
 	 * Sets the term that represents this command's parameters.

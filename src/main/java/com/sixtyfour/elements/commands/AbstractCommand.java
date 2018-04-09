@@ -1,5 +1,6 @@
 package com.sixtyfour.elements.commands;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.sixtyfour.elements.Type;
@@ -102,6 +103,16 @@ public abstract class AbstractCommand implements Command {
 	@Override
 	public Term getTerm() {
 		return term;
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.sixtyfour.elements.commands.Command#getAllTerms()
+	 */
+	@Override
+	public List<Term> getAllTerms() {
+		List<Term> ret=new ArrayList<Term>();
+		ret.add(term);
+		return ret;
 	}
 
 	/*

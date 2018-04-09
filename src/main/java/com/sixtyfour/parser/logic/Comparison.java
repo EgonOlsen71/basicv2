@@ -215,4 +215,13 @@ public class Comparison implements LogicBlock {
 	public boolean isConstant() {
 		return false;
 	}
+
+	@Override
+	public List<Term> getTerms() {
+		List<Term> terms = new ArrayList<Term>();
+		terms.add(right);
+		terms.add(left);
+		return terms;
+	}
+
 }

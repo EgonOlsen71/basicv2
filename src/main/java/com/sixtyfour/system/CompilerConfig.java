@@ -14,6 +14,7 @@ public class CompilerConfig {
 	private boolean intermediateLanguageOptimizations = true;
 	private boolean nativeLanguageOptimizations = true;
 	private boolean optimizedLinker = true;
+	private boolean deadStoreElimination = true;
 	private static CompilerConfig instance = new CompilerConfig();
 
 	public static CompilerConfig getConfig() {
@@ -62,5 +63,13 @@ public class CompilerConfig {
 
 	public void setOptimizedLinker(boolean optimizedLinker) {
 		this.optimizedLinker = optimizedLinker;
+	}
+
+	public boolean isDeadStoreElimination() {
+		return deadStoreElimination;
+	}
+
+	public void setDeadStoreElimination(boolean deadStoreElimination) {
+		this.deadStoreElimination = deadStoreElimination;
 	}
 }

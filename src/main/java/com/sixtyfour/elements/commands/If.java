@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.sixtyfour.cbmnative.NativeCompiler;
 import com.sixtyfour.parser.Parser;
+import com.sixtyfour.parser.Term;
 import com.sixtyfour.parser.TermEnhancer;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.parser.logic.LogicParser;
@@ -76,6 +77,18 @@ public class If extends AbstractCommand {
 			return "GOTO" + restTerm;
 		}
 		return restTerm;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.sixtyfour.elements.commands.Command#getAllTerms()
+	 */
+	@Override
+	public List<Term> getAllTerms() {
+		List<Term> ret = new ArrayList<Term>();
+		ret.addAll(logicTerm.getTerms());
+		return ret;
 	}
 
 	/*

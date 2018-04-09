@@ -395,7 +395,7 @@ public class NativeCompilerTest {
 	}
 
 	private static List<String> testMachineCode(Basic basic) {
-		List<String> mCode = NativeCompiler.getCompiler().compileToPseudeCode(basic.getMachine(), basic.getPCode());
+		List<String> mCode = NativeCompiler.getCompiler().compileToPseudeCode(basic);
 		System.out.println("------------------------------");
 		for (String line : mCode) {
 			System.out.println(line);

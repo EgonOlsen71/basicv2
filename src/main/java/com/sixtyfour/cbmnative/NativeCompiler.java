@@ -16,8 +16,8 @@ import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Line;
 import com.sixtyfour.parser.Term;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
-import com.sixtyfour.parser.optimize.ConstantFolder;
 import com.sixtyfour.parser.optimize.ConstantPropagator;
+import com.sixtyfour.parser.optimize.DeadStoreEliminator;
 import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Machine;
 
@@ -83,9 +83,9 @@ public class NativeCompiler {
 
 	public List<String> compile(Basic basic) {
 		basic.compile();
-		PCode pCode = basic.getPCode();
+		List<String> mCode = NativeCompiler.getCompiler().compileToPseudeCode(basic);
+
 		PlatformProvider platform = new C64Platform();
-		List<String> mCode = NativeCompiler.getCompiler().compileToPseudeCode(basic.getMachine(), pCode);
 		List<String> nCode = platform.getTransformer().transform(basic.getMachine(), platform, mCode);
 		if (platform.getOptimizer() != null && CompilerConfig.getConfig().isNativeLanguageOptimizations()) {
 			nCode = platform.getOptimizer().optimize(platform, nCode);
@@ -96,8 +96,13 @@ public class NativeCompiler {
 		return nCode;
 	}
 
-	public List<String> compileToPseudeCode(Machine machine, PCode pCode) {
+	public List<String> compileToPseudeCode(Basic basic) {
 		long s = System.currentTimeMillis();
+		Machine machine = basic.getMachine();
+		PCode pCode = basic.getPCode();
+		ConstantPropagator.propagateConstants(machine);
+		DeadStoreEliminator.eliminateDeadStores(basic);
+		
 		List<String> mCode = new ArrayList<String>();
 		for (Integer lineNumber : pCode.getLineNumbers()) {
 			Line line = pCode.getLines().get(lineNumber);
@@ -146,8 +151,6 @@ public class NativeCompiler {
 
 	public List<String> compileToPseudoCode(Machine machine, Term term) {
 		Atom atom = TermHelper.linearize(machine, term);
-		ConstantPropagator.propagateConstants(machine);
-		term = ConstantFolder.foldConstants(term, machine);
 		return compileToPseudoCode(machine, atom);
 	}
 

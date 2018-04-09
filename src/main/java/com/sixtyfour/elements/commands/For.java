@@ -76,6 +76,20 @@ public class For extends AbstractCommand {
 	/*
 	 * (non-Javadoc)
 	 * 
+	 * @see com.sixtyfour.elements.commands.Command#getAllTerms()
+	 */
+	@Override
+	public List<Term> getAllTerms() {
+		List<Term> ret = new ArrayList<Term>();
+		ret.add(term);
+		ret.add(endTerm);
+		ret.add(stepTerm);
+		return ret;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String,
 	 * int, int, int, boolean, sixtyfour.system.Machine)
 	 */
@@ -128,7 +142,7 @@ public class For extends AbstractCommand {
 		if (!Parser.isNumberType(stepTerm)) {
 			typeMismatch(stepTerm);
 		}
-		
+
 		machine.trackVariableUsage(var, false);
 		return null;
 	}

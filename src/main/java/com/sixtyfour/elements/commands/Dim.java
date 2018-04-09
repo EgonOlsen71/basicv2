@@ -1,6 +1,7 @@
 package com.sixtyfour.elements.commands;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,7 @@ import com.sixtyfour.elements.Type;
 import com.sixtyfour.elements.Variable;
 import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Parser;
+import com.sixtyfour.parser.Term;
 import com.sixtyfour.parser.VariableAndTerms;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.system.BasicProgramCounter;
@@ -82,6 +84,26 @@ public class Dim extends AbstractCommand {
 			}
 		}
 		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.sixtyfour.elements.commands.Command#getAllTerms()
+	 */
+	@Override
+	public List<Term> getAllTerms() {
+		List<Term> ret = new ArrayList<Term>();
+		ret.add(term);
+		Collection<List<Atom>> terms = this.terms.values();
+		for (List<Atom> atoms : terms) {
+			for (Atom atom : atoms) {
+				if (atom instanceof Term) {
+					ret.add((Term) atom);
+				}
+			}
+		}
+		return ret;
 	}
 
 	/*

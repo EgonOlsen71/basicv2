@@ -1,6 +1,9 @@
 package com.sixtyfour.parser.logic;
 
+import java.util.List;
+
 import com.sixtyfour.parser.Atom;
+import com.sixtyfour.parser.Term;
 import com.sixtyfour.system.Machine;
 
 /**
@@ -21,5 +24,12 @@ public interface LogicBlock extends Atom {
 	 * Not. Negates the block's state.
 	 */
 	void not();
+	
+	/**
+	 * Returns the terms used to form this logic block in no particular order.
+	 * 
+	 * @return the terms
+	 */
+	List<Term> getTerms();
 
 }

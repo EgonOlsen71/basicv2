@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.sixtyfour.elements.Type;
+import com.sixtyfour.parser.Term;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.system.Machine;
 
@@ -204,6 +205,18 @@ public class LogicTerm implements LogicBlock {
 	@Override
 	public boolean isConstant() {
 		return false;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.sixtyfour.parser.logic.LogicBlock#getTerms()
+	 */
+	@Override
+	public List<Term> getTerms() {
+		List<Term> terms=new ArrayList<Term>();
+		for (LogicBlock block:blocks) {
+			terms.addAll(block.getTerms());
+		}
+		return terms;
 	}
 
 }

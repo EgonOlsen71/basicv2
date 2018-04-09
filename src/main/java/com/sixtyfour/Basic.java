@@ -3,13 +3,16 @@ package com.sixtyfour;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.sixtyfour.cbmnative.PCode;
 import com.sixtyfour.elements.commands.Command;
 import com.sixtyfour.elements.commands.CommandList;
 import com.sixtyfour.elements.commands.For;
+import com.sixtyfour.elements.commands.Let;
 import com.sixtyfour.elements.commands.Next;
 import com.sixtyfour.elements.commands.Rem;
 import com.sixtyfour.elements.commands.internal.Delay;
@@ -894,5 +897,38 @@ public class Basic implements ProgramExecutor {
 				cnt++;
 			}
 		}
+	}
+
+	/**
+	 * Removes all the commands in the list from the program by replacing them
+	 * with NOPs (i.e. instances of REM).
+	 * 
+	 * @param toRemove
+	 *            the commands to remove
+	 */
+	public void removeCommands(List<Command> toRemove) {
+		this.machine.removeCommands(toRemove);
+
+		Set<Command> remSet = new HashSet<Command>(toRemove);
+
+		Integer num = null;
+		int lineCnt = 0;
+		int pos = 0;
+
+		do {
+			num = lineNumbers.get(lineCnt);
+			Line line = lines.get(num);
+
+			List<Command> cmds = line.getCommands();
+			for (int i = pos; i < cmds.size(); i++) {
+				Command cmd = cmds.get(i);
+				if (remSet.contains(cmd)) {
+					cmds.set(i, new Rem());
+					Logger.log("Eliminated dead store to " + ((Let) cmd).getVar().getUpperCaseName() + " from line " + num);
+				}
+			}
+			lineCnt++;
+		} while (lineCnt < lines.size() && !stop);
+
 	}
 }

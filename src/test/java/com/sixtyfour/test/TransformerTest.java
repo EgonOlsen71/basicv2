@@ -35,7 +35,7 @@ public class TransformerTest {
 		// testTransformer2();
 		// testTransformer4();
 		// testTransformer5();
-		 testTransformerFractal();
+		// testTransformerFractal();
 		// testTransformer6();
 		// testTransformer7();
 		// testTransformerPrime();
@@ -567,16 +567,17 @@ public class TransformerTest {
 	}
 
 	private static Assembler initTestEnvironment(String[] vary, boolean executePseudo) {
-		//CompilerConfig conf=CompilerConfig.getConfig();
-		//conf.setConstantFolding(false);
-		//conf.setConstantPropagation(false);
-		//conf.setIntermediateLanguageOptimizations(false);
-		//conf.setNativeLanguageOptimizations(false);
+		CompilerConfig conf=CompilerConfig.getConfig();
+		conf.setConstantFolding(true);
+		conf.setConstantPropagation(true);
+		conf.setDeadStoreElimination(true);
+		conf.setIntermediateLanguageOptimizations(true);
+		conf.setNativeLanguageOptimizations(true);
 		
 		final Basic basic = new Basic(vary);
 		basic.compile();
 
-		List<String> mCode = NativeCompiler.getCompiler().compileToPseudeCode(basic.getMachine(), basic.getPCode());
+		List<String> mCode = NativeCompiler.getCompiler().compileToPseudeCode(basic);
 		System.out.println("------------------------------");
 		for (String line : mCode) {
 			System.out.println(line);
