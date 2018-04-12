@@ -1613,31 +1613,34 @@ NUMCHKLOOP	INY
 			CMP #43			; check +
 			BNE	NOPLUS
 			TXA
-			BIT VAL31		; nothing found yet, ok
+			BIT VAL6		; nothing found yet, ok
 			BNE	CHECKERR
-			LDX #1
+			ORA #2
+			TAX
 			JMP NUMCHKLOOP
 NOPLUS		CMP #45			; check -
 			BNE	NOMINUS
 			TXA
-			BIT VAL31		; nothing found yet, ok
+			BIT VAL6		; nothing found yet, ok
 			BNE	CHECKERR
-			LDX #2
+			ORA #4
+			TAX
 			JMP NUMCHKLOOP
 NOMINUS		CMP #69			; check -
 			BNE	NOEEE
 			TXA
-			BIT VAL4		; no e found yet, ok
+			BIT VAL8		; no e found yet, ok
 			BNE	CHECKERR
-			ORA #4
+			ORA #8
+			AND #249		; +- are allowed after an e again
 			TAX
 			JMP NUMCHKLOOP
 NOEEE		CMP #46			; check .
 			BNE	NOPOINT
 			TXA
-			BIT VAL8		; no . found yet, ok
+			BIT VAL24		; no . found yet, ok
 			BNE	CHECKERR
-			ORA #8
+			ORA #16
 			TAX
 			JMP NUMCHKLOOP
 NOPOINT		CMP #48
@@ -1649,9 +1652,10 @@ NOPOINT		CMP #48
 			TAX
 			JMP NUMCHKLOOP
 
-VAL31		.BYTE 31
-VAL4		.BYTE 4
+VAL1		.BYTE 1
+VAL6		.BYTE 6
 VAL8		.BYTE 8
+VAL24		.BYTE 24
 
 CHECKERR	LDA #<REAL_CONST_MINUS_ONE
 			STA TMP3_ZP
