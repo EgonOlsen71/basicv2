@@ -84,6 +84,7 @@ public class Transformer6502 implements Transformer {
 		res.add("CRSRPOS = $FFF0");
 		res.add("CRSRRIGHT = $AB3B");
 		res.add("GETIN = $FFE4");
+		res.add("INPUT = $A560");
 
 		res.add("TMP_ZP = 105");
 		res.add("TMP2_ZP = 107");
@@ -184,6 +185,8 @@ public class Transformer6502 implements Transformer {
 		res.add("ENDSTRBUF\t.WORD " + platform.getStringMemoryEnd());
 		res.add("CONCATBUFP\t.BYTE 0");
 		res.add("PROGRAMEND");
+		res.add("INPUTQUEUEP\t.BYTE 0");
+		res.add("INPUTQUEUE\t.ARRAY $0F");
 		res.add("CONCATBUF\t.ARRAY 256");
 		res.add("FPSTACK .ARRAY " + Math.min(256, platform.getStackSize() * 5));
 		res.add("FORSTACK .ARRAY " + Math.min(1024, platform.getStackSize() * 17));

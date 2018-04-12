@@ -1494,7 +1494,91 @@ SOMENUMKEY	SEC
 			LDX #<Y_REG
 			LDY #>Y_REG
 			JMP FACMEM
-NUMERROR	JMP	SYNTAXERROR		
+NUMERROR	JMP	SYNTAXERROR
+;###################################
+QUEUESIZE	LDY INPUTQUEUEP
+			LDA #0
+			JSR INTFAC
+			LDX #<X_REG
+			LDY #>X_REG
+			JMP FACMEM
+;###################################
+CLEARQUEUE	LDA #$0
+			STA INPUTQUEUEP
+			RTS
+;###################################
+INPUTSTR	LDA #$0
+			STA TMP_FLAG
+			LDX INPUTQUEUEP
+			BEQ INPUTNORM
+			LDA #$FF
+			LDX #$1
+			CLC
+			ADC INPUTQUEUE
+			STA TMP_ZP
+			BCC INNONO
+			LDX #$2
+INNONO		STX TMP_ZP+1
+			DEC	INPUTQUEUEP		; Decrement the queue size
+			LDX INPUTQUEUEP	
+SHRINKQ		INX
+			LDA INPUTQUEUE,X	; Copy the queue's content down one entry
+			DEX
+			STA INPUTQUEUE,X
+			DEX
+			BNE SHRINKQ			
+INNOFLOW	LDY INPUTQUEUE
+			DEY	
+			JMP ISTRLOOP
+INPUTNORM	AND #$FF
+			JSR INPUT
+			LDA #$FF
+			STA TMP_ZP
+			LDA #$1
+			STA TMP_ZP+1
+			LDY #0
+			DEY
+ISTRLOOP	INY
+			LDA $0200,Y
+			TAX
+			CMP #$2C			; found ,?
+			BNE	ICHECK
+			STA TMP_FLAG
+			LDA #$0
+			STA $0200,Y			; replace , by the string terminator
+			LDX INPUTQUEUEP		; load the queue size
+			BNE	INQUEUENE		; If empty, set at least to one
+			STA INPUTQUEUE		; ...and set the first index to 0
+			INX
+INQUEUENE	INY
+			TYA
+			STA INPUTQUEUE,X	; store the offset in the queue
+			INX					
+			STX INPUTQUEUEP		; update the queue size
+			JMP ISTRLOOP		; Back to loop...
+ICHECK		TXA					; String terminator?
+			BNE ISTRLOOP		; No, loop...
+			LDA TMP_FLAG
+			BEQ	ISIMPLECOPY
+			JMP	INPUTSTR
+ISIMPLECOPY	
+			INY
+			TYA
+			LDY #0
+			STA (TMP_ZP),Y
+			TAX				; Length in X
+IQUEUECOPY	LDA #<A_REG
+			LDY #>A_REG
+			STA TMP2_ZP
+			STY TMP2_ZP+1
+			LDA CONCATBUFP	; save the current concatbuffer position...
+			PHA
+			JSR COPYONLY
+			PLA
+			STA CONCATBUFP	; and restore it (because COPYONLY nulls it)
+			RTS
+;###################################
+INPUTNUMBER	RTS	
 ;###################################
 GETSTR		JSR GETIN
 			BNE SOMEKEY
