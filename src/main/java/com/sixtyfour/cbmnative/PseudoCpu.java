@@ -664,6 +664,9 @@ public class PseudoCpu {
 		case "CHR":
 			chr(parts);
 			return;
+		case "EXTRAIGNORED":
+			strOutAbs("?extra ignored", 0);
+			return;
 		case "USR":
 			usr(parts);
 			return;
@@ -875,6 +878,14 @@ public class PseudoCpu {
 			machine.getOutputChannel().print(channel, readString(regs[A].intValue()));
 		} else {
 			machine.getDeviceProvider().print(channel, readString(regs[A].intValue()));
+		}
+	}
+
+	private void strOutAbs(String strg, int channel) {
+		if (channel == 0) {
+			machine.getOutputChannel().print(channel, strg);
+		} else {
+			machine.getDeviceProvider().print(channel, strg);
 		}
 	}
 

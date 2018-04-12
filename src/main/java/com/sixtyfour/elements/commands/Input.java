@@ -88,6 +88,7 @@ public class Input extends MultiVariableCommand {
 		NativeCompiler compiler = NativeCompiler.getCompiler();
 		List<CodeContainer> ccs = new ArrayList<CodeContainer>();
 
+		String labelCheck = "INPUTCHECK" + inputCount;
 		String label = "INPUT" + (inputCount++);
 		if (comment != null) {
 			ccs.addAll(Util.createSingleCommand("MOV A,#" + comment + "{STRING}", "JSR STROUT"));
@@ -120,8 +121,9 @@ public class Input extends MultiVariableCommand {
 				expr.add("JSR INPUTNUMBER");
 				expr.add("CMP X,#0{REAL}");
 				expr.add("JE " + label2);
-				expr.add("MOV A,#?Redo from start{STRING}");
+				expr.add("MOV A,#?redo from start{STRING}");
 				expr.add("JSR STROUT");
+				expr.add("JSR LINEBREAK");
 				expr.add("JMP " + label);
 				expr.add(label2 + ":");
 			}
@@ -140,6 +142,16 @@ public class Input extends MultiVariableCommand {
 			CodeContainer cc = new CodeContainer(before, expr, after);
 			ccs.add(cc);
 		}
+		
+		List<String> check=new ArrayList<String>();
+		check.add("JSR QUEUESIZE");
+		check.add("CMP X,#0{REAL}");
+		check.add("JE " + labelCheck);
+		check.add("JSR EXTRAIGNORED");
+		check.add(labelCheck+":");
+		CodeContainer cc = new CodeContainer(null, check, null);
+		ccs.add(cc);
+		
 		return ccs;
 	}
 

@@ -1027,7 +1027,7 @@ ARRAYACCESS_STRING_INT
 			LDA (TMP_ZP),Y
 			STA A_REG+1
 			RTS
-; #######
+;###################################
 ARRAYACCESS_INTEGER
 			LDA #<X_REG
 			LDY #>X_REG
@@ -1064,7 +1064,7 @@ ARRAYACCESS_INTEGER_INT
 			LDY #>X_REG
 			; FAC to (X/Y)
 			JMP FACMEM	;RTS is implicit
-; #######
+;###################################
 ARRAYACCESS_REAL
 			LDA #<X_REG
 			LDY #>X_REG
@@ -1508,6 +1508,9 @@ CLEARQUEUE	LDA #$0
 			RTS
 ;###################################
 INPUTSTR	LDA #$0
+INPUTSTR2	STA TMP_REG+1
+			LDA #$0
+			STA TMP_REG
 			STA TMP_FLAG
 			LDX INPUTQUEUEP
 			BEQ INPUTNORM
@@ -1520,15 +1523,17 @@ INPUTSTR	LDA #$0
 			LDX #$2
 INNONO		STX TMP_ZP+1
 			DEC	INPUTQUEUEP		; Decrement the queue size
-			LDX INPUTQUEUEP	
+			LDY INPUTQUEUE		; Store current offset in Y
+			STY TMP_REG			; Store the value to subtract it later on
+			DEY
+			LDX #$0
 SHRINKQ		INX
 			LDA INPUTQUEUE,X	; Copy the queue's content down one entry
 			DEX
 			STA INPUTQUEUE,X
-			DEX
-			BNE SHRINKQ			
-INNOFLOW	LDY INPUTQUEUE
-			DEY	
+			INX
+			CPX INPUTQUEUEP
+			BNE SHRINKQ
 			JMP ISTRLOOP
 INPUTNORM	AND #$FF
 			JSR INPUT
@@ -1561,13 +1566,16 @@ ICHECK		TXA					; String terminator?
 			LDA TMP_FLAG
 			BEQ	ISIMPLECOPY
 			JMP	INPUTSTR
-ISIMPLECOPY	
-			INY
-			TYA
+ISIMPLECOPY	TYA
+			SEC
+			SBC TMP_REG
 			LDY #0
 			STA (TMP_ZP),Y
 			TAX				; Length in X
-IQUEUECOPY	LDA #<A_REG
+			LDA TMP_REG+1	; Check for numeric mode
+			BEQ	INISSTR
+			RTS
+INISSTR		LDA #<A_REG
 			LDY #>A_REG
 			STA TMP2_ZP
 			STY TMP2_ZP+1
@@ -1578,7 +1586,90 @@ IQUEUECOPY	LDA #<A_REG
 			STA CONCATBUFP	; and restore it (because COPYONLY nulls it)
 			RTS
 ;###################################
-INPUTNUMBER	RTS	
+INPUTNUMBER	LDA #$1
+			JSR INPUTSTR2
+			LDA TMP_ZP
+			STA $22
+			LDA TMP_ZP+1
+			STA $23
+			LDY #0
+			STY $0D
+			LDA ($22),Y
+			STA TMP_REG		; Store the string's length
+			TAY
+			INC $22
+			BNE VALSTR2
+			INC $23
+
+VALSTR2		LDY #$0			; check, if it's a valid number input. This check might not be 100% like the one done by BASIC V2...well, who cares...?!?
+			DEY
+			LDX #$0			; bit 0: Number found, bit 1: plus found, bit 2: minus found, bit 3: e found, bit 4: . found
+NUMCHKLOOP	INY
+			CPY TMP_REG
+			BEQ NUMOK
+			LDA ($22),Y
+			CMP #$20
+			BEQ NUMCHKLOOP	; ignore spaces
+			CMP #43			; check +
+			BNE	NOPLUS
+			TXA
+			BIT VAL31		; nothing found yet, ok
+			BNE	CHECKERR
+			LDX #1
+			JMP NUMCHKLOOP
+NOPLUS		CMP #45			; check -
+			BNE	NOMINUS
+			TXA
+			BIT VAL31		; nothing found yet, ok
+			BNE	CHECKERR
+			LDX #2
+			JMP NUMCHKLOOP
+NOMINUS		CMP #69			; check -
+			BNE	NOEEE
+			TXA
+			BIT VAL4		; no e found yet, ok
+			BNE	CHECKERR
+			ORA #4
+			TAX
+			JMP NUMCHKLOOP
+NOEEE		CMP #46			; check .
+			BNE	NOPOINT
+			TXA
+			BIT VAL8		; no . found yet, ok
+			BNE	CHECKERR
+			ORA #8
+			TAX
+			JMP NUMCHKLOOP
+NOPOINT		CMP #48
+			BCC	CHECKERR	; <0
+			CMP #58
+			BCS CHECKERR	; >9
+			TXA
+			ORA #1
+			TAX
+			JMP NUMCHKLOOP
+
+VAL31		.BYTE 31
+VAL4		.BYTE 4
+VAL8		.BYTE 8
+
+CHECKERR	LDA #<REAL_CONST_MINUS_ONE
+			STA TMP3_ZP
+			LDA #>REAL_CONST_MINUS_ONE
+			STA TMP3_ZP+1
+			LDX #<X_REG
+			LDY #>X_REG
+			JMP COPY2_XY
+			RTS				; Flag error and return
+							; check, if the input string looked like a number
+NUMOK		LDA TMP_REG
+			JSR VALS
+			LDA #$0			; flag as number
+			STA X_REG
+			LDX #<Y_REG
+			LDY #>Y_REG
+			JMP FACMEM		; ...and return
+
 ;###################################
 GETSTR		JSR GETIN
 			BNE SOMEKEY
@@ -2107,6 +2198,9 @@ OUTOFMEMORY
 ;###################################
 ILLEGALQUANTITY
 			JMP $B248
+;###################################
+EXTRAIGNORED
+			JMP $ACF4
 ;###################################
 SYNTAXERROR 
 ERROR		JMP $AF08	;General purpose error, here a syntax error
