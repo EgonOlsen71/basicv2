@@ -90,10 +90,10 @@ public class Input extends MultiVariableCommand {
 
 		String labelCheck = "INPUTCHECK" + inputCount;
 		String label = "INPUT" + (inputCount++);
+		ccs.addAll(Util.createSingleCommand(label + ":", "JSR CLEARQUEUE"));
 		if (comment != null) {
 			ccs.addAll(Util.createSingleCommand("MOV A,#" + comment + "{STRING}", "JSR STROUT"));
 		}
-		ccs.addAll(Util.createSingleCommand(label + ":", "JSR CLEARQUEUE"));
 
 		for (int i = 0; i < vars.size(); i++) {
 			Term indexTerm = indexTerms.get(i);
