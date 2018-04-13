@@ -3,6 +3,7 @@ package com.sixtyfour.cbmnative.mos6502;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -28,6 +29,7 @@ public class Optimizer64 implements Optimizer {
 			this.add(new Pattern("INTOUT + LINEBRK", new String[] { "JSR INTOUTBRK" }, "JSR INTOUT", "JSR LINEBREAK"));
 			this.add(new Pattern("POP, REG0, VAR0", new String[] { "{LINE0}", "{LINE1}", "{LINE2}", "{LINE3}" }, "JSR POPREAL", "LDX #<{REG0}", "LDY #>{REG0}", "JSR FACMEM",
 					"LDA #<{REG0}", "LDY #>{REG0}", "JSR REALFAC"));
+			
 			this.add(new Pattern(false, "Array index is integer (store)", new String[] { "{LINE10}", "{LINE11}", "{LINE12}", "{LINE13}", "{LINE18}", "{LINE19}", "{LINE20}",
 					"{LINE21}", "{LINE0}", "{LINE1}", "{LINE22}_INT" }, "LDY {MEM0}", "LDA {MEM0}", "JSR INTFAC", "LDX #<{REG0}", "LDY #>{REG0}", "JSR FACMEM", "LDA #<{REG0}",
 					"LDY #>{REG0}", "JSR REALFAC", "JSR PUSHREAL", "LDA {*}", "LDY {*}", "STA {REG1}", "STY {REG1}", "JSR POPREAL", "LDX #<{REG2}", "LDY #>{REG2}", "JSR FACMEM",
@@ -35,6 +37,7 @@ public class Optimizer64 implements Optimizer {
 			this.add(new Pattern(false, "Array index is integer (load)", new String[] { "{LINE6}", "{LINE7}", "{LINE8}", "{LINE9}", "{LINE0}", "{LINE1}", "{LINE10}_INT" },
 					"LDY {MEM0}", "LDA {MEM0}", "JSR INTFAC", "LDX #<{REG0}", "LDY #>{REG0}", "JSR FACMEM", "LDA #<{MEM1}", "LDY #>{MEM1}", "STA G_REG", "STY G_REG+1",
 					"JSR ARRAYACCESS{*}"));
+			
 			this.add(new Pattern("Quick copy into REG", new String[] { "{LINE0}", "{LINE1}", "STA TMP3_ZP", "STY TMP3_ZP+1", "{LINE3}", "{LINE4}", "JSR COPY2_XY" },
 					"LDA #<{MEM0}", "LDY #>{MEM0}", "JSR REALFAC", "LDX #<{REG0}", "LDY #>{REG0}", "JSR FACMEM"));
 			this.add(new Pattern(false, "Simplified CMP with 0", new String[] { "{LINE0}", "LDA $61" }, "JSR REALFAC", "LDX #<{REG0}", "LDY #>{REG0}", "JSR FACMEM",
@@ -48,12 +51,15 @@ public class Optimizer64 implements Optimizer {
 			this.add(new Pattern("FAC into REG?, REG? into FAC, REG into...", new String[] { "{LINE0}", "{LINE1}", "{LINE2}", "{LINE6}", "{LINE7}", "{LINE8}", "{LINE9}",
 					"{LINE10}", "{LINE11}" }, "LDX #<{REG0}", "LDY #>{REG0}", "JSR FACMEM", "LDA #<{REG0}", "LDY #>{REG0}", "JSR REALFAC", "LDX #<{MEM0}", "LDY #>{MEM0}",
 					"JSR FACMEM", "LDA #<{REG0}", "LDY #>{REG0}", "JSR REALFAC"));
+			
 			this.add(new Pattern("FAC into REG?, REG? into FAC", null, "LDX #<{REG0}", "LDY #>{REG0}", "JSR FACMEM", "LDA #<{REG0}", "LDY #>{REG0}", "JSR REALFAC"));
+			
 			this.add(new Pattern("INT to FAC, FAC to INT", new String[] { "{LINE0}", "{LINE1}" }, "LDY {*}", "LDA {*}", "JSR INTFAC", "JSR FACINT"));
+			
 			this.add(new Pattern("STY A...LDY A...STY B", new String[] { "{LINE0}", "{LINE3}" }, "STY {MEM0}", "LDY {MEM0}", "LDA #0", "STY {*}"));
 			this.add(new Pattern("FAC to INT, INT to FAC", null, "JSR INTFAC", "JSR FACINT"));
 			this.add(new Pattern("VAR into FAC, FAC into VAR", null, "LDA #<{MEM0}", "LDY #>{MEM0}", "JSR REALFAC", "LDX #<{MEM0}", "LDY #>{MEM0}", "JSR FACMEM"));
-
+			
 			this.add(new Pattern(false, "CMP (REG) = 0", new String[] { "LDA {REG0}", "{LINE6}", "{LINE7}" }, "LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC", "LDA #<{REG0}",
 					"LDY #>{REG0}", "JSR CMPFAC", "BEQ {*}", "LDA #0"));
 			this.add(new Pattern(false, "CMP (REG) != 0", new String[] { "LDA {REG0}", "{LINE6}", "{LINE7}" }, "LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC", "LDA #<{REG0}",
@@ -62,7 +68,7 @@ public class Optimizer64 implements Optimizer {
 					"LDY #>{MEM0}", "JSR CMPFAC", "BEQ {*}", "LDA #0"));
 			this.add(new Pattern(false, "CMP (MEM) != 0", new String[] { "LDA {MEM0}", "{LINE6}", "{LINE7}" }, "LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC", "LDA #<{MEM0}",
 					"LDY #>{MEM0}", "JSR CMPFAC", "BNE {*}", "LDA #0"));
-
+	
 			this.add(new Pattern(false, "CMP (REG) = 0(2)", new String[] { "LDA {REG0}", "{LINE6}", "{LINE7}" }, "LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC", "LDA #<{REG0}",
 					"LDY #>{REG0}", "JSR CMPFAC", "{LABEL}", "BEQ {*}"));
 			this.add(new Pattern(false, "CMP (REG) != 0(2)", new String[] { "LDA {REG0}", "{LINE6}", "{LINE7}" }, "LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC", "LDA #<{REG0}",
@@ -71,7 +77,7 @@ public class Optimizer64 implements Optimizer {
 					"LDY #>{MEM0}", "JSR CMPFAC", "{LABEL}", "BEQ {*}"));
 			this.add(new Pattern(false, "CMP (MEM) != 0(2)", new String[] { "LDA {MEM0}", "{LINE6}", "{LINE7}" }, "LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC", "LDA #<{MEM0}",
 					"LDY #>{MEM0}", "JSR CMPFAC", "{LABEL}", "BNE {*}"));
-
+			
 			// Note: This optimization relies on the former stage to create an
 			// actually unneeded PUSH/POP sequence in for loops. But if I
 			// optimize that away, this will
@@ -97,6 +103,7 @@ public class Optimizer64 implements Optimizer {
 					"JSR REALFAC", "LDA #<{REG1}", "LDY #>{REG1}", "JSR MEMARG", "JSR {*}"));
 			this.add(new Pattern("Avoid INTEGER->REAL conversion", true, new String[] { "LDA #<{CONST0}R", "LDY #>{CONST0}R", "JSR REALFAC" }, "LDY {CONST0}", "LDA {CONST0}",
 					"JSR INTFAC"));
+			
 			this.add(new Pattern(false, "Array value used twice in calculation", new String[] { "{LINE0}", "{LINE1}", "{LINE2}", "{LINE3}", "{LINE4}", "{LINE5}", "{LINE6}",
 					"{LINE7}", "{LINE8}", "{LINE9}", "{LINE10}", "{LINE11}", "{LINE12}", "{LINE13}", "{LINE14}", "{LINE12}", "{LINE13}", "JSR MEMARG" }, "LDA #<{MEM0}",
 					"LDY #>{MEM0}", "STA TMP3_ZP", "STY TMP3_ZP+1", "LDX #<{REG0}", "LDY #>{REG0}", "JSR COPY2_XY", "LDA #<{MEM1}", "LDY #>{MEM1}", "STA {REG1}", "STY {REG1}",
@@ -217,9 +224,20 @@ public class Optimizer64 implements Optimizer {
 		for (Map.Entry<String, Integer> cnts : type2count.entrySet()) {
 			Logger.log("Optimization " + cnts.getKey() + " applied " + cnts.getValue() + " times!");
 		}
-		Logger.log("Assembly code optimized in " + (System.currentTimeMillis() - s) + "ms");
 
-		return applySpecialRules(input);
+		input= applySpecialRules(input);
+		input= removeNops(input);
+		Logger.log("Assembly code optimized in " + (System.currentTimeMillis() - s) + "ms");
+		return input;
+	}
+
+	private List<String> removeNops(List<String> input) {
+		for(Iterator<String> itty=input.iterator(); itty.hasNext();) {
+			if (itty.next().equals("NOP")) {
+				itty.remove();
+			}
+		}
+		return input;
 	}
 
 	private List<String> applySpecialRules(List<String> input) {

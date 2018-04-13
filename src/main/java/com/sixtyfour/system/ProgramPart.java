@@ -89,7 +89,7 @@ public class ProgramPart {
 	}
 
 	/**
-	 * Sets the end address
+	 * Gets the end address
 	 * 
 	 * @return the end address
 	 */

@@ -2,6 +2,8 @@ package com.sixtyfour.parser.optimize;
 
 import com.sixtyfour.elements.Constant;
 import com.sixtyfour.elements.Type;
+import com.sixtyfour.elements.commands.Command;
+import com.sixtyfour.elements.functions.Function;
 import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Operator;
 import com.sixtyfour.parser.Term;
@@ -32,7 +34,7 @@ public class ConstantFolder {
 				return finalTerm;
 			}
 
-			if (left.isConstant() && right.isConstant() && left.getType().equals(right.getType())) {
+			if (left.isConstant() && right.isConstant() && Type.isAssignable(left.getType(), right.getType())) {
 				Constant<?> conty = null;
 				Object val = finalTerm.eval(machine);
 				if (left.getType().equals(Type.STRING)) {
@@ -48,14 +50,41 @@ public class ConstantFolder {
 					finalTerm.setRight(new Constant<Integer>(0));
 				}
 			} else {
-				if ((left.isTerm())) {
+				if (left != null && left.isTerm()) {
 					finalTerm.setLeft(foldConstants((Term) left, machine));
 				}
-				if ((right.isTerm())) {
+				if (right != null && right.isTerm()) {
 					finalTerm.setRight(foldConstants((Term) right, machine));
+				}
+				if (left != null && left instanceof Function) {
+					Function fun = (Function) left;
+					fun.setTerm(foldConstants(fun.getTerm(), machine));
+				}
+
+				if (right != null && right instanceof Function) {
+					Function fun = (Function) right;
+					fun.setTerm(foldConstants(fun.getTerm(), machine));
 				}
 			}
 		}
 		return finalTerm;
+	}
+
+	public static void foldConstants(Machine machine) {
+		if (CompilerConfig.getConfig().isConstantFolding()) {
+			for (Command cmd : machine.getCommandList()) {
+				for (Term cmdTerm : cmd.getAllTerms()) {
+					/*
+					if (cmdTerm != null && cmd.getTerm() != null) {
+						System.out.println(cmd.getName() + "/" + cmdTerm + "/" + cmd.getTerm().getInitial() + "/" + ConstantPropagator.checkForConstant(machine, cmdTerm));
+					}
+					*/
+					if (cmdTerm != null) {
+						foldConstants(cmdTerm, machine);
+						//System.out.println("> " + cmdTerm);
+					}
+				}
+			}
+		}
 	}
 }

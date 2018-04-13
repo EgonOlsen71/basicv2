@@ -16,6 +16,7 @@ import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Line;
 import com.sixtyfour.parser.Term;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
+import com.sixtyfour.parser.optimize.ConstantFolder;
 import com.sixtyfour.parser.optimize.ConstantPropagator;
 import com.sixtyfour.parser.optimize.DeadStoreEliminator;
 import com.sixtyfour.system.CompilerConfig;
@@ -108,9 +109,11 @@ public class NativeCompiler {
 			DeadStoreEliminator.eliminateDeadStores(basic);
 		} else {
 			// If it's enabled, we are save to proceed the usual way, i.e.
-			// propagate first, then eliminate based on the results, because folding
+			// propagate first, then eliminate based on the results, because
+			// folding
 			// will take care of the unused expressions later anyway.
 			ConstantPropagator.propagateConstants(machine);
+			ConstantFolder.foldConstants(machine);
 			DeadStoreEliminator.eliminateDeadStores(basic);
 		}
 
@@ -162,7 +165,12 @@ public class NativeCompiler {
 
 	public List<String> compileToPseudoCode(Machine machine, Term term) {
 		Atom atom = TermHelper.linearize(machine, term);
-		return compileToPseudoCode(machine, atom);
+		List<String> ret = compileToPseudoCode(machine, atom);
+		// The compiler adds "NOP"s as markers for a new term, so that
+		// optimizations don't cross term borders and screw things up in the
+		// process. They will be removed later...
+		ret.add(0, "NOP");
+		return ret;
 	}
 
 	public List<String> compileToPseudoCode(Machine machine, Atom term) {

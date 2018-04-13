@@ -1,5 +1,5 @@
 bl=10:ml=40:ad=0.5
-dim i,xt(10),yt(10),xp(10),yp(10),xd(10),yd(10),sc(10)
+dim i(10),xt(10),yt(10),xp(10),yp(10),xd(10),yd(10),sc(10)
 dim x,y,b2,b3,p,pp,ac
 vp=20000
 wp=21000
@@ -14,7 +14,7 @@ poke 53280,6:poke53281,6
 gosub render
 
 key:
-get a$:if a$="" then key
+rem get a$:if a$="" then key
 end
 
 render:

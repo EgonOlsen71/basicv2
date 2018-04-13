@@ -51,6 +51,9 @@ public class ConstantPropagator {
 	}
 
 	public static boolean checkForConstant(Machine machine, Term t) {
+		if (t == null) {
+			return false;
+		}
 		boolean[] isConstant = new boolean[1];
 		isConstant[0] = true;
 		return checkForConstant(machine, t, isConstant);

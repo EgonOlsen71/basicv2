@@ -9,6 +9,7 @@ import com.sixtyfour.Basic;
 import com.sixtyfour.elements.Variable;
 import com.sixtyfour.elements.commands.Command;
 import com.sixtyfour.elements.commands.Let;
+import com.sixtyfour.elements.functions.Function;
 import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Term;
 import com.sixtyfour.system.CompilerConfig;
@@ -42,7 +43,7 @@ public class DeadStoreEliminator {
 				if (cmd.isCommand("LET")) {
 					Let let = (Let) cmd;
 					String varName = let.getVar().getUpperCaseName();
-					//System.out.println(let.getVar()+"/"+let.getVar().isSupposedToBeArray());
+					// System.out.println(let.getVar()+"/"+let.getVar().isSupposedToBeArray());
 					if (varName.equals("TI$") || let.getVar().isSupposedToBeArray()) {
 						continue;
 					}
@@ -83,9 +84,19 @@ public class DeadStoreEliminator {
 		if (!found && right != null && right.isTerm()) {
 			found = findVariable(varName, (Term) right);
 		}
+
+		if (!found && left != null && left instanceof Function) {
+			found = findVariable(varName, ((Function) left).getTerm());
+		}
+
+		if (!found && right != null && right instanceof Function) {
+			found = findVariable(varName, ((Function) right).getTerm());
+		}
+
 		if (!found && left != null && left instanceof Variable) {
 			found = ((Variable) left).getUpperCaseName().equals(varName);
 		}
+
 		if (!found && right != null && right instanceof Variable) {
 			found = ((Variable) right).getUpperCaseName().equals(varName);
 		}

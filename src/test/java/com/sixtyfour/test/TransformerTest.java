@@ -3,7 +3,9 @@ package com.sixtyfour.test;
 import java.awt.image.BufferedImage;
 import java.io.FileOutputStream;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.sixtyfour.Assembler;
 import com.sixtyfour.Basic;
@@ -11,6 +13,7 @@ import com.sixtyfour.Loader;
 import com.sixtyfour.cbmnative.NativeCompiler;
 import com.sixtyfour.cbmnative.PseudoCpu;
 import com.sixtyfour.parser.Preprocessor;
+import com.sixtyfour.parser.assembly.AssemblyParser;
 import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Conversions;
 import com.sixtyfour.system.Cpu;
@@ -52,30 +55,33 @@ public class TransformerTest {
 		// testTransformerSqr();
 		// testTransformer16();
 		// testTransformer17();
-		//testTransformer18();
-		//testTransformer20();
-	    	//testTransformer22();
-	   	//testTransformer23();
-	    	testTransformerFrog();
+		// testTransformer18();
+		 testTransformer20();
+		// testTransformer22();
+		// testTransformer23();
+		testTransformerFrog();
 	}
 
 	private static void testTransformerFrog() throws Exception {
 		System.out.println("\n\ntestTransformerFrog");
 		String[] vary = Preprocessor.convertToLineNumbers(Loader.loadProgram("src/test/resources/transform/frog_transform.bas"));
 
+		for (String line : vary) {
+			System.out.println(line);
+		}
 		final Assembler assy = initTestEnvironment(vary);
 		FileWriter.writeAsPrg(assy.getProgram(), "++frog.prg", true);
 		Machine machine = executeTest(assy);
 		System.out.println("Ticks: " + machine.getCpu().getClockTicks());
 	}
-	
+
 	private static void testTransformer23() throws Exception {
 		System.out.println("\n\ntestTransformer23");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/test23.bas");
 		Assembler assy = initTestEnvironment(vary, false);
 		FileWriter.writeAsPrg(assy.getProgram(), "++testdata.prg", true);
 	}
-	
+
 	private static void testTransformer22() throws Exception {
 		System.out.println("\n\ntestTransformer22");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/test22.bas");
@@ -83,7 +89,6 @@ public class TransformerTest {
 		FileWriter.writeAsPrg(assy.getProgram(), "++testinput.prg", true);
 	}
 
-	
 	private static void testTransformer20() throws Exception {
 		System.out.println("\n\ntestTransformer20");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/test20.bas");
@@ -595,13 +600,13 @@ public class TransformerTest {
 	}
 
 	private static Assembler initTestEnvironment(String[] vary, boolean executePseudo) {
-		CompilerConfig conf=CompilerConfig.getConfig();
-		conf.setConstantFolding(false);
-		conf.setConstantPropagation(false);
-		conf.setDeadStoreElimination(false);
-		conf.setIntermediateLanguageOptimizations(false);
-		conf.setNativeLanguageOptimizations(false);
-		
+		CompilerConfig conf = CompilerConfig.getConfig();
+		conf.setConstantFolding(true);
+		conf.setConstantPropagation(true);
+		conf.setDeadStoreElimination(true);
+		conf.setIntermediateLanguageOptimizations(true);
+		conf.setNativeLanguageOptimizations(true);
+
 		final Basic basic = new Basic(vary);
 		basic.compile();
 
@@ -645,9 +650,59 @@ public class TransformerTest {
 			assy.run();
 		} catch (Exception e) {
 			e.printStackTrace();
+			printMemory(assy, machine);
 		}
 		System.out.println("...done!");
 		return machine;
+	}
+
+	private static void printMemory(Assembler assy, Machine machine) {
+		Program prg = assy.getProgram();
+		String code = assy.toString();
+		String[] lines = code.split("\n");
+		System.out.println("Lines: " + lines.length);
+		Map<String, String> addr2line = new HashMap<String, String>();
+		for (String line : lines) {
+			if (line.startsWith(".")) {
+				int pos = line.indexOf("\t");
+				addr2line.put(line.substring(0, pos), line);
+			}
+		}
+		StringBuilder sb = new StringBuilder();
+
+		for (ProgramPart pp : prg.getParts()) {
+			for (int i = pp.getAddress(); i < pp.getEndAddress(); i++) {
+				String addr = Integer.toString(i, 16);
+				addr = "." + addr;
+				if (addr2line.containsKey(addr)) {
+					if (sb.length() > 0) {
+						sb.append("\n");
+					}
+					sb.append("> ").append(addr2line.get(addr)).append("\n");
+					sb.append("  " + addr).append("\t");
+				}
+				int val = AssemblyParser.getLowByte(machine.getRam()[i]);
+				String num = Integer.toString(val, 16);
+				if (num.length() == 1) {
+					num = "0" + num;
+				}
+				sb.append(num).append(" ");
+			}
+		}
+		System.out.println(sb.toString());
+
+		System.out.println("--------------------------------------------------------------");
+		
+		lines = sb.toString().split("\n");
+		for (int i = 0; i < lines.length; i += 2) {
+			String l1 = lines[i];
+			String l2 = lines[i + 1];
+			if (l1.length() > 0 && l2.length() > 0 && l1.substring(1).equals(l2.substring(1))) {
+				continue;
+			}
+			System.out.println(l1);
+			System.out.println(l2);
+		}
 	}
 
 	@SuppressWarnings("unused")

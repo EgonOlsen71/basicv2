@@ -7,6 +7,7 @@ import com.sixtyfour.cbmnative.NativeCompiler;
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Parser;
+import com.sixtyfour.parser.Term;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.system.BasicProgramCounter;
 import com.sixtyfour.system.Machine;
@@ -52,6 +53,19 @@ public class Poke extends AbstractCommand {
 		val = pars.get(1);
 
 		return null;
+	}
+
+		
+	@Override
+	public List<Term> getAllTerms() {
+		List<Term> ret = new ArrayList<Term>();
+		if (addr.isTerm()) {
+			ret.add((Term) addr);
+		}
+		if (val.isTerm()) {
+			ret.add((Term) val);
+		}
+		return ret;
 	}
 
 	/*
