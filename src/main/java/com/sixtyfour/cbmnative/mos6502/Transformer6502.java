@@ -15,6 +15,7 @@ import com.sixtyfour.cbmnative.mos6502.generators.GeneratorList;
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.elements.Variable;
 import com.sixtyfour.parser.assembly.AssemblyParser;
+import com.sixtyfour.system.DataStore;
 import com.sixtyfour.system.Machine;
 
 /**
@@ -129,6 +130,7 @@ public class Transformer6502 implements Transformer {
 		}
 
 		List<String> inits = createInitScript(vars);
+		List<String> datas=createDatas(machine);
 
 		subs.addAll(inits);
 		subs.add("; *** SUBROUTINES END ***");
@@ -138,6 +140,7 @@ public class Transformer6502 implements Transformer {
 		res.addAll(mnems);
 		res.addAll(subs);
 		res.addAll(consts);
+		res.addAll(datas);
 		res.add("CONSTANTS_END");
 		if (!strVars.contains("; VAR: TI$")) {
 			strVars.add("; VAR: TI$");
@@ -178,6 +181,7 @@ public class Transformer6502 implements Transformer {
 		res.add("EMPTYSTR\t.BYTE 0");
 		res.add("FPSTACKP\t.WORD FPSTACK");
 		res.add("FORSTACKP\t.WORD FORSTACK");
+		res.add("DATASP\t.WORD DATAS");
 		res.add("LASTVAR\t.WORD 0");
 		res.add("LASTVARP\t.WORD 0");
 		res.add("HIGHP\t.WORD STRBUF");
@@ -192,6 +196,55 @@ public class Transformer6502 implements Transformer {
 		res.add("FORSTACK .ARRAY " + Math.min(1024, platform.getStackSize() * 17));
 		res.add("STRBUF\t.BYTE 0");
 		return res;
+	}
+
+	private List<String> createDatas(Machine machine) {
+	    DataStore datas=machine.getDataStore();
+	    List<String> ret=new ArrayList<String>();
+	    ret.add("; ******** DATA ********");
+	    ret.add("DATAS");
+	    
+	    datas.restore();
+		Object obj = null;
+		while ((obj = datas.read()) != null) {
+			Type type = Type.STRING;
+			if (obj instanceof Integer) {
+			    Integer num = (Integer) obj;
+				if (num < -32768 || num > 32767) {
+				    obj=num.floatValue();
+				    type = Type.REAL;
+				} else {
+				    type = Type.INTEGER;
+				}
+			} else if (obj instanceof Float) {
+				type = Type.REAL;
+			}
+
+			if (obj.toString().equals("\\0")) {
+				if (type == Type.STRING) {
+					obj = "";
+				} else if (type == Type.REAL) {
+					obj = 0.0f;
+				} else {
+					obj = 0;
+				}
+			}
+
+			if (type == Type.INTEGER) {
+				ret.add(".BYTE 0");
+				ret.add(".WORD "+obj.toString());
+			} else if (type == Type.REAL) {
+			    ret.add(".BYTE 1");
+			    ret.add(".REAL "+obj.toString());
+			} else {
+			    ret.add(".BYTE 2");
+			    ret.add(".BYTE "+obj.toString().length());
+			    ret.add(".TEXT \""+obj.toString()+"\"");
+			}
+		}
+		ret.add(".BYTE $FF");
+		ret.add("; ******** DATA END ********");
+	    return ret;
 	}
 
 	private List<String> createInitScript(List<String> vars) {

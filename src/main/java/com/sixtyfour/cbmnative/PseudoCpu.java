@@ -184,7 +184,7 @@ public class PseudoCpu {
 		try {
 			if (parts.length > 0) {
 
-				if (parts[0].endsWith(":") && Character.isDigit(parts[0].charAt(parts[0].length() - 2))) {
+				if (parts[0].endsWith(":") && (Character.isDigit(parts[0].charAt(parts[0].length() - 2)) || parts[0].startsWith("PROGRAM"))) {
 					return;
 				}
 
@@ -683,6 +683,7 @@ public class PseudoCpu {
 			val(parts);
 			return;
 		case "TABOUT":
+		    	regs[Y]=1;
 			tab(parts);
 			return;
 		case "LEN":
@@ -2113,7 +2114,15 @@ public class PseudoCpu {
 		ti = getIndex(target);
 		si = getIndex(source);
 		Type type = Type.INTEGER;
-
+		
+		if (ti==-1 && si==-1) {
+		    // constant into memory
+		    int addr = Integer.parseInt(target);
+		    int val = Integer.parseInt(source.substring(0, source.indexOf("{")).replace("#", "").trim()) & 0xff;
+		    memory[addr] = val;
+		    return;
+		}
+		
 		if (ti == -1 && si != -1) {
 			// From register into memory
 			int pos = target.lastIndexOf("{");

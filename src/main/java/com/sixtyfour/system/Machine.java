@@ -472,6 +472,7 @@ public class Machine {
 	 */
 	public void clearCommandList() {
 		this.commandList.clear();
+		this.data.clear();
 	}
 
 	/**

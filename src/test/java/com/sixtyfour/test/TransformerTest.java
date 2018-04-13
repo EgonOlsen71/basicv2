@@ -54,9 +54,28 @@ public class TransformerTest {
 		// testTransformer17();
 		//testTransformer18();
 		//testTransformer20();
-	    	testTransformer22();
+	    	//testTransformer22();
+	   	//testTransformer23();
+	    	testTransformerFrog();
 	}
 
+	private static void testTransformerFrog() throws Exception {
+		System.out.println("\n\ntestTransformerFrog");
+		String[] vary = Preprocessor.convertToLineNumbers(Loader.loadProgram("src/test/resources/transform/frog_transform.bas"));
+
+		final Assembler assy = initTestEnvironment(vary);
+		FileWriter.writeAsPrg(assy.getProgram(), "++frog.prg", true);
+		Machine machine = executeTest(assy);
+		System.out.println("Ticks: " + machine.getCpu().getClockTicks());
+	}
+	
+	private static void testTransformer23() throws Exception {
+		System.out.println("\n\ntestTransformer23");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/test23.bas");
+		Assembler assy = initTestEnvironment(vary, false);
+		FileWriter.writeAsPrg(assy.getProgram(), "++testdata.prg", true);
+	}
+	
 	private static void testTransformer22() throws Exception {
 		System.out.println("\n\ntestTransformer22");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/test22.bas");
@@ -577,11 +596,11 @@ public class TransformerTest {
 
 	private static Assembler initTestEnvironment(String[] vary, boolean executePseudo) {
 		CompilerConfig conf=CompilerConfig.getConfig();
-		conf.setConstantFolding(true);
-		conf.setConstantPropagation(true);
-		conf.setDeadStoreElimination(true);
-		conf.setIntermediateLanguageOptimizations(true);
-		conf.setNativeLanguageOptimizations(true);
+		conf.setConstantFolding(false);
+		conf.setConstantPropagation(false);
+		conf.setDeadStoreElimination(false);
+		conf.setIntermediateLanguageOptimizations(false);
+		conf.setNativeLanguageOptimizations(false);
 		
 		final Basic basic = new Basic(vary);
 		basic.compile();

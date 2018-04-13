@@ -103,6 +103,7 @@ public class NativeCompilerTest {
 		testLogicExpression3();
 		testStringExpression10();
 		testStringExpression11();
+		testFrog();
 	}
 
 	private static void testFiles() {
@@ -184,6 +185,17 @@ public class NativeCompilerTest {
 		cd.dispose();
 	}
 
+	@SuppressWarnings("unused")
+	private static void testFrog() {
+		System.out.println("\n\ntestFrog");
+		String[] rd = Preprocessor.convertToLineNumbers(Loader.loadProgram("src/test/resources/transform/frog_transform.bas"));
+		Basic basic = new Basic(rd);
+		basic.compile();
+		ConsoleDevice cd = ConsoleDevice.openDevice(basic.getMachine(), 1, true, 640, 400);
+		runCompiled(basic);
+		cd.dispose();
+	}
+	
 	@SuppressWarnings("unused")
 	private static void testInput() {
 		System.out.println("\n\ntestInput");

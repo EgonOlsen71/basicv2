@@ -1,6 +1,5 @@
 ;###################################
-START
-			LDA #<FPSTACK
+START		LDA #<FPSTACK
 			LDY #>FPSTACK
 			STA FPSTACKP
 			STY FPSTACKP+1
@@ -24,12 +23,9 @@ START
 			TAY
 			TAX
 			STA $C6
+			JSR RESTORE
 			CLC
 			RTS
-;###################################
-RUN			LDX SP_SAVE
-			TXS
-			JMP PROGRAMSTART
 ;###################################
 INITNARRAY 
 			STA TMP_ZP
@@ -151,6 +147,16 @@ ARRAYSKIP2	STA TMP_REG
 ARRAYQUIT	RTS
 ;###################################
 END			RTS
+;###################################
+RUN			LDX SP_SAVE
+			TXS
+			JMP PROGRAMSTART
+;###################################
+RESTORE		LDA #<DATAS
+			LDY #>DATAS
+			STA DATASP
+			STY DATASP+1
+			RTS
 ;###################################
 MID			LDA #<D_REG
 			LDY #>D_REG
@@ -451,7 +457,7 @@ OFFPOSCHECK2
 STR			LDA #<Y_REG
 			LDY #>Y_REG
 			JSR REALFAC
-			LDY #0
+STRINT		LDY #0
 			JSR FACSTR
 			LDY #0
 			STY TMP_ZP+1
@@ -1507,6 +1513,99 @@ CLEARQUEUE	LDA #$0
 			STA INPUTQUEUEP
 			RTS
 ;###################################
+READINIT	LDA DATASP
+			STA TMP3_ZP
+			LDA DATASP+1
+			STA TMP3_ZP+1
+			LDY #$0
+			LDA (TMP3_ZP),Y
+			INC TMP3_ZP
+			BNE READNOOV
+			INC TMP3_ZP+1
+READNOOV	CMP #$FF
+			BNE MOREDATA
+			JMP OUTOFDATA
+MOREDATA	RTS
+;###################################
+READADDPTR	STX TMP_REG+1
+			LDA TMP3_ZP
+			CLC
+			ADC TMP_REG+1
+			STA TMP3_ZP
+			BCC READADDPTRX
+			INC TMP3_ZP+1
+READADDPTRX	RTS
+;###################################
+READNUMBER	JSR READINIT
+MORENUMDATA CMP #$2				; Strings are not allowed here
+			BNE NUMNUM
+			JMP SYNTAXERROR
+NUMNUM		CMP #$1
+			BEQ NUMREADREAL
+			LDA (TMP3_ZP),Y		; It's an integer
+			STA TMP_REG
+			INY
+			LDA (TMP3_ZP),Y
+			LDY TMP_REG
+			JSR INTFAC
+			LDX #2
+			JSR READADDPTR				
+			JMP NUMREAD
+NUMREADREAL	LDA TMP3_ZP
+			LDY TMP3_ZP+1
+			JSR REALFAC
+			LDX #5
+			JSR READADDPTR					
+NUMREAD		JSR NEXTDATA
+			LDX #<Y_REG
+			LDY #>Y_REG
+			JMP FACMEM		; ...and return
+;###################################
+READSTR		JSR READINIT
+			CMP #$2
+			BNE DATA2STR		; It's a number and has to be converted
+			LDA TMP3_ZP
+			STA A_REG
+			LDA TMP3_ZP+1
+			STA A_REG+1
+			LDA (TMP3_ZP),Y
+			CLC
+			ADC TMP3_ZP
+			STA TMP3_ZP
+			BCC READNOOV2
+			INC TMP3_ZP+1
+READNOOV2	JSR NEXTDATA
+			INC DATASP
+			BNE READNOOV3
+			INC DATASP+1	
+READNOOV3	RTS
+;###################################
+NEXTDATA	LDA TMP3_ZP			; Adjust pointer to the next element
+			STA DATASP
+			LDA TMP3_ZP+1
+			STA DATASP+1
+			RTS
+;###################################
+DATA2STR	CMP #$1
+			BEQ DREAL2STR		; It's a floating point number...
+			LDA (TMP3_ZP),Y		; It's an integer
+			STA TMP_REG
+			INY
+			LDA (TMP3_ZP),Y
+			LDY TMP_REG
+			JSR INTFAC
+			LDX #2
+			JSR READADDPTR				
+			JMP DFAC2STR
+DREAL2STR	LDA TMP3_ZP
+			LDY TMP3_ZP+1
+			JSR REALFAC
+			LDX #5
+			JSR READADDPTR
+DFAC2STR	JSR NEXTDATA
+			JSR STRINT
+			RTS
+;###################################
 INPUTSTR	LDA #$0
 INPUTSTR2	STA TMP_REG+1
 			LDA #$0
@@ -1937,10 +2036,6 @@ CMPSTRLOOP	LDA (TMP_ZP),Y
 			BNE CMPSTRLOOP
 STRCMPRES	STX TMP3_ZP
 			RTS					
-
-;###################################
-READNUMBER	RTS
-
 ;###################################
 PUSHINT		LDX FPSTACKP
 			STX TMP2_ZP
@@ -2196,6 +2291,9 @@ DONE		RTS
 ;###################################
 NEXTWOFOR	LDX #$0A
 			JMP $A437
+;###################################
+OUTOFDATA	LDX #$0D 
+			JMP $A437 
 ;###################################
 OUTOFMEMORY	
 			JMP $A435
