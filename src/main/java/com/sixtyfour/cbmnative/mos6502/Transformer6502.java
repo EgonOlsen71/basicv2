@@ -187,11 +187,12 @@ public class Transformer6502 implements Transformer {
 		res.add("HIGHP\t.WORD STRBUF");
 		res.add("STRBUFP\t.WORD STRBUF");
 		res.add("ENDSTRBUF\t.WORD " + platform.getStringMemoryEnd());
+		res.add("INPUTQUEUEP\t.BYTE 0");
 		res.add("CONCATBUFP\t.BYTE 0");
 		res.add("PROGRAMEND");
-		res.add("INPUTQUEUEP\t.BYTE 0");
-		res.add("INPUTQUEUE\t.ARRAY $0F");
+		// Don't stick anything here between CONCATBUFP and CONCATBUF...
 		res.add("CONCATBUF\t.ARRAY 256");
+		res.add("INPUTQUEUE\t.ARRAY $0F");
 		res.add("FPSTACK .ARRAY " + Math.min(256, platform.getStackSize() * 5));
 		res.add("FORSTACK .ARRAY " + Math.min(1024, platform.getStackSize() * 17));
 		res.add("STRBUF\t.BYTE 0");

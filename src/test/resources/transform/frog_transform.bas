@@ -1,5 +1,5 @@
-bl=10:ml=40:ad=0.5
-dim i(10),xt(10),yt(10),xp(10),yp(10),xd(10),yd(10),sc(10)
+bl=6:ml=40:ad=0.5
+dim i(10),xt(bl),yt(bl),xp(bl),yp(bl),xd(bl),yd(bl),sc(bl)
 dim x,y,b2,b3,p,pp,ac
 vp=20000
 wp=21000

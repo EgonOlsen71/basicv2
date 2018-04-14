@@ -56,6 +56,7 @@ public class ConstantFolder {
 				if (right != null && right.isTerm()) {
 					finalTerm.setRight(foldConstants((Term) right, machine));
 				}
+				
 				if (left != null && left instanceof Function) {
 					Function fun = (Function) left;
 					fun.setTerm(foldConstants(fun.getTerm(), machine));

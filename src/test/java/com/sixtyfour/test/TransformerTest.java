@@ -50,13 +50,13 @@ public class TransformerTest {
 		// testTransformer12();
 		// testTransformer13();
 		// testTransformer14();
-		// testTransformerBeer();
+		 //testTransformerBeer();
 		// testTransformer15();
 		// testTransformerSqr();
 		// testTransformer16();
 		// testTransformer17();
 		// testTransformer18();
-		 testTransformer20();
+		// testTransformer20();
 		// testTransformer22();
 		// testTransformer23();
 		testTransformerFrog();
@@ -606,6 +606,7 @@ public class TransformerTest {
 		conf.setDeadStoreElimination(true);
 		conf.setIntermediateLanguageOptimizations(true);
 		conf.setNativeLanguageOptimizations(true);
+		conf.setOptimizedLinker(true);
 
 		final Basic basic = new Basic(vary);
 		basic.compile();
