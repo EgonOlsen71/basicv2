@@ -12,6 +12,15 @@ import java.util.Map;
  */
 public class Pattern {
 	private List<String> pattern;
+	private List<Integer> spacePos;
+	private List<Integer> partRightP0;
+	private List<Integer> partRightP1;
+	private List<String> command;
+	private List<String> partP0;
+	private List<Boolean> isJump;
+	private List<String> partRights;
+	private List<String> partRightsReg;
+	private List<String> partLefts;
 	private int pos = 0;
 	private String[] regs = new String[10];
 	private String[] mems = new String[10];
@@ -25,6 +34,31 @@ public class Pattern {
 
 	public Pattern(String name, String[] replacement, String... parts) {
 		pattern = new ArrayList<>(Arrays.asList(parts));
+		spacePos = new ArrayList<>();
+		command = new ArrayList<>();
+		isJump = new ArrayList<>();
+		partP0 = new ArrayList<>();
+		partRights = new ArrayList<>();
+		partRightP0 = new ArrayList<>();
+		partRightP1 = new ArrayList<>();
+		partLefts = new ArrayList<>();
+		partRightsReg = new ArrayList<>();
+		for (String part : pattern) {
+			int p0 = part.indexOf(" ");
+			spacePos.add(p0);
+			String ft = part.substring(0, 3);
+			command.add(ft);
+			partP0.add(p0 != -1 ? part.substring(0, p0) : null);
+			String pr = part.substring(p0 + 1).trim();
+			partRights.add(pr);
+			int prP0 = pr.indexOf("{");
+			partRightP0.add(prP0);
+			partLefts.add(prP0 != -1 ? pr.substring(0, prP0) : null);
+			int prP1 = pr.lastIndexOf("}");
+			partRightP1.add(prP1);
+			partRightsReg.add((prP1 != -1 && prP0 != -1) ? pr.substring(prP0 + 1, prP1) : null);
+			isJump.add(ft.equals("JSR") || ft.equals("JMP") || ft.equals("BEQ") || ft.endsWith("JMP") || ft.equals("BNE") || ft.equals("BCC") || ft.equals("BCS"));
+		}
 		this.replacement = replacement;
 		this.name = name;
 	}
@@ -111,12 +145,12 @@ public class Pattern {
 	}
 
 	public boolean matches(String line, int ix, Map<String, Number> const2Value) {
-		String part = pattern.get(pos);
 		line = line.trim();
 		if (line.startsWith(";")) {
 			return false;
 		}
-		int p0 = part.indexOf(" ");
+		String part = pattern.get(pos);
+		int p0 = spacePos.get(pos);
 		int p1 = line.indexOf(" ");
 		if (p0 == -1 && p1 == -1 && part.equalsIgnoreCase(line)) {
 			return inc(ix);
@@ -125,32 +159,32 @@ public class Pattern {
 			return inc(ix);
 		}
 
-		String ft = part.substring(0, 3);
-		if (ft.equals("JSR") || ft.equals("JMP") || ft.equals("BEQ") || ft.endsWith("JMP") || ft.equals("BNE") || ft.equals("BCC") || ft.equals("BCS")) {
+		String ft = command.get(pos);
+		if (isJump.get(pos)) {
 			if (part.endsWith("{*}") && line.startsWith(ft)) {
 				return inc(ix);
 			}
 		}
 
 		if (p0 != -1 && p1 != -1 && !line.contains("SKIP")) {
-			if (part.substring(0, p0).equalsIgnoreCase(line.substring(0, p1))) {
-				String partRight = part.substring(p0 + 1).trim();
+			if (partP0.get(pos).equalsIgnoreCase(line.substring(0, p1))) {
+				String partRight = partRights.get(pos);
 				String lineRight = line.substring(p1 + 1).trim();
 				if (partRight.equalsIgnoreCase(lineRight)) {
 					return inc(ix);
 				} else {
-					p0 = partRight.indexOf("{");
+					p0 = partRightP0.get(pos);
 					if (p0 != -1) {
-						String leftPart = partRight.substring(0, p0);
+						String leftPart = partLefts.get(pos);
 						if (lineRight.startsWith(leftPart)) {
 							String value = lineRight.substring(p0);
-							p1 = partRight.lastIndexOf("}");
-							String reg = partRight.substring(p0 + 1, p1);
+							p1 = partRightP1.get(pos);
+							String reg = partRightsReg.get(pos);
 							if (reg.equals("*")) {
 								return inc(ix);
 							} else {
 								if (reg.startsWith("#")) {
-									String num = reg.replace("#", "");
+									String num = reg.substring(1);
 									boolean isReal = num.contains(".");
 									Number val = Float.valueOf(num);
 									if (!isReal) {
@@ -165,7 +199,7 @@ public class Pattern {
 									return resetPattern();
 								} else {
 									if (lineRight.contains("_REG") && reg.startsWith("REG")) {
-										int num = Integer.parseInt(reg.replace("REG", ""));
+										int num = Integer.parseInt(reg.substring(3));
 										int pv = value.lastIndexOf("+");
 										if (pv != -1) {
 											value = value.substring(0, pv);
@@ -186,7 +220,7 @@ public class Pattern {
 											if (pv != -1) {
 												value = value.substring(0, pv);
 											}
-											int num = Integer.parseInt(reg.replace("MEM", ""));
+											int num = Integer.parseInt(reg.substring(3));
 											if (mems[num] == null) {
 												mems[num] = value;
 												return inc(ix);
@@ -202,7 +236,7 @@ public class Pattern {
 											if (pv != -1) {
 												value = value.substring(0, pv);
 											}
-											int num = Integer.parseInt(reg.replace("CONST", ""));
+											int num = Integer.parseInt(reg.substring(5));
 											if (consts[num] == null) {
 												consts[num] = value;
 												return inc(ix);
@@ -232,24 +266,31 @@ public class Pattern {
 	}
 
 	private boolean isNumber(String lineRight) {
-		try {
-			Integer.parseInt(lineRight);
-			return true;
-		} catch (Exception e) {
-			return false;
+		for (int i=0; i<lineRight.length(); i++) {
+			char c=lineRight.charAt(i);
+			if (c<'0' || c>'9') {
+				return false;
+			}
 		}
+		return true;
 	}
 
 	private boolean resetPattern() {
 		pos = 0;
 		index = -1;
 		end = -1;
-		regs = new String[regs.length];
-		mems = new String[mems.length];
-		consts = new String[consts.length];
+		clearArray(regs);
+		clearArray(mems);
+		clearArray(consts);
 		return false;
 	}
 
+	private void clearArray(String[] array) {
+		for (int i=0; i<array.length; i++) {
+			array[i]=null;
+		}
+	}
+	
 	private boolean inc(int ix) {
 		pos++;
 		if (index == -1) {

@@ -1,4 +1,4 @@
-bl=6:ml=40:ad=0.5
+bl=6:ml=40:ad=0.5:ti$="000000"
 dim i(10),xt(bl),yt(bl),xp(bl),yp(bl),xd(bl),yd(bl),sc(bl)
 dim x,y,b2,b3,p,pp,ac
 vp=20000
@@ -14,6 +14,7 @@ poke 53280,6:poke53281,6
 gosub render
 
 key:
+printti
 rem get a$:if a$="" then key
 end
 

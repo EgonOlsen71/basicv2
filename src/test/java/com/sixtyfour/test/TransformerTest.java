@@ -38,7 +38,7 @@ public class TransformerTest {
 		// testTransformer2();
 		// testTransformer4();
 		// testTransformer5();
-		// testTransformerFractal();
+		 testTransformerFractal();
 		// testTransformer6();
 		// testTransformer7();
 		// testTransformerPrime();
@@ -59,7 +59,21 @@ public class TransformerTest {
 		// testTransformer20();
 		// testTransformer22();
 		// testTransformer23();
-		testTransformerFrog();
+		//testTransformerFrog();
+		//testTransformerAffine();
+	}
+	
+	private static void testTransformerAffine() throws Exception {
+		System.out.println("\n\ntestTransformerAffine");
+		String[] vary = Preprocessor.convertToLineNumbers(Loader.loadProgram("src/test/resources/transform/affine_transform.bas"));
+
+		for (String line : vary) {
+			System.out.println(line);
+		}
+		final Assembler assy = initTestEnvironment(vary);
+		FileWriter.writeAsPrg(assy.getProgram(), "++affine.prg", true);
+		Machine machine = executeTest(assy);
+		System.out.println("Ticks: " + machine.getCpu().getClockTicks());
 	}
 
 	private static void testTransformerFrog() throws Exception {
@@ -654,6 +668,7 @@ public class TransformerTest {
 			e.printStackTrace();
 			printMemory(assy, machine);
 		}
+		System.out.println("program end: "+prg.getParts().get(prg.getParts().size()-1).getEndAddress());
 		System.out.println("...done!");
 		return machine;
 	}
