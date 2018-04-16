@@ -84,15 +84,19 @@ public class NativeCompiler {
 
 	public List<String> compile(Basic basic) {
 		basic.compile();
+		CompilerConfig conf=CompilerConfig.getConfig();
 		List<String> mCode = NativeCompiler.getCompiler().compileToPseudeCode(basic);
 
 		PlatformProvider platform = new C64Platform();
 		List<String> nCode = platform.getTransformer().transform(basic.getMachine(), platform, mCode);
-		if (platform.getOptimizer() != null && CompilerConfig.getConfig().isNativeLanguageOptimizations()) {
+		if (platform.getOptimizer() != null && conf.isNativeLanguageOptimizations()) {
 			nCode = platform.getOptimizer().optimize(platform, nCode);
 		}
-		if (platform.getUnlinker() != null && CompilerConfig.getConfig().isOptimizedLinker()) {
+		if (platform.getUnlinker() != null && conf.isOptimizedLinker()) {
 			nCode = platform.getUnlinker().unlink(nCode);
+		}
+		if (conf.getCompactThreshold()>1) {
+		    nCode=new Compactor(conf.getCompactThreshold()).compact(nCode);
 		}
 		return nCode;
 	}

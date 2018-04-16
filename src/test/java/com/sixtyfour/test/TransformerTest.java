@@ -607,6 +607,7 @@ public class TransformerTest {
 		conf.setIntermediateLanguageOptimizations(true);
 		conf.setNativeLanguageOptimizations(true);
 		conf.setOptimizedLinker(true);
+		//conf.setCompactThreshold(4);
 
 		final Basic basic = new Basic(vary);
 		basic.compile();
