@@ -1032,6 +1032,9 @@ ARRAYACCESS_STRING_INT
 			STA A_REG+1
 			RTS
 ;###################################
+ARRAYACCESS_INTEGER_S
+			STA G_REG
+			STY G_REG+1
 ARRAYACCESS_INTEGER
 			LDA #<X_REG
 			LDY #>X_REG
@@ -1069,6 +1072,9 @@ ARRAYACCESS_INTEGER_INT
 			; FAC to (X/Y)
 			JMP FACMEM	;RTS is implicit
 ;###################################
+ARRAYACCESS_REAL_S
+			STA G_REG
+			STY G_REG+1
 ARRAYACCESS_REAL
 			LDA #<X_REG
 			LDY #>X_REG

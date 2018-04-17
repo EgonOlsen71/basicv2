@@ -142,6 +142,8 @@ public class Optimizer64 implements Optimizer {
 					"JSR FACWORD"));
 			this.add(new Pattern(false, "Load and PUSH combined", new String[] { "JSR REALFACPUSH" }, "JSR REALFAC", "JSR PUSHREAL"));
 			this.add(new Pattern(false, "Memory saving copy", new String[]{"{LINE1}","{LINE2}","{LINE3}","JSR COPY2_XYA"}, "STA TMP3_ZP","STY TMP3_ZP+1","LDX #<{REG0}","LDY #>{REG0}","JSR COPY2_XY"));
+			this.add(new Pattern(false, "Memory saving array access (real)", new String[]{"{LINE0}","{LINE1}","JSR ARRAYACCESS_REAL_S"}, "LDA #<{MEM0}","LDY #>{MEM0}","STA G_REG","STY G_REG+1","JSR ARRAYACCESS_REAL"));
+			this.add(new Pattern(false, "Memory saving array access (integer)", new String[]{"{LINE0}","{LINE1}","JSR ARRAYACCESS_INTEGER_S"}, "LDA #<{MEM0}","LDY #>{MEM0}","STA G_REG","STY G_REG+1","JSR ARRAYACCESS_INTEGER"));
 		}
 	};
 

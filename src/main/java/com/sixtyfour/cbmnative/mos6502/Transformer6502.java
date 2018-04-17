@@ -36,7 +36,7 @@ public class Transformer6502 implements Transformer {
 		subs.addAll(Arrays.asList(Loader.loadProgram(this.getClass().getResourceAsStream("/subroutines.asm"))));
 
 		consts.add("; *** CONSTANTS ***");
-		consts.add("*=$6590");
+		//consts.add("*=$6590");
 		consts.add("CONSTANTS");
 		vars.add("; *** VARIABLES ***");
 		vars.add("VARIABLES");
