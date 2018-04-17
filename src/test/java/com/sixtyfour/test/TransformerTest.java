@@ -38,7 +38,7 @@ public class TransformerTest {
 		// testTransformer2();
 		// testTransformer4();
 		// testTransformer5();
-		 testTransformerFractal();
+		// testTransformerFractal();
 		// testTransformer6();
 		// testTransformer7();
 		// testTransformerPrime();
@@ -59,8 +59,9 @@ public class TransformerTest {
 		// testTransformer20();
 		// testTransformer22();
 		// testTransformer23();
-		testTransformerFrog();
+		//testTransformerFrog();
 		//testTransformerAffine();
+	    	testTransformer24();
 	}
 	
 	private static void testTransformerAffine() throws Exception {
@@ -89,6 +90,13 @@ public class TransformerTest {
 		Machine machine = executeTest(assy);
 		//printZeropage(assy);
 		System.out.println("Ticks: " + machine.getCpu().getClockTicks());
+	}
+	
+	private static void testTransformer24() throws Exception {
+		System.out.println("\n\ntestTransformer24");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/test24.bas");
+		Assembler assy = initTestEnvironment(vary, false);
+		FileWriter.writeAsPrg(assy.getProgram(), "++testconsts.prg", true);
 	}
 
 	private static void printZeropage(final Assembler assy) {
