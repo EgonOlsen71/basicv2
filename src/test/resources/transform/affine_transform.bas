@@ -2,16 +2,16 @@ rem@ £allram:£fastfor:£shortif:£fastarray
 rem@ £word x=fast, ma=fast, mt, tx, tz, v, i
 rem@ £varstart $6590
 
-dim pt%(4), cs%(18), xy%(18), ts%(12), ag%(3), sn%(1440)
+dim pt%(4), cs%(18), xy%(18), ts%(12), ag(3)
 
 w=40
 
 tx=49152:tz=0:di=128
-mp=25:tw=64:xd=0:yd=0:xh=0:yh=0:tc=0:t=0:l=0:r=0
-tt=0:tl=0:tr=0:dl=0:dr=0:u0=0:u1=0:v0=0:v1=0
-n=0:df=0:de=0:xs=0:xe=0:us=0:ue=0:vs=0:ve=0:kp=0
-u=0:v=0:le=0:du=0:dv=0:x=0:y=0:z=0:tp=0:si=0
-co=0:c=0:tv=0:mt=0:ma=0:xc=.:yv=.:zc=.:xn=.:yn=.:zn=.
+mp=25:tw=64:xd=.:yd=.:xh=.:yh=.:tc=.:t=.:l=.:r=.
+tt=.:tl=.:tr=.:dl=.:dr=.:u0=.:u1=.:v0=.:v1=.
+n=.:df=.:de=.:xs=.:xe=.:us=.:ue=.:vs=.:ve=.:kp=.
+u=.:v=.:le=.:du=.:dv=.:x=.:y=.:z=.:tp=.:si=.
+co=.:c=.:tv=.:mt=.:ma=.:xc=.:yv=.:zc=.:xn=.:yn=.:zn=.
 
 gosub bitmapon
 gosub unpack
@@ -44,17 +44,15 @@ gosub setup
 xd=200:yd=200
 xh=xd/2:yh=yd/2
 
-for i=0 to 720:vl=512*sin(((i/2)-360)*3.14159265359/180)
-sn%(i)=vl:sn%(i+720)=vl:nexti
 for i=0 to 3:pt%(i)=64/(2^(2*i)):nexti
 
-for w2=0 to 360:w=int(w2)
+for w=0 to 6.283 step 0.011111
 gosub mapit
-next w2
+next w
 return
 
 mapit:
-ag%(0)=w:ag%(1)=0:ag%(2)=w
+ag(0)=w:ag(1)=0:ag(2)=w
 gosub rotate
 gosub render
 gosub paint
@@ -232,31 +230,31 @@ zc=cs%(p+2)+mp
 
 xn=xc:yn=yc:zn=zc
 
-if ag%(0)=0 then skipx
-si=sn%(ag%(0)*2)
-co=sn%((ag%(0)+90)*2)
-yn=(yc*co-zc*si)/512
-zn=(yc*si+zc*co)/512
+if ag(0)=0 then skipx
+si=sin(ag(0))
+co=cos(ag(0))
+yn=(yc*co-zc*si)
+zn=(yc*si+zc*co)
 yc=yn
 zc=zn
 skipx:
-if ag%(1)=0 then skipy
-si=sn%(ag%(1)*2)
-co=sn%((ag%(1)+90)*2)
-zn=(zc*co-xc*si)/512
-xn=(zc*si+xc*co)/512
+if ag(1)=0 then skipy
+si=sin(ag(1))
+co=cos(ag(1))
+zn=(zc*co-xc*si)
+xn=(zc*si+xc*co)
 xc=xn
 zc=zn
 skipy:
-if ag%(2)=0 then skipz
-si=sn%(ag%(2)*2)
-co=sn%((ag%(2)+90)*2)
-xn=(xc*co-yc*si)/512
-yn=(xc*si+yc*co)/512
+if ag(2)=0 then skipz
+si=sin(ag(2))
+co=cos(ag(2))
+xn=(xc*co-yc*si)
+yn=(xc*si+yc*co)
 skipz:
 zn=zn-mp
-xy%(c)=(xh+((xn*di%)/zn))/2:c=c+1
-xy%(c)=yh+((yn*di%)/zn):c=c+1
+xy%(c)=(xh+((xn*di)/zn))/2:c=c+1
+xy%(c)=yh+((yn*di)/zn):c=c+1
 xy%(c)=z:c=c+1
 next p
 return

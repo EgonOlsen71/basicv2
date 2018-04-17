@@ -153,6 +153,7 @@ public class Assembler implements ProgramExecutor {
 						initial = false;
 					} else {
 						ProgramPart part = new ProgramPart();
+						part.setAddress(start);
 						part.setEndAddress(addr);
 						part.setLineAddresses(createAndResetOpas(lineBreaks));
 						prg.addPart(part);

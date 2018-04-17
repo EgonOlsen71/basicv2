@@ -36,6 +36,7 @@ public class Transformer6502 implements Transformer {
 		subs.addAll(Arrays.asList(Loader.loadProgram(this.getClass().getResourceAsStream("/subroutines.asm"))));
 
 		consts.add("; *** CONSTANTS ***");
+		consts.add("*=$6590");
 		consts.add("CONSTANTS");
 		vars.add("; *** VARIABLES ***");
 		vars.add("VARIABLES");
@@ -111,6 +112,7 @@ public class Transformer6502 implements Transformer {
 			if (sp != -1) {
 				line = line.substring(sp).trim();
 			}
+			
 			cnt = extractData(platform, machine, consts, vars, strVars, strArrayVars, name2label, cnt, line);
 
 			Generator pm = GeneratorList.getGenerator(orgLine);
@@ -120,7 +122,7 @@ public class Transformer6502 implements Transformer {
 				if (cmd.endsWith(":")) {
 					mnems.add(cmd);
 				} else {
-					mnems.add("; not supported: " + cmd);
+					mnems.add("; ignored: " + cmd);
 				}
 			}
 		}
@@ -326,7 +328,9 @@ public class Transformer6502 implements Transformer {
 					if (type == Type.STRING) {
 						name = "$" + name.substring(1);
 					}
+					
 					if (!name2label.containsKey(name)) {
+					    
 						consts.add("; CONST: " + name);
 						String label = "CONST_" + (cnt++);
 						name2label.put(name, label);
@@ -336,20 +340,18 @@ public class Transformer6502 implements Transformer {
 							// Range check...convert to real if needed
 							int num = Integer.parseInt(name);
 							if (num < -32768 || num > 32767) {
-								name = name + ".0";
+								name+= ".0";
 								type = Type.REAL;
 							}
 						}
-
+						
 						if (type == Type.INTEGER) {
 							consts.add(label + "\t" + ".WORD " + name);
 							if (platform.useLooseTypes()) {
-								int val = getConstantValue(line);
-								if (val >= 0 || val < 256) {
-									consts.add(label + "R\t" + ".REAL " + name + ".0");
-								}
+								consts.add(label + "R\t" + ".REAL " + name + ".0");
 							}
 						} else if (type == Type.REAL) {
+						    	consts.add(label+"R");
 							consts.add(label + "\t" + ".REAL " + name);
 						} else if (type == Type.STRING) {
 							consts.add(label + "\t" + ".BYTE " + name.length());

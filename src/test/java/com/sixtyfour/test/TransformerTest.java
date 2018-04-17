@@ -38,7 +38,7 @@ public class TransformerTest {
 		// testTransformer2();
 		// testTransformer4();
 		// testTransformer5();
-		 testTransformerFractal();
+		// testTransformerFractal();
 		// testTransformer6();
 		// testTransformer7();
 		// testTransformerPrime();
@@ -60,7 +60,7 @@ public class TransformerTest {
 		// testTransformer22();
 		// testTransformer23();
 		//testTransformerFrog();
-		//testTransformerAffine();
+		testTransformerAffine();
 	}
 	
 	private static void testTransformerAffine() throws Exception {
@@ -84,9 +84,18 @@ public class TransformerTest {
 			System.out.println(line);
 		}
 		final Assembler assy = initTestEnvironment(vary);
+		//assy.getCpu().setCpuTracer(new MySimpleTracer(assy));
 		FileWriter.writeAsPrg(assy.getProgram(), "++frog.prg", true);
 		Machine machine = executeTest(assy);
+		//printZeropage(assy);
 		System.out.println("Ticks: " + machine.getCpu().getClockTicks());
+	}
+
+	private static void printZeropage(final Assembler assy) {
+	    System.out.println("Zeropage:");
+	    for (int i=0; i<256; i++) {
+	        System.out.println(i+": "+assy.getMachine().getRam()[i]);
+	    }
 	}
 
 	private static void testTransformer23() throws Exception {
@@ -394,7 +403,7 @@ public class TransformerTest {
 
 		final Assembler assy = initTestEnvironment(vary);
 
-		// assy.getCpu().setCpuTracer(new MySimpleTracer(assy));
+		//assy.getCpu().setCpuTracer(new MySimpleTracer(assy));
 
 		assy.run();
 		Program prg = assy.getProgram();
@@ -660,6 +669,7 @@ public class TransformerTest {
 		System.out.println("Running compiled program...");
 		Machine machine = assy.getMachine();
 		machine.addRoms();
+		//printZeropage(assy);
 
 		System.out.println(assy.toString());
 		try {
@@ -725,7 +735,6 @@ public class TransformerTest {
 	@SuppressWarnings("unused")
 	private static class MySimpleTracer implements CpuTracer {
 		private final Assembler assy;
-		private int lastVal = 255;
 
 		private MySimpleTracer(Assembler assy) {
 			this.assy = assy;
@@ -735,15 +744,13 @@ public class TransformerTest {
 
 		@Override
 		public void commandExecuted(Cpu cpu, int opcode, int opcodePc, int newPc) {
+		    	
 			String line = assy.getCodeLine(opcodePc);
 			if (line != null) {
 				cnt++;
-				if (assy.getMachine().getRam()[2] != lastVal || cnt > 400) {
-					lastVal = assy.getMachine().getRam()[2];
 					System.out.println(Integer.toHexString(opcodePc) + " - " + Integer.toHexString(opcode) + " -> " + Integer.toHexString(newPc) + " / a=" + cpu.getAcc() + " / x="
 							+ cpu.getX() + " / y=" + cpu.getY() + "/ z=" + (cpu.getStatus() & 0b10) + " / 105=" + assy.getMachine().getRam()[105] + " / 106="
-							+ assy.getMachine().getRam()[106] + "/" + line + " " + assy.getRam()[opcodePc + 1] + "/" + assy.getMachine().getRam()[2] + "/" + cnt);
-				}
+							+ assy.getMachine().getRam()[106] + "/" + line + " " + assy.getRam()[opcodePc + 1] + "/" + assy.getMachine().getRam()[1] + "/" + cnt);
 			}
 		}
 
