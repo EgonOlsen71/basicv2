@@ -141,6 +141,7 @@ public class Optimizer64 implements Optimizer {
 			this.add(new Pattern(false, "POP, REG0, VAR0 -> to WORD", new String[] { "{LINE0}", "{LINE4}" }, "JSR POPREAL", "LDX #<{REG0}", "LDY #>{REG0}", "JSR FACMEM",
 					"JSR FACWORD"));
 			this.add(new Pattern(false, "Load and PUSH combined", new String[] { "JSR REALFACPUSH" }, "JSR REALFAC", "JSR PUSHREAL"));
+			this.add(new Pattern(false, "Memory saving copy", new String[]{"{LINE1}","{LINE2}","{LINE3}","JSR COPY2_XYA"}, "STA TMP3_ZP","STY TMP3_ZP+1","LDX #<{REG0}","LDY #>{REG0}","JSR COPY2_XY"));
 		}
 	};
 
