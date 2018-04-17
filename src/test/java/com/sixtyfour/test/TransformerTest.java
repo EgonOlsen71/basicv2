@@ -60,8 +60,8 @@ public class TransformerTest {
 		// testTransformer22();
 		// testTransformer23();
 		//testTransformerFrog();
-		//testTransformerAffine();
-	    	testTransformer24();
+		testTransformerAffine();
+	    //	testTransformer24();
 	}
 	
 	private static void testTransformerAffine() throws Exception {
@@ -71,7 +71,7 @@ public class TransformerTest {
 		for (String line : vary) {
 			System.out.println(line);
 		}
-		final Assembler assy = initTestEnvironment(vary);
+		final Assembler assy = initTestEnvironment(vary, false, 26000);
 		FileWriter.writeAsPrg(assy.getProgram(), "++affine.prg", true);
 		Machine machine = executeTest(assy);
 		System.out.println("Ticks: " + machine.getCpu().getClockTicks());
@@ -629,8 +629,12 @@ public class TransformerTest {
 	private static Assembler initTestEnvironment(String[] vary) {
 		return initTestEnvironment(vary, false);
 	}
-
+	
 	private static Assembler initTestEnvironment(String[] vary, boolean executePseudo) {
+		return initTestEnvironment(vary, executePseudo, -1);
+	}
+
+	private static Assembler initTestEnvironment(String[] vary, boolean executePseudo, int variableStart) {
 		CompilerConfig conf = CompilerConfig.getConfig();
 		conf.setConstantFolding(true);
 		conf.setConstantPropagation(true);
@@ -657,7 +661,7 @@ public class TransformerTest {
 		}
 		System.out.println("------------------------------");
 
-		List<String> nCode = NativeCompiler.getCompiler().compile(basic);
+		List<String> nCode = NativeCompiler.getCompiler().compile(basic, variableStart);
 		for (String line : nCode) {
 			System.out.println(line);
 		}

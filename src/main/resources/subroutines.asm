@@ -1546,7 +1546,15 @@ MORENUMDATA CMP #$2				; Strings are not allowed here
 			JMP SYNTAXERROR
 NUMNUM		CMP #$1
 			BEQ NUMREADREAL
-			LDA (TMP3_ZP),Y		; It's an integer
+			CMP #$0
+			BEQ NUMREADINT
+			LDA (TMP3_ZP),Y
+			TAY
+			JSR BYTEFAC
+			LDX #1
+			JSR READADDPTR
+			JMP NUMREAD			; It's a byte
+NUMREADINT	LDA (TMP3_ZP),Y		; It's an integer
 			STA TMP_REG
 			INY
 			LDA (TMP3_ZP),Y
@@ -1592,7 +1600,15 @@ NEXTDATA	LDA TMP3_ZP			; Adjust pointer to the next element
 ;###################################
 DATA2STR	CMP #$1
 			BEQ DREAL2STR		; It's a floating point number...
-			LDA (TMP3_ZP),Y		; It's an integer
+			CMP #$0
+			BEQ DATA2STRINT
+			LDA (TMP3_ZP),Y		; It's a byte
+			TAY
+			JSR BYTEFAC
+			LDX #1
+			JSR READADDPTR
+			JMP DFAC2STR
+DATA2STRINT	LDA (TMP3_ZP),Y		; It's an integer
 			STA TMP_REG
 			INY
 			LDA (TMP3_ZP),Y

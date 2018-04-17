@@ -1,7 +1,5 @@
-rem@ £allram:£fastfor:£shortif:£fastarray
-rem@ £word x=fast, ma=fast, mt, tx, tz, v, i
 rem@ £varstart $6590
-
+ti$="000000"
 dim pt%(4), cs%(18), xy%(18), ts%(12), ag(3)
 
 w=40
@@ -13,13 +11,15 @@ n=.:df=.:de=.:xs=.:xe=.:us=.:ue=.:vs=.:ve=.:kp=.
 u=.:v=.:le=.:du=.:dv=.:x=.:y=.:z=.:tp=.:si=.
 co=.:c=.:tv=.:mt=.:ma=.:xc=.:yv=.:zc=.:xn=.:yn=.:zn=.
 
-gosub bitmapon
 gosub unpack
+gosub bitmapon
 gosub clearscr
 gosub setcolor
 gosub draw
-key: get a$:if a$=""then key
+tt=ti
+rem key: get a$:if a$=""then key
 gosub bitmapoff
+print tt
 end
 
 bitmapon:
@@ -46,16 +46,14 @@ xh=xd/2:yh=yd/2
 
 for i=0 to 3:pt%(i)=64/(2^(2*i)):nexti
 
-for w=0 to 6.283 step 0.011111
+w=0.3
 gosub mapit
-next w
 return
 
 mapit:
 ag(0)=w:ag(1)=0:ag(2)=w
 gosub rotate
 gosub render
-gosub paint
 return
 
 render:
@@ -216,11 +214,6 @@ tc=tc+6
 next i
 return
 
-paint:
-rem not needed on actual hardware 
-sys 832
-return
-
 rotate:
 c=0
 for p=0 to 17 step 3
@@ -274,9 +267,6 @@ ts%(3)=tw:ts%(4)=tw:ts%(5)=tw
 ts%(6)=0:ts%(7)=0:ts%(8)=0
 ts%(9)=tw:ts%(10)=tw:ts%(11)=0
 
-poke 832, 234
-poke 833, 96
-
 return
 
 clearscr:
@@ -291,12 +281,14 @@ for i = 55296 to 56295:poke i,2:next i
 return
 
 unpack:
+print"{clr}unpacking texture..."
 p=tx
 packloop:
 read c,v
 if c=0 then extend
 for i=1 to c
 pokep,v
+poke 53280,v
 p=p+4
 nexti
 goto packloop
@@ -308,6 +300,7 @@ poke i+0, (v and 192)/64
 poke i+1, (v and 48)/16
 poke i+2, (v and 12)/4
 poke i+3, (v and 3)
+poke 53280,v
 next i
 return
 

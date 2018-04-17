@@ -40,6 +40,7 @@ public class NativeOptimizer {
 		// "MOV Y,*", "* X,Y", "POP Y" }, new String[] { "{2}", "{3}", "{0}"
 		// }));
 		patterns.add(new NativePattern(new String[] { "PUSH C", "MOV C*", "PUSH C", "CHGCTX #1", "MOV B*", "POP D", "POP C" }, new String[] { "{1:MOV C,>MOV D,}", "{3}", "{4}" }));
+		patterns.add(new NativePattern(new String[] { "MOV Y,#*", "PUSH Y", "NOP", "MOV Y,#*", "PUSH Y", "NOP" }, new String[] { "{0}", "{1}", "{3}", "{4}" }));
 	}
 
 	public static List<String> optimizeNative(List<String> code) {
@@ -62,8 +63,10 @@ public class NativeOptimizer {
 			for (int i = 0; i < code.size() - 1; i++) {
 				boolean cont = false;
 				int p = 0;
+				String line0 = code.get(i);
 				for (; p < MAX_AHEAD && p + i < code.size(); p++) {
-					lines[p] = code.get(p + i);
+					String line = code.get(p + i);
+					lines[p] = line;
 					splittedLines[p] = lines[p].split(" |,");
 				}
 				for (; p < MAX_AHEAD; p++) {
@@ -242,7 +245,7 @@ public class NativeOptimizer {
 					}
 				}
 				if (!rep) {
-					ret.add(lines[0]);
+					ret.add(line0);
 				} else {
 					i++;
 				}

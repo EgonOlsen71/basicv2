@@ -23,6 +23,9 @@ import com.sixtyfour.system.Machine;
  * 
  */
 public class Transformer6502 implements Transformer {
+
+	private int variableStart = -1;
+
 	@Override
 	public List<String> transform(Machine machine, PlatformProvider platform, List<String> code) {
 		List<String> res = new ArrayList<>();
@@ -36,7 +39,9 @@ public class Transformer6502 implements Transformer {
 		subs.addAll(Arrays.asList(Loader.loadProgram(this.getClass().getResourceAsStream("/subroutines.asm"))));
 
 		consts.add("; *** CONSTANTS ***");
-		//consts.add("*=$6590");
+		if (variableStart >= 0) {
+			consts.add("*=$" + Integer.toHexString(variableStart));
+		}
 		consts.add("CONSTANTS");
 		vars.add("; *** VARIABLES ***");
 		vars.add("VARIABLES");
@@ -96,7 +101,7 @@ public class Transformer6502 implements Transformer {
 		res.add("*=" + platform.getStartAddress());
 		res.add("TSX");
 		res.add("STX SP_SAVE");
-		
+
 		int cnt = 0;
 
 		List<String> strVars = new ArrayList<String>();
@@ -112,7 +117,7 @@ public class Transformer6502 implements Transformer {
 			if (sp != -1) {
 				line = line.substring(sp).trim();
 			}
-			
+
 			cnt = extractData(platform, machine, consts, vars, strVars, strArrayVars, name2label, cnt, line);
 
 			Generator pm = GeneratorList.getGenerator(orgLine);
@@ -132,7 +137,7 @@ public class Transformer6502 implements Transformer {
 		}
 
 		List<String> inits = createInitScript(vars);
-		List<String> datas=createDatas(machine);
+		List<String> datas = createDatas(machine);
 
 		subs.addAll(inits);
 		subs.add("; *** SUBROUTINES END ***");
@@ -202,22 +207,22 @@ public class Transformer6502 implements Transformer {
 	}
 
 	private List<String> createDatas(Machine machine) {
-	    DataStore datas=machine.getDataStore();
-	    List<String> ret=new ArrayList<String>();
-	    ret.add("; ******** DATA ********");
-	    ret.add("DATAS");
-	    
-	    datas.restore();
+		DataStore datas = machine.getDataStore();
+		List<String> ret = new ArrayList<String>();
+		ret.add("; ******** DATA ********");
+		ret.add("DATAS");
+
+		datas.restore();
 		Object obj = null;
 		while ((obj = datas.read()) != null) {
 			Type type = Type.STRING;
 			if (obj instanceof Integer) {
-			    Integer num = (Integer) obj;
+				Integer num = (Integer) obj;
 				if (num < -32768 || num > 32767) {
-				    obj=num.floatValue();
-				    type = Type.REAL;
+					obj = num.floatValue();
+					type = Type.REAL;
 				} else {
-				    type = Type.INTEGER;
+					type = Type.INTEGER;
 				}
 			} else if (obj instanceof Float) {
 				type = Type.REAL;
@@ -234,20 +239,26 @@ public class Transformer6502 implements Transformer {
 			}
 
 			if (type == Type.INTEGER) {
-				ret.add(".BYTE 0");
-				ret.add(".WORD "+obj.toString());
+				int val = ((Number) obj).intValue();
+				if (val < 0 || val > 255) {
+					ret.add(".BYTE 0");
+					ret.add(".WORD " + obj.toString());
+				} else {
+					ret.add(".BYTE 3");
+					ret.add(".BYTE " + obj.toString());
+				}
 			} else if (type == Type.REAL) {
-			    ret.add(".BYTE 1");
-			    ret.add(".REAL "+obj.toString());
+				ret.add(".BYTE 1");
+				ret.add(".REAL " + obj.toString());
 			} else {
-			    ret.add(".BYTE 2");
-			    ret.add(".BYTE "+obj.toString().length());
-			    ret.add(".TEXT \""+obj.toString()+"\"");
+				ret.add(".BYTE 2");
+				ret.add(".BYTE " + obj.toString().length());
+				ret.add(".TEXT \"" + obj.toString() + "\"");
 			}
 		}
 		ret.add(".BYTE $FF");
 		ret.add("; ******** DATA END ********");
-	    return ret;
+		return ret;
 	}
 
 	private List<String> createInitScript(List<String> vars) {
@@ -328,9 +339,9 @@ public class Transformer6502 implements Transformer {
 					if (type == Type.STRING) {
 						name = "$" + name.substring(1);
 					}
-					
+
 					if (!name2label.containsKey(name)) {
-					    
+
 						consts.add("; CONST: " + name);
 						String label = "CONST_" + (cnt++);
 						name2label.put(name, label);
@@ -340,18 +351,18 @@ public class Transformer6502 implements Transformer {
 							// Range check...convert to real if needed
 							int num = Integer.parseInt(name);
 							if (num < -32768 || num > 32767) {
-								name+= ".0";
+								name += ".0";
 								type = Type.REAL;
 							}
 						}
-						
+
 						if (type == Type.INTEGER) {
 							consts.add(label + "\t" + ".WORD " + name);
 							if (platform.useLooseTypes()) {
 								consts.add(label + "R\t" + ".REAL " + name + ".0");
 							}
 						} else if (type == Type.REAL) {
-						    	consts.add(label+"R");
+							consts.add(label + "R");
 							consts.add(label + "\t" + ".REAL " + name);
 						} else if (type == Type.STRING) {
 							consts.add(label + "\t" + ".BYTE " + name.length());
@@ -416,5 +427,10 @@ public class Transformer6502 implements Transformer {
 		}
 
 		return cnt;
+	}
+
+	@Override
+	public void setVariableStart(int variableStart) {
+		this.variableStart = variableStart;
 	}
 }

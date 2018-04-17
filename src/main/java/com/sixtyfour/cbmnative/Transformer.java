@@ -14,4 +14,6 @@ public interface Transformer {
 	 * @return
 	 */
 	List<String> transform(Machine machine, PlatformProvider romProvider, List<String> code);
+
+	void setVariableStart(int variableStart);
 }
