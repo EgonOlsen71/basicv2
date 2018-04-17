@@ -2088,6 +2088,7 @@ REALFACPUSH	STA TMP_ZP
 			LDY #0
 			LDA (TMP_ZP),Y
 			STA (TMP2_ZP),Y
+			BEQ PUSHED0
 			INY
 			LDA (TMP_ZP),Y
 			STA (TMP2_ZP),Y
@@ -2100,7 +2101,7 @@ REALFACPUSH	STA TMP_ZP
 			INY
 			LDA (TMP_ZP),Y
 			STA (TMP2_ZP),Y
-			LDA FPSTACKP
+PUSHED0		LDA FPSTACKP
 			CLC
 			ADC #5
 			STA FPSTACKP
@@ -2147,6 +2148,7 @@ COPY2_XY	STX TMP_ZP
 COPY3_XY	LDY #0
 			LDA (TMP3_ZP),Y
 			STA (TMP_ZP),Y
+			BEQ COPIED0			; Shortcut for 0 values...
 			INY
 			LDA (TMP3_ZP),Y
 			STA (TMP_ZP),Y
@@ -2159,7 +2161,7 @@ COPY3_XY	LDY #0
 			INY
 			LDA (TMP3_ZP),Y
 			STA (TMP_ZP),Y
-			RTS
+COPIED0		RTS
 ;###################################
 FASTAND		LDA $69			; Check ARG for 0
 			BNE CHECKFAC	

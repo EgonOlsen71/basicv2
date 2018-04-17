@@ -59,7 +59,7 @@ public class TransformerTest {
 		// testTransformer20();
 		// testTransformer22();
 		// testTransformer23();
-		//testTransformerFrog();
+		testTransformerFrog();
 		//testTransformerAffine();
 	}
 	
