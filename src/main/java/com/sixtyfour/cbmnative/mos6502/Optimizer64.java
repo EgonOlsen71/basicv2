@@ -216,6 +216,7 @@ public class Optimizer64 implements Optimizer {
 	    this.add(new Pattern(false, "Memory saving array access (integer)",
 		    new String[] { "{LINE0}", "{LINE1}", "JSR ARRAYACCESS_INTEGER_S" }, "LDA #<{MEM0}", "LDY #>{MEM0}",
 		    "STA G_REG", "STY G_REG+1", "JSR ARRAYACCESS_INTEGER"));
+	    this.add(new Pattern(false, "POPREAL and load X", new String[]{"JSR POPREAL2X"}, "JSR POPREAL", "LDA #<X_REG", "LDY #>X_REG"));
 	}
     };
 

@@ -2137,6 +2137,20 @@ PUSHREAL	LDX FPSTACKP
 NOPVPUR		RTS
 
 ;###################################
+POPREAL2X	LDA FPSTACKP
+			SEC
+			SBC #5
+			STA FPSTACKP
+			BCS NOPVPR2X
+			DEC FPSTACKP+1
+NOPVPR2X	LDA FPSTACKP
+			LDY FPSTACKP+1
+			JSR REALFAC
+			LDA #<X_REG
+			LDY #>X_REG
+			RTS
+
+;###################################
 POPREAL		LDA FPSTACKP
 			SEC
 			SBC #5
@@ -2145,8 +2159,7 @@ POPREAL		LDA FPSTACKP
 			DEC FPSTACKP+1
 NOPVPR		LDA FPSTACKP
 			LDY FPSTACKP+1
-			JSR REALFAC
-			RTS
+			JMP REALFAC
 
 ;### HELPER #######################
 ;###################################
