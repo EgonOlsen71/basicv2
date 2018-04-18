@@ -2148,6 +2148,7 @@ NOPVPR2X	LDA FPSTACKP
 			JSR REALFAC
 			LDA #<X_REG
 			LDY #>X_REG
+			JSR MEMARG
 			RTS
 
 ;###################################
