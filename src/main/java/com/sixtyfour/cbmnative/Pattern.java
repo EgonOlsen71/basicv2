@@ -2,7 +2,6 @@ package com.sixtyfour.cbmnative;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -88,6 +87,12 @@ public class Pattern {
 			String[] replacement = null;
 			if (this.replacement != null) {
 				replacement = Arrays.copyOf(this.replacement, this.replacement.length);
+				List<String> sub = new ArrayList<String>();
+				for (String subline:code.subList(index, end + 1)) {
+				    if (!subline.startsWith(";")) {
+					sub.add(subline);
+				    }
+				}
 				for (int i = 0; i < replacement.length; i++) {
 					if (replacement[i].startsWith("{LINE")) {
 						String postFix = "";
@@ -97,12 +102,6 @@ public class Pattern {
 							replacement[i] = replacement[i].substring(0, pos + 1);
 						}
 						int num = Integer.parseInt(replacement[i].substring(5, replacement[i].length() - 1));
-						List<String> sub = new ArrayList<String>(code.subList(index, end + 1));
-						for (Iterator<String> sitty = sub.iterator(); sitty.hasNext();) {
-							if (sitty.next().startsWith(";")) {
-								sitty.remove();
-							}
-						}
 						replacement[i] = sub.get(num) + postFix;
 					} else {
 						int pos = replacement[i].indexOf("{REG");
@@ -145,7 +144,6 @@ public class Pattern {
 	}
 
 	public boolean matches(String line, int ix, Map<String, Number> const2Value) {
-		line = line.trim();
 		if (line.startsWith(";")) {
 			return false;
 		}
@@ -177,7 +175,6 @@ public class Pattern {
 					if (p0 != -1) {
 						String leftPart = partLefts.get(pos);
 						if (lineRight.startsWith(leftPart)) {
-							String value = lineRight.substring(p0);
 							p1 = partRightP1.get(pos);
 							String reg = partRightsReg.get(pos);
 							if (reg.equals("*")) {
@@ -198,7 +195,8 @@ public class Pattern {
 									}
 									return resetPattern();
 								} else {
-									if (lineRight.contains("_REG") && reg.startsWith("REG")) {
+								    String value = lineRight.substring(p0);
+								    if (reg.startsWith("REG") && lineRight.contains("_REG")) {
 										int num = Integer.parseInt(reg.substring(3));
 										int pv = value.lastIndexOf("+");
 										if (pv != -1) {
@@ -215,7 +213,7 @@ public class Pattern {
 											}
 										}
 									} else {
-										if ((lineRight.contains("VAR_") || lineRight.contains("CONST_") || isNumber(lineRight)) && reg.startsWith("MEM")) {
+										if (reg.startsWith("MEM") && (lineRight.contains("VAR_") || lineRight.contains("CONST_") || isNumber(lineRight))) {
 											int pv = value.lastIndexOf("+");
 											if (pv != -1) {
 												value = value.substring(0, pv);
@@ -231,7 +229,7 @@ public class Pattern {
 													return resetPattern();
 												}
 											}
-										} else if (lineRight.contains("CONST_") && reg.startsWith("CONST")) {
+										} else if (reg.startsWith("CONST") && lineRight.contains("CONST_")) {
 											int pv = value.lastIndexOf("+");
 											if (pv != -1) {
 												value = value.substring(0, pv);

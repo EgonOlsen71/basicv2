@@ -224,35 +224,9 @@ public class Optimizer64 implements Optimizer {
 	// if (true) return input;
 	long s = System.currentTimeMillis();
 	Map<String, Integer> type2count = new HashMap<>();
-	Map<String, Number> const2Value = new HashMap<>();
-	for (String line : input) {
-	    line = line.replace("\t", " ");
-	    if (line.startsWith("CONST_")) {
-		int pos = line.indexOf(" ");
-		if (pos != -1) {
-		    String name = line.substring(0, pos).trim();
-		    String right = line.substring(pos + 1).trim();
-		    pos = right.indexOf(" ");
-		    if (pos != -1) {
-			String type = right.substring(0, pos).trim();
-			String number = right.substring(pos + 1).trim();
-			if (type.equals(".REAL") || type.equals(".WORD")) {
-			    try {
-				Float num = Float.valueOf(number);
-				if (type.equals(".REAL")) {
-				    const2Value.put(name, num);
-				} else {
-				    const2Value.put(name, num.intValue());
-				}
-			    } catch (Exception e) {
-				Logger.log("Failed to parse " + number + " as a number!");
-			    }
-			}
-		    }
-		}
-	    }
-	}
-
+	Map<String, Number> const2Value = extractConstants(input);
+	trimLines(input);
+	
 	Set<Pattern> used = new HashSet<Pattern>();
 	boolean optimized = false;
 	do {
@@ -305,6 +279,48 @@ public class Optimizer64 implements Optimizer {
 	input = removeNops(input);
 	Logger.log("Assembly code optimized in " + (System.currentTimeMillis() - s) + "ms");
 	return input;
+    }
+
+    private void trimLines(List<String> input) {
+	for (int i=0; i<input.size(); i++) {
+	    String line = input.get(i).trim();
+	    if (line.startsWith("; *** SUBROUTINES ***")) {
+		break;
+	    }
+	    input.set(i, line);
+	}
+    }
+
+    private Map<String, Number> extractConstants(List<String> input) {
+	Map<String, Number> const2Value = new HashMap<>();
+	for (String line : input) {
+	    line = line.replace("\t", " ");
+	    if (line.startsWith("CONST_")) {
+		int pos = line.indexOf(" ");
+		if (pos != -1) {
+		    String name = line.substring(0, pos).trim();
+		    String right = line.substring(pos + 1).trim();
+		    pos = right.indexOf(" ");
+		    if (pos != -1) {
+			String type = right.substring(0, pos).trim();
+			String number = right.substring(pos + 1).trim();
+			if (type.equals(".REAL") || type.equals(".WORD")) {
+			    try {
+				Float num = Float.valueOf(number);
+				if (type.equals(".REAL")) {
+				    const2Value.put(name, num);
+				} else {
+				    const2Value.put(name, num.intValue());
+				}
+			    } catch (Exception e) {
+				Logger.log("Failed to parse " + number + " as a number!");
+			    }
+			}
+		    }
+		}
+	    }
+	}
+	return const2Value;
     }
 
     private List<String> removeNops(List<String> input) {
