@@ -253,7 +253,7 @@ public class Transformer6502 implements Transformer {
 			} else {
 				ret.add(".BYTE 2");
 				ret.add(".BYTE " + obj.toString().length());
-				ret.add(".TEXT \"" + obj.toString() + "\"");
+				ret.add(".STRG \"" + obj.toString() + "\"");
 			}
 		}
 		ret.add(".BYTE $FF");
@@ -366,7 +366,7 @@ public class Transformer6502 implements Transformer {
 							consts.add(label + "\t" + ".REAL " + name);
 						} else if (type == Type.STRING) {
 							consts.add(label + "\t" + ".BYTE " + name.length());
-							consts.add("\t" + ".TEXT \"" + name + "\"");
+							consts.add("\t" + ".STRG \"" + name + "\"");
 						}
 					}
 				} else {

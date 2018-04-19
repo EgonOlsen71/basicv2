@@ -206,7 +206,7 @@ public class Assembler implements ProgramExecutor {
 				int[] data = AssemblyParser.getBinaryData(addr, line, ccon, lcon);
 				lineBreaks.add(addr);
 				System.arraycopy(data, 0, compileMachine.getRam(), addr, data.length);
-				if (lineUpper.startsWith(".TEXT")) {
+				if (lineUpper.startsWith(".STRG")) {
 					// If it's a string, the length might have changed due to
 					// place holder conversions to control codes. So we set the
 					// actual length here.
@@ -373,7 +373,6 @@ public class Assembler implements ProgramExecutor {
 					sb.append("." + Integer.toString(i, 16));
 					sb.append("\t");
 				}
-
 				int val = AssemblyParser.getLowByte(part.getBytes()[i - start]);
 				String num = Integer.toString(val, 16);
 				if (num.length() == 1) {

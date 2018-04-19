@@ -219,7 +219,7 @@ public class AssemblyParser {
 		List<Integer> ram = new ArrayList<Integer>();
 		data = data.trim();
 		String datupper = VarUtils.toUpper(data);
-		if (datupper.startsWith(".TEXT")) {
+		if (datupper.startsWith(".TEXT") || datupper.startsWith(".STRG")) {
 			data = data.substring(5).trim();
 			if (data.startsWith("\"") && data.endsWith("\"")) {
 				data = data.substring(1, data.length() - 1);

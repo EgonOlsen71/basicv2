@@ -3,7 +3,7 @@
 
 *=$c000   ; Startadresse des Programms
 
-BSOUT = CHROUT
+BSOUT = $FFD2
 
 start        lda #147          ; Steuerzeichen für Bildschirm löschen
              jsr BSOUT         ; Löschen durchführen

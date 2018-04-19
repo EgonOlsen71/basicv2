@@ -42,6 +42,7 @@ public abstract class AbstractMnemonic implements Mnemonic {
 	public int parse(String linePart, int addr, Machine machine, ConstantsContainer ccon, LabelsContainer lcon) {
 		linePart = linePart.trim().substring(3);
 		Parameters pars = this.parseParameters(linePart, addr, ccon, lcon);
+		
 		if (opcodes[0] == 0 && pars == null) {
 			raiseSyntaxError(linePart);
 		}
