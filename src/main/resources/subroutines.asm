@@ -659,7 +659,7 @@ GCEXE
 UPDATEGC	TYA
 			PHA
 			LDA GCBUFP			; Update the GC buffer pointer, if the old string pointer is >= strbuf and < highp
-			STA 53280
+			;STA 53280
 			STA TMP3_ZP
 			LDA GCBUFP+1
 			STA TMP3_ZP+1
