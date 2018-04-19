@@ -43,8 +43,23 @@ public class AssemblerTest {
 		testCpuCallListener();
 		testConstants();
 		testE46();
+		testFastCopy();
 	}
 
+	private static void testFastCopy() {
+	    System.out.println("\ntestFastCopy");
+		String[] code = Loader.loadProgram("src/test/resources/asm/fastcopy.asm");
+		Assembler asm = new Assembler(code);
+		asm.compile();
+		asm.run();
+		System.out.println(asm.toString());
+		for (int i=49152; i<49250; i++) {
+		    System.out.print(Integer.toHexString(asm.getRam()[i])+",");
+		}
+		System.out.println();
+	}
+
+	
 	private static void testConstants() {
 		String line = "*=$c000  \n";
 		line += "CONST=$c000 \n";
