@@ -19,7 +19,7 @@
 			JSR QUICKCOPY
 			RTS
 
-QUICKCOPY	LDA TMP_REG
+QUICKCOPY	LDA TMP_REG		; a self modifying copy routine
 			STA TMEM+1
 			LDA TMP_REG+1
 			STA TMEM+2

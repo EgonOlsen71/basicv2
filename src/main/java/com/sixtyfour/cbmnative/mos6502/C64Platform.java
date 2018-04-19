@@ -49,8 +49,8 @@ public class C64Platform implements PlatformProvider {
 	}
 
 	@Override
-	public int getMemoryStackSize() {
-		return 10;
+	public int getGarbageCollectionBufferSize() {
+		return 128;
 	}
 
 }

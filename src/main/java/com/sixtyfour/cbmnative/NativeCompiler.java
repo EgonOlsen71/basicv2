@@ -230,13 +230,13 @@ public class NativeCompiler {
 					if (!exp.contains("[]")) {
 						tr = "A";
 						sr = "B";
-						withStrings = true;
+						// withStrings = true;
 					} else {
 						tr = "G";
 						sr = "G";
 						isArrayAccess = true;
 						if (exp.contains("{STRING")) {
-							withStrings = true;
+							// withStrings = true;
 							stringStack.push(true);
 						} else {
 							stringStack.push(false);
@@ -361,7 +361,7 @@ public class NativeCompiler {
 							if (modeSwitchCnt > 1 && !code.isEmpty()) {
 								ntr = "A";
 								nsr = "B";
-								withStrings = true;
+								// withStrings = true;
 							}
 						}
 
@@ -422,7 +422,7 @@ public class NativeCompiler {
 					pointerMode = true;
 					tr = "A";
 					sr = "B";
-					withStrings = true;
+					// withStrings = true;
 				} else {
 					modeSwitchCnt++;
 					if (pointerMode) {
@@ -437,6 +437,8 @@ public class NativeCompiler {
 				}
 				String regs = pointerMode ? "A,B" : "X,Y";
 
+				String last = this.getLastEntry(code);
+				
 				boolean dontPush = false;
 
 				switch (op) {
@@ -501,15 +503,18 @@ public class NativeCompiler {
 					code.add("MOVB " + regs.replace(",", ",(") + ")");
 					break;
 				case ".":
+					withStrings = true;
 					code.add("JSR CONCAT");
 					break;
 				case "USR":
 					code.add("JSR USR");
 					break;
 				case "CHR":
+					withStrings = true;
 					code.add("JSR CHR");
 					break;
 				case "STR":
+					withStrings = true;
 					code.add("JSR STR");
 					break;
 				case "VAL":
@@ -538,15 +543,18 @@ public class NativeCompiler {
 					stringStack.pop();
 					break;
 				case "MID":
+					withStrings = true;
 					code.add("POP D");
 					code.add("POP C");
 					code.add("JSR MID");
 					break;
 				case "LEFT":
+					withStrings = true;
 					code.add("POP C");
 					code.add("JSR LEFT");
 					break;
 				case "RIGHT":
+					withStrings = true;
 					code.add("POP C");
 					code.add("JSR RIGHT");
 					break;

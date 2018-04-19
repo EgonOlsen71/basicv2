@@ -38,8 +38,6 @@ public class Jsr extends JumpBase {
 			super.generateCode(context, line, nCode, subCode, name2label);
 		} else if (line.equals("JSR COPYSTR")) {
 			nCode.add(";ignored: JSR COPYSTR");
-		} else if (line.equals("JSR COMPACT")) {
-			nCode.add(";ignored: JSR COMPACT");
 		} else {
 			super.generateCode(context, line, nCode, subCode, name2label);
 		}

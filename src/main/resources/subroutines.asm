@@ -9,6 +9,10 @@ START		LDA #<FPSTACK
 			STY FORSTACKP+1
 			LDA #0
 			STA CONCATBUFP
+			LDA #<GCBUF
+			LDY #>GCBUF
+			STA GCBUFP
+			STY GCBUFP+1
 			LDA #<STRBUF
 			LDY #>STRBUF
 			STA STRBUFP
@@ -293,6 +297,7 @@ BUFFERUSED	LDA B_REG			;copy the content to append
 ;###################################
 COPY2CONCAT	LDY #0
 			LDA (TMP_ZP),Y
+			BEQ NOC2C			; Nothing to append, skip
 			STA TMP2_ZP
 			INC TMP_ZP
 			BNE COPY2CONT
@@ -307,7 +312,7 @@ COPY2LOOP	LDA (TMP_ZP),Y
 MEMORYOK	CPY TMP2_ZP
 			BNE COPY2LOOP
 			STX CONCATBUFP
-			RTS
+NOC2C		RTS
 ;###################################
 ; Special loop to handle the common for-poke-next-case
 ; used to clear the screen and such...
@@ -629,15 +634,88 @@ READTID		LDA #0
 			LDY #>VAR_TI$
 			JMP COPYSTRING	;RTS is implicit
 ;###################################
-COPYSTRING	STA TMP2_ZP			; TODO: Add a call to GC here. Remember: GC has to adjust highp as well!
-			STY TMP2_ZP+1		; TODO: Store the old string pointer in the GC buffer. It might be used later, but we need to preserve it here... 
+COMPACT		LDY #0
+			LDA (TMP_ZP),Y		; Get the source's length
+			STA TMP4_REG		; ...and store it
+			LDA STRBUFP+1		; First, check if the new string would fit into memory...
+			STA TMP4_REG+1		; For that, we have to calculate the new strbufp after adding the string
+			LDA STRBUFP
+			CLC
+			ADC TMP4_REG
+			STA TMP4_REG
+			BCC	RGCNOOV1
+			INC TMP4_REG+1
+RGCNOOV1	LDA TMP4_REG+1		; Now do the actual check
+			CMP ENDSTRBUF+1
+			BEQ RGCLOW1
+			BCS GCEXE			; Doesn't fit, run GC!
+RGCLOW1		LDA TMP4_REG
+			CMP ENDSTRBUF
+			BCS	GCEXE			; This also triggers, if the it would fit exactly...but anyway...
+			RTS					; It fits? Then exit without GC
+GCEXE
+			RTS					; Remember: GC has to adjust highp as well!
+;###################################
+UPDATEGC	TYA
+			PHA
+			LDA GCBUFP			; Update the GC buffer pointer, if the old string pointer is >= strbuf and < highp
+			STA 53280
+			STA TMP3_ZP
+			LDA GCBUFP+1
+			STA TMP3_ZP+1
+			LDY #0
+			LDA (TMP3_ZP),Y
+			STA TMP4_REG		; store low byte for later
+			INY
+			LDA (TMP3_ZP),Y
+			STA TMP4_REG+1		; store high byte for later
+			CMP #>STRBUF
+			BEQ UGCLOWS			; high byte = strbuf? Then check low byte
+			BCS	UGCCHECKHP		; high byte > strbuf? Then check upper bound
+			JMP UGCX			; high byte < strbuf? nothing to update, just exit
+UGCLOWS		LDA TMP4_REG
+			CMP #<STRBUF
+			BCS UGCCHECKHP		; low byte>= strbuf? Then check upper bound
+			JMP UGCX			; low byte < strbuf? nothing to update, just exit
+UGCCHECKHP	LDA TMP4_REG+1
+			CMP HIGHP+1
+			BCC UGCDO			; high byte < highp? Then update GC
+			BEQ UGCLOWHP		; high byte = highp? Then check low byte
+			JMP UGCX			; high byte > highp? nothing to update, just exit
+UGCLOWHP	LDA TMP4_REG
+			CMP HIGHP
+			BCC UGCDO			; low byte < highp? Then update GC
+			JMP UGCX			; low byte >= highp? nothing to update, just exit
+UGCDO		CLC
+			LDA GCBUFP
+			ADC #2
+			STA GCBUFP
+			BCC UGCX
+			INC GCBUFP+1
+UGCX		PLA
+			TAY
+			RTS
+;###################################
+COPYSTRING	STA TMP2_ZP
+			STY TMP2_ZP+1
 			CPY TMP_ZP+1
 			BNE CONTCOPY
 			LDA TMP2_ZP
 			CMP TMP_ZP
 			BNE CONTCOPY
 			RTS					; A copy from a variable into the same instance is pointless an will be ignored.
-CONTCOPY	LDY #0
+CONTCOPY	JSR COMPACT			; Do a GC if needed
+			LDA GCBUFP			; Store the current pointer stored in the target variable in the gc buffer...
+			STA TMP3_ZP
+			LDA GCBUFP+1
+			STA TMP3_ZP+1
+			LDY #0
+			LDA (TMP2_ZP),Y
+			STA (TMP3_ZP),Y
+			INY
+			LDA (TMP2_ZP),Y
+			STA (TMP3_ZP),Y
+			DEY					; ... but don't adjust the buffer pointer (yet)
 			STY TMP_FLAG
 			LDA (TMP_ZP),Y
 			BNE NOTEMPTYSTR
@@ -674,6 +752,7 @@ CHECKLOW3	LDA TMP_ZP
 			BCC INVAR			; No, it's not a constant. It's something from lower memory...
 			
 ISCONST		JSR CHECKLASTVAR	; Reclaim formerly used memory if possible
+			JSR UPDATEGC
 			LDA TMP_ZP
 			STA (TMP2_ZP),Y		; Yes, it's a constant...
 			INY
@@ -720,19 +799,19 @@ COPYONLY	LDY #0
 			STY TMP_FLAG
 			JMP CHECKMEM
 
-ALTCOPY		JMP COPYSTRING2	; TODO: Add a call to increase the GC pointer, if (check this inside the call, not here) the last pointer in the buffer is < highp
-							; and > stringbuffer start because only then it can create an unused "isle" of memory in the pool.
+ALTCOPY		JSR UPDATEGC
+			JMP COPYSTRING2
 
 UPDATEPTR	LDA TMP_ZP+1	; Check if the new string comes after or equals highp, which indicates that it can be
 			CMP HIGHP+1		; "copied down". This is another routine, because of...reasons...
 			BEQ CHECKXT1
 			BCS ALTCOPY
+			JSR UPDATEGC
 			JMP CHECKMEM
 CHECKXT1	LDA TMP_ZP
 			CMP HIGHP
 			BCS ALTCOPY
-							; TODO: Add a call to increase the GC pointer, if (check this inside the call, not here) the last pointer in the buffer is < highp
-							; and > stringbuffer start because only then it can create an unused "isle" of memory in the pool.
+			JSR UPDATEGC
 
 CHECKMEM	LDY	ENDSTRBUF+1	; Check, if enough memory is available. This is a rough check, it requires at least 256 bytes to be free or otherwise,
 			DEY				; it will fail. This isn't very memory efficient, but it's faster to check this way...

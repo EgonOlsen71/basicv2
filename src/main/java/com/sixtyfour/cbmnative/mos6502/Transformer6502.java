@@ -47,8 +47,6 @@ public class Transformer6502 implements Transformer {
 		vars.add("VARIABLES");
 		Map<String, String> name2label = new HashMap<String, String>();
 
-		int memStackSize = Math.min(255, platform.getMemoryStackSize() * 3);
-		res.add("MEMORY_STACK_SIZE = " + memStackSize);
 		res.add("SGNFAC = $BC2B");
 		res.add("MEMARG = $BA8C");
 		res.add("ARGADD = $B86A");
@@ -191,6 +189,7 @@ public class Transformer6502 implements Transformer {
 		res.add("DATASP\t.WORD DATAS");
 		res.add("LASTVAR\t.WORD 0");
 		res.add("LASTVARP\t.WORD 0");
+		res.add("GCBUFP\t.WORD 0");
 		res.add("HIGHP\t.WORD STRBUF");
 		res.add("STRBUFP\t.WORD STRBUF");
 		res.add("ENDSTRBUF\t.WORD " + platform.getStringMemoryEnd());
@@ -201,7 +200,8 @@ public class Transformer6502 implements Transformer {
 		res.add("CONCATBUF\t.ARRAY 256");
 		res.add("INPUTQUEUE\t.ARRAY $0F");
 		res.add("FPSTACK .ARRAY " + Math.min(256, platform.getStackSize() * 5));
-		res.add("FORSTACK .ARRAY " + Math.min(1024, platform.getStackSize() * 17));
+		res.add("FORSTACK .ARRAY " + Math.min(1024, platform.getForStackSize() * 17));
+		res.add("GCBUF\t.ARRAY " + Math.min(4096, platform.getGarbageCollectionBufferSize() * 2));
 		res.add("STRBUF\t.BYTE 0");
 		return res;
 	}

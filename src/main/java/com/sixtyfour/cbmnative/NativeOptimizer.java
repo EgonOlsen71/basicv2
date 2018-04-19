@@ -25,7 +25,9 @@ public class NativeOptimizer {
 		patterns.add(new NativePattern(new String[] { "MOV Y,*", "MOV X,Y" }, new String[] { "{0:MOV Y,>MOV X,}" }));
 		patterns.add(new NativePattern(new String[] { "MOV B,*", "MOV A,B" }, new String[] { "{0:MOV B,>MOV A,}" }));
 		patterns.add(new NativePattern(new String[] { "MOV Y*", "PUSH Y", "JSR COMPACT", "MOV A*", "POP X" }, new String[] { "{2}", "{3}", "{0:MOV Y,>MOV X,}" }));
+		patterns.add(new NativePattern(new String[] { "MOV Y*", "PUSH Y", "MOV A*", "POP X" }, new String[] { "{2}", "{0:MOV Y,>MOV X,}" }));
 		patterns.add(new NativePattern(new String[] { "PUSH X", "JSR COMPACT", "MOV A*", "POP X" }, new String[] { "{1}", "{2}" }));
+		patterns.add(new NativePattern(new String[] { "PUSH X", "MOV A*", "POP X" }, new String[] { "{1}" }));
 		patterns.add(new NativePattern(new String[] { "MOV Y,X", "MOV X*", "ADD X,Y" }, new String[] { "{1:MOV X,>MOV Y,}", "{2}" }));
 		patterns.add(new NativePattern(new String[] { "MOV Y,X", "MOV X*", "MUL X,Y" }, new String[] { "{1:MOV X,>MOV Y,}", "{2}" }));
 		patterns.add(new NativePattern(new String[] { "PUSH C", "CHGCTX #1", "MOV B*", "POP C" }, new String[] { "{1}", "{2}" }));

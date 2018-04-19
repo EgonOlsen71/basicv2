@@ -54,23 +54,28 @@ public abstract class MultiVariableCommand extends AbstractCommand {
 	final protected List<CodeContainer> evalToCode(Machine machine, String strCall, String numberCall) {
 		NativeCompiler compiler = NativeCompiler.getCompiler();
 		List<CodeContainer> ccs = new ArrayList<CodeContainer>();
-
+		boolean added=false;
+		
 		for (int i = 0; i < vars.size(); i++) {
 			Term indexTerm = indexTerms.get(i);
 			Variable var = this.getVariable(machine, i);
 			List<String> after = new ArrayList<String>();
 			List<String> expr = new ArrayList<String>();
-			List<String> before = null;
+			List<String> before = new ArrayList<String>();;
 
 			if (var.getType() == Type.STRING) {
 				expr.add("JSR " + strCall);
+				if (!added) {
+					//before.add(0, "JSR COMPACT"); // Shouldn't be needed here...
+					added=true;
+				}
 			} else if (var.getType() == Type.INTEGER || var.getType() == Type.REAL) {
 				expr.add("JSR " + numberCall);
 			}
 
 			if (indexTerm != null) {
 				List<Atom> pars = Parser.getParameters(indexTerm);
-				before = compiler.compileToPseudoCode(machine, Parser.createIndexTerm(machine, pars, var.getDimensions()));
+				before.addAll(compiler.compileToPseudoCode(machine, Parser.createIndexTerm(machine, pars, var.getDimensions())));
 
 				after.add("POP X");
 				after.add("MOV G," + getVariableLabel(machine, var));

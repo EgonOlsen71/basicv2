@@ -20,6 +20,11 @@ public interface PlatformProvider {
 	 * @return
 	 */
 	int getForStackSize();
+	
+	/**
+	 * @return
+	 */
+	int getGarbageCollectionBufferSize();
 
 	/**
 	 * @return
@@ -45,10 +50,4 @@ public interface PlatformProvider {
 	 * @return
 	 */
 	int getStringMemoryEnd();
-
-	/**
-	 * @return
-	 */
-	int getMemoryStackSize();
-
 }
