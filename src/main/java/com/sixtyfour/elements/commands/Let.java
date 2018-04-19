@@ -100,17 +100,19 @@ public class Let extends AbstractCommand {
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.sixtyfour.elements.commands.Command#getAllTerms()
 	 */
 	@Override
 	public List<Term> getAllTerms() {
-		List<Term> ret=new ArrayList<Term>();
+		List<Term> ret = new ArrayList<Term>();
 		ret.add(term);
 		ret.add(indexTerm);
 		return ret;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 

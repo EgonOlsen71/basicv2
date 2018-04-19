@@ -142,16 +142,16 @@ public class Input extends MultiVariableCommand {
 			CodeContainer cc = new CodeContainer(before, expr, after);
 			ccs.add(cc);
 		}
-		
-		List<String> check=new ArrayList<String>();
+
+		List<String> check = new ArrayList<String>();
 		check.add("JSR QUEUESIZE");
 		check.add("CMP X,#0{REAL}");
 		check.add("JE " + labelCheck);
 		check.add("JSR EXTRAIGNORED");
-		check.add(labelCheck+":");
+		check.add(labelCheck + ":");
 		CodeContainer cc = new CodeContainer(null, check, null);
 		ccs.add(cc);
-		
+
 		return ccs;
 	}
 

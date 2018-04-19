@@ -29,7 +29,7 @@ public class Tab extends Spc {
 		}
 		int num = VarUtils.getInt(term.eval(machine));
 		if (num < 0 || num > 255) {
-			throw new RuntimeException("Illegal quantity error: " + this+"/"+num);
+			throw new RuntimeException("Illegal quantity error: " + this + "/" + num);
 		}
 		num -= machine.getOutputChannel().getCursor();
 		num = Math.max(0, num);

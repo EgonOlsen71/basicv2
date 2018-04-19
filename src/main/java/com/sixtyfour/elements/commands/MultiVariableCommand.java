@@ -50,7 +50,7 @@ public abstract class MultiVariableCommand extends AbstractCommand {
 		ret.addAll(this.indexTerms);
 		return ret;
 	}
-	
+
 	final protected List<CodeContainer> evalToCode(Machine machine, String strCall, String numberCall) {
 		NativeCompiler compiler = NativeCompiler.getCompiler();
 		List<CodeContainer> ccs = new ArrayList<CodeContainer>();

@@ -483,9 +483,9 @@ public class Machine {
 	 *            the commands to remove
 	 */
 	public void removeCommands(List<Command> toRemove) {
-		Set<Command> remSet=new HashSet<Command>(toRemove);
-		for (int i=0; i<commandList.size(); i++) {
-			Command cmd=commandList.get(i);
+		Set<Command> remSet = new HashSet<Command>(toRemove);
+		for (int i = 0; i < commandList.size(); i++) {
+			Command cmd = commandList.get(i);
 			if (remSet.contains(cmd)) {
 				commandList.set(i, new Rem());
 			}

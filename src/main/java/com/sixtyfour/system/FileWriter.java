@@ -57,32 +57,32 @@ public class FileWriter {
 					bos.write(b);
 				}
 			}
-			int lastEnd=-1;
-			int cnt=0;
-			for (ProgramPart part:prg.getParts()) {
-			    	int start=part.getAddress();
-        			int[] bin = part.getBytes();
-        			
-        			if (lastEnd!=-1) {
-        			    for (int i=lastEnd; i<start; i++) {
-        				bos.write(0);
-        			    }
-        			}
-        			
-        			Integer end = prg.getLabelsContainer().get("PROGRAMEND");
-        			if (end != null && end<part.getEndAddress()) {
-        			    	int clip = end - (cnt == 0 ? codeStartOrg:start);
-        				if (clip < bin.length) {
-        					bin = Arrays.copyOfRange(bin, 0, clip);
-        				}
-        			} else {
-        			    end=part.getEndAddress();
-        			}
-        			lastEnd=end;
-        			cnt++;
-        			for (int b : bin) {
-        				bos.write(b);
-        			}
+			int lastEnd = -1;
+			int cnt = 0;
+			for (ProgramPart part : prg.getParts()) {
+				int start = part.getAddress();
+				int[] bin = part.getBytes();
+
+				if (lastEnd != -1) {
+					for (int i = lastEnd; i < start; i++) {
+						bos.write(0);
+					}
+				}
+
+				Integer end = prg.getLabelsContainer().get("PROGRAMEND");
+				if (end != null && end < part.getEndAddress()) {
+					int clip = end - (cnt == 0 ? codeStartOrg : start);
+					if (clip < bin.length) {
+						bin = Arrays.copyOfRange(bin, 0, clip);
+					}
+				} else {
+					end = part.getEndAddress();
+				}
+				lastEnd = end;
+				cnt++;
+				for (int b : bin) {
+					bos.write(b);
+				}
 			}
 		} finally {
 			if (bos != null) {

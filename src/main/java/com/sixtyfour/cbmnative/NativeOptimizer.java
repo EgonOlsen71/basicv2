@@ -40,8 +40,9 @@ public class NativeOptimizer {
 		// "MOV Y,*", "* X,Y", "POP Y" }, new String[] { "{2}", "{3}", "{0}"
 		// }));
 		patterns.add(new NativePattern(new String[] { "PUSH C", "MOV C*", "PUSH C", "CHGCTX #1", "MOV B*", "POP D", "POP C" }, new String[] { "{1:MOV C,>MOV D,}", "{3}", "{4}" }));
-		
-		// The fact that NOPs are inserted between expressions now kills the fastfor-optimizer. This little hack revives it...
+
+		// The fact that NOPs are inserted between expressions now kills the
+		// fastfor-optimizer. This little hack revives it...
 		patterns.add(new NativePattern(new String[] { "MOV Y,#*", "PUSH Y", "NOP", "MOV Y,#*", "PUSH Y", "NOP" }, new String[] { "{0}", "{1}", "{3}", "{4}" }));
 	}
 

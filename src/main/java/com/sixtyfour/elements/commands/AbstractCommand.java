@@ -104,13 +104,15 @@ public abstract class AbstractCommand implements Command {
 	public Term getTerm() {
 		return term;
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.sixtyfour.elements.commands.Command#getAllTerms()
 	 */
 	@Override
 	public List<Term> getAllTerms() {
-		List<Term> ret=new ArrayList<Term>();
+		List<Term> ret = new ArrayList<Term>();
 		ret.add(term);
 		return ret;
 	}
@@ -210,7 +212,9 @@ public abstract class AbstractCommand implements Command {
 		return false;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.sixtyfour.parser.Atom#isConstant()
 	 */
 	@Override

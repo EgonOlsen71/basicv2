@@ -207,13 +207,15 @@ public class LogicTerm implements LogicBlock {
 		return false;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.sixtyfour.parser.logic.LogicBlock#getTerms()
 	 */
 	@Override
 	public List<Term> getTerms() {
-		List<Term> terms=new ArrayList<Term>();
-		for (LogicBlock block:blocks) {
+		List<Term> terms = new ArrayList<Term>();
+		for (LogicBlock block : blocks) {
 			terms.addAll(block.getTerms());
 		}
 		return terms;

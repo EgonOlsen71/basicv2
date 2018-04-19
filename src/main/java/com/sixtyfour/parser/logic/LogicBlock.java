@@ -24,7 +24,7 @@ public interface LogicBlock extends Atom {
 	 * Not. Negates the block's state.
 	 */
 	void not();
-	
+
 	/**
 	 * Returns the terms used to form this logic block in no particular order.
 	 * 

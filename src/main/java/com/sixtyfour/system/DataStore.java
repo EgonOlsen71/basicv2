@@ -63,13 +63,13 @@ public class DataStore {
 		}
 		return datas.get(position++);
 	}
-	
+
 	/**
 	 * Clears the data store.
 	 */
 	public void clear() {
-	    restore();
-	    datas.clear();
+		restore();
+		datas.clear();
 	}
 
 }

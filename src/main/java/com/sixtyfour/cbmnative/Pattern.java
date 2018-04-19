@@ -88,10 +88,10 @@ public class Pattern {
 			if (this.replacement != null) {
 				replacement = Arrays.copyOf(this.replacement, this.replacement.length);
 				List<String> sub = new ArrayList<String>();
-				for (String subline:code.subList(index, end + 1)) {
-				    if (!subline.startsWith(";")) {
-					sub.add(subline);
-				    }
+				for (String subline : code.subList(index, end + 1)) {
+					if (!subline.startsWith(";")) {
+						sub.add(subline);
+					}
 				}
 				for (int i = 0; i < replacement.length; i++) {
 					if (replacement[i].startsWith("{LINE")) {
@@ -195,8 +195,8 @@ public class Pattern {
 									}
 									return resetPattern();
 								} else {
-								    String value = lineRight.substring(p0);
-								    if (reg.startsWith("REG") && lineRight.contains("_REG")) {
+									String value = lineRight.substring(p0);
+									if (reg.startsWith("REG") && lineRight.contains("_REG")) {
 										int num = Integer.parseInt(reg.substring(3));
 										int pv = value.lastIndexOf("+");
 										if (pv != -1) {
@@ -264,9 +264,9 @@ public class Pattern {
 	}
 
 	private boolean isNumber(String lineRight) {
-		for (int i=0; i<lineRight.length(); i++) {
-			char c=lineRight.charAt(i);
-			if (c<'0' || c>'9') {
+		for (int i = 0; i < lineRight.length(); i++) {
+			char c = lineRight.charAt(i);
+			if (c < '0' || c > '9') {
 				return false;
 			}
 		}
@@ -284,11 +284,11 @@ public class Pattern {
 	}
 
 	private void clearArray(String[] array) {
-		for (int i=0; i<array.length; i++) {
-			array[i]=null;
+		for (int i = 0; i < array.length; i++) {
+			array[i] = null;
 		}
 	}
-	
+
 	private boolean inc(int ix) {
 		pos++;
 		if (index == -1) {

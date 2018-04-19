@@ -55,7 +55,6 @@ public class Poke extends AbstractCommand {
 		return null;
 	}
 
-		
 	@Override
 	public List<Term> getAllTerms() {
 		List<Term> ret = new ArrayList<Term>();

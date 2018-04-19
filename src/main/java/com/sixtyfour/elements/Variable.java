@@ -294,7 +294,7 @@ public class Variable implements Atom {
 	@Override
 	public String toString() {
 		if (!array || value == null) {
-			return name + "{" + value + "/"+this.isConstant()+"}";
+			return name + "{" + value + "/" + this.isConstant() + "}";
 		} else {
 			return name + "{" + Arrays.toString(((List<Object>) value).toArray()) + "}";
 		}

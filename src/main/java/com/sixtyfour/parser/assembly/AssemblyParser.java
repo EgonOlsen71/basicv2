@@ -141,12 +141,12 @@ public class AssemblyParser {
 				number = number.replace("*", String.valueOf(addr));
 				return getConstantParsed("", number, ccon, true).getValue();
 			} else {
-				if (number!=null && number.contains("+")) {
-					number=number.substring(0, number.indexOf("+"));
+				if (number != null && number.contains("+")) {
+					number = number.substring(0, number.indexOf("+"));
 				}
 				Integer labelAddr = lcon.get(number);
 				if (labelAddr != null) {
-					return labelAddr+addrAdd;
+					return labelAddr + addrAdd;
 				}
 			}
 

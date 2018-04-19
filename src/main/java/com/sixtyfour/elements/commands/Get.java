@@ -67,7 +67,7 @@ public class Get extends MultiVariableCommand {
 	public List<CodeContainer> evalToCode(Machine machine) {
 		return this.evalToCode(machine, "GETSTR", "GETNUMBER");
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 

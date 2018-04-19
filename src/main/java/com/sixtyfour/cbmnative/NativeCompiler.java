@@ -85,14 +85,14 @@ public class NativeCompiler {
 	public List<String> compile(Basic basic) {
 		return compile(basic, -1);
 	}
-	
+
 	public List<String> compile(Basic basic, int variableMemory) {
 		basic.compile();
-		CompilerConfig conf=CompilerConfig.getConfig();
+		CompilerConfig conf = CompilerConfig.getConfig();
 		List<String> mCode = NativeCompiler.getCompiler().compileToPseudeCode(basic);
 
 		PlatformProvider platform = new C64Platform();
-		Transformer tf=platform.getTransformer();
+		Transformer tf = platform.getTransformer();
 		tf.setVariableStart(variableMemory);
 		List<String> nCode = tf.transform(basic.getMachine(), platform, mCode);
 		if (platform.getOptimizer() != null && conf.isNativeLanguageOptimizations()) {
@@ -101,8 +101,8 @@ public class NativeCompiler {
 		if (platform.getUnlinker() != null && conf.isOptimizedLinker()) {
 			nCode = platform.getUnlinker().unlink(nCode);
 		}
-		if (conf.getCompactThreshold()>1) {
-		    nCode=new Compactor(conf.getCompactThreshold()).compact(nCode);
+		if (conf.getCompactThreshold() > 1) {
+			nCode = new Compactor(conf.getCompactThreshold()).compact(nCode);
 		}
 		return nCode;
 	}

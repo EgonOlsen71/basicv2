@@ -683,7 +683,7 @@ public class PseudoCpu {
 			val(parts);
 			return;
 		case "TABOUT":
-		    	regs[Y]=1;
+			regs[Y] = 1;
 			tab(parts);
 			return;
 		case "LEN":
@@ -2114,15 +2114,15 @@ public class PseudoCpu {
 		ti = getIndex(target);
 		si = getIndex(source);
 		Type type = Type.INTEGER;
-		
-		if (ti==-1 && si==-1) {
-		    // constant into memory
-		    int addr = Integer.parseInt(target);
-		    int val = Integer.parseInt(source.substring(0, source.indexOf("{")).replace("#", "").trim()) & 0xff;
-		    memory[addr] = val;
-		    return;
+
+		if (ti == -1 && si == -1) {
+			// constant into memory
+			int addr = Integer.parseInt(target);
+			int val = Integer.parseInt(source.substring(0, source.indexOf("{")).replace("#", "").trim()) & 0xff;
+			memory[addr] = val;
+			return;
 		}
-		
+
 		if (ti == -1 && si != -1) {
 			// From register into memory
 			int pos = target.lastIndexOf("{");

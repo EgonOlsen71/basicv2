@@ -56,7 +56,7 @@ public class ConstantFolder {
 				if (right != null && right.isTerm()) {
 					finalTerm.setRight(foldConstants((Term) right, machine));
 				}
-				
+
 				if (left != null && left instanceof Function) {
 					Function fun = (Function) left;
 					fun.setTerm(foldConstants(fun.getTerm(), machine));
@@ -76,13 +76,14 @@ public class ConstantFolder {
 			for (Command cmd : machine.getCommandList()) {
 				for (Term cmdTerm : cmd.getAllTerms()) {
 					/*
-					if (cmdTerm != null && cmd.getTerm() != null) {
-						System.out.println(cmd.getName() + "/" + cmdTerm + "/" + cmd.getTerm().getInitial() + "/" + ConstantPropagator.checkForConstant(machine, cmdTerm));
-					}
-					*/
+					 * if (cmdTerm != null && cmd.getTerm() != null) {
+					 * System.out.println(cmd.getName() + "/" + cmdTerm + "/" +
+					 * cmd.getTerm().getInitial() + "/" +
+					 * ConstantPropagator.checkForConstant(machine, cmdTerm)); }
+					 */
 					if (cmdTerm != null) {
 						foldConstants(cmdTerm, machine);
-						//System.out.println("> " + cmdTerm);
+						// System.out.println("> " + cmdTerm);
 					}
 				}
 			}

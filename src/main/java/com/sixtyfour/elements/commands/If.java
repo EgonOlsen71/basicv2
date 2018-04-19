@@ -78,7 +78,7 @@ public class If extends AbstractCommand {
 		}
 		return restTerm;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
