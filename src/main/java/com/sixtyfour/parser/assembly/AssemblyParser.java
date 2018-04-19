@@ -141,13 +141,16 @@ public class AssemblyParser {
 				number = number.replace("*", String.valueOf(addr));
 				return getConstantParsed("", number, ccon, true).getValue();
 			} else {
+				if (number!=null && number.contains("+")) {
+					number=number.substring(0, number.indexOf("+"));
+				}
 				Integer labelAddr = lcon.get(number);
 				if (labelAddr != null) {
-					return labelAddr;
+					return labelAddr+addrAdd;
 				}
 			}
 
-			// No constant and no label found...might be a delayed label...
+			// No constant and no label found...might be a delayed label..
 			lcon.addDelayedLabelRef(addr, number, low, high, addrAdd, isDataLine);
 			return addr;
 

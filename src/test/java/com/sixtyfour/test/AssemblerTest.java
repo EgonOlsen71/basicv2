@@ -47,19 +47,26 @@ public class AssemblerTest {
 	}
 
 	private static void testFastCopy() {
-	    System.out.println("\ntestFastCopy");
+		System.out.println("\ntestFastCopy");
 		String[] code = Loader.loadProgram("src/test/resources/asm/fastcopy.asm");
 		Assembler asm = new Assembler(code);
 		asm.compile();
+		int[] ram = asm.getRam();
+		for (int i = 0x2000; i < 0x2123; i++) {
+			ram[i] = 199;
+		}
+		for (int i = 0x2123; i < 0x2123 + 0x2000; i++) {
+			ram[i] = (i - 0x2123) & 0xff;
+		}
 		asm.run();
 		System.out.println(asm.toString());
-		for (int i=49152; i<49250; i++) {
-		    System.out.print(Integer.toHexString(asm.getRam()[i])+",");
+		for (int i = 8192; i < 16384; i++) {
+			System.out.print(Integer.toHexString(asm.getRam()[i] & 0xff) + ",");
 		}
 		System.out.println();
+		System.out.println(asm.getCpu().getClockTicks() + " ticks");
 	}
 
-	
 	private static void testConstants() {
 		String line = "*=$c000  \n";
 		line += "CONST=$c000 \n";
