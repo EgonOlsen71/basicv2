@@ -629,8 +629,9 @@ READTID		LDA #0
 			LDY #>VAR_TI$
 			JMP COPYSTRING	;RTS is implicit
 ;###################################
-COPYSTRING	STA TMP2_ZP
-			STY TMP2_ZP+1
+COPYSTRING						; TODO: Add a call to GC here. Remember: GC has to adjust highp as well!
+			STA TMP2_ZP			; TODO: Store the old string pointer in the GC buffer. It might be used later, but we need to preserve it here...
+			STY TMP2_ZP+1		 
 			CPY TMP_ZP+1
 			BNE CONTCOPY
 			LDA TMP2_ZP
@@ -720,7 +721,8 @@ COPYONLY	LDY #0
 			STY TMP_FLAG
 			JMP CHECKMEM
 
-ALTCOPY		JMP COPYSTRING2
+ALTCOPY						; TODO: Add a call to increase the GC pointer, if (check this inside the call, not here) the last pointer in the buffer is < highp
+			JMP COPYSTRING2	; and > stringbuffer start because only then it can create an unused "isle" of memory in the pool.
 
 UPDATEPTR	LDA TMP_ZP+1	; Check if the new string comes after or equals highp, which indicates that it can be
 			CMP HIGHP+1		; "copied down". This is another routine, because of...reasons...
@@ -730,6 +732,8 @@ UPDATEPTR	LDA TMP_ZP+1	; Check if the new string comes after or equals highp, wh
 CHECKXT1	LDA TMP_ZP
 			CMP HIGHP
 			BCS ALTCOPY
+							; TODO: Add a call to increase the GC pointer, if (check this inside the call, not here) the last pointer in the buffer is < highp
+							; and > stringbuffer start because only then it can create an unused "isle" of memory in the pool.
 
 CHECKMEM	LDY	ENDSTRBUF+1	; Check, if enough memory is available. This is a rough check, it requires at least 256 bytes to be free or otherwise,
 			DEY				; it will fail. This isn't very memory efficient, but it's faster to check this way...
