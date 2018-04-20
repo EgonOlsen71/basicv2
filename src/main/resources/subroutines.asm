@@ -1055,7 +1055,8 @@ POS			SEC
 			LDY #>X_REG
 			JMP FACMEM
 ;###################################
-FRE			LDA ENDSTRBUF
+FRE			JSR COMPACT
+			LDA ENDSTRBUF
 			SEC
 			SBC STRBUFP
 			TAY
