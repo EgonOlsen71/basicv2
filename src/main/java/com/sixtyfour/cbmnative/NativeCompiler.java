@@ -437,8 +437,6 @@ public class NativeCompiler {
 				}
 				String regs = pointerMode ? "A,B" : "X,Y";
 
-				String last = this.getLastEntry(code);
-				
 				boolean dontPush = false;
 
 				switch (op) {
