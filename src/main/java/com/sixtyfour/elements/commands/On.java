@@ -130,7 +130,10 @@ public class On extends AbstractCommand {
 				after.add("JSR " + lineNumbers.get(i));
 				after.add("JMP " + label);
 			} else {
-				after.add("JE " + lineNumbers.get(i));
+			    String al="AFTER" + oc + "SUB" + i;	
+			    after.add("JNE " + al);
+			    after.add("JMP " + lineNumbers.get(i));
+			    after.add(al+ ":");
 			}
 		}
 		after.add(label + ":");

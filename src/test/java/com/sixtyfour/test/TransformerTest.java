@@ -60,10 +60,23 @@ public class TransformerTest {
 		// testTransformer22();
 		// testTransformer23();
 		// testTransformerFrog();
-		 testTransformerAffine();
+		// testTransformerAffine();
 	    	//testTransformer24();
 		//testTransformer25();
 	    	//testTransformer26();
+	    	testHilbert();
+	}
+	
+	private static void testHilbert() throws Exception {
+		System.out.println("\n\ntestHilbert");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/hilbert.bas");
+		Assembler assy = initTestEnvironment(vary, false);
+		FileWriter.writeAsPrg(assy.getProgram(), "++testhilbert.prg", true);
+		JsrProfiler profiler = new JsrProfiler(assy);
+		assy.getCpu().setCpuTracer(profiler);
+		Machine machine = executeTest(assy);
+
+		printStats(profiler, machine);
 	}
 	
 	private static void testTransformer26() throws Exception {

@@ -325,6 +325,15 @@ public class Transformer6502 implements Transformer {
 		return val;
 	}
 
+	private String removeBrackets(String txt) {
+		txt = txt.replace("(", "").replace(")", "");
+		int pos = txt.lastIndexOf("{");
+		if (pos != -1) {
+			txt = txt.substring(0, pos);
+		}
+		return txt;
+	}
+	
 	private int extractData(PlatformProvider platform, Machine machine, List<String> consts, List<String> vars, List<String> strVars, List<String> strArrayVars,
 			Map<String, String> name2label, int cnt, String line) {
 		String[] parts = line.split(",", 2);
@@ -336,15 +345,17 @@ public class Transformer6502 implements Transformer {
 				String name = part.substring(0, pos);
 				if (name.startsWith("#")) {
 					Type type = Type.valueOf(part.substring(pos + 1, part.length() - 1));
+					String keyName=name;
 					if (type == Type.STRING) {
 						name = "$" + name.substring(1);
+						keyName=removeBrackets(name);
 					}
 
-					if (!name2label.containsKey(name)) {
+					if (!name2label.containsKey(keyName)) {
 
-						consts.add("; CONST: " + name);
+						consts.add("; CONST: " + keyName);
 						String label = "CONST_" + (cnt++);
-						name2label.put(name, label);
+						name2label.put(keyName, label);
 
 						name = name.substring(1);
 						if (type == Type.INTEGER) {
