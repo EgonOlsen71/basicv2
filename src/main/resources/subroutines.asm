@@ -2246,6 +2246,7 @@ NOPVPR		LDA FPSTACKP
 			JMP REALFAC
 ;###################################
 SHR			LDA $61
+			BEQ SHLOK
 			SEC
 			SBC A_REG
 			BCS SHROK
@@ -2254,6 +2255,7 @@ SHROK		STA $61
 			RTS
 ;###################################
 SHL			LDA $61
+			BEQ SHLOK
 			CLC
 			ADC A_REG
 			BCC SHLOK
