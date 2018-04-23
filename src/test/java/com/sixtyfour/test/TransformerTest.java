@@ -59,10 +59,10 @@ public class TransformerTest {
 		// testTransformer20();
 		// testTransformer22();
 		// testTransformer23();
-		//testTransformerFrog();
-		//testTransformerAffine();
-	    	testTransformer24();
-		testTransformer25();
+		// testTransformerFrog();
+		testTransformerAffine();
+	    	//testTransformer24();
+		//testTransformer25();
 	}
 	
 	private static void testTransformerAffine() throws Exception {

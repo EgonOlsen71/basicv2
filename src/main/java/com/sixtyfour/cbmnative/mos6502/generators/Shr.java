@@ -9,41 +9,21 @@ import com.sixtyfour.Logger;
  * @author EgonOlsen
  * 
  */
-public abstract class Calculation implements Generator {
+public class Shr extends Calculation {
 
-    	protected String comment = null;
-    	protected String systemCall = null;
-    	protected String mnemonic = null;
-
-	protected Calculation(String mnemonic, String comment, String systemCall) {
-		this.mnemonic = mnemonic;
-		this.comment = comment;
-		this.systemCall = systemCall;
+	public Shr() {
+		super("SHR", "; FAC = FAC>>A", "JSR SHR");
 	}
-
-	@Override
-	public String getMnemonic() {
-		return mnemonic;
+	
+	protected Shr(String mnemonic, String comment, String systemCall) {
+		super(mnemonic, comment, systemCall);
 	}
-
+	
 	@Override
 	public void generateCode(GeneratorContext context, String line, List<String> nCode, List<String> subCode, Map<String, String> name2label) {
 		Operands ops = new Operands(line, name2label);
 		Logger.log(line + " -- " + ops.getTarget() + "  <op>  " + ops.getSource());
-
-		Operand source = ops.getSource();
 		Operand target = ops.getTarget();
-
-		if (source.isRegister()) {
-			nCode.add("LDA #<" + source.getRegisterName());
-			nCode.add("LDY #>" + source.getRegisterName());
-		} else {
-			nCode.add("LDA #<" + source.getAddress());
-			nCode.add("LDY #>" + source.getAddress());
-		}
-
-		nCode.add("; Real in (A/Y) to FAC");
-		nCode.add("JSR REALFAC"); // Real in (A/Y) to FAC
 
 		if (target.isRegister()) {
 			nCode.add("LDA #<" + target.getRegisterName());
@@ -53,8 +33,9 @@ public abstract class Calculation implements Generator {
 			nCode.add("LDY #>" + target.getAddress());
 		}
 
-		nCode.add("; Real in (A/Y) to ARG");
-		nCode.add("JSR MEMARG"); // Real in (A/Y) to ARG
+		nCode.add("; Real in (A/Y) to FAC");
+		nCode.add("JSR REALFAC"); // Real in (A/Y) to FAC
+
 		nCode.add(comment);
 		nCode.add(systemCall);
 
@@ -69,5 +50,4 @@ public abstract class Calculation implements Generator {
 		nCode.add("; FAC to (X/Y)");
 		nCode.add("JSR FACMEM"); // FAC to (X/Y)
 	}
-
 }

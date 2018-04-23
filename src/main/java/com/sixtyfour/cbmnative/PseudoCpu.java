@@ -207,6 +207,12 @@ public class PseudoCpu {
 				case "DIV":
 					div(parts);
 					break;
+				case "SHR":
+					shr(parts);
+					break;
+				case "SHL":
+				    	shl(parts);
+				    	break;
 				case "SUB":
 					sub(parts);
 					break;
@@ -2038,6 +2044,34 @@ public class PseudoCpu {
 			@Override
 			public String op() {
 				return "/_";
+			}
+		});
+	}
+	
+	private void shr(String[] parts) {
+		calc(parts, new Calc() {
+			@Override
+			public Number calc(Number n1, Number n2) {
+				return n1.floatValue() / Math.pow(2, n2.floatValue());
+			}
+
+			@Override
+			public String op() {
+				return ">_";
+			}
+		});
+	}
+	
+	private void shl(String[] parts) {
+		calc(parts, new Calc() {
+			@Override
+			public Number calc(Number n1, Number n2) {
+				return n1.floatValue() * Math.pow(2, n2.floatValue());
+			}
+
+			@Override
+			public String op() {
+				return "<_";
 			}
 		});
 	}

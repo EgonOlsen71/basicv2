@@ -1,5 +1,8 @@
 package com.sixtyfour.parser.optimize;
 
+import java.util.Set;
+import java.util.HashSet;
+
 import com.sixtyfour.Logger;
 import com.sixtyfour.elements.Constant;
 import com.sixtyfour.elements.Type;
@@ -19,6 +22,21 @@ import com.sixtyfour.system.Machine;
  */
 public class ConstantPropagator {
 
+    	private final static Set<Integer> POWERS_OF_TWO=new HashSet<Integer>() {
+	    private static final long serialVersionUID = 1L;
+	    {
+    		this.add(2);
+    		this.add(4);
+    		this.add(8);
+    		this.add(16);
+    		this.add(32);
+    		this.add(64);
+    		this.add(128);
+    		this.add(256);
+    		this.add(512);
+    	    }
+    	};
+    
 	public static boolean propagateConstants(Machine machine) {
 		boolean found = false;
 		boolean doneSomething = false;
@@ -77,16 +95,34 @@ public class ConstantPropagator {
 		Atom left = t.getLeft();
 		Atom right = t.getRight();
 
-		// While we are at it: Optimize some divisions to multiplications by
-		// 1/...
+		// While we are at it: Optimize some divisions to multiplications by 1/... or shifts...
 		if (t.getOperator().isDivision()) {
 			double val = 0;
 			if (right.isConstant() && (val = ((Number) right.eval(machine)).doubleValue()) < thresHold && val > -thresHold) {
-				t.setOperator(new Operator('*'));
-				right = new Constant<Float>((float) (1d / val));
-				t.setRight(right);
+			    	if (val!=(int) val || !POWERS_OF_TWO.contains((int) val)) {
+			    	    t.setOperator(new Operator('*'));
+			    	    right = new Constant<Float>((float) (1d / val));
+			    	    t.setRight(right);
+			    	} else {
+			    	    if (POWERS_OF_TWO.contains((int) val)) {
+			    		right = new Constant<Integer>((int) val);
+			    		t.setRight(right);
+			    	    }
+			    	}
 			}
 		}
+		
+		// ... and some multiplications by shifts as well
+		if (t.getOperator().isMultiplication()) {
+			double val = 0;
+			if (right.isConstant() && (val = ((Number) right.eval(machine)).doubleValue()) < thresHold && val > -thresHold) {
+			    	if (val==(int) val && POWERS_OF_TWO.contains((int) val)) {
+			    	    right = new Constant<Integer>((int) val);
+			    	    t.setRight(right);
+			    	} 
+			}
+		}
+		// ****
 
 		if (!isConstant[0]) {
 			return false;

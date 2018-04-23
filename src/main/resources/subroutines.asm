@@ -2244,8 +2244,23 @@ POPREAL		LDA FPSTACKP
 NOPVPR		LDA FPSTACKP
 			LDY FPSTACKP+1
 			JMP REALFAC
-
-;### HELPER #######################
+;###################################
+SHR			LDA $61
+			SEC
+			SBC A_REG
+			BCS SHROK
+			LDA #0
+SHROK		STA $61
+			RTS
+;###################################
+SHL			LDA $61
+			CLC
+			ADC A_REG
+			BCC SHLOK
+			LDA #$FF
+SHLOK		STA $61
+			RTS
+;### HELPER ########################
 ;###################################
 INCTMPZP	LDA TMP_ZP
 			CLC

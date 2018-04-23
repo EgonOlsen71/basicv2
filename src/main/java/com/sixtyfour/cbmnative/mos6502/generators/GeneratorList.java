@@ -35,6 +35,8 @@ public class GeneratorList {
 			this.add(new Sub());
 			this.add(new Mul());
 			this.add(new Div());
+			this.add(new Shr());
+			this.add(new Shl());
 			this.add(new And());
 			this.add(new Or());
 			this.add(new Int());
