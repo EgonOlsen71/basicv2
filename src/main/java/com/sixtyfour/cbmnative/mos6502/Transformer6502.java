@@ -326,12 +326,7 @@ public class Transformer6502 implements Transformer {
 	}
 
 	private String removeBrackets(String txt) {
-		txt = txt.replace("(", "").replace(")", "");
-		int pos = txt.lastIndexOf("{");
-		if (pos != -1) {
-			txt = txt.substring(0, pos);
-		}
-		return txt;
+		return txt.replace("(", "").replace(")", "");
 	}
 	
 	private int extractData(PlatformProvider platform, Machine machine, List<String> consts, List<String> vars, List<String> strVars, List<String> strArrayVars,
