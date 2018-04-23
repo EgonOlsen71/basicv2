@@ -20,7 +20,7 @@ public interface PlatformProvider {
 	 * @return
 	 */
 	int getForStackSize();
-	
+
 	/**
 	 * @return
 	 */

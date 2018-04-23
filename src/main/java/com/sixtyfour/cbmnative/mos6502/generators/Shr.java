@@ -14,11 +14,11 @@ public class Shr extends Calculation {
 	public Shr() {
 		super("SHR", "; FAC = FAC>>A", "JSR SHR");
 	}
-	
+
 	protected Shr(String mnemonic, String comment, String systemCall) {
 		super(mnemonic, comment, systemCall);
 	}
-	
+
 	@Override
 	public void generateCode(GeneratorContext context, String line, List<String> nCode, List<String> subCode, Map<String, String> name2label) {
 		Operands ops = new Operands(line, name2label);

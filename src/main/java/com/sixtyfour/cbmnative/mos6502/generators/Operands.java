@@ -14,7 +14,7 @@ public class Operands {
 	private Operand source;
 
 	public Operands(String command, Map<String, String> name2label) {
-	  int pos = command.indexOf(" ");
+		int pos = command.indexOf(" ");
 		if (pos == -1) {
 			throw new RuntimeException("Can't parse command: " + command);
 		}
@@ -31,8 +31,8 @@ public class Operands {
 			String left = command.substring(0, pos).trim();
 			String right = command.substring(pos + 1).trim();
 
-			//System.out.println("Command: "+command+"/"+pos+"/"+left+"/"+right);
-			
+			// System.out.println("Command: "+command+"/"+pos+"/"+left+"/"+right);
+
 			target = new Operand();
 			source = new Operand();
 

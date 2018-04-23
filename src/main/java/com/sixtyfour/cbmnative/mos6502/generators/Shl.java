@@ -9,5 +9,5 @@ public class Shl extends Shr {
 	public Shl() {
 		super("SHL", "; FAC = FAC<<A", "JSR SHL");
 	}
-	
+
 }

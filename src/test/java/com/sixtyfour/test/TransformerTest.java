@@ -60,20 +60,28 @@ public class TransformerTest {
 		// testTransformer22();
 		// testTransformer23();
 		// testTransformerFrog();
-		 testTransformerAffine();
-	    	//testTransformer24();
-		//testTransformer25();
-	    	//testTransformer26();
-	    	testHilbert();
+		// testTransformerAffine();
+		// testTransformer24();
+		// testTransformer25();
+		// testTransformer26();
+		// testHilbert();
+		testLines();
 	}
 	
+	private static void testLines() throws Exception {
+		System.out.println("\n\ntestLines");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/lines.bas");
+		Assembler assy = initTestEnvironment(vary, false);
+		FileWriter.writeAsPrg(assy.getProgram(), "++testlines.prg", true);
+	}
+
 	private static void testHilbert() throws Exception {
 		System.out.println("\n\ntestHilbert");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/hilbert.bas");
 		Assembler assy = initTestEnvironment(vary, false);
 		FileWriter.writeAsPrg(assy.getProgram(), "++testhilbert.prg", true);
 	}
-	
+
 	private static void testTransformer26() throws Exception {
 		System.out.println("\n\ntestTransformer26");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/test26.bas");
@@ -85,7 +93,7 @@ public class TransformerTest {
 
 		printStats(profiler, machine);
 	}
-	
+
 	private static void testTransformerAffine() throws Exception {
 		System.out.println("\n\ntestTransformerAffine");
 		String[] vary = Preprocessor.convertToLineNumbers(Loader.loadProgram("src/test/resources/transform/affine_transform.bas"));
@@ -107,13 +115,13 @@ public class TransformerTest {
 			System.out.println(line);
 		}
 		final Assembler assy = initTestEnvironment(vary);
-		//assy.getCpu().setCpuTracer(new MySimpleTracer(assy));
+		// assy.getCpu().setCpuTracer(new MySimpleTracer(assy));
 		FileWriter.writeAsPrg(assy.getProgram(), "++frog.prg", true);
 		Machine machine = executeTest(assy);
-		//printZeropage(assy);
+		// printZeropage(assy);
 		System.out.println("Ticks: " + machine.getCpu().getClockTicks());
 	}
-	
+
 	private static void testTransformer25() throws Exception {
 		System.out.println("\n\ntestTransformer25");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/test25.bas");
@@ -125,7 +133,7 @@ public class TransformerTest {
 
 		printStats(profiler, machine);
 	}
-	
+
 	private static void testTransformer24() throws Exception {
 		System.out.println("\n\ntestTransformer24");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/test24.bas");
@@ -134,10 +142,10 @@ public class TransformerTest {
 	}
 
 	private static void printZeropage(final Assembler assy) {
-	    System.out.println("Zeropage:");
-	    for (int i=0; i<256; i++) {
-	        System.out.println(i+": "+assy.getMachine().getRam()[i]);
-	    }
+		System.out.println("Zeropage:");
+		for (int i = 0; i < 256; i++) {
+			System.out.println(i + ": " + assy.getMachine().getRam()[i]);
+		}
 	}
 
 	private static void testTransformer23() throws Exception {
@@ -445,7 +453,7 @@ public class TransformerTest {
 
 		final Assembler assy = initTestEnvironment(vary);
 
-		//assy.getCpu().setCpuTracer(new MySimpleTracer(assy));
+		// assy.getCpu().setCpuTracer(new MySimpleTracer(assy));
 
 		assy.run();
 		Program prg = assy.getProgram();
@@ -663,7 +671,7 @@ public class TransformerTest {
 	private static Assembler initTestEnvironment(String[] vary) {
 		return initTestEnvironment(vary, false);
 	}
-	
+
 	private static Assembler initTestEnvironment(String[] vary, boolean executePseudo) {
 		return initTestEnvironment(vary, executePseudo, -1);
 	}
@@ -676,7 +684,7 @@ public class TransformerTest {
 		conf.setIntermediateLanguageOptimizations(true);
 		conf.setNativeLanguageOptimizations(true);
 		conf.setOptimizedLinker(true);
-		//conf.setCompactThreshold(4);
+		// conf.setCompactThreshold(4);
 
 		final Basic basic = new Basic(vary);
 		basic.compile();
@@ -715,7 +723,7 @@ public class TransformerTest {
 		System.out.println("Running compiled program...");
 		Machine machine = assy.getMachine();
 		machine.addRoms();
-		//printZeropage(assy);
+		// printZeropage(assy);
 
 		System.out.println(assy.toString());
 		try {
@@ -724,7 +732,7 @@ public class TransformerTest {
 			e.printStackTrace();
 			printMemory(assy, machine);
 		}
-		System.out.println("program end: "+prg.getParts().get(prg.getParts().size()-1).getEndAddress());
+		System.out.println("program end: " + prg.getParts().get(prg.getParts().size() - 1).getEndAddress());
 		System.out.println("...done!");
 		return machine;
 	}
@@ -765,7 +773,7 @@ public class TransformerTest {
 		System.out.println(sb.toString());
 
 		System.out.println("--------------------------------------------------------------");
-		
+
 		lines = sb.toString().split("\n");
 		for (int i = 0; i < lines.length; i += 2) {
 			String l1 = lines[i];
@@ -790,13 +798,13 @@ public class TransformerTest {
 
 		@Override
 		public void commandExecuted(Cpu cpu, int opcode, int opcodePc, int newPc) {
-		    	
+
 			String line = assy.getCodeLine(opcodePc);
 			if (line != null) {
 				cnt++;
-					System.out.println(Integer.toHexString(opcodePc) + " - " + Integer.toHexString(opcode) + " -> " + Integer.toHexString(newPc) + " / a=" + cpu.getAcc() + " / x="
-							+ cpu.getX() + " / y=" + cpu.getY() + "/ z=" + (cpu.getStatus() & 0b10) + " / 105=" + assy.getMachine().getRam()[105] + " / 106="
-							+ assy.getMachine().getRam()[106] + "/" + line + " " + assy.getRam()[opcodePc + 1] + "/" + assy.getMachine().getRam()[1] + "/" + cnt);
+				System.out.println(Integer.toHexString(opcodePc) + " - " + Integer.toHexString(opcode) + " -> " + Integer.toHexString(newPc) + " / a=" + cpu.getAcc() + " / x="
+						+ cpu.getX() + " / y=" + cpu.getY() + "/ z=" + (cpu.getStatus() & 0b10) + " / 105=" + assy.getMachine().getRam()[105] + " / 106="
+						+ assy.getMachine().getRam()[106] + "/" + line + " " + assy.getRam()[opcodePc + 1] + "/" + assy.getMachine().getRam()[1] + "/" + cnt);
 			}
 		}
 

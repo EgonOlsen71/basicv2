@@ -11,9 +11,9 @@ import com.sixtyfour.Logger;
  */
 public abstract class Calculation implements Generator {
 
-    	protected String comment = null;
-    	protected String systemCall = null;
-    	protected String mnemonic = null;
+	protected String comment = null;
+	protected String systemCall = null;
+	protected String mnemonic = null;
 
 	protected Calculation(String mnemonic, String comment, String systemCall) {
 		this.mnemonic = mnemonic;

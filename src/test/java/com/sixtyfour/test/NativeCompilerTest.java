@@ -195,7 +195,7 @@ public class NativeCompilerTest {
 		runCompiled(basic);
 		cd.dispose();
 	}
-	
+
 	@SuppressWarnings("unused")
 	private static void testInput() {
 		System.out.println("\n\ntestInput");

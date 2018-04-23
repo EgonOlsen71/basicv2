@@ -211,8 +211,8 @@ public class PseudoCpu {
 					shr(parts);
 					break;
 				case "SHL":
-				    	shl(parts);
-				    	break;
+					shl(parts);
+					break;
 				case "SUB":
 					sub(parts);
 					break;
@@ -2047,7 +2047,7 @@ public class PseudoCpu {
 			}
 		});
 	}
-	
+
 	private void shr(String[] parts) {
 		calc(parts, new Calc() {
 			@Override
@@ -2061,7 +2061,7 @@ public class PseudoCpu {
 			}
 		});
 	}
-	
+
 	private void shl(String[] parts) {
 		calc(parts, new Calc() {
 			@Override

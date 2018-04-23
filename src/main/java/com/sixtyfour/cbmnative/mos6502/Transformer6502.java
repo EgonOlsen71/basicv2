@@ -328,7 +328,7 @@ public class Transformer6502 implements Transformer {
 	private String removeBrackets(String txt) {
 		return txt.replace("(", "").replace(")", "");
 	}
-	
+
 	private int extractData(PlatformProvider platform, Machine machine, List<String> consts, List<String> vars, List<String> strVars, List<String> strArrayVars,
 			Map<String, String> name2label, int cnt, String line) {
 		String[] parts = line.split(",", 2);
@@ -340,10 +340,10 @@ public class Transformer6502 implements Transformer {
 				String name = part.substring(0, pos);
 				if (name.startsWith("#")) {
 					Type type = Type.valueOf(part.substring(pos + 1, part.length() - 1));
-					String keyName=name;
+					String keyName = name;
 					if (type == Type.STRING) {
 						name = "$" + name.substring(1);
-						keyName=removeBrackets(name);
+						keyName = removeBrackets(name);
 					}
 
 					if (!name2label.containsKey(keyName)) {
