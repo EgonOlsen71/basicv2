@@ -38,7 +38,7 @@ public class TransformerTest {
 		// testTransformer2();
 		// testTransformer4();
 		// testTransformer5();
-		// testTransformerFractal();
+		 testTransformerFractal();
 		// testTransformer6();
 		// testTransformer7();
 		// testTransformerPrime();
@@ -60,9 +60,22 @@ public class TransformerTest {
 		// testTransformer22();
 		// testTransformer23();
 		// testTransformerFrog();
-		testTransformerAffine();
+		// testTransformerAffine();
 	    	//testTransformer24();
 		//testTransformer25();
+	    	//testTransformer26();
+	}
+	
+	private static void testTransformer26() throws Exception {
+		System.out.println("\n\ntestTransformer26");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/test26.bas");
+		Assembler assy = initTestEnvironment(vary, false);
+		FileWriter.writeAsPrg(assy.getProgram(), "++testshift.prg", true);
+		JsrProfiler profiler = new JsrProfiler(assy);
+		assy.getCpu().setCpuTracer(profiler);
+		Machine machine = executeTest(assy);
+
+		printStats(profiler, machine);
 	}
 	
 	private static void testTransformerAffine() throws Exception {
