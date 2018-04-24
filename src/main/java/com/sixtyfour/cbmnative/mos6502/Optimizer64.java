@@ -112,7 +112,7 @@ public class Optimizer64 implements Optimizer {
 					"JSR {*}", "LDA #<{REG0}", "LDY #>{REG0}", "JSR REALFAC", "JSR PUSHREAL", "LDA #<{MEM0}", "LDY #>{MEM0}", "STA TMP3_ZP", "STY TMP3_ZP+1", "LDX #<{REG0}",
 					"LDY #>{REG0}", "JSR COPY2_XY", "LDA #<{MEM1}", "LDY #>{MEM1}", "STA {REG1}", "STY {REG1}", "JSR {*}", "JSR POPREAL", "LDA #<{REG0}", "LDY #>{REG0}",
 					"JSR MEMARG"));
-			this.add(new Pattern("Constant directly into FAC", new String[] { "LDA #0", "STA $61", "STA $62", "STA $63", "STA $64", "STA $65", "STA $66", "{LINE2}", "{LINE3}",
+			this.add(new Pattern("Constant directly into FAC", new String[] { "LDA #0", "STA $61", "{LINE2}", "{LINE3}",
 					"LDA #0", "STA $63", "STA $64", "STA $65", "LDY #128", "STY $62", "INY", "STY $61", "LDY #$FF", "STY $66", "{LINE6}", "{LINE8}" }, "LDA #<REAL_CONST_ZERO",
 					"LDY #>REAL_CONST_ZERO", "JMP {*}", "{LABEL}", "LDA #<REAL_CONST_MINUS_ONE", "LDY #>REAL_CONST_MINUS_ONE", "{LABEL}", "JSR REALFAC", "LDA $61"));
 			this.add(new Pattern(false, "Highly simplified loading for CMP", new String[] { "{LINE0}", "{LINE1}", "JSR REALFAC", "{LINE7}", "{LINE8}", "{LINE19}" },
