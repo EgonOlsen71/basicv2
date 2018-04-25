@@ -79,15 +79,6 @@ public class Optimizer64 implements Optimizer {
 					"LDY #>{MEM0}", "JSR CMPFAC", "{LABEL}", "BEQ {*}"));
 			this.add(new Pattern(false, "CMP (MEM) != 0(2)", new String[] { "LDA {MEM0}", "{LINE6}", "{LINE7}" }, "LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC", "LDA #<{MEM0}",
 					"LDY #>{MEM0}", "JSR CMPFAC", "{LABEL}", "BNE {*}"));
-
-			// Note: This optimization relies on the former stage to create an
-			// actually unneeded PUSH/POP sequence in for loops. But if I
-			// optimize that away, this will
-			// fail and I can't be bothered to fix this instead...so deal with
-			// it...
-			this.add(new Pattern(false, "POKE with integer constant(1)@real location", new String[] { "JSR REALFAC", "JSR FACWORD", "STY 105", "STA 106", "LDA {MEM0}", "LDY #0",
-					"STA (105),Y" }, "JSR REALFAC", "JSR PUSHREAL", "LDY {MEM0}", "LDA {MEM0}", "JSR INTFAC", "LDX #<{REG0}", "LDY #>{REG0}", "JSR FACMEM", "JSR POPREAL",
-					"JSR FACWORD", "STY 105", "STA 106", "LDA #<{REG0}", "LDY #>{REG0}", "JSR REALFAC", "JSR FACWORD", "TYA", "LDY #0", "STA (105),Y"));
 			this.add(new Pattern(false, "CHR with integer constant", new String[] { "LDA{MEM0}", "JSR CHRINT" }, "LDY {MEM0}", "LDA {MEM0}", "JSR INTFAC", "LDX #<{REG0}",
 					"LDY #>{REG0}", "JSR FACMEM", "JSR CHR"));
 			this.add(new Pattern(false, "NEXT check simplified", new String[] { "JSR NEXT", "LDA A_REG", "{LINE8}", "JMP (JUMP_TARGET)" }, "JSR NEXT", "LDY {MEM0}", "LDA {MEM0}",
@@ -124,8 +115,6 @@ public class Optimizer64 implements Optimizer {
 					"JSR MEMARG", "JSR {*}"));
 			this.add(new Pattern(false, "NEXT with no variable name simplified", new String[] { "LDA #0", "STA A_REG", "STA A_REG+1", "JSR NEXT" }, "LDY {CONST0}", "LDA {CONST0}",
 					"STY A_REG", "STA A_REG+1", "JSR NEXT"));
-			this.add(new Pattern(false, "POKE and NEXT combined", new String[] { "LDY #0", "STA (105),Y", "STY A_REG", "STY A_REG+1" }, "LDY #0", "STA (105),Y", "LDA #0",
-					"STA A_REG", "STA A_REG+1"));
 			this.add(new Pattern("Improved copy from REG0 to REG1", new String[] { "{LINE0}", "{LINE1}", "STA TMP3_ZP", "STY TMP3_ZP+1", "{LINE3}", "{LINE4}", "JSR COPY2_XY" },
 					"LDA #<{REG0}", "LDY #>{REG0}", "JSR REALFAC", "LDX #<{REG1}", "LDY #>{REG1}", "JSR FACMEM"));
 			this.add(new Pattern(false, "Fast SQRT", new String[] { "JSR SQRT" }, "JSR FACSQR"));

@@ -8,6 +8,8 @@ import com.sixtyfour.elements.Type;
 
 public class Mov extends GeneratorBase {
 
+    private static int MOV_CNT=0;
+    
 	@Override
 	public String getMnemonic() {
 		return "MOV";
@@ -154,10 +156,12 @@ public class Mov extends GeneratorBase {
 		nCode.add("JSR REALFAC"); // Real in (A/Y) to FAC
 		nCode.add("JSR FACWORD"); // FAC to integer in Y/A
 
-		nCode.add("STY TMP_ZP");
-		nCode.add("STA TMP_ZP+1");
-		nCode.add("LDY #0");
-		nCode.add("LDA (TMP_ZP),Y");
+		String lab="MOVSELF"+(MOV_CNT++);
+		nCode.add("STY "+lab+"+1");
+		
+		nCode.add("STA "+lab+"+2");
+		nCode.add(lab+":");
+		nCode.add("LDA $FFFF");
 		nCode.add("TAY");
 		nCode.add("LDA #0");
 
