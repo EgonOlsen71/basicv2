@@ -95,8 +95,7 @@ public class Movb extends GeneratorBase {
 			nCode.add("STY " + createAddress(target.getRegisterName(), 1));
 		} else {
 		    nCode.add("MOVBSELF"+MOV_CNT+":");
-		    nCode.add("LDA $FFFF");
-			nCode.add("TAY");
+		    nCode.add("LDY $FFFF");
 			nCode.add("LDA #0");
 			nCode.add("; integer in Y/A to FAC");
 			nCode.add("JSR INTFAC"); // integer in A/Y to FAC
