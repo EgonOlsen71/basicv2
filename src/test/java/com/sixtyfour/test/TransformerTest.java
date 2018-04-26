@@ -38,10 +38,10 @@ public class TransformerTest {
 		// testTransformer2();
 		// testTransformer4();
 		// testTransformer5();
-		 testTransformerFractal();
+		// testTransformerFractal();
 		// testTransformer6();
 		// testTransformer7();
-		 testTransformerPrime();
+		// testTransformerPrime();
 		// testTransformerSqr();
 		// testTransformer8();
 		// testTransformer9();
@@ -59,13 +59,14 @@ public class TransformerTest {
 		// testTransformer20();
 		// testTransformer22();
 		// testTransformer23();
-		 testTransformerFrog();
-		 testTransformerAffine();
+		// testTransformerFrog();
+		// testTransformerAffine();
 		// testTransformer24();
 		// testTransformer25();
 		// testTransformer26();
 		// testHilbert();
-		testLines();
+		//testLines();
+		testTransformer27();
 	}
 	
 	private static void testLines() throws Exception {
@@ -80,6 +81,18 @@ public class TransformerTest {
 		String[] vary = Loader.loadProgram("src/test/resources/transform/hilbert.bas");
 		Assembler assy = initTestEnvironment(vary, false);
 		FileWriter.writeAsPrg(assy.getProgram(), "++testhilbert.prg", true);
+	}
+	
+	private static void testTransformer27() throws Exception {
+		System.out.println("\n\ntestTransformer27");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/test27.bas");
+		Assembler assy = initTestEnvironment(vary, false);
+		FileWriter.writeAsPrg(assy.getProgram(), "++testlogic.prg", true);
+		JsrProfiler profiler = new JsrProfiler(assy);
+		assy.getCpu().setCpuTracer(profiler);
+		Machine machine = executeTest(assy);
+
+		printStats(profiler, machine);
 	}
 
 	private static void testTransformer26() throws Exception {
