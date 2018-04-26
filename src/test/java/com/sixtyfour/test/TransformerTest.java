@@ -41,7 +41,7 @@ public class TransformerTest {
 		 testTransformerFractal();
 		// testTransformer6();
 		// testTransformer7();
-		// testTransformerPrime();
+		 testTransformerPrime();
 		// testTransformerSqr();
 		// testTransformer8();
 		// testTransformer9();
@@ -59,7 +59,7 @@ public class TransformerTest {
 		// testTransformer20();
 		// testTransformer22();
 		// testTransformer23();
-		// testTransformerFrog();
+		 testTransformerFrog();
 		 testTransformerAffine();
 		// testTransformer24();
 		// testTransformer25();

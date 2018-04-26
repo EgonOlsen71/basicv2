@@ -138,6 +138,10 @@ public class Optimizer64 implements Optimizer {
 			this.add(new Pattern(false, "Memory saving array access (integer)", new String[] { "{LINE0}", "{LINE1}", "JSR ARRAYACCESS_INTEGER_S" }, "LDA #<{MEM0}", "LDY #>{MEM0}",
 					"STA G_REG", "STY G_REG+1", "JSR ARRAYACCESS_INTEGER"));
 			this.add(new Pattern(false, "POPREAL and load X", new String[] { "JSR POPREAL2X" }, "JSR POPREAL", "LDA #<X_REG", "LDY #>X_REG", "JSR MEMARG"));
+			this.add(new Pattern(false, "Simplified CMP redux", new String[]{"{LINE0}","{LINE1}","{LINE2}","{LINE3}","{LINE8}","{LINE11}","{LINE14}","{LINE15}","{LINE16}","{LINE17}",},"LDA #0","STA $61","JMP {*}", "{LABEL}","LDA #0","STA $63","STA $64","STA $65",
+				"LDY #128","STY $62","INY","STY $61","LDY #$FF","STY $66","{LABEL}","LDA $61","{LABEL}","BNE {*}"));
+
+
 		}
 	};
 
@@ -283,16 +287,20 @@ public class Optimizer64 implements Optimizer {
 
 	private List<String> simplifyBranches(List<String> input) {
 		List<String> ret = new ArrayList<String>();
-		for (int i = 0; i < input.size() - 1; i++) {
-			String line = input.get(i);
-			line = line.replace("\t", " ").trim();
-			String line2 = input.get(i + 1);
-			line2 = line2.replace("\t", " ").trim();
+		for (int i = 0; i < input.size() - 2; i++) {
+			String line = trimLine(input, i);
+			String line2 = trimLine(input, i+1);
+			String line3 = trimLine(input, i+2);
 			if (line.startsWith("; *** SUBROUTINES ***")) {
 				ret.addAll(input.subList(i, input.size()));
 				break;
 			}
 			boolean skip = false;
+			int add=1;
+			if(line2.startsWith(";")) {
+			    line2=line3;
+			    add=2;
+			}
 			if (line.contains("BNE LINE_NSKIP") && line2.contains("JMP LINE_SKIP")) {
 				for (int p = i + 1; p < Math.min(input.size(), i + 30); p++) {
 					String subLine = input.get(p);
@@ -300,7 +308,7 @@ public class Optimizer64 implements Optimizer {
 						ret.add(line2.replace("JMP LINE_SKIP", "BEQ LINE_SKIP"));
 						ret.add("; Simplified conditional branch");
 						skip = true;
-						i++;
+						i+=add;
 						break;
 					}
 				}
@@ -311,5 +319,11 @@ public class Optimizer64 implements Optimizer {
 			ret.add(line);
 		}
 		return ret;
+	}
+
+	private String trimLine(List<String> input, int i) {
+	    String line3 = input.get(i);
+	    line3 = line3.replace("\t", " ").trim();
+	    return line3;
 	}
 }

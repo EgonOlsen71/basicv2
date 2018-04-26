@@ -163,7 +163,7 @@ public class Pattern {
 				return inc(ix);
 			}
 		}
-
+		
 		if (p0 != -1 && p1 != -1 && !line.contains("SKIP")) {
 			if (partP0.get(pos).equalsIgnoreCase(line.substring(0, p1))) {
 				String partRight = partRights.get(pos);
