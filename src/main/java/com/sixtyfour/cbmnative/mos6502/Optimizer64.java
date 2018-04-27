@@ -62,23 +62,7 @@ public class Optimizer64 implements Optimizer {
 			this.add(new Pattern("FAC to INT, INT to FAC", null, "JSR INTFAC", "JSR FACINT"));
 			this.add(new Pattern("VAR into FAC, FAC into VAR", null, "LDA #<{MEM0}", "LDY #>{MEM0}", "JSR REALFAC", "LDX #<{MEM0}", "LDY #>{MEM0}", "JSR FACMEM"));
 
-			this.add(new Pattern(false, "CMP (REG) = 0", new String[] { "LDA {REG0}", "{LINE6}", "{LINE7}" }, "LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC", "LDA #<{REG0}",
-					"LDY #>{REG0}", "JSR CMPFAC", "BEQ {*}", "LDA #0"));
-			this.add(new Pattern(false, "CMP (REG) != 0", new String[] { "LDA {REG0}", "{LINE6}", "{LINE7}" }, "LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC", "LDA #<{REG0}",
-					"LDY #>{REG0}", "JSR CMPFAC", "BNE {*}", "LDA #0"));
-			this.add(new Pattern(false, "CMP (MEM) = 0", new String[] { "LDA {MEM0}", "{LINE6}", "{LINE7}" }, "LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC", "LDA #<{MEM0}",
-					"LDY #>{MEM0}", "JSR CMPFAC", "BEQ {*}", "LDA #0"));
-			this.add(new Pattern(false, "CMP (MEM) != 0", new String[] { "LDA {MEM0}", "{LINE6}", "{LINE7}" }, "LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC", "LDA #<{MEM0}",
-					"LDY #>{MEM0}", "JSR CMPFAC", "BNE {*}", "LDA #0"));
-
-			this.add(new Pattern(false, "CMP (REG) = 0(2)", new String[] { "LDA {REG0}", "{LINE6}", "{LINE7}" }, "LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC", "LDA #<{REG0}",
-					"LDY #>{REG0}", "JSR CMPFAC", "{LABEL}", "BEQ {*}"));
-			this.add(new Pattern(false, "CMP (REG) != 0(2)", new String[] { "LDA {REG0}", "{LINE6}", "{LINE7}" }, "LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC", "LDA #<{REG0}",
-					"LDY #>{REG0}", "JSR CMPFAC", "{LABEL}", "BNE {*}"));
-			this.add(new Pattern(false, "CMP (MEM) = 0(2)", new String[] { "LDA {MEM0}", "{LINE6}", "{LINE7}" }, "LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC", "LDA #<{MEM0}",
-					"LDY #>{MEM0}", "JSR CMPFAC", "{LABEL}", "BEQ {*}"));
-			this.add(new Pattern(false, "CMP (MEM) != 0(2)", new String[] { "LDA {MEM0}", "{LINE6}", "{LINE7}" }, "LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC", "LDA #<{MEM0}",
-					"LDY #>{MEM0}", "JSR CMPFAC", "{LABEL}", "BNE {*}"));
+			
 			this.add(new Pattern(false, "CHR with integer constant", new String[] { "LDA{MEM0}", "JSR CHRINT" }, "LDY {MEM0}", "LDA {MEM0}", "JSR INTFAC", "LDX #<{REG0}",
 					"LDY #>{REG0}", "JSR FACMEM", "JSR CHR"));
 			this.add(new Pattern(false, "NEXT check simplified", new String[] { "JSR NEXT", "LDA A_REG", "{LINE8}", "JMP (JUMP_TARGET)" }, "JSR NEXT", "LDY {MEM0}", "LDA {MEM0}",
@@ -140,6 +124,23 @@ public class Optimizer64 implements Optimizer {
 			this.add(new Pattern(false, "POPREAL and load X", new String[] { "JSR POPREAL2X" }, "JSR POPREAL", "LDA #<X_REG", "LDY #>X_REG", "JSR MEMARG"));
 			this.add(new Pattern(false, "Simplified CMP redux", new String[]{"{LINE0}","{LINE2}","{LINE3}","LDA #$1","{LINE14}","{LINE16}","{LINE17}",},"LDA #0","STA $61","JMP {*}", "{LABEL}","LDA #0","STA $63","STA $64","STA $65",
 				"LDY #128","STY $62","INY","STY $61","LDY #$FF","STY $66","{LABEL}","LDA $61","{LABEL}","BNE {*}"));
+			this.add(new Pattern(false, "CMP (REG) = 0", new String[] { "LDA {REG0}", "{LINE6}", "{LINE7}" }, "LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC", "LDA #<{REG0}",
+				"LDY #>{REG0}", "JSR CMPFAC", "BEQ {*}", "LDA #0"));
+		this.add(new Pattern(false, "CMP (REG) != 0", new String[] { "LDA {REG0}", "{LINE6}", "{LINE7}" }, "LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC", "LDA #<{REG0}",
+				"LDY #>{REG0}", "JSR CMPFAC", "BNE {*}", "LDA #0"));
+		this.add(new Pattern(false, "CMP (MEM) = 0", new String[] { "LDA {MEM0}", "{LINE6}", "{LINE7}" }, "LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC", "LDA #<{MEM0}",
+				"LDY #>{MEM0}", "JSR CMPFAC", "BEQ {*}", "LDA #0"));
+		this.add(new Pattern(false, "CMP (MEM) != 0", new String[] { "LDA {MEM0}", "{LINE6}", "{LINE7}" }, "LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC", "LDA #<{MEM0}",
+				"LDY #>{MEM0}", "JSR CMPFAC", "BNE {*}", "LDA #0"));
+
+		this.add(new Pattern(false, "CMP (REG) = 0(2)", new String[] { "LDA {REG0}", "{LINE6}", "{LINE7}" }, "LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC", "LDA #<{REG0}",
+				"LDY #>{REG0}", "JSR CMPFAC", "{LABEL}", "BEQ {*}"));
+		this.add(new Pattern(false, "CMP (REG) != 0(2)", new String[] { "LDA {REG0}", "{LINE6}", "{LINE7}" }, "LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC", "LDA #<{REG0}",
+				"LDY #>{REG0}", "JSR CMPFAC", "{LABEL}", "BNE {*}"));
+		this.add(new Pattern(false, "CMP (MEM) = 0(2)", new String[] { "LDA {MEM0}", "{LINE6}", "{LINE7}" }, "LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC", "LDA #<{MEM0}",
+				"LDY #>{MEM0}", "JSR CMPFAC", "{LABEL}", "BEQ {*}"));
+		this.add(new Pattern(false, "CMP (MEM) != 0(2)", new String[] { "LDA {MEM0}", "{LINE6}", "{LINE7}" }, "LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC", "LDA #<{MEM0}",
+				"LDY #>{MEM0}", "JSR CMPFAC", "{LABEL}", "BNE {*}"));
 			this.add(new Pattern(false, "Direct loading of 0", new String[]{"LDA #$0", "STA $61"},"LDA #<{#0.0}","LDY #>{#0.0}","JSR REALFAC"));
 
 

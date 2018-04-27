@@ -147,6 +147,7 @@ public class Pattern {
 		if (line.startsWith(";")) {
 			return false;
 		}
+		
 		String part = pattern.get(pos);
 		int p0 = spacePos.get(pos);
 		int p1 = line.indexOf(" ");

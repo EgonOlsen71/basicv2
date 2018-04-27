@@ -38,10 +38,10 @@ public class TransformerTest {
 		// testTransformer2();
 		// testTransformer4();
 		// testTransformer5();
-		// testTransformerFractal();
+		 testTransformerFractal();
 		// testTransformer6();
 		// testTransformer7();
-		// testTransformerPrime();
+		 testTransformerPrime();
 		// testTransformerSqr();
 		// testTransformer8();
 		// testTransformer9();
@@ -50,7 +50,7 @@ public class TransformerTest {
 		// testTransformer12();
 		// testTransformer13();
 		// testTransformer14();
-		// testTransformerBeer();
+		 testTransformerBeer();
 		// testTransformer15();
 		// testTransformerSqr();
 		// testTransformer16();
@@ -59,8 +59,8 @@ public class TransformerTest {
 		// testTransformer20();
 		// testTransformer22();
 		// testTransformer23();
-		// testTransformerFrog();
-		// testTransformerAffine();
+		 testTransformerFrog();
+		 testTransformerAffine();
 		// testTransformer24();
 		// testTransformer25();
 		// testTransformer26();
