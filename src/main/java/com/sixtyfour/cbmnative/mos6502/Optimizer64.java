@@ -140,6 +140,7 @@ public class Optimizer64 implements Optimizer {
 			this.add(new Pattern(false, "POPREAL and load X", new String[] { "JSR POPREAL2X" }, "JSR POPREAL", "LDA #<X_REG", "LDY #>X_REG", "JSR MEMARG"));
 			this.add(new Pattern(false, "Simplified CMP redux", new String[]{"{LINE0}","{LINE2}","{LINE3}","LDA #$1","{LINE14}","{LINE16}","{LINE17}",},"LDA #0","STA $61","JMP {*}", "{LABEL}","LDA #0","STA $63","STA $64","STA $65",
 				"LDY #128","STY $62","INY","STY $61","LDY #$FF","STY $66","{LABEL}","LDA $61","{LABEL}","BNE {*}"));
+			this.add(new Pattern(false, "Direct loading of 0", new String[]{"LDA #$0", "STA $61"},"LDA #<{#0.0}","LDY #>{#0.0}","JSR REALFAC"));
 
 
 		}
