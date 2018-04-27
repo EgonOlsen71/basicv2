@@ -38,7 +38,7 @@ public class TransformerTest {
 		// testTransformer2();
 		// testTransformer4();
 		// testTransformer5();
-		 testTransformerFractal();
+		// testTransformerFractal();
 		// testTransformer6();
 		// testTransformer7();
 		// testTransformerPrime();
@@ -46,7 +46,7 @@ public class TransformerTest {
 		// testTransformer8();
 		// testTransformer9();
 		// testTransformer10();
-		// testTransformer11();
+		 testTransformer11();
 		// testTransformer12();
 		// testTransformer13();
 		// testTransformer14();
@@ -59,8 +59,8 @@ public class TransformerTest {
 		// testTransformer20();
 		// testTransformer22();
 		// testTransformer23();
-		 testTransformerFrog();
-		 testTransformerAffine();
+		// testTransformerFrog();
+		// testTransformerAffine();
 		// testTransformer24();
 		// testTransformer25();
 		// testTransformer26();
@@ -694,6 +694,7 @@ public class TransformerTest {
 		conf.setConstantFolding(true);
 		conf.setConstantPropagation(true);
 		conf.setDeadStoreElimination(true);
+		conf.setDeadStoreEliminationOfStrings(true);
 		conf.setIntermediateLanguageOptimizations(true);
 		conf.setNativeLanguageOptimizations(true);
 		conf.setOptimizedLinker(true);

@@ -16,77 +16,84 @@ import com.sixtyfour.util.VarUtils;
  * 
  */
 public class ConstantFolder {
-	/**
-	 * Optimizes the term tree by folding constants where possible.
-	 * 
-	 * @param finalTerm
-	 *            the final term
-	 * @param machine
-	 *            the machine
-	 * @return the optimized term
-	 */
-	public static Term foldConstants(Term finalTerm, Machine machine) {
-		if (CompilerConfig.getConfig().isConstantFolding()) {
-			Atom left = finalTerm.getLeft();
-			Atom right = finalTerm.getRight();
+    /**
+     * Optimizes the term tree by folding constants where possible.
+     * 
+     * @param finalTerm
+     *            the final term
+     * @param machine
+     *            the machine
+     * @return the optimized term
+     */
+    public static Term foldConstants(Term finalTerm, Machine machine) {
+	if (CompilerConfig.getConfig().isConstantFolding()) {
+	    Atom left = finalTerm.getLeft();
+	    Atom right = finalTerm.getRight();
 
-			if (finalTerm.getOperator().isNop()) {
-				return finalTerm;
-			}
-
-			if (left.isConstant() && right.isConstant() && Type.isAssignable(left.getType(), right.getType())) {
-				Constant<?> conty = null;
-				Object val = finalTerm.eval(machine);
-				if (left.getType().equals(Type.STRING)) {
-					conty = new Constant<String>(val.toString());
-				} else if (VarUtils.isFloat(val)) {
-					conty = new Constant<Float>((Float) val);
-				} else if (VarUtils.isInteger(val)) {
-					conty = new Constant<Integer>((Integer) val);
-				}
-				if (conty != null) {
-					finalTerm.setOperator(Operator.NOP);
-					finalTerm.setLeft(conty);
-					finalTerm.setRight(new Constant<Integer>(0));
-				}
-			} else {
-				if (left != null && left.isTerm()) {
-					finalTerm.setLeft(foldConstants((Term) left, machine));
-				}
-				if (right != null && right.isTerm()) {
-					finalTerm.setRight(foldConstants((Term) right, machine));
-				}
-
-				if (left != null && left instanceof Function) {
-					Function fun = (Function) left;
-					fun.setTerm(foldConstants(fun.getTerm(), machine));
-				}
-
-				if (right != null && right instanceof Function) {
-					Function fun = (Function) right;
-					fun.setTerm(foldConstants(fun.getTerm(), machine));
-				}
-			}
+	    if (finalTerm.getOperator().isNop()) {
+		if (left.isConstant()) {
+		    setConstant(finalTerm, machine, left);
 		}
 		return finalTerm;
-	}
+	    }
 
-	public static void foldConstants(Machine machine) {
-		if (CompilerConfig.getConfig().isConstantFolding()) {
-			for (Command cmd : machine.getCommandList()) {
-				for (Term cmdTerm : cmd.getAllTerms()) {
-					/*
-					 * if (cmdTerm != null && cmd.getTerm() != null) {
-					 * System.out.println(cmd.getName() + "/" + cmdTerm + "/" +
-					 * cmd.getTerm().getInitial() + "/" +
-					 * ConstantPropagator.checkForConstant(machine, cmdTerm)); }
-					 */
-					if (cmdTerm != null) {
-						foldConstants(cmdTerm, machine);
-						// System.out.println("> " + cmdTerm);
-					}
-				}
-			}
+	    if (left.isConstant() && right.isConstant() && Type.isAssignable(left.getType(), right.getType())) {
+		setConstant(finalTerm, machine, left);
+	    } else {
+		if (left != null && left.isTerm()) {
+		    finalTerm.setLeft(foldConstants((Term) left, machine));
 		}
+		if (right != null && right.isTerm()) {
+		    finalTerm.setRight(foldConstants((Term) right, machine));
+		}
+
+		if (left != null && left instanceof Function) {
+		    Function fun = (Function) left;
+		    fun.setTerm(foldConstants(fun.getTerm(), machine));
+		}
+
+		if (right != null && right instanceof Function) {
+		    Function fun = (Function) right;
+		    fun.setTerm(foldConstants(fun.getTerm(), machine));
+		}
+	    }
 	}
+	return finalTerm;
+    }
+
+    public static void foldConstants(Machine machine) {
+	if (CompilerConfig.getConfig().isConstantFolding()) {
+	    for (Command cmd : machine.getCommandList()) {
+		for (Term cmdTerm : cmd.getAllTerms()) {
+		    /*
+		     * if (cmdTerm != null && cmd.getTerm() != null) {
+		     * System.out.println(cmd.getName() + "/" + cmdTerm + "/" +
+		     * cmd.getTerm().getInitial() + "/" +
+		     * ConstantPropagator.checkForConstant(machine, cmdTerm)); }
+		     */
+		    if (cmdTerm != null) {
+			foldConstants(cmdTerm, machine);
+			// System.out.println("> " + cmdTerm);
+		    }
+		}
+	    }
+	}
+    }
+
+    private static void setConstant(Term finalTerm, Machine machine, Atom left) {
+	Constant<?> conty = null;
+	Object val = finalTerm.eval(machine);
+	if (left.getType().equals(Type.STRING)) {
+	    conty = new Constant<String>(val.toString());
+	} else if (VarUtils.isFloat(val)) {
+	    conty = new Constant<Float>((Float) val);
+	} else if (VarUtils.isInteger(val)) {
+	    conty = new Constant<Integer>((Integer) val);
+	}
+	if (conty != null) {
+	    finalTerm.setOperator(Operator.NOP);
+	    finalTerm.setLeft(conty);
+	    finalTerm.setRight(new Constant<Integer>(0));
+	}
+    }
 }

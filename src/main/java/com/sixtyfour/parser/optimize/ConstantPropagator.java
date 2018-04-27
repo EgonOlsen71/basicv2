@@ -53,7 +53,7 @@ public class ConstantPropagator {
 							}
 							Term term = let.getTerm();
 							boolean termIsConstant = ConstantPropagator.checkForConstant(machine, term);
-							if (termIsConstant) {
+							if (termIsConstant && !var.getUpperCaseName().equals("TI$")) {
 								var.setValue(term.eval(machine));
 								var.setConstant(true);
 								Logger.log(var + " can be considered constant!");
@@ -87,9 +87,12 @@ public class ConstantPropagator {
 			isConstant[0] = false;
 			return false;
 		}
-		if (t.getType(true) == Type.STRING) {
-			isConstant[0] = false;
-			return false;
+		
+		if (!CompilerConfig.getConfig().isDeadStoreEliminationOfStrings()) {
+        		if (t.getType(true) == Type.STRING) {
+        			isConstant[0] = false;
+        			return false;
+        		}
 		}
 
 		Atom left = t.getLeft();

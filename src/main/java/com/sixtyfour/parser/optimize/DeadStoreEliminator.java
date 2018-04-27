@@ -43,6 +43,11 @@ public class DeadStoreEliminator {
 				if (cmd.isCommand("LET")) {
 					Let let = (Let) cmd;
 					String varName = let.getVar().getUpperCaseName();
+					if (!CompilerConfig.getConfig().isDeadStoreEliminationOfStrings()) {
+        					if (varName.contains("$")) {
+        					    continue;
+        					}
+					}
 					// System.out.println(let.getVar()+"/"+let.getVar().isSupposedToBeArray());
 					if (varName.equals("TI$") || let.getVar().isSupposedToBeArray()) {
 						continue;

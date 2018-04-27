@@ -15,6 +15,8 @@ public class CompilerConfig {
 	private boolean nativeLanguageOptimizations = true;
 	private boolean optimizedLinker = true;
 	private boolean deadStoreElimination = true;
+	private boolean deadStoreEliminationOfStrings = true;
+
 	private int compactThreshold = 0;
 	private static CompilerConfig instance = new CompilerConfig();
 
@@ -80,5 +82,13 @@ public class CompilerConfig {
 
 	public void setCompactThreshold(int compactThreshold) {
 		this.compactThreshold = compactThreshold;
+	}
+	
+	public boolean isDeadStoreEliminationOfStrings() {
+	    return deadStoreEliminationOfStrings;
+	}
+
+	public void setDeadStoreEliminationOfStrings(boolean deadStoreEliminationOfStrings) {
+	    this.deadStoreEliminationOfStrings = deadStoreEliminationOfStrings;
 	}
 }
