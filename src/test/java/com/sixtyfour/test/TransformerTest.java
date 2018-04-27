@@ -41,7 +41,7 @@ public class TransformerTest {
 		 testTransformerFractal();
 		// testTransformer6();
 		// testTransformer7();
-		 testTransformerPrime();
+		// testTransformerPrime();
 		// testTransformerSqr();
 		// testTransformer8();
 		// testTransformer9();
@@ -50,7 +50,7 @@ public class TransformerTest {
 		// testTransformer12();
 		// testTransformer13();
 		// testTransformer14();
-		 testTransformerBeer();
+		// testTransformerBeer();
 		// testTransformer15();
 		// testTransformerSqr();
 		// testTransformer16();
@@ -65,7 +65,7 @@ public class TransformerTest {
 		// testTransformer25();
 		// testTransformer26();
 		// testHilbert();
-		testLines();
+		//testLines(); 
 		//testTransformer27();
 	}
 	
@@ -191,17 +191,17 @@ public class TransformerTest {
 	private static void testTransformer18() throws Exception {
 		System.out.println("\n\ntestTransformer18");
 		/*
-		 * String[] vary =
-		 * Loader.loadProgram("src/test/resources/transform/test18.bas");
-		 * Assembler assy = initTestEnvironment(vary, false);
-		 * FileWriter.writeAsPrg(assy.getProgram(), "++testget.prg", true);
-		 * 
-		 * vary = Loader.loadProgram("src/test/resources/transform/test19.bas");
-		 * assy = initTestEnvironment(vary, false);
-		 * FileWriter.writeAsPrg(assy.getProgram(), "++testgetnum.prg", true);
-		 */
-		String[] vary = Loader.loadProgram("src/test/resources/transform/game.bas");
+		  String[] vary =
+		  Loader.loadProgram("src/test/resources/transform/test18.bas");
+		  Assembler assy = initTestEnvironment(vary, false);
+		  FileWriter.writeAsPrg(assy.getProgram(), "++testget.prg", true);
+		  */
+		String[] vary = Loader.loadProgram("src/test/resources/transform/test19.bas");
 		Assembler assy = initTestEnvironment(vary, false);
+		  FileWriter.writeAsPrg(assy.getProgram(), "++testgetnum.prg", true);
+		 /*
+		 vary = Loader.loadProgram("src/test/resources/transform/game.bas");
+		 assy = initTestEnvironment(vary, false);
 		FileWriter.writeAsPrg(assy.getProgram(), "++testgame.prg", true);
 		/*
 		 * JsrProfiler profiler = new JsrProfiler(assy);

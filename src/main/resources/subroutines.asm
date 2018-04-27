@@ -2442,6 +2442,9 @@ EXTRAIGNORED
 			JMP $ACF4
 ;###################################
 SYNTAXERROR 
-ERROR		JMP $AF08	;General purpose error, here a syntax error
+			JMP $AF08
+;###################################
+ERROR		
+			JMP $AF08	;General purpose error, here a syntax error
 ;###################################
 
