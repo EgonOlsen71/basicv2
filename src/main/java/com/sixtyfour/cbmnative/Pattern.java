@@ -135,7 +135,7 @@ public class Pattern {
 
 	private void replace(String[] replacement, int i, int pos, int offset, String[] values) {
 		int endi = replacement[i].indexOf("}");
-		int posi = Integer.valueOf(replacement[i].substring(pos + offset, endi));
+		int posi = Integer.parseInt(replacement[i].substring(pos + offset, endi));
 		String fp = replacement[i].substring(0, pos);
 		if (!fp.endsWith("#<") && !fp.endsWith("#>")) {
 			fp = fp + " ";
