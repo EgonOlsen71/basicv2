@@ -46,7 +46,7 @@ public class TransformerTest {
 		// testTransformer8();
 		// testTransformer9();
 		// testTransformer10();
-		 testTransformer11();
+		// testTransformer11();
 		// testTransformer12();
 		// testTransformer13();
 		// testTransformer14();
@@ -67,6 +67,14 @@ public class TransformerTest {
 		// testHilbert();
 		//testLines(); 
 		//testTransformer27();
+		 testConditions();
+	}
+	
+	private static void testConditions() throws Exception {
+		System.out.println("\n\ntestConditions");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/conditions.bas");
+		Assembler assy = initTestEnvironment(vary, false);
+		FileWriter.writeAsPrg(assy.getProgram(), "++testconditions.prg", true);
 	}
 	
 	private static void testLines() throws Exception {
