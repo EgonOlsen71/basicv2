@@ -184,14 +184,13 @@ public class Pattern {
 								if (reg.startsWith("#")) {
 									String num = reg.substring(1);
 									boolean isReal = num.contains(".");
-									Number val = Float.valueOf(num);
+									float val = Float.parseFloat(num);
 									if (!isReal) {
-										val = val.intValue();
+										val = (int) val;
 									}
 									int pos = lineRight.indexOf("CONST_");
 									if (lineRight.equals(reg)
-											|| (pos != -1 && const2Value.containsKey(lineRight.substring(pos)) && const2Value.get(lineRight.substring(pos)).floatValue() == val
-													.floatValue())) {
+											|| (pos != -1 && const2Value.containsKey(lineRight.substring(pos)) && const2Value.get(lineRight.substring(pos)).floatValue() == val)) {
 										return inc(ix);
 									}
 									return resetPattern();
