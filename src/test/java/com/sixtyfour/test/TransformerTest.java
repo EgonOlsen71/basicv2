@@ -60,9 +60,9 @@ public class TransformerTest {
 		// testTransformer22();
 		// testTransformer23();
 		// testTransformerFrog();
-		 testTransformerAffine();
+		// testTransformerAffine();
 		// testTransformer24();
-		// testTransformer25();
+		 testTransformer25();
 		// testTransformer26();
 		// testHilbert();
 		//testLines(); 

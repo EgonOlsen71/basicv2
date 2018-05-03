@@ -137,6 +137,8 @@ public class Transformer6502 implements Transformer {
 		List<String> inits = createInitScript(vars);
 		List<String> datas = createDatas(machine);
 
+		int gcBufSize=Math.min(4096, platform.getGarbageCollectionBufferSize() * 2);
+		
 		subs.addAll(inits);
 		subs.add("; *** SUBROUTINES END ***");
 		subs.add("SQRTTABLE");
@@ -176,6 +178,9 @@ public class Transformer6502 implements Transformer {
 		res.add("TMP2_REG\t.WORD 0");
 		res.add("TMP3_REG\t.WORD 0");
 		res.add("TMP4_REG\t.WORD 0");
+		res.add("STORE1\t.WORD 0");
+		res.add("STORE2\t.WORD 0");
+		res.add("STORE3\t.WORD 0");
 		res.add("TMP_FREG\t.REAL 0");
 		res.add("TMP2_FREG\t.REAL 0");
 		res.add("TMP_FLAG\t.BYTE 0");
@@ -189,7 +194,8 @@ public class Transformer6502 implements Transformer {
 		res.add("DATASP\t.WORD DATAS");
 		res.add("LASTVAR\t.WORD 0");
 		res.add("LASTVARP\t.WORD 0");
-		res.add("GCBUFP\t.WORD 0");
+		res.add("GCBUFP\t.WORD GCBUF");
+		res.add("GCBUFEND\t.WORD GCBUF+"+(gcBufSize-1));
 		res.add("HIGHP\t.WORD STRBUF");
 		res.add("STRBUFP\t.WORD STRBUF");
 		res.add("ENDSTRBUF\t.WORD " + platform.getStringMemoryEnd());
@@ -201,7 +207,7 @@ public class Transformer6502 implements Transformer {
 		res.add("INPUTQUEUE\t.ARRAY $0F");
 		res.add("FPSTACK .ARRAY " + Math.min(256, platform.getStackSize() * 5));
 		res.add("FORSTACK .ARRAY " + Math.min(1024, platform.getForStackSize() * 17));
-		res.add("GCBUF\t.ARRAY " + Math.min(4096, platform.getGarbageCollectionBufferSize() * 2));
+		res.add("GCBUF\t.ARRAY " + gcBufSize);
 		res.add("STRBUF\t.BYTE 0");
 		return res;
 	}
