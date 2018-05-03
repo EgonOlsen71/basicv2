@@ -651,7 +651,7 @@ RGCNOOV1	LDA TMP4_REG+1		; Now do the actual check
 			BCS GCEXE			; Doesn't fit, run GC!
 RGCLOW1		LDA TMP4_REG
 			CMP ENDSTRBUF
-			BCS	GCEXE			; This also triggers, if the it would fit exactly...but anyway...
+			BCS	GCEXE			; This also triggers, if it would fit exactly...but anyway...
 			RTS					; It fits? Then exit without GC
 GCEXE
 			RTS					; Remember: GC has to adjust highp as well!
