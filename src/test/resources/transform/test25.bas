@@ -5,7 +5,7 @@
 26 rem print "e:";e$:print "u:";u$(i):print "z:";z$(i):print "f:";f$
 27 rem getzz$:ifzz$=""then27
 28 rem print"----------------------------------------"
-30 next:printfre(0):next
+30 next:printx:next
 
 
 

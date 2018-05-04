@@ -62,22 +62,22 @@ public class TransformerTest {
 		// testTransformerFrog();
 		// testTransformerAffine();
 		// testTransformer24();
-		 testTransformer25();
+		testTransformer25();
 		// testTransformer26();
 		// testHilbert();
-		//testLines(); 
-		//testTransformer27();
+		// testLines();
+		// testTransformer27();
 		// testConditions();
 		// testTransformer28();
 	}
-	
+
 	private static void testConditions() throws Exception {
 		System.out.println("\n\ntestConditions");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/conditions.bas");
 		Assembler assy = initTestEnvironment(vary, false);
 		FileWriter.writeAsPrg(assy.getProgram(), "++testconditions.prg", true);
 	}
-	
+
 	private static void testLines() throws Exception {
 		System.out.println("\n\ntestLines");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/lines.bas");
@@ -91,7 +91,7 @@ public class TransformerTest {
 		Assembler assy = initTestEnvironment(vary, false);
 		FileWriter.writeAsPrg(assy.getProgram(), "++testhilbert.prg", true);
 	}
-	
+
 	private static void testTransformer27() throws Exception {
 		System.out.println("\n\ntestTransformer27");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/test27.bas");
@@ -143,7 +143,7 @@ public class TransformerTest {
 		// printZeropage(assy);
 		System.out.println("Ticks: " + machine.getCpu().getClockTicks());
 	}
-	
+
 	private static void testTransformer28() throws Exception {
 		System.out.println("\n\ntestTransformer28");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/test28.bas");
@@ -151,12 +151,12 @@ public class TransformerTest {
 		FileWriter.writeAsPrg(assy.getProgram(), "++testgc2.prg", true);
 		JsrProfiler profiler = new JsrProfiler(assy);
 		assy.getCpu().setCpuTracer(profiler);
-		
+
 		assy.getCpu().setCpuTracer(new MySimpleTracer(assy));
-		
+
 		Machine machine = executeTest(assy);
 
-		//printStats(profiler, machine);
+		// printStats(profiler, machine);
 	}
 
 	private static void testTransformer25() throws Exception {
@@ -166,12 +166,13 @@ public class TransformerTest {
 		FileWriter.writeAsPrg(assy.getProgram(), "++testgc.prg", true);
 		JsrProfiler profiler = new JsrProfiler(assy);
 		assy.getCpu().setCpuTracer(profiler);
-		
-		//assy.getCpu().setCpuTracer(new MySimpleTracer(assy));
-		
+
+		assy.getCpu().setCpuTracer(new MySimpleTracer(assy));
+
 		Machine machine = executeTest(assy);
 
-		printStats(profiler, machine);
+		System.out.println("Ticks: "+assy.getCpu().getClockTicks());
+		// printStats(profiler, machine);
 	}
 
 	private static void testTransformer24() throws Exception {
@@ -218,19 +219,18 @@ public class TransformerTest {
 	private static void testTransformer18() throws Exception {
 		System.out.println("\n\ntestTransformer18");
 		/*
-		  String[] vary =
-		  Loader.loadProgram("src/test/resources/transform/test18.bas");
-		  Assembler assy = initTestEnvironment(vary, false);
-		  FileWriter.writeAsPrg(assy.getProgram(), "++testget.prg", true);
-		  */
+		 * String[] vary =
+		 * Loader.loadProgram("src/test/resources/transform/test18.bas");
+		 * Assembler assy = initTestEnvironment(vary, false);
+		 * FileWriter.writeAsPrg(assy.getProgram(), "++testget.prg", true);
+		 */
 		String[] vary = Loader.loadProgram("src/test/resources/transform/test19.bas");
 		Assembler assy = initTestEnvironment(vary, false);
-		  FileWriter.writeAsPrg(assy.getProgram(), "++testgetnum.prg", true);
-		 /*
-		 vary = Loader.loadProgram("src/test/resources/transform/game.bas");
-		 assy = initTestEnvironment(vary, false);
-		FileWriter.writeAsPrg(assy.getProgram(), "++testgame.prg", true);
+		FileWriter.writeAsPrg(assy.getProgram(), "++testgetnum.prg", true);
 		/*
+		 * vary = Loader.loadProgram("src/test/resources/transform/game.bas");
+		 * assy = initTestEnvironment(vary, false);
+		 * FileWriter.writeAsPrg(assy.getProgram(), "++testgame.prg", true); /*
 		 * JsrProfiler profiler = new JsrProfiler(assy);
 		 * assy.getCpu().setCpuTracer(profiler); Machine machine =
 		 * executeTest(assy);
@@ -843,18 +843,23 @@ public class TransformerTest {
 			String line = assy.getCodeLine(opcodePc);
 			if (line != null) {
 				cnt++;
-				System.out.println(Integer.toHexString(opcodePc) + " - " + Integer.toHexString(opcode) + " -> " + Integer.toHexString(newPc) + " / a=" + cpu.getAcc() + " / x="
-						+ cpu.getX() + " / y=" + cpu.getY() + "/ z=" + (cpu.getStatus() & 0b10) + " / TMP_ZP=" + printReg(105, assy)+ " / TMP2_ZP=" + printReg(107, assy)+ " / TMP3_ZP=" + printReg(34, assy) + "/" + line + " " + assy.getRam()[opcodePc + 1] + "/" + cnt+" - "+print16Bit(1024,assy)+"/"+print16Bit(1026,assy)+"/"+print16Bit(1028,assy)+"/"+print16Bit(1030,assy));
+				if (line.contains("STA 1025") || line.contains("JSR QUICKCOPY") || line.contains("JSR SAVEPOINTERS")) {
+					System.out.println(Integer.toHexString(opcodePc) + " - " + Integer.toHexString(opcode) + " -> " + Integer.toHexString(newPc) + " / a=" + cpu.getAcc() + " / x="
+							+ cpu.getX() + " / y=" + cpu.getY() + "/ z=" + (cpu.getStatus() & 0b10) + " / TMP_ZP=" + printReg(105, assy) + " / TMP2_ZP=" + printReg(107, assy)
+							+ " / TMP3_ZP=" + printReg(34, assy) + "/" + line + " " + assy.getRam()[opcodePc + 1] + "/" + cnt + " - " + print16Bit(1024, assy) + "/"
+							+ print16Bit(1027, assy) + "/" + print16Bit(1030, assy) + "/" + print16Bit(1033, assy)+ "/" + print16Bit(1036, assy)+" @ "+cpu.getClockTicks());
+
+				}
 			}
 		}
 
 		private String printReg(int i, Assembler assy) {
-		    int addr=(assy.getRam()[i]+256*assy.getRam()[i+1]);
-		    return addr+" ["+(assy.getRam()[addr]+256*assy.getRam()[addr+1])+"] ";
+			int addr = (assy.getRam()[i] + 256 * assy.getRam()[i + 1]);
+			return addr + " [" + (assy.getRam()[addr] + 256 * assy.getRam()[addr + 1]) + "] ";
 		}
-		
+
 		private String print16Bit(int i, Assembler assy) {
-		    return (assy.getRam()[i]+256*assy.getRam()[i+1])+"";
+			return (assy.getRam()[i] + 256 * assy.getRam()[i + 1]) + "";
 		}
 
 		@Override

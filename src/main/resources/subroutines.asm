@@ -664,8 +664,10 @@ RESTOREPOINTERS
 			STA TMP_ZP
 			RTS
 ;###################################
-COMPACT		LDY #0
-			LDA GCBUFP			; Check, if there's still space left in the GC buffer
+COMPACT
+			LDY #0				; Check, if there's still space left in the GC buffer
+
+			LDA GCBUFP
 			CMP GCBUFEND
 			BNE GCBUFNE
 			LDA GCBUFP+1
@@ -728,6 +730,11 @@ GCLOOPCHK	LDA TMP_ZP			; Check if we are done with the buffer?
 			STA GCBUFP
 			LDA #>GCBUF
 			STA GCBUFP+1		; reset the GC buffer pointer to the start
+
+			LDA #0
+			STA LASTVAR
+			STA LASTVAR+1		; reset the last variable pointer to 0
+
 GCSKIP		JSR RESTOREPOINTERS
 			RTS					; Remember: GC has to adjust highp as well!
 ;###################################
@@ -763,6 +770,8 @@ FREEMEMNOOV	LDA TMP2_REG
 			LDA TMP3_REG+1
 			STA TMP4_REG+1		; save the length for later
 
+			LDA #0
+			STA 53280
 			JSR QUICKCOPY		; ...and copy the memory down
 
 			LDA HIGHP
@@ -779,9 +788,18 @@ FREEMEMNOOV	LDA TMP2_REG
 			STA TMP_REG
 			LDA #>GCBUF
 			STA TMP_REG+1		; Set the start for GC buffer adjustment
+
+			LDA #1
+			STA 53280
 			JSR ADJUSTBUFFER	; the end for the GC buffer adjustment is still stored in TMP_ZP
 
+			LDA #2
+			STA 53280
 			JSR ADJUSTSTRREF	; adjust the string pointers that are in need
+
+			LDA #6
+			STA 53280
+
 			RTS
 ;###################################
 LOG			LDA TMP_REG
@@ -1000,40 +1018,38 @@ ADJUSTSTRPOINTER
 			RTS
 ;###################################
 QUICKCOPY	LDA TMP_REG		; a self modifying copy routine
+			STA 1033
 			STA TMEM+1
-			
-			STA 1024
-			
 			LDA TMP_REG+1
+			STA 1034
 			STA TMEM+2
 			
-			STA 1025
-
 			LDA TMP2_REG
 			STA SMEM+1
-			
-			STA 1026
-			
+			STA 1027
 			LDA TMP2_REG+1
 			STA SMEM+2
+			STA 1028
 			
-			STA 1027
-
 			LDA HIGHP
 			STA 1030
-			STA 53280
-			
 			SEC
 			SBC TMP2_REG
 			STA TMP3_REG
-			STA 1028
+			STA 1024
 			LDA HIGHP+1
 			STA 1031
 			SBC TMP2_REG+1
 			STA TMP3_REG+1	; The length is not the length of the memory chunk, but the number of bytes  from source to end
-			STA 1029
+			STA 1025
+			BCC QCEXIT
 
-QCYEAH		LDY #$0
+			LDA GCBUFP
+			STA 1036
+			LDA GCBUFP+1
+			STA 1037
+
+			LDY #$0
 			LDX TMP3_REG
 			BNE QCLOOP
 			LDA TMP3_REG+1
