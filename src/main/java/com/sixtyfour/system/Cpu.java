@@ -1297,7 +1297,7 @@ public class Cpu {
 
 	private void cmp_hhllx(int xb, int accb) {
 		index = getWord(ram[pc++], ram[pc++]);
-		tmp = accb - ram[index + xb];
+		tmp = accb - ram[(index + xb) & 0xffff];
 		setFlags(tmp, accb, true, true, false, true, false);
 		ticks += 4;
 		if (index >> 8 != (index + xb) >> 8) {
@@ -1325,7 +1325,7 @@ public class Cpu {
 
 	private void ror_hhllx(int xb) {
 		index = getWord(ram[pc++], ram[pc++]) + xb;
-		ram[index] = ror(ram[index]);
+		ram[index] = ror(ram[index & 0xffff]);
 		ticks += 7;
 	}
 
@@ -1354,7 +1354,7 @@ public class Cpu {
 
 	private void rol_hhllx(int xb) {
 		index = getWord(ram[pc++], ram[pc++]) + xb;
-		ram[index] = rol(ram[index]);
+		ram[index] = rol(ram[index & 0xffff]);
 		ticks += 7;
 	}
 
@@ -1383,7 +1383,7 @@ public class Cpu {
 
 	private void lsr_hhllx(int xb) {
 		index = getWord(ram[pc++], ram[pc++]) + xb;
-		ram[index] = lsr(ram[index]);
+		ram[index] = lsr(ram[index & 0xffff]);
 		ticks += 7;
 	}
 
@@ -1412,7 +1412,7 @@ public class Cpu {
 
 	private void asl_hhllx(int xb) {
 		index = getWord(ram[pc++], ram[pc++]) + xb;
-		ram[index] = asl(ram[index]);
+		ram[index] = asl(ram[index & 0xffff]);
 		ticks += 7;
 	}
 
@@ -1466,7 +1466,7 @@ public class Cpu {
 	}
 
 	private void dec_hhllx(int xb) {
-		index = getWord(ram[pc++], ram[pc++]) + xb;
+		index = (getWord(ram[pc++], ram[pc++]) + xb) & 0xffff;
 		ram[index] = (ram[index] - 1) & 0xff;
 		setFlags(ram[index], true, true);
 		ticks += 7;
@@ -1494,7 +1494,7 @@ public class Cpu {
 	}
 
 	private void inc_hhllx(int xb) {
-		index = getWord(ram[pc++], ram[pc++]) + xb;
+		index = (getWord(ram[pc++], ram[pc++]) + xb) & 0xffff;
 		ram[index] = (ram[index] + 1) & 0xff;
 		setFlags(ram[index], true, true);
 		ticks += 7;
@@ -1563,9 +1563,9 @@ public class Cpu {
 		ac = (~(status & 1)) & 1;
 		tmp = getWord(ram[pc++], ram[pc++]);
 		if (!decimal) {
-			acc -= ram[tmp + xb] + ac;
+			acc -= ram[(tmp + xb) & 0xffff] + ac;
 		} else {
-			acc = subBCD(subBCD(accb, ac), ram[tmp + xb]);
+			acc = subBCD(subBCD(accb, ac), ram[(tmp + xb) & 0xffff]);
 		}
 		setFlags(acc, accb, true, true, true, true, false);
 		acc &= 0xff;
@@ -1655,9 +1655,9 @@ public class Cpu {
 		ac = status & 1;
 		tmp = getWord(ram[pc++], ram[pc++]);
 		if (!decimal) {
-			acc += ram[tmp + xb] + ac;
+			acc += ram[(tmp + xb) & 0xffff] + ac;
 		} else {
-			acc = addBCD(addBCD(accb, ac), ram[tmp + xb]);
+			acc = addBCD(addBCD(accb, ac), ram[(tmp + xb) & 0xffff]);
 		}
 		setFlags(acc, accb, true, true, true, true, true);
 		acc &= 0xff;
@@ -1721,7 +1721,7 @@ public class Cpu {
 
 	private void eor_hhllx(int xb) {
 		tmp = getWord(ram[pc++], ram[pc++]);
-		acc ^= ram[tmp + xb];
+		acc ^= ram[(tmp + xb) & 0xffff];
 		setFlags(acc, true, true);
 		ticks += 4;
 		if (tmp >> 8 != (tmp + xb) >> 8) {
@@ -1771,7 +1771,7 @@ public class Cpu {
 
 	private void or_hhllx(int xb) {
 		tmp = getWord(ram[pc++], ram[pc++]);
-		acc |= ram[tmp + xb];
+		acc |= ram[(tmp + xb) & 0xffff];
 		setFlags(acc, true, true);
 		ticks += 4;
 		if (tmp >> 8 != (tmp + xb) >> 8) {
@@ -1821,7 +1821,7 @@ public class Cpu {
 
 	private void and_hhllx(int xb) {
 		tmp = getWord(ram[pc++], ram[pc++]);
-		acc &= ram[tmp + xb];
+		acc &= ram[(tmp + xb) & 0xffff];
 		setFlags(acc, true, true);
 		ticks += 4;
 		if (tmp >> 8 != (tmp + xb) >> 8) {
@@ -1891,7 +1891,7 @@ public class Cpu {
 	}
 
 	private void sta_hhllx(int xb, int accb) {
-		ram[getWord(ram[pc++], ram[pc++]) + xb] = accb;
+		ram[(getWord(ram[pc++], ram[pc++]) + xb) & 0xffff] = accb;
 		ticks += 5;
 	}
 
@@ -1914,7 +1914,7 @@ public class Cpu {
 
 	private void ldy_hhllx(int xb) {
 		tmp = getWord(ram[pc++], ram[pc++]);
-		y = ram[tmp + xb];
+		y = ram[(tmp + xb) & 0xffff];
 		setFlags(y, true, true);
 		ticks += 4;
 		if (tmp >> 8 != (tmp + xb) >> 8) {
@@ -1948,7 +1948,7 @@ public class Cpu {
 
 	private void ldx_hhllx(int yb) {
 		tmp = getWord(ram[pc++], ram[pc++]);
-		x = ram[tmp + yb];
+		x = ram[(tmp + yb) & 0xffff];
 		setFlags(x, true, true);
 		ticks += 4;
 		if (tmp >> 8 != (tmp + yb) >> 8) {
@@ -1998,7 +1998,7 @@ public class Cpu {
 
 	private void lda_hhll(int xb) {
 		tmp = getWord(ram[pc++], ram[pc++]);
-		acc = ram[tmp + xb];
+		acc = ram[(tmp + xb) & 0xffff];
 		setFlags(acc, true, true);
 		ticks += 4;
 		if (tmp >> 8 != (tmp + xb) >> 8) {

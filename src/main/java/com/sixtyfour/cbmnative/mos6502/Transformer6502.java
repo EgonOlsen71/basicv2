@@ -195,7 +195,7 @@ public class Transformer6502 implements Transformer {
 		res.add("LASTVAR\t.WORD 0");
 		res.add("LASTVARP\t.WORD 0");
 		res.add("GCBUFP\t.WORD GCBUF");
-		res.add("GCBUFEND\t.WORD GCBUF+"+(gcBufSize-1));
+		res.add("GCBUFEND\t.WORD GCBUF+"+(gcBufSize));
 		res.add("HIGHP\t.WORD STRBUF");
 		res.add("STRBUFP\t.WORD STRBUF");
 		res.add("ENDSTRBUF\t.WORD " + platform.getStringMemoryEnd());

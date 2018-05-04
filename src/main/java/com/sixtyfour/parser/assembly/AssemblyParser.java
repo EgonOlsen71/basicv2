@@ -222,6 +222,17 @@ public class AssemblyParser {
 		List<Integer> ram = new ArrayList<Integer>();
 		data = data.trim();
 		String datupper = VarUtils.toUpper(data);
+		
+		int addrAdd=0;
+		int posy = data.lastIndexOf("+");
+		if (posy != -1 && posy >= data.lastIndexOf("\"")) {
+			try {
+				addrAdd = Integer.parseInt(data.substring(posy + 1));
+			} catch (Exception e) {
+				throw new RuntimeException("Parse error in " + data + "/" + addr);
+			}
+		}
+		
 		if (datupper.startsWith(".TEXT") || datupper.startsWith(".STRG")) {
 			data = data.substring(5).trim();
 			if (data.startsWith("\"") && data.endsWith("\"")) {
@@ -259,14 +270,14 @@ public class AssemblyParser {
 		} else if (datupper.startsWith(".BYTE")) {
 			String[] parts = data.substring(5).trim().split(" ");
 			for (String part : parts) {
-				int val = getLowByte(getValue(part, addr - 1, ccon, lcon, true, false, 0, true));
+				int val = getLowByte(getValue(part, addr - 1, ccon, lcon, true, false, addrAdd, true));
 				addr++;
 				ram.add(val);
 			}
 		} else if (datupper.startsWith(".WORD")) {
 			String[] parts = data.substring(5).trim().split(" ");
 			for (String part : parts) {
-				int val = getValue(part, addr - 1, ccon, lcon, false, false, 0, true);
+				int val = getValue(part, addr - 1, ccon, lcon, false, false, addrAdd, true);
 				addr += 2;
 				ram.add(getLowByteSigned(val));
 				ram.add(getHighByteSigned(val));
@@ -283,7 +294,7 @@ public class AssemblyParser {
 		} else if (datupper.startsWith(".ARRAY")) {
 			String[] parts = data.substring(6).trim().split(" ");
 			for (String part : parts) {
-				int val = getValue(part, addr - 1, ccon, lcon, false, false, 0, true);
+				int val = getValue(part, addr - 1, ccon, lcon, false, false, addrAdd, true);
 				if (val < 0) {
 					throw new RuntimeException("Value out of range: " + val);
 				}

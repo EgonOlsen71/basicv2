@@ -308,7 +308,7 @@ COPY2LOOP	LDA (TMP_ZP),Y
 			INY
 			INX
 			BNE MEMORYOK
-			JMP OUTOFMEMORY
+			JMP STRINGTOOLONG
 MEMORYOK	CPY TMP2_ZP
 			BNE COPY2LOOP
 			STX CONCATBUFP
@@ -634,34 +634,6 @@ READTID		LDA #0
 			LDY #>VAR_TI$
 			JMP COPYSTRING	;RTS is implicit
 ;###################################
-COMPACT		LDY #0
-			LDA GCBUFP			; Check, if there's still space left in the GC buffer
-			CMP GCBUFEND
-			BNE GCBUFNE
-			LDA GCBUFP+1
-			CMP GCBUFEND+1
-			BNE GCBUFNE
-			JMP GCEXE			; The GC buffer is full, compact it
-
-GCBUFNE		LDA (TMP_ZP),Y		; Get the source's length
-			STA TMP4_REG		; ...and store it
-			LDA STRBUFP+1		; First, check if the new string would fit into memory...
-			STA TMP4_REG+1		; For that, we have to calculate the new strbufp after adding the string
-			LDA STRBUFP
-			CLC
-			ADC TMP4_REG
-			STA TMP4_REG
-			BCC	RGCNOOV1
-			INC TMP4_REG+1
-RGCNOOV1	LDA TMP4_REG+1		; Now do the actual check
-			CMP ENDSTRBUF+1
-			BEQ RGCLOW1
-			BCS GCEXE			; Doesn't fit, run GC!
-RGCLOW1		LDA TMP4_REG
-			CMP ENDSTRBUF
-			BCS	GCEXE			; This also triggers, if it would fit exactly...but anyway...
-			RTS					; It fits? Then exit without GC
-;###################################
 SAVEPOINTERS
 			LDA TMP_ZP			; ...save the pointers
 			STA STORE1
@@ -692,6 +664,36 @@ RESTOREPOINTERS
 			STA TMP_ZP
 			RTS
 ;###################################
+COMPACT		LDY #0
+			LDA GCBUFP			; Check, if there's still space left in the GC buffer
+			CMP GCBUFEND
+			BNE GCBUFNE
+			LDA GCBUFP+1
+			CMP GCBUFEND+1
+			BNE GCBUFNE
+			JMP GCEXE			; The GC buffer is full, compact it
+
+GCBUFNE		LDA (TMP_ZP),Y		; Get the source's length
+			STA TMP4_REG		; ...and store it
+			LDA STRBUFP+1		; First, check if the new string would fit into memory...
+			STA TMP4_REG+1		; For that, we have to calculate the new strbufp after adding the string
+			LDA STRBUFP
+			CLC
+			ADC TMP4_REG
+			STA TMP4_REG
+			BCC	RGCNOOV1
+			INC TMP4_REG+1
+RGCNOOV1	LDA TMP4_REG+1		; Now do the actual check
+			CMP ENDSTRBUF+1
+			BEQ RGCLOW1
+			BCS GCEXE			; Doesn't fit, run GC!
+			JMP RGCEXIT
+RGCLOW1		LDA TMP4_REG
+			CMP ENDSTRBUF
+			BCS	GCEXE			; This also triggers if it would fit exactly...but anyway...
+RGCEXIT		RTS					; It fits? Then exit without GC
+
+;###################################
 GCEXE		JSR SAVEPOINTERS
 			LDA GCBUFP
 			STA TMP_ZP
@@ -712,7 +714,8 @@ GCLOOP		LDA TMP_ZP			; Adjust GC pointer to the next element (from top to bottom
 			STA TMP_ZP
 			BCS GCLOOPNOOV
 			DEC TMP_ZP+1
-GCLOOPNOOV	JSR FREEMEM			; free that memory
+GCLOOPNOOV	
+			JSR FREEMEM			; free that memory
 
 GCLOOPCHK	LDA TMP_ZP			; Check if we are done with the buffer?
 			CMP #<GCBUF
@@ -753,7 +756,7 @@ FREEMEMNOOV	LDA TMP2_REG
 			STA TMP2_REG
 			LDA TMP2_REG+1
 			ADC TMP3_REG+1
-			STA TMP2_REG+1		; Set the source position (i.e. target+lenght+1)
+			STA TMP2_REG+1		; Set the source position (i.e. target+length+1)
 
 			LDA TMP3_REG
 			STA TMP4_REG
@@ -762,12 +765,12 @@ FREEMEMNOOV	LDA TMP2_REG
 
 			JSR QUICKCOPY		; ...and copy the memory down
 
-			LDA STRBUFP
+			LDA HIGHP
 			SEC
 			SBC TMP4_REG
 			STA STRBUFP
 			STA HIGHP
-			LDA STRBUFP+1
+			LDA HIGHP+1
 			SBC TMP4_REG+1
 			STA STRBUFP+1
 			STA HIGHP+1			; adjust the string pointer as well as highp
@@ -776,13 +779,9 @@ FREEMEMNOOV	LDA TMP2_REG
 			STA TMP_REG
 			LDA #>GCBUF
 			STA TMP_REG+1		; Set the start for GC buffer adjustment
-			LDA TMP_ZP
-			STA TMP2_REG
-			LDA TMP_ZP+1
-			STA TMP2_REG+1		; Set the end for the GC buffer adjustment
-			JSR ADJUSTBUFFER	; todo: This triggers and endless loop...
+			JSR ADJUSTBUFFER	; the end for the GC buffer adjustment is still stored in TMP_ZP
 
-			;JSR ADJUSTSTRREF	; adjust the string pointers that are in need
+			JSR ADJUSTSTRREF	; adjust the string pointers that are in need
 			RTS
 ;###################################
 LOG			LDA TMP_REG
@@ -808,17 +807,24 @@ ADJUSTBUFFER
 			STA TMP2_ZP
 			LDA TMP_REG+1
 			STA TMP2_ZP+1		; Transfer start into TMP2_ZP. TMP_ZP still contains the actual pointer
-
+			
+			CMP TMP_ZP+1
+			BNE ADJBLOOP
+			LDA TMP2_ZP
+			CMP TMP_ZP
+			BNE ADJBLOOP
+			RTS					; Nothing to do, exit...
+			
 ADJBLOOP	LDY #1
 			LDA (TMP2_ZP),Y
-			CMP (TMP_ZP),Y		; Compare highbyte in the buffer with the actual pointer
+			CMP (TMP_ZP),Y		; Compare highbyte in the buffer with the actual pointer. todo: Store this in some location, it doesn't change here
 			BCC ADJBCONT		; lower? Nothing to do...
 			BEQ ADJBCHECKLOW	; The same? There might be something to do
 			JMP ADJBADJUST		; Greater? Something to do
 ADJBCHECKLOW
 			DEY
 			LDA (TMP2_ZP),Y
-			CMP (TMP_ZP),Y			; The same for the lowbyte
+			CMP (TMP_ZP),Y		; The same for the lowbyte.  todo: Store this in some location, it doesn't change here
 			BCC ADJBCONT		; lower? Nothing to do
 ADJBADJUST	LDY #0
 			LDA (TMP2_ZP),Y
@@ -827,21 +833,20 @@ ADJBADJUST	LDY #0
 			STA (TMP2_ZP),Y
 			INY
 			LDA (TMP2_ZP),Y
-			SBC TMP4_REG
+			SBC TMP4_REG+1
 			STA (TMP2_ZP),Y		; Adjust the gc buffer
 ADJBCONT	LDA TMP2_ZP
 			CLC
 			ADC #2
 			STA TMP2_ZP
 			LDA TMP2_ZP+1
-			ADC #1
+			ADC #0
 			STA TMP2_ZP+1
-			CMP TMP2_REG+1
+			CMP TMP_ZP+1
 			BNE ADJBLOOP		; Highbyte not equal pointer? Loop!
 			LDA TMP2_ZP
-			CMP TMP2_REG
+			CMP TMP_ZP
 			BNE ADJBLOOP		; Lowbyte not equal pointer? Loop!
-
 			RTS
 ;###################################
 ADJUSTSTRREF
@@ -861,9 +866,9 @@ ADJUSTSTRREF
 			JMP ADJINITSA2				; No string variables at all
 ADJINITIT1	STA TMP_ZP
 			STY TMP_ZP+1
-			LDY #0
+			
 ADJINITSTRLOOP
-			INY
+			LDY #1
 			LDA (TMP_ZP),Y
 			CMP (TMP2_ZP),Y
 			BCC ADJBISCONT			; lower? Nothing to do...
@@ -877,9 +882,7 @@ ADJBISCHECKLOW
 			BCC ADJBISCONT
 ADJBISADJUST
 			JSR ADJUSTSTRPOINTER
-
-			LDA #>EMPTYSTR
-			STA (TMP_ZP),Y
+			
 ADJBISCONT	LDA TMP_ZP
 			CLC
 			ADC #2
@@ -930,10 +933,21 @@ ADJARRAYQUIT
 ADJINITSTRARRAY
 			STA TMP_ZP
 			STY TMP_ZP+1
+			
+			LDA TMP3_ZP
+			PHA
+			LDA TMP3_ZP+1
+			PHA						; Save TMP3_ZP
+			
+			LDA TMP2_REG
+			STA TMP3_ZP
+			LDA TMP2_REG+1
+			STA TMP3_ZP+1			; Copy TMP2_REG into TMP3_ZP
+			
 ADJSINITLOOP
 			LDY #1
 			LDA (TMP_ZP),Y
-			CMP TMP2_REG+1
+			CMP (TMP3_ZP),Y
 			BCC ADJBISCONT2			; lower? Nothing to do...
 			BEQ ADJBISCHECKLOW2		; The same? There might be something to do
 			JMP ADJBISADJUST2		; Greater? Something t
@@ -941,16 +955,11 @@ ADJSINITLOOP
 ADJBISCHECKLOW2
 			DEY
 			LDA (TMP_ZP),Y
-			CMP TMP2_REG			; The same for the lowbyte
+			CMP (TMP3_ZP),Y			; The same for the lowbyte
 			BCC ADJBISCONT2
 ADJBISADJUST2
 			JSR ADJUSTSTRPOINTER
-
-			LDA #<EMPTYSTR
-			STA (TMP_ZP),Y
-			LDA #>EMPTYSTR
-			INY
-			STA (TMP_ZP),Y
+			
 ADJBISCONT2	CLC
 			LDA TMP_ZP
 			ADC #2
@@ -969,6 +978,12 @@ ADJSLOOPNOV2
 			BNE ADJSINITLOOP
 			LDA TMP2_ZP+1
 			BNE ADJSINITLOOP
+			
+			PLA
+			STA TMP3_ZP+1
+			PLA
+			STA TMP3_ZP			; Restore TMP3_ZP
+			
 			RTS
 ;###################################
 ADJUSTSTRPOINTER
@@ -979,30 +994,50 @@ ADJUSTSTRPOINTER
 			STA (TMP_ZP),Y
 			INY
 			LDA (TMP_ZP),Y
-			SBC TMP4_REG
+			SBC TMP4_REG+1
 			STA (TMP_ZP),Y			; Adjust the string pointer buffer
+			DEY
 			RTS
 ;###################################
 QUICKCOPY	LDA TMP_REG		; a self modifying copy routine
 			STA TMEM+1
+			
+			STA 1024
+			
 			LDA TMP_REG+1
 			STA TMEM+2
+			
+			STA 1025
 
 			LDA TMP2_REG
 			STA SMEM+1
+			
+			STA 1026
+			
 			LDA TMP2_REG+1
 			STA SMEM+2
+			
+			STA 1027
 
 			LDA HIGHP
+			STA 1030
+			STA 53280
+			
 			SEC
 			SBC TMP2_REG
 			STA TMP3_REG
+			STA 1028
 			LDA HIGHP+1
+			STA 1031
 			SBC TMP2_REG+1
 			STA TMP3_REG+1	; The length is not the length of the memory chunk, but the number of bytes  from source to end
+			STA 1029
 
-			LDY #$0
+QCYEAH		LDY #$0
 			LDX TMP3_REG
+			BNE QCLOOP
+			LDA TMP3_REG+1
+			BEQ QCEXIT		; length is null, nothing to copy
 QCLOOP
 SMEM		LDA $0000,Y
 TMEM		STA $0000,Y
@@ -1021,7 +1056,6 @@ QCEXIT		RTS
 UPDATEGC	TYA
 			PHA
 			LDA GCBUFP			; Update the GC buffer pointer, if the old string pointer is >= strbuf and < highp
-			;STA 53280
 			STA TMP3_ZP
 			LDA GCBUFP+1
 			STA TMP3_ZP+1
@@ -2793,6 +2827,10 @@ NEXTWOFOR	LDX #$0A
 			JMP $A437
 ;###################################
 OUTOFDATA	LDX #$0D 
+			JMP $A437 
+;###################################
+STRINGTOOLONG
+			LDX #$17       
 			JMP $A437 
 ;###################################
 OUTOFMEMORY	
