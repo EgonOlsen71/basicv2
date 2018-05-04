@@ -171,7 +171,7 @@ public class TransformerTest {
 		
 		Machine machine = executeTest(assy);
 
-		//printStats(profiler, machine);
+		printStats(profiler, machine);
 	}
 
 	private static void testTransformer24() throws Exception {
