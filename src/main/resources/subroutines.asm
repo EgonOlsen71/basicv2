@@ -706,8 +706,6 @@ GCEXE		JSR SAVEPOINTERS
 GCLOOP		LDY #0
 			LDA TMP_ZP
 			
-			STA 53280
-			
 			STA GCWORK
 			LDA TMP_ZP+1
 			STA GCWORK+1		; store the pointer for later use...
@@ -746,14 +744,13 @@ GCLOOPNOOV3 LDY #0
 			INY
 			LDA (TMP2_ZP),Y
 			CMP GCWORK+1
-			BNE GCKLOOP
-			JMP MEMFREE
+			BEQ MEMFREE
 			
 GCKLOOP		LDA TMP_ZP+1		; Check if we have processed all of the string memory...
 			CMP HIGHP+1
 			BEQ GCHECKLOW
-			BCS GCDONE
-			JMP GCLOOP
+			BCC GCLOOP
+			JMP GCDONE
 			
 GCHECKLOW	LDA TMP_ZP
 			CMP HIGHP
@@ -994,6 +991,7 @@ UPDATEHIGHP	LDA STRBUFP
 			LDA STRBUFP+1
 			STA HIGHP+1		; set new pointer
 			JSR REMEMBERLASTVAR
+			JSR STOREVARREF
 NOHPUPDATE	LDY #0
 			LDA (TMP_ZP),Y	; Set the new length...
 			STA (TMP3_ZP),Y
@@ -1058,6 +1056,7 @@ SKIPLOWAS2	LDA HIGHP+1
 			STA STRBUFP+1
 			LDA #0
 			STA CONCATBUFP	; Reset the work buffer
+			JSR STOREVARREF
 			RTS
 ;###################################
 ; Checks if this variable is the same one that has been stored last. If so, we can reclaim its memory first.
@@ -1077,16 +1076,7 @@ CHECKLASTVAR
 NOTSAMEVAR	RTS
 ;###################################
 ; Stores the last variable reference that has been stored in string memory.
-; In addition, this also appends a reference to the variable at the end of the string in memory for
-; easier GC later...
 REMEMBERLASTVAR
-			TYA
-			PHA				; Save Y reg
-			LDA TMP_ZP
-			PHA
-			LDA TMP_ZP+1
-			PHA				; Save TMP_ZP...
-			
 			LDA TMP2_ZP
 			STA LASTVAR
 			LDA TMP2_ZP+1
@@ -1095,6 +1085,15 @@ REMEMBERLASTVAR
 			STA LASTVARP
 			LDA TMP3_ZP+1
 			STA LASTVARP+1	; Remember this variable as the last written one
+			RTS
+;###################################
+STOREVARREF
+			TYA
+			PHA				; Save Y reg
+			LDA TMP_ZP
+			PHA
+			LDA TMP_ZP+1
+			PHA
 			
 			LDA HIGHP+1
 			STA TMP_ZP+1
@@ -1118,9 +1117,10 @@ RLVNOOV		LDA TMP2_ZP
 			STA TMP_ZP		; ...restore TMP_ZP
 			PLA
 			TAY				; ...restore Y reg
-			
 			RTS
 ;###################################
+; Appends a reference to the variable at the end of the string in memory for
+; easier GC later...
 INTOUT		JMP REALOUT
 ;###################################
 INTOUTBRK  	JMP REALOUTBRK

@@ -347,7 +347,7 @@ public class Transformer6502 implements Transformer {
 					String keyName = name;
 					if (type == Type.STRING) {
 						name = "$" + name.substring(1);
-						keyName = removeBrackets(name);
+						keyName = name;
 					}
 
 					if (!name2label.containsKey(keyName)) {
