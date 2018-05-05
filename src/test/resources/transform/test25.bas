@@ -1,3 +1,4 @@
+5 print"initial:";fre(0)
 10 f$="12345678901234":dimz$(50):dimu$(50):forx=0to1000:for i=1to50 
 20 a$=left$(f$,rnd(0)*10):b$=left$(f$,rnd(0)*10)
 21 c$=left$(f$,rnd(0)*10):d$=left$(f$,rnd(0)*10)

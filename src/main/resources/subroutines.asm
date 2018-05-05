@@ -698,7 +698,6 @@ GCEXE		JSR SAVEPOINTERS
 			
 			LDA #<STRBUF
 			STA TMP_ZP
-			
 			STA GCSTART
 			LDA #>STRBUF
 			STA TMP_ZP+1		; Pointer into the string memory, initialized to point at the start...
@@ -706,31 +705,32 @@ GCEXE		JSR SAVEPOINTERS
 			
 GCLOOP		LDY #0
 			LDA TMP_ZP
+			
+			STA 53280
+			
 			STA GCWORK
 			LDA TMP_ZP+1
 			STA GCWORK+1		; store the pointer for later use...
 			LDA (TMP_ZP),Y
 			STA GCLEN			; store the length
 			
-			STA 53280
-			
 			INC TMP_ZP
 			BNE GCLOOPNOOV
 			INC TMP_ZP+1
-GCLOOPNOOV	
-			LDA TMP_ZP
+	
+GCLOOPNOOV	LDA TMP_ZP
 			CLC
 			ADC GCLEN
 			STA TMP_ZP
 			BCC GCLOOPNOOV2
-			INC TMP_ZP+1		; TMP_ZP now points to the reference to the string variable that used this chunk
+			INC TMP_ZP+1		; TMP_ZP now points to the reference to the string variable that used this chunk once
 
 GCLOOPNOOV2 LDY #0
 			LDA (TMP_ZP),Y
 			STA TMP2_ZP
 			INY
 			LDA (TMP_ZP),Y
-			STA TMP2_ZP+1		; Store the reference in TMP2_ZP
+			STA TMP2_ZP+1		; Store the variable reference in TMP2_ZP
 			
 			LDA TMP_ZP
 			CLC
@@ -763,8 +763,8 @@ GCHECKLOW	LDA TMP_ZP
 MEMFREE		LDA GCSTART			; found a variable that points to this chunk...
 			CMP GCWORK			; ...then check if the can be copied down. This is the case if GCSTART!=GCWORK
 			BNE COPYDOWN
-			LDA GCSTART
-			CMP GCWORK
+			LDA GCSTART+1
+			CMP GCWORK+1
 			BNE COPYDOWN
 								
 			LDA TMP_ZP			; GCSTART==GCWORK...adjust GCSTART and continue
@@ -773,7 +773,7 @@ MEMFREE		LDA GCSTART			; found a variable that points to this chunk...
 			STA GCSTART+1		
 			JMP	GCKLOOP			; continue if needed...
 			
-COPYDOWN	LDA GCSTART			; There a gap in memory, so copy the found variable down to GCSTART and adjust GCSTART accordingly
+COPYDOWN	LDA GCSTART			; There's a gap in memory, so copy the found variable down to GCSTART and adjust GCSTART accordingly
 			STA TMP_REG
 			LDA GCSTART+1
 			STA TMP_REG+1		; set the target location...
@@ -800,7 +800,13 @@ COPYDOWN	LDA GCSTART			; There a gap in memory, so copy the found variable down 
 			STA GCSTART+1		; update GCSTART to point to the next free chunk
 			
 			JSR QUICKCOPY		; copy the chunk down to (former, now stored in TMP_REG) GCSTART
-			JSR ADJUSTPOINTER	; ...and adjust the pointer to the memory in the variable to that new location
+			
+			LDY #0
+			LDA TMP_REG
+			STA (TMP2_ZP),Y
+			INY
+			LDA TMP_REG+1
+			STA (TMP2_ZP),Y		; ...and adjust the pointer to the memory in the variable to that new location
 			
 			JMP GCKLOOP
 
@@ -814,15 +820,6 @@ GCDONE		LDA GCSTART
 GCSKIP		JSR RESTOREPOINTERS
 			RTS					; Remember: GC has to adjust highp as well!
 
-;###################################
-ADJUSTPOINTER
-			LDY #0
-			LDA TMP_REG
-			STA (TMP2_ZP),Y
-			INY
-			LDA TMP_REG+1
-			STA (TMP2_ZP),Y
-			RTS
 ;###################################
 QUICKCOPY	LDA TMP_REG		; a self modifying copy routine
 			STA TMEM+1
@@ -843,8 +840,6 @@ QCLOOP
 SMEM		LDA $0000,Y
 TMEM		STA $0000,Y
 			INY
-			
-			STY 53280
 			
 			BNE YNOOV
 			INC TMEM+2
@@ -1110,19 +1105,19 @@ REMEMBERLASTVAR
 			BCS RLVNOOV
 			DEC TMP_ZP+1
 			
-			LDA TMP2_ZP
+RLVNOOV		LDA TMP2_ZP
 			LDY #0
 			STA (TMP_ZP),Y
 			LDA TMP2_ZP+1
 			INY
 			STA (TMP_ZP),Y	; Store the reference to the variable that uses this chunk of memory at the end of the string
 			
-RLVNOOV		PLA
+			PLA
 			STA TMP_ZP+1
 			PLA
 			STA TMP_ZP		; ...restore TMP_ZP
 			PLA
-			TAY				; ...retore Y reg
+			TAY				; ...restore Y reg
 			
 			RTS
 ;###################################

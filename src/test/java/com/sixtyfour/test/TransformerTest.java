@@ -68,7 +68,7 @@ public class TransformerTest {
 		// testLines();
 		// testTransformer27();
 		// testConditions();
-		//testTransformer28();
+		testTransformer28();
 	}
 
 	private static void testConditions() throws Exception {
