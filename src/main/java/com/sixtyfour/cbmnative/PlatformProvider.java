@@ -21,10 +21,6 @@ public interface PlatformProvider {
 	 */
 	int getForStackSize();
 
-	/**
-	 * @return
-	 */
-	int getGarbageCollectionBufferSize();
 
 	/**
 	 * @return

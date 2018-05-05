@@ -9,10 +9,6 @@ START		LDA #<FPSTACK
 			STY FORSTACKP+1
 			LDA #0
 			STA CONCATBUFP
-			LDA #<GCBUF
-			LDY #>GCBUF
-			STA GCBUFP
-			STY GCBUFP+1
 			LDA #<STRBUF
 			LDY #>STRBUF
 			STA STRBUFP
@@ -665,15 +661,7 @@ RESTOREPOINTERS
 			RTS
 ;###################################
 COMPACT
-			LDY #0				; Check, if there's still space left in the GC buffer
-
-			LDA GCBUFP
-			CMP GCBUFEND
-			BNE GCBUFNE
-			LDA GCBUFP+1
-			CMP GCBUFEND+1
-			BNE GCBUFNE
-			JMP GCEXE			; The GC buffer is full, compact it
+			LDY #0
 
 GCBUFNE		LDA (TMP_ZP),Y		; Get the source's length
 			STA TMP4_REG		; ...and store it
@@ -685,7 +673,13 @@ GCBUFNE		LDA (TMP_ZP),Y		; Get the source's length
 			STA TMP4_REG
 			BCC	RGCNOOV1
 			INC TMP4_REG+1
-RGCNOOV1	LDA TMP4_REG+1		; Now do the actual check
+RGCNOOV1	CLC
+			LDA TMP4_REG
+			ADC #3
+			STA TMP4_REG
+			BCC	RGCNOOV2
+			INC TMP4_REG+1
+RGCNOOV2	LDA TMP4_REG+1		; Now do the actual check
 			CMP ENDSTRBUF+1
 			BEQ RGCLOW1
 			BCS GCEXE			; Doesn't fit, run GC!
@@ -697,357 +691,148 @@ RGCEXIT		RTS					; It fits? Then exit without GC
 
 ;###################################
 GCEXE		JSR SAVEPOINTERS
-			LDA GCBUFP
-			STA TMP_ZP
-			LDA GCBUFP+1
-			STA TMP_ZP+1
-
-			LDA GCBUFP
-			CMP #<GCBUF
-			BNE GCLOOP
-			LDA GCBUFP+1
-			CMP #>GCBUF
-			BNE GCLOOP
-			JMP GCSKIP			; If there's nothing in the buffer, then there's nothing to do
-
-GCLOOP		LDA TMP_ZP			; Adjust GC pointer to the next element (from top to bottom)
-			SEC
-			SBC #2
-			STA TMP_ZP
-			BCS GCLOOPNOOV
-			DEC TMP_ZP+1
-GCLOOPNOOV	
-			JSR FREEMEM			; free that memory
-
-GCLOOPCHK	LDA TMP_ZP			; Check if we are done with the buffer?
-			CMP #<GCBUF
-			BNE GCLOOP
-			LDA TMP_ZP+1
-			CMP #>GCBUF
-			BNE GCLOOP
-
-			LDA #<GCBUF
-			STA GCBUFP
-			LDA #>GCBUF
-			STA GCBUFP+1		; reset the GC buffer pointer to the start
 
 			LDA #0
 			STA LASTVAR
 			STA LASTVAR+1		; reset the last variable pointer to 0
+			
+			LDA #<STRBUF
+			STA TMP_ZP
+			
+			STA GCSTART
+			LDA #>STRBUF
+			STA TMP_ZP+1		; Pointer into the string memory, initialized to point at the start...
+			STA GCSTART+1
+			
+GCLOOP		LDY #0
+			LDA TMP_ZP
+			STA GCWORK
+			LDA TMP_ZP+1
+			STA GCWORK+1		; store the pointer for later use...
+			LDA (TMP_ZP),Y
+			STA GCLEN			; store the length
+			
+			STA 53280
+			
+			INC TMP_ZP
+			BNE GCLOOPNOOV
+			INC TMP_ZP+1
+GCLOOPNOOV	
+			LDA TMP_ZP
+			CLC
+			ADC GCLEN
+			STA TMP_ZP
+			BCC GCLOOPNOOV2
+			INC TMP_ZP+1		; TMP_ZP now points to the reference to the string variable that used this chunk
+
+GCLOOPNOOV2 LDY #0
+			LDA (TMP_ZP),Y
+			STA TMP2_ZP
+			INY
+			LDA (TMP_ZP),Y
+			STA TMP2_ZP+1		; Store the reference in TMP2_ZP
+			
+			LDA TMP_ZP
+			CLC
+			ADC #2
+			STA TMP_ZP
+			BCC GCLOOPNOOV3
+			INC TMP_ZP+1		; adjust the pointer to point to the next entry
+			
+GCLOOPNOOV3 LDY #0
+			LDA (TMP2_ZP),Y
+			CMP GCWORK
+			BNE GCKLOOP
+			INY
+			LDA (TMP2_ZP),Y
+			CMP GCWORK+1
+			BNE GCKLOOP
+			JMP MEMFREE
+			
+GCKLOOP		LDA TMP_ZP+1		; Check if we have processed all of the string memory...
+			CMP HIGHP+1
+			BEQ GCHECKLOW
+			BCS GCDONE
+			JMP GCLOOP
+			
+GCHECKLOW	LDA TMP_ZP
+			CMP HIGHP
+			BCS GCDONE	
+			JMP GCLOOP		
+			
+MEMFREE		LDA GCSTART			; found a variable that points to this chunk...
+			CMP GCWORK			; ...then check if the can be copied down. This is the case if GCSTART!=GCWORK
+			BNE COPYDOWN
+			LDA GCSTART
+			CMP GCWORK
+			BNE COPYDOWN
+								
+			LDA TMP_ZP			; GCSTART==GCWORK...adjust GCSTART and continue
+			STA GCSTART
+			LDA TMP_ZP+1
+			STA GCSTART+1		
+			JMP	GCKLOOP			; continue if needed...
+			
+COPYDOWN	LDA GCSTART			; There a gap in memory, so copy the found variable down to GCSTART and adjust GCSTART accordingly
+			STA TMP_REG
+			LDA GCSTART+1
+			STA TMP_REG+1		; set the target location...
+			
+			LDA GCWORK
+			STA TMP2_REG
+			LDA GCWORK+1
+			STA TMP2_REG+1		; set the source location...
+			
+			LDA TMP_ZP
+			SEC
+			SBC GCWORK
+			STA TMP3_REG
+			LDA TMP_ZP+1
+			SBC GCWORK+1
+			STA TMP3_REG+1		; set the length
+			
+			LDA GCSTART
+			CLC
+			ADC TMP3_REG
+			STA GCSTART
+			LDA GCSTART+1
+			ADC TMP3_REG+1
+			STA GCSTART+1		; update GCSTART to point to the next free chunk
+			
+			JSR QUICKCOPY		; copy the chunk down to (former, now stored in TMP_REG) GCSTART
+			JSR ADJUSTPOINTER	; ...and adjust the pointer to the memory in the variable to that new location
+			
+			JMP GCKLOOP
+
+GCDONE		LDA GCSTART
+			STA HIGHP
+			STA STRBUFP
+			LDA GCSTART+1
+			STA HIGHP+1
+			STA STRBUFP+1		; Update the string pointers to the new, hopefully lower position
 
 GCSKIP		JSR RESTOREPOINTERS
 			RTS					; Remember: GC has to adjust highp as well!
+
 ;###################################
-FREEMEM		LDY #0
-			STY TMP3_REG+1		; Set the length's highbyte to 0 for now
-			LDA (TMP_ZP),Y
-			STA TMP2_REG
-			STA TMP_REG
-			STA TMP2_ZP
-			INY
-			LDA (TMP_ZP),Y
-			STA TMP2_REG+1		; init source to target for now
-			STA TMP_REG+1		; set the target
-			STA TMP2_ZP+1
-
-			DEY
-			LDA (TMP2_ZP),Y		; Read the length
-			STA TMP3_REG
-			INC TMP3_REG
-			BNE FREEMEMNOOV
-			INC TMP3_REG+1		; set the length(+1)
-
-FREEMEMNOOV	LDA TMP2_REG
-			CLC
-			ADC	TMP3_REG
-			STA TMP2_REG
-			LDA TMP2_REG+1
-			ADC TMP3_REG+1
-			STA TMP2_REG+1		; Set the source position (i.e. target+length+1)
-
-			LDA TMP3_REG
-			STA TMP4_REG
-			LDA TMP3_REG+1
-			STA TMP4_REG+1		; save the length for later
-
-			LDA #0
-			STA 53280
-			JSR QUICKCOPY		; ...and copy the memory down
-
-			LDA HIGHP
-			SEC
-			SBC TMP4_REG
-			STA STRBUFP
-			STA HIGHP
-			LDA HIGHP+1
-			SBC TMP4_REG+1
-			STA STRBUFP+1
-			STA HIGHP+1			; adjust the string pointer as well as highp
-
-			LDA #<GCBUF
-			STA TMP_REG
-			LDA #>GCBUF
-			STA TMP_REG+1		; Set the start for GC buffer adjustment
-
-			LDA #1
-			STA 53280
-			JSR ADJUSTBUFFER	; the end for the GC buffer adjustment is still stored in TMP_ZP
-
-			LDA #2
-			STA 53280
-			JSR ADJUSTSTRREF	; adjust the string pointers that are in need
-
-			LDA #6
-			STA 53280
-
-			RTS
-;###################################
-LOG			LDA TMP_REG
-			STA 1024
-			LDA TMP_REG+1
-			STA 1025
-			LDA TMP2_REG
-			STA 1026
-			LDA TMP2_REG+1
-			STA 1027
-			LDA TMP3_REG
-			STA 1028
-			LDA TMP3_REG+1
-			STA 1029
-			LDA HIGHP
-			STA 1030
-			LDA HIGHP+1
-			STA 1031
-			JMP OUTOFMEMORY
-;###################################
-ADJUSTBUFFER
+ADJUSTPOINTER
+			LDY #0
 			LDA TMP_REG
-			STA TMP2_ZP
-			LDA TMP_REG+1
-			STA TMP2_ZP+1		; Transfer start into TMP2_ZP. TMP_ZP still contains the actual pointer
-			
-			CMP TMP_ZP+1
-			BNE ADJBLOOP
-			LDA TMP2_ZP
-			CMP TMP_ZP
-			BNE ADJBLOOP
-			RTS					; Nothing to do, exit...
-			
-ADJBLOOP	LDY #1
-			LDA (TMP2_ZP),Y
-			CMP (TMP_ZP),Y		; Compare highbyte in the buffer with the actual pointer. todo: Store this in some location, it doesn't change here
-			BCC ADJBCONT		; lower? Nothing to do...
-			BEQ ADJBCHECKLOW	; The same? There might be something to do
-			JMP ADJBADJUST		; Greater? Something to do
-ADJBCHECKLOW
-			DEY
-			LDA (TMP2_ZP),Y
-			CMP (TMP_ZP),Y		; The same for the lowbyte.  todo: Store this in some location, it doesn't change here
-			BCC ADJBCONT		; lower? Nothing to do
-ADJBADJUST	LDY #0
-			LDA (TMP2_ZP),Y
-			SEC
-			SBC TMP4_REG
 			STA (TMP2_ZP),Y
 			INY
-			LDA (TMP2_ZP),Y
-			SBC TMP4_REG+1
-			STA (TMP2_ZP),Y		; Adjust the gc buffer
-ADJBCONT	LDA TMP2_ZP
-			CLC
-			ADC #2
-			STA TMP2_ZP
-			LDA TMP2_ZP+1
-			ADC #0
-			STA TMP2_ZP+1
-			CMP TMP_ZP+1
-			BNE ADJBLOOP		; Highbyte not equal pointer? Loop!
-			LDA TMP2_ZP
-			CMP TMP_ZP
-			BNE ADJBLOOP		; Lowbyte not equal pointer? Loop!
-			RTS
-;###################################
-ADJUSTSTRREF
-			LDA TMP_ZP
-			STA TMP2_REG
-			STA TMP2_ZP
-			LDA TMP_ZP+1
-			STA TMP2_REG+1				; Save the current pointer in TMP2_REG
-			STA TMP2_ZP+1
-
-			LDA #<STRINGVARS_START		; Reset all string variables...
-			LDY #>STRINGVARS_START
-			CMP #<STRINGVARS_END
-			BNE ADJINITIT1
-			CPY #>STRINGVARS_END
-			BNE ADJINITIT1
-			JMP ADJINITSA2				; No string variables at all
-ADJINITIT1	STA TMP_ZP
-			STY TMP_ZP+1
-			
-ADJINITSTRLOOP
-			LDY #1
-			LDA (TMP_ZP),Y
-			CMP (TMP2_ZP),Y
-			BCC ADJBISCONT			; lower? Nothing to do...
-			BEQ ADJBISCHECKLOW		; The same? There might be something to do
-			JMP ADJBISADJUST		; Greater? Something t
-
-ADJBISCHECKLOW
-			DEY
-			LDA (TMP_ZP),Y
-			CMP (TMP2_ZP),Y			; The same for the lowbyte
-			BCC ADJBISCONT
-ADJBISADJUST
-			JSR ADJUSTSTRPOINTER
-			
-ADJBISCONT	LDA TMP_ZP
-			CLC
-			ADC #2
-			STA TMP_ZP
-			LDA TMP_ZP+1
-			ADC #0
-			STA TMP_ZP+1
-			CMP #>STRINGVARS_END
-			BNE ADJINITSTRLOOP
-			LDA TMP_ZP
-			CMP #<STRINGVARS_END
-			BNE ADJINITSTRLOOP
-
-ADJINITSA2	LDA #<STRINGARRAYS_START	; ...and all string arrays
-			LDY #>STRINGARRAYS_START
-			CMP #<STRINGARRAYS_END
-			BNE ADJARRAYLOOP
-			CPY #>STRINGARRAYS_END
-			BNE ADJARRAYLOOP
-			JMP ADJARRAYQUIT				;...no string array at all
-ADJARRAYLOOP
-			CLC
-			ADC #3
-			BCC ADJARRAYSKIP1
-			INY
-ADJARRAYSKIP1
-			CPY #>STRINGARRAYS_END
-			BCC ADJARRAYSKIP2
-			CMP #<STRINGARRAYS_END
-			BCS ADJARRAYQUIT
-ADJARRAYSKIP2
-			STA TMP_REG
-			STY TMP_REG+1
-			JSR INITSPARAMS
-			LDA TMP_REG
-			LDY TMP_REG+1
-			JSR ADJINITSTRARRAY
-			LDA TMP_ZP
-			LDY TMP_ZP+1
-			JMP ADJARRAYLOOP
-ADJARRAYQUIT
-			LDA TMP2_REG
-			STA TMP_ZP
-			LDA TMP2_REG+1
-			STA TMP_ZP+1				; Restore the current pointer from TMP2_REG
-			RTS
-;###################################
-ADJINITSTRARRAY
-			STA TMP_ZP
-			STY TMP_ZP+1
-			
-			LDA TMP3_ZP
-			PHA
-			LDA TMP3_ZP+1
-			PHA						; Save TMP3_ZP
-			
-			LDA TMP2_REG
-			STA TMP3_ZP
-			LDA TMP2_REG+1
-			STA TMP3_ZP+1			; Copy TMP2_REG into TMP3_ZP
-			
-ADJSINITLOOP
-			LDY #1
-			LDA (TMP_ZP),Y
-			CMP (TMP3_ZP),Y
-			BCC ADJBISCONT2			; lower? Nothing to do...
-			BEQ ADJBISCHECKLOW2		; The same? There might be something to do
-			JMP ADJBISADJUST2		; Greater? Something t
-
-ADJBISCHECKLOW2
-			DEY
-			LDA (TMP_ZP),Y
-			CMP (TMP3_ZP),Y			; The same for the lowbyte
-			BCC ADJBISCONT2
-ADJBISADJUST2
-			JSR ADJUSTSTRPOINTER
-			
-ADJBISCONT2	CLC
-			LDA TMP_ZP
-			ADC #2
-			STA TMP_ZP
-			BCC ADJSLOOPNOV1
-			INC TMP_ZP+1
-ADJSLOOPNOV1
-			SEC
-			LDA TMP2_ZP
-			SBC #2
-			STA TMP2_ZP
-			BCS ADJSLOOPNOV2
-			DEC TMP2_ZP+1
-ADJSLOOPNOV2
-			LDA TMP2_ZP
-			BNE ADJSINITLOOP
-			LDA TMP2_ZP+1
-			BNE ADJSINITLOOP
-			
-			PLA
-			STA TMP3_ZP+1
-			PLA
-			STA TMP3_ZP			; Restore TMP3_ZP
-			
-			RTS
-;###################################
-ADJUSTSTRPOINTER
-			LDY #0
-			LDA (TMP_ZP),Y
-			SEC
-			SBC TMP4_REG
-			STA (TMP_ZP),Y
-			INY
-			LDA (TMP_ZP),Y
-			SBC TMP4_REG+1
-			STA (TMP_ZP),Y			; Adjust the string pointer buffer
-			DEY
+			LDA TMP_REG+1
+			STA (TMP2_ZP),Y
 			RTS
 ;###################################
 QUICKCOPY	LDA TMP_REG		; a self modifying copy routine
-			STA 1033
 			STA TMEM+1
 			LDA TMP_REG+1
-			STA 1034
 			STA TMEM+2
 			
 			LDA TMP2_REG
 			STA SMEM+1
-			STA 1027
 			LDA TMP2_REG+1
 			STA SMEM+2
-			STA 1028
-			
-			LDA HIGHP
-			STA 1030
-			SEC
-			SBC TMP2_REG
-			STA TMP3_REG
-			STA 1024
-			LDA HIGHP+1
-			STA 1031
-			SBC TMP2_REG+1
-			STA TMP3_REG+1	; The length is not the length of the memory chunk, but the number of bytes  from source to end
-			STA 1025
-			BCC QCEXIT
-
-			LDA GCBUFP
-			STA 1036
-			LDA GCBUFP+1
-			STA 1037
 
 			LDY #$0
 			LDX TMP3_REG
@@ -1058,6 +843,9 @@ QCLOOP
 SMEM		LDA $0000,Y
 TMEM		STA $0000,Y
 			INY
+			
+			STY 53280
+			
 			BNE YNOOV
 			INC TMEM+2
 			INC SMEM+2
@@ -1069,45 +857,6 @@ YNOOV		DEX
 			JMP QCLOOP
 QCEXIT		RTS
 ;###################################
-UPDATEGC	TYA
-			PHA
-			LDA GCBUFP			; Update the GC buffer pointer, if the old string pointer is >= strbuf and < highp
-			STA TMP3_ZP
-			LDA GCBUFP+1
-			STA TMP3_ZP+1
-			LDY #0
-			LDA (TMP3_ZP),Y
-			STA TMP4_REG		; store low byte for later
-			INY
-			LDA (TMP3_ZP),Y
-			STA TMP4_REG+1		; store high byte for later
-			CMP #>STRBUF
-			BEQ UGCLOWS			; high byte = strbuf? Then check low byte
-			BCS	UGCCHECKHP		; high byte > strbuf? Then check upper bound
-			JMP UGCX			; high byte < strbuf? nothing to update, just exit
-UGCLOWS		LDA TMP4_REG
-			CMP #<STRBUF
-			BCS UGCCHECKHP		; low byte>= strbuf? Then check upper bound
-			JMP UGCX			; low byte < strbuf? nothing to update, just exit
-UGCCHECKHP	LDA TMP4_REG+1
-			CMP HIGHP+1
-			BCC UGCDO			; high byte < highp? Then update GC
-			BEQ UGCLOWHP		; high byte = highp? Then check low byte
-			JMP UGCX			; high byte > highp? nothing to update, just exit
-UGCLOWHP	LDA TMP4_REG
-			CMP HIGHP
-			BCC UGCDO			; low byte < highp? Then update GC
-			JMP UGCX			; low byte >= highp? nothing to update, just exit
-UGCDO		CLC
-			LDA GCBUFP
-			ADC #2
-			STA GCBUFP
-			BCC UGCX
-			INC GCBUFP+1
-UGCX		PLA
-			TAY
-			RTS
-;###################################
 COPYSTRING	STA TMP2_ZP
 			STY TMP2_ZP+1
 			CPY TMP_ZP+1
@@ -1117,17 +866,7 @@ COPYSTRING	STA TMP2_ZP
 			BNE CONTCOPY
 			RTS					; A copy from a variable into the same instance is pointless an will be ignored.
 CONTCOPY	JSR COMPACT			; Do a GC if needed
-			LDA GCBUFP			; Store the current pointer stored in the target variable in the gc buffer...
-			STA TMP3_ZP
-			LDA GCBUFP+1
-			STA TMP3_ZP+1
 			LDY #0
-			LDA (TMP2_ZP),Y
-			STA (TMP3_ZP),Y
-			INY
-			LDA (TMP2_ZP),Y
-			STA (TMP3_ZP),Y
-			DEY					; ... but don't adjust the buffer pointer (yet)
 			STY TMP_FLAG
 			LDA (TMP_ZP),Y
 			BNE NOTEMPTYSTR
@@ -1164,7 +903,6 @@ CHECKLOW3	LDA TMP_ZP
 			BCC INVAR			; No, it's not a constant. It's something from lower memory...
 			
 ISCONST		JSR CHECKLASTVAR	; Reclaim formerly used memory if possible
-			JSR UPDATEGC
 			LDA TMP_ZP
 			STA (TMP2_ZP),Y		; Yes, it's a constant...
 			INY
@@ -1211,29 +949,18 @@ COPYONLY	LDY #0
 			STY TMP_FLAG
 			JMP CHECKMEM
 
-ALTCOPY		JSR UPDATEGC
-			JMP COPYSTRING2
+ALTCOPY		JMP COPYSTRING2
 
 UPDATEPTR	LDA TMP_ZP+1	; Check if the new string comes after or equals highp, which indicates that it can be
 			CMP HIGHP+1		; "copied down". This is another routine, because of...reasons...
 			BEQ CHECKXT1
 			BCS ALTCOPY
-			JSR UPDATEGC
 			JMP CHECKMEM
 CHECKXT1	LDA TMP_ZP
 			CMP HIGHP
 			BCS ALTCOPY
-			JSR UPDATEGC
 
-CHECKMEM	LDY	ENDSTRBUF+1	; Check, if enough memory is available. This is a rough check, it requires at least 256 bytes to be free or otherwise,
-			DEY				; it will fail. This isn't very memory efficient, but it's faster to check this way...
-			CPY STRBUFP+1
-			BEQ CHECKLOWMEM
-			BCS MEMOK
-CHECKLOWMEM LDA ENDSTRBUF
-			CMP STRBUFP
-			BCS MEMOK
-			JMP OUTOFMEMORY
+CHECKMEM	
 MEMOK		LDY #0
 			LDA STRBUFP		; no, then copy it into string memory later...
 			STA (TMP2_ZP),Y	; ...but update the string memory pointer now
@@ -1248,7 +975,7 @@ MEMOK		LDY #0
 			ADC STRBUFP
 			PHP
 			CLC
-			ADC #1
+			ADC #3
 			STA STRBUFP
 			BCC NOCS1
 			INC STRBUFP+1
@@ -1324,7 +1051,7 @@ SKIPCP2		LDA HIGHP
 			ADC TMP_REG
 			PHP
 			CLC
-			ADC #1
+			ADC #3
 			STA HIGHP
 			STA STRBUFP
 			BCC SKIPLOWAS1
@@ -1354,8 +1081,17 @@ CHECKLASTVAR
 			STA STRBUFP+1
 NOTSAMEVAR	RTS
 ;###################################
-; Stores the last variable reference that has been stored in string memory
+; Stores the last variable reference that has been stored in string memory.
+; In addition, this also appends a reference to the variable at the end of the string in memory for
+; easier GC later...
 REMEMBERLASTVAR
+			TYA
+			PHA				; Save Y reg
+			LDA TMP_ZP
+			PHA
+			LDA TMP_ZP+1
+			PHA				; Save TMP_ZP...
+			
 			LDA TMP2_ZP
 			STA LASTVAR
 			LDA TMP2_ZP+1
@@ -1364,6 +1100,30 @@ REMEMBERLASTVAR
 			STA LASTVARP
 			LDA TMP3_ZP+1
 			STA LASTVARP+1	; Remember this variable as the last written one
+			
+			LDA HIGHP+1
+			STA TMP_ZP+1
+			LDA HIGHP
+			SEC
+			SBC #2
+			STA TMP_ZP
+			BCS RLVNOOV
+			DEC TMP_ZP+1
+			
+			LDA TMP2_ZP
+			LDY #0
+			STA (TMP_ZP),Y
+			LDA TMP2_ZP+1
+			INY
+			STA (TMP_ZP),Y	; Store the reference to the variable that uses this chunk of memory at the end of the string
+			
+RLVNOOV		PLA
+			STA TMP_ZP+1
+			PLA
+			STA TMP_ZP		; ...restore TMP_ZP
+			PLA
+			TAY				; ...retore Y reg
+			
 			RTS
 ;###################################
 INTOUT		JMP REALOUT
@@ -1467,7 +1227,8 @@ POS			SEC
 			LDY #>X_REG
 			JMP FACMEM
 ;###################################
-FRE			JSR GCEXE
+FRE			
+			JSR GCEXE
 			LDA ENDSTRBUF
 			SEC
 			SBC STRBUFP

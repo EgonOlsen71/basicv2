@@ -48,9 +48,4 @@ public class C64Platform implements PlatformProvider {
 		return 0xa000;
 	}
 
-	@Override
-	public int getGarbageCollectionBufferSize() {
-		return 	1200;
-	}
-
 }
