@@ -6,12 +6,14 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.sixtyfour.Assembler;
 import com.sixtyfour.Basic;
 import com.sixtyfour.Loader;
 import com.sixtyfour.cbmnative.NativeCompiler;
 import com.sixtyfour.cbmnative.PseudoCpu;
+import com.sixtyfour.elements.Variable;
 import com.sixtyfour.parser.Preprocessor;
 import com.sixtyfour.parser.assembly.AssemblyParser;
 import com.sixtyfour.system.CompilerConfig;
@@ -62,13 +64,14 @@ public class TransformerTest {
 		// testTransformerFrog();
 		// testTransformerAffine();
 		// testTransformer24();
-		testTransformer25();
+		// testTransformer25();
 		// testTransformer26();
 		// testHilbert();
 		// testLines();
 		// testTransformer27();
 		// testConditions();
 		//testTransformer28();
+		testTransformer29();
 	}
 
 	private static void testConditions() throws Exception {
@@ -146,6 +149,19 @@ public class TransformerTest {
 		System.out.println("Ticks: " + machine.getCpu().getClockTicks());
 	}
 
+	private static void testTransformer29() throws Exception {
+		System.out.println("\n\ntestTransformer29");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/test29.bas");
+		Assembler assy = initTestEnvironment(vary, false);
+		FileWriter.writeAsPrg(assy.getProgram(), "++test29.prg", true);
+		JsrProfiler profiler = new JsrProfiler(assy);
+		assy.getCpu().setCpuTracer(profiler);
+
+		Machine machine = executeTest(assy);
+
+		printStats(profiler, machine);
+	}
+	
 	private static void testTransformer28() throws Exception {
 		System.out.println("\n\ntestTransformer28");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/test28.bas");

@@ -79,6 +79,9 @@ public class ArrayAccess extends AbstractFunction {
 		List<String> ret = new ArrayList<String>();
 		ret.add("_");
 		Variable vary = machine.getVariableUpperCase(variableName);
+		if (vary == null) {
+			throw new RuntimeException("Array not defined: " + variableName);
+		}
 
 		List<Atom> pars = Parser.getParameters(term);
 		int[] dimensions = vary.getDimensions();

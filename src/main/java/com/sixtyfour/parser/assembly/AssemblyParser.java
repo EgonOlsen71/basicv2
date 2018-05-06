@@ -222,8 +222,8 @@ public class AssemblyParser {
 		List<Integer> ram = new ArrayList<Integer>();
 		data = data.trim();
 		String datupper = VarUtils.toUpper(data);
-		
-		int addrAdd=0;
+
+		int addrAdd = 0;
 		int posy = data.lastIndexOf("+");
 		if (posy != -1 && posy >= data.lastIndexOf("\"")) {
 			try {
@@ -232,37 +232,43 @@ public class AssemblyParser {
 				throw new RuntimeException("Parse error in " + data + "/" + addr);
 			}
 		}
-		
+
 		if (datupper.startsWith(".TEXT") || datupper.startsWith(".STRG")) {
 			data = data.substring(5).trim();
 			if (data.startsWith("\"") && data.endsWith("\"")) {
 				data = data.substring(1, data.length() - 1);
-				int pos = -1;
-				int lpos = -1;
-				do {
-					lpos = pos;
-					pos = data.indexOf("{", pos + 1);
-					if (pos != -1) {
-						int pos2 = data.indexOf("}", pos);
-						if (pos2 != -1) {
-							String part = data.substring(pos, pos2 + 1);
-							pos = pos2;
-							int code = ControlCodes.getCode(part);
-							if (code == -1) {
-								addToRam(ram, part);
-								lpos = pos;
+				int pos = 0;
+
+				if (data.length() > 0) {
+					do {
+						char c = data.charAt(pos);
+						if (c == '{') {
+							int pos2 = data.indexOf("}", pos);
+							if (pos2 != -1) {
+								String part = data.substring(pos, pos2 + 1);
+								pos = pos2;
+								int mul = 1;
+								if (part.contains("*")) {
+									String p = part.substring(part.indexOf("*") + 1);
+									mul = Integer.parseInt(p.replace("}", ""));
+									part = part.substring(0, part.indexOf("*")) + "}";
+								}
+								for (int i = 0; i < mul; i++) {
+									int code = ControlCodes.getCode(part);
+									if (code == -1) {
+										addToRam(ram, part);
+									} else {
+										ram.add(code);
+									}
+								}
 							} else {
-								ram.add(code);
-								lpos = pos;
+								addToRam(ram, String.valueOf(c));
 							}
 						} else {
-							pos = -1;
+							addToRam(ram, String.valueOf(c));
 						}
-					}
-				} while (pos != -1);
-				if (lpos < data.length() - 1) {
-					data = data.substring(lpos + 1);
-					addToRam(ram, data);
+						pos++;
+					} while (pos < data.length());
 				}
 			} else {
 				throw new RuntimeException("Invalid text data: " + data);

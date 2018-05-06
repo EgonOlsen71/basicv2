@@ -14,6 +14,7 @@ public class ControlCodes {
 		private static final long serialVersionUID = 1L;
 
 		{
+			this.put("space", 32);
 			this.put("black", 144);
 			this.put("blk", 144);
 			this.put("white", 5);
@@ -37,14 +38,17 @@ public class ControlCodes {
 			this.put("light red", 150);
 			this.put("lred", 150);
 			this.put("dark grey", 151);
+			this.put("dark gray", 151);
 			this.put("gry1", 151);
 			this.put("grey", 152);
+			this.put("gray", 152);
 			this.put("gry2", 152);
 			this.put("light green", 153);
 			this.put("lgrn", 153);
 			this.put("light blue", 154);
 			this.put("lblu", 154);
 			this.put("light grey", 155);
+			this.put("light gray", 155);
 			this.put("gry3", 155);
 			this.put("reverse on", 18);
 			this.put("rvon", 18);
@@ -76,11 +80,17 @@ public class ControlCodes {
 			this.put("f6", 139);
 			this.put("f8", 140);
 			this.put("shift space", 160);
-			for (int i = 65; i < 91; i++) {
+			for (int i = 65; i < 255; i++) {
 				this.put("shift-" + ((char) (i - 65 + 'a')), i);
 			}
-			for (int i = 65; i < 91; i++) {
-				// this.put("cbm-"+((char) (i-65+'a')), i);
+			for (int i = 65; i < 255; i++) {
+				 this.put("cbm-"+((char) (i- 65+'a')), i);
+			}
+			for (int i = 65; i < 255; i++) {
+				 this.put("cm "+((char) (i- 65+'a')), i);
+			}
+			for (int i = 65; i < 255; i++) {
+				this.put("sh " + ((char) (i - 65 + 'a')), i);
 			}
 			// {CBM-A} to {CBM-Z}
 		}

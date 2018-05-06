@@ -1794,7 +1794,15 @@ READADDPTRX	RTS
 READNUMBER	JSR READINIT
 MORENUMDATA CMP #$2				; Strings are not allowed here
 			BNE NUMNUM
+			LDA (TMP3_ZP),Y		; ...unless they are empty, which makes them count as 0
+			BEQ RNESTR
 			JMP SYNTAXERROR
+RNESTR		LDA #0
+			LDY #0
+			JSR INTFAC
+			LDX #1
+			JSR READADDPTR
+			JMP NUMREAD
 NUMNUM		CMP #$1
 			BEQ NUMREADREAL
 			CMP #$0
