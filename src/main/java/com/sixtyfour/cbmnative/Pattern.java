@@ -149,6 +149,7 @@ public class Pattern {
 		}
 		
 		String part = pattern.get(pos);
+		
 		int p0 = spacePos.get(pos);
 		int p1 = line.indexOf(" ");
 		if (p0 == -1 && p1 == -1 && part.equalsIgnoreCase(line)) {

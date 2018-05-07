@@ -60,7 +60,7 @@ public class TransformerTest {
 		// testTransformer22();
 		// testTransformer23();
 		// testTransformerFrog();
-		// testTransformerAffine();
+		 testTransformerAffine();
 		// testTransformer24();
 		// testTransformer25();
 		// testTransformer26();
@@ -69,7 +69,7 @@ public class TransformerTest {
 		// testTransformer27();
 		// testConditions();
 		//testTransformer28();
-		testTransformer29();
+		//testTransformer29();
 	}
 
 	private static void testConditions() throws Exception {

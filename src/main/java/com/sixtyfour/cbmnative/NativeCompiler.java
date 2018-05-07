@@ -125,16 +125,6 @@ public class NativeCompiler {
 	Machine machine = basic.getMachine();
 	PCode pCode = basic.getPCode();
 
-	// Preexecute the DIMs to make the machine know them.
-	List<Command> cmds = basic.getMachine().getCommandList();
-	for (Command cmd : cmds) {
-	    if (cmd.isCommand("DIM")) {
-		// This doesn't generate any code. It just prefills the variable
-		// for futher use.
-		cmd.evalToCode(machine);
-	    }
-	}
-
 	CompilerConfig config = CompilerConfig.getConfig();
 	if (!config.isConstantFolding()) {
 	    // If no folding is being used, we must not run dead store
@@ -149,6 +139,16 @@ public class NativeCompiler {
 	    ConstantPropagator.propagateConstants(machine);
 	    ConstantFolder.foldConstants(machine);
 	    DeadStoreEliminator.eliminateDeadStores(basic);
+	}
+	
+	// Preexecute the DIMs to make the machine know them.
+	List<Command> cmds = basic.getMachine().getCommandList();
+	for (Command cmd : cmds) {
+	    if (cmd.isCommand("DIM")) {
+		// This doesn't generate any code. It just prefills the variable
+		// for futher use.
+		cmd.evalToCode(machine);
+	    }
 	}
 
 	List<String> mCode = new ArrayList<String>();

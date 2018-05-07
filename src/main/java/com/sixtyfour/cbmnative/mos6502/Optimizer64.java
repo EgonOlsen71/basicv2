@@ -21,7 +21,8 @@ public class Optimizer64 implements Optimizer {
 	private List<Pattern> patterns = new ArrayList<Pattern>() {
 		private static final long serialVersionUID = 1L;
 		{
-			this.add(new Pattern("Simplified setting to 0", new String[] { "LDA #0", "STA {MEM0}" }, "LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC", "LDX #<{MEM0}", "LDY #>{MEM0}",
+			
+		    this.add(new Pattern("Simplified setting to 0", new String[] { "LDA #0", "STA {MEM0}" }, "LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC", "LDX #<{MEM0}", "LDY #>{MEM0}",
 					"JSR FACMEM"));
 			this.add(new Pattern(false, "Faster logic OR", new String[] { "JSR FASTOR" }, "JSR FACOR"));
 			this.add(new Pattern(false, "Faster logic AND", new String[] { "JSR FASTAND" }, "JSR ARGAND"));
@@ -50,10 +51,7 @@ public class Optimizer64 implements Optimizer {
 			this.add(new Pattern("REG0->VAR, REG0->REG1", new String[] { "{LINE6}", "{LINE7}", "{LINE8}" }, "LDX #<{REG0}", "LDY #>{REG0}", "JSR FACMEM", "LDA #<{REG0}",
 					"LDY #>{REG0}", "JSR REALFAC", "LDX #<{MEM0}", "LDY #>{MEM0}", "JSR FACMEM", "LDA #<{REG0}", "LDY #>{REG0}", "JSR REALFAC", "LDX #<{REG1}", "LDY #>{REG1}",
 					"JSR FACMEM", "LDA #<{REG1}", "LDY #>{REG1}", "JSR REALFAC"));
-			this.add(new Pattern("FAC into REG?, REG? into FAC, REG into...", new String[] { "{LINE0}", "{LINE1}", "{LINE2}", "{LINE6}", "{LINE7}", "{LINE8}", "{LINE9}",
-					"{LINE10}", "{LINE11}" }, "LDX #<{REG0}", "LDY #>{REG0}", "JSR FACMEM", "LDA #<{REG0}", "LDY #>{REG0}", "JSR REALFAC", "LDX #<{MEM0}", "LDY #>{MEM0}",
-					"JSR FACMEM", "LDA #<{REG0}", "LDY #>{REG0}", "JSR REALFAC"));
-
+			
 			this.add(new Pattern("FAC into REG?, REG? into FAC", null, "LDX #<{REG0}", "LDY #>{REG0}", "JSR FACMEM", "LDA #<{REG0}", "LDY #>{REG0}", "JSR REALFAC"));
 
 			this.add(new Pattern("INT to FAC, FAC to INT", new String[] { "{LINE0}", "{LINE1}" }, "LDY {*}", "LDA {*}", "JSR INTFAC", "JSR FACINT"));
@@ -63,7 +61,7 @@ public class Optimizer64 implements Optimizer {
 			this.add(new Pattern("VAR into FAC, FAC into VAR", null, "LDA #<{MEM0}", "LDY #>{MEM0}", "JSR REALFAC", "LDX #<{MEM0}", "LDY #>{MEM0}", "JSR FACMEM"));
 
 			
-			this.add(new Pattern(false, "CHR with integer constant", new String[] { "LDA{MEM0}", "JSR CHRINT" }, "LDY {MEM0}", "LDA {MEM0}", "JSR INTFAC", "LDX #<{REG0}",
+			this.add(new Pattern(false, "CHR with integer constant", new String[] { "LDA {MEM0}", "JSR CHRINT" }, "LDY {MEM0}", "LDA {MEM0}", "JSR INTFAC", "LDX #<{REG0}",
 					"LDY #>{REG0}", "JSR FACMEM", "JSR CHR"));
 			this.add(new Pattern(false, "NEXT check simplified", new String[] { "JSR NEXT", "LDA A_REG", "{LINE8}", "JMP (JUMP_TARGET)" }, "JSR NEXT", "LDY {MEM0}", "LDA {MEM0}",
 					"CPY A_REG", "BNE {*}", "CMP A_REG+1", "BNE {*}", "{LABEL}", "BNE {*}", "JMP (JUMP_TARGET)"));
@@ -80,7 +78,6 @@ public class Optimizer64 implements Optimizer {
 					"JSR REALFAC", "LDA #<{REG1}", "LDY #>{REG1}", "JSR MEMARG", "JSR {*}"));
 			this.add(new Pattern("Avoid INTEGER->REAL conversion", true, new String[] { "LDA #<{CONST0}R", "LDY #>{CONST0}R", "JSR REALFAC" }, "LDY {CONST0}", "LDA {CONST0}",
 					"JSR INTFAC"));
-
 			this.add(new Pattern(false, "Array value used twice in calculation", new String[] { "{LINE0}", "{LINE1}", "{LINE2}", "{LINE3}", "{LINE4}", "{LINE5}", "{LINE6}",
 					"{LINE7}", "{LINE8}", "{LINE9}", "{LINE10}", "{LINE11}", "{LINE12}", "{LINE13}", "{LINE14}", "{LINE12}", "{LINE13}", "JSR MEMARG" }, "LDA #<{MEM0}",
 					"LDY #>{MEM0}", "STA TMP3_ZP", "STY TMP3_ZP+1", "LDX #<{REG0}", "LDY #>{REG0}", "JSR COPY2_XY", "LDA #<{MEM1}", "LDY #>{MEM1}", "STA {REG1}", "STY {REG1}",
@@ -142,6 +139,8 @@ public class Optimizer64 implements Optimizer {
 		this.add(new Pattern(false, "CMP (MEM) != 0(2)", new String[] { "LDA {MEM0}", "{LINE6}", "{LINE7}" }, "LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC", "LDA #<{MEM0}",
 				"LDY #>{MEM0}", "JSR CMPFAC", "{LABEL}", "BNE {*}"));
 			this.add(new Pattern(false, "Direct loading of 0", new String[]{"LDA #$0", "STA $61"},"LDA #<{#0.0}","LDY #>{#0.0}","JSR REALFAC"));
+		
+			this.add(new Pattern(false, "FAC into REG?, REG? into FAC (2)", new String[]{"{LINE0}","{LINE1}","{LINE2}"}, "LDY #>{REG0}", "LDX #<{REG0}", "JSR FACMEM", "LDA #<{REG0}", "LDY #>{REG0}", "JSR REALFAC"));
 
 
 		}
@@ -154,6 +153,8 @@ public class Optimizer64 implements Optimizer {
 		Map<String, Integer> type2count = new HashMap<>();
 		Map<String, Number> const2Value = extractConstants(input);
 		trimLines(input);
+		
+		input=trackAndModifyRegisterUsage(input);
 
 		Set<Pattern> used = new HashSet<Pattern>();
 		boolean optimized = false;
@@ -287,6 +288,89 @@ public class Optimizer64 implements Optimizer {
 		return input;
 	}
 
+	private List<String> trackAndModifyRegisterUsage(List<String> code)
+		  {
+		    Map<String, Integer[]> regState = new HashMap<>();
+		    String lastReg = "";
+		    for (int i = 0; i < code.size(); i++)
+		    {
+		      String line = code.get(i);
+		      if (line.startsWith(";"))
+		      {
+		        continue;
+		      }
+
+		      if (line.startsWith("JMP") || line.startsWith("B") || line.startsWith("RTS"))
+		      {
+		        regState.clear();
+		        lastReg = "";
+		      }
+
+		      if (line.startsWith("L") && line.endsWith("_REG"))
+		      {
+		        String reg = line.substring(line.indexOf(" ")).trim();
+		        lastReg = reg;
+		        Integer[] state = regState.get(reg);
+
+		        if (state == null)
+		        {
+		          regState.put(reg, new Integer[] { 0, i }); // Unknown stage...yet
+		        }
+		        else
+		        {
+		          if (code.get(i + 2).startsWith("JSR FACMEM"))
+		          {
+		            regState.put(reg, new Integer[] { 1, i }); // Already written into memory? Update the location to the latest
+		                                                       // one!
+		          }
+		        }
+		      }
+		      else
+		      {
+		        Integer[] state = regState.get(lastReg);
+		        if (state != null)
+		        {
+		          if (line.startsWith("JSR FACMEM"))
+		          {
+		            regState.put(lastReg, new Integer[] { 1, state[1] }); // Mark as: Value stored in reg!
+		          }
+		          else
+		          {
+		            if (line.startsWith("JSR REALFAC") || line.startsWith("JSR MEMARG"))
+		            {
+
+		              if (state[0] < 2)
+		              {
+		                regState.put(lastReg, new Integer[] { 2, state[1] }); // Mark as: Value read back into FAC!
+		              }
+		              else
+		              {
+		                // The value from the register is read without being written before again...don't optimize the initial
+		                // setter away...
+		                // ...so we swap the order of that setter to prevent this.
+		                String l1 = code.get(state[1]);
+		                String l0 = code.get(state[1] - 1);
+		                code.set(state[1] - 1, l1);
+		                code.set(state[1], l0);
+
+		                Logger.log("Swapped: " + l0 + "/" + l1 + "@" + state[1]);
+		              }
+		            }
+		            else
+		            {
+		              lastReg = "";
+		            }
+		          }
+		        }
+		        else
+		        {
+		          lastReg = "";
+		        }
+		      }
+		    }
+		    return code;
+		  }
+	
 	private List<String> simplifyBranches(List<String> input) {
 		List<String> ret = new ArrayList<String>();
 		for (int i = 0; i < input.size() - 2; i++) {
