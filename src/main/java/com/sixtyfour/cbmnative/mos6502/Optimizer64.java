@@ -22,7 +22,7 @@ public class Optimizer64 implements Optimizer {
 		private static final long serialVersionUID = 1L;
 		{
 			
-		    this.add(new Pattern("Simplified setting to 0", new String[] { "LDA #0", "STA {MEM0}" }, "LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC", "LDX #<{MEM0}", "LDY #>{MEM0}",
+		    this.add(new Pattern("Simplified setting to 0", new String[] { "LDA #0", "STA {MEM0}", "STA {MEM0}+1" }, "LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC", "LDX #<{MEM0}", "LDY #>{MEM0}",
 					"JSR FACMEM"));
 			this.add(new Pattern(false, "Faster logic OR", new String[] { "JSR FASTOR" }, "JSR FACOR"));
 			this.add(new Pattern(false, "Faster logic AND", new String[] { "JSR FASTAND" }, "JSR ARGAND"));

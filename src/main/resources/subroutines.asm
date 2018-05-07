@@ -2094,6 +2094,7 @@ SGTEQ		JSR CMPSTRGTEQ
 			JMP COPY2_XY
 NOTSGTEQ	LDA #0
 			STA X_REG
+			STA X_REG+1
 			RTS
 
 ;###################################
@@ -2191,6 +2192,7 @@ SGT			JSR CMPSTRGT
 			JMP COPY2_XY
 NOTSGT		LDA #0				; If the exponent is 0, the whole number is...
 			STA X_REG
+			STA X_REG+1
 			RTS
 
 ;###################################
@@ -2263,6 +2265,7 @@ SEQ			JSR CMPSTR
 			JMP COPY2_XY
 NOTSEQ		LDA #0
 			STA X_REG
+			STA X_REG+1
 			RTS
 
 ;###################################
@@ -2428,6 +2431,7 @@ SHR			LDA $61
 			SBC A_REG
 			BCS SHROK
 			LDA #0
+			STA $66
 SHROK		STA $61
 			RTS
 ;###################################
@@ -2436,6 +2440,8 @@ SHL			LDA $61
 			CLC
 			ADC A_REG
 			BCC SHLOK
+			LDA #0
+			STA $66
 			LDA #$FF
 SHLOK		STA $61
 			RTS
@@ -2468,7 +2474,10 @@ COPY3_XY	LDY #0
 			INY
 			LDA (TMP3_ZP),Y
 			STA (TMP_ZP),Y
-COPIED0		RTS
+			RTS
+COPIED0		INY
+			STA (TMP_ZP),Y
+			RTS
 ;###################################
 FASTAND		LDA $69			; Check ARG for 0
 			BNE CHECKFAC	

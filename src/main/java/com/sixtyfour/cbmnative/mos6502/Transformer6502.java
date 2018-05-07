@@ -285,7 +285,7 @@ public class Transformer6502 implements Transformer {
 						// INT and REAL arrays are both marked "ARRAY", so this
 						// branch can only happen if it a single REAL.
 						inits.add("STA " + parts[0]);
-						// inits.add("STA " + parts[0] + "+1");
+						inits.add("STA " + parts[0] + "+1");
 						// inits.add("STA " + parts[0] + "+2");
 						// inits.add("STA " + parts[0] + "+3");
 						// inits.add("STA " + parts[0] + "+4");

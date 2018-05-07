@@ -14,6 +14,7 @@ import com.sixtyfour.cbmnative.NativeCompiler;
 import com.sixtyfour.cbmnative.PseudoCpu;
 import com.sixtyfour.parser.assembly.AssemblyParser;
 import com.sixtyfour.system.CompilerConfig;
+import com.sixtyfour.system.Conversions;
 import com.sixtyfour.system.Cpu;
 import com.sixtyfour.system.CpuTracer;
 import com.sixtyfour.system.FileWriter;
@@ -35,7 +36,7 @@ public class GamesCompiler {
 		File[] games = src.listFiles(new FilenameFilter() {
 			@Override
 			public boolean accept(File dir, String name) {
-				return name.endsWith("JellyMaze.bas");
+				return name.endsWith(".bas");
 			}
 		});
 
@@ -47,7 +48,7 @@ public class GamesCompiler {
 			System.out.println("Code ends at: "+assy.getProgram().getParts().get(0).getEndAddress());
 			FileWriter.writeAsPrg(assy.getProgram(), target, true);
 			
-			//assy.getCpu().setCpuTracer(new MySimpleTracer(assy));
+			assy.getCpu().setCpuTracer(new MySimpleTracer(assy));
 			//executeTest(assy);
 		}
 	}
@@ -188,9 +189,7 @@ public class GamesCompiler {
 						+ Integer.toHexString(newPc) + " / a=" + cpu.getAcc() + " / x=" + cpu.getX() + " / y="
 						+ cpu.getY() + "/ z=" + (cpu.getStatus() & 0b10) + " / TMP_ZP=" + printReg(105, assy)
 						+ " / TMP2_ZP=" + printReg(107, assy) + " / TMP3_ZP=" + printReg(34, assy) + "/" + line + " "
-						+ assy.getRam()[opcodePc + 1] + "/" + cnt + " - " + print16Bit(1024, assy) + "/"
-						+ print16Bit(1027, assy) + "/" + print16Bit(1030, assy) + "/" + print16Bit(1033, assy) + "/"
-						+ print16Bit(1036, assy) + " @ " + cpu.getClockTicks());
+						+ assy.getRam()[opcodePc + 1] + "/" + cnt + " - FAC1:" + Conversions.convertFloat(assy.getMachine(), 0x61) + " @ " + cpu.getClockTicks());
 
 			}
 
