@@ -52,6 +52,7 @@ public class Optimizer64 implements Optimizer {
 					"LDY #>{REG0}", "JSR REALFAC", "LDX #<{MEM0}", "LDY #>{MEM0}", "JSR FACMEM", "LDA #<{REG0}", "LDY #>{REG0}", "JSR REALFAC", "LDX #<{REG1}", "LDY #>{REG1}",
 					"JSR FACMEM", "LDA #<{REG1}", "LDY #>{REG1}", "JSR REALFAC"));
 			
+			// todo: This still removes too much in some cases...fix this!
 			this.add(new Pattern("FAC into REG?, REG? into FAC", null, "LDX #<{REG0}", "LDY #>{REG0}", "JSR FACMEM", "LDA #<{REG0}", "LDY #>{REG0}", "JSR REALFAC"));
 
 			this.add(new Pattern("INT to FAC, FAC to INT", new String[] { "{LINE0}", "{LINE1}" }, "LDY {*}", "LDA {*}", "JSR INTFAC", "JSR FACINT"));
