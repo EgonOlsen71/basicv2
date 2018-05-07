@@ -63,12 +63,12 @@ public class LabelsContainer {
 
 				int opcode = ram[targetAddr];
 				if (!dl.isDataLine() && MnemonicList.getConditonalBranches().contains(opcode)) {
-					// System.out.println("Applied conditional delayed Label: "+entry.getValue()+"/"+entry.getKey()+"/"+value);
+					// System.out.println("Applied conditional delayed Label: "+entry.getValue()+"/"+entry.getKey()+"/"+value+"/"+opcode);
 					int offset = value - (targetAddr + 2);
 					if (offset <= 127 && offset >= -128) {
 						ram[++targetAddr] = AssemblyParser.getLowByte(offset);
 					} else {
-						throw new RuntimeException("Destination address out of range: " + value + "/" + targetAddr + "/" + offset + "/" + label);
+						throw new RuntimeException("Destination address out of range: " + opcode + "/" + value + "/" + targetAddr + "/" + offset + "/" + label);
 					}
 				} else {
 					// System.out.println("Applied delayed Label: "+entry.getValue()+"@"+Integer.toHexString(targetAddr)+"/"+value);
@@ -153,7 +153,6 @@ public class LabelsContainer {
 	 *            like .BYTE
 	 */
 	public void addDelayedLabelRef(int addr, String label, boolean low, boolean high, int addrAdd, boolean isDataLine) {
-		// System.out.println("Adding delayed Label: "+label+" @"+addr);
 		delayed.put(addr, new DelayedLabel(truncateAdd(label), low, high, addrAdd, isDataLine));
 	}
 

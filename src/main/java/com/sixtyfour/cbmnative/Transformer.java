@@ -22,4 +22,8 @@ public interface Transformer {
 	void setStringMemoryEnd(int stringMemoryEnd);
 
 	int getVariableStart();
+
+	int getStartAddress();
+	
+	void setStartAddress(int addr);
 }

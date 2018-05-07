@@ -25,8 +25,9 @@ import com.sixtyfour.system.Machine;
 public class Transformer6502 implements Transformer {
 
 	private int variableStart = -1;
-	private int stringMemoryEnd= 0xa000;
-		
+	private int stringMemoryEnd = 0xa000;
+	private int startAddress = 2072;
+
 	@Override
 	public List<String> transform(Machine machine, PlatformProvider platform, List<String> code) {
 		List<String> res = new ArrayList<>();
@@ -97,7 +98,7 @@ public class Transformer6502 implements Transformer {
 		res.add("TMP3_ZP = 34");
 		res.add(";make sure that JUMP_TARGET's low can't be $ff");
 		res.add("JUMP_TARGET = 69");
-		res.add("*=" + platform.getStartAddress());
+		res.add("*=" + startAddress);
 		res.add("TSX");
 		res.add("STX SP_SAVE");
 
@@ -440,20 +441,30 @@ public class Transformer6502 implements Transformer {
 	public void setVariableStart(int variableStart) {
 		this.variableStart = variableStart;
 	}
-	
+
 	@Override
 	public int getVariableStart() {
 		return variableStart;
 	}
-	
+
 	@Override
 	public int getStringMemoryEnd() {
-	    return stringMemoryEnd;
+		return stringMemoryEnd;
 	}
 
 	@Override
 	public void setStringMemoryEnd(int stringMemoryEnd) {
-	    this.stringMemoryEnd = stringMemoryEnd;
+		this.stringMemoryEnd = stringMemoryEnd;
+	}
+
+	@Override
+	public void setStartAddress(int addr) {
+		startAddress = addr;
+	}
+
+	@Override
+	public int getStartAddress() {
+		return startAddress;
 	}
 
 }

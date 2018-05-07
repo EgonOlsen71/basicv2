@@ -9,8 +9,8 @@ import com.sixtyfour.elements.Type;
 
 public class Movb extends GeneratorBase {
 
-    private static int MOV_CNT=0;
-    
+	private static int MOV_CNT = 0;
+
 	@Override
 	public String getMnemonic() {
 		return "MOVB";
@@ -22,7 +22,7 @@ public class Movb extends GeneratorBase {
 		Logger.log(line + " -- " + ops.getTarget() + "  |||  " + ops.getSource());
 
 		MOV_CNT++;
-		
+
 		Operand source = ops.getSource();
 		Operand target = ops.getTarget();
 
@@ -60,7 +60,7 @@ public class Movb extends GeneratorBase {
 		createIndexedTargetCode(nCode, target);
 
 		nCode.add("LDA #$" + Integer.toHexString(Integer.parseInt(source.getValue().substring(1))).toUpperCase(Locale.ENGLISH));
-		nCode.add("MOVBSELF"+MOV_CNT+":");
+		nCode.add("MOVBSELF" + MOV_CNT + ":");
 		nCode.add("STA $FFFF");
 
 	}
@@ -79,9 +79,9 @@ public class Movb extends GeneratorBase {
 
 			nCode.add("; FAC to integer in Y/A");
 			nCode.add("JSR FACWORD"); // FAC to integer in Y/A
-			String lab="MOVBSELF"+MOV_CNT;
-			nCode.add("STY "+lab+"+1");
-			nCode.add("STA "+lab+"+2");
+			String lab = "MOVBSELF" + MOV_CNT;
+			nCode.add("STY " + lab + "+1");
+			nCode.add("STA " + lab + "+2");
 		}
 	}
 
@@ -89,13 +89,13 @@ public class Movb extends GeneratorBase {
 		createIndexedTargetCode(nCode, source);
 
 		if (target.getType() == Type.INTEGER) {
-		    nCode.add("MOVBSELF"+MOV_CNT+":");
-		    nCode.add("LDA $FFFF");
+			nCode.add("MOVBSELF" + MOV_CNT + ":");
+			nCode.add("LDA $FFFF");
 			nCode.add("STA " + target.getRegisterName());
 			nCode.add("STY " + createAddress(target.getRegisterName(), 1));
 		} else {
-		    nCode.add("MOVBSELF"+MOV_CNT+":");
-		    nCode.add("LDY $FFFF");
+			nCode.add("MOVBSELF" + MOV_CNT + ":");
+			nCode.add("LDY $FFFF");
 			nCode.add("LDA #0");
 			nCode.add("; integer in Y/A to FAC");
 			nCode.add("JSR INTFAC"); // integer in A/Y to FAC
@@ -112,7 +112,7 @@ public class Movb extends GeneratorBase {
 
 		if (source.getType() == Type.INTEGER) {
 			nCode.add("LDA " + source.getRegisterName());
-			nCode.add("MOVBSELF"+MOV_CNT+":");
+			nCode.add("MOVBSELF" + MOV_CNT + ":");
 			nCode.add("STA $FFFF");
 		} else {
 			nCode.add("LDA #<" + source.getRegisterName());
@@ -122,7 +122,7 @@ public class Movb extends GeneratorBase {
 
 			nCode.add("; FAC to integer in Y/A");
 			nCode.add("JSR FACWORD"); // FAC to integer in Y/A
-			nCode.add("MOVBSELF"+MOV_CNT+":");
+			nCode.add("MOVBSELF" + MOV_CNT + ":");
 			nCode.add("STY $FFFF");
 		}
 	}

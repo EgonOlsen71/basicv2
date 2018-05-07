@@ -147,9 +147,9 @@ public class Pattern {
 		if (line.startsWith(";")) {
 			return false;
 		}
-		
+
 		String part = pattern.get(pos);
-		
+
 		int p0 = spacePos.get(pos);
 		int p1 = line.indexOf(" ");
 		if (p0 == -1 && p1 == -1 && part.equalsIgnoreCase(line)) {
@@ -165,7 +165,7 @@ public class Pattern {
 				return inc(ix);
 			}
 		}
-		
+
 		if (p0 != -1 && p1 != -1 && !line.contains("SKIP")) {
 			if (partP0.get(pos).equalsIgnoreCase(line.substring(0, p1))) {
 				String partRight = partRights.get(pos);

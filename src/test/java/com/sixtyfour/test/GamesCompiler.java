@@ -21,7 +21,6 @@ import com.sixtyfour.system.FileWriter;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.system.Program;
 import com.sixtyfour.system.ProgramPart;
-import com.sixtyfour.test.helper.JsrProfiler;
 
 /**
  * @author EgonOlsen
@@ -36,23 +35,25 @@ public class GamesCompiler {
 		File[] games = src.listFiles(new FilenameFilter() {
 			@Override
 			public boolean accept(File dir, String name) {
-				return name.endsWith("StarPilot.bas");
+				return name.endsWith("Maze_15000.bas");
 			}
 		});
 
 		for (File game : games) {
 			System.out.println("Compiling " + game);
 			String[] vary = Loader.loadProgram(new FileInputStream(game));
-			Assembler assy = initTestEnvironment(vary, false, 49152, 53248);
-			String target = dst.getPath() + "/+" + game.getName().replace(".bas", ".prg");
-			System.out.println("Code ends at: "+assy.getProgram().getParts().get(0).getEndAddress());
-			FileWriter.writeAsPrg(assy.getProgram(), target, true);
-			
-			assy.getCpu().setCpuTracer(new MySimpleTracer(assy));
-			//executeTest(assy);
+			String gameName = game.getName();
+			Assembler assy = initTestEnvironment(gameName, vary, false, 30000, -1);
+			String target = dst.getPath() + "/+" + gameName.replace(".bas", ".prg");
+			System.out.println("Code ends at: " + assy.getProgram().getParts().get(0).getEndAddress());
+			System.out.println("Binary ends at: " + assy.getProgram().getParts().get(assy.getProgram().getParts().size() - 1).getEndAddress());
+			FileWriter.writeAsPrg(assy.getProgram(), target, assy.getProgram().getCodeStart()<2100);
+
+			// assy.getCpu().setCpuTracer(new MySimpleTracer(assy));
+			// executeTest(assy);
 		}
 	}
-	
+
 	private static Machine executeTest(final Assembler assy) {
 		Program prg = assy.getProgram();
 		for (ProgramPart pp : prg.getParts()) {
@@ -73,12 +74,12 @@ public class GamesCompiler {
 		}
 		System.out.println("program end: " + prg.getParts().get(prg.getParts().size() - 1).getEndAddress());
 		System.out.println("...done!");
-		
-		//printMemory(assy, machine);
-		
+
+		// printMemory(assy, machine);
+
 		return machine;
 	}
-	
+
 	private static void printMemory(Assembler assy, Machine machine) {
 		Program prg = assy.getProgram();
 		String code = assy.toString();
@@ -128,9 +129,9 @@ public class GamesCompiler {
 		}
 	}
 
-	private static Assembler initTestEnvironment(String[] vary, boolean executePseudo, int variableStart, int stringMemoryEnd) {
+	private static Assembler initTestEnvironment(String name, String[] vary, boolean executePseudo, int variableStart, int stringMemoryEnd) {
 		CompilerConfig conf = CompilerConfig.getConfig();
-		boolean optis=true;
+		boolean optis = true;
 		conf.setConstantFolding(optis);
 		conf.setConstantPropagation(optis);
 		conf.setDeadStoreElimination(optis);
@@ -157,7 +158,18 @@ public class GamesCompiler {
 		}
 		System.out.println("------------------------------");
 
-		List<String> nCode = NativeCompiler.getCompiler().compile(basic, variableStart, stringMemoryEnd);
+		int start = -1;
+		if (name.indexOf("_") != -1) {
+			name = name.substring(name.lastIndexOf("_")+1, name.lastIndexOf("."));
+			try {
+				start = Integer.valueOf(name);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		}
+
+		System.out.println("Program '"+name+"' starts at "+start);
+		List<String> nCode = NativeCompiler.getCompiler().compile(basic, start, variableStart, stringMemoryEnd);
 		for (String line : nCode) {
 			System.out.println(line);
 		}
@@ -167,7 +179,7 @@ public class GamesCompiler {
 
 		return assy;
 	}
-	
+
 	@SuppressWarnings("unused")
 	private static class MySimpleTracer implements CpuTracer {
 		private final Assembler assy;
@@ -185,11 +197,10 @@ public class GamesCompiler {
 			if (line != null) {
 				cnt++;
 
-				System.out.println(Integer.toHexString(opcodePc) + " - " + Integer.toHexString(opcode) + " -> "
-						+ Integer.toHexString(newPc) + " / a=" + cpu.getAcc() + " / x=" + cpu.getX() + " / y="
-						+ cpu.getY() + "/ z=" + (cpu.getStatus() & 0b10) + " / TMP_ZP=" + printReg(105, assy)
-						+ " / TMP2_ZP=" + printReg(107, assy) + " / TMP3_ZP=" + printReg(34, assy) + "/" + line + " "
-						+ assy.getRam()[opcodePc + 1] + "/" + cnt + " - FAC1:" + Conversions.convertFloat(assy.getMachine(), 0x61) + " @ " + cpu.getClockTicks());
+				System.out.println(Integer.toHexString(opcodePc) + " - " + Integer.toHexString(opcode) + " -> " + Integer.toHexString(newPc) + " / a=" + cpu.getAcc() + " / x="
+						+ cpu.getX() + " / y=" + cpu.getY() + "/ z=" + (cpu.getStatus() & 0b10) + " / TMP_ZP=" + printReg(105, assy) + " / TMP2_ZP=" + printReg(107, assy)
+						+ " / TMP3_ZP=" + printReg(34, assy) + "/" + line + " " + assy.getRam()[opcodePc + 1] + "/" + cnt + " - FAC1:"
+						+ Conversions.convertFloat(assy.getMachine(), 0x61) + " @ " + cpu.getClockTicks());
 
 			}
 

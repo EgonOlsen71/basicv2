@@ -167,9 +167,9 @@ public class Conversions {
 	 * @return the float value
 	 */
 	public static float convertFloat(int exp, int neg, int m1, int m2, int m3, int m4) {
-	    	if (exp==0) {
-	    	    return 0;
-	    	}
+		if (exp == 0) {
+			return 0;
+		}
 		double expf = exp - 128;
 		double man = ((neg != 0 ? -1d : 1d) * ((m4 | 0x80) * Math.pow(2d, -8d) + m3 * (Math.pow(2d, -16d)) + m2 * (Math.pow(2d, -24d)) + m1 * (Math.pow(2d, -32d))));
 		return (float) (man * Math.pow(2, expf));
@@ -194,9 +194,9 @@ public class Conversions {
 	 * @return the float value
 	 */
 	public static double convertDouble(int exp, int neg, int m1, int m2, int m3, int m4) {
-	    	if (exp==0) {
-	    	    return 0;
-	    	}
+		if (exp == 0) {
+			return 0;
+		}
 		double expf = exp - 128;
 		double man = ((neg != 0 ? -1d : 1d) * ((m4 | 0x80) * Math.pow(2d, -8d) + m3 * (Math.pow(2d, -16d)) + m2 * (Math.pow(2d, -24d)) + m1 * (Math.pow(2d, -32d))));
 		return (double) (man * Math.pow(2, expf));

@@ -76,13 +76,13 @@ public class Operands {
 		if (txt.length() == 1 && !Character.isDigit(txt.charAt(0))) {
 			op.setRegister(txt.toUpperCase(Locale.ENGLISH));
 		} else {
-			String otxt=txt;
+			String otxt = txt;
 			if (txt.startsWith("(")) {
 				op.setIndexed(true);
 				if (txt.endsWith("})")) {
 					txt = removeBrackets(txt);
 					if (op.getType() == Type.STRING && txt.startsWith("#")) {
-						txt=removePostfix(otxt);
+						txt = removePostfix(otxt);
 						txt = "$" + txt.substring(1);
 					}
 					String label = name2label.get(txt);
@@ -95,7 +95,7 @@ public class Operands {
 			} else {
 				txt = removeBrackets(txt);
 				if (op.getType() == Type.STRING && txt.startsWith("#")) {
-					txt=removePostfix(otxt);
+					txt = removePostfix(otxt);
 					txt = "$" + txt.substring(1);
 				}
 				String label = name2label.get(txt);
@@ -132,10 +132,10 @@ public class Operands {
 
 	private String removeBrackets(String txt) {
 		txt = txt.replace("(", "").replace(")", "");
-		txt=removePostfix(txt);
+		txt = removePostfix(txt);
 		return txt;
 	}
-	
+
 	private String removePostfix(String txt) {
 		int pos = txt.lastIndexOf("{");
 		if (pos != -1) {

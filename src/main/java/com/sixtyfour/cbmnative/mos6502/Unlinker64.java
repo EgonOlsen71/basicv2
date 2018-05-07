@@ -115,7 +115,7 @@ public class Unlinker64 implements Unlinker {
 
 		Set<String> labels = new HashSet<String>();
 		for (String line : ret) {
-		    line = line.replace("\t", " ");
+			line = line.replace("\t", " ");
 			for (String jmp : jumps) {
 				jmp += " ";
 				if (line.toUpperCase(Locale.ENGLISH).contains(jmp)) {

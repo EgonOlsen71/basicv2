@@ -105,30 +105,47 @@ public class Compactor {
 					boolean reallyFirst = true;
 					for (List<Line> toReps : rems) {
 						boolean first = true;
+						boolean alreadyProcs = false;
 						for (Line toRep : toReps) {
 							int pos = toRep.position;
-
 							if (replaced.contains(pos)) {
+								alreadyProcs = true;
 								break;
 							}
-							if (first) {
-								input.set(pos, "JSR " + label);
-								if (reallyFirst) {
-									input.add(insertAt++, label);
-									for (Line rr : toReps) {
-										input.add(insertAt++, rr.txt);
+						}
+
+						if (!alreadyProcs) {
+							for (Line toRep : toReps) {
+								int pos = toRep.position;
+								if (first) {
+									input.set(pos, "JSR " + label);
+									if (reallyFirst) {
+										input.add(insertAt++, label);
+										for (Line rr : toReps) {
+											input.add(insertAt++, rr.txt);
+										}
+										input.add(insertAt++, "RTS");
+										input.add(insertAt++, ";##################################################");
+										reallyFirst = false;
 									}
-									input.add(insertAt++, "RTS");
-									input.add(insertAt++, ";##################################################");
-									reallyFirst = false;
+									first = false;
+									replaced.add(pos);
+								} else {
+									input.set(pos, "NOP");
+									replaced.add(pos);
 								}
-								first = false;
-							} else {
-								input.set(pos, "NOP");
-								replaced.add(pos);
 							}
 						}
 					}
+					/*
+					 * if (extCount>13 && extCount<18) {
+					 * System.out.println("TRÖT: "+(extCount-1)+
+					 * "---------------------------------------------------");
+					 * int h=0; for (String l:input) {
+					 * System.out.println(l+"    @"+(h++)); }
+					 * System.out.println(
+					 * "---------------------------------------------------"); }
+					 */
 				}
 			}
 			updateLineMap(input);
@@ -161,32 +178,33 @@ public class Compactor {
 	private void updateLineMap(List<String> input) {
 		lines.clear();
 		int cnt = 0;
-		int skip=0;
+		int skip = 0;
 		for (String line : input) {
 			line = line.trim();
 			if (line.contains("##END_COMPACT")) {
 				return;
 			}
-			if (line.startsWith("RTS") || line.contains("##") || line.startsWith("NOP") || (skip-->0) || line.contains("$FFFF") || line.contains("JMP")|| line.contains("JSR NEXT")/*|| line.startsWith("JSR GOSUB") || line.startsWith("JSR LINE")*/) {
+			if (line.startsWith("RTS") || line.contains("##") || line.startsWith("NOP") || (skip-- > 0) || line.contains("$FFFF") || line.startsWith("JSR COMPACT")
+					|| line.contains("JMP") || line.contains("JSR NEXT")) {
 				cnt++;
 				continue;
 			}
 			if (line.contains("MOVBSELF") && line.startsWith("ST")) {
-			    // Self modifying code...don't compact it, until it's over...
-			    int p1=line.indexOf(" ");
-			    int p2=line.indexOf("+");
-			    if (p1!=-1 && p2!=-1) {
-				String lab=line.substring(p1, p2).trim();
-				for (int lc=cnt; lc<input.size(); lc++) {
-				    String subl=input.get(lc);
-				    if (subl.startsWith(lab+":")) {
-					cnt++;
-					skip=lc+2-cnt;
-					break;
-				    }
+				// Self modifying code...don't compact it, until it's over...
+				int p1 = line.indexOf(" ");
+				int p2 = line.indexOf("+");
+				if (p1 != -1 && p2 != -1) {
+					String lab = line.substring(p1, p2).trim();
+					for (int lc = cnt; lc < input.size(); lc++) {
+						String subl = input.get(lc);
+						if (subl.startsWith(lab + ":")) {
+							cnt++;
+							skip = lc + 2 - cnt;
+							break;
+						}
+					}
+					continue;
 				}
-				continue;
-			    }
 			}
 			int hc = line.hashCode();
 			List<Line> hcs = lines.get(hc);

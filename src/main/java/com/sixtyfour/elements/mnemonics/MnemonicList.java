@@ -13,7 +13,6 @@ public class MnemonicList {
 
 	private static final Set<Integer> CONDITIONAL_BRANCHES = Collections.unmodifiableSet(new HashSet<Integer>() {
 		private static final long serialVersionUID = 1L;
-
 		{
 			this.add(0x90);
 			this.add(0xB0);

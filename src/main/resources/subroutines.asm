@@ -2481,10 +2481,12 @@ COPIED0		INY
 ;###################################
 FASTAND		LDA $69			; Check ARG for 0
 			BNE CHECKFAC	
-			STA $61			; if so, set FAC to 0 and exit
+			STA $61
+			STA $66			; if so, set FAC to 0 and exit
 			RTS
 CHECKFAC	LDA $61			; Check if there's a -1 in FAC1
 			BNE FACNOTNULL
+			STA $66			; make sure that it's not -0
 			RTS				; FAC is 0, then exit
 FACNOTNULL	CMP #$81
 			BNE NORMALAND
@@ -2524,6 +2526,8 @@ FASTOR		LDA $61			; Check FAC for 0
 			BNE CHECKFACOR
 			LDA $69			; if so, is ARG = 0 as well?
 			BNE CHECKARGOR	; no, continue with ARG (FAC is still 0 here)
+			LDA #0
+			STA $66			; make sure that the negative flag is deleted in this case...
 			RTS				; yes? Then we leave FAC untouched
 CHECKFACOR	LDA $61			; Check if there's a -1 in FAC1
 			CMP #$81

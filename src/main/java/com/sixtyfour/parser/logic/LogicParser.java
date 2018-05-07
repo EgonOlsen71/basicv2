@@ -308,11 +308,11 @@ public class LogicParser {
 					// beginning. But then again, the term is wrong that way
 					// anyway...
 					left = left.substring(bl);
-				} else if (bl<0) {
+				} else if (bl < 0) {
 					// This will destroy the term if the brackets are not at the
 					// end. But then again, the term is wrong that way
 					// anyway...
-					left=left.substring(0, left.length()+bl);
+					left = left.substring(0, left.length() + bl);
 				}
 				compy.setLeft(Parser.getTerm(left, machine, false, true, termMap));
 				if (right != null) {

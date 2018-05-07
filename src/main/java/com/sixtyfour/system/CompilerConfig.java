@@ -83,12 +83,12 @@ public class CompilerConfig {
 	public void setCompactThreshold(int compactThreshold) {
 		this.compactThreshold = compactThreshold;
 	}
-	
+
 	public boolean isDeadStoreEliminationOfStrings() {
-	    return deadStoreEliminationOfStrings;
+		return deadStoreEliminationOfStrings;
 	}
 
 	public void setDeadStoreEliminationOfStrings(boolean deadStoreEliminationOfStrings) {
-	    this.deadStoreEliminationOfStrings = deadStoreEliminationOfStrings;
+		this.deadStoreEliminationOfStrings = deadStoreEliminationOfStrings;
 	}
 }

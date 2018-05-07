@@ -88,7 +88,7 @@ public class ParserTest {
 	/**
 	 * Test stuff.
 	 */
-	
+
 	private static void testAnd() {
 		System.out.println("testAnd");
 		Machine machine = new Machine();
@@ -102,7 +102,7 @@ public class ParserTest {
 		System.out.println(res);
 		System.out.println("Value: " + res.eval(machine));
 	}
-	
+
 	private static void testStuff() {
 		System.out.println("testStuff");
 		Machine machine = new Machine();

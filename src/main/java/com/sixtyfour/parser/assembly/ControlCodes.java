@@ -84,10 +84,10 @@ public class ControlCodes {
 				this.put("shift-" + ((char) (i - 65 + 'a')), i);
 			}
 			for (int i = 65; i < 255; i++) {
-				 this.put("cbm-"+((char) (i- 65+'a')), i);
+				this.put("cbm-" + ((char) (i - 65 + 'a')), i);
 			}
 			for (int i = 65; i < 255; i++) {
-				 this.put("cm "+((char) (i- 65+'a')), i);
+				this.put("cm " + ((char) (i - 65 + 'a')), i);
 			}
 			for (int i = 65; i < 255; i++) {
 				this.put("sh " + ((char) (i - 65 + 'a')), i);

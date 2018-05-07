@@ -248,7 +248,7 @@ public abstract class AbstractMnemonic implements Mnemonic {
 				throw new RuntimeException("Parse error in " + pars + "/" + addr);
 			}
 		}
-		
+
 		boolean isValue = pars.startsWith("#");
 		boolean isIndirect = pars.startsWith("(");
 		int indexedPos = pars.indexOf(',');

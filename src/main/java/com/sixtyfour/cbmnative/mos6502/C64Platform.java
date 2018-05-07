@@ -6,12 +6,6 @@ import com.sixtyfour.cbmnative.Transformer;
 import com.sixtyfour.cbmnative.Unlinker;
 
 public class C64Platform implements PlatformProvider {
-	private int startAddress = 2072;
-
-	@Override
-	public int getStartAddress() {
-		return startAddress;
-	}
 
 	@Override
 	public int getStackSize() {

@@ -9,18 +9,12 @@ public interface PlatformProvider {
 	/**
 	 * @return
 	 */
-	int getStartAddress();
-
-	/**
-	 * @return
-	 */
 	int getStackSize();
 
 	/**
 	 * @return
 	 */
 	int getForStackSize();
-
 
 	/**
 	 * @return

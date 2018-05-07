@@ -87,12 +87,12 @@ public class ConstantPropagator {
 			isConstant[0] = false;
 			return false;
 		}
-		
+
 		if (!CompilerConfig.getConfig().isDeadStoreEliminationOfStrings()) {
-        		if (t.getType(true) == Type.STRING) {
-        			isConstant[0] = false;
-        			return false;
-        		}
+			if (t.getType(true) == Type.STRING) {
+				isConstant[0] = false;
+				return false;
+			}
 		}
 
 		Atom left = t.getLeft();
