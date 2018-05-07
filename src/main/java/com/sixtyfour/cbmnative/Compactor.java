@@ -167,7 +167,7 @@ public class Compactor {
 			if (line.contains("##END_COMPACT")) {
 				return;
 			}
-			if (line.startsWith("RTS") || line.contains("##") || line.startsWith("NOP") || (skip-->0) || line.contains("$FFFF") || line.contains("JSR NEXT")/*|| line.startsWith("JSR GOSUB") || line.startsWith("JSR LINE")*/) {
+			if (line.startsWith("RTS") || line.contains("##") || line.startsWith("NOP") || (skip-->0) || line.contains("$FFFF") || line.contains("JMP")|| line.contains("JSR NEXT")/*|| line.startsWith("JSR GOSUB") || line.startsWith("JSR LINE")*/) {
 				cnt++;
 				continue;
 			}

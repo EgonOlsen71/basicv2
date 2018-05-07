@@ -67,6 +67,7 @@
 305 PRINT"{home}{cyan}time up{down*4}":PRINT"{white}you scored";SC:POKEV+27,255
 310 PRINT"{down*4}would you like another game?"
 315 GET A$:IFA$="y"THENPOKEV+21,1:PRINT"{clear}":POKEV+27,0:GOTO30
+316 remprinta$="y",a$="o",a$<>"y"
 320 IFA$<>"n"THEN315
 325 END
 1000 POKEV+21,9:AL=0:POKEV+2,PEEK(V)+10:POKEV+3,PEEK(V+1)+10
