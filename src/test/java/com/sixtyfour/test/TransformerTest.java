@@ -6,14 +6,12 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import com.sixtyfour.Assembler;
 import com.sixtyfour.Basic;
 import com.sixtyfour.Loader;
 import com.sixtyfour.cbmnative.NativeCompiler;
 import com.sixtyfour.cbmnative.PseudoCpu;
-import com.sixtyfour.elements.Variable;
 import com.sixtyfour.parser.Preprocessor;
 import com.sixtyfour.parser.assembly.AssemblyParser;
 import com.sixtyfour.system.CompilerConfig;

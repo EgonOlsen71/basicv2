@@ -25,7 +25,8 @@ import com.sixtyfour.system.Machine;
 public class Transformer6502 implements Transformer {
 
 	private int variableStart = -1;
-
+	private int stringMemoryEnd= 0xa000;
+		
 	@Override
 	public List<String> transform(Machine machine, PlatformProvider platform, List<String> code) {
 		List<String> res = new ArrayList<>();
@@ -197,7 +198,7 @@ public class Transformer6502 implements Transformer {
 		res.add("LASTVARP\t.WORD 0");
 		res.add("HIGHP\t.WORD STRBUF");
 		res.add("STRBUFP\t.WORD STRBUF");
-		res.add("ENDSTRBUF\t.WORD " + platform.getStringMemoryEnd());
+		res.add("ENDSTRBUF\t.WORD " + this.stringMemoryEnd);
 		res.add("INPUTQUEUEP\t.BYTE 0");
 		res.add("CONCATBUFP\t.BYTE 0");
 		res.add("PROGRAMEND");
@@ -329,10 +330,6 @@ public class Transformer6502 implements Transformer {
 		return val;
 	}
 
-	private String removeBrackets(String txt) {
-		return txt.replace("(", "").replace(")", "");
-	}
-
 	private int extractData(PlatformProvider platform, Machine machine, List<String> consts, List<String> vars, List<String> strVars, List<String> strArrayVars,
 			Map<String, String> name2label, int cnt, String line) {
 		String[] parts = line.split(",", 2);
@@ -443,4 +440,20 @@ public class Transformer6502 implements Transformer {
 	public void setVariableStart(int variableStart) {
 		this.variableStart = variableStart;
 	}
+	
+	@Override
+	public int getVariableStart() {
+		return variableStart;
+	}
+	
+	@Override
+	public int getStringMemoryEnd() {
+	    return stringMemoryEnd;
+	}
+
+	@Override
+	public void setStringMemoryEnd(int stringMemoryEnd) {
+	    this.stringMemoryEnd = stringMemoryEnd;
+	}
+
 }

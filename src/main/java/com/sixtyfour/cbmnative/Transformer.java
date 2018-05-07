@@ -16,4 +16,10 @@ public interface Transformer {
 	List<String> transform(Machine machine, PlatformProvider romProvider, List<String> code);
 
 	void setVariableStart(int variableStart);
+
+	int getStringMemoryEnd();
+
+	void setStringMemoryEnd(int stringMemoryEnd);
+
+	int getVariableStart();
 }

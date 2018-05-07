@@ -161,14 +161,32 @@ public class Compactor {
 	private void updateLineMap(List<String> input) {
 		lines.clear();
 		int cnt = 0;
+		int skip=0;
 		for (String line : input) {
 			line = line.trim();
 			if (line.contains("##END_COMPACT")) {
 				return;
 			}
-			if (line.startsWith("RTS") || line.contains("##") || line.startsWith("NOP")) {
+			if (line.startsWith("RTS") || line.contains("##") || line.startsWith("NOP") || (skip-->0) || line.contains("$FFFF")/*|| line.startsWith("JSR GOSUB") || line.startsWith("JSR LINE")*/) {
 				cnt++;
 				continue;
+			}
+			if (line.contains("MOVBSELF") && line.startsWith("ST")) {
+			    // Self modifying code...don't compact it, until it's over...
+			    int p1=line.indexOf(" ");
+			    int p2=line.indexOf("+");
+			    if (p1!=-1 && p2!=-1) {
+				String lab=line.substring(p1, p2).trim();
+				for (int lc=cnt; lc<input.size(); lc++) {
+				    String subl=input.get(lc);
+				    if (subl.startsWith(lab+":")) {
+					cnt++;
+					skip=lc+2-cnt;
+					break;
+				    }
+				}
+				continue;
+			    }
 			}
 			int hc = line.hashCode();
 			List<Line> hcs = lines.get(hc);

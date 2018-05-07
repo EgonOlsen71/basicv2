@@ -41,9 +41,4 @@ public interface PlatformProvider {
 	 * @return
 	 */
 	boolean useLooseTypes();
-
-	/**
-	 * @return
-	 */
-	int getStringMemoryEnd();
 }

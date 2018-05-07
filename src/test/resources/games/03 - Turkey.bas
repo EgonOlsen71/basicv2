@@ -1,7 +1,7 @@
 1 poke 53281,0:poke 53280,9
 2 co=54272:p=150:x=150:y=190:v=53248:sc=0:li=3:xd=int(rnd(1)*9-4):yd=-1
 3 poke v+21,3:poke 2040,13:poke 2041,14
-4 for i=0 to 126:read q: poke 832+i,q:printi,q:next
+4 for i=0 to 126:read q: poke 832+i,q:next
 5 poke v,p:poke v+1,200:poke v+2,x:pokev+3,y
 7 print "{clear}{white}super waiter!{space*2}{blue}score:"
 8 fori=55381to55406:pokei,5:pokei-co,86:next:fori=55381to56156step40

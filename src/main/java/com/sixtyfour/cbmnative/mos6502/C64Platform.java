@@ -42,10 +42,4 @@ public class C64Platform implements PlatformProvider {
 	public boolean useLooseTypes() {
 		return true;
 	}
-
-	@Override
-	public int getStringMemoryEnd() {
-		return 0xa000;
-	}
-
 }
