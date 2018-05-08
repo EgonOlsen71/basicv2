@@ -127,9 +127,8 @@ public class ControlCodes {
 		
 		public void add(int code, String... placeholders) {
 		    for (String placy:placeholders) {
-			placy=placy.replace("--", "-minus");
 			this.put(placy, code);
-			this.put(placy.replace("-", " "), code);
+			this.put(placy.replaceFirst("-", " "), code);
 		    }
 		}
 	};
