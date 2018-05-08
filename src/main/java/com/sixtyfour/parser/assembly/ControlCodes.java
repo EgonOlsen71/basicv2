@@ -116,7 +116,7 @@ public class ControlCodes {
 			add(220,"cm--","cm-minus");
 			add(221,"shift--","shift-minus","sh--","sh-minus");
 			add(222,"shift-↑","shift-up arrow","sh-↑","sh-up arrow");
-			add(223,"shift-*", "shift-asterisk","sh-*", "sh-asterisk");
+			add(223,"cm-*", "cm-asterisk");
 			
 			for (int i = 65; i < 91; i++) {
 			    char c=((char) (i - 65 + 'a'));
