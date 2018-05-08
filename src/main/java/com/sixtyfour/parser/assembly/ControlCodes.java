@@ -79,18 +79,17 @@ public class ControlCodes {
 			this.put("f4", 138);
 			this.put("f6", 139);
 			this.put("f8", 140);
+			this.put("pound", 92);
 			this.put("shift space", 160);
-			for (int i = 65; i < 255; i++) {
-				this.put("shift-" + ((char) (i - 65 + 'a')), i);
+			for (int i = 65; i < 91; i++) {
+			    char c=((char) (i - 65 + 'a'));
+			    this.put("shift-" + c, i);
+			    this.put("sh " + c, i);
 			}
 			for (int i = 65; i < 255; i++) {
-				this.put("cbm-" + ((char) (i - 65 + 'a')), i);
-			}
-			for (int i = 65; i < 255; i++) {
-				this.put("cm " + ((char) (i - 65 + 'a')), i);
-			}
-			for (int i = 65; i < 255; i++) {
-				this.put("sh " + ((char) (i - 65 + 'a')), i);
+			    char c=((char) (i - 65 + 'a'));
+			    this.put("cbm-" + c, i);
+			    this.put("cm " + c, i);
 			}
 			// {CBM-A} to {CBM-Z}
 		}
