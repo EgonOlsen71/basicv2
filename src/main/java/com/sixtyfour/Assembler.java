@@ -18,6 +18,7 @@ import com.sixtyfour.system.Cpu;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.system.Program;
 import com.sixtyfour.system.ProgramPart;
+import com.sixtyfour.util.MemoryException;
 import com.sixtyfour.util.VarUtils;
 
 /**
@@ -427,7 +428,7 @@ public class Assembler implements ProgramExecutor {
 	private void flagAddress(Set<Integer> used, int start, int endExcl) {
 	    for (int i=start; i<endExcl; i++) {
 		if (used.contains(i)) {
-		    throw new RuntimeException("Overlapping memory addresses @ $"+Integer.toHexString(i));
+		    throw new MemoryException("Overlapping memory addresses @ $"+Integer.toHexString(i));
 		}
 		used.add(i);
 	    }
