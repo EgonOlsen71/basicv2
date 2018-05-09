@@ -6,7 +6,7 @@ package com.sixtyfour.system;
  * @author EgonOlsen
  * 
  */
-public class ProgramPart {
+public class ProgramPart implements Comparable<ProgramPart> {
 
 	private int address;
 	private int endAddress;
@@ -105,6 +105,12 @@ public class ProgramPart {
 	 */
 	public void setEndAddress(int endAddress) {
 		this.endAddress = endAddress;
+	}
+
+	
+	@Override
+	public int compareTo(ProgramPart o) {
+	    return this.address-o.address;
 	}
 
 }

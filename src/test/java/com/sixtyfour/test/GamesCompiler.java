@@ -170,7 +170,7 @@ public class GamesCompiler {
 		}
 
 		System.out.println("Program '"+name+"' starts at "+start);
-		List<String> nCode = NativeCompiler.getCompiler().compile(basic, new MemoryConfig(start, variableStart, stringMemoryEnd));
+		List<String> nCode = NativeCompiler.getCompiler().compile(basic, new MemoryConfig(start, -1, variableStart, stringMemoryEnd));
 		for (String line : nCode) {
 			System.out.println(line);
 		}

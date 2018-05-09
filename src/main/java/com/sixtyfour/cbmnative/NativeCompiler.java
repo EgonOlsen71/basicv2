@@ -101,6 +101,9 @@ public class NativeCompiler {
 		if (memConfig.getProgramStart() != -1) {
 			tf.setStartAddress(memConfig.getProgramStart());
 		}
+		if (memConfig.getRuntimeStart() != -1) {
+			tf.setRuntimeStart(memConfig.getRuntimeStart());
+		}
 
 		if (!memConfig.isValid()) {
 			throw new RuntimeException("String memory (" + memConfig.getStringEnd() + ") must not be lower than variable memory (" + memConfig.getVariableStart() + ")!");

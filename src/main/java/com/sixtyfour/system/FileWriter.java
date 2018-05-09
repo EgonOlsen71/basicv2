@@ -4,7 +4,10 @@ import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author EgonOlsen
@@ -59,7 +62,11 @@ public class FileWriter {
 			}
 			int lastEnd = -1;
 			int cnt = 0;
-			for (ProgramPart part : prg.getParts()) {
+			
+			List<ProgramPart> parts=new ArrayList<>(prg.getParts());
+			Collections.sort(parts);
+			
+			for (ProgramPart part : parts) {
 				int start = part.getAddress();
 				int[] bin = part.getBytes();
 
@@ -70,7 +77,7 @@ public class FileWriter {
 				}
 
 				Integer end = prg.getLabelsContainer().get("PROGRAMEND");
-				if (end != null && end < part.getEndAddress()) {
+				if (end != null && end < part.getEndAddress() && end>(cnt == 0 ? codeStartOrg : start)) {
 					int clip = end - (cnt == 0 ? codeStartOrg : start);
 					if (clip < bin.length) {
 						bin = Arrays.copyOfRange(bin, 0, clip);

@@ -235,6 +235,13 @@ public class Assembler implements ProgramExecutor {
 
 		prg.setCodeStart(codeStart == -1 ? start : codeStart);
 		program = prg;
+		for (int i=0; i<prg.getParts().size(); i++) {
+		    ProgramPart pp=prg.getParts().get(i);
+		    String start=getHex(pp.getAddress());
+		    String end=getHex(pp.getEndAddress());
+		    Logger.log("Part "+i+": "+start+" - "+end);
+		}
+		
 		Logger.log(cnt + " lines compiled in: " + (System.nanoTime() - startTime) / 1000000L + "ms");
 	}
 
@@ -400,6 +407,14 @@ public class Assembler implements ProgramExecutor {
 
 	private void raiseError(String txt, int addr, int cnt) {
 		throw new RuntimeException("Line " + cnt + "\t." + Integer.toHexString(addr) + "\t" + txt);
+	}
+	
+	private String getHex(int inty) {
+	    String p=Integer.toHexString(inty);
+	    if (p.length()<4) {
+		p="000".substring(0, 4-p.length())+p;
+	    }
+	    return "$"+p;
 	}
 
 	@Override

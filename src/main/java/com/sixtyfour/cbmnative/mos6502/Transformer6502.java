@@ -25,6 +25,7 @@ import com.sixtyfour.system.Machine;
 public class Transformer6502 implements Transformer {
 
 	private int variableStart = -1;
+	private int runtimeStart = -1;
 	private int stringMemoryEnd = 0xa000;
 	private int startAddress = 2072;
 
@@ -36,6 +37,9 @@ public class Transformer6502 implements Transformer {
 		List<String> mnems = new ArrayList<String>();
 		List<String> subs = new ArrayList<String>();
 		mnems.add("; *** CODE ***");
+		if (runtimeStart!=-1) {
+		    subs.add("*=$" + Integer.toHexString(runtimeStart));
+		}
 		subs.add("; *** SUBROUTINES ***");
 
 		subs.addAll(Arrays.asList(Loader.loadProgram(this.getClass().getResourceAsStream("/subroutines.asm"))));
@@ -465,6 +469,16 @@ public class Transformer6502 implements Transformer {
 	@Override
 	public int getStartAddress() {
 		return startAddress;
+	}
+
+	@Override
+	public int getRuntimeStart() {
+	    return runtimeStart;
+	}
+
+	@Override
+	public void setRuntimeStart(int runtimeStart) {
+	    this.runtimeStart = runtimeStart;
 	}
 
 }

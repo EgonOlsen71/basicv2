@@ -26,4 +26,8 @@ public interface Transformer {
 	int getStartAddress();
 	
 	void setStartAddress(int addr);
+
+	int getRuntimeStart();
+
+	void setRuntimeStart(int runtimeStart);
 }
