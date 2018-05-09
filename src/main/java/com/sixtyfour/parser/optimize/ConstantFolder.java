@@ -40,19 +40,19 @@ public class ConstantFolder {
 			if (left.isConstant() && right.isConstant() && Type.isAssignable(left.getType(), right.getType())) {
 				setConstant(finalTerm, machine, left);
 			} else {
-				if (left != null && left.isTerm()) {
+				if (left.isTerm()) {
 					finalTerm.setLeft(foldConstants((Term) left, machine));
 				}
-				if (right != null && right.isTerm()) {
+				if (right.isTerm()) {
 					finalTerm.setRight(foldConstants((Term) right, machine));
 				}
 
-				if (left != null && left instanceof Function) {
+				if (left instanceof Function) {
 					Function fun = (Function) left;
 					fun.setTerm(foldConstants(fun.getTerm(), machine));
 				}
 
-				if (right != null && right instanceof Function) {
+				if (right instanceof Function) {
 					Function fun = (Function) right;
 					fun.setTerm(foldConstants(fun.getTerm(), machine));
 				}

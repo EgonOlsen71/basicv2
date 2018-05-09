@@ -65,7 +65,7 @@ public class GetFile extends Get {
 
 		String expPush = expr.get(expr.size() - 1);
 		expr = expr.subList(0, expr.size() - 1);
-		expPush.replace("X", "G").replace("Y", "G");
+		expPush=expPush.replace("X", "G").replace("Y", "G");
 		expr.add(expPush);
 
 		CodeContainer cc = new CodeContainer(before, expr, after);
