@@ -10,6 +10,7 @@ import java.util.Map;
 import com.sixtyfour.Assembler;
 import com.sixtyfour.Basic;
 import com.sixtyfour.Loader;
+import com.sixtyfour.cbmnative.MemoryConfig;
 import com.sixtyfour.cbmnative.NativeCompiler;
 import com.sixtyfour.cbmnative.PseudoCpu;
 import com.sixtyfour.parser.assembly.AssemblyParser;
@@ -169,7 +170,7 @@ public class GamesCompiler {
 		}
 
 		System.out.println("Program '"+name+"' starts at "+start);
-		List<String> nCode = NativeCompiler.getCompiler().compile(basic, start, variableStart, stringMemoryEnd);
+		List<String> nCode = NativeCompiler.getCompiler().compile(basic, new MemoryConfig(start, variableStart, stringMemoryEnd));
 		for (String line : nCode) {
 			System.out.println(line);
 		}

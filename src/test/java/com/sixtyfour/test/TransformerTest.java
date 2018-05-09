@@ -10,6 +10,7 @@ import java.util.Map;
 import com.sixtyfour.Assembler;
 import com.sixtyfour.Basic;
 import com.sixtyfour.Loader;
+import com.sixtyfour.cbmnative.MemoryConfig;
 import com.sixtyfour.cbmnative.NativeCompiler;
 import com.sixtyfour.cbmnative.PseudoCpu;
 import com.sixtyfour.parser.Preprocessor;
@@ -759,7 +760,9 @@ public class TransformerTest {
 		}
 		System.out.println("------------------------------");
 
-		List<String> nCode = NativeCompiler.getCompiler().compile(basic, variableStart);
+		MemoryConfig memConfig=new MemoryConfig();
+		memConfig.setVariableStart(variableStart);
+		List<String> nCode = NativeCompiler.getCompiler().compile(basic, memConfig);
 		for (String line : nCode) {
 			System.out.println(line);
 		}

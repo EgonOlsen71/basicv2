@@ -83,34 +83,27 @@ public class NativeCompiler {
 	}
 
 	public List<String> compile(Basic basic) {
-		return compile(basic, -1);
+		return compile(basic, new MemoryConfig());
 	}
 
-	public List<String> compile(Basic basic, int variableMemory) {
-		return compile(basic, variableMemory, -1);
-	}
-
-	public List<String> compile(Basic basic, int variableMemory, int stringMemoryEnd) {
-		return compile(basic, -1, variableMemory, stringMemoryEnd);
-	}
-
-	public List<String> compile(Basic basic, int programStart, int variableMemory, int stringMemoryEnd) {
+	public List<String> compile(Basic basic, MemoryConfig memConfig) {
+	
 		basic.compile();
 		CompilerConfig conf = CompilerConfig.getConfig();
 		List<String> mCode = NativeCompiler.getCompiler().compileToPseudeCode(basic);
 
 		PlatformProvider platform = new C64Platform();
 		Transformer tf = platform.getTransformer();
-		tf.setVariableStart(variableMemory);
-		if (stringMemoryEnd != -1) {
-			tf.setStringMemoryEnd(stringMemoryEnd);
+		tf.setVariableStart(memConfig.getVariableStart());
+		if (memConfig.getStringEnd() != -1) {
+			tf.setStringMemoryEnd(memConfig.getStringEnd());
 		}
-		if (programStart != -1) {
-			tf.setStartAddress(programStart);
+		if (memConfig.getProgramStart() != -1) {
+			tf.setStartAddress(memConfig.getProgramStart());
 		}
 
-		if (stringMemoryEnd != -1 && variableMemory != -1 && stringMemoryEnd < variableMemory) {
-			throw new RuntimeException("String memory (" + stringMemoryEnd + ") must not be lower than variable memory (" + variableMemory + ")!");
+		if (!memConfig.isValid()) {
+			throw new RuntimeException("String memory (" + memConfig.getStringEnd() + ") must not be lower than variable memory (" + memConfig.getVariableStart() + ")!");
 		}
 
 		List<String> nCode = tf.transform(basic.getMachine(), platform, mCode);
