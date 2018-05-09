@@ -3,8 +3,10 @@ package com.sixtyfour;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.sixtyfour.elements.mnemonics.Mnemonic;
 import com.sixtyfour.parser.assembly.AssemblyParser;
@@ -129,6 +131,7 @@ public class Assembler implements ProgramExecutor {
 		Program prg = new Program();
 		prg.setLabelsContainer(lcon);
 		boolean initial = true;
+		Set<Integer> usedAddrs=new HashSet<>();
 
 		for (String line : code) {
 			String oLine = line;
@@ -190,7 +193,9 @@ public class Assembler implements ProgramExecutor {
 						try {
 							lineBreaks.add(addr);
 							addr2code.put(addr, line);
+							int oldAddr=addr;
 							addr = mne.parse(line, addr, compileMachine, ccon, lcon);
+							flagAddress(usedAddrs, oldAddr, addr);
 						} catch (RuntimeException re) {
 							raiseError("Error at line: " + oLine, re, addr, cnt);
 						}
@@ -212,7 +217,9 @@ public class Assembler implements ProgramExecutor {
 					// actual length here.
 					compileMachine.getRam()[addr - 1] = data.length;
 				}
+				int oldAddr=addr;
 				addr += data.length;
+				flagAddress(usedAddrs, oldAddr, addr);
 			}
 
 		}
@@ -415,6 +422,15 @@ public class Assembler implements ProgramExecutor {
 		p="000".substring(0, 4-p.length())+p;
 	    }
 	    return "$"+p;
+	}
+	
+	private void flagAddress(Set<Integer> used, int start, int endExcl) {
+	    for (int i=start; i<endExcl; i++) {
+		if (used.contains(i)) {
+		    throw new RuntimeException("Overlapping memory addresses @ $"+Integer.toHexString(i));
+		}
+		used.add(i);
+	    }
 	}
 
 	@Override
