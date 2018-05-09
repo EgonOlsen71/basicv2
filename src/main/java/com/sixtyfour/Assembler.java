@@ -132,7 +132,7 @@ public class Assembler implements ProgramExecutor {
 		Program prg = new Program();
 		prg.setLabelsContainer(lcon);
 		boolean initial = true;
-		Set<Integer> usedAddrs=new HashSet<>();
+		Set<Integer> usedAddrs = new HashSet<>();
 
 		for (String line : code) {
 			String oLine = line;
@@ -194,7 +194,7 @@ public class Assembler implements ProgramExecutor {
 						try {
 							lineBreaks.add(addr);
 							addr2code.put(addr, line);
-							int oldAddr=addr;
+							int oldAddr = addr;
 							addr = mne.parse(line, addr, compileMachine, ccon, lcon);
 							flagAddress(usedAddrs, oldAddr, addr);
 						} catch (RuntimeException re) {
@@ -218,7 +218,7 @@ public class Assembler implements ProgramExecutor {
 					// actual length here.
 					compileMachine.getRam()[addr - 1] = data.length;
 				}
-				int oldAddr=addr;
+				int oldAddr = addr;
 				addr += data.length;
 				flagAddress(usedAddrs, oldAddr, addr);
 			}
@@ -243,13 +243,13 @@ public class Assembler implements ProgramExecutor {
 
 		prg.setCodeStart(codeStart == -1 ? start : codeStart);
 		program = prg;
-		for (int i=0; i<prg.getParts().size(); i++) {
-		    ProgramPart pp=prg.getParts().get(i);
-		    String start=getHex(pp.getAddress());
-		    String end=getHex(pp.getEndAddress());
-		    Logger.log("Part "+i+": "+start+" - "+end);
+		for (int i = 0; i < prg.getParts().size(); i++) {
+			ProgramPart pp = prg.getParts().get(i);
+			String start = getHex(pp.getAddress());
+			String end = getHex(pp.getEndAddress());
+			Logger.log("Part " + i + ": " + start + " - " + end);
 		}
-		
+
 		Logger.log(cnt + " lines compiled in: " + (System.nanoTime() - startTime) / 1000000L + "ms");
 	}
 
@@ -416,22 +416,22 @@ public class Assembler implements ProgramExecutor {
 	private void raiseError(String txt, int addr, int cnt) {
 		throw new RuntimeException("Line " + cnt + "\t." + Integer.toHexString(addr) + "\t" + txt);
 	}
-	
+
 	private String getHex(int inty) {
-	    String p=Integer.toHexString(inty);
-	    if (p.length()<4) {
-		p="000".substring(0, 4-p.length())+p;
-	    }
-	    return "$"+p;
-	}
-	
-	private void flagAddress(Set<Integer> used, int start, int endExcl) {
-	    for (int i=start; i<endExcl; i++) {
-		if (used.contains(i)) {
-		    throw new MemoryException("Overlapping memory addresses @ $"+Integer.toHexString(i));
+		String p = Integer.toHexString(inty);
+		if (p.length() < 4) {
+			p = "000".substring(0, 4 - p.length()) + p;
 		}
-		used.add(i);
-	    }
+		return "$" + p;
+	}
+
+	private void flagAddress(Set<Integer> used, int start, int endExcl) {
+		for (int i = start; i < endExcl; i++) {
+			if (used.contains(i)) {
+				throw new MemoryException("Overlapping memory addresses @ $" + Integer.toHexString(i));
+			}
+			used.add(i);
+		}
 	}
 
 	@Override

@@ -37,8 +37,8 @@ public class Transformer6502 implements Transformer {
 		List<String> mnems = new ArrayList<String>();
 		List<String> subs = new ArrayList<String>();
 		mnems.add("; *** CODE ***");
-		if (runtimeStart!=-1) {
-		    subs.add("*=$" + Integer.toHexString(runtimeStart));
+		if (runtimeStart != -1) {
+			subs.add("*=$" + Integer.toHexString(runtimeStart));
 		}
 		subs.add("; *** SUBROUTINES ***");
 
@@ -473,12 +473,12 @@ public class Transformer6502 implements Transformer {
 
 	@Override
 	public int getRuntimeStart() {
-	    return runtimeStart;
+		return runtimeStart;
 	}
 
 	@Override
 	public void setRuntimeStart(int runtimeStart) {
-	    this.runtimeStart = runtimeStart;
+		this.runtimeStart = runtimeStart;
 	}
 
 }

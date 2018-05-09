@@ -33,77 +33,77 @@ import com.sixtyfour.system.Machine;
 public class NativeCompilerTest {
 
 	public static void main(String[] args) throws Exception {
-		testExpression0();
-		testExpression1();
-		testExpression2();
-		testExpression3();
-		testExpression4();
-		testExpression5();
-		testExpression6();
-		testLinearize();
-		testStringExpression0();
-		testStringExpression1();
-		testStringExpression2();
-		testStringExpression3();
-		testStringExpression4();
-		testStringExpression5();
-		testStringExpression6();
-
-		testArrayAccess0();
-		testArrayAccess1();
-
-		testStringExpression7();
-		testStringExpression8();
-		testExpression7();
-		testStringExpression9();
-
-		testStringArrayAccess0();
-		testStringArrayAccess1();
-		testArrayAccessTotal();
-
-		testLogicExpression0();
-
-		testSimpleProgram0();
-		testSimpleProgram1();
-		testSimpleProgram2();
-		testSimpleProgram3();
-		testSimpleProgram4();
-		testSimpleProgram5();
-		testSimpleProgram6();
-
-		testProgram0();
-
-		testLogicExpression1();
-		testLogicExpression2();
-
-		testProgram1();
-
-		testSimplePrint0();
-		testPrime();
-		testConditions();
-
-		testPeekPoke();
-		testDefFn0();
-		testDefFn1();
-
-		testFor0();
-		testFor1();
-
-		testBeer();
+		// testExpression0();
+		// testExpression1();
+		// testExpression2();
+		// testExpression3();
+		// testExpression4();
+		// testExpression5();
+		// testExpression6();
+		// testLinearize();
+		// testStringExpression0();
+		// testStringExpression1();
+		// testStringExpression2();
+		// testStringExpression3();
+		// testStringExpression4();
+		// testStringExpression5();
+		// testStringExpression6();
+		//
+		// testArrayAccess0();
+		// testArrayAccess1();
+		//
+		// testStringExpression7();
+		// testStringExpression8();
+		// testExpression7();
+		// testStringExpression9();
+		//
+		// testStringArrayAccess0();
+		// testStringArrayAccess1();
+		// testArrayAccessTotal();
+		//
+		// testLogicExpression0();
+		//
+		// testSimpleProgram0();
+		// testSimpleProgram1();
+		// testSimpleProgram2();
+		// testSimpleProgram3();
+		// testSimpleProgram4();
+		// testSimpleProgram5();
+		// testSimpleProgram6();
+		//
+		// testProgram0();
+		//
+		// testLogicExpression1();
+		// testLogicExpression2();
+		//
+		// testProgram1();
+		//
+		// testSimplePrint0();
+		// testPrime();
+		// testConditions();
+		//
+		// testPeekPoke();
+		// testDefFn0();
+		// testDefFn1();
+		//
+		// testFor0();
+		// testFor1();
+		//
+		// testBeer();
 		// testFractal();
-		testOnSomething();
-		testReadData();
+		// testOnSomething();
+		// testReadData();
 		// testGet();
 		// testInput();
 		//
 		// testLyrix();
 		testFiles();
-		testArrayAccess01();
+		// testArrayAccess01();
 		// testBasicMapper();
-		testLogicExpression3();
-		testStringExpression10();
-		testStringExpression11();
-		testFrog();
+		// testLogicExpression3();
+		// testStringExpression10();
+		// testStringExpression11();
+		// testFrog();
 	}
 
 	private static void testFiles() {

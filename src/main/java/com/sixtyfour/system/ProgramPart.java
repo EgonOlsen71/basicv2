@@ -107,10 +107,9 @@ public class ProgramPart implements Comparable<ProgramPart> {
 		this.endAddress = endAddress;
 	}
 
-	
 	@Override
 	public int compareTo(ProgramPart o) {
-	    return this.address-o.address;
+		return this.address - o.address;
 	}
 
 }

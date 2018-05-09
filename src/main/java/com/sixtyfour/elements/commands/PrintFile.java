@@ -60,11 +60,6 @@ public class PrintFile extends Print {
 
 		expr = compiler.compileToPseudoCode(machine, fileNumber);
 
-		String expPush = expr.get(expr.size() - 1);
-		expr = expr.subList(0, expr.size() - 1);
-		expPush=expPush.replace("X", "G").replace("Y", "G");
-		expr.add(expPush);
-
 		CodeContainer cc = new CodeContainer(before, expr, after);
 		List<CodeContainer> ccs = new ArrayList<CodeContainer>();
 		ccs.add(cc);

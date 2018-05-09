@@ -87,7 +87,7 @@ public class NativeCompiler {
 	}
 
 	public List<String> compile(Basic basic, MemoryConfig memConfig) {
-	
+
 		basic.compile();
 		CompilerConfig conf = CompilerConfig.getConfig();
 		List<String> mCode = NativeCompiler.getCompiler().compileToPseudeCode(basic);

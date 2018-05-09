@@ -63,8 +63,8 @@ public class Gget extends AbstractGraphicsCommand {
 				break;
 			}
 		}
-		if (varName==null) {
-		    throw new RuntimeException("Missing variable name in "+linePart);
+		if (varName == null) {
+			throw new RuntimeException("Missing variable name in " + linePart);
 		}
 		Variable var = new Variable(VarUtils.toUpper(varName.trim()), null);
 		VariableAndIndex vai = Parser.getIndexTerm(var, part, machine, false);

@@ -62,10 +62,10 @@ public class FileWriter {
 			}
 			int lastEnd = -1;
 			int cnt = 0;
-			
-			List<ProgramPart> parts=new ArrayList<>(prg.getParts());
+
+			List<ProgramPart> parts = new ArrayList<>(prg.getParts());
 			Collections.sort(parts);
-			
+
 			for (ProgramPart part : parts) {
 				int start = part.getAddress();
 				int[] bin = part.getBytes();
@@ -77,7 +77,7 @@ public class FileWriter {
 				}
 
 				Integer end = prg.getLabelsContainer().get("PROGRAMEND");
-				if (end != null && end < part.getEndAddress() && end>(cnt == 0 ? codeStartOrg : start)) {
+				if (end != null && end < part.getEndAddress() && end > (cnt == 0 ? codeStartOrg : start)) {
 					int clip = end - (cnt == 0 ? codeStartOrg : start);
 					if (clip < bin.length) {
 						bin = Arrays.copyOfRange(bin, 0, clip);

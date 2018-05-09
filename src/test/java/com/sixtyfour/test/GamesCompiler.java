@@ -48,7 +48,7 @@ public class GamesCompiler {
 			String target = dst.getPath() + "/+" + gameName.replace(".bas", ".prg");
 			System.out.println("Code ends at: " + assy.getProgram().getParts().get(0).getEndAddress());
 			System.out.println("Binary ends at: " + assy.getProgram().getParts().get(assy.getProgram().getParts().size() - 1).getEndAddress());
-			FileWriter.writeAsPrg(assy.getProgram(), target, assy.getProgram().getCodeStart()<2100);
+			FileWriter.writeAsPrg(assy.getProgram(), target, assy.getProgram().getCodeStart() < 2100);
 
 			// assy.getCpu().setCpuTracer(new MySimpleTracer(assy));
 			// executeTest(assy);
@@ -161,7 +161,7 @@ public class GamesCompiler {
 
 		int start = -1;
 		if (name.indexOf("_") != -1) {
-			name = name.substring(name.lastIndexOf("_")+1, name.lastIndexOf("."));
+			name = name.substring(name.lastIndexOf("_") + 1, name.lastIndexOf("."));
 			try {
 				start = Integer.valueOf(name);
 			} catch (Exception e) {
@@ -169,7 +169,7 @@ public class GamesCompiler {
 			}
 		}
 
-		System.out.println("Program '"+name+"' starts at "+start);
+		System.out.println("Program '" + name + "' starts at " + start);
 		List<String> nCode = NativeCompiler.getCompiler().compile(basic, new MemoryConfig(start, -1, variableStart, stringMemoryEnd));
 		for (String line : nCode) {
 			System.out.println(line);
