@@ -163,12 +163,20 @@ public class Optimizer64 implements Optimizer {
 		int lastLine = input.size();
 
 		int codeEnd = input.size();
+		int codeStart = 0;
 		for (int i = 0; i < input.size(); i++) {
 			String line = input.get(i);
+			if (line.startsWith("; *** CODE ***")) {
+				codeStart = i;
+			}
 			if (line.startsWith("; *** SUBROUTINES ***")) {
 				codeEnd = i;
 				break;
 			}
+		}
+
+		if (codeStart == 0 || codeEnd == input.size()) {
+			Logger.log("WARNING: Unable to determine code start or end: " + codeStart + "/" + codeEnd + "/" + input.size());
 		}
 
 		do {
@@ -192,7 +200,7 @@ public class Optimizer64 implements Optimizer {
 					continue;
 				}
 
-				int stl = 0;
+				int stl = codeStart;
 				if (pcnt <= lastPattern2) {
 					stl = start;
 				}
