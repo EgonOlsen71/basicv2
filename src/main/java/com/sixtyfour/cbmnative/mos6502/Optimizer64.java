@@ -158,20 +158,47 @@ public class Optimizer64 implements Optimizer {
 
 		Set<Pattern> used = new HashSet<Pattern>();
 		boolean optimized = false;
+
+		int lastPattern = -1;
+		int lastLine = input.size();
+
+		int codeEnd = input.size();
+		for (int i = 0; i < input.size(); i++) {
+			String line = input.get(i);
+			if (line.startsWith("; *** SUBROUTINES ***")) {
+				codeEnd = i;
+				break;
+			}
+		}
+
 		do {
 			optimized = false;
+
+			int start = 0;
+			int lastPattern2 = lastPattern;
+			if (lastLine != input.size()) {
+				start = lastLine;
+				lastLine = input.size();
+				lastPattern = -1;
+			}
+
+			int pcnt = 0;
 			for (Pattern pattern : patterns) {
+				pcnt++;
 				if (pattern.isLooseTypes() && !platform.useLooseTypes()) {
 					continue;
 				}
 				if (used.contains(pattern)) {
 					continue;
 				}
-				for (int i = 0; i < input.size(); i++) {
+
+				int stl = 0;
+				if (pcnt <= lastPattern2) {
+					stl = start;
+				}
+
+				for (int i = stl; i < codeEnd; i++) {
 					String line = input.get(i);
-					if (line.startsWith("; *** SUBROUTINES ***")) {
-						break;
-					}
 					int sp = pattern.getPos();
 					boolean matches = pattern.matches(line, i, const2Value);
 					if (matches) {
@@ -182,8 +209,15 @@ public class Optimizer64 implements Optimizer {
 						} else {
 							type2count.put(name, cnt + 1);
 						}
+						int oldSize = input.size();
 						input = pattern.apply(input);
+						codeEnd -= (oldSize - input.size());
 						optimized = true;
+						int iLine = i - pattern.getSourceSize() - 1;
+						if (iLine <= lastLine) {
+							lastLine = iLine;
+							lastPattern = pcnt;
+						}
 						break;
 					}
 					if (pattern.getPos() == 0 && sp > 1) {
@@ -312,44 +346,23 @@ public class Optimizer64 implements Optimizer {
 																// stage...yet
 				} else {
 					if (code.get(i + 2).startsWith("JSR FACMEM")) {
-						regState.put(reg, new Integer[] { 1, i }); // Already
-																	// written
-																	// into
-																	// memory?
-																	// Update
-																	// the
-																	// location
-																	// to the
-																	// latest
-																	// one!
+						regState.put(reg, new Integer[] { 1, i });
 					}
 				}
 			} else {
 				Integer[] state = regState.get(lastReg);
 				if (state != null) {
 					if (line.startsWith("JSR FACMEM")) {
-						regState.put(lastReg, new Integer[] { 1, state[1] }); // Mark
-																				// as:
-																				// Value
-																				// stored
-																				// in
-																				// reg!
+						regState.put(lastReg, new Integer[] { 1, state[1] });
 					} else {
 						if (line.startsWith("JSR REALFAC") || line.startsWith("JSR MEMARG")) {
 
 							if (state[0] < 2) {
-								regState.put(lastReg, new Integer[] { 2, state[1] }); // Mark
-																						// as:
-																						// Value
-																						// read
-																						// back
-																						// into
-																						// FAC!
+								regState.put(lastReg, new Integer[] { 2, state[1] });
 							} else {
 								// The value from the register is read without
 								// being written before again...don't optimize
-								// the initial
-								// setter away...
+								// the initial setter away...
 								// ...so we swap the order of that setter to
 								// prevent this.
 								String l1 = code.get(state[1]);
