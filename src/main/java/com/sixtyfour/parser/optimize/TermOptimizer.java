@@ -87,22 +87,6 @@ public class TermOptimizer {
 			ret = t;
 			// System.out.println("Replaced by: " + ret);
 		}
-		
-		// Should swap factors to speed up some multiplication, but somehow gets swapped again later...!?
-//		if (ret.getOperator().isPlus() || ret.getOperator().isMultiplication()) {
-//			if (ret.getRight().isConstant()) {
-//				Object res=ret.getRight().eval(machine);
-//				if (res instanceof Number) {
-//					float val=((Number)res).floatValue();
-//					if (val<10) {
-//						Atom r=ret.getRight();
-//						ret.setRight(ret.getLeft());
-//						ret.setLeft(r);
-//					}
-//				}
-//			}
-//		}
-
 		return ret;
 	}
 
