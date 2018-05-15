@@ -36,7 +36,7 @@ public class GamesCompiler {
 		File[] games = src.listFiles(new FilenameFilter() {
 			@Override
 			public boolean accept(File dir, String name) {
-				return name.endsWith("Poetry.bas");
+				return name.endsWith(".bas");
 			}
 		});
 
