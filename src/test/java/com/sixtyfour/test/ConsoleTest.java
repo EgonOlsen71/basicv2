@@ -14,9 +14,10 @@ import com.sixtyfour.extensions.textmode.ConsoleSupport;
  * 
  */
 public class ConsoleTest {
-	
-    private static CompilerConfig config=new CompilerConfig();
-    public static void main(String[] args) {
+
+	private static CompilerConfig config = new CompilerConfig();
+
+	public static void main(String[] args) {
 		testConsole();
 		testPrint();
 		testShowImage();

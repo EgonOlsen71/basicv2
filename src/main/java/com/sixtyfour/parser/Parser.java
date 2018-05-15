@@ -431,7 +431,7 @@ public class Parser {
 	 * element.
 	 * 
 	 * @param config
-	 * 		teh compiler's config
+	 *            teh compiler's config
 	 * @param term
 	 *            the term as text
 	 * @param machine

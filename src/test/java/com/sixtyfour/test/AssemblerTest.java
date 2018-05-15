@@ -12,10 +12,10 @@ import com.sixtyfour.system.Machine;
 import com.sixtyfour.system.Program;
 
 public class AssemblerTest {
-	
-    
-    private static CompilerConfig config=new CompilerConfig();
-    public static void main(String[] args) {
+
+	private static CompilerConfig config = new CompilerConfig();
+
+	public static void main(String[] args) {
 		testLda();
 		testLdx();
 		testLdy();

@@ -7,9 +7,9 @@ import com.sixtyfour.parser.assembly.ConstantValue;
 import com.sixtyfour.parser.assembly.ConstantsContainer;
 
 public class AssemblyParserTest {
-    private static CompilerConfig config=new CompilerConfig();
-    
-    public static void main(String[] args) {
+	private static CompilerConfig config = new CompilerConfig();
+
+	public static void main(String[] args) {
 		testConstants();
 		testComplexConstants();
 		testComplexConstants2();
@@ -24,14 +24,14 @@ public class AssemblyParserTest {
 		cv = new ConstantInt("HONKI2", 100);
 		ccon.put(cv);
 
-		ConstantValue vally = AssemblyParser.getConstantParsed(config,"KLONK", "HONK+35*HONKI2", ccon, true);
+		ConstantValue vally = AssemblyParser.getConstantParsed(config, "KLONK", "HONK+35*HONKI2", ccon, true);
 		System.out.println(vally.getName() + " = " + vally.getValue());
 	}
 
 	private static void testComplexConstants2() {
 		ConstantsContainer ccon = new ConstantsContainer();
 
-		ConstantValue vally = AssemblyParser.getConstantParsed(config,"KLONK", "1234*3+11", ccon, true);
+		ConstantValue vally = AssemblyParser.getConstantParsed(config, "KLONK", "1234*3+11", ccon, true);
 		System.out.println(vally.getName() + " = " + vally.getValue());
 	}
 
@@ -47,8 +47,8 @@ public class AssemblyParserTest {
 	}
 
 	private static void testConstants() {
-		System.out.println(AssemblyParser.getConstant(config,"*=$c000", null));
-		System.out.println(AssemblyParser.getConstant(config,"BSOUTy = 63424", null));
-		System.out.println(AssemblyParser.getConstant(config,AssemblyParser.truncateComments("*=$c001 ;This is a comment!;;;"), null));
+		System.out.println(AssemblyParser.getConstant(config, "*=$c000", null));
+		System.out.println(AssemblyParser.getConstant(config, "BSOUTy = 63424", null));
+		System.out.println(AssemblyParser.getConstant(config, AssemblyParser.truncateComments("*=$c001 ;This is a comment!;;;"), null));
 	}
 }

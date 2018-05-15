@@ -6,7 +6,8 @@ import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.parser.Preprocessor;
 
 public class PreprocessorTest {
-    private static CompilerConfig config=new CompilerConfig();
+	private static CompilerConfig config = new CompilerConfig();
+
 	public static void main(String[] args) {
 		testPrePro();
 		testPrePro2();

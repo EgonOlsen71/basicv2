@@ -18,7 +18,8 @@ import com.sixtyfour.templating.TemplateFactory;
  * 
  */
 public class MixedTest {
-    private static CompilerConfig config=new CompilerConfig();
+	private static CompilerConfig config = new CompilerConfig();
+
 	public static void main(String[] args) throws Exception {
 		testMixed();
 		testMixedTemplate();
@@ -37,7 +38,7 @@ public class MixedTest {
 		vars.put("CN", 10);
 		vars.put("NA$", "Test");
 		vars.put("TT$", "At least better than PHP!");
-		Template templ = TemplateFactory.getTemplate(config,new FileInputStream("src/test/resources/mixed/mixedhtml.cbm"), vars);
+		Template templ = TemplateFactory.getTemplate(config, new FileInputStream("src/test/resources/mixed/mixedhtml.cbm"), vars);
 		String res = templ.process(config);
 		System.out.println(res);
 	}

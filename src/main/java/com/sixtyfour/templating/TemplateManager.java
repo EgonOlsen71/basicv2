@@ -20,8 +20,8 @@ public class TemplateManager {
 	private Map<TemplateInfo, ThreadLocal<Template>> templates = new HashMap<TemplateInfo, ThreadLocal<Template>>();
 	private Map<String, TemplateInfo> templateInfos = new HashMap<String, TemplateInfo>();
 	private static TemplateManager instance = new TemplateManager();
-	private CompilerConfig config=new CompilerConfig();
-	
+	private CompilerConfig config = new CompilerConfig();
+
 	public static TemplateManager getInstance() {
 		return instance;
 	}

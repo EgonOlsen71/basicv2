@@ -9,7 +9,8 @@ import com.sixtyfour.config.CompilerConfig;
  */
 @SuppressWarnings("unused")
 public class ProgramTest {
-    private static CompilerConfig config=new CompilerConfig();
+	private static CompilerConfig config = new CompilerConfig();
+
 	/**
 	 * The main method.
 	 * 

@@ -33,8 +33,8 @@ import com.sixtyfour.system.Graphics;
  */
 public class AdvancedGraphicsTest {
 
-    	private static CompilerConfig config=new CompilerConfig();
-    
+	private static CompilerConfig config = new CompilerConfig();
+
 	public static void main(String[] args) throws Exception {
 		test3d();
 	}
@@ -106,7 +106,8 @@ public class AdvancedGraphicsTest {
 
 		});
 
-		inty2.compile(config, false); // Don't reset the machine, keep the ram's content
+		inty2.compile(config, false); // Don't reset the machine, keep the ram's
+										// content
 		inty2.run(config);
 
 		BufferedImage bi = Graphics.createImage(inty.getMachine(), 8192, 1024, false, true);

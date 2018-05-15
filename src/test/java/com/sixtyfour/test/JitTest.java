@@ -18,7 +18,8 @@ import com.sixtyfour.util.Jit;
  * 
  */
 public class JitTest {
-    private static CompilerConfig config=new CompilerConfig();
+	private static CompilerConfig config = new CompilerConfig();
+
 	public static void main(String[] args) {
 		testJittedTerm();
 		testComplexCalculation();

@@ -10,7 +10,8 @@ import com.sixtyfour.extensions.graphics.GraphicsBasic;
  * 
  */
 public class GraphicsBasicTest {
-    private static CompilerConfig config=new CompilerConfig();
+	private static CompilerConfig config = new CompilerConfig();
+
 	public static void main(String[] args) throws Exception {
 		testGronGroff();
 		testLines();

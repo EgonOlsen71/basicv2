@@ -15,18 +15,21 @@ public interface ProgramExecutor {
 
 	/**
 	 * Compiles a program.
+	 * 
 	 * @param config
 	 */
 	void compile(CompilerConfig config);
 
 	/**
 	 * Runs a program.
+	 * 
 	 * @param config
 	 */
 	void run(CompilerConfig config);
 
 	/**
 	 * Starts a program.
+	 * 
 	 * @param config
 	 */
 	void start(CompilerConfig config);

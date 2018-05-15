@@ -105,7 +105,7 @@ public class PseudoCpu {
 		Tab.setLimitedToPrint(false);
 		Spc.setLimitedToPrint(false);
 		this.machine = machine;
-		this.config=config;
+		this.config = config;
 		stack.clear();
 		label2line.clear();
 		memLocations.clear();
@@ -1131,9 +1131,9 @@ public class PseudoCpu {
 		int start = regs[C].intValue();
 
 		if (end != -1) {
-			mid.setTerm(Parser.getTerm(config,"\"" + ch + "\"," + start + "," + end, machine, false, false));
+			mid.setTerm(Parser.getTerm(config, "\"" + ch + "\"," + start + "," + end, machine, false, false));
 		} else {
-			mid.setTerm(Parser.getTerm(config,"\"" + ch + "\"," + start, machine, false, false));
+			mid.setTerm(Parser.getTerm(config, "\"" + ch + "\"," + start, machine, false, false));
 		}
 		String snum = mid.eval(machine).toString();
 		copyStringResult(snum);
@@ -1142,7 +1142,7 @@ public class PseudoCpu {
 	private void left(String[] parts) {
 		String ch = readString(regs[B].intValue());
 		int end = regs[C].intValue();
-		left.setTerm(Parser.getTerm(config,"\"" + ch + "\"," + end, machine, false, false));
+		left.setTerm(Parser.getTerm(config, "\"" + ch + "\"," + end, machine, false, false));
 		String snum = left.eval(machine).toString();
 		copyStringResult(snum);
 	}
@@ -1150,7 +1150,7 @@ public class PseudoCpu {
 	private void right(String[] parts) {
 		String ch = readString(regs[B].intValue());
 		int end = regs[C].intValue();
-		right.setTerm(Parser.getTerm(config,"\"" + ch + "\"," + end, machine, false, false));
+		right.setTerm(Parser.getTerm(config, "\"" + ch + "\"," + end, machine, false, false));
 		String snum = right.eval(machine).toString();
 		copyStringResult(snum);
 	}
@@ -1164,7 +1164,7 @@ public class PseudoCpu {
 	}
 
 	private void pos(String[] parts) {
-		pos.setTerm(Parser.getTerm(config,"0", machine, false, false));
+		pos.setTerm(Parser.getTerm(config, "0", machine, false, false));
 		Number num = (Number) pos.eval(machine);
 		regs[X] = num;
 	}
@@ -1396,7 +1396,7 @@ public class PseudoCpu {
 
 	private void runStringIntFunction(String[] parts, Function func, boolean inty) {
 		String ch = readString(regs[B].intValue());
-		func.setTerm(Parser.getTerm(config,"\"" + ch + "\"", machine, false, false));
+		func.setTerm(Parser.getTerm(config, "\"" + ch + "\"", machine, false, false));
 		Number num = ((Number) func.eval(machine));
 		if (inty) {
 			num = num.intValue();
@@ -1416,7 +1416,7 @@ public class PseudoCpu {
 		// These results will be stored in the actual variable memory, not in
 		// the concat buffer. This will populate the buffer, but anyway...
 		Number num = (Number) regs[Y];
-		func.setTerm(Parser.getTerm(config,String.valueOf(inty ? num.intValue() : num.floatValue()), machine, false, false));
+		func.setTerm(Parser.getTerm(config, String.valueOf(inty ? num.intValue() : num.floatValue()), machine, false, false));
 		String snum = func.eval(machine).toString();
 		copyStringResult(snum);
 	}

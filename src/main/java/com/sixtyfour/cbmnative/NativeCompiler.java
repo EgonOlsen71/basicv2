@@ -74,6 +74,15 @@ public class NativeCompiler {
 			this.add("RIGHT");
 			this.add("TAB");
 			this.add("SPC");
+
+			// SCMP is a special case as it has an additional parameter like =
+			// or <. So at one point, only the former part of the operator will
+			// be checked against this list to include SCMP. However, there's
+			// another location where this happens and at that stage, SCMP must
+			// not be included, which is why the check happens against the
+			// complete operator string instead...yeah, it's not really
+			// elegant...
+			this.add("SCMP");
 		}
 	};
 
@@ -349,6 +358,10 @@ public class NativeCompiler {
 			if (isBreak) {
 				String ex = stack.pop();
 				String op = ex.replace(":", "");
+				String opStart = op;
+				if (opStart.indexOf(" ") != -1) {
+					opStart = opStart.substring(0, opStart.indexOf(" "));
+				}
 				boolean isSingle = isSingle(op);
 				if (op.startsWith("ARRAYACCESS")) {
 					if ("Y".equals(getLastFilledRegister(code, 1, floatRegs))) {
@@ -381,7 +394,7 @@ public class NativeCompiler {
 					String ntr = tr;
 					String nsr = sr;
 
-					if (STRING_OPERATORS.contains(op) || isStringArrayAccess) {
+					if (STRING_OPERATORS.contains(opStart) || isStringArrayAccess) {
 						if (!pointerMode || isStringArrayAccess) {
 							if (modeSwitchCnt > 1 && !code.isEmpty()) {
 								ntr = "A";
@@ -406,6 +419,7 @@ public class NativeCompiler {
 						} else {
 							String v = yStack.pop();
 							if (v == null) {
+								// System.out.println(code+"/"+tr+"/"+sr+"/"+ntr+"/"+nsr+"/"+stringStack.peek()+"/"+op);
 								if (!popy(code, tr, sr, ntr, nsr, false)) {
 									yStack.push(null);
 								}

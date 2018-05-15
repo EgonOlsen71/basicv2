@@ -43,7 +43,7 @@ public class VisualRuntime {
 	private Basic basic;
 	private String[] code;
 	private File lastDir;
-	private CompilerConfig config=new CompilerConfig();
+	private CompilerConfig config = new CompilerConfig();
 
 	/**
 	 * The main method. Just run this without any parameters.

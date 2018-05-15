@@ -9,8 +9,9 @@ import com.sixtyfour.system.CpuTracer;
 import com.sixtyfour.system.Machine;
 
 public class AssemblerBeer {
-    
-    private static CompilerConfig config=new CompilerConfig();
+
+	private static CompilerConfig config = new CompilerConfig();
+
 	public static void main(String[] args) {
 		testBeer();
 	}

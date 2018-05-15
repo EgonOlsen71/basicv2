@@ -33,7 +33,8 @@ import com.sixtyfour.system.Machine;
 
 public class NativeCompilerTest {
 
-    private static CompilerConfig config=new CompilerConfig();
+	private static CompilerConfig config = new CompilerConfig();
+
 	public static void main(String[] args) throws Exception {
 		// testExpression0();
 		// testExpression1();
@@ -167,7 +168,7 @@ public class NativeCompilerTest {
 
 		List<String> mCode = testMachineCode(inty);
 		pc.setMemoryLimit(16000);
-		pc.execute(config,inty.getMachine(), mCode);
+		pc.execute(config, inty.getMachine(), mCode);
 
 		System.out.println("Saving image!");
 		BufferedImage bi2 = Graphics.createImage(pc.getRam(), 16384, 24576, true, true);

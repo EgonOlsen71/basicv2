@@ -33,58 +33,58 @@ import com.sixtyfour.test.helper.ProfilerData;
  */
 public class TransformerTest {
 
-    private static CompilerConfig config=new CompilerConfig();
+	private static CompilerConfig config = new CompilerConfig();
 	private static String path = "compiled/";
 
 	public static void main(String[] args) throws Exception {
-//		testTransformer3();
-//		testTransformer1();
-//		testTransformer2();
-//		testTransformer4();
-//		testTransformer5();
-//		testTransformerFractal();
-//		testTransformer6();
-//		testTransformer7();
-//		testTransformerPrime();
-//		testTransformerSqr();
-//		testTransformer8();
-//		testTransformer9();
-//		testTransformer10();
-//		testTransformer11();
-//		testTransformer12();
-//		testTransformer13();
-//		testTransformer14();
+		// testTransformer3();
+		// testTransformer1();
+		// testTransformer2();
+		// testTransformer4();
+		// testTransformer5();
+		// testTransformerFractal();
+		// testTransformer6();
+		// testTransformer7();
+		// testTransformerPrime();
+		// testTransformerSqr();
+		// testTransformer8();
+		// testTransformer9();
+		// testTransformer10();
+		// testTransformer11();
+		// testTransformer12();
+		// testTransformer13();
+		// testTransformer14();
 //		testTransformerBeer();
-//		testTransformer15();
-//		testTransformerSqr();
-//		testTransformer16();
-//		testTransformer17();
-//		testTransformer18();
-//		testTransformer20();
-//		testTransformer22();
-//		testTransformer23();
-//		testTransformerFrog();
-//		testTransformerAffine();
-//		testTransformer24();
-//		testTransformer25();
-//		testTransformer26();
-//		testHilbert();
-//		testLines();
-//		testTransformer27();
-//		testConditions();
-//		testTransformer28();
-//		testTransformer29();
-//		testTransformer30();
+		// testTransformer15();
+		// testTransformerSqr();
+		// testTransformer16();
+		// testTransformer17();
+		// testTransformer18();
+		// testTransformer20();
+		// testTransformer22();
+		// testTransformer23();
+		// testTransformerFrog();
+		// testTransformerAffine();
+		// testTransformer24();
+		// testTransformer25();
+		// testTransformer26();
+		// testHilbert();
+		// testLines();
+		// testTransformer27();
+		// testConditions();
+		// testTransformer28();
+		// testTransformer29();
+		// testTransformer30();
 		testBenchmark();
 	}
 
 	private static void testBenchmark() throws Exception {
 		System.out.println("\n\ntestBenchmark");
-		String[] vary = Loader.loadProgram("src/test/resources/transform/benchmark.bas");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/benchmark2.bas");
 		Assembler assy = initTestEnvironment(vary, false);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++testbenchmark.prg", true);
 	}
-	
+
 	private static void testConditions() throws Exception {
 		System.out.println("\n\ntestConditions");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/conditions.bas");
@@ -157,7 +157,7 @@ public class TransformerTest {
 		// printZeropage(assy);
 		System.out.println("Ticks: " + machine.getCpu().getClockTicks());
 	}
-	
+
 	private static void testTransformer30() throws Exception {
 		System.out.println("\n\ntestTransformer30");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/test30.bas");

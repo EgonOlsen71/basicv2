@@ -16,7 +16,7 @@ public class Runner implements Runnable {
 	private final Basic olsenBasic;
 	private boolean running;
 	private Basic runningBasic = null;
-	private CompilerConfig config=new CompilerConfig();
+	private CompilerConfig config = new CompilerConfig();
 
 	public Runner(String[] program, BasicShell shellFrame) {
 		Basic.registerExtension(new GraphicsBasic());

@@ -8,8 +8,9 @@ import com.sixtyfour.extensions.textmode.ConsoleSupport;
 import com.sixtyfour.parser.Preprocessor;
 
 public class FrogTest {
-    private static CompilerConfig config=new CompilerConfig();
-    public static void main(String[] args) {
+	private static CompilerConfig config = new CompilerConfig();
+
+	public static void main(String[] args) {
 		testFrog();
 		testFrog2();
 	}

@@ -13,7 +13,8 @@ import com.sixtyfour.system.Conversions;
  * 
  */
 public class FloatTest {
-    private static CompilerConfig config=new CompilerConfig();
+	private static CompilerConfig config = new CompilerConfig();
+
 	public static void main(String[] args) {
 		testFloat();
 		testConversions();

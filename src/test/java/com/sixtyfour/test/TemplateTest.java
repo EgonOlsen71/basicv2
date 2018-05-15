@@ -13,8 +13,8 @@ import com.sixtyfour.templating.TemplateManager;
  * A basic template example/test.
  */
 public class TemplateTest {
-    private static CompilerConfig config=new CompilerConfig();
-    
+	private static CompilerConfig config = new CompilerConfig();
+
 	public static void main(String[] args) throws Exception {
 		testTemplate();
 		testTemplateInclude();

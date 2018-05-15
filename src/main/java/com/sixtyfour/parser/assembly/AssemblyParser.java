@@ -117,7 +117,8 @@ public class AssemblyParser {
 	 *            like .BYTE
 	 * @return the number
 	 */
-	public static int getValue(CompilerConfig config, String number, int addr, ConstantsContainer ccon, LabelsContainer lcon, boolean low, boolean high, int addrAdd, boolean isDataLine) {
+	public static int getValue(CompilerConfig config, String number, int addr, ConstantsContainer ccon, LabelsContainer lcon, boolean low, boolean high, int addrAdd,
+			boolean isDataLine) {
 		number = number.trim();
 		if (number.endsWith("\\")) {
 			number = number.substring(0, number.length() - 1);

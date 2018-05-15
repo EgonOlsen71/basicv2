@@ -13,7 +13,8 @@ import com.sixtyfour.system.Machine;
  * Basic tests for the parser.
  */
 public class ParserTest {
-    private static CompilerConfig config=new CompilerConfig();
+	private static CompilerConfig config = new CompilerConfig();
+
 	/**
 	 * The main method.
 	 * 

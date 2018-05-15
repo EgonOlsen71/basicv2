@@ -10,8 +10,9 @@ import com.sixtyfour.plugins.impl.RamSystemCallListener;
 import com.sixtyfour.system.Graphics;
 
 public class GraphicsTest {
-    private static CompilerConfig config=new CompilerConfig();
-    public static void main(String[] args) throws Exception {
+	private static CompilerConfig config = new CompilerConfig();
+
+	public static void main(String[] args) throws Exception {
 		testFractal();
 		testFractalMulticolor();
 		testFractalMulticolor2();

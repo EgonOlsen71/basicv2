@@ -21,9 +21,9 @@ import com.sixtyfour.system.Graphics;
  * 
  */
 public class AffineTextureMappingTest {
-    private static CompilerConfig config=new CompilerConfig();
-    
-    public static void main(String[] args) throws Exception {
+	private static CompilerConfig config = new CompilerConfig();
+
+	public static void main(String[] args) throws Exception {
 		testBasicMapper();
 	}
 

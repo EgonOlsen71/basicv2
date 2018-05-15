@@ -314,7 +314,7 @@ public class Pattern {
 	public void setSimple(boolean simple) {
 		this.simple = simple;
 	}
-	
+
 	public int getSourceSize() {
 		return pattern.size();
 	}

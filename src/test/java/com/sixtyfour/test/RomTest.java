@@ -14,9 +14,9 @@ import com.sixtyfour.system.Machine;
  * 
  */
 public class RomTest {
-    
-    private static CompilerConfig config=new CompilerConfig();
-    
+
+	private static CompilerConfig config = new CompilerConfig();
+
 	public static void main(String[] args) {
 		testRomAccess();
 		testRomCalc();

@@ -15,7 +15,8 @@ public class InterpreterTest {
 	 * @param args
 	 *            the arguments
 	 */
-    private static CompilerConfig config=new CompilerConfig();
+	private static CompilerConfig config = new CompilerConfig();
+
 	public static void main(String[] args) {
 		testLet();
 		testPrint();

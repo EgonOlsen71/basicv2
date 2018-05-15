@@ -38,7 +38,7 @@ public class NativeOptimizer {
 		patterns.add(new NativePattern(new String[] { "MOV X,#*", "MOVB (Y),X" }, new String[] { "{0:MOV X,>MOVB (Y),}" }));
 		patterns.add(new NativePattern(new String[] { "MOV Y,#*", "MOV G,Y" }, new String[] { "{0:MOV Y,>MOV G,}" }));
 		patterns.add(new NativePattern(new String[] { "MOV X,#*", "MOV G,Y" }, new String[] { "{0:MOV X,>MOV G,}" }));
-		patterns.add(new NativePattern(new String[] { "INT X,Y","INT X,X"}, new String[]{"{0}"}));
+		patterns.add(new NativePattern(new String[] { "INT X,Y", "INT X,X" }, new String[] { "{0}" }));
 
 		// patterns.add(new NativePattern(new String[] { "MOV Y,*", "PUSH Y",
 		// "MOV Y,*", "* X,Y", "POP Y" }, new String[] { "{2}", "{3}", "{0}"

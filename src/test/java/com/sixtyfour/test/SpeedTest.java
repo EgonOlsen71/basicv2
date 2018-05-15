@@ -7,9 +7,9 @@ import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.plugins.impl.ConsoleOutputChannel;
 
 public class SpeedTest {
-    
-    private static CompilerConfig config=new CompilerConfig();
-    
+
+	private static CompilerConfig config = new CompilerConfig();
+
 	public static void main(String[] args) throws Exception {
 		String[] asm = Loader.loadProgram("src/test/resources/asm/selfmodify.asm");
 		String[] basic = new String[] { "10fori%=8192to16192:pokei%,0:next" };
