@@ -4,11 +4,11 @@ import java.util.Map.Entry;
 
 import com.sixtyfour.Basic;
 import com.sixtyfour.Logger;
+import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.Variable;
 import com.sixtyfour.elements.systemvars.SystemVariable;
 import com.sixtyfour.plugins.OutputChannel;
 import com.sixtyfour.plugins.impl.MemoryDeviceProvider;
-import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Machine;
 
 /**

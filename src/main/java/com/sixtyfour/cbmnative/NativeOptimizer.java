@@ -3,7 +3,7 @@ package com.sixtyfour.cbmnative;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.sixtyfour.system.CompilerConfig;
+import com.sixtyfour.config.CompilerConfig;
 
 /**
  * An optimizer for the native code in pseudo assembly language.

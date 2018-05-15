@@ -1,11 +1,11 @@
 package com.sixtyfour.elements.mnemonics;
 
+import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.parser.TermEnhancer;
 import com.sixtyfour.parser.assembly.AssemblyParser;
 import com.sixtyfour.parser.assembly.ConstantsContainer;
 import com.sixtyfour.parser.assembly.LabelsContainer;
 import com.sixtyfour.parser.assembly.Parameters;
-import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 

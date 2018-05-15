@@ -8,13 +8,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.mnemonics.Mnemonic;
 import com.sixtyfour.parser.assembly.AssemblyParser;
 import com.sixtyfour.parser.assembly.ConstantValue;
 import com.sixtyfour.parser.assembly.ConstantsContainer;
 import com.sixtyfour.parser.assembly.LabelAndCode;
 import com.sixtyfour.parser.assembly.LabelsContainer;
-import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Cpu;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.system.Program;

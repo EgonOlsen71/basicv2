@@ -2,12 +2,12 @@ package com.sixtyfour.test;
 
 import com.sixtyfour.Basic;
 import com.sixtyfour.Loader;
+import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.Variable;
 import com.sixtyfour.extensions.graphics.GraphicsBasic;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.Term;
 import com.sixtyfour.parser.TermEnhancer;
-import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.Jit;
 

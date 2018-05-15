@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.sixtyfour.Logger;
+import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.elements.Variable;
 import com.sixtyfour.elements.functions.Asc;
@@ -28,7 +29,6 @@ import com.sixtyfour.elements.functions.Val;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.plugins.DeviceProvider;
 import com.sixtyfour.plugins.SystemCallListener;
-import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.DataStore;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;

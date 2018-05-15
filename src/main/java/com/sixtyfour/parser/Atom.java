@@ -2,9 +2,9 @@ package com.sixtyfour.parser;
 
 import java.util.List;
 
+import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
-import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Machine;
 
 /**

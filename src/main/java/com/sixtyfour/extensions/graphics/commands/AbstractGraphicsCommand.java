@@ -2,10 +2,10 @@ package com.sixtyfour.extensions.graphics.commands;
 
 import java.util.List;
 
+import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.commands.AbstractCommand;
 import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Parser;
-import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Machine;
 
 /**

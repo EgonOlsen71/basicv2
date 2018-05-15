@@ -1,7 +1,7 @@
 package com.sixtyfour.test;
 
 import com.sixtyfour.Basic;
-import com.sixtyfour.system.CompilerConfig;
+import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.system.Machine;
 
 /**

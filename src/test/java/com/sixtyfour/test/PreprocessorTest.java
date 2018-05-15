@@ -2,8 +2,8 @@ package com.sixtyfour.test;
 
 import com.sixtyfour.Basic;
 import com.sixtyfour.Loader;
+import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.parser.Preprocessor;
-import com.sixtyfour.system.CompilerConfig;
 
 public class PreprocessorTest {
     private static CompilerConfig config=new CompilerConfig();

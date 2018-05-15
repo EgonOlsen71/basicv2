@@ -1,5 +1,6 @@
 package com.sixtyfour.parser.optimize;
 
+import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.Constant;
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.elements.commands.Command;
@@ -7,7 +8,6 @@ import com.sixtyfour.elements.functions.Function;
 import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Operator;
 import com.sixtyfour.parser.Term;
-import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 

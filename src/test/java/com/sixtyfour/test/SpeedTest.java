@@ -3,8 +3,8 @@ package com.sixtyfour.test;
 import com.sixtyfour.Assembler;
 import com.sixtyfour.Basic;
 import com.sixtyfour.Loader;
+import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.plugins.impl.ConsoleOutputChannel;
-import com.sixtyfour.system.CompilerConfig;
 
 public class SpeedTest {
     

@@ -2,6 +2,7 @@ package com.sixtyfour.extensions.graphics.commands;
 
 import java.util.List;
 
+import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.elements.Variable;
 import com.sixtyfour.extensions.graphics.GraphicsDevice;
@@ -10,7 +11,6 @@ import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.Term;
 import com.sixtyfour.parser.VariableAndIndex;
 import com.sixtyfour.system.BasicProgramCounter;
-import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 

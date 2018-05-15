@@ -15,12 +15,12 @@ import javax.swing.UIManager;
 
 import com.sixtyfour.Basic;
 import com.sixtyfour.Loader;
+import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.extensions.graphics.GraphicsBasic;
 import com.sixtyfour.extensions.textmode.ConsoleSupport;
 import com.sixtyfour.parser.Preprocessor;
 import com.sixtyfour.plugins.CodeEnhancer;
 import com.sixtyfour.plugins.impl.RamSystemCallListener;
-import com.sixtyfour.system.CompilerConfig;
 
 /**
  * A simple UI class that allows for starting BASIC programs from the desktop.

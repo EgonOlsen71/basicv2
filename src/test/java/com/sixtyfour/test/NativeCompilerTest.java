@@ -18,6 +18,7 @@ import com.sixtyfour.Loader;
 import com.sixtyfour.cbmnative.NativeCompiler;
 import com.sixtyfour.cbmnative.PseudoCpu;
 import com.sixtyfour.cbmnative.TermHelper;
+import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.Variable;
 import com.sixtyfour.elements.functions.Spc;
 import com.sixtyfour.elements.functions.Tab;
@@ -27,7 +28,6 @@ import com.sixtyfour.parser.Preprocessor;
 import com.sixtyfour.parser.Term;
 import com.sixtyfour.parser.TermEnhancer;
 import com.sixtyfour.plugins.impl.RamSystemCallListener;
-import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Graphics;
 import com.sixtyfour.system.Machine;
 

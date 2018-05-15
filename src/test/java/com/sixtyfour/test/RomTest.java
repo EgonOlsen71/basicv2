@@ -3,9 +3,9 @@ package com.sixtyfour.test;
 import com.sixtyfour.Assembler;
 import com.sixtyfour.Basic;
 import com.sixtyfour.Loader;
+import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.extensions.textmode.ConsoleSupport;
 import com.sixtyfour.plugins.impl.RamSystemCallListener;
-import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Conversions;
 import com.sixtyfour.system.Machine;
 

@@ -4,6 +4,7 @@ import java.util.Set;
 import java.util.HashSet;
 
 import com.sixtyfour.Logger;
+import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.Constant;
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.elements.Variable;
@@ -13,7 +14,6 @@ import com.sixtyfour.elements.functions.Function;
 import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Operator;
 import com.sixtyfour.parser.Term;
-import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Machine;
 
 /**

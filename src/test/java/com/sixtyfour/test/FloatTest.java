@@ -3,7 +3,7 @@ package com.sixtyfour.test;
 import java.util.Arrays;
 
 import com.sixtyfour.Basic;
-import com.sixtyfour.system.CompilerConfig;
+import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.system.Conversions;
 
 /**

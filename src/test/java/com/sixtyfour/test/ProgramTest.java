@@ -2,7 +2,7 @@ package com.sixtyfour.test;
 
 import com.sixtyfour.Basic;
 import com.sixtyfour.Loader;
-import com.sixtyfour.system.CompilerConfig;
+import com.sixtyfour.config.CompilerConfig;
 
 /**
  * Basic tests for executing complete BASIC programs.

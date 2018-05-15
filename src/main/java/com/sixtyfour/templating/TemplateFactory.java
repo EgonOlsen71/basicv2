@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.sixtyfour.Loader;
-import com.sixtyfour.system.CompilerConfig;
+import com.sixtyfour.config.CompilerConfig;
 
 /**
  * A factory for creating Template objects. A template isn't thread-safe, i.e.

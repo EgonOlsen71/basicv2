@@ -1,4 +1,4 @@
-package com.sixtyfour.cbmnative;
+package com.sixtyfour.config;
 
 /**
  * @author EgonOlsen

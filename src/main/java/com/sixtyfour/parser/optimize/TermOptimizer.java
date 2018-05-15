@@ -2,13 +2,13 @@ package com.sixtyfour.parser.optimize;
 
 import java.util.Map;
 
+import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.Constant;
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Operator;
 import com.sixtyfour.parser.Term;
 import com.sixtyfour.parser.TermBuilder;
-import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Machine;
 
 /**

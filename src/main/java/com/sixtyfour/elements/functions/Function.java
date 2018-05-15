@@ -3,9 +3,9 @@
  */
 package com.sixtyfour.elements.functions;
 
+import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Term;
-import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Machine;
 
 /**

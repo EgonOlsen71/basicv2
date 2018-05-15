@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.sixtyfour.system.CompilerConfig;
+import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.templating.Template;
 import com.sixtyfour.templating.TemplateManager;
 

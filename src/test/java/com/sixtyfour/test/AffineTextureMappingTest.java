@@ -11,9 +11,9 @@ import javax.swing.JPanel;
 
 import com.sixtyfour.Basic;
 import com.sixtyfour.Loader;
+import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.parser.Preprocessor;
 import com.sixtyfour.plugins.impl.RamSystemCallListener;
-import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Graphics;
 
 /**

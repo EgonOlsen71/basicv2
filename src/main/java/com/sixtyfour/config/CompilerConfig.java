@@ -1,4 +1,4 @@
-package com.sixtyfour.system;
+package com.sixtyfour.config;
 
 /**
  * Contains the configuration for the compiler. Some (most) of these options

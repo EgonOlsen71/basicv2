@@ -2,8 +2,8 @@ package com.sixtyfour.test;
 
 import com.sixtyfour.Assembler;
 import com.sixtyfour.Loader;
+import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.plugins.CpuCallListener;
-import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Cpu;
 import com.sixtyfour.system.CpuTracer;
 import com.sixtyfour.system.Machine;

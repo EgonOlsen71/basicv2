@@ -1,9 +1,9 @@
 package com.sixtyfour.cbmnative;
 
+import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.Term;
 import com.sixtyfour.parser.TermEnhancer;
-import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Machine;
 
 /**

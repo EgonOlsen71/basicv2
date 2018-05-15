@@ -9,11 +9,11 @@ import java.util.Map.Entry;
 
 import com.sixtyfour.Assembler;
 import com.sixtyfour.Basic;
+import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.Variable;
 import com.sixtyfour.parser.Line;
 import com.sixtyfour.parser.Preprocessor;
 import com.sixtyfour.plugins.CpuCallListener;
-import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Cpu;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.system.Program;

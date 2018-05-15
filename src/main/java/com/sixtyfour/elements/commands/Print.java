@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Locale;
 
 import com.sixtyfour.cbmnative.NativeCompiler;
+import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.elements.functions.Function;
 import com.sixtyfour.elements.functions.FunctionList;
@@ -15,7 +16,6 @@ import com.sixtyfour.parser.TermEnhancer;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.plugins.PrintConsumer;
 import com.sixtyfour.system.BasicProgramCounter;
-import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 

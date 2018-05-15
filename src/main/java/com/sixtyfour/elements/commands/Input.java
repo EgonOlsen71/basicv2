@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.sixtyfour.cbmnative.NativeCompiler;
 import com.sixtyfour.cbmnative.Util;
+import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.elements.Variable;
 import com.sixtyfour.parser.Atom;
@@ -15,7 +16,6 @@ import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.plugins.OutputChannel;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.system.BasicProgramCounter;
-import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.util.VarUtils;
 
 /**

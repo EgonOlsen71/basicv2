@@ -3,10 +3,10 @@ package com.sixtyfour.elements.commands;
 import java.util.List;
 
 import com.sixtyfour.cbmnative.Util;
+import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.system.BasicProgramCounter;
-import com.sixtyfour.system.CompilerConfig;
 
 /**
  * The Class Restore.

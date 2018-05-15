@@ -1,6 +1,6 @@
 package com.sixtyfour.plugins;
 
-import com.sixtyfour.system.CompilerConfig;
+import com.sixtyfour.config.CompilerConfig;
 
 /**
  * An interface for devices like virtual disk drives.

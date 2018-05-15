@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.commands.Command;
 import com.sixtyfour.elements.commands.CommandList;
 import com.sixtyfour.elements.functions.Function;
 import com.sixtyfour.elements.functions.FunctionList;
 import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
-import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.IntegerC;
 import com.sixtyfour.util.VarUtils;

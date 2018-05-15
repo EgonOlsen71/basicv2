@@ -6,13 +6,13 @@ import java.util.List;
 import java.util.Set;
 
 import com.sixtyfour.Basic;
+import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.Variable;
 import com.sixtyfour.elements.commands.Command;
 import com.sixtyfour.elements.commands.Let;
 import com.sixtyfour.elements.functions.Function;
 import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Term;
-import com.sixtyfour.system.CompilerConfig;
 
 /**
  * @author EgonOlsen

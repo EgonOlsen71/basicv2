@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.sixtyfour.cbmnative.PCode;
+import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.commands.Command;
 import com.sixtyfour.elements.commands.CommandList;
 import com.sixtyfour.elements.commands.For;
@@ -27,7 +28,6 @@ import com.sixtyfour.plugins.MemoryListener;
 import com.sixtyfour.plugins.OutputChannel;
 import com.sixtyfour.plugins.SystemCallListener;
 import com.sixtyfour.system.BasicProgramCounter;
-import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Cpu;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.Jit;

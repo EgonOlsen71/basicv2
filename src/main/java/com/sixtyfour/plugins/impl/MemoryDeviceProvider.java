@@ -6,13 +6,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.plugins.DeviceProvider;
 import com.sixtyfour.plugins.FileMode;
 import com.sixtyfour.plugins.FileType;
 import com.sixtyfour.plugins.FileWrapper;
 import com.sixtyfour.plugins.OutputChannel;
 import com.sixtyfour.plugins.PrintConsumer;
-import com.sixtyfour.system.CompilerConfig;
 
 /**
  * A simple implementation of a device provider that provides a virtual,

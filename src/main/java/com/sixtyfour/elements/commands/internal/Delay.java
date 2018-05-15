@@ -1,9 +1,9 @@
 package com.sixtyfour.elements.commands.internal;
 
+import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.commands.AbstractCommand;
 import com.sixtyfour.elements.commands.For;
 import com.sixtyfour.system.BasicProgramCounter;
-import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Machine;
 
 /**

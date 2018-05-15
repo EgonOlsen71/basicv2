@@ -1,8 +1,8 @@
 package com.sixtyfour.elements.mnemonics;
 
+import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.parser.assembly.ConstantsContainer;
 import com.sixtyfour.parser.assembly.LabelsContainer;
-import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Machine;
 
 /**

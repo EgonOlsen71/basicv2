@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.sixtyfour.cbmnative.Util;
+import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
-import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.DataStore;
 import com.sixtyfour.system.Machine;
 

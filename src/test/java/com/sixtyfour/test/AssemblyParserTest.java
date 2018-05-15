@@ -1,10 +1,10 @@
 package com.sixtyfour.test;
 
+import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.parser.assembly.AssemblyParser;
 import com.sixtyfour.parser.assembly.ConstantInt;
 import com.sixtyfour.parser.assembly.ConstantValue;
 import com.sixtyfour.parser.assembly.ConstantsContainer;
-import com.sixtyfour.system.CompilerConfig;
 
 public class AssemblyParserTest {
     private static CompilerConfig config=new CompilerConfig();

@@ -2,7 +2,7 @@ package com.sixtyfour.parser;
 
 import java.util.Map;
 
-import com.sixtyfour.system.CompilerConfig;
+import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.system.Machine;
 
 /**

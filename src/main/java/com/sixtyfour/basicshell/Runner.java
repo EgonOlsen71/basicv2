@@ -3,9 +3,9 @@ package com.sixtyfour.basicshell;
 import java.util.concurrent.Future;
 
 import com.sixtyfour.Basic;
+import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.extensions.graphics.GraphicsBasic;
 import com.sixtyfour.extensions.textmode.ConsoleSupport;
-import com.sixtyfour.system.CompilerConfig;
 
 /**
  * Runs the program that's inside the editor.

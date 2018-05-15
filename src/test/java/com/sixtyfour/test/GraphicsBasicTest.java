@@ -2,8 +2,8 @@ package com.sixtyfour.test;
 
 import com.sixtyfour.Basic;
 import com.sixtyfour.Loader;
+import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.extensions.graphics.GraphicsBasic;
-import com.sixtyfour.system.CompilerConfig;
 
 /**
  * @author EgonOlsen

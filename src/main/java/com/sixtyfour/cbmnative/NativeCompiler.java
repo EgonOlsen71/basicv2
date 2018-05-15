@@ -11,6 +11,8 @@ import java.util.Set;
 import com.sixtyfour.Basic;
 import com.sixtyfour.Logger;
 import com.sixtyfour.cbmnative.mos6502.C64Platform;
+import com.sixtyfour.config.CompilerConfig;
+import com.sixtyfour.config.MemoryConfig;
 import com.sixtyfour.elements.commands.Command;
 import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Line;
@@ -19,7 +21,6 @@ import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.parser.optimize.ConstantFolder;
 import com.sixtyfour.parser.optimize.ConstantPropagator;
 import com.sixtyfour.parser.optimize.DeadStoreEliminator;
-import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Machine;
 
 /**

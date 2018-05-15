@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.sixtyfour.Logger;
-import com.sixtyfour.system.CompilerConfig;
+import com.sixtyfour.config.CompilerConfig;
 
 /**
  * Manages templates bound to threads. For each thread, you'll get an individual

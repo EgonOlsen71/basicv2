@@ -3,10 +3,10 @@
  */
 package com.sixtyfour.elements.commands;
 
+import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.plugins.DeviceProvider;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.system.BasicProgramCounter;
-import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.util.VarUtils;
 
 /**

@@ -5,12 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.Variable;
 import com.sixtyfour.elements.mnemonics.Mnemonic;
 import com.sixtyfour.elements.mnemonics.MnemonicList;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.Term;
-import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Conversions;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
