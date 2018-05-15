@@ -36,7 +36,7 @@ public class GamesCompiler {
 		File[] games = src.listFiles(new FilenameFilter() {
 			@Override
 			public boolean accept(File dir, String name) {
-				return name.endsWith(".bas");
+				return name.endsWith("Poetry.bas");
 			}
 		});
 
@@ -138,7 +138,7 @@ public class GamesCompiler {
 		conf.setDeadStoreElimination(optis);
 		conf.setDeadStoreEliminationOfStrings(optis);
 		conf.setIntermediateLanguageOptimizations(optis);
-		conf.setNativeLanguageOptimizations(optis);
+		conf.setNativeLanguageOptimizations(false);
 		conf.setOptimizedLinker(optis);
 		conf.setCompactThreshold(4);
 
