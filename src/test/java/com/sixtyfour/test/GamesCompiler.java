@@ -55,7 +55,7 @@ public class GamesCompiler {
 		}
 	}
 
-	private static Machine executeTest(final Assembler assy) {
+	private static Machine executeTest(CompilerConfig conf, final Assembler assy) {
 		Program prg = assy.getProgram();
 		for (ProgramPart pp : prg.getParts()) {
 			System.out.println("Size: " + pp.size());
@@ -68,7 +68,7 @@ public class GamesCompiler {
 
 		System.out.println(assy.toString());
 		try {
-			assy.run();
+			assy.run(conf);
 		} catch (Exception e) {
 			e.printStackTrace();
 			printMemory(assy, machine);
@@ -131,7 +131,7 @@ public class GamesCompiler {
 	}
 
 	private static Assembler initTestEnvironment(String name, String[] vary, boolean executePseudo, int variableStart, int stringMemoryEnd) {
-		CompilerConfig conf = CompilerConfig.getConfig();
+		CompilerConfig conf = new CompilerConfig();
 		boolean optis = true;
 		conf.setConstantFolding(optis);
 		conf.setConstantPropagation(optis);
@@ -143,9 +143,9 @@ public class GamesCompiler {
 		conf.setCompactThreshold(4);
 
 		final Basic basic = new Basic(vary);
-		basic.compile();
+		basic.compile(conf);
 
-		List<String> mCode = NativeCompiler.getCompiler().compileToPseudeCode(basic);
+		List<String> mCode = NativeCompiler.getCompiler().compileToPseudeCode(conf, basic);
 		System.out.println("------------------------------");
 		for (String line : mCode) {
 			System.out.println(line);
@@ -155,7 +155,7 @@ public class GamesCompiler {
 		if (executePseudo) {
 			System.out.println("Running pseudo code...");
 			PseudoCpu pc = new PseudoCpu();
-			pc.execute(basic.getMachine(), mCode);
+			pc.execute(conf, basic.getMachine(), mCode);
 		}
 		System.out.println("------------------------------");
 
@@ -170,13 +170,13 @@ public class GamesCompiler {
 		}
 
 		System.out.println("Program '" + name + "' starts at " + start);
-		List<String> nCode = NativeCompiler.getCompiler().compile(basic, new MemoryConfig(start, -1, variableStart, stringMemoryEnd));
+		List<String> nCode = NativeCompiler.getCompiler().compile(conf, basic, new MemoryConfig(start, -1, variableStart, stringMemoryEnd));
 		for (String line : nCode) {
 			System.out.println(line);
 		}
 
 		final Assembler assy = new Assembler(nCode);
-		assy.compile();
+		assy.compile(conf);
 
 		return assy;
 	}

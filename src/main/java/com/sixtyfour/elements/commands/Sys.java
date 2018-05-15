@@ -9,6 +9,7 @@ import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.system.BasicProgramCounter;
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.util.VarUtils;
 
 /**
@@ -35,9 +36,9 @@ public class Sys extends AbstractCommand {
 	 * int, int, int, boolean, sixtyfour.system.Machine)
 	 */
 	@Override
-	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
-		super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine);
-		term = Parser.getTerm(this, linePart, machine, true);
+	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
+		super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine);
+		term = Parser.getTerm(config, this, linePart, machine, true);
 		pars = Parser.getParameters(term);
 
 		if (pars.isEmpty()) {
@@ -51,7 +52,7 @@ public class Sys extends AbstractCommand {
 	}
 
 	@Override
-	public List<CodeContainer> evalToCode(Machine machine) {
+	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
 		int memAddr = VarUtils.getInt(addr.eval(machine));
 		if (memAddr < 0 || memAddr > 65535) {
 			throw new RuntimeException("Illegal quantity error: " + this);
@@ -67,7 +68,7 @@ public class Sys extends AbstractCommand {
 	 * Machine)
 	 */
 	@Override
-	public BasicProgramCounter execute(Machine machine) {
+	public BasicProgramCounter execute(CompilerConfig config, Machine machine) {
 		int memAddr = VarUtils.getInt(addr.eval(machine));
 		if (memAddr < 0 || memAddr > 65535) {
 			throw new RuntimeException("Illegal quantity error: " + this);

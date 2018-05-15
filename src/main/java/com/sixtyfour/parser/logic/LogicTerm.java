@@ -6,6 +6,7 @@ import java.util.List;
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.parser.Term;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Machine;
 
 /**
@@ -63,14 +64,14 @@ public class LogicTerm implements LogicBlock {
 	}
 
 	@Override
-	public List<CodeContainer> evalToCode(Machine machine) {
+	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
 		List<CodeContainer> ret = new ArrayList<CodeContainer>();
 		if (blocks.size() == 0) {
 			return ret;
 		}
 		for (int i = 0; i < blocks.size(); i++) {
 			LogicBlock nextBlock = blocks.get(i);
-			ret.addAll(nextBlock.evalToCode(machine));
+			ret.addAll(nextBlock.evalToCode(config, machine));
 		}
 		return ret;
 	}

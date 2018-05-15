@@ -49,8 +49,8 @@ public class NativeOptimizer {
 		patterns.add(new NativePattern(new String[] { "MOV Y,#*", "PUSH Y", "NOP", "MOV Y,#*", "PUSH Y", "NOP" }, new String[] { "{0}", "{1}", "{3}", "{4}" }));
 	}
 
-	public static List<String> optimizeNative(List<String> code) {
-		if (CompilerConfig.getConfig().isIntermediateLanguageOptimizations()) {
+	public static List<String> optimizeNative(CompilerConfig config, List<String> code) {
+		if (config.isIntermediateLanguageOptimizations()) {
 			int oldCode = 0;
 			do {
 				oldCode = code.size();

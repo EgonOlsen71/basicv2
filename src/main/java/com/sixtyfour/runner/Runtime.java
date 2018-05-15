@@ -8,6 +8,7 @@ import com.sixtyfour.Loader;
 import com.sixtyfour.extensions.graphics.GraphicsBasic;
 import com.sixtyfour.extensions.textmode.ConsoleSupport;
 import com.sixtyfour.plugins.impl.RamSystemCallListener;
+import com.sixtyfour.system.CompilerConfig;
 
 /**
  * A simple helper class that allows for starting BASIC programs from the
@@ -35,7 +36,7 @@ public class Runtime {
 		Basic parser = new Basic(code);
 		parser.getMachine().addRoms();
 		parser.setSystemCallListener(new RamSystemCallListener(parser.getMachine()));
-		parser.run();
+		parser.run(new CompilerConfig());
 	}
 
 }

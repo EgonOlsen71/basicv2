@@ -12,6 +12,7 @@ import com.sixtyfour.plugins.FileType;
 import com.sixtyfour.plugins.FileWrapper;
 import com.sixtyfour.plugins.OutputChannel;
 import com.sixtyfour.plugins.PrintConsumer;
+import com.sixtyfour.system.CompilerConfig;
 
 /**
  * A simple implementation of a device provider that provides a virtual,
@@ -297,7 +298,7 @@ public class MemoryDeviceProvider implements DeviceProvider {
 	 * @see sixtyfour.plugins.DeviceProvider#load(java.lang.String, int, int)
 	 */
 	@Override
-	public void load(String fileName, int device, int secondary) {
+	public void load(CompilerConfig config, String fileName, int device, int secondary) {
 		// System.out.println(fileName + "/" + device + "/" + secondary);
 		// Do nothing...
 	}

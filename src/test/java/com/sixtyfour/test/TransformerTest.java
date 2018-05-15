@@ -33,6 +33,7 @@ import com.sixtyfour.test.helper.ProfilerData;
  */
 public class TransformerTest {
 
+    private static CompilerConfig config=new CompilerConfig();
 	private static String path = "compiled/";
 
 	public static void main(String[] args) throws Exception {
@@ -41,7 +42,7 @@ public class TransformerTest {
 //		testTransformer2();
 //		testTransformer4();
 //		testTransformer5();
-//		testTransformerFractal();
+		testTransformerFractal();
 //		testTransformer6();
 //		testTransformer7();
 //		testTransformerPrime();
@@ -73,7 +74,7 @@ public class TransformerTest {
 //		testConditions();
 //		testTransformer28();
 //		testTransformer29();
-		testTransformer30();
+//		testTransformer30();
 	}
 
 	private static void testConditions() throws Exception {
@@ -437,7 +438,7 @@ public class TransformerTest {
 
 		System.out.println("----------------------------------------");
 		Basic basy = new Basic(vary);
-		basy.run();
+		basy.run(config);
 		System.out.println("----------------------------------------");
 	}
 
@@ -528,7 +529,7 @@ public class TransformerTest {
 
 		// assy.getCpu().setCpuTracer(new MySimpleTracer(assy));
 
-		assy.run();
+		assy.run(config);
 		Program prg = assy.getProgram();
 		for (ProgramPart pp : prg.getParts()) {
 			System.out.println("Size: " + pp.size());
@@ -561,7 +562,7 @@ public class TransformerTest {
 		System.out.println(assy.toString());
 		try {
 			monitor.start();
-			assy.run();
+			assy.run(config);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -622,8 +623,8 @@ public class TransformerTest {
 		}
 
 		Assembler assy = new Assembler(nCode);
-		assy.compile();
-		assy.run();
+		assy.compile(config);
+		assy.run(config);
 		Program prg = assy.getProgram();
 		for (ProgramPart pp : prg.getParts()) {
 			System.out.println("Size: " + pp.size());
@@ -635,7 +636,7 @@ public class TransformerTest {
 		String[] vary = Loader.loadProgram("src/test/resources/transform/test1.bas");
 
 		final Assembler assy = initTestEnvironment(vary);
-		assy.run();
+		assy.run(config);
 		Program prg = assy.getProgram();
 		for (ProgramPart pp : prg.getParts()) {
 			System.out.println("Size: " + pp.size());
@@ -656,7 +657,7 @@ public class TransformerTest {
 		 */
 		System.out.println(assy.toString());
 
-		assy.run();
+		assy.run(config);
 		System.out.println("...done!");
 		System.out.println("A=" + Conversions.convertCompactFloat(machine, 0xa81));
 		System.out.println("D=" + Conversions.convertCompactFloat(machine, 0xa8a));
@@ -680,8 +681,8 @@ public class TransformerTest {
 		}
 
 		Assembler assy = new Assembler(nCode);
-		assy.compile();
-		assy.run();
+		assy.compile(config);
+		assy.run(config);
 		Program prg = assy.getProgram();
 		for (ProgramPart pp : prg.getParts()) {
 			System.out.println("Size: " + pp.size());
@@ -692,7 +693,7 @@ public class TransformerTest {
 		machine.addRoms();
 		System.out.println(assy.toString());
 
-		assy.run();
+		assy.run(config);
 		System.out.println("...done!");
 		System.out.println("A=" + Conversions.convertCompactFloat(machine, 0x824));
 		System.out.println(Arrays.toString(Arrays.copyOfRange(machine.getRam(), 0x824, 0x824 + 5)));
@@ -750,7 +751,7 @@ public class TransformerTest {
 	}
 
 	private static Assembler initTestEnvironment(String[] vary, boolean executePseudo, int variableStart) {
-		CompilerConfig conf = CompilerConfig.getConfig();
+		CompilerConfig conf = new CompilerConfig();
 		conf.setConstantFolding(true);
 		conf.setConstantPropagation(true);
 		conf.setDeadStoreElimination(true);
@@ -761,9 +762,9 @@ public class TransformerTest {
 		// conf.setCompactThreshold(4);
 
 		final Basic basic = new Basic(vary);
-		basic.compile();
+		basic.compile(conf);
 
-		List<String> mCode = NativeCompiler.getCompiler().compileToPseudeCode(basic);
+		List<String> mCode = NativeCompiler.getCompiler().compileToPseudeCode(conf, basic);
 		System.out.println("------------------------------");
 		for (String line : mCode) {
 			System.out.println(line);
@@ -773,19 +774,19 @@ public class TransformerTest {
 		if (executePseudo) {
 			System.out.println("Running pseudo code...");
 			PseudoCpu pc = new PseudoCpu();
-			pc.execute(basic.getMachine(), mCode);
+			pc.execute(conf, basic.getMachine(), mCode);
 		}
 		System.out.println("------------------------------");
 
 		MemoryConfig memConfig = new MemoryConfig();
 		memConfig.setVariableStart(variableStart);
-		List<String> nCode = NativeCompiler.getCompiler().compile(basic, memConfig);
+		List<String> nCode = NativeCompiler.getCompiler().compile(conf, basic, memConfig);
 		for (String line : nCode) {
 			System.out.println(line);
 		}
 
 		final Assembler assy = new Assembler(nCode);
-		assy.compile();
+		assy.compile(conf);
 
 		return assy;
 	}
@@ -803,7 +804,7 @@ public class TransformerTest {
 
 		System.out.println(assy.toString());
 		try {
-			assy.run();
+			assy.run(config);
 		} catch (Exception e) {
 			e.printStackTrace();
 			printMemory(assy, machine);

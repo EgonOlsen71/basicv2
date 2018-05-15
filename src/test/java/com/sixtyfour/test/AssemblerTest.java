@@ -5,13 +5,17 @@ import java.util.Arrays;
 import com.sixtyfour.Assembler;
 import com.sixtyfour.Loader;
 import com.sixtyfour.plugins.CpuCallListener;
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Cpu;
 import com.sixtyfour.system.CpuTracer;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.system.Program;
 
 public class AssemblerTest {
-	public static void main(String[] args) {
+	
+    
+    private static CompilerConfig config=new CompilerConfig();
+    public static void main(String[] args) {
 		testLda();
 		testLdx();
 		testLdy();
@@ -50,7 +54,7 @@ public class AssemblerTest {
 		System.out.println("\ntestFastCopy");
 		String[] code = Loader.loadProgram("src/test/resources/asm/fastcopy.asm");
 		Assembler asm = new Assembler(code);
-		asm.compile();
+		asm.compile(config);
 		int[] ram = asm.getRam();
 		for (int i = 0x2000; i < 0x2123; i++) {
 			ram[i] = 199;
@@ -58,7 +62,7 @@ public class AssemblerTest {
 		for (int i = 0x2123; i < 0x2123 + 0x2000; i++) {
 			ram[i] = (i - 0x2123) & 0xff;
 		}
-		asm.run();
+		asm.run(config);
 		System.out.println(asm.toString());
 		for (int i = 8192; i < 16384; i++) {
 			System.out.print(Integer.toHexString(asm.getRam()[i] & 0xff) + ",");
@@ -80,7 +84,7 @@ public class AssemblerTest {
 	private static void testCpuCallListener() {
 		String[] code = Loader.loadProgram("src/test/resources/asm/calllistener.asm");
 		Assembler asm = new Assembler(code);
-		asm.compile();
+		asm.compile(config);
 		asm.getCpu().setCpuCallListener(new CpuCallListener() {
 			@Override
 			public boolean jsr(Cpu cpu, int addr) {
@@ -88,14 +92,14 @@ public class AssemblerTest {
 				return true;
 			}
 		});
-		asm.run();
+		asm.run(config);
 		System.out.println("Value written: " + asm.getMachine().getRam()[8192]);
 	}
 
 	private static void testSelfModify() {
 		String[] code = Loader.loadProgram("src/test/resources/asm/selfmodify.asm");
 		Assembler asm = new Assembler(code);
-		asm.compile();
+		asm.compile(config);
 		Machine machine = asm.getMachine();
 		int[] ram = machine.getRam();
 
@@ -103,7 +107,7 @@ public class AssemblerTest {
 		ram[0x2222] = 0xfe;
 		ram[0x3567] = 0xfa;
 
-		asm.run();
+		asm.run(config);
 		System.out.println(ram[0x2000] + ram[0x2222] + ram[0x3567]);
 
 		System.out.println(asm.toString());
@@ -112,7 +116,7 @@ public class AssemblerTest {
 	private static void testMath() {
 		String[] code = Loader.loadProgram("src/test/resources/asm/math.asm");
 		Assembler asm = new Assembler(code);
-		asm.compile();
+		asm.compile(config);
 		Program prg = asm.getProgram();
 		Machine machine = asm.getMachine();
 		int[] ram = machine.getRam();
@@ -123,14 +127,14 @@ public class AssemblerTest {
 		ram[0x64] = 0x22;
 		ram[0x65] = 0x31;
 
-		asm.run();
+		asm.run(config);
 		System.out.println(ram[0x66] + 256 * ram[0x67]);
 
 		prg.setCodeStart(0xc100);
 
 		ram[0x62] = 0x10;
 		ram[0x63] = 0xae;
-		asm.run();
+		asm.run(config);
 		System.out.println(ram[0x66] + 256 * ram[0x67]);
 	}
 
@@ -334,7 +338,7 @@ public class AssemblerTest {
 
 	private static void execute(String line) {
 		Assembler asm = new Assembler(line);
-		asm.compile();
+		asm.compile(config);
 		int[] bin = asm.getProgram().getParts().get(0).getBytes();
 		System.out.println(Arrays.toString(bin));
 	}
@@ -412,9 +416,9 @@ public class AssemblerTest {
 	private static void testE46() {
 		String[] code = Loader.loadProgram("src/test/resources/asm/e45.asm");
 		Assembler asm = new Assembler(code);
-		asm.compile();
+		asm.compile(config);
 		System.out.println(asm.toString());
-		asm.run();
+		asm.run(config);
 		for (int i = 1024; i < 1050; i++) {
 			System.out.println(asm.getMachine().getRam()[i]);
 		}
@@ -425,7 +429,7 @@ public class AssemblerTest {
 	private static void testCpuRun() {
 		String[] code = Loader.loadProgram("src/test/resources/asm/example3.asm");
 		Assembler asm = new Assembler(code);
-		asm.compile();
+		asm.compile(config);
 		Cpu cpu = asm.getCpu();
 		cpu.setExitOnBreak(false);
 		System.out.println(asm.toString());
@@ -444,7 +448,7 @@ public class AssemblerTest {
 
 			}
 		});
-		asm.run();
+		asm.run(config);
 		outputRunResults(asm.getMachine(), cpu);
 
 		cpu.setCpuTracer(null);
@@ -469,7 +473,7 @@ public class AssemblerTest {
 
 	private static void runAssembler(String[] code) {
 		Assembler asm = new Assembler(code);
-		asm.compile();
+		asm.compile(config);
 		Program prg = asm.getProgram();
 		int[] bin = prg.getParts().get(0).getBytes();
 		System.out.println(Arrays.toString(bin));

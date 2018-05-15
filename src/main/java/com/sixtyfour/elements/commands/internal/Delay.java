@@ -3,6 +3,7 @@ package com.sixtyfour.elements.commands.internal;
 import com.sixtyfour.elements.commands.AbstractCommand;
 import com.sixtyfour.elements.commands.For;
 import com.sixtyfour.system.BasicProgramCounter;
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Machine;
 
 /**
@@ -24,7 +25,7 @@ public class Delay extends AbstractCommand {
 	}
 
 	@Override
-	public BasicProgramCounter execute(Machine machine) {
+	public BasicProgramCounter execute(CompilerConfig config, Machine machine) {
 		delayLoop.setToFinalValue(machine);
 		if (delay) {
 			long steps = delayLoop.getSteps(machine);

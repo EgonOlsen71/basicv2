@@ -10,6 +10,7 @@ import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.Term;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
@@ -74,7 +75,7 @@ public class ArrayAccess extends AbstractFunction {
 	}
 
 	@Override
-	public List<CodeContainer> evalToCode(Machine machine) {
+	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
 		// fillParameterIndices(machine);
 		List<String> ret = new ArrayList<String>();
 		ret.add("_");
@@ -89,10 +90,10 @@ public class ArrayAccess extends AbstractFunction {
 			throw new RuntimeException("Array indices don't match: " + this + "/" + pars.size() + "/" + dimensions.length);
 		}
 
-		Term t = Parser.createIndexTerm(machine, pars, dimensions);
+		Term t = Parser.createIndexTerm(config, machine, pars, dimensions);
 
-		List<String> n1 = t.evalToCode(machine).get(0).getExpression();
-		n1.addAll(vary.evalToCode(machine).get(0).getExpression());
+		List<String> n1 = t.evalToCode(config, machine).get(0).getExpression();
+		n1.addAll(vary.evalToCode(config, machine).get(0).getExpression());
 		n1.add(":" + this.getClass().getSimpleName().toUpperCase(Locale.ENGLISH));
 		ret.addAll(0, n1);
 		List<CodeContainer> cc = new ArrayList<CodeContainer>();

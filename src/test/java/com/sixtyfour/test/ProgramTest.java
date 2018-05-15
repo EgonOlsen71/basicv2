@@ -2,13 +2,14 @@ package com.sixtyfour.test;
 
 import com.sixtyfour.Basic;
 import com.sixtyfour.Loader;
+import com.sixtyfour.system.CompilerConfig;
 
 /**
  * Basic tests for executing complete BASIC programs.
  */
 @SuppressWarnings("unused")
 public class ProgramTest {
-
+    private static CompilerConfig config=new CompilerConfig();
 	/**
 	 * The main method.
 	 * 
@@ -45,32 +46,32 @@ public class ProgramTest {
 	private static void testArray() {
 		String[] vary = Loader.loadProgram("src/test/resources/basic/array.bas");
 		Basic inty = new Basic(vary);
-		inty.run();
+		inty.run(config);
 	}
 
 	private static void testBuggedOn64() {
 		String[] vary = Loader.loadProgram("src/test/resources/basic/buggy64.bas");
 		Basic inty = new Basic(vary);
-		inty.run();
+		inty.run(config);
 
 	}
 
 	private static void testBio() {
 		String[] vary = Loader.loadProgram("src/test/resources/basic/bio64.bas");
 		Basic inty = new Basic(vary);
-		inty.run();
+		inty.run(config);
 	}
 
 	private static void testOtherPrime() {
 		String[] vary = Loader.loadProgram("src/test/resources/basic/primzahlen.bas");
 		Basic inty = new Basic(vary);
-		inty.run();
+		inty.run(config);
 	}
 
 	private static void testCalendar() {
 		String[] vary = Loader.loadProgram("src/test/resources/basic/kalender.bas");
 		Basic inty = new Basic(vary);
-		inty.run();
+		inty.run(config);
 	}
 
 	/**
@@ -80,7 +81,7 @@ public class ProgramTest {
 		String[] vary = Loader.loadProgram("src/test/resources/basic/files.bas");
 		Basic inty = new Basic(vary);
 		// inty.setPrintLineNumbers(true);
-		inty.run();
+		inty.run(config);
 	}
 
 	/**
@@ -89,7 +90,7 @@ public class ProgramTest {
 	private static void testCalc() {
 		String[] vary = Loader.loadProgram("src/test/resources/basic/calctest.bas");
 		Basic inty = new Basic(vary);
-		inty.run();
+		inty.run(config);
 	}
 
 	/**
@@ -98,7 +99,7 @@ public class ProgramTest {
 	private static void testAdventure() {
 		String[] vary = Loader.loadProgram("src/test/resources/basic/OHARES3.BAS");
 		Basic inty = new Basic(vary);
-		inty.run();
+		inty.run(config);
 	}
 
 	/**
@@ -107,7 +108,7 @@ public class ProgramTest {
 	private static void testData() {
 		String[] vary = Loader.loadProgram("src/test/resources/basic/data.bas");
 		Basic inty = new Basic(vary);
-		inty.run();
+		inty.run(config);
 	}
 
 	/**
@@ -116,7 +117,7 @@ public class ProgramTest {
 	private static void testInput() {
 		String[] vary = Loader.loadProgram("src/test/resources/basic/input.bas");
 		Basic inty = new Basic(vary);
-		inty.run();
+		inty.run(config);
 	}
 
 	/**
@@ -125,7 +126,7 @@ public class ProgramTest {
 	private static void testRun() {
 		String[] vary = Loader.loadProgram("src/test/resources/basic/run.bas");
 		Basic inty = new Basic(vary);
-		inty.run();
+		inty.run(config);
 	}
 
 	/**
@@ -134,7 +135,7 @@ public class ProgramTest {
 	private static void testBeer() {
 		String[] vary = Loader.loadProgram("src/test/resources/basic/beer.bas");
 		Basic inty = new Basic(vary);
-		inty.run();
+		inty.run(config);
 	}
 
 	/**
@@ -143,7 +144,7 @@ public class ProgramTest {
 	private static void testMenu() {
 		String[] vary = Loader.loadProgram("src/test/resources/basic/menu.bas");
 		Basic inty = new Basic(vary);
-		inty.run();
+		inty.run(config);
 	}
 
 	/**
@@ -152,7 +153,7 @@ public class ProgramTest {
 	private static void testGosub() {
 		String[] vary = Loader.loadProgram("src/test/resources/basic/fac.bas");
 		Basic inty = new Basic(vary);
-		inty.run();
+		inty.run(config);
 	}
 
 	/**
@@ -161,7 +162,7 @@ public class ProgramTest {
 	private static void testGosubReturn() {
 		String[] vary = Loader.loadProgram("src/test/resources/basic/subroutines.bas");
 		Basic inty = new Basic(vary);
-		inty.run();
+		inty.run(config);
 	}
 
 	/**
@@ -170,7 +171,7 @@ public class ProgramTest {
 	private static void testVarious() {
 		String[] vary = Loader.loadProgram("src/test/resources/basic/various.bas");
 		Basic inty = new Basic(vary);
-		inty.run();
+		inty.run(config);
 	}
 
 	/**
@@ -179,13 +180,13 @@ public class ProgramTest {
 	private static void testConditions() {
 		String[] condy = Loader.loadProgram("src/test/resources/basic/conditions.bas");
 		Basic inty = new Basic(condy);
-		inty.run();
+		inty.run(config);
 	}
 
 	private static void testIf() {
 		String[] condy = Loader.loadProgram("src/test/resources/basic/if.bas");
 		Basic inty = new Basic(condy);
-		inty.run();
+		inty.run(config);
 	}
 
 	/**
@@ -194,7 +195,7 @@ public class ProgramTest {
 	private static void testPrime() {
 		String[] prime = Loader.loadProgram("src/test/resources/basic/prime.bas");
 		Basic inty = new Basic(prime);
-		inty.run();
+		inty.run(config);
 	}
 
 	/**
@@ -203,7 +204,7 @@ public class ProgramTest {
 	private static void testPrime2() {
 		String[] prime = Loader.loadProgram("src/test/resources/basic/prime2.bas");
 		Basic inty = new Basic(prime);
-		inty.run();
+		inty.run(config);
 	}
 
 	/**

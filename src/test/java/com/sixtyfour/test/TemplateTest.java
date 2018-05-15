@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.templating.Template;
 import com.sixtyfour.templating.TemplateManager;
 
@@ -12,6 +13,8 @@ import com.sixtyfour.templating.TemplateManager;
  * A basic template example/test.
  */
 public class TemplateTest {
+    private static CompilerConfig config=new CompilerConfig();
+    
 	public static void main(String[] args) throws Exception {
 		testTemplate();
 		testTemplateInclude();
@@ -26,7 +29,7 @@ public class TemplateTest {
 		TemplateManager tm = TemplateManager.getInstance();
 		Template templ = tm.getTemplate("src/test/resources/templates/includer.cbm");
 		templ.setVariablesWithType(vars);
-		String res = templ.process();
+		String res = templ.process(config);
 		System.out.println(res);
 	}
 
@@ -39,7 +42,7 @@ public class TemplateTest {
 		TemplateManager tm = TemplateManager.getInstance();
 		Template templ = tm.getTemplate("src/test/resources/templates/html.cbm");
 		templ.setVariables(vars);
-		String res = templ.process();
+		String res = templ.process(config);
 		System.out.println(res);
 	}
 
@@ -59,7 +62,7 @@ public class TemplateTest {
 					vars.put("TT$", "At least better than PHP!");
 
 					templ.setVariables(vars);
-					String res = templ.process();
+					String res = templ.process(config);
 					System.out.println(res);
 				}
 			};

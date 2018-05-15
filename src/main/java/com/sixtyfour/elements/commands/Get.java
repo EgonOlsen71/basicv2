@@ -11,6 +11,7 @@ import com.sixtyfour.parser.TermEnhancer;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.system.BasicProgramCounter;
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.util.VarUtils;
 
 /**
@@ -52,20 +53,20 @@ public class Get extends MultiVariableCommand {
 	 * int, int, int, boolean, sixtyfour.system.Machine)
 	 */
 	@Override
-	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
-		super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine);
+	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
+		super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine);
 		linePart = TermEnhancer.removeWhiteSpace(linePart);
 		linePart = linePart.substring(3).trim();
 		if (linePart.length() == 0) {
 			syntaxError(this);
 		}
-		this.fillVariables(linePart, machine);
+		this.fillVariables(config, linePart, machine);
 		return null;
 	}
 
 	@Override
-	public List<CodeContainer> evalToCode(Machine machine) {
-		return this.evalToCode(machine, "GETSTR", "GETNUMBER");
+	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
+		return this.evalToCode(config, machine, "GETSTR", "GETNUMBER");
 	}
 
 	/*
@@ -76,7 +77,7 @@ public class Get extends MultiVariableCommand {
 	 * Machine)
 	 */
 	@Override
-	public BasicProgramCounter execute(Machine machine) {
+	public BasicProgramCounter execute(CompilerConfig config, Machine machine) {
 		for (int i = 0; i < vars.size(); i++) {
 			Term indexTerm = indexTerms.get(i);
 			Variable var = this.getVariable(machine, i);

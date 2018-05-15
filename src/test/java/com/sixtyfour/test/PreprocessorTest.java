@@ -3,8 +3,10 @@ package com.sixtyfour.test;
 import com.sixtyfour.Basic;
 import com.sixtyfour.Loader;
 import com.sixtyfour.parser.Preprocessor;
+import com.sixtyfour.system.CompilerConfig;
 
 public class PreprocessorTest {
+    private static CompilerConfig config=new CompilerConfig();
 	public static void main(String[] args) {
 		testPrePro();
 		testPrePro2();
@@ -27,6 +29,6 @@ public class PreprocessorTest {
 			System.out.println(line);
 		}
 		Basic bas = new Basic(res);
-		bas.run();
+		bas.run(config);
 	}
 }

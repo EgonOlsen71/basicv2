@@ -8,6 +8,7 @@ import java.util.Map;
 import com.sixtyfour.elements.Constant;
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.Jitted;
 
@@ -245,7 +246,7 @@ public class Term implements Atom {
 	}
 
 	@Override
-	public List<CodeContainer> evalToCode(Machine machine) {
+	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
 		List<String> ret = new ArrayList<String>();
 		List<CodeContainer> cc = new ArrayList<CodeContainer>();
 
@@ -253,13 +254,13 @@ public class Term implements Atom {
 			if (left == null) {
 				throw new RuntimeException("Syntax error!");
 			}
-			return left.evalToCode(machine);
+			return left.evalToCode(config, machine);
 		}
 		Type type = getType(true);
 		if (type == Type.STRING) {
 			if (operator.isPlus()) {
-				List<String> s1 = left.evalToCode(machine).get(0).getExpression();
-				List<String> s2 = right.evalToCode(machine).get(0).getExpression();
+				List<String> s1 = left.evalToCode(config, machine).get(0).getExpression();
+				List<String> s2 = right.evalToCode(config, machine).get(0).getExpression();
 				ret.add(0, "_");
 				s2.add(0, ":.");
 				ret.addAll(0, s1);
@@ -268,8 +269,8 @@ public class Term implements Atom {
 				return cc;
 			}
 		} else {
-			List<String> n1 = left.evalToCode(machine).get(0).getExpression();
-			List<String> n2 = right.evalToCode(machine).get(0).getExpression();
+			List<String> n1 = left.evalToCode(config, machine).get(0).getExpression();
+			List<String> n2 = right.evalToCode(config, machine).get(0).getExpression();
 
 			if (n1 == null || n2 == null) {
 				throw new RuntimeException("Unknown function name: " + this.getExpression());

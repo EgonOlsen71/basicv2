@@ -6,13 +6,14 @@ import com.sixtyfour.parser.Line;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.Term;
 import com.sixtyfour.parser.TermEnhancer;
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Machine;
 
 /**
  * Basic tests for the parser.
  */
 public class ParserTest {
-
+    private static CompilerConfig config=new CompilerConfig();
 	/**
 	 * The main method.
 	 * 
@@ -41,7 +42,7 @@ public class ParserTest {
 		String term = "(int(int(4.4+5*2.2)+5.6)) and (8+4)";
 		String s = TermEnhancer.addBrackets(term);
 		System.out.println(s);
-		Term t = Parser.getTerm(term, machine, false, true);
+		Term t = Parser.getTerm(config, term, machine, false, true);
 		System.out.println(t);
 		System.out.println(t.eval(machine));
 	}
@@ -52,14 +53,14 @@ public class ParserTest {
 		String s = TermEnhancer.addBrackets(term);
 		System.out.println(s);
 		Machine machine = new Machine();
-		Term t = Parser.getTerm(term, machine, false, true);
+		Term t = Parser.getTerm(config, term, machine, false, true);
 		System.out.println(t);
 		System.out.println(t.eval(machine));
 
 		term = "1*-3^2e1";
 		s = TermEnhancer.addBrackets(term);
 		System.out.println(s);
-		t = Parser.getTerm(term, machine, false, true);
+		t = Parser.getTerm(config, term, machine, false, true);
 		System.out.println(t);
 		System.out.println(t.eval(machine));
 	}
@@ -68,17 +69,17 @@ public class ParserTest {
 		System.out.println("testArrayAccess");
 		String term = "10*b(1,1)";
 		Machine machine = new Machine();
-		Term t = Parser.getTerm(term, machine, false, true);
+		Term t = Parser.getTerm(config, term, machine, false, true);
 		System.out.println(t);
 		System.out.println(TermEnhancer.addBrackets(term));
 		System.out.println();
 		term = "10+b(1,1)";
-		t = Parser.getTerm(term, machine, false, true);
+		t = Parser.getTerm(config, term, machine, false, true);
 		System.out.println(t);
 		System.out.println(TermEnhancer.addBrackets(term));
 		System.out.println();
 		term = "a=a*2+4+b(1,1)";
-		t = Parser.getTerm(term, machine, true, true);
+		t = Parser.getTerm(config, term, machine, true, true);
 		System.out.println(t);
 		System.out.println(t.getOperator());
 		System.out.println(t.eval(machine));
@@ -98,7 +99,7 @@ public class ParserTest {
 		String wbres = TermEnhancer.addBrackets(term);
 		System.out.println(wbres);
 
-		Term res = Parser.getTerm(term, machine, false, true);
+		Term res = Parser.getTerm(config, term, machine, false, true);
 		System.out.println(res);
 		System.out.println("Value: " + res.eval(machine));
 	}
@@ -122,7 +123,7 @@ public class ParserTest {
 		String wbres = TermEnhancer.addBrackets(term);
 		System.out.println(wbres);
 
-		Term res = Parser.getTerm(term, machine, false, true);
+		Term res = Parser.getTerm(config, term, machine, false, true);
 		System.out.println(res);
 		System.out.println("Value: " + res.eval(machine));
 	}
@@ -140,7 +141,7 @@ public class ParserTest {
 		String wbres = TermEnhancer.addBrackets(term);
 		System.out.println(wbres);
 
-		Term res = Parser.getTerm(term, machine, false, true);
+		Term res = Parser.getTerm(config, term, machine, false, true);
 		System.out.println(res);
 		System.out.println("Value: " + res.eval(machine));
 
@@ -165,7 +166,7 @@ public class ParserTest {
 		String wbres = TermEnhancer.addBrackets(term);
 		System.out.println(wbres);
 
-		Term res = Parser.getTerm(term, machine, false, true);
+		Term res = Parser.getTerm(config, term, machine, false, true);
 		System.out.println(res);
 		System.out.println("Value: " + res.eval(machine));
 	}
@@ -182,7 +183,7 @@ public class ParserTest {
 		String wbres = TermEnhancer.addBrackets(term);
 		System.out.println(wbres);
 
-		Term res = Parser.getTerm(term, machine, false, true);
+		Term res = Parser.getTerm(config, term, machine, false, true);
 		System.out.println(res);
 		System.out.println("Value: " + res.eval(machine));
 	}
@@ -201,7 +202,7 @@ public class ParserTest {
 		String wbres = TermEnhancer.addBrackets(term);
 		System.out.println(wbres);
 
-		Term res = Parser.getTerm(term, machine, false, true);
+		Term res = Parser.getTerm(config, term, machine, false, true);
 		System.out.println(res);
 		System.out.println("Value: " + res.eval(machine));
 	}
@@ -222,7 +223,7 @@ public class ParserTest {
 		machine.add(new Variable("I", 4.1234));
 		String term = "(a^z * (b + c / (z+-sin(u+z*k))) * d)/cos(i) + cos(-88)";
 		// String term="sin(-1)";
-		Term res = Parser.getTerm(term, machine, false, true);
+		Term res = Parser.getTerm(config, term, machine, false, true);
 		System.out.println(res);
 		System.out.println("Value: " + res.eval(machine));
 		System.out.println(((5f * ((5.6f + (14f / (12f + (-1f * Math.sin((1.4f + (12f * -2f))))))) * 3f)) / (Math.cos((4.1234f)) + Math.cos(88f))));

@@ -37,10 +37,10 @@ public class ConstantPropagator {
 		}
 	};
 
-	public static boolean propagateConstants(Machine machine) {
+	public static boolean propagateConstants(CompilerConfig config, Machine machine) {
 		boolean found = false;
 		boolean doneSomething = false;
-		if (CompilerConfig.getConfig().isConstantPropagation()) {
+		if (config.isConstantPropagation()) {
 			do {
 				found = false;
 				for (Command cmd : machine.getCommandList()) {
@@ -52,7 +52,7 @@ public class ConstantPropagator {
 								continue;
 							}
 							Term term = let.getTerm();
-							boolean termIsConstant = ConstantPropagator.checkForConstant(machine, term);
+							boolean termIsConstant = ConstantPropagator.checkForConstant(config, machine, term);
 							if (termIsConstant && !var.getUpperCaseName().equals("TI$")) {
 								var.setValue(term.eval(machine));
 								var.setConstant(true);
@@ -68,16 +68,16 @@ public class ConstantPropagator {
 		return doneSomething;
 	}
 
-	public static boolean checkForConstant(Machine machine, Term t) {
+	public static boolean checkForConstant(CompilerConfig config, Machine machine, Term t) {
 		if (t == null) {
 			return false;
 		}
 		boolean[] isConstant = new boolean[1];
 		isConstant[0] = true;
-		return checkForConstant(machine, t, isConstant);
+		return checkForConstant(config, machine, t, isConstant);
 	}
 
-	public static boolean checkForConstant(Machine machine, Term t, boolean[] isConstant) {
+	public static boolean checkForConstant(CompilerConfig config, Machine machine, Term t, boolean[] isConstant) {
 
 		// Value up to which divisions by <value> will be converted into
 		// *1/<value>
@@ -88,7 +88,7 @@ public class ConstantPropagator {
 			return false;
 		}
 
-		if (!CompilerConfig.getConfig().isDeadStoreEliminationOfStrings()) {
+		if (!config.isDeadStoreEliminationOfStrings()) {
 			if (t.getType(true) == Type.STRING) {
 				isConstant[0] = false;
 				return false;
@@ -143,13 +143,13 @@ public class ConstantPropagator {
 		}
 		if (left.isTerm()) {
 			Term lt = (Term) left;
-			isConstant[0] &= checkForConstant(machine, lt, isConstant);
+			isConstant[0] &= checkForConstant(config, machine, lt, isConstant);
 		} else {
 			if (!(left.isConstant())) {
 				if (left instanceof Function) {
 					Function func = (Function) left;
 					if (func.isDeterministic()) {
-						isConstant[0] &= checkForConstant(machine, func.getTerm(), isConstant);
+						isConstant[0] &= checkForConstant(config, machine, func.getTerm(), isConstant);
 					} else {
 						isConstant[0] = false;
 						return false;
@@ -163,13 +163,13 @@ public class ConstantPropagator {
 		if (right != null) {
 			if (isConstant[0] && right.isTerm()) {
 				Term rt = (Term) right;
-				isConstant[0] &= checkForConstant(machine, rt, isConstant);
+				isConstant[0] &= checkForConstant(config, machine, rt, isConstant);
 			} else {
 				if (!(right.isConstant())) {
 					if (right instanceof Function) {
 						Function func = (Function) right;
 						if (func.isDeterministic()) {
-							isConstant[0] &= checkForConstant(machine, func.getTerm(), isConstant);
+							isConstant[0] &= checkForConstant(config, machine, func.getTerm(), isConstant);
 						} else {
 							isConstant[0] = false;
 							return false;

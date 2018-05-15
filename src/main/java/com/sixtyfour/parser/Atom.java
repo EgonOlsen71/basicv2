@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Machine;
 
 /**
@@ -46,7 +47,7 @@ public interface Atom {
 	 *            the machine
 	 * @return the result list
 	 */
-	List<CodeContainer> evalToCode(Machine machine);
+	List<CodeContainer> evalToCode(CompilerConfig config, Machine machine);
 
 	/**
 	 * Returns true, if the Atom represents a Term and false otherwise.

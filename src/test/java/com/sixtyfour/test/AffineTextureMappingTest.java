@@ -13,6 +13,7 @@ import com.sixtyfour.Basic;
 import com.sixtyfour.Loader;
 import com.sixtyfour.parser.Preprocessor;
 import com.sixtyfour.plugins.impl.RamSystemCallListener;
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Graphics;
 
 /**
@@ -20,7 +21,9 @@ import com.sixtyfour.system.Graphics;
  * 
  */
 public class AffineTextureMappingTest {
-	public static void main(String[] args) throws Exception {
+    private static CompilerConfig config=new CompilerConfig();
+    
+    public static void main(String[] args) throws Exception {
 		testBasicMapper();
 	}
 
@@ -67,7 +70,7 @@ public class AffineTextureMappingTest {
 			System.out.println(line);
 		}
 		final Basic inty = new Basic(vary);
-		inty.compile();
+		inty.compile(config);
 
 		// inty.getMachine().putProgram(asm.getProgram());
 		inty.enableJit(-1);
@@ -100,7 +103,7 @@ public class AffineTextureMappingTest {
 		 * 
 		 * } });
 		 */
-		inty.start();
+		inty.start(config);
 		BufferedImage bi2 = Graphics.createImage(inty.getMachine(), 16384, 24576, true, true);
 		FileOutputStream fos = new FileOutputStream("affine.png");
 		Graphics.savePng(bi2, fos);

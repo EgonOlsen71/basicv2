@@ -12,6 +12,7 @@ import com.sixtyfour.parser.Term;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.plugins.DeviceProvider;
 import com.sixtyfour.system.BasicProgramCounter;
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
@@ -37,13 +38,13 @@ public class InputFile extends Input {
 	 * int, boolean, sixtyfour.system.Machine)
 	 */
 	@Override
-	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
+	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
 		linePart = linePart.substring(this.name.length());
 		int pos = linePart.indexOf(',');
 		if (pos == -1) {
 			pos = linePart.length();
 		}
-		term = Parser.getTerm(linePart.substring(0, pos), machine, false, true);
+		term = Parser.getTerm(config, linePart.substring(0, pos), machine, false, true);
 		linePart = pos != linePart.length() ? linePart.substring(pos + 1) : "";
 		List<Atom> pars = Parser.getParameters(term);
 		if (pars.size() != 1) {
@@ -51,7 +52,7 @@ public class InputFile extends Input {
 		}
 		fileNumber = pars.get(0);
 		checkTypes(pars, linePart, Type.STRING);
-		super.parse("INPUT" + linePart, lineCnt, lineNumber, linePos, lastPos, machine);
+		super.parse(config, "INPUT" + linePart, lineCnt, lineNumber, linePos, lastPos, machine);
 		if (comment != null && !comment.isEmpty()) {
 			syntaxError(this);
 		}
@@ -59,18 +60,18 @@ public class InputFile extends Input {
 	}
 
 	@Override
-	public List<CodeContainer> evalToCode(Machine machine) {
+	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
 		NativeCompiler compiler = NativeCompiler.getCompiler();
 		List<String> after = new ArrayList<String>();
 		List<String> expr = null;
 		List<String> before = new ArrayList<String>();
 
-		expr = compiler.compileToPseudoCode(machine, fileNumber);
+		expr = compiler.compileToPseudoCode(config, machine, fileNumber);
 
 		CodeContainer cc = new CodeContainer(before, expr, after);
 		List<CodeContainer> ccs = new ArrayList<CodeContainer>();
 		ccs.add(cc);
-		ccs.addAll(this.evalToCodeFile(machine, "INPUTSTRCHANNEL", "INPUTNUMBERCHANNEL"));
+		ccs.addAll(this.evalToCodeFile(config, machine, "INPUTSTRCHANNEL", "INPUTNUMBERCHANNEL"));
 		return ccs;
 	}
 
@@ -80,7 +81,7 @@ public class InputFile extends Input {
 	 * @see sixtyfour.elements.commands.Input#execute(sixtyfour.system.Machine)
 	 */
 	@Override
-	public BasicProgramCounter execute(Machine machine) {
+	public BasicProgramCounter execute(CompilerConfig config, Machine machine) {
 		int fn = VarUtils.getInt(fileNumber.eval(machine));
 		DeviceProvider device = machine.getDeviceProvider();
 		for (int i = 0; i < vars.size(); i++) {

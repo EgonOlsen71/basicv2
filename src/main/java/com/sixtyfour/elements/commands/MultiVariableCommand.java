@@ -11,6 +11,7 @@ import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.Term;
 import com.sixtyfour.parser.VariableAndIndex;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
@@ -51,7 +52,7 @@ public abstract class MultiVariableCommand extends AbstractCommand {
 		return ret;
 	}
 
-	final protected List<CodeContainer> evalToCode(Machine machine, String strCall, String numberCall) {
+	final protected List<CodeContainer> evalToCode(CompilerConfig config, Machine machine, String strCall, String numberCall) {
 		NativeCompiler compiler = NativeCompiler.getCompiler();
 		List<CodeContainer> ccs = new ArrayList<CodeContainer>();
 		boolean added = false;
@@ -77,13 +78,13 @@ public abstract class MultiVariableCommand extends AbstractCommand {
 
 			if (indexTerm != null) {
 				List<Atom> pars = Parser.getParameters(indexTerm);
-				before.addAll(compiler.compileToPseudoCode(machine, Parser.createIndexTerm(machine, pars, var.getDimensions())));
+				before.addAll(compiler.compileToPseudoCode(config, machine, Parser.createIndexTerm(config, machine, pars, var.getDimensions())));
 
 				after.add("POP X");
-				after.add("MOV G," + getVariableLabel(machine, var));
+				after.add("MOV G," + getVariableLabel(config, machine, var));
 				after.add("JSR ARRAYSTORE");
 			} else {
-				after.add("MOV " + getVariableLabel(machine, var) + "," + (var.getType() == Type.STRING ? "A" : "Y"));
+				after.add("MOV " + getVariableLabel(config, machine, var) + "," + (var.getType() == Type.STRING ? "A" : "Y"));
 			}
 
 			CodeContainer cc = new CodeContainer(before, expr, after);
@@ -92,7 +93,7 @@ public abstract class MultiVariableCommand extends AbstractCommand {
 		return ccs;
 	}
 
-	final protected List<CodeContainer> evalToCodeFile(Machine machine, String strCall, String numberCall) {
+	final protected List<CodeContainer> evalToCodeFile(CompilerConfig config, Machine machine, String strCall, String numberCall) {
 		NativeCompiler compiler = NativeCompiler.getCompiler();
 		List<CodeContainer> ccs = new ArrayList<CodeContainer>();
 
@@ -117,13 +118,13 @@ public abstract class MultiVariableCommand extends AbstractCommand {
 
 			if (indexTerm != null) {
 				List<Atom> pars = Parser.getParameters(indexTerm);
-				expr = compiler.compileToPseudoCode(machine, Parser.createIndexTerm(machine, pars, var.getDimensions()));
+				expr = compiler.compileToPseudoCode(config, machine, Parser.createIndexTerm(config, machine, pars, var.getDimensions()));
 
 				after.add("POP X");
-				after.add("MOV G," + getVariableLabel(machine, var));
+				after.add("MOV G," + getVariableLabel(config, machine, var));
 				after.add("JSR ARRAYSTORE");
 			} else {
-				after.add("MOV " + getVariableLabel(machine, var) + "," + (var.getType() == Type.STRING ? "A" : "Y"));
+				after.add("MOV " + getVariableLabel(config, machine, var) + "," + (var.getType() == Type.STRING ? "A" : "Y"));
 			}
 
 			CodeContainer cc = new CodeContainer(before, expr, after);
@@ -185,7 +186,7 @@ public abstract class MultiVariableCommand extends AbstractCommand {
 	 * @param machine
 	 *            the machine
 	 */
-	final protected void fillVariables(String linePart, Machine machine) {
+	final protected void fillVariables(CompilerConfig config, String linePart, Machine machine) {
 		int brackets = 0;
 		StringBuilder sb = new StringBuilder();
 		List<String> parts = new ArrayList<String>();
@@ -211,7 +212,7 @@ public abstract class MultiVariableCommand extends AbstractCommand {
 		int cnt = 0;
 		for (String part : parts) {
 			Variable var = new Variable(VarUtils.toUpper(varNames.get(cnt++).trim()), null);
-			VariableAndIndex vai = Parser.getIndexTerm(var, part, machine, false);
+			VariableAndIndex vai = Parser.getIndexTerm(config, var, part, machine, false);
 			var = vai.getVariable();
 			indexTerms.add(vai.getIndexTerm());
 			vars.add(var);

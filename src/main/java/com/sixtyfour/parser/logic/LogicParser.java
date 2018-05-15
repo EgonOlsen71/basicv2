@@ -9,6 +9,7 @@ import java.util.Map;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.Term;
 import com.sixtyfour.parser.TermEnhancer;
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
@@ -38,8 +39,8 @@ public class LogicParser {
 	 *            the machine
 	 * @return the logic term
 	 */
-	public static LogicTerm getTerm(String term, Machine machine) {
-		return getTerm(term, machine, null);
+	public static LogicTerm getTerm(CompilerConfig config, String term, Machine machine) {
+		return getTerm(config, term, machine, null);
 	}
 
 	/**
@@ -53,7 +54,7 @@ public class LogicParser {
 	 *            the term map
 	 * @return the logic term
 	 */
-	public static LogicTerm getTerm(String term, Machine machine, Map<String, Term> termMap) {
+	public static LogicTerm getTerm(CompilerConfig config, String term, Machine machine, Map<String, Term> termMap) {
 		Map<String, LogicTerm> blocks = new HashMap<String, LogicTerm>();
 		term = processLogicOperations(term);
 		boolean inString = false;
@@ -90,7 +91,7 @@ public class LogicParser {
 				} else if (i == term.length() - 1) {
 					String toProcess = lastPart;
 					int startPos = lastStart;
-					String blockName = createLogicBlock(toProcess.substring(1, toProcess.length() - 1), blocks, machine, termMap);
+					String blockName = createLogicBlock(config, toProcess.substring(1, toProcess.length() - 1), blocks, machine, termMap);
 					int endy = Math.min(startPos + toProcess.length(), term.length());
 					term = term.substring(0, startPos) + blockName + (endy != term.length() ? term.substring(endy, term.length()) : "");
 					i = -1;
@@ -205,7 +206,7 @@ public class LogicParser {
 	 *            the term map
 	 * @return the name of the block
 	 */
-	private static String createLogicBlock(String toProcess, Map<String, LogicTerm> blocks, Machine machine, Map<String, Term> termMap) {
+	private static String createLogicBlock(CompilerConfig config, String toProcess, Map<String, LogicTerm> blocks, Machine machine, Map<String, Term> termMap) {
 		String[] delims = { "OR", "AND" };
 		String utp = Parser.replaceStrings(toProcess, '.');
 		int curPos = 0;
@@ -314,13 +315,13 @@ public class LogicParser {
 					// anyway...
 					left = left.substring(0, left.length() + bl);
 				}
-				compy.setLeft(Parser.getTerm(left, machine, false, true, termMap));
+				compy.setLeft(Parser.getTerm(config, left, machine, false, true, termMap));
 				if (right != null) {
 					int br = getBracketDelta(right);
 					if (br < 0) {
 						right = right.substring(0, right.length() + br);
 					}
-					compy.setRight(Parser.getTerm(right, machine, false, true, termMap));
+					compy.setRight(Parser.getTerm(config, right, machine, false, true, termMap));
 				}
 				if (not) {
 					compy.not();

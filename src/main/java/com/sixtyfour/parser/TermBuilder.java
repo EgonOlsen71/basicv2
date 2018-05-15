@@ -2,6 +2,7 @@ package com.sixtyfour.parser;
 
 import java.util.Map;
 
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Machine;
 
 /**
@@ -24,5 +25,5 @@ public interface TermBuilder {
 	 *            the machine
 	 * @return the final term
 	 */
-	Term build(Term t, Map<String, Term> termMap, Machine machine);
+	Term build(CompilerConfig config, Term t, Map<String, Term> termMap, Machine machine);
 }

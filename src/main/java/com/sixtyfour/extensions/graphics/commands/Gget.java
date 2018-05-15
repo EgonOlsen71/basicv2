@@ -10,6 +10,7 @@ import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.Term;
 import com.sixtyfour.parser.VariableAndIndex;
 import com.sixtyfour.system.BasicProgramCounter;
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
@@ -30,13 +31,13 @@ public class Gget extends AbstractGraphicsCommand {
 	}
 
 	@Override
-	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
-		String ret = super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine, 1, 0);
-		this.fillVariable(linePart.substring(4).trim(), machine);
+	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
+		String ret = super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine, 1, 0);
+		this.fillVariable(config, linePart.substring(4).trim(), machine);
 		return ret;
 	}
 
-	private void fillVariable(String linePart, Machine machine) {
+	private void fillVariable(CompilerConfig config, String linePart, Machine machine) {
 		int brackets = 0;
 		StringBuilder sb = new StringBuilder();
 		String part = null;
@@ -67,7 +68,7 @@ public class Gget extends AbstractGraphicsCommand {
 			throw new RuntimeException("Missing variable name in " + linePart);
 		}
 		Variable var = new Variable(VarUtils.toUpper(varName.trim()), null);
-		VariableAndIndex vai = Parser.getIndexTerm(var, part, machine, false);
+		VariableAndIndex vai = Parser.getIndexTerm(config, var, part, machine, false);
 		var = vai.getVariable();
 		indexTerm = vai.getIndexTerm();
 		this.var = var;
@@ -92,7 +93,7 @@ public class Gget extends AbstractGraphicsCommand {
 	}
 
 	@Override
-	public BasicProgramCounter execute(Machine machine) {
+	public BasicProgramCounter execute(CompilerConfig config, Machine machine) {
 		GraphicsDevice window = GraphicsDevice.getDevice(machine);
 		if (window != null) {
 			Variable var = this.getVariable(machine);

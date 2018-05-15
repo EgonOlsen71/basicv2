@@ -25,8 +25,8 @@ public class ConstantFolder {
 	 *            the machine
 	 * @return the optimized term
 	 */
-	public static Term foldConstants(Term finalTerm, Machine machine) {
-		if (CompilerConfig.getConfig().isConstantFolding()) {
+	public static Term foldConstants(CompilerConfig config, Term finalTerm, Machine machine) {
+		if (config.isConstantFolding()) {
 			Atom left = finalTerm.getLeft();
 			Atom right = finalTerm.getRight();
 
@@ -41,28 +41,28 @@ public class ConstantFolder {
 				setConstant(finalTerm, machine, left);
 			} else {
 				if (left.isTerm()) {
-					finalTerm.setLeft(foldConstants((Term) left, machine));
+					finalTerm.setLeft(foldConstants(config, (Term) left, machine));
 				}
 				if (right.isTerm()) {
-					finalTerm.setRight(foldConstants((Term) right, machine));
+					finalTerm.setRight(foldConstants(config, (Term) right, machine));
 				}
 
 				if (left instanceof Function) {
 					Function fun = (Function) left;
-					fun.setTerm(foldConstants(fun.getTerm(), machine));
+					fun.setTerm(foldConstants(config, fun.getTerm(), machine));
 				}
 
 				if (right instanceof Function) {
 					Function fun = (Function) right;
-					fun.setTerm(foldConstants(fun.getTerm(), machine));
+					fun.setTerm(foldConstants(config, fun.getTerm(), machine));
 				}
 			}
 		}
 		return finalTerm;
 	}
 
-	public static void foldConstants(Machine machine) {
-		if (CompilerConfig.getConfig().isConstantFolding()) {
+	public static void foldConstants(CompilerConfig config, Machine machine) {
+		if (config.isConstantFolding()) {
 			for (Command cmd : machine.getCommandList()) {
 				for (Term cmdTerm : cmd.getAllTerms()) {
 					/*
@@ -72,7 +72,7 @@ public class ConstantFolder {
 					 * ConstantPropagator.checkForConstant(machine, cmdTerm)); }
 					 */
 					if (cmdTerm != null) {
-						foldConstants(cmdTerm, machine);
+						foldConstants(config, cmdTerm, machine);
 						// System.out.println("> " + cmdTerm);
 					}
 				}

@@ -5,6 +5,7 @@ import com.sixtyfour.Basic;
 import com.sixtyfour.Loader;
 import com.sixtyfour.extensions.textmode.ConsoleSupport;
 import com.sixtyfour.plugins.impl.RamSystemCallListener;
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Conversions;
 import com.sixtyfour.system.Machine;
 
@@ -13,6 +14,9 @@ import com.sixtyfour.system.Machine;
  * 
  */
 public class RomTest {
+    
+    private static CompilerConfig config=new CompilerConfig();
+    
 	public static void main(String[] args) {
 		testRomAccess();
 		testRomCalc();
@@ -29,14 +33,14 @@ public class RomTest {
 		String[] basic = Loader.loadProgram("src/test/resources/rom/math.bas");
 		Basic.registerExtension(ConsoleSupport.class);
 		Basic inty = new Basic(basic);
-		inty.compile();
+		inty.compile(config);
 		inty.setSystemCallListener(new RamSystemCallListener(inty.getMachine()));
 
-		asm.compile();
+		asm.compile(config);
 		Machine machine = inty.getMachine();
 		machine.addRoms();
 		machine.putProgram(asm.getProgram());
-		inty.run();
+		inty.run(config);
 
 		System.out.println(Conversions.convertCompactFloat(machine, 0x2000));
 		System.out.println(Conversions.convertFloat(machine, 0x61));
@@ -48,17 +52,17 @@ public class RomTest {
 		Basic inty = new Basic(vary);
 		inty.getMachine().addRoms();
 		inty.setSystemCallListener(new RamSystemCallListener(inty.getMachine()));
-		inty.run();
+		inty.run(config);
 	}
 
 	private static void testRomCalc() {
 		System.out.println("testRomCalc");
 		String[] code = Loader.loadProgram("src/test/resources/rom/math.asm");
 		Assembler asm = new Assembler(code);
-		asm.compile();
+		asm.compile(config);
 		final Machine machine = asm.getMachine();
 		machine.addRoms();
-		asm.run();
+		asm.run(config);
 		System.out.println(Conversions.convertCompactFloat(machine, 0x2000));
 		System.out.println(Conversions.convertCompactFloat(machine, 0x2010) + " ~ " + Math.sqrt(Conversions.convertCompactFloat(machine, 0x2000)));
 	}
@@ -67,10 +71,10 @@ public class RomTest {
 		System.out.println("testRomCalc2");
 		String[] code = Loader.loadProgram("src/test/resources/rom/math2.asm");
 		Assembler asm = new Assembler(code);
-		asm.compile();
+		asm.compile(config);
 		final Machine machine = asm.getMachine();
 		machine.addRoms();
-		asm.run();
+		asm.run(config);
 		System.out.println(Conversions.convertCompactFloat(machine, 0x2000));
 		System.out.println(Conversions.convertCompactFloat(machine, 0x2010) + " ~ " + Math.sqrt(Conversions.convertCompactFloat(machine, 0x2000)));
 	}
@@ -79,18 +83,18 @@ public class RomTest {
 		System.out.println("testRomAndBasicCalc");
 		String[] code = Loader.loadProgram("src/test/resources/rom/math.asm");
 		Assembler asm = new Assembler(code);
-		asm.compile();
+		asm.compile(config);
 
 		String[] basic = Loader.loadProgram("src/test/resources/rom/math.bas");
 		Basic.registerExtension(ConsoleSupport.class);
 		Basic inty = new Basic(basic);
-		inty.compile();
+		inty.compile(config);
 		inty.setSystemCallListener(new RamSystemCallListener(inty.getMachine()));
 
 		Machine machine = inty.getMachine();
 		machine.addRoms();
 		machine.putProgram(asm.getProgram());
-		inty.run();
+		inty.run(config);
 
 		System.out.println(Conversions.convertFloat(machine, 0x2010));
 	}

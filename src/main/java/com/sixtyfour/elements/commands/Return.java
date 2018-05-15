@@ -7,6 +7,7 @@ import java.util.List;
 import com.sixtyfour.cbmnative.Util;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.system.BasicProgramCounter;
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.StackEntry;
 
 /**
@@ -31,8 +32,8 @@ public class Return extends AbstractCommand {
 	 * int, int, int, boolean, sixtyfour.system.Machine)
 	 */
 	@Override
-	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
-		super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine);
+	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
+		super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine);
 		linePart = linePart.substring(6).trim();
 		if (linePart.trim().length() > 0) {
 			syntaxError(this);
@@ -48,7 +49,7 @@ public class Return extends AbstractCommand {
 	 * Machine)
 	 */
 	@Override
-	public BasicProgramCounter execute(Machine machine) {
+	public BasicProgramCounter execute(CompilerConfig config, Machine machine) {
 		StackEntry caller = machine.getCaller();
 		if (caller == null) {
 			throw new RuntimeException("RETURN without GOSUB error!");
@@ -60,7 +61,7 @@ public class Return extends AbstractCommand {
 	}
 
 	@Override
-	public List<CodeContainer> evalToCode(Machine machine) {
+	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
 		return Util.createSingleCommand("JSR RETURN", "RTS");
 	}
 

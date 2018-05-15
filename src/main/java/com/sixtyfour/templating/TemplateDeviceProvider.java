@@ -8,6 +8,7 @@ import com.sixtyfour.elements.Variable;
 import com.sixtyfour.elements.systemvars.SystemVariable;
 import com.sixtyfour.plugins.OutputChannel;
 import com.sixtyfour.plugins.impl.MemoryDeviceProvider;
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Machine;
 
 /**
@@ -29,7 +30,7 @@ public class TemplateDeviceProvider extends MemoryDeviceProvider {
 	}
 
 	@Override
-	public void load(String fileName, int device, int secondary) {
+	public void load(CompilerConfig config, String fileName, int device, int secondary) {
 		if (device == 8) {
 			TemplateManager tm = TemplateManager.getInstance();
 
@@ -55,7 +56,7 @@ public class TemplateDeviceProvider extends MemoryDeviceProvider {
 					tmpl.getMachine().addOrSet(entry.getValue());
 				}
 
-				String result = tmpl.processPart();
+				String result = tmpl.processPart(config);
 				oo.print(0, result);
 			} finally {
 				//

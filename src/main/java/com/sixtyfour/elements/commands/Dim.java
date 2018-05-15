@@ -14,6 +14,7 @@ import com.sixtyfour.parser.Term;
 import com.sixtyfour.parser.VariableAndTerms;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.system.BasicProgramCounter;
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
@@ -71,9 +72,9 @@ public class Dim extends AbstractCommand {
 	 * int, int, int, boolean, sixtyfour.system.Machine)
 	 */
 	@Override
-	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
-		super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine);
-		List<VariableAndTerms> vars = Parser.getArrayVariables(linePart, machine);
+	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
+		super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine);
+		List<VariableAndTerms> vars = Parser.getArrayVariables(config, linePart, machine);
 		terms = new HashMap<String, List<Atom>>();
 		this.vars = new ArrayList<Variable>();
 		if (vars != null) {
@@ -114,7 +115,7 @@ public class Dim extends AbstractCommand {
 	 * Machine)
 	 */
 	@Override
-	public BasicProgramCounter execute(Machine machine) {
+	public BasicProgramCounter execute(CompilerConfig config, Machine machine) {
 		for (int i = 0; i < vars.size(); i++) {
 			Variable var = vars.get(i);
 			if (!var.isArray()) {
@@ -155,10 +156,10 @@ public class Dim extends AbstractCommand {
 	}
 
 	@Override
-	public List<CodeContainer> evalToCode(Machine machine) {
+	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
 		// Just make sure that the machine has access to the arrays...there's no
 		// actual native code needed here.
-		this.execute(machine);
+		this.execute(config, machine);
 
 		for (int i = 0; i < vars.size(); i++) {
 			Variable var = vars.get(i);

@@ -7,6 +7,7 @@ import com.sixtyfour.extensions.graphics.GraphicsBasic;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.Term;
 import com.sixtyfour.parser.TermEnhancer;
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.Jit;
 
@@ -17,6 +18,7 @@ import com.sixtyfour.util.Jit;
  * 
  */
 public class JitTest {
+    private static CompilerConfig config=new CompilerConfig();
 	public static void main(String[] args) {
 		testJittedTerm();
 		testComplexCalculation();
@@ -43,7 +45,7 @@ public class JitTest {
 		String wbres = TermEnhancer.addBrackets(term);
 		System.out.println(wbres);
 
-		Term res = Parser.getTerm(term, machine, false, true);
+		Term res = Parser.getTerm(config, term, machine, false, true);
 		System.out.println(res);
 		System.out.println("Code: " + res.toCode(machine));
 	}
@@ -52,7 +54,7 @@ public class JitTest {
 		String[] prime = Loader.loadProgram("src/test/resources/basic/jittest.bas");
 		Basic inty = new Basic(prime);
 		inty.enableJit(0);
-		inty.run();
+		inty.run(config);
 	}
 
 	private static void testFractal() {
@@ -60,6 +62,6 @@ public class JitTest {
 		Basic.registerExtension(new GraphicsBasic());
 		Basic inty = new Basic(vary);
 		inty.enableJit(3);
-		inty.run();
+		inty.run(config);
 	}
 }

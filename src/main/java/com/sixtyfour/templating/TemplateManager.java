@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.sixtyfour.Logger;
+import com.sixtyfour.system.CompilerConfig;
 
 /**
  * Manages templates bound to threads. For each thread, you'll get an individual
@@ -19,7 +20,8 @@ public class TemplateManager {
 	private Map<TemplateInfo, ThreadLocal<Template>> templates = new HashMap<TemplateInfo, ThreadLocal<Template>>();
 	private Map<String, TemplateInfo> templateInfos = new HashMap<String, TemplateInfo>();
 	private static TemplateManager instance = new TemplateManager();
-
+	private CompilerConfig config=new CompilerConfig();
+	
 	public static TemplateManager getInstance() {
 		return instance;
 	}
@@ -44,7 +46,7 @@ public class TemplateManager {
 			ThreadLocal<Template> tl = new ThreadLocal<Template>();
 			templates.put(existing, tl);
 
-			Template tmpl = createTemplate(pathToTemplate, existing, tl);
+			Template tmpl = createTemplate(config, pathToTemplate, existing, tl);
 			templateInfos.put(pathToTemplate, existing);
 			return tmpl;
 		} else {
@@ -57,21 +59,21 @@ public class TemplateManager {
 			if (tl == null) {
 				tl = new ThreadLocal<Template>();
 				templates.put(existing, tl);
-				return createTemplate(pathToTemplate, existing, tl);
+				return createTemplate(config, pathToTemplate, existing, tl);
 			} else {
 				Template tmpl = tl.get();
 				if (tmpl == null) {
-					return createTemplate(pathToTemplate, existing, tl);
+					return createTemplate(config, pathToTemplate, existing, tl);
 				}
 				return tmpl;
 			}
 		}
 	}
 
-	private Template createTemplate(String pathToTemplate, TemplateInfo existing, ThreadLocal<Template> tl) {
+	private Template createTemplate(CompilerConfig config, String pathToTemplate, TemplateInfo existing, ThreadLocal<Template> tl) {
 		try {
 			Logger.log("Creating new template instance for " + pathToTemplate);
-			Template tmpl = TemplateFactory.getTemplate(new FileInputStream(pathToTemplate), null);
+			Template tmpl = TemplateFactory.getTemplate(config, new FileInputStream(pathToTemplate), null);
 			tl.set(tmpl);
 			tmpl.setPath(pathToTemplate);
 			existing.setBasicCode(tmpl.getBasicCode());

@@ -6,6 +6,7 @@ import com.sixtyfour.elements.Type;
 import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Machine;
 
 /**
@@ -48,7 +49,7 @@ public class Usr extends AbstractFunction {
 	 * .system.Machine)
 	 */
 	@Override
-	public List<CodeContainer> evalToCode(Machine machine) {
+	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
 		List<Atom> pars = Parser.getParameters(term);
 		if (pars.size() != 1) {
 			throw new RuntimeException("USR in compiled code only supports 1 numeric parameter!");
@@ -57,7 +58,7 @@ public class Usr extends AbstractFunction {
 			throw new RuntimeException("Parameter for USR in compiled has to be numeric!");
 		}
 
-		return super.evalToCode(machine);
+		return super.evalToCode(config, machine);
 	}
 
 	/*

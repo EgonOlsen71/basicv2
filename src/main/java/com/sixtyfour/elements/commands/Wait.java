@@ -9,6 +9,7 @@ import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.system.BasicProgramCounter;
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
@@ -39,9 +40,9 @@ public class Wait extends AbstractCommand {
 	 * int, int, int, boolean, sixtyfour.system.Machine)
 	 */
 	@Override
-	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
-		super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine);
-		term = Parser.getTerm(this, linePart, machine, true);
+	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
+		super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine);
+		term = Parser.getTerm(config, this, linePart, machine, true);
 		pars = Parser.getParameters(term);
 
 		if (pars.size() < 2 || pars.size() > 3) {
@@ -63,7 +64,7 @@ public class Wait extends AbstractCommand {
 	}
 
 	@Override
-	public List<CodeContainer> evalToCode(Machine machine) {
+	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
 		Atom addr = pars.get(0);
 		Atom waitFor = pars.get(1);
 		NativeCompiler compiler = NativeCompiler.getCompiler();
@@ -77,16 +78,16 @@ public class Wait extends AbstractCommand {
 		if (pars.size() == 3) {
 			invertFound = true;
 			Atom inverted = pars.get(2);
-			expr.addAll(compiler.compileToPseudoCode(machine, inverted));
+			expr.addAll(compiler.compileToPseudoCode(config, machine, inverted));
 		}
 
-		expr.addAll(compiler.compileToPseudoCode(machine, waitFor));
+		expr.addAll(compiler.compileToPseudoCode(config, machine, waitFor));
 		List<String> before = null;
 
 		String expPush = getPushRegister(expr.get(expr.size() - 1));
 		expr = expr.subList(0, expr.size() - 1);
 
-		before = compiler.compileToPseudoCode(machine, addr);
+		before = compiler.compileToPseudoCode(config, machine, addr);
 
 		if (expPush.equals("Y")) {
 			expr.add("MOV X,Y");
@@ -118,7 +119,7 @@ public class Wait extends AbstractCommand {
 	 * Machine)
 	 */
 	@Override
-	public BasicProgramCounter execute(Machine machine) {
+	public BasicProgramCounter execute(CompilerConfig config, Machine machine) {
 		Atom addr = pars.get(0);
 		Atom waitFor = pars.get(1);
 		int memAddr = VarUtils.getInt(addr.eval(machine));

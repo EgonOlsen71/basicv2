@@ -8,6 +8,7 @@ import com.sixtyfour.elements.Type;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.Term;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
@@ -101,10 +102,10 @@ public abstract class AbstractFunction implements Function {
 	}
 
 	@Override
-	public List<CodeContainer> evalToCode(Machine machine) {
+	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
 		List<String> ret = new ArrayList<String>();
 		ret.add("_");
-		List<String> n1 = term.evalToCode(machine).get(0).getExpression();
+		List<String> n1 = term.evalToCode(config, machine).get(0).getExpression();
 		n1.add(":" + this.getClass().getSimpleName().toUpperCase(Locale.ENGLISH));
 		ret.addAll(0, n1);
 		List<CodeContainer> cc = new ArrayList<CodeContainer>();
@@ -149,8 +150,8 @@ public abstract class AbstractFunction implements Function {
 	 * sixtyfour.system.Machine)
 	 */
 	@Override
-	public void parse(String linePart, Machine machine) {
-		this.setTerm(Parser.getTerm(linePart, machine, false, true));
+	public void parse(CompilerConfig config, String linePart, Machine machine) {
+		this.setTerm(Parser.getTerm(config, linePart, machine, false, true));
 	}
 
 	/*

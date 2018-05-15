@@ -15,6 +15,7 @@ import com.sixtyfour.parser.Term;
 import com.sixtyfour.parser.VariableAndIndex;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.system.BasicProgramCounter;
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
@@ -76,16 +77,16 @@ public class Let extends AbstractCommand {
 	 * int, int, int, boolean, sixtyfour.system.Machine)
 	 */
 	@Override
-	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
-		super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine);
+	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
+		super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine);
 		if (VarUtils.toUpper(linePart).startsWith("LET")) {
 			linePart = linePart.substring(3).trim();
 		}
 		var = Parser.getVariable(linePart, machine);
-		VariableAndIndex vai = Parser.getIndexTerm(var, linePart, machine, true);
+		VariableAndIndex vai = Parser.getIndexTerm(config, var, linePart, machine, true);
 		indexTerm = vai.getIndexTerm();
 		var = vai.getVariable();
-		term = Parser.getTerm(linePart, machine, true, true);
+		term = Parser.getTerm(config, linePart, machine, true, true);
 		if (term.getOperator().isDelimiter()) {
 			syntaxError(linePart);
 		}
@@ -121,7 +122,7 @@ public class Let extends AbstractCommand {
 	 * Machine)
 	 */
 	@Override
-	public BasicProgramCounter execute(Machine machine) {
+	public BasicProgramCounter execute(CompilerConfig config, Machine machine) {
 		var = machine.add(var);
 		if (indexTerm == null) {
 			// no array
@@ -137,17 +138,17 @@ public class Let extends AbstractCommand {
 	}
 
 	@Override
-	public List<CodeContainer> evalToCode(Machine machine) {
+	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
 		var = machine.add(var);
 		NativeCompiler compiler = NativeCompiler.getCompiler();
 		List<String> after = new ArrayList<String>();
-		List<String> expr = compiler.compileToPseudoCode(machine, term);
+		List<String> expr = compiler.compileToPseudoCode(config, machine, term);
 		List<String> before = null;
 
 		String expPush = getPushRegister(expr.get(expr.size() - 1));
 		expr = expr.subList(0, expr.size() - 1);
 		if (indexTerm != null) {
-			before = compiler.compileToPseudoCode(machine, Parser.createIndexTerm(machine, pars, var.getDimensions()));
+			before = compiler.compileToPseudoCode(config, machine, Parser.createIndexTerm(config, machine, pars, var.getDimensions()));
 			if (expPush.equals("X")) {
 				after.add("MOV Y,X");
 			} else if (expPush.equals("B")) {
@@ -161,7 +162,7 @@ public class Let extends AbstractCommand {
 			}
 
 			after.add("POP X");
-			after.add("MOV G," + getVariableLabel(machine, var));
+			after.add("MOV G," + getVariableLabel(config, machine, var));
 			after.add("JSR ARRAYSTORE");
 		} else {
 			if (var.getType() == Type.STRING) {
@@ -176,7 +177,7 @@ public class Let extends AbstractCommand {
 					after.add("JSR COPYSTR");
 				}
 			}
-			after.add("MOV " + getVariableLabel(machine, var) + "," + expPush);
+			after.add("MOV " + getVariableLabel(config, machine, var) + "," + expPush);
 		}
 
 		CodeContainer cc = new CodeContainer(before, expr, after);

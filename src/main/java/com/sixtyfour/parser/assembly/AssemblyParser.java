@@ -10,6 +10,7 @@ import com.sixtyfour.elements.mnemonics.Mnemonic;
 import com.sixtyfour.elements.mnemonics.MnemonicList;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.Term;
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Conversions;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
@@ -116,7 +117,7 @@ public class AssemblyParser {
 	 *            like .BYTE
 	 * @return the number
 	 */
-	public static int getValue(String number, int addr, ConstantsContainer ccon, LabelsContainer lcon, boolean low, boolean high, int addrAdd, boolean isDataLine) {
+	public static int getValue(CompilerConfig config, String number, int addr, ConstantsContainer ccon, LabelsContainer lcon, boolean low, boolean high, int addrAdd, boolean isDataLine) {
 		number = number.trim();
 		if (number.endsWith("\\")) {
 			number = number.substring(0, number.length() - 1);
@@ -128,7 +129,7 @@ public class AssemblyParser {
 				return cv.getValue();
 			} else {
 				if (!number.contains("*")) {
-					cv = getConstantParsed("___", number, ccon, false);
+					cv = getConstantParsed(config, "___", number, ccon, false);
 					if (cv != null && cv.getValue() != 0) {
 						// System.out.println("Calculated: "+cv.getValue());
 						return cv.getValue();
@@ -139,7 +140,7 @@ public class AssemblyParser {
 
 			if (number.contains("*")) {
 				number = number.replace("*", String.valueOf(addr));
-				return getConstantParsed("", number, ccon, true).getValue();
+				return getConstantParsed(config, "", number, ccon, true).getValue();
 			} else {
 				if (number != null && number.contains("+")) {
 					number = number.substring(0, number.indexOf("+"));
@@ -218,7 +219,7 @@ public class AssemblyParser {
 	 * @param ccon
 	 * @return the actual data
 	 */
-	public static int[] getBinaryData(int addr, String data, ConstantsContainer ccon, LabelsContainer lcon) {
+	public static int[] getBinaryData(CompilerConfig config, int addr, String data, ConstantsContainer ccon, LabelsContainer lcon) {
 		List<Integer> ram = new ArrayList<Integer>();
 		data = data.trim();
 		String datupper = VarUtils.toUpper(data);
@@ -276,14 +277,14 @@ public class AssemblyParser {
 		} else if (datupper.startsWith(".BYTE")) {
 			String[] parts = data.substring(5).trim().split(" ");
 			for (String part : parts) {
-				int val = getLowByte(getValue(part, addr - 1, ccon, lcon, true, false, addrAdd, true));
+				int val = getLowByte(getValue(config, part, addr - 1, ccon, lcon, true, false, addrAdd, true));
 				addr++;
 				ram.add(val);
 			}
 		} else if (datupper.startsWith(".WORD")) {
 			String[] parts = data.substring(5).trim().split(" ");
 			for (String part : parts) {
-				int val = getValue(part, addr - 1, ccon, lcon, false, false, addrAdd, true);
+				int val = getValue(config, part, addr - 1, ccon, lcon, false, false, addrAdd, true);
 				addr += 2;
 				ram.add(getLowByteSigned(val));
 				ram.add(getHighByteSigned(val));
@@ -300,7 +301,7 @@ public class AssemblyParser {
 		} else if (datupper.startsWith(".ARRAY")) {
 			String[] parts = data.substring(6).trim().split(" ");
 			for (String part : parts) {
-				int val = getValue(part, addr - 1, ccon, lcon, false, false, addrAdd, true);
+				int val = getValue(config, part, addr - 1, ccon, lcon, false, false, addrAdd, true);
 				if (val < 0) {
 					throw new RuntimeException("Value out of range: " + val);
 				}
@@ -337,7 +338,7 @@ public class AssemblyParser {
 	 *            a container for constants
 	 * @return the new constant or null if there is none
 	 */
-	public static ConstantValue getConstant(String linePart, ConstantsContainer ccon) {
+	public static ConstantValue getConstant(CompilerConfig config, String linePart, ConstantsContainer ccon) {
 		String linePart2 = Parser.replaceStrings(linePart, '_').trim();
 		int pos = linePart2.indexOf("=");
 		if (pos != -1) {
@@ -345,7 +346,7 @@ public class AssemblyParser {
 			String right = linePart.substring(pos + 1).trim();
 
 			if (ccon != null && (right.contains("+") || right.contains("-") || right.contains("*") || right.contains("/"))) {
-				return getConstantParsed(left, right, ccon, true);
+				return getConstantParsed(config, left, right, ccon, true);
 			}
 
 			int val = getValue(right);
@@ -373,7 +374,7 @@ public class AssemblyParser {
 	 *            Otherwise, null will be returned
 	 * @return the new constant
 	 */
-	public static ConstantValue getConstantParsed(String left, String right, ConstantsContainer ccon, boolean raiseError) {
+	public static ConstantValue getConstantParsed(CompilerConfig config, String left, String right, ConstantsContainer ccon, boolean raiseError) {
 		// Uses the Basic parser's term parsing method to evaluate the
 		// constant's assignment.
 		// Due to limitations in Basic V2, we have to convert the variable names
@@ -433,7 +434,7 @@ public class AssemblyParser {
 
 		Term ressy = null;
 		try {
-			ressy = Parser.getTerm(res.toString(), machine, true, true);
+			ressy = Parser.getTerm(config, res.toString(), machine, true, true);
 		} catch (Throwable nfe) {
 			if (raiseError) {
 				throw nfe;

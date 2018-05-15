@@ -3,6 +3,7 @@ package com.sixtyfour.elements.commands;
 import com.sixtyfour.plugins.DeviceProvider;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.system.BasicProgramCounter;
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.util.VarUtils;
 
 /**
@@ -25,7 +26,7 @@ public class Save extends FileOperation {
 	 * Machine)
 	 */
 	@Override
-	public BasicProgramCounter execute(Machine machine) {
+	public BasicProgramCounter execute(CompilerConfig config, Machine machine) {
 		DeviceProvider device = machine.getDeviceProvider();
 
 		try {

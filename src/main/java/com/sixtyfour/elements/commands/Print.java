@@ -15,6 +15,7 @@ import com.sixtyfour.parser.TermEnhancer;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.plugins.PrintConsumer;
 import com.sixtyfour.system.BasicProgramCounter;
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
@@ -60,15 +61,15 @@ public class Print extends AbstractCommand {
 	 * int, int, int, boolean, sixtyfour.system.Machine)
 	 */
 	@Override
-	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
-		super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine);
+	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
+		super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine);
 		List<PrintPart> parts = getParts(linePart.substring(linePart.startsWith("?") ? 1 : 5));
 		if (parts.size() == 0) {
 			PrintPart newLine = new PrintPart("\"\"", ' ');
 			parts.add(newLine);
 		}
 		for (PrintPart part : parts) {
-			part.term = Parser.getTerm(part.part, machine, false, true);
+			part.term = Parser.getTerm(config, part.part, machine, false, true);
 		}
 		this.parts = parts;
 		return null;
@@ -97,7 +98,7 @@ public class Print extends AbstractCommand {
 	 * Machine)
 	 */
 	@Override
-	public BasicProgramCounter execute(Machine machine) {
+	public BasicProgramCounter execute(CompilerConfig config, Machine machine) {
 		return execute(machine, machine.getOutputChannel(), 0);
 	}
 
@@ -159,11 +160,11 @@ public class Print extends AbstractCommand {
 		return null;
 	}
 
-	public List<CodeContainer> evalToCode(Machine machine) {
-		return evalToCode(machine, "");
+	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
+		return evalToCode(config, machine, "");
 	}
 
-	public List<CodeContainer> evalToCode(Machine machine, String appendix) {
+	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine, String appendix) {
 		NativeCompiler compiler = NativeCompiler.getCompiler();
 		List<String> after = new ArrayList<String>();
 		List<String> expr = new ArrayList<String>();
@@ -176,7 +177,7 @@ public class Print extends AbstractCommand {
 			Type type = part.term.getType();
 
 			if (!part.part.replace("\"", "").isEmpty()) {
-				List<String> exprPart = compiler.compileToPseudoCode(machine, part.term);
+				List<String> exprPart = compiler.compileToPseudoCode(config, machine, part.term);
 				if (!exprPart.isEmpty()) {
 					String expPush = getPushRegister(exprPart.get(exprPart.size() - 1));
 					exprPart = exprPart.subList(0, exprPart.size() - 1);

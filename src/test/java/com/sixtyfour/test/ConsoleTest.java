@@ -7,13 +7,16 @@ import com.sixtyfour.Basic;
 import com.sixtyfour.Loader;
 import com.sixtyfour.extensions.graphics.GraphicsBasic;
 import com.sixtyfour.extensions.textmode.ConsoleSupport;
+import com.sixtyfour.system.CompilerConfig;
 
 /**
  * @author EgonOlsen
  * 
  */
 public class ConsoleTest {
-	public static void main(String[] args) {
+	
+    private static CompilerConfig config=new CompilerConfig();
+    public static void main(String[] args) {
 		testConsole();
 		testPrint();
 		testShowImage();
@@ -25,9 +28,9 @@ public class ConsoleTest {
 		Basic.registerExtension(new ConsoleSupport());
 		Basic.registerExtension(new GraphicsBasic());
 		Basic inty = new Basic(vary);
-		inty.compile();
+		inty.compile(config);
 		loadImage(inty);
-		inty.run();
+		inty.run(config);
 	}
 
 	private static void testShowImage() {
@@ -35,9 +38,9 @@ public class ConsoleTest {
 		Basic.registerExtension(new ConsoleSupport());
 		Basic.registerExtension(new GraphicsBasic());
 		Basic inty = new Basic(vary);
-		inty.compile();
+		inty.compile(config);
 		loadImage(inty);
-		inty.run();
+		inty.run(config);
 	}
 
 	private static void loadImage(Basic inty) {
@@ -71,7 +74,7 @@ public class ConsoleTest {
 		Basic.registerExtension(new ConsoleSupport());
 		Basic.registerExtension(new GraphicsBasic());
 		Basic inty = new Basic(vary);
-		inty.run();
+		inty.run(config);
 	}
 
 	private static void testPrint() {
@@ -79,7 +82,7 @@ public class ConsoleTest {
 		Basic.registerExtension(new ConsoleSupport());
 		Basic.registerExtension(new GraphicsBasic());
 		Basic inty = new Basic(vary);
-		inty.run();
+		inty.run(config);
 	}
 
 }

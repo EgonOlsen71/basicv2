@@ -8,6 +8,7 @@ import com.sixtyfour.Assembler;
 import com.sixtyfour.Basic;
 import com.sixtyfour.Loader;
 import com.sixtyfour.plugins.impl.RamSystemCallListener;
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.templating.Template;
 import com.sixtyfour.templating.TemplateFactory;
@@ -17,7 +18,7 @@ import com.sixtyfour.templating.TemplateFactory;
  * 
  */
 public class MixedTest {
-
+    private static CompilerConfig config=new CompilerConfig();
 	public static void main(String[] args) throws Exception {
 		testMixed();
 		testMixedTemplate();
@@ -25,8 +26,8 @@ public class MixedTest {
 	}
 
 	private static void testBeerTemplate() throws Exception {
-		Template templ = TemplateFactory.getTemplate(new FileInputStream("src/test/resources/mixed/beer.cbm"), null);
-		String res = templ.process();
+		Template templ = TemplateFactory.getTemplate(config, new FileInputStream("src/test/resources/mixed/beer.cbm"), null);
+		String res = templ.process(config);
 		System.out.println(res);
 
 	}
@@ -36,8 +37,8 @@ public class MixedTest {
 		vars.put("CN", 10);
 		vars.put("NA$", "Test");
 		vars.put("TT$", "At least better than PHP!");
-		Template templ = TemplateFactory.getTemplate(new FileInputStream("src/test/resources/mixed/mixedhtml.cbm"), vars);
-		String res = templ.process();
+		Template templ = TemplateFactory.getTemplate(config,new FileInputStream("src/test/resources/mixed/mixedhtml.cbm"), vars);
+		String res = templ.process(config);
 		System.out.println(res);
 	}
 
@@ -48,13 +49,13 @@ public class MixedTest {
 		Machine machine = basic.getMachine();
 
 		Assembler asm = new Assembler(asmCode, machine);
-		asm.compile();
+		asm.compile(config);
 
 		basic.setSystemCallListener(new RamSystemCallListener(machine));
-		basic.compile();
+		basic.compile(config);
 		machine.getCpu().setExitOnBreak(false);
 		machine.putProgram(asm.getProgram());
-		basic.run();
+		basic.run(config);
 	}
 
 }

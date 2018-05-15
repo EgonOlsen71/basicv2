@@ -8,6 +8,7 @@ import com.sixtyfour.elements.Type;
 import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
@@ -41,7 +42,7 @@ public class Mid extends AbstractFunction {
 	 * .sixtyfour.system.Machine)
 	 */
 	@Override
-	public List<CodeContainer> evalToCode(Machine machine) {
+	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
 		List<Atom> pars = Parser.getParameters(term);
 		checkParameters(pars);
 		Atom var = pars.get(0);
@@ -49,18 +50,18 @@ public class Mid extends AbstractFunction {
 		List<String> ret = new ArrayList<String>();
 
 		// Add additional parameters in reverse order
-		List<String> n1 = pars.get(1).evalToCode(machine).get(0).getExpression();
+		List<String> n1 = pars.get(1).evalToCode(config, machine).get(0).getExpression();
 		n1.add(":PAR");
 		n1.add("_");
 
 		if (pars.size() > 2) {
-			n1.addAll(pars.get(2).evalToCode(machine).get(0).getExpression());
+			n1.addAll(pars.get(2).evalToCode(config, machine).get(0).getExpression());
 		} else {
 			n1.add("#-1{INTEGER}");
 		}
 		n1.add(":PAR");
 		n1.add("_");
-		n1.addAll(var.evalToCode(machine).get(0).getExpression());
+		n1.addAll(var.evalToCode(config, machine).get(0).getExpression());
 		n1.add(":" + this.getClass().getSimpleName().toUpperCase(Locale.ENGLISH));
 		ret.addAll(0, n1);
 		ret.add("_");

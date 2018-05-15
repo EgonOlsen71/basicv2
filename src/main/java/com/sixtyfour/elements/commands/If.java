@@ -11,6 +11,7 @@ import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.parser.logic.LogicParser;
 import com.sixtyfour.parser.logic.LogicTerm;
 import com.sixtyfour.system.BasicProgramCounter;
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Machine;
 
 /**
@@ -42,8 +43,8 @@ public class If extends AbstractCommand {
 	 * int, int, int, boolean, sixtyfour.system.Machine)
 	 */
 	@Override
-	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
-		super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine);
+	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
+		super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine);
 		linePart = TermEnhancer.removeWhiteSpace(linePart);
 
 		String uPart = Parser.replaceStrings(linePart, '.');
@@ -64,7 +65,7 @@ public class If extends AbstractCommand {
 		String firstTerm = linePart.substring(2, termEnd);
 		conditionalTerm = firstTerm;
 
-		logicTerm = LogicParser.getTerm(firstTerm, machine);
+		logicTerm = LogicParser.getTerm(config, firstTerm, machine);
 
 		// System.out.println("Logic term: "+logicTerm+"/"+logicTerm.getFirstOperation()+"/"+Parser.replaceLogicOperators(firstTerm));
 
@@ -99,7 +100,7 @@ public class If extends AbstractCommand {
 	 * Machine)
 	 */
 	@Override
-	public BasicProgramCounter execute(Machine machine) {
+	public BasicProgramCounter execute(CompilerConfig config, Machine machine) {
 		pc.setSkip(false);
 		boolean ok = logicTerm.evalToBoolean(machine);
 		if (ok) {
@@ -110,12 +111,12 @@ public class If extends AbstractCommand {
 	}
 
 	@Override
-	public List<CodeContainer> evalToCode(Machine machine) {
+	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
 		NativeCompiler compiler = NativeCompiler.getCompiler();
 		List<String> after = new ArrayList<String>();
 		// System.out.println(conditionalTerm+"    /    "+Parser.getTerm(conditionalTerm,
 		// machine, false, true));
-		List<String> expr = compiler.compileToPseudoCode(machine, Parser.getTerm(conditionalTerm, machine, false, true));
+		List<String> expr = compiler.compileToPseudoCode(config, machine, Parser.getTerm(config, conditionalTerm, machine, false, true));
 		List<String> before = null;
 
 		String expPush = getPushRegister(expr.get(expr.size() - 1));

@@ -8,6 +8,7 @@ import com.sixtyfour.elements.Type;
 import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
@@ -64,17 +65,17 @@ public class Right extends AbstractFunction {
 	}
 
 	@Override
-	public List<CodeContainer> evalToCode(Machine machine) {
+	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
 		List<Atom> pars = Parser.getParameters(term);
 		if (pars.size() != 2) {
 			throw new RuntimeException("Wrong number of parameters: " + term);
 		}
 		Atom var = pars.get(0);
 		List<String> ret = new ArrayList<String>();
-		List<String> n1 = pars.get(1).evalToCode(machine).get(0).getExpression();
+		List<String> n1 = pars.get(1).evalToCode(config, machine).get(0).getExpression();
 		n1.add(":PAR");
 		n1.add("_");
-		n1.addAll(var.evalToCode(machine).get(0).getExpression());
+		n1.addAll(var.evalToCode(config, machine).get(0).getExpression());
 		n1.add(":" + this.getClass().getSimpleName().toUpperCase(Locale.ENGLISH));
 		ret.addAll(0, n1);
 		ret.add("_");

@@ -8,6 +8,7 @@ import com.sixtyfour.elements.Type;
 import com.sixtyfour.elements.Variable;
 import com.sixtyfour.elements.commands.Def;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
@@ -55,7 +56,7 @@ public class Fn extends AbstractFunction {
 	}
 
 	@Override
-	public List<CodeContainer> evalToCode(Machine machine) {
+	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
 		Def def = (Def) machine.getFunction(this.functionName);
 		if (def == null) {
 			throw new RuntimeException("Undef'd function error: " + this + "/" + this.functionName);
@@ -63,7 +64,7 @@ public class Fn extends AbstractFunction {
 		List<String> ret = new ArrayList<String>();
 
 		ret.add("_");
-		List<String> n1 = term.evalToCode(machine).get(0).getExpression();
+		List<String> n1 = term.evalToCode(config, machine).get(0).getExpression();
 		n1.add(":" + this.getClass().getSimpleName().toUpperCase(Locale.ENGLISH) + " DEF" + def.getCount());
 		ret.addAll(0, n1);
 

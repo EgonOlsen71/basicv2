@@ -5,9 +5,11 @@ import com.sixtyfour.Loader;
 import com.sixtyfour.extensions.graphics.GraphicsBasic;
 import com.sixtyfour.extensions.textmode.ConsoleSupport;
 import com.sixtyfour.parser.Preprocessor;
+import com.sixtyfour.system.CompilerConfig;
 
 public class FrogTest {
-	public static void main(String[] args) {
+    private static CompilerConfig config=new CompilerConfig();
+    public static void main(String[] args) {
 		testFrog();
 		testFrog2();
 	}
@@ -20,8 +22,8 @@ public class FrogTest {
 		Basic.registerExtension(ConsoleSupport.class);
 		Basic.registerExtension(GraphicsBasic.class);
 		Basic inty = new Basic(vary);
-		inty.compile();
-		inty.run();
+		inty.compile(config);
+		inty.run(config);
 	}
 
 	public static void testFrog2() {
@@ -32,7 +34,7 @@ public class FrogTest {
 		Basic.registerExtension(ConsoleSupport.class);
 		Basic.registerExtension(GraphicsBasic.class);
 		Basic inty = new Basic(vary);
-		inty.compile();
-		inty.run();
+		inty.compile(config);
+		inty.run(config);
 	}
 }

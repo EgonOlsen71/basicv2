@@ -13,6 +13,7 @@ import com.sixtyfour.elements.Variable;
 import com.sixtyfour.parser.Line;
 import com.sixtyfour.parser.Preprocessor;
 import com.sixtyfour.plugins.CpuCallListener;
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Cpu;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.system.Program;
@@ -54,11 +55,11 @@ public class Template {
 	 * @param variables
 	 *            the variables to prefill the template with
 	 */
-	public Template(String template, Map<String, Object> variables) {
+	public Template(CompilerConfig config, String template, Map<String, Object> variables) {
 		if (variables != null) {
 			vars.putAll(variables);
 		}
-		parseTemplate(template);
+		parseTemplate(config, template);
 	}
 
 	/**
@@ -144,7 +145,7 @@ public class Template {
 	 * 
 	 * @return the processed template, i.e. the generated output.
 	 */
-	public String process() {
+	public String process(CompilerConfig config) {
 		out.reset();
 		Machine machine = basic.getMachine();
 		machine.resetMemory();
@@ -156,7 +157,7 @@ public class Template {
 			Variable vary = new Variable(VarUtils.toUpper(var.getKey()), var.getValue());
 			machine.addOrSet(vary);
 		}
-		basic.start();
+		basic.start(config);
 		return out.getResult();
 	}
 
@@ -207,9 +208,9 @@ public class Template {
 	 * @param out
 	 * @return
 	 */
-	String processPart() {
+	String processPart(CompilerConfig config) {
 		out.reset();
-		basic.start();
+		basic.start(config);
 		return out.getResult();
 	}
 
@@ -219,7 +220,7 @@ public class Template {
 	 * @param template
 	 *            the template
 	 */
-	private void parseTemplate(String template) {
+	private void parseTemplate(CompilerConfig config, String template) {
 		int pl = template.toLowerCase(Locale.ENGLISH).indexOf("<!labels>");
 		boolean labels = pl != -1;
 		if (labels) {
@@ -311,7 +312,7 @@ public class Template {
 					lastLine = addStaticPart(lastLine, code, prior, firstLine, labels);
 					prior = null;
 					Assembler assem = new Assembler(lines);
-					assem.compile();
+					assem.compile(config);
 					prgs.add(assem.getProgram());
 				}
 				last = pos2;
@@ -331,7 +332,7 @@ public class Template {
 
 		basicCode = code.toString();
 		basic = new Basic(basicCode);
-		basic.compile();
+		basic.compile(config);
 		out = new TemplateOutputChannel();
 		basic.setOutputChannel(out);
 		basic.getMachine().setSystemCallListener(new StaticTemplateCallListener(staticParts, out, basic.getMachine()));

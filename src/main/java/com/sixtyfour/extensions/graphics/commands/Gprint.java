@@ -9,6 +9,7 @@ import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.plugins.PrintConsumer;
 import com.sixtyfour.system.BasicProgramCounter;
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
@@ -29,7 +30,7 @@ public class Gprint extends Print {
 	}
 
 	@Override
-	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
+	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
 		this.lineCnt = lineCnt;
 		this.linePos = linePos;
 		this.lineNumber = lineNumber;
@@ -41,7 +42,7 @@ public class Gprint extends Print {
 
 		int dif = linePart.indexOf(',', linePart.indexOf(',') + 1);
 		String terms = linePart.substring(0, dif);
-		term = Parser.getTerm(this, terms, machine, true);
+		term = Parser.getTerm(config, this, terms, machine, true);
 		pars = Parser.getParameters(term);
 
 		checkTypes(pars, linePart, Type.STRING, Type.STRING);
@@ -53,7 +54,7 @@ public class Gprint extends Print {
 			parts.add(newLine);
 		}
 		for (PrintPart part : parts) {
-			part.term = Parser.getTerm(part.part, machine, false, true);
+			part.term = Parser.getTerm(config, part.part, machine, false, true);
 		}
 		this.parts = parts;
 		return null;

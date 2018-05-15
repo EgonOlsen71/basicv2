@@ -10,6 +10,7 @@ import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.Term;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.system.BasicProgramCounter;
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
@@ -38,9 +39,9 @@ public class Poke extends AbstractCommand {
 	 * int, int, int, boolean, sixtyfour.system.Machine)
 	 */
 	@Override
-	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
-		super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine);
-		term = Parser.getTerm(this, linePart, machine, true);
+	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
+		super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine);
+		term = Parser.getTerm(config, this, linePart, machine, true);
 		pars = Parser.getParameters(term);
 
 		if (pars.size() != 2) {
@@ -75,7 +76,7 @@ public class Poke extends AbstractCommand {
 	 * Machine)
 	 */
 	@Override
-	public BasicProgramCounter execute(Machine machine) {
+	public BasicProgramCounter execute(CompilerConfig config, Machine machine) {
 		int memAddr = VarUtils.getInt(addr.eval(machine));
 		int vally = VarUtils.getInt(val.eval(machine));
 		if (vally < 0 || vally > 255 || memAddr < 0 || memAddr > 65535) {
@@ -88,10 +89,10 @@ public class Poke extends AbstractCommand {
 	}
 
 	@Override
-	public List<CodeContainer> evalToCode(Machine machine) {
+	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
 		NativeCompiler compiler = NativeCompiler.getCompiler();
 		List<String> after = new ArrayList<String>();
-		List<String> expr = compiler.compileToPseudoCode(machine, val);
+		List<String> expr = compiler.compileToPseudoCode(config, machine, val);
 		List<String> before = null;
 
 		String expPush = getPushRegister(expr.get(expr.size() - 1));
@@ -103,7 +104,7 @@ public class Poke extends AbstractCommand {
 			}
 			after.add("MOVB " + ((Number) addr.eval(machine)).intValue() + ",X");
 		} else {
-			before = compiler.compileToPseudoCode(machine, addr);
+			before = compiler.compileToPseudoCode(config, machine, addr);
 
 			if (expPush.equals("Y")) {
 				expr.add("MOV X,Y");

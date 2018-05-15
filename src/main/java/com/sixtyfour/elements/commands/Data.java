@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.sixtyfour.cbmnative.Util;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.DataStore;
 import com.sixtyfour.system.Machine;
 
@@ -26,8 +27,8 @@ public class Data extends AbstractCommand {
 	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String,
 	 * int, int, int, boolean, sixtyfour.system.Machine)
 	 */
-	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
-		super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine);
+	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
+		super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine);
 		List<String> parts = getParts(linePart.substring(4), lastPos);
 
 		DataStore dataStore = machine.getDataStore();
@@ -47,7 +48,7 @@ public class Data extends AbstractCommand {
 	}
 
 	@Override
-	public List<CodeContainer> evalToCode(Machine machine) {
+	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
 		return Util.createNoCommand();
 	}
 

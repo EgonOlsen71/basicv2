@@ -4,8 +4,12 @@ import com.sixtyfour.Assembler;
 import com.sixtyfour.Basic;
 import com.sixtyfour.Loader;
 import com.sixtyfour.plugins.impl.ConsoleOutputChannel;
+import com.sixtyfour.system.CompilerConfig;
 
 public class SpeedTest {
+    
+    private static CompilerConfig config=new CompilerConfig();
+    
 	public static void main(String[] args) throws Exception {
 		String[] asm = Loader.loadProgram("src/test/resources/asm/selfmodify.asm");
 		String[] basic = new String[] { "10fori%=8192to16192:pokei%,0:next" };
@@ -34,7 +38,7 @@ public class SpeedTest {
 
 	private static void testAsm(String[] code) {
 		Assembler asm = new Assembler(code);
-		asm.run();
+		asm.run(config);
 	}
 
 	private static void testBasic(String[] code) {
@@ -50,6 +54,6 @@ public class SpeedTest {
 				//
 			}
 		});
-		basic.run();
+		basic.run(config);
 	}
 }

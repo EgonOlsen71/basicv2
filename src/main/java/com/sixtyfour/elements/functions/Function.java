@@ -5,6 +5,7 @@ package com.sixtyfour.elements.functions;
 
 import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Term;
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Machine;
 
 /**
@@ -59,7 +60,7 @@ public interface Function extends Atom {
 	 * @param machine
 	 *            the current machine
 	 */
-	void parse(String linePart, Machine machine);
+	void parse(CompilerConfig config, String linePart, Machine machine);
 
 	/**
 	 * Returns true, if this function has a postfix.

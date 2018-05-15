@@ -1,5 +1,6 @@
 package com.sixtyfour;
 
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Cpu;
 import com.sixtyfour.system.Machine;
 
@@ -14,18 +15,21 @@ public interface ProgramExecutor {
 
 	/**
 	 * Compiles a program.
+	 * @param config
 	 */
-	void compile();
+	void compile(CompilerConfig config);
 
 	/**
 	 * Runs a program.
+	 * @param config
 	 */
-	void run();
+	void run(CompilerConfig config);
 
 	/**
 	 * Starts a program.
+	 * @param config
 	 */
-	void start();
+	void start(CompilerConfig config);
 
 	/**
 	 * Gets the machine.

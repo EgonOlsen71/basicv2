@@ -5,6 +5,7 @@ import com.sixtyfour.extensions.graphics.commands.AbstractGraphicsCommand;
 import com.sixtyfour.extensions.textmode.ConsoleDevice;
 import com.sixtyfour.parser.Atom;
 import com.sixtyfour.system.BasicProgramCounter;
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
@@ -21,14 +22,14 @@ public class Console extends AbstractGraphicsCommand {
 	}
 
 	@Override
-	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
-		String ret = super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine, 1, 3);
+	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
+		String ret = super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine, 1, 3);
 		checkTypes(pars, linePart, Type.STRING, Type.STRING, Type.STRING, Type.STRING);
 		return ret;
 	}
 
 	@Override
-	public BasicProgramCounter execute(Machine machine) {
+	public BasicProgramCounter execute(CompilerConfig config, Machine machine) {
 		Atom m = pars.get(0);
 		ConsoleDevice window = ConsoleDevice.getDevice(machine);
 		int mode = VarUtils.getInt(m.eval(machine));

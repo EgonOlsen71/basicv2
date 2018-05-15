@@ -11,6 +11,7 @@ import com.sixtyfour.parser.TermEnhancer;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.system.BasicProgramCounter;
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.util.VarUtils;
 
 /**
@@ -51,8 +52,8 @@ public class Def extends AbstractCommand {
 	 * int, int, int, boolean, sixtyfour.system.Machine)
 	 */
 	@Override
-	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
-		super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine);
+	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
+		super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine);
 		linePart = TermEnhancer.removeWhiteSpace(linePart);
 		int pos = linePart.indexOf('(');
 		int pos2 = linePart.indexOf(')');
@@ -104,7 +105,7 @@ public class Def extends AbstractCommand {
 		varName = "_" + varName + fnName;
 		// System.out.println("New DEF-Term: " + term + " - " + fnName + " - " +
 		// varName);
-		this.term = Parser.getTerm(term, machine, false, true, null);
+		this.term = Parser.getTerm(config, term, machine, false, true, null);
 		machine.add(new Variable(varName, 0f));
 		return null;
 	}
@@ -122,7 +123,7 @@ public class Def extends AbstractCommand {
 	}
 
 	@Override
-	public List<CodeContainer> evalToCode(Machine machine) {
+	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
 		Command cmd = machine.getFunction(fnName);
 		if (cmd != null && !cmd.getTerm().toString().equals(this.getTerm().toString())) {
 			throw new RuntimeException("Redef'd function error: " + fnName);
@@ -130,7 +131,7 @@ public class Def extends AbstractCommand {
 		machine.setFunction(fnName, this);
 		NativeCompiler compiler = NativeCompiler.getCompiler();
 		List<String> after = new ArrayList<String>();
-		List<String> expr = compiler.compileToPseudoCode(machine, term);
+		List<String> expr = compiler.compileToPseudoCode(config, machine, term);
 		List<String> before = new ArrayList<String>();
 
 		count = DEF_COUNT++;
@@ -166,7 +167,7 @@ public class Def extends AbstractCommand {
 	 * Machine)
 	 */
 	@Override
-	public BasicProgramCounter execute(Machine machine) {
+	public BasicProgramCounter execute(CompilerConfig config, Machine machine) {
 		machine.setFunction(fnName, this);
 		return null;
 	}

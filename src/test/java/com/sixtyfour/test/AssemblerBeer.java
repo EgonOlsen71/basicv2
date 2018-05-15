@@ -3,11 +3,14 @@ package com.sixtyfour.test;
 import com.sixtyfour.Assembler;
 import com.sixtyfour.Loader;
 import com.sixtyfour.plugins.CpuCallListener;
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Cpu;
 import com.sixtyfour.system.CpuTracer;
 import com.sixtyfour.system.Machine;
 
 public class AssemblerBeer {
+    
+    private static CompilerConfig config=new CompilerConfig();
 	public static void main(String[] args) {
 		testBeer();
 	}
@@ -15,7 +18,7 @@ public class AssemblerBeer {
 	private static void testBeer() {
 		String[] code = Loader.loadProgram("src/test/resources/asm/beer.asm");
 		Assembler asm = new Assembler(code);
-		asm.compile();
+		asm.compile(config);
 		Machine machine = asm.getMachine();
 
 		System.out.println(asm.toString());
@@ -50,7 +53,7 @@ public class AssemblerBeer {
 				return false;
 			}
 		});
-		asm.run();
+		asm.run(config);
 	}
 
 }

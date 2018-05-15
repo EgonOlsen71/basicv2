@@ -20,8 +20,8 @@ import com.sixtyfour.system.CompilerConfig;
  */
 public class DeadStoreEliminator {
 
-	public static boolean eliminateDeadStores(Basic basic) {
-		if (CompilerConfig.getConfig().isDeadStoreElimination()) {
+	public static boolean eliminateDeadStores(CompilerConfig config, Basic basic) {
+		if (config.isDeadStoreElimination()) {
 			List<Command> commands = basic.getMachine().getCommandList();
 			Set<Term> terms = new HashSet<Term>();
 
@@ -29,7 +29,7 @@ public class DeadStoreEliminator {
 			for (Command cmd : commands) {
 				List<Term> cmdTerms = cmd.getAllTerms();
 				for (Term cmdTerm : cmdTerms) {
-					if (cmdTerm != null && !ConstantPropagator.checkForConstant(basic.getMachine(), cmdTerm)) {
+					if (cmdTerm != null && !ConstantPropagator.checkForConstant(config, basic.getMachine(), cmdTerm)) {
 						terms.add(cmdTerm);
 					}
 				}
@@ -43,7 +43,7 @@ public class DeadStoreEliminator {
 				if (cmd.isCommand("LET")) {
 					Let let = (Let) cmd;
 					String varName = let.getVar().getUpperCaseName();
-					if (!CompilerConfig.getConfig().isDeadStoreEliminationOfStrings()) {
+					if (!config.isDeadStoreEliminationOfStrings()) {
 						if (varName.contains("$")) {
 							continue;
 						}

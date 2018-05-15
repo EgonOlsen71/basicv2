@@ -8,6 +8,7 @@ import com.sixtyfour.elements.Type;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.system.BasicProgramCounter;
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
@@ -42,15 +43,15 @@ public class On extends AbstractCommand {
 	 * int, int, int, boolean, sixtyfour.system.Machine)
 	 */
 	@Override
-	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
-		super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine);
+	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
+		super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine);
 		linePart = linePart.substring(2).trim();
 		String uPart = VarUtils.toUpper(linePart);
 		int pos = uPart.lastIndexOf("GO");
 		if (pos == -1) {
 			syntaxError(this);
 		}
-		term = Parser.getTerm(linePart.substring(0, pos), machine, false, true);
+		term = Parser.getTerm(config, linePart.substring(0, pos), machine, false, true);
 
 		if (term.getType().equals(Type.STRING)) {
 			typeMismatch(linePart);
@@ -94,7 +95,7 @@ public class On extends AbstractCommand {
 	 * Machine)
 	 */
 	@Override
-	public BasicProgramCounter execute(Machine machine) {
+	public BasicProgramCounter execute(CompilerConfig config, Machine machine) {
 		int index = VarUtils.getInt(term.eval(machine));
 		if (index <= 0 || index > lineNumbers.size()) {
 			return null;
@@ -107,10 +108,10 @@ public class On extends AbstractCommand {
 	}
 
 	@Override
-	public List<CodeContainer> evalToCode(Machine machine) {
+	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
 		NativeCompiler compiler = NativeCompiler.getCompiler();
 		List<String> after = new ArrayList<String>();
-		List<String> expr = compiler.compileToPseudoCode(machine, term);
+		List<String> expr = compiler.compileToPseudoCode(config, machine, term);
 		List<String> before = null;
 
 		String expPush = getPushRegister(expr.get(expr.size() - 1));

@@ -9,6 +9,7 @@ import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.system.BasicProgramCounter;
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.util.VarUtils;
 
 /**
@@ -33,13 +34,13 @@ public class Cmd extends AbstractCommand {
 	 * int, int, int, boolean, sixtyfour.system.Machine)
 	 */
 	@Override
-	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
+	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
 		linePart = linePart.substring(this.name.length());
 		int pos = linePart.indexOf(',');
 		if (pos == -1) {
 			pos = linePart.length();
 		}
-		term = Parser.getTerm(linePart.substring(0, pos), machine, false, true);
+		term = Parser.getTerm(config, linePart.substring(0, pos), machine, false, true);
 		linePart = pos != linePart.length() ? linePart.substring(pos + 1) : "";
 		List<Atom> pars = Parser.getParameters(term);
 		if (pars.size() != 1) {
@@ -51,7 +52,7 @@ public class Cmd extends AbstractCommand {
 	}
 
 	@Override
-	public List<CodeContainer> evalToCode(Machine machine) {
+	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
 		int fn = VarUtils.getInt(fileNumber.eval(machine));
 		return Util.createSingleCommand("MOV X,#" + fn + "{INTEGER}", "JSR CMD");
 	}
@@ -64,7 +65,7 @@ public class Cmd extends AbstractCommand {
 	 * Machine)
 	 */
 	@Override
-	public BasicProgramCounter execute(Machine machine) {
+	public BasicProgramCounter execute(CompilerConfig config, Machine machine) {
 		int fn = VarUtils.getInt(fileNumber.eval(machine));
 		if (!machine.getDeviceProvider().isOpen(fn)) {
 			throw new RuntimeException("File not open error: " + this);

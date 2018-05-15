@@ -6,6 +6,7 @@ package com.sixtyfour.elements.commands;
 import com.sixtyfour.plugins.DeviceProvider;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.system.BasicProgramCounter;
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.util.VarUtils;
 
 /**
@@ -28,22 +29,22 @@ public class Load extends FileOperation {
 	 * Machine)
 	 */
 	@Override
-	public BasicProgramCounter execute(Machine machine) {
+	public BasicProgramCounter execute(CompilerConfig config, Machine machine) {
 		DeviceProvider device = machine.getDeviceProvider();
 
 		try {
 			switch (pars.size()) {
 			case 0:
-				device.load("", 1, 0);
+				device.load(config, "", 1, 0);
 				break;
 			case 1:
-				device.load((String) pars.get(0).eval(machine), 1, 0);
+				device.load(config, (String) pars.get(0).eval(machine), 1, 0);
 				break;
 			case 2:
-				device.load((String) pars.get(0).eval(machine), VarUtils.getInt(pars.get(1).eval(machine)), 0);
+				device.load(config, (String) pars.get(0).eval(machine), VarUtils.getInt(pars.get(1).eval(machine)), 0);
 				break;
 			case 3:
-				device.load((String) pars.get(0).eval(machine), VarUtils.getInt(pars.get(1).eval(machine)), VarUtils.getInt(pars.get(2).eval(machine)));
+				device.load(config, (String) pars.get(0).eval(machine), VarUtils.getInt(pars.get(1).eval(machine)), VarUtils.getInt(pars.get(2).eval(machine)));
 				break;
 			default:
 				syntaxError(this);

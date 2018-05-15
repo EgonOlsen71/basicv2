@@ -14,6 +14,7 @@ import com.sixtyfour.parser.assembly.ConstantValue;
 import com.sixtyfour.parser.assembly.ConstantsContainer;
 import com.sixtyfour.parser.assembly.LabelAndCode;
 import com.sixtyfour.parser.assembly.LabelsContainer;
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Cpu;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.system.Program;
@@ -121,7 +122,7 @@ public class Assembler implements ProgramExecutor {
 	 * the actual program.
 	 */
 	@Override
-	public void compile() {
+	public void compile(CompilerConfig config) {
 		Machine compileMachine = new Machine();
 		ConstantsContainer ccon = new ConstantsContainer();
 		LabelsContainer lcon = new LabelsContainer(compileMachine);
@@ -149,7 +150,7 @@ public class Assembler implements ProgramExecutor {
 				continue;
 			}
 
-			ConstantValue cv = AssemblyParser.getConstant(line, ccon);
+			ConstantValue cv = AssemblyParser.getConstant(config, line, ccon);
 			if (cv != null) {
 				ccon.put(cv);
 				if (cv.getName().equals("*")) {
@@ -195,7 +196,7 @@ public class Assembler implements ProgramExecutor {
 							lineBreaks.add(addr);
 							addr2code.put(addr, line);
 							int oldAddr = addr;
-							addr = mne.parse(line, addr, compileMachine, ccon, lcon);
+							addr = mne.parse(config, line, addr, compileMachine, ccon, lcon);
 							flagAddress(usedAddrs, oldAddr, addr);
 						} catch (RuntimeException re) {
 							raiseError("Error at line: " + oLine, re, addr, cnt);
@@ -209,7 +210,7 @@ public class Assembler implements ProgramExecutor {
 			}
 			if (isData) {
 				String lineUpper = VarUtils.toUpper(line.trim());
-				int[] data = AssemblyParser.getBinaryData(addr, line, ccon, lcon);
+				int[] data = AssemblyParser.getBinaryData(config, addr, line, ccon, lcon);
 				lineBreaks.add(addr);
 				System.arraycopy(data, 0, compileMachine.getRam(), addr, data.length);
 				if (lineUpper.startsWith(".STRG")) {
@@ -259,9 +260,9 @@ public class Assembler implements ProgramExecutor {
 	 * 6502 emulation.
 	 */
 	@Override
-	public void run() {
+	public void run(CompilerConfig config) {
 		if (program == null) {
-			compile();
+			compile(config);
 		}
 		Cpu cpu = machine.getCpu();
 		cpu.setPaused(false);
@@ -276,7 +277,7 @@ public class Assembler implements ProgramExecutor {
 	 * cpu won't be reset.
 	 */
 	@Override
-	public void start() {
+	public void start(CompilerConfig config) {
 		if (program == null) {
 			throw new RuntimeException("Program hasn't been compiled!");
 		}

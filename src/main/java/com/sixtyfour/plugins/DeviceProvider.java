@@ -1,5 +1,7 @@
 package com.sixtyfour.plugins;
 
+import com.sixtyfour.system.CompilerConfig;
+
 /**
  * An interface for devices like virtual disk drives.
  */
@@ -127,7 +129,7 @@ public interface DeviceProvider extends PrintConsumer {
 	 * @param secondary
 	 *            the secondary
 	 */
-	void load(String fileName, int device, int secondary);
+	void load(CompilerConfig config, String fileName, int device, int secondary);
 
 	/**
 	 * Verify.

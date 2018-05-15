@@ -6,6 +6,7 @@ import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Term;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.system.BasicProgramCounter;
+import com.sixtyfour.system.CompilerConfig;
 
 /**
  * The interface for commands.
@@ -88,7 +89,7 @@ public interface Command extends Atom {
 	 * @return an optional string that be used by the parser. Only very few
 	 *         commands make use of this, most return null.
 	 */
-	String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine);
+	String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine);
 
 	/**
 	 * Executes the command in the current machine's context.
@@ -98,7 +99,7 @@ public interface Command extends Atom {
 	 * @return a program counter instance that contains the current state after
 	 *         execution
 	 */
-	BasicProgramCounter execute(Machine machine);
+	BasicProgramCounter execute(CompilerConfig config, Machine machine);
 
 	/**
 	 * Stops the execution of a command. Only application to commands like WAIT.
@@ -111,4 +112,5 @@ public interface Command extends Atom {
 	 * @return is it?
 	 */
 	boolean isConditional();
+
 }

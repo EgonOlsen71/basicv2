@@ -3,6 +3,7 @@ package com.sixtyfour.cbmnative;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.Term;
 import com.sixtyfour.parser.TermEnhancer;
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Machine;
 
 /**
@@ -15,11 +16,11 @@ public class TermHelper {
 	 * @param term
 	 * @return
 	 */
-	public static Term linearize(Machine machine, Term term) {
+	public static Term linearize(CompilerConfig config, Machine machine, Term term) {
 		if (term == null) {
 			throw new RuntimeException("Term is null!");
 		}
-		return Parser.getTerm(linearize(term.getInitial()), machine, false, true);
+		return Parser.getTerm(config, linearize(term.getInitial()), machine, false, true);
 	}
 
 	/**

@@ -15,6 +15,7 @@ import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.plugins.OutputChannel;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.system.BasicProgramCounter;
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.util.VarUtils;
 
 /**
@@ -60,8 +61,8 @@ public class Input extends MultiVariableCommand {
 	 * int, int, int, boolean, sixtyfour.system.Machine)
 	 */
 	@Override
-	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
-		super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine);
+	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
+		super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine);
 		linePart = TermEnhancer.removeWhiteSpace(linePart);
 		linePart = linePart.substring(5).trim();
 		if (linePart.length() == 0) {
@@ -79,12 +80,12 @@ public class Input extends MultiVariableCommand {
 			comment = linePart.substring(pos + 1, pos2);
 			linePart = linePart.substring(pos2 + 2);
 		}
-		this.fillVariables(linePart, machine);
+		this.fillVariables(config, linePart, machine);
 		return null;
 	}
 
 	@Override
-	public List<CodeContainer> evalToCode(Machine machine) {
+	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
 		NativeCompiler compiler = NativeCompiler.getCompiler();
 		List<CodeContainer> ccs = new ArrayList<CodeContainer>();
 
@@ -130,13 +131,13 @@ public class Input extends MultiVariableCommand {
 
 			if (indexTerm != null) {
 				List<Atom> pars = Parser.getParameters(indexTerm);
-				before = compiler.compileToPseudoCode(machine, Parser.createIndexTerm(machine, pars, var.getDimensions()));
+				before = compiler.compileToPseudoCode(config, machine, Parser.createIndexTerm(config, machine, pars, var.getDimensions()));
 
 				after.add("POP X");
-				after.add("MOV G," + getVariableLabel(machine, var));
+				after.add("MOV G," + getVariableLabel(config, machine, var));
 				after.add("JSR ARRAYSTORE");
 			} else {
-				after.add("MOV " + getVariableLabel(machine, var) + "," + (var.getType() == Type.STRING ? "A" : "Y"));
+				after.add("MOV " + getVariableLabel(config, machine, var) + "," + (var.getType() == Type.STRING ? "A" : "Y"));
 			}
 
 			CodeContainer cc = new CodeContainer(before, expr, after);
@@ -163,7 +164,7 @@ public class Input extends MultiVariableCommand {
 	 * Machine)
 	 */
 	@Override
-	public BasicProgramCounter execute(Machine machine) {
+	public BasicProgramCounter execute(CompilerConfig config, Machine machine) {
 		List<String> queue = new ArrayList<String>();
 		OutputChannel out = machine.getOutputChannel();
 		for (int i = 0; i < vars.size(); i++) {

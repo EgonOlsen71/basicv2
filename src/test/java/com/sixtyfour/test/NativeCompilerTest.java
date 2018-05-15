@@ -27,11 +27,13 @@ import com.sixtyfour.parser.Preprocessor;
 import com.sixtyfour.parser.Term;
 import com.sixtyfour.parser.TermEnhancer;
 import com.sixtyfour.plugins.impl.RamSystemCallListener;
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Graphics;
 import com.sixtyfour.system.Machine;
 
 public class NativeCompilerTest {
 
+    private static CompilerConfig config=new CompilerConfig();
 	public static void main(String[] args) throws Exception {
 		// testExpression0();
 		// testExpression1();
@@ -146,7 +148,7 @@ public class NativeCompilerTest {
 		}
 		Basic inty = new Basic(vary);
 		final PseudoCpu pc = new PseudoCpu();
-		inty.compile();
+		inty.compile(config);
 		pc.setSystemCallListener(new RamSystemCallListener(inty.getMachine()) {
 			@Override
 			public void sys(int addr, Object... params) {
@@ -165,7 +167,7 @@ public class NativeCompilerTest {
 
 		List<String> mCode = testMachineCode(inty);
 		pc.setMemoryLimit(16000);
-		pc.execute(inty.getMachine(), mCode);
+		pc.execute(config,inty.getMachine(), mCode);
 
 		System.out.println("Saving image!");
 		BufferedImage bi2 = Graphics.createImage(pc.getRam(), 16384, 24576, true, true);
@@ -179,7 +181,7 @@ public class NativeCompilerTest {
 		System.out.println("\n\ntestLyrix");
 		String[] rd = Loader.loadProgram("src/test/resources/basic/lyrix_raw.bas");
 		Basic basic = new Basic(rd);
-		basic.compile();
+		basic.compile(config);
 		ConsoleDevice cd = ConsoleDevice.openDevice(basic.getMachine(), 1, true, 640, 400);
 		runCompiled(basic);
 		cd.dispose();
@@ -190,7 +192,7 @@ public class NativeCompilerTest {
 		System.out.println("\n\ntestFrog");
 		String[] rd = Preprocessor.convertToLineNumbers(Loader.loadProgram("src/test/resources/transform/frog_transform.bas"));
 		Basic basic = new Basic(rd);
-		basic.compile();
+		basic.compile(config);
 		ConsoleDevice cd = ConsoleDevice.openDevice(basic.getMachine(), 1, true, 640, 400);
 		runCompiled(basic);
 		cd.dispose();
@@ -201,7 +203,7 @@ public class NativeCompilerTest {
 		System.out.println("\n\ntestInput");
 		String[] rd = Loader.loadProgram("src/test/resources/basic/input.bas");
 		Basic basic = new Basic(rd);
-		basic.compile();
+		basic.compile(config);
 		ConsoleDevice cd = ConsoleDevice.openDevice(basic.getMachine(), 1, true, 640, 400);
 		runCompiled(basic);
 		cd.dispose();
@@ -389,25 +391,25 @@ public class NativeCompilerTest {
 
 	private static PseudoCpu compileAndRun(String prg) {
 		Basic basic = new Basic(prg);
-		basic.compile();
+		basic.compile(config);
 		return runCompiled(basic);
 	}
 
 	private static PseudoCpu compileAndRun(String[] prg) {
 		Basic basic = new Basic(prg);
-		basic.compile();
+		basic.compile(config);
 		return runCompiled(basic);
 	}
 
 	private static PseudoCpu runCompiled(Basic basic) {
 		List<String> mCode = testMachineCode(basic);
 		PseudoCpu pc = new PseudoCpu();
-		pc.execute(basic.getMachine(), mCode);
+		pc.execute(config, basic.getMachine(), mCode);
 		return pc;
 	}
 
 	private static List<String> testMachineCode(Basic basic) {
-		List<String> mCode = NativeCompiler.getCompiler().compileToPseudeCode(basic);
+		List<String> mCode = NativeCompiler.getCompiler().compileToPseudeCode(config, basic);
 		System.out.println("------------------------------");
 		for (String line : mCode) {
 			System.out.println(line);
@@ -765,22 +767,22 @@ public class NativeCompilerTest {
 		System.out.println("w/o brackets: " + term);
 		System.out.println("With brackets: " + s);
 
-		Term t = Parser.getTerm(term, machine, false, true);
+		Term t = Parser.getTerm(config, term, machine, false, true);
 		System.out.println("TERM: " + t);
-		List<String> ret = TermHelper.linearize(machine, t).evalToCode(machine).get(0).getExpression();
+		List<String> ret = TermHelper.linearize(config, machine, t).evalToCode(config, machine).get(0).getExpression();
 
 		System.out.println("Expression:");
 		for (String line : ret) {
 			System.out.println("--> " + line);
 		}
-		List<String> code = new NativeCompiler().compileToPseudoCode(machine, t);
+		List<String> code = new NativeCompiler().compileToPseudoCode(config, machine, t);
 		System.out.println("Pseudocode of " + term + " :");
 		for (String line : code) {
 			System.out.println("----> " + line);
 		}
 
 		PseudoCpu pc = new PseudoCpu();
-		pc.execute(machine, code);
+		pc.execute(config, machine, code);
 		Deque<Number> stack = pc.getStack();
 
 		System.out.println("------------------------------");

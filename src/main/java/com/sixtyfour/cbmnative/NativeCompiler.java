@@ -83,14 +83,13 @@ public class NativeCompiler {
 	}
 
 	public List<String> compile(Basic basic) {
-		return compile(basic, new MemoryConfig());
+		return compile(new CompilerConfig(), basic, new MemoryConfig());
 	}
 
-	public List<String> compile(Basic basic, MemoryConfig memConfig) {
+	public List<String> compile(CompilerConfig conf, Basic basic, MemoryConfig memConfig) {
 
-		basic.compile();
-		CompilerConfig conf = CompilerConfig.getConfig();
-		List<String> mCode = NativeCompiler.getCompiler().compileToPseudeCode(basic);
+		basic.compile(conf);
+		List<String> mCode = NativeCompiler.getCompiler().compileToPseudeCode(conf, basic);
 
 		PlatformProvider platform = new C64Platform();
 		Transformer tf = platform.getTransformer();
@@ -122,25 +121,24 @@ public class NativeCompiler {
 		return nCode;
 	}
 
-	public List<String> compileToPseudeCode(Basic basic) {
+	public List<String> compileToPseudeCode(CompilerConfig config, Basic basic) {
 		long s = System.currentTimeMillis();
 		Machine machine = basic.getMachine();
 		PCode pCode = basic.getPCode();
 
-		CompilerConfig config = CompilerConfig.getConfig();
 		if (!config.isConstantFolding()) {
 			// If no folding is being used, we must not run dead store
 			// elimination after a potential propagation or otherwise, we might
 			// remove actually needed assignments.
-			DeadStoreEliminator.eliminateDeadStores(basic);
+			DeadStoreEliminator.eliminateDeadStores(config, basic);
 		} else {
 			// If it's enabled, we are save to proceed the usual way, i.e.
 			// propagate first, then eliminate based on the results, because
 			// folding
 			// will take care of the unused expressions later anyway.
-			ConstantPropagator.propagateConstants(machine);
-			ConstantFolder.foldConstants(machine);
-			DeadStoreEliminator.eliminateDeadStores(basic);
+			ConstantPropagator.propagateConstants(config, machine);
+			ConstantFolder.foldConstants(config, machine);
+			DeadStoreEliminator.eliminateDeadStores(config, basic);
 		}
 
 		// Preexecute the DIMs to make the machine know them.
@@ -149,7 +147,7 @@ public class NativeCompiler {
 			if (cmd.isCommand("DIM")) {
 				// This doesn't generate any code. It just prefills the variable
 				// for futher use.
-				cmd.evalToCode(machine);
+				cmd.evalToCode(config, machine);
 			}
 		}
 
@@ -160,13 +158,13 @@ public class NativeCompiler {
 			boolean condi = false;
 			for (Command cmd : line.getCommands()) {
 				if (!condi) {
-					mCode.addAll(compileToPseudoCode(machine, cmd));
+					mCode.addAll(compileToPseudoCode(config, machine, cmd));
 				} else {
 					// Place conditional code blocks inside of the conditional
 					// area. This should now handle nested ifs as well.
 					for (int i = mCode.size() - 1; i >= 0; i--) {
 						if (!mCode.get(i).startsWith("SKIP")) {
-							mCode.addAll(i + 1, compileToPseudoCode(machine, cmd));
+							mCode.addAll(i + 1, compileToPseudoCode(config, machine, cmd));
 							break;
 						}
 					}
@@ -180,7 +178,7 @@ public class NativeCompiler {
 		}
 
 		int os = mCode.size();
-		mCode = optimize(mCode);
+		mCode = optimize(config, mCode);
 
 		Logger.log("Code optimized: " + os + " => " + mCode.size() + " lines!");
 
@@ -195,13 +193,13 @@ public class NativeCompiler {
 		return mCode;
 	}
 
-	public List<String> compileToPseudoCode(Machine machine, Command command) {
-		return compileToPseudoCodeInternal(machine, command);
+	public List<String> compileToPseudoCode(CompilerConfig config, Machine machine, Command command) {
+		return compileToPseudoCodeInternal(config, machine, command);
 	}
 
-	public List<String> compileToPseudoCode(Machine machine, Term term) {
-		Atom atom = TermHelper.linearize(machine, term);
-		List<String> ret = compileToPseudoCode(machine, atom);
+	public List<String> compileToPseudoCode(CompilerConfig config, Machine machine, Term term) {
+		Atom atom = TermHelper.linearize(config, machine, term);
+		List<String> ret = compileToPseudoCode(config, machine, atom);
 		// The compiler adds "NOP"s as markers for a new term, so that
 		// optimizations don't cross term borders and screw things up in the
 		// process. They will be removed later...
@@ -209,7 +207,7 @@ public class NativeCompiler {
 		return ret;
 	}
 
-	public List<String> compileToPseudoCode(Machine machine, Atom term) {
+	public List<String> compileToPseudoCode(CompilerConfig config, Machine machine, Atom term) {
 		String tr = null;
 		String sr = null;
 		boolean pointerMode = false;
@@ -224,7 +222,7 @@ public class NativeCompiler {
 		};
 
 		List<String> code = new ArrayList<String>();
-		List<String> expr = term.evalToCode(machine).get(0).getExpression();
+		List<String> expr = term.evalToCode(config, machine).get(0).getExpression();
 
 		Deque<String> stack = new LinkedList<String>();
 		Deque<String> yStack = new LinkedList<String>();
@@ -689,11 +687,11 @@ public class NativeCompiler {
 		/*
 		 * if (!yStack.isEmpty()) { code.add("POP X"); }
 		 */
-		return optimize(code);
+		return optimize(config, code);
 	}
 
-	private List<String> optimize(List<String> code) {
-		return NativeOptimizer.optimizeNative(code);
+	private List<String> optimize(CompilerConfig config, List<String> code) {
+		return NativeOptimizer.optimizeNative(config, code);
 	}
 
 	private String getLastMoveTarget(List<String> code, int offset) {
@@ -757,9 +755,9 @@ public class NativeCompiler {
 		return reg.equals("C") || reg.equals("D") || reg.equals("G");
 	}
 
-	private List<String> compileToPseudoCodeInternal(Machine machine, Atom atom) {
+	private List<String> compileToPseudoCodeInternal(CompilerConfig config, Machine machine, Atom atom) {
 		List<String> mCode = new ArrayList<String>();
-		List<CodeContainer> ccs = atom.evalToCode(machine);
+		List<CodeContainer> ccs = atom.evalToCode(config, machine);
 		for (CodeContainer cc : ccs) {
 			mCode.addAll(cc.getPseudoBefore());
 			mCode.addAll(cc.getExpression());

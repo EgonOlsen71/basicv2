@@ -27,6 +27,7 @@ import com.sixtyfour.plugins.MemoryListener;
 import com.sixtyfour.plugins.OutputChannel;
 import com.sixtyfour.plugins.SystemCallListener;
 import com.sixtyfour.system.BasicProgramCounter;
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Cpu;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.Jit;
@@ -346,8 +347,8 @@ public class Basic implements ProgramExecutor {
 	 * will call it on its own if needed.
 	 */
 	@Override
-	public void compile() {
-		compile(true);
+	public void compile(CompilerConfig config) {
+		compile(config, true);
 	}
 
 	/**
@@ -359,7 +360,7 @@ public class Basic implements ProgramExecutor {
 	 *            if true, the compile will happen on a clean machine. If false,
 	 *            it it will reuse existing variable definitions
 	 */
-	public void compile(boolean resetMachine) {
+	public void compile(CompilerConfig config, boolean resetMachine) {
 		long start = System.nanoTime();
 		if (resetMachine) {
 			machine.resetMemory();
@@ -406,7 +407,7 @@ public class Basic implements ProgramExecutor {
 							if (!command.keepSpaces()) {
 								part = TermEnhancer.removeWhiteSpace(part);
 							}
-							part = command.parse(part, lineCnt, cl.getNumber(), pos, (pos == parts.length - 1), machine);
+							part = command.parse(config, part, lineCnt, cl.getNumber(), pos, (pos == parts.length - 1), machine);
 
 							machine.addCommand(command);
 							cl.addCommand(command);
@@ -444,12 +445,12 @@ public class Basic implements ProgramExecutor {
 	 * compiling it over and over again.
 	 */
 	@Override
-	public void start() {
+	public void start(CompilerConfig config) {
 		stop = false;
 		if (!compiled) {
 			throw new RuntimeException("Code not compiled! Either call compile();start(); or run()!");
 		}
-		runInternal();
+		runInternal(config);
 	}
 
 	/**
@@ -458,13 +459,13 @@ public class Basic implements ProgramExecutor {
 	 * this, use start() instead or call compile() before calling run().
 	 */
 	@Override
-	public void run() {
+	public void run(CompilerConfig config) {
 		stop = false;
 		if (!compiled) {
-			compile();
+			compile(config);
 		}
 		if (compiled) {
-			runInternal();
+			runInternal(config);
 			compiled = false;
 		} else {
 			machine.getOutputChannel().systemPrintln(0, "\nREADY.");
@@ -480,7 +481,7 @@ public class Basic implements ProgramExecutor {
 	 * @param cmd
 	 *            the command to execute
 	 */
-	public void executeSingleCommand(String cmd) {
+	public void executeSingleCommand(CompilerConfig config, String cmd) {
 		if (cmd == null || cmd.isEmpty()) {
 			return;
 		}
@@ -491,8 +492,8 @@ public class Basic implements ProgramExecutor {
 		if (!command.keepSpaces()) {
 			cmd = TermEnhancer.removeWhiteSpace(cmd);
 		}
-		command.parse(cmd, 0, 0, 0, false, machine);
-		command.execute(machine);
+		command.parse(config, cmd, 0, 0, 0, false, machine);
+		command.execute(config, machine);
 	}
 
 	/**
@@ -724,16 +725,16 @@ public class Basic implements ProgramExecutor {
 
 	/**
    */
-	private void runInternal() {
+	private void runInternal(CompilerConfig config) {
 		long start = System.nanoTime();
 		if (codeEnhancer != null) {
 			String cmd = codeEnhancer.getFirstCommand();
-			executeSingleCommand(cmd);
+			executeSingleCommand(config, cmd);
 		}
-		execute(0, 0);
+		execute(config, 0, 0);
 		if (codeEnhancer != null) {
 			String cmd = codeEnhancer.getLastCommand();
-			executeSingleCommand(cmd);
+			executeSingleCommand(config, cmd);
 		}
 		long end = System.nanoTime();
 		machine.getOutputChannel().systemPrintln(0, "\nREADY. (" + ((end - start) / 1000000L) + "ms)");
@@ -745,7 +746,7 @@ public class Basic implements ProgramExecutor {
 	 * @param pos
 	 *            the pos
 	 */
-	private void execute(int lineCnt, int pos) {
+	private void execute(CompilerConfig config, int lineCnt, int pos) {
 		if (lineNumbers.size() == 0) {
 			return;
 		}
@@ -778,7 +779,7 @@ public class Basic implements ProgramExecutor {
 
 					Command command = line.getCommands().get(i);
 					machine.setCurrentCommand(command);
-					BasicProgramCounter pc = command.execute(machine);
+					BasicProgramCounter pc = command.execute(config, machine);
 					if (tracer != null) {
 						tracer.commandExecuted(this, command, num, i);
 					}

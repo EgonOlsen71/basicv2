@@ -11,6 +11,7 @@ import com.sixtyfour.parser.Term;
 import com.sixtyfour.parser.TermEnhancer;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.system.BasicProgramCounter;
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
@@ -94,8 +95,8 @@ public class For extends AbstractCommand {
 	 * int, int, int, boolean, sixtyfour.system.Machine)
 	 */
 	@Override
-	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
-		super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine);
+	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
+		super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine);
 		linePart = TermEnhancer.removeWhiteSpace(linePart.substring(this.name.length()));
 		String uLinePart = VarUtils.toUpper(linePart);
 
@@ -108,7 +109,7 @@ public class For extends AbstractCommand {
 
 		String assignment = linePart.substring(0, posTo);
 		var = Parser.getVariable(assignment, machine);
-		term = Parser.getTerm(assignment, machine, true, true);
+		term = Parser.getTerm(config, assignment, machine, true, true);
 
 		if (var.getType() == Type.INTEGER) {
 			syntaxError(linePart);
@@ -126,14 +127,14 @@ public class For extends AbstractCommand {
 		} else {
 			toTxt = linePart.substring(posTo + 2, posStep);
 		}
-		endTerm = Parser.getTerm(toTxt, machine, false, true);
+		endTerm = Parser.getTerm(config, toTxt, machine, false, true);
 
 		if (posStep != -1) {
 			stepTxt = linePart.substring(posStep + 4);
 		} else {
 			stepTxt = "1";
 		}
-		stepTerm = Parser.getTerm(stepTxt, machine, false, true);
+		stepTerm = Parser.getTerm(config, stepTxt, machine, false, true);
 
 		if (!Parser.isNumberType(endTerm)) {
 			typeMismatch(endTerm);
@@ -155,7 +156,7 @@ public class For extends AbstractCommand {
 	 * Machine)
 	 */
 	@Override
-	public BasicProgramCounter execute(Machine machine) {
+	public BasicProgramCounter execute(CompilerConfig config, Machine machine) {
 		var = machine.add(var);
 		var.setValue(term.eval(machine));
 		end = VarUtils.getFloat(endTerm.eval(machine));
@@ -167,13 +168,13 @@ public class For extends AbstractCommand {
 	}
 
 	@Override
-	public List<CodeContainer> evalToCode(Machine machine) {
+	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
 		var = machine.add(var);
 		NativeCompiler compiler = NativeCompiler.getCompiler();
 		List<String> after = new ArrayList<String>();
-		List<String> expr = compiler.compileToPseudoCode(machine, endTerm);
-		expr.addAll(compiler.compileToPseudoCode(machine, stepTerm));
-		expr.addAll(compiler.compileToPseudoCode(machine, term));
+		List<String> expr = compiler.compileToPseudoCode(config, machine, endTerm);
+		expr.addAll(compiler.compileToPseudoCode(config, machine, stepTerm));
+		expr.addAll(compiler.compileToPseudoCode(config, machine, term));
 		List<String> before = null;
 
 		String varLabel = var.getName() + "{" + var.getType() + "}";

@@ -20,6 +20,7 @@ import com.sixtyfour.extensions.textmode.ConsoleSupport;
 import com.sixtyfour.parser.Preprocessor;
 import com.sixtyfour.plugins.CodeEnhancer;
 import com.sixtyfour.plugins.impl.RamSystemCallListener;
+import com.sixtyfour.system.CompilerConfig;
 
 /**
  * A simple UI class that allows for starting BASIC programs from the desktop.
@@ -42,6 +43,7 @@ public class VisualRuntime {
 	private Basic basic;
 	private String[] code;
 	private File lastDir;
+	private CompilerConfig config=new CompilerConfig();
 
 	/**
 	 * The main method. Just run this without any parameters.
@@ -179,7 +181,7 @@ public class VisualRuntime {
 					}
 				});
 				try {
-					basic.run();
+					basic.run(config);
 				} catch (Exception e) {
 					JOptionPane.showMessageDialog(frame, "ERROR: " + e.getMessage());
 				} finally {

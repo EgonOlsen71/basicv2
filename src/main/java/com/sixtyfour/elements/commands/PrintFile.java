@@ -9,6 +9,7 @@ import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.system.BasicProgramCounter;
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
@@ -33,13 +34,13 @@ public class PrintFile extends Print {
 	 * int, boolean, sixtyfour.system.Machine)
 	 */
 	@Override
-	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
+	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
 		linePart = linePart.substring(this.name.length());
 		int pos = linePart.indexOf(',');
 		if (pos == -1) {
 			pos = linePart.length();
 		}
-		term = Parser.getTerm(linePart.substring(0, pos), machine, false, true);
+		term = Parser.getTerm(config, linePart.substring(0, pos), machine, false, true);
 		linePart = pos != linePart.length() ? linePart.substring(pos + 1) : "";
 		List<Atom> pars = Parser.getParameters(term);
 		if (pars.size() != 1) {
@@ -47,23 +48,23 @@ public class PrintFile extends Print {
 		}
 		fileNumber = pars.get(0);
 		checkTypes(pars, linePart, Type.STRING);
-		super.parse("PRINT" + linePart, lineCnt, lineNumber, linePos, lastPos, machine);
+		super.parse(config, "PRINT" + linePart, lineCnt, lineNumber, linePos, lastPos, machine);
 		return null;
 	}
 
 	@Override
-	public List<CodeContainer> evalToCode(Machine machine) {
+	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
 		NativeCompiler compiler = NativeCompiler.getCompiler();
 		List<String> after = new ArrayList<String>();
 		List<String> expr = null;
 		List<String> before = new ArrayList<String>();
 
-		expr = compiler.compileToPseudoCode(machine, fileNumber);
+		expr = compiler.compileToPseudoCode(config, machine, fileNumber);
 
 		CodeContainer cc = new CodeContainer(before, expr, after);
 		List<CodeContainer> ccs = new ArrayList<CodeContainer>();
 		ccs.add(cc);
-		ccs.addAll(this.evalToCode(machine, "CHANNEL"));
+		ccs.addAll(this.evalToCode(config, machine, "CHANNEL"));
 		return ccs;
 	}
 
@@ -73,7 +74,7 @@ public class PrintFile extends Print {
 	 * @see sixtyfour.elements.commands.Print#execute(sixtyfour.system.Machine)
 	 */
 	@Override
-	public BasicProgramCounter execute(Machine machine) {
+	public BasicProgramCounter execute(CompilerConfig config, Machine machine) {
 		int fn = VarUtils.getInt(fileNumber.eval(machine));
 		return execute(machine, machine.getDeviceProvider(), fn);
 	}

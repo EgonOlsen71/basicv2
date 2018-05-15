@@ -9,6 +9,7 @@ import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Term;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.system.BasicProgramCounter;
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
@@ -72,7 +73,7 @@ public abstract class AbstractCommand implements Command {
 	}
 
 	@Override
-	public List<CodeContainer> evalToCode(Machine machine) {
+	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
 		throw new RuntimeException("Command " + this.getName() + " not implemented in native compiler!");
 	}
 
@@ -174,7 +175,7 @@ public abstract class AbstractCommand implements Command {
 	 * int, int, boolean, sixtyfour.system.Machine)
 	 */
 	@Override
-	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
+	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
 		this.lineCnt = lineCnt;
 		this.linePos = linePos;
 		this.lineNumber = lineNumber;
@@ -188,7 +189,7 @@ public abstract class AbstractCommand implements Command {
 	 * sixtyfour.elements.commands.Command#execute(sixtyfour.system.Machine)
 	 */
 	@Override
-	public BasicProgramCounter execute(Machine machine) {
+	public BasicProgramCounter execute(CompilerConfig config, Machine machine) {
 		return null;
 	}
 
@@ -309,8 +310,8 @@ public abstract class AbstractCommand implements Command {
 	 * @param variable
 	 * @return
 	 */
-	protected String getVariableLabel(Machine machine, Variable variable) {
-		List<CodeContainer> ccs = variable.evalToCode(machine);
+	protected String getVariableLabel(CompilerConfig config, Machine machine, Variable variable) {
+		List<CodeContainer> ccs = variable.evalToCode(config, machine);
 		return ccs.get(0).getExpression().get(0);
 	}
 

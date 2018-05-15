@@ -7,6 +7,7 @@ import com.sixtyfour.Basic;
 import com.sixtyfour.Loader;
 import com.sixtyfour.plugins.CpuCallListener;
 import com.sixtyfour.plugins.impl.RamSystemCallListener;
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Cpu;
 import com.sixtyfour.system.Graphics;
 
@@ -32,6 +33,8 @@ import com.sixtyfour.system.Graphics;
  */
 public class AdvancedGraphicsTest {
 
+    	private static CompilerConfig config=new CompilerConfig();
+    
 	public static void main(String[] args) throws Exception {
 		test3d();
 	}
@@ -39,7 +42,7 @@ public class AdvancedGraphicsTest {
 	private static void test3d() throws Exception {
 		String[] vary = Loader.loadProgram("src/test/resources/basic/graphicspackage.bas");
 		final Basic inty = new Basic(vary);
-		inty.run();
+		inty.run(config);
 		final ParameterHolder holder = new ParameterHolder();
 
 		vary = Loader.loadProgram("src/test/resources/basic/graphics3d.bas");
@@ -103,8 +106,8 @@ public class AdvancedGraphicsTest {
 
 		});
 
-		inty2.compile(false); // Don't reset the machine, keep the ram's content
-		inty2.run();
+		inty2.compile(config, false); // Don't reset the machine, keep the ram's content
+		inty2.run(config);
 
 		BufferedImage bi = Graphics.createImage(inty.getMachine(), 8192, 1024, false, true);
 		FileOutputStream fos = new FileOutputStream("graphics3d.png");

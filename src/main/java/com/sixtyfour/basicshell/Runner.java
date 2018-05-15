@@ -5,6 +5,7 @@ import java.util.concurrent.Future;
 import com.sixtyfour.Basic;
 import com.sixtyfour.extensions.graphics.GraphicsBasic;
 import com.sixtyfour.extensions.textmode.ConsoleSupport;
+import com.sixtyfour.system.CompilerConfig;
 
 /**
  * Runs the program that's inside the editor.
@@ -15,6 +16,7 @@ public class Runner implements Runnable {
 	private final Basic olsenBasic;
 	private boolean running;
 	private Basic runningBasic = null;
+	private CompilerConfig config=new CompilerConfig();
 
 	public Runner(String[] program, BasicShell shellFrame) {
 		Basic.registerExtension(new GraphicsBasic());
@@ -63,8 +65,8 @@ public class Runner implements Runnable {
 				Basic imm = new Basic("0" + command, olsenBasic.getMachine());
 				// imm.setLoopMode(LoopMode.REMOVE);
 				runningBasic = imm;
-				imm.compile(false);
-				imm.start();
+				imm.compile(config, false);
+				imm.start(config);
 				running = false;
 				runningBasic = null;
 			}
@@ -109,7 +111,7 @@ public class Runner implements Runnable {
 	public void run() {
 		running = true;
 		runningBasic = olsenBasic;
-		olsenBasic.run();
+		olsenBasic.run(config);
 		running = false;
 		runningBasic = null;
 	}

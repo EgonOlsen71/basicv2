@@ -8,6 +8,7 @@ import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Operator;
 import com.sixtyfour.parser.Term;
 import com.sixtyfour.parser.TermBuilder;
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Machine;
 
 /**
@@ -55,7 +56,7 @@ public class TermOptimizer {
 	 * @param builder
 	 * @return
 	 */
-	public static Term optimizeTerm(Machine machine, Term ret, Map<String, Term> termMap, TermBuilder builder) {
+	public static Term optimizeTerm(CompilerConfig config, Machine machine, Term ret, Map<String, Term> termMap, TermBuilder builder) {
 		if (ret.getType(true) == Type.STRING) {
 			return ret;
 		}
@@ -66,7 +67,7 @@ public class TermOptimizer {
 		if (ret.getLeft() instanceof Constant && ret.getOperator().isNop()) {
 			return ret;
 		}
-		boolean isConst = ConstantPropagator.checkForConstant(machine, ret);
+		boolean isConst = ConstantPropagator.checkForConstant(config, machine, ret);
 		if (isConst) {
 			// System.out.println("To replace: " + ret);
 			String ts = ret.eval(machine).toString();
@@ -79,7 +80,7 @@ public class TermOptimizer {
 			}
 			// System.out.println("TS: "+ts);
 			Term t = new Term(ts, termMap);
-			t = builder.build(t, termMap, machine);
+			t = builder.build(config, t, termMap, machine);
 			if (!t.isComplete()) {
 				t.setOperator(Operator.NOP);
 				t.setRight(new Constant<Integer>(0));

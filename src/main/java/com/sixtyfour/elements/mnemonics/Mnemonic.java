@@ -2,6 +2,7 @@ package com.sixtyfour.elements.mnemonics;
 
 import com.sixtyfour.parser.assembly.ConstantsContainer;
 import com.sixtyfour.parser.assembly.LabelsContainer;
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Machine;
 
 /**
@@ -26,7 +27,7 @@ public interface Mnemonic {
 	 * @return the next free memory address after inserting the new opcode and
 	 *         its operands.
 	 */
-	int parse(String linePart, int addr, Machine machine, ConstantsContainer ccon, LabelsContainer lcon);
+	int parse(CompilerConfig config, String linePart, int addr, Machine machine, ConstantsContainer ccon, LabelsContainer lcon);
 
 	/**
 	 * Returns true if the implementation can handle the given line's content.

@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
@@ -42,7 +43,7 @@ public class Constant<T> implements Atom {
 	}
 
 	@Override
-	public List<CodeContainer> evalToCode(Machine machine) {
+	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
 		List<String> ret = new ArrayList<String>();
 		ret.add("#" + value.toString() + "{" + type + "}");
 		List<CodeContainer> cc = new ArrayList<CodeContainer>();

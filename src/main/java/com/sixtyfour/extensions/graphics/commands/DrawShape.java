@@ -4,6 +4,7 @@ import com.sixtyfour.elements.Type;
 import com.sixtyfour.extensions.graphics.GraphicsDevice;
 import com.sixtyfour.parser.Atom;
 import com.sixtyfour.system.BasicProgramCounter;
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
@@ -20,14 +21,14 @@ public class DrawShape extends AbstractGraphicsCommand {
 	}
 
 	@Override
-	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
-		String ret = super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine, 3, 2);
+	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
+		String ret = super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine, 3, 2);
 		checkTypes(pars, linePart, Type.STRING, Type.STRING, Type.STRING, Type.STRING, Type.STRING);
 		return ret;
 	}
 
 	@Override
-	public BasicProgramCounter execute(Machine machine) {
+	public BasicProgramCounter execute(CompilerConfig config, Machine machine) {
 		Atom id = pars.get(0);
 		Atom x = pars.get(1);
 		Atom y = pars.get(2);

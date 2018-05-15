@@ -18,13 +18,8 @@ public class CompilerConfig {
 	private boolean deadStoreEliminationOfStrings = true;
 
 	private int compactThreshold = 0;
-	private static CompilerConfig instance = new CompilerConfig();
 
-	public static CompilerConfig getConfig() {
-		return instance;
-	}
-
-	private CompilerConfig() {
+	public CompilerConfig() {
 		//
 	}
 

@@ -5,6 +5,7 @@ import com.sixtyfour.parser.assembly.AssemblyParser;
 import com.sixtyfour.parser.assembly.ConstantsContainer;
 import com.sixtyfour.parser.assembly.LabelsContainer;
 import com.sixtyfour.parser.assembly.Parameters;
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
@@ -39,9 +40,9 @@ public abstract class AbstractMnemonic implements Mnemonic {
 	}
 
 	@Override
-	public int parse(String linePart, int addr, Machine machine, ConstantsContainer ccon, LabelsContainer lcon) {
+	public int parse(CompilerConfig config, String linePart, int addr, Machine machine, ConstantsContainer ccon, LabelsContainer lcon) {
 		linePart = linePart.trim().substring(3);
-		Parameters pars = this.parseParameters(linePart, addr, ccon, lcon);
+		Parameters pars = this.parseParameters(config, linePart, addr, ccon, lcon);
 
 		if (opcodes[0] == 0 && pars == null) {
 			raiseSyntaxError(linePart);
@@ -233,7 +234,7 @@ public abstract class AbstractMnemonic implements Mnemonic {
 		return addr;
 	}
 
-	protected Parameters parseParameters(String pars, int addr, ConstantsContainer ccon, LabelsContainer lcon) {
+	protected Parameters parseParameters(CompilerConfig config, String pars, int addr, ConstantsContainer ccon, LabelsContainer lcon) {
 		pars = TermEnhancer.removeWhiteSpace(pars);
 
 		if (pars.isEmpty()) {
@@ -275,7 +276,7 @@ public abstract class AbstractMnemonic implements Mnemonic {
 		par.setY(part2.startsWith("Y"));
 		par.setIndirect(isIndirect);
 
-		int val = AssemblyParser.getValue(part1, addr, ccon, lcon, lowByte, highByte, addrAdd, false);
+		int val = AssemblyParser.getValue(config, part1, addr, ccon, lcon, lowByte, highByte, addrAdd, false);
 		if (lowByte) {
 			val = AssemblyParser.getLowByte(val);
 		} else if (highByte) {

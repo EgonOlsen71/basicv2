@@ -6,6 +6,7 @@ import com.sixtyfour.elements.Type;
 import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.TermEnhancer;
+import com.sixtyfour.system.CompilerConfig;
 import com.sixtyfour.system.Machine;
 
 /**
@@ -33,11 +34,11 @@ public abstract class FileOperation extends AbstractCommand {
 	 * int, int, int, boolean, sixtyfour.system.Machine)
 	 */
 	@Override
-	public String parse(String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
-		super.parse(linePart, lineCnt, lineNumber, linePos, lastPos, machine);
+	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
+		super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine);
 		linePart = TermEnhancer.removeWhiteSpace(linePart);
 		linePart = linePart.substring(this.name.length());
-		term = Parser.getTerm(linePart, machine, false, true);
+		term = Parser.getTerm(config, linePart, machine, false, true);
 		pars = Parser.getParameters(term);
 		if (pars.size() > 0 && !pars.get(0).getType().equals(Type.STRING)) {
 			syntaxError(this);
