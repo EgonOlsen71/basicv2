@@ -121,10 +121,16 @@ public class Compactor {
 									input.set(pos, "JSR " + label);
 									if (reallyFirst) {
 										input.add(insertAt++, label);
+										String lastLine=null;
 										for (Line rr : toReps) {
-											input.add(insertAt++, rr.txt);
+										    	lastLine=rr.txt;
+											input.add(insertAt++, lastLine);
 										}
-										input.add(insertAt++, "RTS");
+										if (lastLine!=null && lastLine.startsWith("JSR")) {
+										    input.set(insertAt-1, "JMP"+lastLine.substring(3));
+										} else {
+										    input.add(insertAt++, "RTS");
+										}
 										input.add(insertAt++, ";##################################################");
 										reallyFirst = false;
 									}
