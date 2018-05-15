@@ -42,7 +42,7 @@ public class TransformerTest {
 //		testTransformer2();
 //		testTransformer4();
 //		testTransformer5();
-		testTransformerFractal();
+//		testTransformerFractal();
 //		testTransformer6();
 //		testTransformer7();
 //		testTransformerPrime();
@@ -75,8 +75,16 @@ public class TransformerTest {
 //		testTransformer28();
 //		testTransformer29();
 //		testTransformer30();
+		testBenchmark();
 	}
 
+	private static void testBenchmark() throws Exception {
+		System.out.println("\n\ntestBenchmark");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/benchmark.bas");
+		Assembler assy = initTestEnvironment(vary, false);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++testbenchmark.prg", true);
+	}
+	
 	private static void testConditions() throws Exception {
 		System.out.println("\n\ntestConditions");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/conditions.bas");
