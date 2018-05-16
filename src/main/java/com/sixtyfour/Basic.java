@@ -10,6 +10,7 @@ import java.util.Set;
 
 import com.sixtyfour.cbmnative.PCode;
 import com.sixtyfour.config.CompilerConfig;
+import com.sixtyfour.config.LoopMode;
 import com.sixtyfour.elements.commands.Command;
 import com.sixtyfour.elements.commands.CommandList;
 import com.sixtyfour.elements.commands.For;
@@ -69,8 +70,6 @@ public class Basic implements ProgramExecutor {
 	private boolean running;
 
 	private Tracer tracer = null;
-
-	private LoopMode loopMode = LoopMode.EXECUTE;
 
 	private static Map<String, BasicExtension> addedExtensions = new HashMap<String, BasicExtension>();
 
@@ -431,7 +430,7 @@ public class Basic implements ProgramExecutor {
 			}
 		}
 
-		modifyDelayLoops();
+		modifyDelayLoops(config);
 
 		compiled = true;
 		Logger.log(machine.getCommandList().size() + " commands compiled in: " + (System.nanoTime() - start) / 1000000L + "ms");
@@ -684,27 +683,6 @@ public class Basic implements ProgramExecutor {
 	}
 
 	/**
-	 * Returns the current loop mode that will be used when compiling the
-	 * program.
-	 * 
-	 * @return the loop mode
-	 */
-	public LoopMode getLoopMode() {
-		return loopMode;
-	}
-
-	/**
-	 * Sets the loop mode. This has to be set before compiling/running a program
-	 * to have an effect.
-	 * 
-	 * @param loopMode
-	 *            the loop mode, EXECUTE is default
-	 */
-	public void setLoopMode(LoopMode loopMode) {
-		this.loopMode = loopMode;
-	}
-
-	/**
 	 * Sets a new code enhancer instance.
 	 * 
 	 * @return the new code enhancer
@@ -845,7 +823,14 @@ public class Basic implements ProgramExecutor {
 		running = false;
 	}
 
-	private void modifyDelayLoops() {
+	/**
+	 * Modifies loops according to the corresponding setting in the CompilerConfig. Usually, there's no need to call this method directly.
+	 *
+	 * @param config
+	 *            the config
+	 */
+	public void modifyDelayLoops(CompilerConfig config) {
+	    LoopMode loopMode=config.getLoopMode();
 		if (loopMode == null || loopMode == LoopMode.EXECUTE) {
 			return;
 		}

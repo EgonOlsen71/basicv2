@@ -151,6 +151,8 @@ public class NativeCompiler {
 			DeadStoreEliminator.eliminateDeadStores(config, basic);
 		}
 
+		basic.modifyDelayLoops(config);
+		
 		// Preexecute the DIMs to make the machine know them.
 		List<Command> cmds = basic.getMachine().getCommandList();
 		for (Command cmd : cmds) {

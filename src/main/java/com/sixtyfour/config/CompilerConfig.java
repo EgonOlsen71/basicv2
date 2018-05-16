@@ -16,6 +16,7 @@ public class CompilerConfig {
 	private boolean optimizedLinker = true;
 	private boolean deadStoreElimination = true;
 	private boolean deadStoreEliminationOfStrings = true;
+	private LoopMode loopMode=LoopMode.REMOVE;
 
 	private int compactThreshold = 0;
 
@@ -86,4 +87,26 @@ public class CompilerConfig {
 	public void setDeadStoreEliminationOfStrings(boolean deadStoreEliminationOfStrings) {
 		this.deadStoreEliminationOfStrings = deadStoreEliminationOfStrings;
 	}
+
+	/**
+	 * Returns the current loop mode that will be used when compiling the
+	 * program.
+	 * 
+	 * @return the loop mode
+	 */
+	public LoopMode getLoopMode() {
+		return loopMode;
+	}
+
+	/**
+	 * Sets the loop mode. This has to be set before compiling/running a program
+	 * to have an effect.
+	 * 
+	 * @param loopMode
+	 *            the loop mode, EXECUTE is default
+	 */
+	public void setLoopMode(LoopMode loopMode) {
+		this.loopMode = loopMode;
+	}
+
 }

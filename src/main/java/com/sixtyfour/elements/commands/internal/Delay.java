@@ -1,8 +1,12 @@
 package com.sixtyfour.elements.commands.internal;
 
+import java.util.List;
+
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.commands.AbstractCommand;
 import com.sixtyfour.elements.commands.For;
+import com.sixtyfour.elements.commands.Let;
+import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.system.BasicProgramCounter;
 import com.sixtyfour.system.Machine;
 
@@ -37,6 +41,14 @@ public class Delay extends AbstractCommand {
 			}
 		}
 		return null;
+	}
+	
+	@Override
+	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
+	    Let letty=new Let();
+	    letty.setTerm(delayLoop.getEndTerm());
+	    letty.setVar(delayLoop.getVar());
+	    return letty.evalToCode(config, machine);
 	}
 
 }

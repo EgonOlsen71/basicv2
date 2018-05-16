@@ -192,6 +192,15 @@ public class For extends AbstractCommand {
 	}
 
 	/**
+	 * Returns the end term.
+	 * 
+	 * @return the end term
+	 */
+	public Term getEndTerm() {
+	    return endTerm;
+	}
+	
+	/**
 	 * Executes a next call for this for.
 	 * 
 	 * @param next
