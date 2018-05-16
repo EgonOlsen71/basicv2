@@ -13,6 +13,7 @@ import com.sixtyfour.Loader;
 import com.sixtyfour.cbmnative.NativeCompiler;
 import com.sixtyfour.cbmnative.PseudoCpu;
 import com.sixtyfour.config.CompilerConfig;
+import com.sixtyfour.config.LoopMode;
 import com.sixtyfour.config.MemoryConfig;
 import com.sixtyfour.parser.assembly.AssemblyParser;
 import com.sixtyfour.system.Conversions;
@@ -138,8 +139,9 @@ public class GamesCompiler {
 		conf.setDeadStoreElimination(optis);
 		conf.setDeadStoreEliminationOfStrings(optis);
 		conf.setIntermediateLanguageOptimizations(optis);
-		conf.setNativeLanguageOptimizations(false);
+		conf.setNativeLanguageOptimizations(optis);
 		conf.setOptimizedLinker(optis);
+		conf.setLoopMode(LoopMode.REMOVE);
 		conf.setCompactThreshold(4);
 
 		final Basic basic = new Basic(vary);
