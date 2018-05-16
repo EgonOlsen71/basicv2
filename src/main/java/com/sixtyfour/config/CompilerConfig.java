@@ -16,7 +16,7 @@ public class CompilerConfig {
 	private boolean optimizedLinker = true;
 	private boolean deadStoreElimination = true;
 	private boolean deadStoreEliminationOfStrings = true;
-	private LoopMode loopMode=LoopMode.REMOVE;
+	private LoopMode loopMode=LoopMode.EXECUTE;
 
 	private int compactThreshold = 0;
 
