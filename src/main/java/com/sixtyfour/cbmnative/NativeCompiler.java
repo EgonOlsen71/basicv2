@@ -125,6 +125,11 @@ public class NativeCompiler {
 		if (platform.getUnlinker() != null && conf.isOptimizedLinker()) {
 			nCode = platform.getUnlinker().unlink(nCode);
 		}
+		
+		if (conf.isOptimizeConstants()) {
+		    nCode=new Compactor(0).removeUnusedConstants(nCode);
+		}
+		
 		if (conf.getCompactThreshold() > 1) {
 			nCode = new Compactor(conf.getCompactThreshold()).compact(nCode);
 		}

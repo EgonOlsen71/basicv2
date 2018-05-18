@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.sixtyfour.Logger;
+
 public class Compactor {
 
 	private int threshold = 4;
@@ -20,6 +22,74 @@ public class Compactor {
 		this.threshold = threshold;
 	}
 
+	public List<String> removeUnusedConstants(List<String> input) {
+	    boolean found=false;
+	    List<Line> consts=new ArrayList<>();
+	    int constStart=0;
+	    for (int i=0; i<input.size(); i++) {
+		String line=input.get(i);
+		if (!found) {
+		    if (line.startsWith("; *** CONSTANTS ***")) {
+			found=true;
+			constStart=i;
+		    }
+		    continue;
+		}
+		if (line.startsWith("CONST_")) {
+		    line=line.replace("\t", " ");
+		    line=line.split(" ")[0].trim();
+		    consts.add(new Line(line, i));
+		}
+	    }
+	    
+	    if (!found) {
+		return input;
+	    }
+	    
+	    Logger.log("Number of constants: "+consts.size());
+	    
+	    List<String> codePart=input.subList(0, constStart);
+	    List<Line> notUsed=new ArrayList<>();
+	    
+	    for (Line consty:consts) {
+		boolean used=false;
+		for (String line:codePart) {
+		    if (line.endsWith(consty.txt)) {
+			used=true;
+			break;
+		    }
+		}
+		if (!used) {
+		    notUsed.add(consty);
+		    continue;
+		}
+	    }
+	    
+	    Logger.log("Number of unused constants: "+notUsed.size());
+	    
+	    for (Line consty:notUsed) {
+		int pos=consty.position;
+		boolean clear=true;
+		for (int i=pos-1; i>=0; i--) {
+		    String cl=input.get(i);
+		    if (!cl.trim().isEmpty() && !cl.startsWith(";") && !cl.contains(".")) {
+			// Actually, this should never happen because of the way in which this algorithm works and how the constant list has been created
+			Logger.log("Blocking entry: "+cl);
+			clear=false;
+		    }
+		    if (cl.startsWith(";")) {
+			break;
+		    }
+		}
+		if (clear) {
+		    input.set(pos, "");
+		    Logger.log("Removed unused constant: "+consty.txt+"@"+consty.position);
+		}
+	    }
+	    
+	    return input;
+	}
+	
 	public List<String> compact(List<String> input) {
 		strip(input);
 
