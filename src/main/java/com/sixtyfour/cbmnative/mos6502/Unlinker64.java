@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import com.sixtyfour.Logger;
 import com.sixtyfour.cbmnative.Unlinker;
 
 /**
@@ -18,7 +19,8 @@ public class Unlinker64 implements Unlinker {
 	public List<String> unlink(List<String> res) {
 
 		// mnems.add("; *** CODE ***");
-
+	    Logger.log("Unlinking unused runtime code...");
+	    
 		List<String> ret = new ArrayList<String>();
 		int posy = res.lastIndexOf("; *** SUBROUTINES ***");
 		int posyEnd = res.lastIndexOf("; *** SUBROUTINES END ***");

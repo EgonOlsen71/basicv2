@@ -123,7 +123,8 @@ public class Assembler implements ProgramExecutor {
 	 */
 	@Override
 	public void compile(CompilerConfig config) {
-		Machine compileMachine = new Machine();
+	    Logger.log("Running assembler...");
+	    Machine compileMachine = new Machine();
 		ConstantsContainer ccon = new ConstantsContainer();
 		LabelsContainer lcon = new LabelsContainer(compileMachine);
 		int addr = 0;

@@ -23,6 +23,7 @@ public class Compactor {
 	}
 
 	public List<String> removeUnusedConstants(List<String> input) {
+	    Logger.log("Removing unused constants...");
 	    boolean found=false;
 	    List<Line> consts=new ArrayList<>();
 	    int constStart=0;
@@ -91,8 +92,9 @@ public class Compactor {
 	}
 	
 	public List<String> compact(List<String> input) {
+	    Logger.log("Compacting code...");
 		strip(input);
-
+		
 		// for (String line : input) { System.out.println(line); }
 
 		int insertAt = 0;

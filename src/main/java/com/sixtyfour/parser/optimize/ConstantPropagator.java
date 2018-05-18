@@ -41,6 +41,7 @@ public class ConstantPropagator {
 		boolean found = false;
 		boolean doneSomething = false;
 		if (config.isConstantPropagation()) {
+		    Logger.log("Propagating constants...");
 			do {
 				found = false;
 				for (Command cmd : machine.getCommandList()) {

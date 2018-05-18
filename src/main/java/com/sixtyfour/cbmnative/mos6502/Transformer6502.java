@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.sixtyfour.Loader;
+import com.sixtyfour.Logger;
 import com.sixtyfour.cbmnative.PlatformProvider;
 import com.sixtyfour.cbmnative.Transformer;
 import com.sixtyfour.cbmnative.mos6502.generators.Generator;
@@ -31,6 +32,7 @@ public class Transformer6502 implements Transformer {
 
 	@Override
 	public List<String> transform(Machine machine, PlatformProvider platform, List<String> code) {
+	    Logger.log("Compiling into native assembly code...");
 		List<String> res = new ArrayList<>();
 		List<String> consts = new ArrayList<String>();
 		List<String> vars = new ArrayList<String>();

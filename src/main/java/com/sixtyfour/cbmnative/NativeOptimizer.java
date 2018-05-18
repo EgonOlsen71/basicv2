@@ -3,6 +3,7 @@ package com.sixtyfour.cbmnative;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sixtyfour.Logger;
 import com.sixtyfour.config.CompilerConfig;
 
 /**
@@ -51,6 +52,14 @@ public class NativeOptimizer {
 	}
 
 	public static List<String> optimizeNative(CompilerConfig config, List<String> code) {
+	    if (config.isIntermediateLanguageOptimizations()) {
+		    Logger.log("Running intermediate code optimizer...");
+		    code= optimizeNativeInternal(config, code);
+	    }
+	    return code;
+	}
+	
+	static List<String> optimizeNativeInternal(CompilerConfig config, List<String> code) {
 		if (config.isIntermediateLanguageOptimizations()) {
 			int oldCode = 0;
 			do {

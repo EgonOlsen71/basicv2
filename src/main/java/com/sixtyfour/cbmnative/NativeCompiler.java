@@ -98,6 +98,8 @@ public class NativeCompiler {
 
 	public List<String> compile(CompilerConfig conf, Basic basic, MemoryConfig memConfig) {
 
+	    	Logger.log("Running native compiler...");
+	    	Logger.log("Parsing BASIC program into AST...");
 		basic.compile(conf);
 		List<String> mCode = NativeCompiler.getCompiler().compileToPseudeCode(conf, basic);
 
@@ -137,7 +139,9 @@ public class NativeCompiler {
 	}
 
 	public List<String> compileToPseudeCode(CompilerConfig config, Basic basic) {
-		long s = System.currentTimeMillis();
+	    	Logger.log("Compiling into intermediate code...");
+	    
+	    	long s = System.currentTimeMillis();
 		Machine machine = basic.getMachine();
 		PCode pCode = basic.getPCode();
 
@@ -206,7 +210,7 @@ public class NativeCompiler {
 		mCode.add(0, "JSR START");
 		mCode.add(0, "PROGRAMSTART:");
 
-		Logger.log("Compiled to pseudo code in: " + (System.currentTimeMillis() - s) + "ms");
+		Logger.log("Compiled to intermediate code in: " + (System.currentTimeMillis() - s) + "ms");
 		return mCode;
 	}
 
@@ -709,13 +713,17 @@ public class NativeCompiler {
 		/*
 		 * if (!yStack.isEmpty()) { code.add("POP X"); }
 		 */
-		return optimize(config, code);
+		return optimizeInternal(config, code);
 	}
 
 	private List<String> optimize(CompilerConfig config, List<String> code) {
 		return NativeOptimizer.optimizeNative(config, code);
 	}
 
+	private List<String> optimizeInternal(CompilerConfig config, List<String> code) {
+		return NativeOptimizer.optimizeNativeInternal(config, code);
+	}
+	
 	private String getLastMoveTarget(List<String> code, int offset) {
 		for (int i = code.size() - offset; i >= 0; i--) {
 			if (code.get(i).startsWith("MOV ")) {

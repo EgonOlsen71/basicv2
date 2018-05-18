@@ -149,6 +149,7 @@ public class Optimizer64 implements Optimizer {
 	@Override
 	public List<String> optimize(PlatformProvider platform, List<String> input) {
 		// if (true) return input;
+	    Logger.log("Optimizing native assembly code...");
 		long s = System.currentTimeMillis();
 		Map<String, Integer> type2count = new HashMap<>();
 		Map<String, Number> const2Value = extractConstants(input);

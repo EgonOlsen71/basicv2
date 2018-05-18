@@ -1,5 +1,6 @@
 package com.sixtyfour.parser.optimize;
 
+import com.sixtyfour.Logger;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.Constant;
 import com.sixtyfour.elements.Type;
@@ -63,6 +64,7 @@ public class ConstantFolder {
 
 	public static void foldConstants(CompilerConfig config, Machine machine) {
 		if (config.isConstantFolding()) {
+		    Logger.log("Folding constants...");
 			for (Command cmd : machine.getCommandList()) {
 				for (Term cmdTerm : cmd.getAllTerms()) {
 					/*
