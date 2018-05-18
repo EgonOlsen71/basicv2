@@ -10,6 +10,7 @@ public class MemoryConfig {
 	private int variableStart = -1;
 	private int stringEnd = -1;
 	private int runtimeStart = -1;
+	private boolean optimizedTempStorage=true;
 
 	public MemoryConfig() {
 		//
@@ -56,5 +57,13 @@ public class MemoryConfig {
 
 	public void setRuntimeStart(int runtimeStart) {
 		this.runtimeStart = runtimeStart;
+	}
+
+	public boolean isOptimizedTempStorage() {
+	    return optimizedTempStorage;
+	}
+
+	public void setOptimizedTempStorage(boolean optimizedTempStorage) {
+	    this.optimizedTempStorage = optimizedTempStorage;
 	}
 }

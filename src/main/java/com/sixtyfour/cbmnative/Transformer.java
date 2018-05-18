@@ -30,4 +30,8 @@ public interface Transformer {
 	int getRuntimeStart();
 
 	void setRuntimeStart(int runtimeStart);
+
+	boolean isOptimizedTempStorage();
+
+	void setOptimizedTempStorage(boolean optimizedTemp);
 }

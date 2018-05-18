@@ -29,6 +29,7 @@ public class Transformer6502 implements Transformer {
 	private int runtimeStart = -1;
 	private int stringMemoryEnd = 0xa000;
 	private int startAddress = 2072;
+	private boolean preferZeropage=true;
 
 	@Override
 	public List<String> transform(Machine machine, PlatformProvider platform, List<String> code) {
@@ -104,6 +105,9 @@ public class Transformer6502 implements Transformer {
 		res.add("TMP3_ZP = 34");
 		res.add(";make sure that JUMP_TARGET's low can't be $ff");
 		res.add("JUMP_TARGET = 69");
+		if (preferZeropage) {
+		    res.add("TMP_REG=71");
+		}
 		res.add("*=" + startAddress);
 		res.add("TSX");
 		res.add("STX SP_SAVE");
@@ -180,7 +184,9 @@ public class Transformer6502 implements Transformer {
 		res.add("B_REG\t.WORD 0");
 		res.add("G_REG\t.WORD 0");
 		res.add("SP_SAVE\t.BYTE 0");
-		res.add("TMP_REG\t.WORD 0");
+		if (!preferZeropage) {
+		    res.add("TMP_REG\t.WORD 0");
+		}
 		res.add("TMP2_REG\t.WORD 0");
 		res.add("TMP3_REG\t.WORD 0");
 		res.add("TMP4_REG\t.WORD 0");
@@ -481,6 +487,17 @@ public class Transformer6502 implements Transformer {
 	@Override
 	public void setRuntimeStart(int runtimeStart) {
 		this.runtimeStart = runtimeStart;
+	}
+	
+	
+	@Override
+	public boolean isOptimizedTempStorage() {
+	    return preferZeropage;
+	}
+
+	@Override
+	public void setOptimizedTempStorage(boolean optimizedTemp) {
+	    this.preferZeropage = optimizedTemp;
 	}
 
 }

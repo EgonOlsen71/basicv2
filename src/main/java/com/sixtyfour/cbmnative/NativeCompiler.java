@@ -106,6 +106,7 @@ public class NativeCompiler {
 		PlatformProvider platform = new C64Platform();
 		Transformer tf = platform.getTransformer();
 		tf.setVariableStart(memConfig.getVariableStart());
+		tf.setOptimizedTempStorage(memConfig.isOptimizedTempStorage());
 		if (memConfig.getStringEnd() != -1) {
 			tf.setStringMemoryEnd(memConfig.getStringEnd());
 		}
