@@ -58,9 +58,19 @@ public class Line {
 	 */
 	public void addDummyRemark() {
 		// Just to ease parsing of data commands (because that's the only
-		// command
-		// where spaces at the end might matter)
-		line += "REM";
+		// command where spaces at the end might matter)
+		// ...but this isn't feasible if we are in a string, i.e. it's not
+		// terminated. In that case, we won't add a REM to it.
+		boolean inString = false;
+		for (int i = 0; i < line.length(); i++) {
+			char c = line.charAt(i);
+			if (c == '"') {
+				inString = !inString;
+			}
+		}
+		if (!inString) {
+			line += "REM";
+		}
 	}
 
 	/**

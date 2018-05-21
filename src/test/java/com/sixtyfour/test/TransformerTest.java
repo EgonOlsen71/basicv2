@@ -77,8 +77,8 @@ public class TransformerTest {
 		// testTransformer29();
 		// testTransformer30();
 		//testBenchmark();
-		//testBreakout();
-		 testOpenPrint();
+		testBreakout();
+//		 testOpenPrint();
 	}
 	
 	private static void testOpenPrint() throws Exception {

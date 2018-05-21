@@ -47,6 +47,10 @@ public class ControlCodes {
 			add(134, "f3");
 			add(135, "f5");
 			add(136, "f7");
+			add(8, "ctrl-h");
+			add(9, "ctrl-i");
+			add(14, "ctrl+n");
+			add(142, "ctrl+/");
 			add(137, "f2", "shift-f1", "sh-f1");
 			add(138, "f4", "shift-f3", "sh-f3");
 			add(139, "f6", "shift-f5", "sh-f5");
