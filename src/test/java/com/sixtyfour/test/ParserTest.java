@@ -35,6 +35,7 @@ public class ParserTest {
 		testMinusPower();
 		testConstants();
 		testAnd();
+		testAnd2();
 	}
 
 	private static void testConstants() {
@@ -99,6 +100,20 @@ public class ParserTest {
 		String term = "(a>68andb)";
 		String wbres = TermEnhancer.addBrackets(term);
 		System.out.println(wbres);
+
+		Term res = Parser.getTerm(config, term, machine, false, true);
+		System.out.println(res);
+		System.out.println("Value: " + res.eval(machine));
+	}
+	
+	private static void testAnd2() {
+		System.out.println("testAnd2");
+		Machine machine = new Machine();
+		machine.add(new Variable("A", 124));
+		machine.add(new Variable("B", 3));
+		String term = "(aand255-b)";
+		String wbres = TermEnhancer.addBrackets(term);
+		System.out.println("Added brackets: "+wbres);
 
 		Term res = Parser.getTerm(config, term, machine, false, true);
 		System.out.println(res);

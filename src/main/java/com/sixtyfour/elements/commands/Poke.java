@@ -6,6 +6,7 @@ import java.util.List;
 import com.sixtyfour.cbmnative.NativeCompiler;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.Type;
+import com.sixtyfour.elements.Variable;
 import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.Term;
@@ -59,11 +60,18 @@ public class Poke extends AbstractCommand {
 	@Override
 	public List<Term> getAllTerms() {
 		List<Term> ret = new ArrayList<Term>();
+
 		if (addr.isTerm()) {
 			ret.add((Term) addr);
+		} else if (addr instanceof Variable) {
+			ret.add(new Term(addr));
 		}
+
 		if (val.isTerm()) {
 			ret.add((Term) val);
+		}
+		if (val instanceof Variable) {
+			ret.add(new Term(val));
 		}
 		return ret;
 	}

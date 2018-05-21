@@ -101,6 +101,8 @@ public class Dim extends AbstractCommand {
 			for (Atom atom : atoms) {
 				if (atom instanceof Term) {
 					ret.add((Term) atom);
+				} else if (atom instanceof Variable) {
+					ret.add(new Term(atom));
 				}
 			}
 		}

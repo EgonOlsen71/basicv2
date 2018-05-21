@@ -13,6 +13,7 @@ import com.sixtyfour.Loader;
 import com.sixtyfour.cbmnative.NativeCompiler;
 import com.sixtyfour.cbmnative.PseudoCpu;
 import com.sixtyfour.config.CompilerConfig;
+import com.sixtyfour.config.LoopMode;
 import com.sixtyfour.config.MemoryConfig;
 import com.sixtyfour.parser.Preprocessor;
 import com.sixtyfour.parser.assembly.AssemblyParser;
@@ -42,7 +43,7 @@ public class TransformerTest {
 		// testTransformer2();
 		// testTransformer4();
 		// testTransformer5();
-		 testTransformerFractal();
+		// testTransformerFractal();
 		// testTransformer6();
 		// testTransformer7();
 		// testTransformerPrime();
@@ -61,10 +62,10 @@ public class TransformerTest {
 		// testTransformer17();
 		// testTransformer18();
 		// testTransformer20();
-		 testTransformer22();
+		// testTransformer22();
 		// testTransformer23();
-		 testTransformerFrog();
-		 testTransformerAffine();
+		// testTransformerFrog();
+		// testTransformerAffine();
 		// testTransformer24();
 		// testTransformer25();
 		// testTransformer26();
@@ -75,8 +76,17 @@ public class TransformerTest {
 		// testTransformer28();
 		// testTransformer29();
 		// testTransformer30();
-		testBenchmark();
+		//testBenchmark();
+		testBreakout();
 	}
+	
+	private static void testBreakout() throws Exception {
+		System.out.println("\n\ntestBreakout");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/breakout.bas");
+		Assembler assy = initTestEnvironment(vary, false);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++testbreakout.prg", true);
+	}
+
 
 	private static void testBenchmark() throws Exception {
 		System.out.println("\n\ntestBenchmark");
@@ -767,6 +777,7 @@ public class TransformerTest {
 		conf.setIntermediateLanguageOptimizations(true);
 		conf.setNativeLanguageOptimizations(true);
 		conf.setOptimizedLinker(true);
+		conf.setLoopMode(LoopMode.REMOVE);
 		// conf.setCompactThreshold(4);
 
 		final Basic basic = new Basic(vary);
