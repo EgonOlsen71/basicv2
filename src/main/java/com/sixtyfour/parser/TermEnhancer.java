@@ -30,7 +30,7 @@ public class TermEnhancer {
 			term = "(" + term + ")";
 		}
 		term = term.replace('↑', '^');
-		return addBrackets(addBrackets(addBrackets(handleSigns(replaceLogicOperators(term)), 2), 0), 1);
+		return addBrackets(addBrackets(addBrackets(addBrackets(handleSigns(replaceLogicOperators(term)), 3), 2), 0), 1);
 	}
 
 	/**
@@ -223,7 +223,8 @@ public class TermEnhancer {
 	 *            the term
 	 * @param level
 	 *            the level, either 0,1 or 2. Three passes are needed to handle
-	 *            *,/ (level 0), ^(level 1) and <,>,= and combinations (level 2)
+	 *            *,/ (level 0), ^(level 1) and <,>,= and combinations (level
+	 *            2). level 3 is for logic operators like AND, OR
 	 * @return the resulting term
 	 */
 	private static String addBrackets(String term, int level) {
@@ -255,9 +256,9 @@ public class TermEnhancer {
 				}
 			}
 
-			if ((level == 2 && (c == '=' || c == '<' || c == '>')) || (level == 1 && (c == '*' || c == '/')) || (level == 0 && c == '^')) {
-				int start = findStart(term, i, level == 2);
-				int end = findEnd(term, i, level == 2);
+			if ((level == 2 && (c == '=' || c == '<' || c == '>')) || (level == 1 && (c == '*' || c == '/')) || (level == 0 && c == '^') || (level == 3 && (c == '&' || c == '°'))) {
+				int start = level != 3 ? findStart(term, i, level >= 2) : i + 1;
+				int end = findEnd(term, i, level >= 2);
 				if (start > 0 && term.charAt(start - 1) == '(' && end < term.length() && term.charAt(end) == ')') {
 					sb.append(term.substring(0, start)).append(term.substring(start, end));
 				} else {

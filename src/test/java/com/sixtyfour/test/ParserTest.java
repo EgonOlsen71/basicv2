@@ -111,7 +111,7 @@ public class ParserTest {
 		Machine machine = new Machine();
 		machine.add(new Variable("A", 124));
 		machine.add(new Variable("B", 3));
-		String term = "(aand255-b)";
+		String term = "(aand255-bor255+2*b)";
 		String wbres = TermEnhancer.addBrackets(term);
 		System.out.println("Added brackets: "+wbres);
 
