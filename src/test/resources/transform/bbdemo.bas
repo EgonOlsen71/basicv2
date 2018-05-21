@@ -1,0 +1,262 @@
+10 REM@ {pound}FASTFOR:{pound}SHORTIF:{pound}DATATYPE BYTE
+12 REM@ {pound}WORD #,I=FAST,X=FAST
+13 REM@ {pound}CONSTANT VIC,BACK,PAPER,SPRON,         PRIOR,SCOL,XHI,IRQ,OFF,VOL,MEM
+15 REM@ {pound}BYTE A,X1,X2,Y1,Y2,XA,XE,YA,YE,CO,CC,SX,SY,V1,H1,V2,H2,Y(,YS(,CO(
+16 REM@ {pound}BYTE P2(,SN
+17 DIM SC(24),CO(23),X(7),Y(7),XS(7),YS(7),P2(7)
+20 VIC=53248:BACK=VIC+32:PAPER=VIC+33:     SPREN=VIC+21:OFF=VIC+17:IRQ=56333
+21 XHI=VIC+16:SCOL=VIC+39:PRI=VIC+27:      MEM=2040
+22 VOL=54272+24
+28 GOSUB13000:REM VORBEREITUNG
+29 POKE BACK,0:POKE PAPER,0:POKE SPREN,0
+30 PRINT"{white}{ct h}{ct n}{clear}{space*8}*** Basic-Boss ***
+32 PRINT"{down}Programmieren in Basic mit der
+34 PRINT"Geschwindigkeit von Maschinensprache !
+40 PRINT"{down}{gray}Unmoeglich? Nein!
+42 PRINT"Dieses Programm wurde von vorne bis
+44 PRINT"hinten in Basic programmiert.
+50 PRINT"Dann wurde es vom Basic-Boss in reine
+52 PRINT"Maschinensprache uebersetzt.
+60 PRINT"{down}Bitte ueberzeugen Sie sich von seiner
+70 PRINT"Geschwindigkeit !
+90 GOTO20000
+100 PRINT"{clear}{down*2}{space*2}So sieht es aus, wenn die Bild-
+110 PRINT"{down}{space*2}schirmfarbe in schneller Folge
+120 PRINT"{down}{space*2}veraendert wird:":GOSUB10020
+130 POKE IRQ,127:REM INTERRUPT AUS
+135 POKE OFF,0:REM BILDSCHIRM AUS
+150 FOR I=0 TO60000
+180 POKE BACK,14
+190 POKE BACK,3
+200 POKE BACK,3
+210 POKE BACK,14
+220 POKE BACK,6
+240 NEXTI
+250 POKE IRQ,129:POKE OFF,27
+253 PRINT"{clear}{down*2} oder so:":GOSUB10020
+265 POKE IRQ,127:REM INTERRUPT AUS
+266 POKE OFF,0:REM BILDSCHIRM AUS
+270 FOR I=0 TO 30000
+271 POKE BACK,0
+272 POKE BACK,2
+273 POKE BACK,2
+274 POKE BACK,2
+275 POKE BACK,8
+276 POKE BACK,8
+277 POKE BACK,8
+280 POKE BACK,7
+281 POKE BACK,1
+282 POKE BACK,1
+283 POKE BACK,7
+284 POKE BACK,8
+285 POKE BACK,8
+286 POKE BACK,8
+287 POKE BACK,2
+288 POKE BACK,2
+289 POKE BACK,2
+290 POKE BACK,2
+291 POKE BACK,0
+295 NEXT
+300 POKE IRQ,129:POKE OFF,27:RETURN
+305 :
+310 PRINT"{clear}{down*2}{space*2}Wenn ein mit dem Basic-Boss
+320 PRINT"{down}{space*2}compiliertes Basicprogramm den
+330 PRINT"{down}{space*2}Bildschirm bearbeitet, sieht das
+340 PRINT"{down}{space*2}so aus:
+350 GOSUB10020:X1=10:X2=1:Y1=14:Y2=4
+355 GOSUB11000
+360 I=0
+370 X1=X1+33:IFX1>=40THENX1=X1-40
+375 X2=X2+17:IFX2>=40THENX2=X2-40
+380 Y1=Y1+21:IFY1>=25THENY1=Y1-25
+385 Y2=Y2+7 :IFY2>=25THENY2=Y2-25
+390 CO=(CO+1AND15)
+395 GOSUB12000
+400 I=I+1
+405 IF I<1000 AND PEEK(198)=0 THEN370
+410 MU=11:GOSUB14000:PRINT"{home}{down*2} oder so:"
+415 GOSUB10020
+420 GOSUB11000:H1=1:V1=2:H2=2:V2=1:I=0
+425 X1=1:Y1=2:X2=37:Y2=22:CC=1
+430 IF X1 =0  THEN H1=-H1
+440 IF X2<=1  THEN H2=-H2
+450 IF Y1 =0  THEN V1=-V1
+460 IF Y2 =0  THEN V2=-V2
+470 IF X1 =39 THEN H1=-H1
+480 IF X2>=38 THEN H2=-H2
+490 IF Y1 =24 THEN V1=-V1
+500 IF Y2 =24 THEN V2=-V2
+510 X1=X1+H1:X2=X2+H2
+520 Y1=Y1+V1:Y2=Y2+V2
+525 CO=CO(CC):CC=CC+1:IFCC>23THENCC=0
+530 GOSUB12000
+540 I=I+1:IFI<1000ANDPEEK(198)=0THEN430
+550 MU=500:GOSUB14000:RETURN
+560 :
+570 PRINT"{clear}Nun huepfen ein paar Sprites ueber
+580 PRINT"{down}den Bildschirm. Allerdings ergibt sich
+590 PRINT"{down}hier ein Problem: Das Programm ist
+600 PRINT"{down}zu schnell. Es muss also gebremst
+605 PRINT"{down}werden:":GOTO1000
+610 :
+620 FOR I=0 TO 7
+630 POKE MEM+I,13
+640 POKE SCOL+I,I+1
+645 X(I)=130+I*25:Y(I)=50+I*18
+647 XS(I)=-I:YS(I)=I
+650 NEXT I
+660 POKE PRI,0:POKE SPREN,255
+662 A=0:C=0
+665 :
+670 FOR I=0 TO 7
+690 IF X(I)AND256 THEN POKE XHI,PEEK(XHI) OR P2(I):GOTO710
+700 POKE XHI,PEEK(XHI)AND (255-P2(I))
+710 POKE VIC+I+I,X(I)AND255
+715 POKE VIC+1+I+I,Y(I)
+720 X(I)=X(I)+XS(I)
+730 Y(I)=Y(I)+YS(I)
+740 IF X(I)>320 THEN X(I)=640-X(I):XS(I)=-XS(I):GOSUB950
+750 IF X(I)<24 THEN X(I)=48-X(I):XS(I)=-XS(I):GOSUB950
+760 IF Y(I)<50 THEN Y(I)=100-Y(I):YS(I)=-YS(I):GOSUB950
+770 IF Y(I)>229 THEN Y(I)=458-Y(I):YS(I)=-YS(I):GOSUB950
+800 REM BESCHLEUNIGUNG X UND Y
+810 IF A<3 THEN 880
+820 XS(I)=XS(I)-1:YS(I)=YS(I)+1
+880 NEXT I
+882 IFA=3 THEN A=0
+883 A=A+1
+886 REM AUF RASTERSTRAHL WARTEN
+887 IF B THEN IF (PEEK(53248+17)AND128)=0 THEN 887
+890 IF PEEK(198)=0 THEN 670
+900 POKE198,0:  RETURN
+950 POKE VOL,SN:SN=15-SN:RETURN
+990 END
+999 :
+1000 GOSUB10600:B=0:GOSUB610
+1010 PRINT"{down*2}jetzt ist es gebremst und wird
+1020 PRINT"{down*2}mit dem Rasterstrahl synchronisiert.
+1030 GOSUB10600
+1050 B=-1:GOSUB610
+1090 RETURN
+9999 :
+10000 TI$="000000":GOTO10100
+10010 TI$="000030":GOTO10100
+10020 TI$="000035":GOTO10100
+10100 GOSUB10600:GOTO10500
+10500 POKE198,0
+10510 GET A$:IFA$=""ANDTI$<"000040"THEN10510
+10520 RETURN
+10600 PRINT"{down*3}{space*12}- Taste -":RETURN
+10998 :
+11000 FORI=1024TO2023:POKEI,160:NEXT
+11010 RETURN
+11997 :
+11998 REM RECHTECK ZEICHNEN MIT FARBE   (X1,Y1,X2,Y2,CH,CO)
+11999 REM (X1,Y1,X2,Y2,CH,CO)
+12000 IF X2>=X1 THEN XA=X1:XE=X2:GOTO12002
+12001 XA=X2:XE=X1
+12002 IF Y2>=Y1 THEN YA=Y1:YE=Y2:GOTO12050
+12003 YA=Y2:YE=Y1
+12050 FOR Y=SC(YA) TO SC(YE) STEP 40
+12060 FOR X=Y+XA TO Y+XE
+12070 POKE X,CO:NEXT X,Y
+12090 RETURN
+12998 :
+12999 REM MULTIPLIKATIONSTABELLE
+13000 FOR I=0 TO 24:SC(I)=55296+I*40:NEXT
+13010 REM FARBEN EINLESEN
+13020 FOR A=0 TO 23:READ CO(A):NEXT
+13030 MP=0
+13040 FOR A=0 TO 7:P2(A)=2^A:NEXT
+13050 FOR I=832 TO 832+62
+13060 READ A:POKE I,A:NEXT I
+13090 RETURN
+13499 REM FARBDATEN
+13500 DATA 0,6,14,3,1,3,14,6,0,2,8,7,1,7,8,2,0,11,5,13,1,13,5,11
+13599 REM SPRITEDATEN
+13600 DATA   0,255,  0,  3,255,192, 15
+13601 DATA 255,240, 31,255,248, 63,255
+13602 DATA 252,127,255,254,127,255,254
+13603 DATA 255,255,255,255,255,255,255
+13604 DATA 255,255,255,255,255,255,255
+13605 DATA 255,255,255,255,255,255,255
+13606 DATA 127,255,254,127,255,254, 63
+13607 DATA 255,252, 31,255,248, 15,255
+13608 DATA 240,  3,255,192,  0,255,  0
+13998 :
+13999 REM BILDSCHIRM LOESCHEN (MU)
+14000 I=1024:A=21
+14010 FOR A=1TO5:NEXT A
+14020 POKEI,32:I=I+MU
+14030 IFI>=2045THENI=I-1021
+14040 IFI<>1024THEN14010
+14050 RETURN
+20000 :
+20010 PRINT"{down}{right*2}Waehlen Sie:
+20020 PRINT"{down}{space*3}1...Bildschirmdemo
+20030 PRINT"{space*3}2...Spritedemo
+20040 PRINT"{space*3}3...Hintergrunddemo
+20050 PRINT"{space*3}4...Noch was
+20090 PRINT"{down*2}(Thilo Herrmann, 1988)
+20092 :
+20094 :
+20100 TI$="000000":GOSUB10500
+20110 IF A$>="1" AND A$<="4" THEN MP=VAL(A$):GOTO20130
+20120 IF A$<>""THEN20100
+20125 MP=MP+1:IF MP>4 THEN MP=1
+20130 ON MP GOSUB 310,570,100,21000
+20140 GOTO29
+21000 PRINT"{clear}{down*2}Sie sollten zum Vergleich mal die
+21010 PRINT"Basic-Version dieses Programms
+21015 PRINT"ablaufen lassen !
+21020 PRINT"{down}Das Basicprogramm zeigt auch, dass
+21030 PRINT"der Programmierer alle Moeglichkeiten
+21040 PRINT"von Basic ausreizen kann, ohne dass er
+21050 PRINT"unnoetig eingeschraenkt wird.
+21060 PRINT"{down}Denn ausser solchen Bildschirm-
+21070 PRINT"spielereien kann man auch ernstere
+21080 PRINT"Anwendungen programmieren, da der
+21090 PRINT"Basic-Boss z.B. eine wesentlich
+21100 PRINT"leistungsfaehigere Stringverwaltung
+21110 PRINT"besitzt als der Basicinterpreter. Darum
+21120 PRINT"ist nun auch die Garbage-Collection
+21130 PRINT"um einiges schneller.":GOSUB10000
+21140 PRINT"{clear}Was das heisst, werden Sie merken,
+21150 PRINT"wenn Sie folgendes Programm ablaufen
+21160 PRINT"lassen:{down}
+21170 PRINT"10 dim a$(2000)
+21180 PRINT"20 for i=1 to 2000
+21190 PRINT"30 a$(i)=chr$(65):next i
+21200 PRINT"40 ti$="000000":print"CHR$(34)"frei"CHR$(34)"fre(0);ti/60
+21210 PRINT"{down}Allein der FRE-Befehl benoetigt ca.
+21220 PRINT"339 Sekunden, da er eine Garbage-
+21230 PRINT"Collection ausloest.
+21240 PRINT"{down}Das gleiche Programm koennen Sie nun
+21250 PRINT"in der compilierten Version starten: ":GOSUB10000
+21260 PRINT"{clear}{down*2} gestartet...
+21300 DIM A$(2000)
+21310 FOR I=1 TO 2000
+21320 A$(I)=CHR$(65):NEXT I
+21330 TI$="000000":PRINT"frei"FRE(0);TI/60
+21335 PRINT"{down*2}Damit ist die Garbage-Collection
+21336 PRINT"{down}in diesem Fall etwa 680 mal schneller !
+21340 GOSUB10010
+21400 PRINT"{clear}{down*2}Die Leistungsdaten des Basic-Boss:
+21410 PRINT"{down}- kurze Compilate
+21420 PRINT"- optimierter und effizienter Code
+21430 PRINT"- sehr schnelle Variablentypen
+21440 PRINT"- extrem kurze Compilierzeiten
+21450 PRINT"- eine hochflexible Compilerarchitektur
+21460 PRINT"- 62 KByte Basicspeicher
+21470 PRINT"- eine schnelle FOR-NEXT-Schleife
+21480 PRINT"- gepackte und schnelle Daten bei DATA
+21490 PRINT"- stark beschleunigte Arrays
+21500 PRINT"- beliebig lange Variablennamen
+21510 PRINT"- genaue deutsche Fehlermeldungen
+21520 PRINT"- Erzeugung echten Maschinencodes
+21525 PRINT"- kein Kopierschutz
+21530 PRINT"{down*2} und noch einiges mehr...
+21540 GOSUB10000
+21550 PRINT"{clear}{down*3} Ich bin jedem dankbar, der dieses
+21560 PRINT" {down}Demoprogramm weiterverbreitet.
+21570 GOTO10000

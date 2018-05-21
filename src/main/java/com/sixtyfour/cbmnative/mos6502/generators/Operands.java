@@ -18,7 +18,7 @@ public class Operands {
 		if (pos == -1) {
 			throw new RuntimeException("Can't parse command: " + command);
 		}
-
+		
 		command = command.substring(pos).trim();
 
 		pos = command.indexOf(",");

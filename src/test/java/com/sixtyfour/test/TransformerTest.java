@@ -77,7 +77,8 @@ public class TransformerTest {
 		// testTransformer29();
 		// testTransformer30();
 		//testBenchmark();
-		testBreakout();
+//		testBreakout();
+		testBbDemo();
 //		 testOpenPrint();
 	}
 	
@@ -93,6 +94,13 @@ public class TransformerTest {
 		String[] vary = Loader.loadProgram("src/test/resources/transform/breakout.bas");
 		Assembler assy = initTestEnvironment(vary, false);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++testbreakout.prg", true);
+	}
+	
+	private static void testBbDemo() throws Exception {
+		System.out.println("\n\ntestBbDemo");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/bbdemo.bas");
+		Assembler assy = initTestEnvironment(vary, false);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++testbbdemo.prg", true);
 	}
 
 
