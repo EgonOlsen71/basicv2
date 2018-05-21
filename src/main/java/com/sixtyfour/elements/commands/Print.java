@@ -293,6 +293,12 @@ public class Print extends AbstractCommand {
 					}
 				}
 			}
+			
+			if (inString && i == line.length() - 1) {
+				// String isn't properly terminated...we'll accept it anyway.
+				inString=false;
+			}
+			
 			if (!inString) {
 				char nc = ' ';
 				if (i < line.length() - 1) {
