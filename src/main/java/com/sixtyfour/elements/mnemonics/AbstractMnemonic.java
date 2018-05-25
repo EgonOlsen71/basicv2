@@ -52,9 +52,6 @@ public abstract class AbstractMnemonic implements Mnemonic {
 			raiseSyntaxError(linePart);
 		}
 		
-		if (pars!=null) {
-		System.out.println(this.getOptionalParameter()+"/"+pars.getRegister()+"/"+linePart);
-		}
 		if (opcodes[0] != 0 && pars != null && !isSingle() && this.getOptionalParameter()!=null && this.getOptionalParameter().equalsIgnoreCase(pars.getRegister())) {
 		    	// Stuff like ROR A...the A can be ignored then.
 			pars=null;
