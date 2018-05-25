@@ -51,6 +51,14 @@ public abstract class AbstractMnemonic implements Mnemonic {
 		if (opcodes[0] != 0 && pars != null && isSingle()) {
 			raiseSyntaxError(linePart);
 		}
+		
+		if (pars!=null) {
+		System.out.println(this.getOptionalParameter()+"/"+pars.getRegister()+"/"+linePart);
+		}
+		if (opcodes[0] != 0 && pars != null && !isSingle() && this.getOptionalParameter()!=null && this.getOptionalParameter().equalsIgnoreCase(pars.getRegister())) {
+		    	// Stuff like ROR A...the A can be ignored then.
+			pars=null;
+		}
 
 		int[] ram = machine.getRam();
 
@@ -120,6 +128,11 @@ public abstract class AbstractMnemonic implements Mnemonic {
 		return addr;
 	}
 
+	@Override
+	public String getOptionalParameter() {
+	    return null;
+	}
+	
 	@Override
 	public boolean isMnemonic(String linePart) {
 		boolean mne = VarUtils.toUpper(linePart.trim()).startsWith(name);
@@ -276,6 +289,11 @@ public abstract class AbstractMnemonic implements Mnemonic {
 		par.setY(part2.startsWith("Y"));
 		par.setIndirect(isIndirect);
 
+		if (pars.equalsIgnoreCase("a")) {
+		    par.setRegister(pars);
+		    return par;
+		}
+		
 		int val = AssemblyParser.getValue(config, part1, addr, ccon, lcon, lowByte, highByte, addrAdd, false);
 		if (lowByte) {
 			val = AssemblyParser.getLowByte(val);

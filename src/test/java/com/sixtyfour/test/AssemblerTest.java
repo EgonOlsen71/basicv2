@@ -234,6 +234,10 @@ public class AssemblerTest {
 		line += "lsr\n";
 		line += "ror\n";
 		line += "rol\n";
+		line += "asl a\n";
+		line += "lsr a\n";
+		line += "ror a\n";
+		line += "rol a\n";
 		execute(line);
 	}
 

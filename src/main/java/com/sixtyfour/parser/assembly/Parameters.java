@@ -13,6 +13,7 @@ public class Parameters {
 	private boolean y;
 	private boolean indirect;
 	private boolean zeropage;
+	private String register;
 
 	/**
 	 * Creates a new instance.
@@ -138,6 +139,24 @@ public class Parameters {
 	 */
 	public void setZeropage(boolean zeropage) {
 		this.zeropage = zeropage;
+	}
+
+	/**
+	 * Returns the register's name or null, if none is given
+	 * 
+	 * @return the name or null
+	 */
+	public String getRegister() {
+	    return register;
+	}
+
+	/**
+	 * Sets the register's name if applicable
+	 * 
+	 * @param register the name
+	 */
+	public void setRegister(String register) {
+	    this.register = register;
 	}
 
 }
