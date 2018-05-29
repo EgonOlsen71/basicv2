@@ -41,7 +41,7 @@ public class ControlCodes {
 			add(14, "ctrl-n");
 			add(13, "return", "ret", "ctrl-m");
 			add(148, "insert", "inst", "shift-delete", "sh-delete", "shift-del", "sh-del");
-			add(147, "clear", "clr", "shift-home", "sh-home");
+			add(147, "clear", "clr", "shift-home", "sh-home", "clr/home");
 			add(19, "home", "ctrl-s");
 			add(133, "f1");
 			add(134, "f3");
@@ -133,8 +133,10 @@ public class ControlCodes {
 			for (String placy : placeholders) {
 				this.put(placy, code);
 				this.put(placy.replaceFirst("ctrl", "ct"), code);
+				this.put(placy.replaceFirst("ctrl", "control"), code);
 				this.put(placy.replaceFirst("-", " "), code);
 				this.put(placy.replaceFirst("ctrl", "ct").replaceFirst("-", " "), code);
+				this.put(placy.replaceFirst("ctrl", "control").replaceFirst("-", " "), code);
 			}
 		}
 	};

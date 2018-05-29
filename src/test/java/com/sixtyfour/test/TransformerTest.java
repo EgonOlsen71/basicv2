@@ -78,9 +78,18 @@ public class TransformerTest {
 		// testTransformer30();
 		//testBenchmark();
 //		testBreakout();
-		testBbDemo();
+//		testBbDemo();
 //		 testOpenPrint();
+	    testScroll();
 	}
+	
+	private static void testScroll() throws Exception {
+		System.out.println("\n\ntestScroll");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/scroll.bas");
+		Assembler assy = initTestEnvironment(vary, false);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++testscroll.prg", true);
+	}
+
 	
 	private static void testOpenPrint() throws Exception {
 		System.out.println("\n\ntestOpenPrint");
@@ -916,7 +925,7 @@ public class TransformerTest {
 				cnt++;
 
 				System.out.println(Integer.toHexString(opcodePc) + " - " + Integer.toHexString(opcode) + " -> " + Integer.toHexString(newPc) + " / a=" + cpu.getAcc() + " / x="
-						+ cpu.getX() + " / y=" + cpu.getY() + "/ z=" + (cpu.getStatus() & 0b10) + " / TMP_ZP=" + printReg(105, assy) + " / TMP2_ZP=" + printReg(107, assy)
+						+ cpu.getX() + " / y=" + cpu.getY() + "/ z=" + (cpu.getStatus() & 0b10)+"/ c=" + (cpu.getStatus() & 0b00000001) + " / TMP_ZP=" + printReg(105, assy) + " / TMP2_ZP=" + printReg(107, assy)
 						+ " / TMP3_ZP=" + printReg(34, assy) + "/" + line + " " + assy.getRam()[opcodePc + 1] + "/" + cnt + " - " + print16Bit(1024, assy) + "/"
 						+ print16Bit(1027, assy) + "/" + print16Bit(1030, assy) + "/" + print16Bit(1033, assy) + "/" + print16Bit(1036, assy) + " @ " + cpu.getClockTicks());
 
