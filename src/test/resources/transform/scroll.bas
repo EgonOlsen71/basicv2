@@ -1,4 +1,3 @@
-
 0 poke 53280, peek(53281)
 1 let l$="{control+n}{home}"
 2 let a$=" Here is a little scrolly dem
