@@ -99,6 +99,11 @@ public class Transformer6502 implements Transformer {
 		res.add("CRSRRIGHT = $AB3B");
 		res.add("GETIN = $FFE4");
 		res.add("INPUT = $A560");
+		res.add("OPENCH = $F34A");
+		res.add("CLOSECH = $F291");
+		res.add("CHKIN = $FFC6");
+		res.add("CHKOUT = $FFC9");
+		res.add("CLRCH = $FFCC");
 
 		res.add("TMP_ZP = 105");
 		res.add("TMP2_ZP = 107");

@@ -54,6 +54,7 @@ public class PrintFile extends Print {
 
 	@Override
 	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
+		machine.setCurrentCommand(this);
 		NativeCompiler compiler = NativeCompiler.getCompiler();
 		List<String> after = new ArrayList<String>();
 		List<String> expr = null;
@@ -65,6 +66,7 @@ public class PrintFile extends Print {
 		List<CodeContainer> ccs = new ArrayList<CodeContainer>();
 		ccs.add(cc);
 		ccs.addAll(this.evalToCode(config, machine, "CHANNEL"));
+		machine.setCurrentCommand(null);
 		return ccs;
 	}
 

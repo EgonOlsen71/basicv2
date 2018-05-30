@@ -1,7 +1,14 @@
 package com.sixtyfour.elements.functions;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
+import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.elements.commands.Print;
+import com.sixtyfour.elements.commands.PrintFile;
+import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
@@ -78,6 +85,22 @@ public class Spc extends AbstractFunction {
 		}
 		return SPACES.substring(0, num);
 	}
+	
+	@Override
+	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
+		List<String> ret = new ArrayList<String>();
+		ret.add("_");
+		List<String> n1 = term.evalToCode(config, machine).get(0).getExpression();
+		String call=":" + this.getClass().getSimpleName().toUpperCase(Locale.ENGLISH);
+		if (machine.getCurrentCommand() instanceof PrintFile) {
+			call+="CHANNEL";
+		}
+		n1.add(call);
+		ret.addAll(0, n1);
+		List<CodeContainer> cc = new ArrayList<CodeContainer>();
+		cc.add(new CodeContainer(ret));
+		return cc;
+	}
 
 	/**
 	 * Ensure context.
@@ -88,7 +111,7 @@ public class Spc extends AbstractFunction {
 	protected void ensureContext(Machine machine) {
 		if (limitedToPrint) {
 			if (!(machine.getCurrentCommand() instanceof Print) || !machine.getCurrentOperator().isNop()) {
-				throw new RuntimeException("Systax error: " + this);
+				throw new RuntimeException("Syntax error: " + this);
 			}
 		}
 	}

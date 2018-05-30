@@ -708,9 +708,11 @@ public class PseudoCpu {
 			right(parts);
 			return;
 		case "TAB":
+		case "TABCHANNEL":
 			tab(parts);
 			return;
 		case "SPC":
+		case "SPCCHANNEL":
 			spc(parts);
 			return;
 		case "POS":
@@ -929,19 +931,19 @@ public class PseudoCpu {
 	}
 
 	private void intOutChannel(String[] parts) {
-		intOut(parts, regs[G].intValue());
+		intOut(parts, regs[C].intValue());
 	}
 
 	private void lineBreakChannel(String[] parts) {
-		lineBreak(parts, regs[G].intValue());
+		lineBreak(parts, regs[C].intValue());
 	}
 
 	private void strOutChannel(String[] parts) {
-		strOut(parts, regs[G].intValue());
+		strOut(parts, regs[C].intValue());
 	}
 
 	private void realOutChannel(String[] parts) {
-		realOut(parts, regs[G].intValue());
+		realOut(parts, regs[C].intValue());
 	}
 
 	private void cmd(String[] parts) {
@@ -1294,14 +1296,14 @@ public class PseudoCpu {
 	}
 
 	private void getStringChannel(String[] parts) {
-		int fn = regs[G].intValue();
+		int fn = regs[C].intValue();
 		DeviceProvider device = machine.getDeviceProvider();
 		Character c = device.getChar(fn);
 		copyStringResult(c.toString());
 	}
 
 	private void getNumberChannel(String[] parts) {
-		int fn = regs[G].intValue();
+		int fn = regs[C].intValue();
 		DeviceProvider device = machine.getDeviceProvider();
 		Character c = device.getChar(fn);
 		c = ensureNumberKey(machine, c, true);
@@ -1309,14 +1311,14 @@ public class PseudoCpu {
 	}
 
 	private void inputNumberChannel(String[] parts) {
-		int fn = regs[G].intValue();
+		int fn = regs[C].intValue();
 		DeviceProvider device = machine.getDeviceProvider();
 		float num = device.inputNumber(fn);
 		regs[Y] = num;
 	}
 
 	private void inputStringChannel(String[] parts) {
-		int fn = regs[G].intValue();
+		int fn = regs[C].intValue();
 		DeviceProvider device = machine.getDeviceProvider();
 		String str = device.inputString(fn);
 		copyStringResult(str);

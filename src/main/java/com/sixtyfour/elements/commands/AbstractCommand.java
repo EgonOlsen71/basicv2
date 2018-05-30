@@ -278,11 +278,11 @@ public abstract class AbstractCommand implements Command {
 	 * @param expr
 	 * @return
 	 */
-	protected List<String> saveG(List<String> expr) {
-		if (expr.size() > 0 && expr.get(expr.size() - 1).equals("PUSH G")) {
+	protected List<String> saveC(List<String> expr) {
+		if (expr.size() > 0 && expr.get(expr.size() - 1).equals("PUSH C")) {
 			expr = expr.subList(0, expr.size() - 1);
 		} else {
-			expr.add("POP G");
+			expr.add("POP C");
 		}
 		return expr;
 	}

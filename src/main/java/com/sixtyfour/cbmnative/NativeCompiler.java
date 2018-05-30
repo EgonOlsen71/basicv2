@@ -51,6 +51,8 @@ public class NativeCompiler {
 			this.add("POS");
 			this.add("TAB");
 			this.add("SPC");
+			this.add("TABCHANNEL");
+			this.add("SPCCHANNEL");
 			this.add("LEN");
 			this.add("USR");
 			this.add("PEEK");
@@ -74,6 +76,8 @@ public class NativeCompiler {
 			this.add("RIGHT");
 			this.add("TAB");
 			this.add("SPC");
+			this.add("TABCHANNEL");
+			this.add("SPCCHANNEL");
 
 			// SCMP is a special case as it has an additional parameter like =
 			// or <. So at one point, only the former part of the operator will
@@ -580,6 +584,12 @@ public class NativeCompiler {
 					break;
 				case "SPC":
 					code.add("JSR SPC");
+					break;
+				case "TABCHANNEL":
+					code.add("JSR TABCHANNEL");
+					break;
+				case "SPCCHANNEL":
+					code.add("JSR SPCCHANNEL");
 					break;
 				case "POS":
 					code.add("JSR POS");

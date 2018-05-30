@@ -104,7 +104,7 @@ public abstract class MultiVariableCommand extends AbstractCommand {
 			List<String> expr = new ArrayList<String>();
 			List<String> before = new ArrayList<String>();
 
-			before = saveG(before);
+			before = saveC(before);
 
 			if (var.getType() == Type.STRING) {
 				before.add("JSR " + strCall);
@@ -113,7 +113,7 @@ public abstract class MultiVariableCommand extends AbstractCommand {
 			}
 
 			if (i != vars.size() - 1) {
-				before.add("PUSH G");
+				before.add("PUSH C");
 			}
 
 			if (indexTerm != null) {

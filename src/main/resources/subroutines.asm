@@ -2619,6 +2619,123 @@ MINUS		LDA #<TMP_FREG
 			BNE MINUS
 DONE		RTS
 ;###################################
+INITOUTCHANNEL
+			LDA #<C_REG
+			LDY #>C_REG
+			JSR REALFAC
+			JSR FACWORD
+			TYA
+			TAX
+			STA TMP_REG
+			JMP CHKOUT
+;###################################
+STROUTCHANNEL
+			JSR INITOUTCHANNEL
+			JSR STROUT
+			JMP CLRCH
+;###################################
+LINEBREAKCHANNEL
+			JSR INITOUTCHANNEL
+			JSR LINEBREAK
+			JMP CLRCH
+;###################################
+SPCCHANNEL
+			JSR INITOUTCHANNEL
+			LDA TMP_REG
+			CMP #3		; To the screen?
+			BEQ SPCSCREEN
+			JMP TABCHANNEL2
+SPCSCREEN	JMP SPC
+;###################################
+TABCHANNEL
+			JSR INITOUTCHANNEL
+			LDA TMP_REG
+			CMP #3		; To the screen?
+			BEQ TABSCREEN
+TABCHANNEL2	LDA #1
+			STA $13		; Something that's not the screen...that's enough for the check the CRSRRIGHT does...
+			LDA #<Y_REG
+			LDY #>Y_REG
+			JSR REALFAC
+			JSR FACWORD
+			TYA
+			TAX
+			CLC
+			JSR TABSPC
+			JMP CLRCH
+TABSCREEN
+			JMP TAB
+;###################################
+TABOUTCHANNEL
+			JSR INITOUTCHANNEL
+			LDA TMP_REG
+			CMP #3		; To the screen?
+			BEQ TABOUTSCREEN
+			LDA #1
+			STA $13		; Something that's not the screen...that's enough for the check the CRSRRIGHT does...
+			LDX #10
+			CLC
+			JSR TABSPC
+			JMP CLRCH
+TABOUTSCREEN
+			JMP TABOUT
+;###################################
+OPEN		LDA #<Y_REG
+			LDY #>Y_REG
+			JSR REALFAC
+			JSR FACWORD
+			STY TMP_REG		; store parameter count in TMP_REG
+
+			LDA #<X_REG
+			LDY #>X_REG
+			JSR REALFAC
+			JSR FACWORD
+			STY $B8			; store logical address
+			DEC TMP_REG
+			BEQ ALLPARAMS
+
+			LDA #<C_REG
+			LDY #>C_REG
+			JSR REALFAC
+			JSR FACWORD
+			STY $BA			; store device number
+			DEC TMP_REG
+			BEQ ALLPARAMS
+
+			LDA #<D_REG
+			LDY #>D_REG
+			JSR REALFAC
+			JSR FACWORD
+			STY $B9			; store secondary address
+			DEC TMP_REG
+			BEQ ALLPARAMS
+
+			LDA G_REG
+			LDY G_REG+1
+			STA TMP_ZP
+			STY TMP_ZP+1
+			LDY #0
+			LDA (TMP_ZP),Y	; get string parameter length
+			STA $B7
+
+			INC G_REG
+			BNE OPENNOOV
+			INC G_REG+1
+
+OPENNOOV	LDA G_REG
+			LDY G_REG+1
+			STA $BB			; low byte of string paramter
+			STY $BC			; store secondary address
+
+ALLPARAMS	JMP OPENCH
+;###################################
+CLOSE		LDA #<X_REG
+			LDY #>X_REG
+			JSR REALFAC
+			JSR FACWORD
+			TYA				; file number into A
+			JMP CLOSECH
+;###################################
 NEXTWOFOR	LDX #$0A
 			JMP $A437
 ;###################################

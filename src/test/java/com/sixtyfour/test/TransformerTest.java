@@ -80,7 +80,15 @@ public class TransformerTest {
 //		testBreakout();
 //		testBbDemo();
 //		 testOpenPrint();
-	    testScroll();
+	    //testScroll();
+		testOpen();
+	}
+	
+	private static void testOpen() throws Exception {
+		System.out.println("\n\ntestOpen");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/testopen.bas");
+		Assembler assy = initTestEnvironment(vary, false);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++testopen.prg", true);
 	}
 	
 	private static void testScroll() throws Exception {
