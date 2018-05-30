@@ -23,8 +23,8 @@ public class DeadStoreEliminator {
 
 	public static boolean eliminateDeadStores(CompilerConfig config, Basic basic) {
 		if (config.isDeadStoreElimination()) {
-		    Logger.log("Eliminating dead stores...");
-		    List<Command> commands = basic.getMachine().getCommandList();
+			Logger.log("Eliminating dead stores...");
+			List<Command> commands = basic.getMachine().getCommandList();
 			Set<Term> terms = new HashSet<Term>();
 
 			// Collect all the terms used in the program first...

@@ -16,8 +16,8 @@ public class CompilerConfig {
 	private boolean optimizedLinker = true;
 	private boolean deadStoreElimination = true;
 	private boolean deadStoreEliminationOfStrings = true;
-	private boolean optimizeConstants=true;
-	private LoopMode loopMode=LoopMode.EXECUTE;
+	private boolean optimizeConstants = true;
+	private LoopMode loopMode = LoopMode.EXECUTE;
 
 	private int compactThreshold = 0;
 
@@ -114,14 +114,14 @@ public class CompilerConfig {
 	 * @return
 	 */
 	public boolean isOptimizeConstants() {
-	    return optimizeConstants;
+		return optimizeConstants;
 	}
 
 	/**
 	 * @param optimizeConstants
 	 */
 	public void setOptimizeConstants(boolean optimizeConstants) {
-	    this.optimizeConstants = optimizeConstants;
+		this.optimizeConstants = optimizeConstants;
 	}
 
 }

@@ -147,16 +147,17 @@ public class Parameters {
 	 * @return the name or null
 	 */
 	public String getRegister() {
-	    return register;
+		return register;
 	}
 
 	/**
 	 * Sets the register's name if applicable
 	 * 
-	 * @param register the name
+	 * @param register
+	 *            the name
 	 */
 	public void setRegister(String register) {
-	    this.register = register;
+		this.register = register;
 	}
 
 }

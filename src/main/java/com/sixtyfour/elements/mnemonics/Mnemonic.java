@@ -66,9 +66,10 @@ public interface Mnemonic {
 	 *         mnemonic
 	 */
 	String getInstruction(int opcode);
-	
+
 	/**
-	 * Returns an optional parameter (like A for ROL, ROR, ASL, LSR) or null, if there is none.
+	 * Returns an optional parameter (like A for ROL, ROR, ASL, LSR) or null, if
+	 * there is none.
 	 * 
 	 * @return the parameter or null
 	 */

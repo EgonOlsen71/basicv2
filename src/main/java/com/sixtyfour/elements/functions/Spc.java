@@ -85,15 +85,15 @@ public class Spc extends AbstractFunction {
 		}
 		return SPACES.substring(0, num);
 	}
-	
+
 	@Override
 	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
 		List<String> ret = new ArrayList<String>();
 		ret.add("_");
 		List<String> n1 = term.evalToCode(config, machine).get(0).getExpression();
-		String call=":" + this.getClass().getSimpleName().toUpperCase(Locale.ENGLISH);
+		String call = ":" + this.getClass().getSimpleName().toUpperCase(Locale.ENGLISH);
 		if (machine.getCurrentCommand() instanceof PrintFile) {
-			call+="CHANNEL";
+			call += "CHANNEL";
 		}
 		n1.add(call);
 		ret.addAll(0, n1);

@@ -102,8 +102,8 @@ public class NativeCompiler {
 
 	public List<String> compile(CompilerConfig conf, Basic basic, MemoryConfig memConfig) {
 
-	    	Logger.log("Running native compiler...");
-	    	Logger.log("Parsing BASIC program into AST...");
+		Logger.log("Running native compiler...");
+		Logger.log("Parsing BASIC program into AST...");
 		basic.compile(conf);
 		List<String> mCode = NativeCompiler.getCompiler().compileToPseudeCode(conf, basic);
 
@@ -132,11 +132,11 @@ public class NativeCompiler {
 		if (platform.getUnlinker() != null && conf.isOptimizedLinker()) {
 			nCode = platform.getUnlinker().unlink(nCode);
 		}
-		
+
 		if (conf.isOptimizeConstants()) {
-		    nCode=new Compactor(0).removeUnusedConstants(nCode);
+			nCode = new Compactor(0).removeUnusedConstants(nCode);
 		}
-		
+
 		if (conf.getCompactThreshold() > 1) {
 			nCode = new Compactor(conf.getCompactThreshold()).compact(nCode);
 		}
@@ -144,9 +144,9 @@ public class NativeCompiler {
 	}
 
 	public List<String> compileToPseudeCode(CompilerConfig config, Basic basic) {
-	    	Logger.log("Compiling into intermediate code...");
-	    
-	    	long s = System.currentTimeMillis();
+		Logger.log("Compiling into intermediate code...");
+
+		long s = System.currentTimeMillis();
 		Machine machine = basic.getMachine();
 		PCode pCode = basic.getPCode();
 
@@ -166,7 +166,7 @@ public class NativeCompiler {
 		}
 
 		basic.modifyDelayLoops(config);
-		
+
 		// Preexecute the DIMs to make the machine know them.
 		List<Command> cmds = basic.getMachine().getCommandList();
 		for (Command cmd : cmds) {
@@ -734,7 +734,7 @@ public class NativeCompiler {
 	private List<String> optimizeInternal(CompilerConfig config, List<String> code) {
 		return NativeOptimizer.optimizeNativeInternal(config, code);
 	}
-	
+
 	private String getLastMoveTarget(List<String> code, int offset) {
 		for (int i = code.size() - offset; i >= 0; i--) {
 			if (code.get(i).startsWith("MOV ")) {

@@ -824,13 +824,14 @@ public class Basic implements ProgramExecutor {
 	}
 
 	/**
-	 * Modifies loops according to the corresponding setting in the CompilerConfig. Usually, there's no need to call this method directly.
-	 *
+	 * Modifies loops according to the corresponding setting in the
+	 * CompilerConfig. Usually, there's no need to call this method directly.
+	 * 
 	 * @param config
 	 *            the config
 	 */
 	public void modifyDelayLoops(CompilerConfig config) {
-	    LoopMode loopMode=config.getLoopMode();
+		LoopMode loopMode = config.getLoopMode();
 		if (loopMode == null || loopMode == LoopMode.EXECUTE) {
 			return;
 		}

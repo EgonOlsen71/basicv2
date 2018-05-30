@@ -42,13 +42,13 @@ public class Delay extends AbstractCommand {
 		}
 		return null;
 	}
-	
+
 	@Override
 	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
-	    Let letty=new Let();
-	    letty.setTerm(delayLoop.getEndTerm());
-	    letty.setVar(delayLoop.getVar());
-	    return letty.evalToCode(config, machine);
+		Let letty = new Let();
+		letty.setTerm(delayLoop.getEndTerm());
+		letty.setVar(delayLoop.getVar());
+		return letty.evalToCode(config, machine);
 	}
 
 }

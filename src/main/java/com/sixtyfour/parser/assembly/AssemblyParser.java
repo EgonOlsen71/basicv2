@@ -65,7 +65,7 @@ public class AssemblyParser {
 			if (c == '"') {
 				inString = !inString;
 			}
-			if (!inString && c == ';' && i>pos) {
+			if (!inString && c == ';' && i > pos) {
 				return sb.toString();
 			}
 			sb.append(c);

@@ -29,11 +29,11 @@ public class Transformer6502 implements Transformer {
 	private int runtimeStart = -1;
 	private int stringMemoryEnd = 0xa000;
 	private int startAddress = 2072;
-	private boolean preferZeropage=true;
+	private boolean preferZeropage = true;
 
 	@Override
 	public List<String> transform(Machine machine, PlatformProvider platform, List<String> code) {
-	    Logger.log("Compiling into native assembly code...");
+		Logger.log("Compiling into native assembly code...");
 		List<String> res = new ArrayList<>();
 		List<String> consts = new ArrayList<String>();
 		List<String> vars = new ArrayList<String>();
@@ -111,7 +111,7 @@ public class Transformer6502 implements Transformer {
 		res.add(";make sure that JUMP_TARGET's low can't be $ff");
 		res.add("JUMP_TARGET = 69");
 		if (preferZeropage) {
-		    res.add("TMP_REG=71");
+			res.add("TMP_REG=71");
 		}
 		res.add("*=" + startAddress);
 		res.add("TSX");
@@ -190,7 +190,7 @@ public class Transformer6502 implements Transformer {
 		res.add("G_REG\t.WORD 0");
 		res.add("SP_SAVE\t.BYTE 0");
 		if (!preferZeropage) {
-		    res.add("TMP_REG\t.WORD 0");
+			res.add("TMP_REG\t.WORD 0");
 		}
 		res.add("TMP2_REG\t.WORD 0");
 		res.add("TMP3_REG\t.WORD 0");
@@ -493,16 +493,15 @@ public class Transformer6502 implements Transformer {
 	public void setRuntimeStart(int runtimeStart) {
 		this.runtimeStart = runtimeStart;
 	}
-	
-	
+
 	@Override
 	public boolean isOptimizedTempStorage() {
-	    return preferZeropage;
+		return preferZeropage;
 	}
 
 	@Override
 	public void setOptimizedTempStorage(boolean optimizedTemp) {
-	    this.preferZeropage = optimizedTemp;
+		this.preferZeropage = optimizedTemp;
 	}
 
 }

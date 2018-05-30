@@ -197,9 +197,9 @@ public class For extends AbstractCommand {
 	 * @return the end term
 	 */
 	public Term getEndTerm() {
-	    return endTerm;
+		return endTerm;
 	}
-	
+
 	/**
 	 * Executes a next call for this for.
 	 * 

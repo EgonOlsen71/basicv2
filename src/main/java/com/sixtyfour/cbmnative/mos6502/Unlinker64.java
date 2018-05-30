@@ -19,8 +19,8 @@ public class Unlinker64 implements Unlinker {
 	public List<String> unlink(List<String> res) {
 
 		// mnems.add("; *** CODE ***");
-	    Logger.log("Unlinking unused runtime code...");
-	    
+		Logger.log("Unlinking unused runtime code...");
+
 		List<String> ret = new ArrayList<String>();
 		int posy = res.lastIndexOf("; *** SUBROUTINES ***");
 		int posyEnd = res.lastIndexOf("; *** SUBROUTINES END ***");
