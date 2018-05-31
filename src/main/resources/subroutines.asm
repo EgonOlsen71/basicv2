@@ -2629,6 +2629,16 @@ INITOUTCHANNEL
 			STA TMP_REG
 			JMP CHKOUT
 ;###################################
+REALOUTCHANNEL
+			JSR INITOUTCHANNEL
+			JSR REALOUT
+			JMP CLRCH
+;###################################
+INTOUTCHANNEL
+			JSR INITOUTCHANNEL
+			JSR INTOUT
+			JMP CLRCH
+;###################################
 STROUTCHANNEL
 			JSR INITOUTCHANNEL
 			JSR STROUT
@@ -2652,7 +2662,9 @@ TABCHANNEL
 			LDA TMP_REG
 			CMP #3		; To the screen?
 			BEQ TABSCREEN
-TABCHANNEL2	LDA #1
+TABCHANNEL2	LDA $13
+			STA STORE1
+			LDA #1
 			STA $13		; Something that's not the screen...that's enough for the check the CRSRRIGHT does...
 			LDA #<Y_REG
 			LDY #>Y_REG
@@ -2660,23 +2672,28 @@ TABCHANNEL2	LDA #1
 			JSR FACWORD
 			TYA
 			TAX
-			CLC
-			JSR TABSPC
-			JMP CLRCH
+			JMP EXITCHANNEL
 TABSCREEN
 			JMP TAB
+;###################################			
+EXITCHANNEL	CLC
+			JSR TABSPC
+			JSR CLRCH
+			LDA STORE1
+			STA $13
+			RTS			
 ;###################################
 TABOUTCHANNEL
 			JSR INITOUTCHANNEL
 			LDA TMP_REG
 			CMP #3		; To the screen?
 			BEQ TABOUTSCREEN
+			LDA $13
+			STA STORE1
 			LDA #1
 			STA $13		; Something that's not the screen...that's enough for the check the CRSRRIGHT does...
 			LDX #10
-			CLC
-			JSR TABSPC
-			JMP CLRCH
+			JMP EXITCHANNEL
 TABOUTSCREEN
 			JMP TABOUT
 ;###################################
