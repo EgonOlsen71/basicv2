@@ -1888,6 +1888,63 @@ DFAC2STR	JSR NEXTDATA
 			JSR STRINT
 			RTS
 ;###################################
+CLEANINPUT	LDY #0				; Processes an input string similar to BASIC's with the only difference that a " at the "wrong" location will be ignored instead of triggering an error
+			LDX #0
+			STY STORE1			; Marks "quote-mode", 0 if off, 1 is on
+			STY STORE2			; Char found, 0 means none, something else means at least one
+			DEY
+CILOOP		INY
+			LDA $0200,Y
+			BNE CINOEND
+			JMP CIEND			; String terminator found, exit	
+CINOEND		STA STORE3			; store current char
+			LDA STORE1
+			BEQ CINOQUOTE		; Not in quote mode...
+			LDA STORE3
+			CMP	#$22			; found a quote (in quote mode)?
+			BNE	CISTILLQUOTE	; no? Then we are still in quote mode
+			LDA #0				; yes? quote mode off
+			STA STORE1
+			JMP CILOOP
+CISTILLQUOTE
+			STA $0200,X
+			INX
+			JMP CILOOP		
+CINOQUOTE	LDA STORE3
+			CMP	#$22
+			BNE	CISOMECHAR		; no quote?
+						
+CIFIRSTCHAR	LDA #1				; quote? 
+			STA STORE1			; enable quote mode
+			STA STORE2			; set char flag
+			JMP CILOOP
+			
+CISOMECHAR 	CMP #$3A			; a : then stop evaluating here
+			BNE	CINOCOLON
+			JMP CIEND
+
+CINOCOLON	CMP #$2C			; a ,?
+			BNE CINOCOMMA
+			LDA #$22			; replace a comma by a ". This will be handled later in the actual input routine
+			STA $0200,X
+			INX
+			LDA #0
+			STA STORE2			; Reset char flag to 0
+			JMP CILOOP
+CINOCOMMA	CMP #$20			; a blank? Only add this, if char flag is !=0
+			BNE	CINOSPACE
+			LDA STORE2			; check char flag
+			BEQ CINEXT			; Set? Then continue normally
+			LDA STORE3			
+CINOSPACE	STA $0200,X
+			STA STORE2			; update char flag with some value!=0
+			INX
+CINEXT		JMP CILOOP
+CIEND		LDA #0
+			STA $0200,X			; Write terminator...
+			RTS					; ...and exit
+					
+;###################################
 INPUTSTR	LDA #$0
 INPUTSTR2	STA TMP_REG+1
 			LDA #$0
@@ -1918,6 +1975,7 @@ SHRINKQ		INX
 			JMP ISTRLOOP
 INPUTNORM	AND #$FF
 			JSR INPUT
+			JSR CLEANINPUT
 			LDA #$FF
 			STA TMP_ZP
 			LDA #$1
@@ -1927,7 +1985,7 @@ INPUTNORM	AND #$FF
 ISTRLOOP	INY
 			LDA $0200,Y
 			TAX
-			CMP #$2C			; found ,?
+			CMP #$22			; found "?  (" is a replacement for , at this stage because " can't occur in an input string while , can)
 			BNE	ICHECK
 			STA TMP_FLAG
 			LDA #$0
@@ -2629,6 +2687,20 @@ INITOUTCHANNEL
 			STA TMP_REG
 			JMP CHKOUT
 ;###################################
+INITINCHANNEL
+			LDA $13
+			STA STORE1+1
+			LDA #1
+			STA $13		; Something that's not the screen...that's enough for the check the CRSRRIGHT does...
+			LDA #<C_REG
+			LDY #>C_REG
+			JSR REALFAC
+			JSR FACWORD
+			TYA
+			TAX
+			STA TMP_REG
+			JMP CHKIN
+;###################################
 REALOUTCHANNEL
 			JSR INITOUTCHANNEL
 			JSR REALOUT
@@ -2638,6 +2710,26 @@ INTOUTCHANNEL
 			JSR INITOUTCHANNEL
 			JSR INTOUT
 			JMP CLRCH
+;###################################
+GETSTRCHANNEL
+			JSR INITINCHANNEL
+			JSR GETSTR
+			JMP CLRINCH
+;###################################
+GETNUMBERCHANNEL
+			JSR INITINCHANNEL
+			JSR GETNUMBER
+			JMP CLRINCH
+;###################################
+INPUTSTRCHANNEL
+			JSR INITINCHANNEL
+			JSR INPUTSTR
+			JMP CLRINCH
+;###################################
+INPUTNUMBERCHANNEL
+			JSR INITINCHANNEL
+			JSR INPUTNUMBER
+			JMP CLRINCH
 ;###################################
 STROUTCHANNEL
 			JSR INITOUTCHANNEL
@@ -2682,6 +2774,11 @@ EXITCHANNEL	CLC
 			LDA STORE1
 			STA $13
 			RTS			
+;###################################
+CLRINCH		JSR CLRCH
+			LDA STORE1+1
+			STA $13
+			RTS	
 ;###################################
 TABOUTCHANNEL
 			JSR INITOUTCHANNEL
