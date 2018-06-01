@@ -27,6 +27,8 @@ START		LDA #<FPSTACK
 			CLC
 			RTS
 ;###################################
+CLR			JMP START
+;###################################
 INITNARRAY 
 			STA TMP_ZP
 			STY TMP_ZP+1

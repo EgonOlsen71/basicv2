@@ -59,7 +59,7 @@ public class Movb extends GeneratorBase {
 	private void indexedTargetWithConstant(List<String> nCode, Operand source, Operand target) {
 		createIndexedTargetCode(nCode, target);
 
-		nCode.add("LDA #$" + Integer.toHexString(Integer.parseInt(source.getValue().substring(1))).toUpperCase(Locale.ENGLISH));
+		nCode.add("LDA #$" + Integer.toHexString((int) Float.parseFloat(source.getValue().substring(1))).toUpperCase(Locale.ENGLISH));
 		nCode.add("MOVBSELF" + MOV_CNT + ":");
 		nCode.add("STA $FFFF");
 
