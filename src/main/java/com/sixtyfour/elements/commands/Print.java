@@ -229,11 +229,17 @@ public class Print extends AbstractCommand {
 			}
 
 			if (("\n").equals(add)) {
-			    	if (!appendix.isEmpty() && (type.equals(Type.INTEGER) || type.equals(Type.REAL))) {
-			    	    	// After a number and before a break, there's an additional blank when writing to a file for some strange reason...
-					expr.add("MOV A,# {STRING}");
-					expr.add("JSR STROUT" + appendix);
-			    	}
+				if (type.equals(Type.INTEGER) || type.equals(Type.REAL)) {
+					if (!appendix.isEmpty()) {
+						// After a number and before a break, there's an
+						// additional blank when writing to a file for some
+						// strange reason...
+						expr.add("MOV A,# {STRING}");
+						expr.add("JSR STROUT" + appendix);
+					} else {
+						expr.add("JSR CHECKCMD");
+					}
+				}
 				expr.add("JSR LINEBREAK" + appendix);
 			} else {
 				if (add != null) {

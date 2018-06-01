@@ -20,6 +20,8 @@ START		LDA #<FPSTACK
 			STA LASTVAR+1
 			JSR INITVARS
 			LDA #0
+			STA CMD_NUM
+			STA CHANNEL
 			TAY
 			TAX
 			STA $C6
@@ -508,11 +510,25 @@ VALSTR		JSR VALS
 			JMP FACMEM	;RTS is implicit
 ;###################################
 TAB			JSR TABSPCINIT
-			SEC
+			JSR REROUTE
+			LDA CMD_NUM
+			BEQ NORMALTAB		; No reroute? Normal TAB
+			CMP #3
+			BEQ NORMALTAB2		; To screen? Normal TAB
+			JMP TABCHANNEL2
+NORMALTAB2	JSR CLRCH
+NORMALTAB	SEC
 			JMP TABSPC
 ;###################################
 SPC			JSR TABSPCINIT
-			CLC
+			JSR REROUTE
+			LDA CMD_NUM
+			BEQ NORMALSPC		; No reroute? Normal SPC
+			CMP #3
+			BEQ NORMALSPC2		; To screen? Normal SPC
+			JMP TABCHANNEL2
+NORMALSPC2	JSR CLRCH
+NORMALSPC	CLC
 			JMP TABSPC
 ;###################################
 TABSPCINIT	SEC
@@ -1121,13 +1137,27 @@ RLVNOOV		LDA TMP2_ZP
 			TAY				; ...restore Y reg
 			RTS
 ;###################################
+REROUTE		LDA CMD_NUM		; if CMD mode, enable channel output
+			BEQ REROUTECMD
+			TAX
+			STA CHANNEL
+			JMP CHKOUT
+REROUTECMD	RTS
+;###################################
+RESETROUTE	LDA CMD_NUM		; if CMD mode, disable channel output
+			BEQ RESETROUTECMD
+			JMP CLRCH
+RESETROUTECMD
+			RTS
+;###################################
 ; Appends a reference to the variable at the end of the string in memory for
 ; easier GC later...
 INTOUT		JMP REALOUT
 ;###################################
 INTOUTBRK  	JMP REALOUTBRK
 ;###################################
-REALOUT		LDA X_REG
+REALOUT		JSR REROUTE
+			LDA X_REG
 			BNE RNOTNULL
 			JMP PRINTNULL
 RNOTNULL	LDA #<X_REG
@@ -1141,9 +1171,11 @@ STRLOOPRO	JSR CHROUT
 			INY
 			LDA $00FF,Y
 			BNE STRLOOPRO
+			JSR RESETROUTE
 			RTS
 ;###################################
-REALOUTBRK  LDA X_REG
+REALOUTBRK  JSR REROUTE
+			LDA X_REG
 			BNE RNOTNULLBRK
 			JMP PRINTNULLBRK
 RNOTNULLBRK	LDA #<X_REG
@@ -1158,27 +1190,33 @@ STRLOOPROB	JSR CHROUT
 			LDA $00FF,Y
 			BNE STRLOOPROB
 			LDA #$0D
+			JSR RESETROUTE
 			JMP CHROUT
-
 ;###################################
-LINEBREAK	LDA #$0D
-			JMP CHROUT
-
+LINEBREAK	JSR REROUTE
+			LDA #$0D
+			JSR CHROUT
+			JMP RESETROUTE
 ;###################################
-PRINTNULL	LDA #$20
+PRINTNULL	JSR REROUTE
+			LDA #$20
 			JSR CHROUT
 			LDA #$30
-			JMP CHROUT
+			JSR CHROUT
+			JMP RESETROUTE
 ;###################################
 PRINTNULLBRK
+			JSR REROUTE
 			LDA #$20
 			JSR CHROUT
 			LDA #$30
 			JSR CHROUT
 			LDA #$0D
-			JMP CHROUT
+			JSR CHROUT
+			JMP RESETROUTE
 ;###################################
-STROUT		LDA A_REG
+STROUT		JSR REROUTE
+			LDA A_REG
 			STA $22
 			LDA A_REG+1
 			STA $23
@@ -1195,9 +1233,11 @@ PRINTSTR	JSR PRINTSTRS
 			STA STRBUFP+1
 			LDA #0
 			STA CONCATBUFP	; Reset the work buffer
+			JSR RESETROUTE
 			RTS
 ;###################################
-STROUTBRK	LDA A_REG
+STROUTBRK	JSR REROUTE
+			LDA A_REG
 			STA $22
 			LDA A_REG+1
 			STA $23
@@ -1215,7 +1255,8 @@ PRINTSTR2	JSR PRINTSTRS
 			LDA #0
 			STA CONCATBUFP	; Reset the work buffer
 			LDA #$0D
-			JMP CHROUT 	;RTS is implicit
+			JSR CHROUT
+			JMP RESETROUTE 	;RTS is implicit
 ;###################################
 POS			SEC 
 			JSR CRSRPOS
@@ -1237,7 +1278,16 @@ FRE
 			LDY #>X_REG
 			JMP FACMEM
 ;###################################
-TABOUT		SEC 
+TABOUT		JSR REROUTE
+			LDA CMD_NUM
+			BEQ NORMALTABOUT		; No reroute? Normal TABOUT
+			CMP #3
+			BEQ NORMALTABOUT2		; To screen? Normal TAB
+			JMP TABOUTCHANNEL2
+NORMALTABOUT2
+			JSR CLRCH
+NORMALTABOUT
+			SEC
 			JSR CRSRPOS
 			TYA
 			SEC
@@ -1729,7 +1779,9 @@ GOSUB		LDA FORSTACKP
 			STA FORSTACKP+1
 			RTS
 ;###################################
-GETNUMBER	JSR GETIN
+GETNUMBER	LDY #0
+			STY CMD_NUM			; Reset CMD target
+			JSR GETIN
 			BEQ IGNOREKEY
 			CMP #$2B
 			BEQ IGNOREKEY
@@ -2116,7 +2168,9 @@ NUMOK		LDA TMP_REG
 			JMP FACMEM		; ...and return
 
 ;###################################
-GETSTR		JSR GETIN
+GETSTR		LDY #0
+			STY CMD_NUM		; Reset CMD target
+			JSR GETIN
 			BNE SOMEKEY
 NOKEY		LDA #<EMPTYSTR
 			STA A_REG
@@ -2686,7 +2740,11 @@ INITOUTCHANNEL
 			JSR FACWORD
 			TYA
 			TAX
-			STA TMP_REG
+			CPX CMD_NUM
+			BNE CMDNEQUAL
+			LDY #0
+			STY CMD_NUM			; Reset CMD channel
+CMDNEQUAL	STA CHANNEL
 			JMP CHKOUT
 ;###################################
 INITINCHANNEL
@@ -2700,7 +2758,7 @@ INITINCHANNEL
 			JSR FACWORD
 			TYA
 			TAX
-			STA TMP_REG
+			STA CHANNEL
 			JMP CHKIN
 ;###################################
 REALOUTCHANNEL
@@ -2745,15 +2803,17 @@ LINEBREAKCHANNEL
 ;###################################
 SPCCHANNEL
 			JSR INITOUTCHANNEL
-			LDA TMP_REG
+			LDA CHANNEL
 			CMP #3		; To the screen?
 			BEQ SPCSCREEN
 			JMP TABCHANNEL2
-SPCSCREEN	JMP SPC
+SPCSCREEN	JSR CLRCH
+			JMP SPC
 ;###################################
 TABCHANNEL
 			JSR INITOUTCHANNEL
-			LDA TMP_REG
+TABCHANNELINT
+			LDA CHANNEL
 			CMP #3		; To the screen?
 			BEQ TABSCREEN
 TABCHANNEL2	LDA $13
@@ -2768,25 +2828,15 @@ TABCHANNEL2	LDA $13
 			TAX
 			JMP EXITCHANNEL
 TABSCREEN
-			JMP TAB
-;###################################			
-EXITCHANNEL	CLC
-			JSR TABSPC
 			JSR CLRCH
-			LDA STORE1
-			STA $13
-			RTS			
-;###################################
-CLRINCH		JSR CLRCH
-			LDA STORE1+1
-			STA $13
-			RTS	
+			JMP TAB
 ;###################################
 TABOUTCHANNEL
 			JSR INITOUTCHANNEL
-			LDA TMP_REG
+			LDA CHANNEL
 			CMP #3		; To the screen?
 			BEQ TABOUTSCREEN
+TABOUTCHANNEL2
 			LDA $13
 			STA STORE1
 			LDA #1
@@ -2794,7 +2844,35 @@ TABOUTCHANNEL
 			LDX #10
 			JMP EXITCHANNEL
 TABOUTSCREEN
+			JSR CLRCH
 			JMP TABOUT
+;###################################
+EXITCHANNEL	CLC
+			JSR TABSPC
+			JSR CLRCH
+			LDA STORE1
+			STA $13
+			RTS
+;###################################
+CLRINCH		JSR CLRCH
+			LDA STORE1+1
+			STA $13
+			RTS
+;###################################
+CMD			LDA #<X_REG
+			LDY #>X_REG
+			JSR REALFAC
+			JSR FACWORD
+			STY CMD_NUM
+			RTS
+;###################################
+CHECKCMD	LDA CMD_NUM		; if CMD mode, then print an additional space
+			BEQ NOCMD
+			JSR REROUTE
+			LDA #$20
+			JMP CHROUT
+			JSR RESETROUTE
+NOCMD		RTS
 ;###################################
 OPEN		LDA #<Y_REG
 			LDY #>Y_REG

@@ -188,6 +188,8 @@ public class Transformer6502 implements Transformer {
 		res.add("A_REG\t.WORD 0");
 		res.add("B_REG\t.WORD 0");
 		res.add("G_REG\t.WORD 0");
+		res.add("CMD_NUM\t.BYTE 0");
+		res.add("CHANNEL\t.BYTE 0");
 		res.add("SP_SAVE\t.BYTE 0");
 		if (!preferZeropage) {
 			res.add("TMP_REG\t.WORD 0");

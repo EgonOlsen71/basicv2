@@ -78,6 +78,10 @@ public class PrintFile extends Print {
 	@Override
 	public BasicProgramCounter execute(CompilerConfig config, Machine machine) {
 		int fn = VarUtils.getInt(fileNumber.eval(machine));
+		if (machine.getOutputChannel().getChannel() == fn) {
+			// A call to PRINT#X resets a CMD X
+			machine.getOutputChannel().setPrintConsumer(null, 0);
+		}
 		return execute(machine, machine.getDeviceProvider(), fn);
 	}
 
