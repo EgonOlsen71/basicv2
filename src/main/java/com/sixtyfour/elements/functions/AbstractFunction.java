@@ -136,6 +136,16 @@ public abstract class AbstractFunction implements Function {
 	/*
 	 * (non-Javadoc)
 	 * 
+	 * @see com.sixtyfour.elements.functions.Function#getInitialCall()
+	 */
+	@Override
+	public String getInitialCall() {
+		return this.name + "(" + term.getInitial() + ")";
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.elements.functions.Function#setTerm(sixtyfour.parser.Term)
 	 */
 	@Override

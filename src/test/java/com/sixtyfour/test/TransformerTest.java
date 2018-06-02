@@ -43,10 +43,10 @@ public class TransformerTest {
 		// testTransformer2();
 		// testTransformer4();
 		// testTransformer5();
-//		 testTransformerFractal();
+		testTransformerFractal();
 		// testTransformer6();
 		// testTransformer7();
-//		 testTransformerPrime();
+		testTransformerPrime();
 		// testTransformerSqr();
 		// testTransformer8();
 		// testTransformer9();
@@ -55,7 +55,7 @@ public class TransformerTest {
 		// testTransformer12();
 		// testTransformer13();
 		// testTransformer14();
-//		testTransformerBeer();
+		testTransformerBeer();
 		// testTransformer15();
 		// testTransformerSqr();
 		// testTransformer16();
@@ -64,49 +64,61 @@ public class TransformerTest {
 		// testTransformer20();
 		// testTransformer22();
 		// testTransformer23();
-//		 testTransformerFrog();
-//		 testTransformerAffine();
+		testTransformerFrog();
+		testTransformerAffine();
 		// testTransformer24();
 		// testTransformer25();
 		// testTransformer26();
-		// testHilbert();
-		// testLines();
+		testHilbert();
+		testLines();
 		// testTransformer27();
 		// testConditions();
 		// testTransformer28();
 		// testTransformer29();
 		// testTransformer30();
-		//testBenchmark();
-//		testBreakout();
-//		testBbDemo();
-//		 testOpenPrint();
-	    //testScroll();
-		//testOpen();
-		//testCmd();		
-		testTab();
+		// testBenchmark();
+		// testBreakout();
+		// testBbDemo();
+		// testOpenPrint();
+		// testScroll();
+		// testOpen();
+		// testCmd();
+		// testTab();
+		testArrays();
 	}
-	
+
+	private static void testArrays() throws Exception {
+		System.out.println("\n\ntestArrays");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/testarrays.bas");
+		Assembler assy = initTestEnvironment(vary, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++testarrays.prg", true);
+		// JsrProfiler profiler = new JsrProfiler(assy);
+		// assy.getCpu().setCpuTracer(profiler);
+		// Machine machine = executeTest(assy);
+		// printStats(profiler, machine);
+	}
+
 	private static void testTab() throws Exception {
 		System.out.println("\n\ntestTab");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/testtab.bas");
 		Assembler assy = initTestEnvironment(vary, false);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++testtab.prg", true);
 	}
-	
+
 	private static void testCmd() throws Exception {
 		System.out.println("\n\ntestCmd");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/testcmd.bas");
 		Assembler assy = initTestEnvironment(vary, false);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++testcmd.prg", true);
 	}
-	
+
 	private static void testOpen() throws Exception {
 		System.out.println("\n\ntestOpen");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/testopen.bas");
 		Assembler assy = initTestEnvironment(vary, false);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++testopen.prg", true);
 	}
-	
+
 	private static void testScroll() throws Exception {
 		System.out.println("\n\ntestScroll");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/scroll.bas");
@@ -114,28 +126,26 @@ public class TransformerTest {
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++testscroll.prg", true);
 	}
 
-	
 	private static void testOpenPrint() throws Exception {
 		System.out.println("\n\ntestOpenPrint");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/test31.bas");
 		Assembler assy = initTestEnvironment(vary, false);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++testopenprint.prg", true);
 	}
-	
+
 	private static void testBreakout() throws Exception {
 		System.out.println("\n\ntestBreakout");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/breakout.bas");
 		Assembler assy = initTestEnvironment(vary, false);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++testbreakout.prg", true);
 	}
-	
+
 	private static void testBbDemo() throws Exception {
 		System.out.println("\n\ntestBbDemo");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/bbdemo.bas");
 		Assembler assy = initTestEnvironment(vary, false);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++testbbdemo.prg", true);
 	}
-
 
 	private static void testBenchmark() throws Exception {
 		System.out.println("\n\ntestBenchmark");
@@ -819,13 +829,14 @@ public class TransformerTest {
 
 	private static Assembler initTestEnvironment(String[] vary, boolean executePseudo, int variableStart) {
 		CompilerConfig conf = new CompilerConfig();
-		conf.setConstantFolding(true);
-		conf.setConstantPropagation(true);
-		conf.setDeadStoreElimination(true);
-		conf.setDeadStoreEliminationOfStrings(true);
-		conf.setIntermediateLanguageOptimizations(true);
-		conf.setNativeLanguageOptimizations(true);
-		conf.setOptimizedLinker(true);
+		boolean opt = true;
+		conf.setConstantFolding(opt);
+		conf.setConstantPropagation(opt);
+		conf.setDeadStoreElimination(opt);
+		conf.setDeadStoreEliminationOfStrings(opt);
+		conf.setIntermediateLanguageOptimizations(opt);
+		conf.setNativeLanguageOptimizations(opt);
+		conf.setOptimizedLinker(opt);
 		conf.setLoopMode(LoopMode.REMOVE);
 		// conf.setCompactThreshold(4);
 
@@ -949,9 +960,10 @@ public class TransformerTest {
 				cnt++;
 
 				System.out.println(Integer.toHexString(opcodePc) + " - " + Integer.toHexString(opcode) + " -> " + Integer.toHexString(newPc) + " / a=" + cpu.getAcc() + " / x="
-						+ cpu.getX() + " / y=" + cpu.getY() + "/ z=" + (cpu.getStatus() & 0b10)+"/ c=" + (cpu.getStatus() & 0b00000001) + " / TMP_ZP=" + printReg(105, assy) + " / TMP2_ZP=" + printReg(107, assy)
-						+ " / TMP3_ZP=" + printReg(34, assy) + "/" + line + " " + assy.getRam()[opcodePc + 1] + "/" + cnt + " - " + print16Bit(1024, assy) + "/"
-						+ print16Bit(1027, assy) + "/" + print16Bit(1030, assy) + "/" + print16Bit(1033, assy) + "/" + print16Bit(1036, assy) + " @ " + cpu.getClockTicks());
+						+ cpu.getX() + " / y=" + cpu.getY() + "/ z=" + (cpu.getStatus() & 0b10) + "/ c=" + (cpu.getStatus() & 0b00000001) + " / TMP_ZP=" + printReg(105, assy)
+						+ " / TMP2_ZP=" + printReg(107, assy) + " / TMP3_ZP=" + printReg(34, assy) + "/" + line + " " + assy.getRam()[opcodePc + 1] + "/" + cnt + " - "
+						+ print16Bit(1024, assy) + "/" + print16Bit(1027, assy) + "/" + print16Bit(1030, assy) + "/" + print16Bit(1033, assy) + "/" + print16Bit(1036, assy)
+						+ " @ " + cpu.getClockTicks());
 
 			}
 

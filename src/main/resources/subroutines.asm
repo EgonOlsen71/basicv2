@@ -567,6 +567,23 @@ LEN			LDA B_REG
 			LDY #>X_REG
 			JMP FACMEM	;RTS is implicit
 ;###################################
+ASC			LDA B_REG
+			STA TMP_ZP
+			LDA B_REG+1
+			STA TMP_ZP+1
+			LDY #0
+			LDA (TMP_ZP),Y
+			BNE DOASC
+			JMP ILLEGALQUANTITY
+DOASC		INY
+			LDA (TMP_ZP),Y
+			TAY
+			LDA #0
+			JSR INTFAC
+			LDX #<X_REG
+			LDY #>X_REG
+			JMP FACMEM
+;###################################
 CHR			LDA STRBUFP
 			STA TMP_ZP
 			STA A_REG
@@ -2683,11 +2700,14 @@ CHECKARGOR2	CMP #$81
 			JMP ARGFAC		; ARG is 1, so just copy it to FAC and exit (implicit)
 NORMALOR	JMP FACOR
 ;###################################
+TILLEGALQUANTITY
+			JMP ILLEGALQUANTITY
+;###################################
 SQRT		LDX #<TMP_FREG
 			LDY #>TMP_FREG
 			JSR FACMEM
 			LDA TMP_FREG+1
-			BMI ILLEGALQUANTITY
+			BMI TILLEGALQUANTITY
 			LDA TMP_FREG
 			BEQ DONE
  

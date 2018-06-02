@@ -85,5 +85,11 @@ public interface Function extends Atom {
 	 * @return
 	 */
 	boolean isDeterministic();
+	
+	/**
+	 * Returns the actual string that defines this function (i.e. how it has been written in the code).
+	 * @return the string
+	 */
+	String getInitialCall();
 
 }

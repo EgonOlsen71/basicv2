@@ -510,11 +510,19 @@ public class Parser {
 				sb.append("(");
 			}
 			Atom atom = pars.get(i);
+			//System.out.println("Atom: "+atom+"             ## "+sb.toString()+"/"+atom.getClass());
 			if (!(atom instanceof Term)) {
 				if (atom instanceof Variable) {
 					sb.append(((Variable) atom).getUpperCaseName());
 				} else {
-					sb.append(atom.eval(machine));
+					if (atom instanceof Function) {
+						Function fun=(Function) atom;
+						String call=fun.getInitialCall();
+						sb.append(call);
+					} else {
+						// Constants...
+						sb.append(atom.eval(machine));
+					}
 				}
 			} else {
 				// For the first array index term, the initial value is the
@@ -535,6 +543,8 @@ public class Parser {
 			m *= dimensions[i] + 1;
 		}
 
+		//System.out.println("Index term: "+sb.toString());
+		
 		Term t = Parser.getTermWithoutChecks(config, sb.toString(), machine, true, true);
 		return t;
 	}
