@@ -82,7 +82,7 @@ public class TransformerTest {
 //		 testOpenPrint();
 	    //testScroll();
 		//testOpen();
-		//testCmd();
+		//testCmd();		
 		testTab();
 	}
 	
