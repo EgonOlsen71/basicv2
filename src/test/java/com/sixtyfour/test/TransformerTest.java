@@ -81,8 +81,16 @@ public class TransformerTest {
 //		testBbDemo();
 //		 testOpenPrint();
 	    //testScroll();
-		testOpen();
-		testCmd();
+		//testOpen();
+		//testCmd();
+		testTab();
+	}
+	
+	private static void testTab() throws Exception {
+		System.out.println("\n\ntestTab");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/testtab.bas");
+		Assembler assy = initTestEnvironment(vary, false);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++testtab.prg", true);
 	}
 	
 	private static void testCmd() throws Exception {

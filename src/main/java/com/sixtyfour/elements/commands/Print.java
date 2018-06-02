@@ -348,9 +348,10 @@ public class Print extends AbstractCommand {
 						}
 						PrintPart pp = new PrintPart(part, nc);
 						res.add(pp);
-						if (end && VarUtils.toUpper(part).contains("SPC(") && part.endsWith(")")) {
-							// Special case: SPC(...) at the end of the line
-							// acts like a ;
+						String upart=VarUtils.toUpper(part);
+						if (end && (upart.contains("SPC(") || upart.contains("TAB(") ) && part.endsWith(")")) {
+							// Special case: SPC(...) and TAB(...) at the end of the line
+							// act like a ;
 							line += ";";
 						}
 						// System.out.println("State: " + i + "/" + c + "/" +
