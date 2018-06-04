@@ -43,10 +43,10 @@ public class TransformerTest {
 		// testTransformer2();
 		// testTransformer4();
 		// testTransformer5();
-		testTransformerFractal();
+//		testTransformerFractal();
 		// testTransformer6();
 		// testTransformer7();
-		testTransformerPrime();
+//		testTransformerPrime();
 		// testTransformerSqr();
 		// testTransformer8();
 		// testTransformer9();
@@ -55,7 +55,7 @@ public class TransformerTest {
 		// testTransformer12();
 		// testTransformer13();
 		// testTransformer14();
-		testTransformerBeer();
+//		testTransformerBeer();
 		// testTransformer15();
 		// testTransformerSqr();
 		// testTransformer16();
@@ -64,13 +64,13 @@ public class TransformerTest {
 		// testTransformer20();
 		// testTransformer22();
 		// testTransformer23();
-		testTransformerFrog();
-		testTransformerAffine();
+//		testTransformerFrog();
+//		testTransformerAffine();
 		// testTransformer24();
 		// testTransformer25();
 		// testTransformer26();
-		testHilbert();
-		testLines();
+//		testHilbert();
+//		testLines();
 		// testTransformer27();
 		// testConditions();
 		// testTransformer28();
@@ -84,7 +84,15 @@ public class TransformerTest {
 		// testOpen();
 		// testCmd();
 		// testTab();
-		testArrays();
+		// testArrays();
+		testLoad();
+	}
+	
+	private static void testLoad() throws Exception {
+		System.out.println("\n\ntestLoad");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/testload.bas");
+		Assembler assy = initTestEnvironment(vary, false);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++testload.prg", true);
 	}
 
 	private static void testArrays() throws Exception {

@@ -3,7 +3,10 @@
  */
 package com.sixtyfour.elements.commands;
 
+import java.util.List;
+
 import com.sixtyfour.config.CompilerConfig;
+import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.plugins.DeviceProvider;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.system.BasicProgramCounter;
@@ -19,6 +22,11 @@ public class Load extends FileOperation {
 	 */
 	public Load() {
 		super("LOAD");
+	}
+
+	@Override
+	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
+		return super.evalToCode(config, machine, "LOAD");
 	}
 
 	/*

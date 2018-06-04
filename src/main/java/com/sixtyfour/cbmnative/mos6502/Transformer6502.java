@@ -104,6 +104,9 @@ public class Transformer6502 implements Transformer {
 		res.add("CHKIN = $FFC6");
 		res.add("CHKOUT = $FFC9");
 		res.add("CLRCH = $FFCC");
+		res.add("LOADXX = $F4B8");
+		res.add("SAVEXX = $F5FA");
+		res.add("TWAIT = $F6ED");
 
 		res.add("TMP_ZP = 105");
 		res.add("TMP2_ZP = 107");

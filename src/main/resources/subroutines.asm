@@ -2894,6 +2894,57 @@ CHECKCMD	LDA CMD_NUM		; if CMD mode, then print an additional space
 			JSR RESETROUTE
 NOCMD		RTS
 ;###################################
+SAVE		LDA #0
+			STA $90			; reset status
+			STA $93			; reset Load/Verify-Flag
+
+			LDA #<X_REG
+			LDY #>X_REG
+			JSR REALFAC
+			JSR FACWORD
+			STY $BA			; Store device number
+							; Note: ,0 or ,1 will be ignored here. It's always ,1 in this context
+
+			JSR SETNAMEPRT
+							; Save the normal BASIC program...
+			LDX 45
+			LDY 46
+			STX $AE
+			STY $AF
+			LDX 43
+			LDY 44
+			STX $C1
+			STY $C2
+
+			JSR SAVEXX
+			JMP TWAIT
+;###################################
+VERIFY		LDA #0
+			STA $90
+			LDA #1
+			STA $93
+			JMP LOADINT
+;###################################
+LOAD		LDA #0
+			STA $90			; reset status
+			STA $93			; reset Load/Verify-Flag
+
+LOADINT		LDA #<X_REG
+			LDY #>X_REG
+			JSR REALFAC
+			JSR FACWORD
+			STY $BA			; Store device number
+							; Note: ,0 or ,1 will be ignored here. It's always ,1 in this context
+
+			JSR SETNAMEPRT
+			JSR LOADXX
+			JSR TWAIT
+			LDA $90
+			CMP #64
+			BEQ LOADOK
+			JMP FILENOTFOUND
+LOADOK		RTS
+;###################################
 OPEN		LDA #<Y_REG
 			LDY #>Y_REG
 			JSR REALFAC
@@ -2924,7 +2975,11 @@ OPEN		LDA #<Y_REG
 			DEC TMP_REG
 			BEQ ALLPARAMS
 
-			LDA G_REG
+			JSR SETNAMEPRT
+
+ALLPARAMS	JMP OPENCH
+;###################################
+SETNAMEPRT	LDA G_REG
 			LDY G_REG+1
 			STA TMP_ZP
 			STY TMP_ZP+1
@@ -2933,15 +2988,14 @@ OPEN		LDA #<Y_REG
 			STA $B7
 
 			INC G_REG
-			BNE OPENNOOV
+			BNE SNPNOOV
 			INC G_REG+1
 
-OPENNOOV	LDA G_REG
+SNPNOOV		LDA G_REG
 			LDY G_REG+1
 			STA $BB			; low byte of string paramter
-			STY $BC			; store secondary address
-
-ALLPARAMS	JMP OPENCH
+			STY $BC			; high byte of string paramter
+			RTS
 ;###################################
 CLOSE		LDA #<X_REG
 			LDY #>X_REG
@@ -2971,6 +3025,13 @@ EXTRAIGNORED
 ;###################################
 SYNTAXERROR 
 			JMP $AF08
+;###################################
+FILENOTFOUND
+			JSR $FFCC
+			JSR $F12F
+			LDA #4
+			ORA #$30
+			JMP CHROUT
 ;###################################
 ERROR		
 			JMP $AF08	;General purpose error, here a syntax error
