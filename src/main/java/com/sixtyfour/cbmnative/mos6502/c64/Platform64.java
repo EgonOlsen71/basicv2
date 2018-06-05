@@ -1,11 +1,12 @@
-package com.sixtyfour.cbmnative.mos6502;
+package com.sixtyfour.cbmnative.mos6502.c64;
 
 import com.sixtyfour.cbmnative.Optimizer;
 import com.sixtyfour.cbmnative.PlatformProvider;
 import com.sixtyfour.cbmnative.Transformer;
 import com.sixtyfour.cbmnative.Unlinker;
+import com.sixtyfour.cbmnative.mos6502.Unlinker6502;
 
-public class C64Platform implements PlatformProvider {
+public class Platform64 implements PlatformProvider {
 
 	@Override
 	public int getStackSize() {
@@ -24,12 +25,12 @@ public class C64Platform implements PlatformProvider {
 
 	@Override
 	public Transformer getTransformer() {
-		return new Transformer6502();
+		return new Transformer64();
 	}
 
 	@Override
 	public Unlinker getUnlinker() {
-		return new Unlinker64();
+		return new Unlinker6502();
 	}
 
 	@Override

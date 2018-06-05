@@ -3,7 +3,6 @@ package com.sixtyfour.cbmnative.mos6502.generators;
 import java.util.List;
 import java.util.Map;
 
-import com.sixtyfour.Logger;
 import com.sixtyfour.elements.Type;
 
 /**
@@ -19,7 +18,7 @@ public class Pop extends GeneratorBase {
 	@Override
 	public void generateCode(GeneratorContext context, String line, List<String> nCode, List<String> subCode, Map<String, String> name2label) {
 		Operands ops = new Operands(line, name2label);
-		Logger.log(line + " -- " + ops.getTarget());
+		//Logger.log(line + " -- " + ops.getTarget());
 		Operand target = ops.getTarget();
 		if (target.getType() == Type.INTEGER) {
 			nCode.add("JSR POPINT");

@@ -13,7 +13,7 @@ import com.sixtyfour.cbmnative.Unlinker;
  * @author EgonOlsen
  * 
  */
-public class Unlinker64 implements Unlinker {
+public class Unlinker6502 implements Unlinker {
 
 	@Override
 	public List<String> unlink(List<String> res) {

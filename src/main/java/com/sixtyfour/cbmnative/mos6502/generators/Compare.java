@@ -3,7 +3,6 @@ package com.sixtyfour.cbmnative.mos6502.generators;
 import java.util.List;
 import java.util.Map;
 
-import com.sixtyfour.Logger;
 import com.sixtyfour.elements.Type;
 
 public abstract class Compare implements Generator {
@@ -25,7 +24,7 @@ public abstract class Compare implements Generator {
 	@Override
 	public void generateCode(GeneratorContext context, String line, List<String> nCode, List<String> subCode, Map<String, String> name2label) {
 		Operands ops = new Operands(line, name2label);
-		Logger.log(line + " -- " + ops.getTarget() + "  |||  " + ops.getSource());
+		//Logger.log(line + " -- " + ops.getTarget() + "  |||  " + ops.getSource());
 
 		Operand source = ops.getSource();
 		Operand target = ops.getTarget();

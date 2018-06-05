@@ -12,6 +12,7 @@ import com.sixtyfour.Basic;
 import com.sixtyfour.Loader;
 import com.sixtyfour.cbmnative.NativeCompiler;
 import com.sixtyfour.cbmnative.PseudoCpu;
+import com.sixtyfour.cbmnative.mos6502.c64.Platform64;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.config.LoopMode;
 import com.sixtyfour.config.MemoryConfig;
@@ -172,7 +173,7 @@ public class GamesCompiler {
 		}
 
 		System.out.println("Program '" + name + "' starts at " + start);
-		List<String> nCode = NativeCompiler.getCompiler().compile(conf, basic, new MemoryConfig(start, -1, variableStart, stringMemoryEnd));
+		List<String> nCode = NativeCompiler.getCompiler().compile(conf, basic, new MemoryConfig(start, -1, variableStart, stringMemoryEnd), new Platform64());
 		for (String line : nCode) {
 			System.out.println(line);
 		}

@@ -1,4 +1,4 @@
-package com.sixtyfour.cbmnative.mos6502;
+package com.sixtyfour.cbmnative.mos6502.c64;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,7 +23,7 @@ import com.sixtyfour.system.Machine;
  * @author EgonOlsen
  * 
  */
-public class Transformer6502 implements Transformer {
+public class Transformer64 implements Transformer {
 
 	private int variableStart = -1;
 	private int runtimeStart = -1;

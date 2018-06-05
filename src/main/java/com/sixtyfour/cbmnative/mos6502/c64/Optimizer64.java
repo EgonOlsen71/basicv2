@@ -1,4 +1,4 @@
-package com.sixtyfour.cbmnative.mos6502;
+package com.sixtyfour.cbmnative.mos6502.c64;
 
 import java.util.ArrayList;
 import java.util.HashMap;

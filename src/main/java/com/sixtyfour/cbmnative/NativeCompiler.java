@@ -10,7 +10,6 @@ import java.util.Set;
 
 import com.sixtyfour.Basic;
 import com.sixtyfour.Logger;
-import com.sixtyfour.cbmnative.mos6502.C64Platform;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.config.MemoryConfig;
 import com.sixtyfour.elements.commands.Command;
@@ -96,18 +95,17 @@ public class NativeCompiler {
 		return instance;
 	}
 
-	public List<String> compile(Basic basic) {
-		return compile(new CompilerConfig(), basic, new MemoryConfig());
+	public List<String> compile(Basic basic, PlatformProvider platform) {
+		return compile(new CompilerConfig(), basic, new MemoryConfig(), platform);
 	}
 
-	public List<String> compile(CompilerConfig conf, Basic basic, MemoryConfig memConfig) {
+	public List<String> compile(CompilerConfig conf, Basic basic, MemoryConfig memConfig, PlatformProvider platform) {
 
 		Logger.log("Running native compiler...");
 		Logger.log("Parsing BASIC program into AST...");
 		basic.compile(conf);
 		List<String> mCode = NativeCompiler.getCompiler().compileToPseudeCode(conf, basic);
 
-		PlatformProvider platform = new C64Platform();
 		Transformer tf = platform.getTransformer();
 		tf.setVariableStart(memConfig.getVariableStart());
 		tf.setOptimizedTempStorage(memConfig.isOptimizedTempStorage());

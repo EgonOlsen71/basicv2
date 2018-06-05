@@ -86,7 +86,7 @@ public class Compactor {
 			}
 			if (clear) {
 				input.set(pos, "");
-				Logger.log("Removed unused constant: " + consty.txt + "@" + consty.position);
+				//Logger.log("Removed unused constant: " + consty.txt + "@" + consty.position);
 			}
 		}
 
@@ -236,9 +236,9 @@ public class Compactor {
 		}
 
 		strip(input);
-		System.out.println("Compactor executed with results:");
-		System.out.println("Old size: " + oldSize);
-		System.out.println("New size: " + input.size());
+		Logger.log("Compactor executed with results:");
+		Logger.log("Old size: " + oldSize);
+		Logger.log("New size: " + input.size());
 		return input;
 
 	}

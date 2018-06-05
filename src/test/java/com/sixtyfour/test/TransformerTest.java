@@ -12,6 +12,7 @@ import com.sixtyfour.Basic;
 import com.sixtyfour.Loader;
 import com.sixtyfour.cbmnative.NativeCompiler;
 import com.sixtyfour.cbmnative.PseudoCpu;
+import com.sixtyfour.cbmnative.mos6502.c64.Platform64;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.config.LoopMode;
 import com.sixtyfour.config.MemoryConfig;
@@ -77,15 +78,15 @@ public class TransformerTest {
 		// testTransformer29();
 		// testTransformer30();
 		// testBenchmark();
-		// testBreakout();
+//		 testBreakout();
 		// testBbDemo();
 		// testOpenPrint();
 		// testScroll();
 		// testOpen();
 		// testCmd();
 		// testTab();
-		// testArrays();
-		testLoad();
+		 testArrays();
+//		testLoad();
 	}
 	
 	private static void testLoad() throws Exception {
@@ -702,7 +703,7 @@ public class TransformerTest {
 
 		vary = Preprocessor.convertToLineNumbers(vary);
 		Basic basic = new Basic(vary);
-		List<String> nCode = NativeCompiler.getCompiler().compile(basic);
+		List<String> nCode = NativeCompiler.getCompiler().compile(basic, new Platform64());
 		for (String line : nCode) {
 			System.out.println(line);
 		}
@@ -760,7 +761,7 @@ public class TransformerTest {
 		String[] vary = Loader.loadProgram("src/test/resources/transform/test3.bas");
 
 		Basic basic = new Basic(vary);
-		List<String> nCode = NativeCompiler.getCompiler().compile(basic);
+		List<String> nCode = NativeCompiler.getCompiler().compile(basic, new Platform64());
 		for (String line : nCode) {
 			System.out.println(line);
 		}
@@ -867,7 +868,7 @@ public class TransformerTest {
 
 		MemoryConfig memConfig = new MemoryConfig();
 		memConfig.setVariableStart(variableStart);
-		List<String> nCode = NativeCompiler.getCompiler().compile(conf, basic, memConfig);
+		List<String> nCode = NativeCompiler.getCompiler().compile(conf, basic, memConfig, new Platform64());
 		for (String line : nCode) {
 			System.out.println(line);
 		}
