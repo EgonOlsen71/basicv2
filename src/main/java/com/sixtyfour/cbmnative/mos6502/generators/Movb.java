@@ -18,7 +18,8 @@ public class Movb extends GeneratorBase {
 	@Override
 	public void generateCode(GeneratorContext context, String line, List<String> nCode, List<String> subCode, Map<String, String> name2label) {
 		Operands ops = new Operands(line, name2label);
-		//Logger.log(line + " -- " + ops.getTarget() + "  |||  " + ops.getSource());
+		// Logger.log(line + " -- " + ops.getTarget() + "  |||  " +
+		// ops.getSource());
 
 		MOV_CNT++;
 

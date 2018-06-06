@@ -32,7 +32,6 @@ public class MoSpeedCL {
 		System.out.println("*** MoSpeed - a Commodore BASIC V2 cross compiler");
 		System.out.println("(w) by EgonOlsen - https://github.com/EgonOlsen71");
 		System.out.println("-------------------------------------------------");
-		System.out.println("type /? for more information\n\n");
 		Map<String, String> cmds = new HashMap<>();
 		String srcFile = null;
 		for (String arg : args) {
@@ -51,6 +50,7 @@ public class MoSpeedCL {
 			printOutHelp();
 			exit(1);
 		}
+		System.out.println("type /? for more information\n\n");
 
 		if (srcFile == null) {
 			System.out.println("No input file specified - aborting!");
@@ -58,6 +58,18 @@ public class MoSpeedCL {
 		}
 
 		CompilerConfig cfg = new CompilerConfig();
+		MemoryConfig memConfig = new MemoryConfig();
+
+		memConfig.setProgramStart(getNumber("progstart", cmds));
+		memConfig.setRuntimeStart(getNumber("runtimestart", cmds));
+		memConfig.setVariableStart(getNumber("varstart", cmds));
+		memConfig.setStringEnd(getNumber("varend", cmds));
+
+		if (!memConfig.isValid()) {
+			System.out.println("Invalid memory configuration!");
+			exit(12);
+		}
+
 		cfg.setConstantFolding(getOption("constfolding", cmds));
 		cfg.setConstantPropagation(getOption("constprop", cmds));
 		cfg.setDeadStoreElimination(getOption("deadstoreopt", cmds));
@@ -127,7 +139,6 @@ public class MoSpeedCL {
 			write(mCode, ilTarget);
 		}
 
-		MemoryConfig memConfig = new MemoryConfig();
 		List<String> nCode = NativeCompiler.getCompiler().compile(cfg, basic, memConfig, platform);
 
 		if (genSrc) {
@@ -138,30 +149,32 @@ public class MoSpeedCL {
 		assy.compile(cfg);
 		try {
 			System.out.println("Writing target file: " + targetFile);
-			FileWriter.writeAsPrg(assy.getProgram(), targetFile, true);
+			FileWriter.writeAsPrg(assy.getProgram(), targetFile, memConfig.getProgramStart() == -1 || memConfig.getProgramStart() < 2100);
 		} catch (Exception e) {
 			System.out.println("Failed to write target file '" + targetFile + "': " + e.getMessage());
 			exit(9);
 		}
 		System.out.println(srcFile + " compiled in " + (System.currentTimeMillis() - s) + "ms!");
-		
+
 		if (cmds.containsKey("vice")) {
 			runVice(cmds, targetFile);
 		}
-		
+
 		exit(0);
 	}
 
 	private static void runVice(Map<String, String> cmds, String targetFile) {
 		try {
-			Process prc=Runtime.getRuntime().exec(cmds.get("vice")+" \""+new File(targetFile).getAbsolutePath()+"\"");
-			try (InputStream is=prc.getInputStream()) {
-				while(is.available()>0) {
+			Process prc = Runtime.getRuntime().exec(cmds.get("vice") + " \"" + new File(targetFile).getAbsolutePath() + "\"");
+			try (InputStream is = prc.getInputStream()) {
+				// while (prc.isAlive()) {
+				while (is.available() > 0) {
 					is.read();
 				}
+				// }
 			}
 		} catch (Exception e) {
-			System.out.println("Failed to start VICE at "+cmds.get("vice")+": "+e.getMessage());
+			System.out.println("Failed to start VICE at " + cmds.get("vice") + ": " + e.getMessage());
 			exit(10);
 		}
 	}
@@ -210,6 +223,24 @@ public class MoSpeedCL {
 		return true;
 	}
 
+	private static int getNumber(String option, Map<String, String> options) {
+		option = option.toLowerCase(Locale.ENGLISH);
+		try {
+			if (options.containsKey(option)) {
+				String nums = options.get(option);
+				if (nums.startsWith("$")) {
+					nums = nums.substring(1);
+					return Integer.parseInt(nums, 16);
+				}
+				return Integer.parseInt(nums);
+			}
+		} catch (Exception e) {
+			System.out.println("Invalid number: " + options.get(option));
+			exit(11);
+		}
+		return -1;
+	}
+
 	private static void printOutHelp() {
 		System.out.println("\n");
 		String appx = ".sh";
@@ -217,10 +248,10 @@ public class MoSpeedCL {
 			appx = ".cmd";
 		}
 		System.out.println("Basic usage: mospeed" + appx + " <source file>");
-		System.out.println("\nThis will compile the specified source file for the C64 with all optimizations enabled.");
+		System.out.println("\nThis will compile the specified source file for the C64 with all optimizations enabled and using the default memory configuration.");
 		System.out.println("The target file name is the source file name with a '++'-prefix.");
-		System.out.println("An existing file of the same name will be overwritten.\n");
-		System.out.println("Optional parameters (either with / or - as prefix):");
+		System.out.println("An existing file of the same name will be overwritten.\n\n");
+		System.out.println("Optional parameters (either with / or - as prefix):\n");
 		System.out.println("/target=<target file> -  the target file name");
 		System.out.println("/platform=c64 - the target platform, only c64 supported for now");
 		System.out.println("/generatesrc=true|false -  writes the generated intermediate and assembly language programs to disk as well");
@@ -234,8 +265,12 @@ public class MoSpeedCL {
 		System.out.println("/deadstoreoptstr=true|false - enables/disables dead store elimination for strings");
 		System.out.println("/loopopt=true|false - enables/disables the removal of empty loops");
 		System.out.println("/compactlevel=[3...] - sets the compactor level. The lower the level, the more compact (but slower) the code. 0 means off!");
+		System.out.println("/progstart=xxxxx|$yyyy - sets the start address for the compiled program. Below 2100, a BASIC header will be added automatically.");
+		System.out.println("/varstart=xxxxx|$yyyy - the start address for variables. If none is given, they will be located right after the runtime code.");
+		System.out.println("/varend=xxxxx|$yyyy - the end address of the variable memory, i.e. in fact of the string memory.");
+		System.out.println("/runtimestart=xxxxx|$yyyy - the start address of the runtime's code. If none is given, it follows the program's code.");
 		System.out.println("/alloff - if specified, all optimizations will be turned off");
-		System.out.println("/vice - sets a path to the VICE executable. If specified, the compiled prg will be started in VICE right away.");
+		System.out.println("/vice - sets a path to the VICE executable. If specified, the compiled prg file will be started in VICE right away.");
 		System.out.println();
 	}
 

@@ -86,7 +86,8 @@ public class Compactor {
 			}
 			if (clear) {
 				input.set(pos, "");
-				//Logger.log("Removed unused constant: " + consty.txt + "@" + consty.position);
+				// Logger.log("Removed unused constant: " + consty.txt + "@" +
+				// consty.position);
 			}
 		}
 

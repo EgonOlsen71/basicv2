@@ -75,14 +75,14 @@ public abstract class FileOperation extends AbstractCommand {
 			syntaxError(this);
 		}
 
-		after.add("JSR "+call);
+		after.add("JSR " + call);
 
 		CodeContainer cc = new CodeContainer(before, expr, after);
 		List<CodeContainer> ccs = new ArrayList<CodeContainer>();
 		ccs.add(cc);
 		return ccs;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 

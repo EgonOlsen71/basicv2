@@ -25,7 +25,7 @@ public class Save extends FileOperation {
 	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
 		return super.evalToCode(config, machine, "SAVE");
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 

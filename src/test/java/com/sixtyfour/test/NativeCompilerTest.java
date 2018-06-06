@@ -100,7 +100,7 @@ public class NativeCompilerTest {
 		// testInput();
 		//
 		// testLyrix();
-//		testFiles();
+		// testFiles();
 		// testArrayAccess01();
 		// testBasicMapper();
 		// testLogicExpression3();

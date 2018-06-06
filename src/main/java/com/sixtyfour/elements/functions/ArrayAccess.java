@@ -90,7 +90,7 @@ public class ArrayAccess extends AbstractFunction {
 			throw new RuntimeException("Array indices don't match: " + this + "/" + pars.size() + "/" + dimensions.length);
 		}
 
-		//System.out.println("Creating term: "+this.variableName);
+		// System.out.println("Creating term: "+this.variableName);
 		Term t = Parser.createIndexTerm(config, machine, pars, dimensions);
 
 		List<String> n1 = t.evalToCode(config, machine).get(0).getExpression();
@@ -122,7 +122,7 @@ public class ArrayAccess extends AbstractFunction {
 	public boolean isDeterministic() {
 		return false;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 

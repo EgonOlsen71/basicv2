@@ -36,10 +36,10 @@ public class Int extends AbstractFunction {
 		if (term.getType().equals(Type.STRING)) {
 			typeMismatch(term.getType());
 		}
-		Number num=(Number) term.eval(machine);
-		int val= VarUtils.getInt(num);
-		if (num.floatValue()<0 && num.floatValue()!=val) {
-			val-=1;
+		Number num = (Number) term.eval(machine);
+		int val = VarUtils.getInt(num);
+		if (num.floatValue() < 0 && num.floatValue() != val) {
+			val -= 1;
 		}
 		return val;
 	}

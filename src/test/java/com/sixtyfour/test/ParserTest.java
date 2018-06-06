@@ -105,7 +105,7 @@ public class ParserTest {
 		System.out.println(res);
 		System.out.println("Value: " + res.eval(machine));
 	}
-	
+
 	private static void testAnd2() {
 		System.out.println("testAnd2");
 		Machine machine = new Machine();
@@ -113,7 +113,7 @@ public class ParserTest {
 		machine.add(new Variable("B", 3));
 		String term = "(aand255-bor255+2*b)";
 		String wbres = TermEnhancer.addBrackets(term);
-		System.out.println("Added brackets: "+wbres);
+		System.out.println("Added brackets: " + wbres);
 
 		Term res = Parser.getTerm(config, term, machine, false, true);
 		System.out.println(res);

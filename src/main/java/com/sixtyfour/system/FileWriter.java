@@ -52,9 +52,17 @@ public class FileWriter {
 			}
 		}
 		try {
+			List<ProgramPart> parts = new ArrayList<>(prg.getParts());
+			Collections.sort(parts);
+
 			bos = new BufferedOutputStream(os);
-			bos.write(codeStart % 256);
-			bos.write(codeStart >> 8);
+			if (!withBasicHeader) {
+				bos.write(parts.get(0).getAddress() % 256);
+				bos.write(parts.get(0).getAddress() >> 8);
+			} else {
+				bos.write(codeStart % 256);
+				bos.write(codeStart >> 8);
+			}
 			if (header != null) {
 				for (int b : header) {
 					bos.write(b);
@@ -62,9 +70,6 @@ public class FileWriter {
 			}
 			int lastEnd = -1;
 			int cnt = 0;
-
-			List<ProgramPart> parts = new ArrayList<>(prg.getParts());
-			Collections.sort(parts);
 
 			for (ProgramPart part : parts) {
 				int start = part.getAddress();

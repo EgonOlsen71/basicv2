@@ -25,7 +25,7 @@ public class Verify extends FileOperation {
 	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
 		return super.evalToCode(config, machine, "VERIFY");
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
