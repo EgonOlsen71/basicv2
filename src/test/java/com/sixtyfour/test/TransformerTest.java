@@ -85,10 +85,18 @@ public class TransformerTest {
 		// testOpen();
 		// testCmd();
 		// testTab();
-		testArrays();
+		//testArrays();
 		// testLoad();
+		 testFn2();
 	}
 
+	private static void testFn2() throws Exception {
+		System.out.println("\n\ntestLoad");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/testfn2.bas");
+		Assembler assy = initTestEnvironment(vary, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++testfn2.prg", true);
+	}
+	
 	private static void testLoad() throws Exception {
 		System.out.println("\n\ntestLoad");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/testload.bas");
