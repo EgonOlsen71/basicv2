@@ -1,5 +1,7 @@
 package com.sixtyfour.config;
 
+import com.sixtyfour.cbmnative.ProgressListener;
+
 /**
  * Contains the configuration for the compiler. Some (most) of these options
  * apply to the native compiler only.
@@ -18,6 +20,7 @@ public class CompilerConfig {
 	private boolean deadStoreEliminationOfStrings = true;
 	private boolean optimizeConstants = true;
 	private LoopMode loopMode = LoopMode.EXECUTE;
+	private ProgressListener progressListener;
 
 	private int compactThreshold = 0;
 
@@ -122,6 +125,14 @@ public class CompilerConfig {
 	 */
 	public void setOptimizeConstants(boolean optimizeConstants) {
 		this.optimizeConstants = optimizeConstants;
+	}
+
+	public ProgressListener getProgressListener() {
+		return progressListener;
+	}
+
+	public void setProgressListener(ProgressListener progressListener) {
+		this.progressListener = progressListener;
 	}
 
 }

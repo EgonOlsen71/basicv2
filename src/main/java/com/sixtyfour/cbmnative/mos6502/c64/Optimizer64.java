@@ -12,6 +12,7 @@ import com.sixtyfour.Logger;
 import com.sixtyfour.cbmnative.Optimizer;
 import com.sixtyfour.cbmnative.Pattern;
 import com.sixtyfour.cbmnative.PlatformProvider;
+import com.sixtyfour.cbmnative.ProgressListener;
 
 /**
  * @author EgonOlsen
@@ -148,6 +149,11 @@ public class Optimizer64 implements Optimizer {
 
 	@Override
 	public List<String> optimize(PlatformProvider platform, List<String> input) {
+		return optimize(platform, input, null);
+	}
+
+	@Override
+	public List<String> optimize(PlatformProvider platform, List<String> input, ProgressListener pg) {
 		// if (true) return input;
 		Logger.log("Optimizing native assembly code...");
 		long s = System.currentTimeMillis();
@@ -180,8 +186,14 @@ public class Optimizer64 implements Optimizer {
 			Logger.log("WARNING: Unable to determine code start or end: " + codeStart + "/" + codeEnd + "/" + input.size());
 		}
 
+		if (pg!=null) {
+			pg.start();
+		}
 		do {
 			optimized = false;
+			if (pg != null) {
+				pg.nextStep();
+			}
 
 			int start = 0;
 			int lastPattern2 = lastPattern;
@@ -243,6 +255,10 @@ public class Optimizer64 implements Optimizer {
 			}
 		} while (optimized);
 
+		if (pg!=null) {
+			pg.done();
+		}
+		
 		for (Map.Entry<String, Integer> cnts : type2count.entrySet()) {
 			Logger.log("Optimization " + cnts.getKey() + " applied " + cnts.getValue() + " times!");
 		}

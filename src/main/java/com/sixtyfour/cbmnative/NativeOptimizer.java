@@ -67,21 +67,30 @@ public class NativeOptimizer {
 		patterns.add(new NativePattern(new String[] { "MOV Y,#*", "PUSH Y", "NOP", "MOV Y,#*", "PUSH Y", "NOP" }, new String[] { "{0}", "{1}", "{3}", "{4}" }));
 	}
 
-	public static List<String> optimizeNative(CompilerConfig config, List<String> code) {
+	public static List<String> optimizeNative(CompilerConfig config, List<String> code, ProgressListener pg) {
 		if (config.isIntermediateLanguageOptimizations()) {
 			Logger.log("Running intermediate code optimizer...");
-			code = optimizeNativeInternal(config, code);
+			code = optimizeNativeInternal(config, code, pg);
 		}
 		return code;
 	}
 
-	static List<String> optimizeNativeInternal(CompilerConfig config, List<String> code) {
+	static List<String> optimizeNativeInternal(CompilerConfig config, List<String> code, ProgressListener pg) {
 		if (config.isIntermediateLanguageOptimizations()) {
 			int oldCode = 0;
+			if (pg != null) {
+				pg.start();
+			}
 			do {
+				if (pg != null) {
+					pg.nextStep();
+				}
 				oldCode = code.size();
 				code = applyPatterns(code);
 			} while (oldCode != code.size());
+			if (pg != null) {
+				pg.done();
+			}
 		}
 		return code;
 	}

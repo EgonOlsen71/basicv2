@@ -125,7 +125,7 @@ public class NativeCompiler {
 
 		List<String> nCode = tf.transform(basic.getMachine(), platform, mCode);
 		if (platform.getOptimizer() != null && conf.isNativeLanguageOptimizations()) {
-			nCode = platform.getOptimizer().optimize(platform, nCode);
+			nCode = platform.getOptimizer().optimize(platform, nCode, conf.getProgressListener());
 		}
 		if (platform.getUnlinker() != null && conf.isOptimizedLinker()) {
 			nCode = platform.getUnlinker().unlink(nCode);
@@ -726,11 +726,11 @@ public class NativeCompiler {
 	}
 
 	private List<String> optimize(CompilerConfig config, List<String> code) {
-		return NativeOptimizer.optimizeNative(config, code);
+		return NativeOptimizer.optimizeNative(config, code, config.getProgressListener());
 	}
 
 	private List<String> optimizeInternal(CompilerConfig config, List<String> code) {
-		return NativeOptimizer.optimizeNativeInternal(config, code);
+		return NativeOptimizer.optimizeNativeInternal(config, code, null);
 	}
 
 	private String getLastMoveTarget(List<String> code, int offset) {

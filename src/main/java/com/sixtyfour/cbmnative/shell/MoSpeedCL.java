@@ -13,6 +13,7 @@ import com.sixtyfour.Basic;
 import com.sixtyfour.Loader;
 import com.sixtyfour.cbmnative.NativeCompiler;
 import com.sixtyfour.cbmnative.PlatformProvider;
+import com.sixtyfour.cbmnative.ProgressListener;
 import com.sixtyfour.cbmnative.mos6502.c64.Platform64;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.config.LoopMode;
@@ -79,6 +80,8 @@ public class MoSpeedCL {
 		cfg.setOptimizeConstants(getOption("constopt", cmds));
 		cfg.setOptimizedLinker(getOption("smartlinker", cmds));
 		cfg.setLoopMode(getOption("loopopt", cmds) ? LoopMode.REMOVE : LoopMode.EXECUTE);
+		
+		cfg.setProgressListener(new DotPrintingProgressListener());
 
 		if (cmds.containsKey("compactlevel")) {
 			try {
@@ -130,17 +133,22 @@ public class MoSpeedCL {
 		try {
 			basic.compile(cfg);
 		} catch (Exception e) {
-			System.out.println("Error compiling BASIC program: " + e.getMessage());
+			System.out.println("\n!!! Error compiling BASIC program: " + e.getMessage());
 			exit(10);
 		}
+		List<String> nCode = null;
 
-		if (genSrc) {
-			List<String> mCode = NativeCompiler.getCompiler().compileToPseudeCode(cfg, basic);
-			write(mCode, ilTarget);
+		try {
+			if (genSrc) {
+				List<String> mCode = NativeCompiler.getCompiler().compileToPseudeCode(cfg, basic);
+				write(mCode, ilTarget);
+			}
+
+			nCode = NativeCompiler.getCompiler().compile(cfg, basic, memConfig, platform);
+		} catch (Exception e) {
+			System.out.println("\n!!! Error compiling: " + e.getMessage());
+			exit(15);
 		}
-
-		List<String> nCode = NativeCompiler.getCompiler().compile(cfg, basic, memConfig, platform);
-
 		if (genSrc) {
 			write(nCode, nlTarget);
 		}
@@ -274,4 +282,23 @@ public class MoSpeedCL {
 		System.out.println();
 	}
 
+	private static class DotPrintingProgressListener implements ProgressListener {
+
+		@Override
+		public void nextStep() {
+			System.out.print("*");
+		}
+
+		@Override
+		public void start() {
+			//
+		}
+
+		@Override
+		public void done() {
+			System.out.println();
+		}
+		
+	}
+	
 }
