@@ -142,7 +142,7 @@ public class Def extends AbstractCommand {
 		before.add("JMP END" + label);
 		before.add(label + ":");
 		before.add("POP X");
-		before.add("MOV " + varName + "{" + term.getType() + "},X");
+		before.add("MOV " + varName + "{REAL},X");
 
 		CodeContainer cc = new CodeContainer(before, expr, after);
 		List<CodeContainer> ccs = new ArrayList<CodeContainer>();
