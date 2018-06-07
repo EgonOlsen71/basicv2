@@ -18,6 +18,7 @@ import com.sixtyfour.cbmnative.mos6502.c64.Platform64;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.config.LoopMode;
 import com.sixtyfour.config.MemoryConfig;
+import com.sixtyfour.parser.Preprocessor;
 import com.sixtyfour.system.FileWriter;
 
 /**
@@ -80,7 +81,7 @@ public class MoSpeedCL {
 		cfg.setOptimizeConstants(getOption("constopt", cmds));
 		cfg.setOptimizedLinker(getOption("smartlinker", cmds));
 		cfg.setLoopMode(getOption("loopopt", cmds) ? LoopMode.REMOVE : LoopMode.EXECUTE);
-		
+
 		cfg.setProgressListener(new DotPrintingProgressListener());
 
 		if (cmds.containsKey("compactlevel")) {
@@ -128,6 +129,16 @@ public class MoSpeedCL {
 
 		System.out.println("Compiling " + srcFile + "...");
 		String[] src = loadSource(srcFile);
+		for (String line : src) {
+			if (!line.trim().isEmpty()) {
+				char c = line.charAt(0);
+				if (!Character.isDigit(c)) {
+					System.out.println("Code seems to use labels, not lines...converting it!");
+					src = Preprocessor.convertToLineNumbers(src);
+				}
+				break;
+			}
+		}
 
 		Basic basic = new Basic(src);
 		try {
@@ -298,7 +309,7 @@ public class MoSpeedCL {
 		public void done() {
 			System.out.println();
 		}
-		
+
 	}
-	
+
 }
