@@ -8,7 +8,7 @@ It doesn't use any parts of the implementation of the original Commodore BASIC l
 It's a complete reimplementation in Java.
 
 It's basically two solutions in one. You can either compile the BASIC programs so that you can run them inside a Java environment/application using the runtime that the project provides.
-Or you can use the native cross compiler to compile it for the real C64 and run it on the actual machine or in an emulator. You'll find this compiler called MoSpeed as command line application in the dist-directory of the project. It can be run on its own, you don't have to download/clone the whole project for this. It comes in two flavours, a jar-file with a batch script to start it and a Windows-executable (created using jsmooth) in the windows-directory.
+Or you can use the native cross compiler to compile it for the real C64 and run it on the actual machine or in an emulator. You'll find this compiler called MoSpeed as a command line application in the dist-directory of the project. It can be run on its own, you don't have to download/clone the whole project for this. It comes in two flavours, a jar-file with a batch script to start it and a Windows-executable (created using jsmooth) in the windows-directory.
 
 In addition, it offers a symbolic assembler that compiles assembler code into actual 6502 machine code. To execute these programs, it comes with a 6502 cpu emulation.
 
