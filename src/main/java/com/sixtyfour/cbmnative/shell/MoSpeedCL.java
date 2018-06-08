@@ -80,6 +80,7 @@ public class MoSpeedCL {
 		cfg.setNativeLanguageOptimizations(getOption("nlangopt", cmds));
 		cfg.setOptimizeConstants(getOption("constopt", cmds));
 		cfg.setOptimizedLinker(getOption("smartlinker", cmds));
+		cfg.setFloatOptimizations(getOption("floatopt", cmds));
 		cfg.setLoopMode(getOption("loopopt", cmds) ? LoopMode.REMOVE : LoopMode.EXECUTE);
 
 		cfg.setProgressListener(new DotPrintingProgressListener());
@@ -283,6 +284,7 @@ public class MoSpeedCL {
 		System.out.println("/deadstoreopt=true|false - enables/disables dead store elimination for numbers");
 		System.out.println("/deadstoreoptstr=true|false - enables/disables dead store elimination for strings");
 		System.out.println("/loopopt=true|false - enables/disables the removal of empty loops");
+		System.out.println("/floatopt=true|false - enables/disables some floating point optimizations, which might impact accuracy");
 		System.out.println("/compactlevel=[3...] - sets the compactor level. The lower the level, the more compact (but slower) the code. 0 means off!");
 		System.out.println("/progstart=xxxxx|$yyyy - sets the start address for the compiled program. Below 2100, a BASIC header will be added automatically.");
 		System.out.println("/varstart=xxxxx|$yyyy - the start address for variables. If none is given, they will be located right after the runtime code.");
