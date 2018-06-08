@@ -1796,7 +1796,9 @@ GOSUB		LDA FORSTACKP
 			STA FORSTACKP+1
 			RTS
 ;###################################
-GETNUMBER	LDY #0
+GETNUMBER	LDA #0
+			STA CONCATBUFP	; Reset the work buffer
+			LDY #0
 			STY CMD_NUM			; Reset CMD target
 			JSR GETIN
 			BEQ IGNOREKEY
@@ -2016,7 +2018,9 @@ CIEND		LDA #0
 			RTS					; ...and exit
 					
 ;###################################
-INPUTSTR	LDA #$0
+INPUTSTR	LDA #0
+			STA CONCATBUFP	; Reset the work buffer
+			LDA #$0
 INPUTSTR2	STA TMP_REG+1
 			LDA #$0
 			STA TMP_REG
@@ -2096,7 +2100,9 @@ INISSTR		LDA #<A_REG
 			STA CONCATBUFP	; and restore it (because COPYONLY nulls it)
 			RTS
 ;###################################
-INPUTNUMBER	LDA #$1
+INPUTNUMBER	LDA #0
+			STA CONCATBUFP	; Reset the work buffer
+			LDA #$1
 			JSR INPUTSTR2
 			LDA TMP_ZP
 			STA $22
@@ -2185,7 +2191,9 @@ NUMOK		LDA TMP_REG
 			JMP FACMEM		; ...and return
 
 ;###################################
-GETSTR		LDY #0
+GETSTR		LDA #0
+			STA CONCATBUFP	; Reset the work buffer
+			LDY #0
 			STY CMD_NUM		; Reset CMD target
 			JSR GETIN
 			BNE SOMEKEY
