@@ -105,11 +105,11 @@ public class ConstantPropagator {
 			double val = 0;
 			if (right.isConstant() && (val = ((Number) right.eval(machine)).doubleValue()) < thresHold && val > -thresHold) {
 				if (val != (int) val || !POWERS_OF_TWO.contains((int) val)) {
-				    	if (config.isFloatOptimizations()) {
-        					t.setOperator(new Operator('*'));
-        					right = new Constant<Float>((float) (1d / val));
-        					t.setRight(right);
-				    	} 
+					if (config.isFloatOptimizations()) {
+						t.setOperator(new Operator('*'));
+						right = new Constant<Float>((float) (1d / val));
+						t.setRight(right);
+					}
 				} else {
 					if (POWERS_OF_TWO.contains((int) val)) {
 						right = new Constant<Integer>((int) val);

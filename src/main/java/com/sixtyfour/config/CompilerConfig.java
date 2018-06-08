@@ -11,137 +11,137 @@ import com.sixtyfour.cbmnative.ProgressListener;
  */
 public class CompilerConfig {
 
-    private boolean constantPropagation = true;
-    private boolean constantFolding = true;
-    private boolean intermediateLanguageOptimizations = true;
-    private boolean nativeLanguageOptimizations = true;
-    private boolean optimizedLinker = true;
-    private boolean deadStoreElimination = true;
-    private boolean deadStoreEliminationOfStrings = true;
-    private boolean optimizeConstants = true;
-    private boolean floatOptimizations = true;
-    private LoopMode loopMode = LoopMode.EXECUTE;
-    private ProgressListener progressListener;
+	private boolean constantPropagation = true;
+	private boolean constantFolding = true;
+	private boolean intermediateLanguageOptimizations = true;
+	private boolean nativeLanguageOptimizations = true;
+	private boolean optimizedLinker = true;
+	private boolean deadStoreElimination = true;
+	private boolean deadStoreEliminationOfStrings = true;
+	private boolean optimizeConstants = true;
+	private boolean floatOptimizations = true;
+	private LoopMode loopMode = LoopMode.EXECUTE;
+	private ProgressListener progressListener;
 
-    private int compactThreshold = 0;
+	private int compactThreshold = 0;
 
-    public CompilerConfig() {
-	//
-    }
+	public CompilerConfig() {
+		//
+	}
 
-    public boolean isConstantPropagation() {
-	return constantPropagation;
-    }
+	public boolean isConstantPropagation() {
+		return constantPropagation;
+	}
 
-    public void setConstantPropagation(boolean constantPropagation) {
-	this.constantPropagation = constantPropagation;
-    }
+	public void setConstantPropagation(boolean constantPropagation) {
+		this.constantPropagation = constantPropagation;
+	}
 
-    public boolean isConstantFolding() {
-	return constantFolding;
-    }
+	public boolean isConstantFolding() {
+		return constantFolding;
+	}
 
-    public void setConstantFolding(boolean constantFolding) {
-	this.constantFolding = constantFolding;
-    }
+	public void setConstantFolding(boolean constantFolding) {
+		this.constantFolding = constantFolding;
+	}
 
-    public boolean isIntermediateLanguageOptimizations() {
-	return intermediateLanguageOptimizations;
-    }
+	public boolean isIntermediateLanguageOptimizations() {
+		return intermediateLanguageOptimizations;
+	}
 
-    public void setIntermediateLanguageOptimizations(boolean intermediateLanguageOptimizations) {
-	this.intermediateLanguageOptimizations = intermediateLanguageOptimizations;
-    }
+	public void setIntermediateLanguageOptimizations(boolean intermediateLanguageOptimizations) {
+		this.intermediateLanguageOptimizations = intermediateLanguageOptimizations;
+	}
 
-    public boolean isNativeLanguageOptimizations() {
-	return nativeLanguageOptimizations;
-    }
+	public boolean isNativeLanguageOptimizations() {
+		return nativeLanguageOptimizations;
+	}
 
-    public void setNativeLanguageOptimizations(boolean nativeLanguageOptimizations) {
-	this.nativeLanguageOptimizations = nativeLanguageOptimizations;
-    }
+	public void setNativeLanguageOptimizations(boolean nativeLanguageOptimizations) {
+		this.nativeLanguageOptimizations = nativeLanguageOptimizations;
+	}
 
-    public boolean isOptimizedLinker() {
-	return optimizedLinker;
-    }
+	public boolean isOptimizedLinker() {
+		return optimizedLinker;
+	}
 
-    public void setOptimizedLinker(boolean optimizedLinker) {
-	this.optimizedLinker = optimizedLinker;
-    }
+	public void setOptimizedLinker(boolean optimizedLinker) {
+		this.optimizedLinker = optimizedLinker;
+	}
 
-    public boolean isDeadStoreElimination() {
-	return deadStoreElimination;
-    }
+	public boolean isDeadStoreElimination() {
+		return deadStoreElimination;
+	}
 
-    public void setDeadStoreElimination(boolean deadStoreElimination) {
-	this.deadStoreElimination = deadStoreElimination;
-    }
+	public void setDeadStoreElimination(boolean deadStoreElimination) {
+		this.deadStoreElimination = deadStoreElimination;
+	}
 
-    public int getCompactThreshold() {
-	return compactThreshold;
-    }
+	public int getCompactThreshold() {
+		return compactThreshold;
+	}
 
-    public void setCompactThreshold(int compactThreshold) {
-	this.compactThreshold = compactThreshold;
-    }
+	public void setCompactThreshold(int compactThreshold) {
+		this.compactThreshold = compactThreshold;
+	}
 
-    public boolean isDeadStoreEliminationOfStrings() {
-	return deadStoreEliminationOfStrings;
-    }
+	public boolean isDeadStoreEliminationOfStrings() {
+		return deadStoreEliminationOfStrings;
+	}
 
-    public void setDeadStoreEliminationOfStrings(boolean deadStoreEliminationOfStrings) {
-	this.deadStoreEliminationOfStrings = deadStoreEliminationOfStrings;
-    }
+	public void setDeadStoreEliminationOfStrings(boolean deadStoreEliminationOfStrings) {
+		this.deadStoreEliminationOfStrings = deadStoreEliminationOfStrings;
+	}
 
-    /**
-     * Returns the current loop mode that will be used when compiling the
-     * program.
-     * 
-     * @return the loop mode
-     */
-    public LoopMode getLoopMode() {
-	return loopMode;
-    }
+	/**
+	 * Returns the current loop mode that will be used when compiling the
+	 * program.
+	 * 
+	 * @return the loop mode
+	 */
+	public LoopMode getLoopMode() {
+		return loopMode;
+	}
 
-    /**
-     * Sets the loop mode. This has to be set before compiling/running a program
-     * to have an effect.
-     * 
-     * @param loopMode
-     *            the loop mode, EXECUTE is default
-     */
-    public void setLoopMode(LoopMode loopMode) {
-	this.loopMode = loopMode;
-    }
+	/**
+	 * Sets the loop mode. This has to be set before compiling/running a program
+	 * to have an effect.
+	 * 
+	 * @param loopMode
+	 *            the loop mode, EXECUTE is default
+	 */
+	public void setLoopMode(LoopMode loopMode) {
+		this.loopMode = loopMode;
+	}
 
-    /**
-     * @return
-     */
-    public boolean isOptimizeConstants() {
-	return optimizeConstants;
-    }
+	/**
+	 * @return
+	 */
+	public boolean isOptimizeConstants() {
+		return optimizeConstants;
+	}
 
-    /**
-     * @param optimizeConstants
-     */
-    public void setOptimizeConstants(boolean optimizeConstants) {
-	this.optimizeConstants = optimizeConstants;
-    }
+	/**
+	 * @param optimizeConstants
+	 */
+	public void setOptimizeConstants(boolean optimizeConstants) {
+		this.optimizeConstants = optimizeConstants;
+	}
 
-    public ProgressListener getProgressListener() {
-	return progressListener;
-    }
+	public ProgressListener getProgressListener() {
+		return progressListener;
+	}
 
-    public void setProgressListener(ProgressListener progressListener) {
-	this.progressListener = progressListener;
-    }
+	public void setProgressListener(ProgressListener progressListener) {
+		this.progressListener = progressListener;
+	}
 
-    public boolean isFloatOptimizations() {
-	return floatOptimizations;
-    }
+	public boolean isFloatOptimizations() {
+		return floatOptimizations;
+	}
 
-    public void setFloatOptimizations(boolean floatOptimizations) {
-	this.floatOptimizations = floatOptimizations;
-    }
+	public void setFloatOptimizations(boolean floatOptimizations) {
+		this.floatOptimizations = floatOptimizations;
+	}
 
 }

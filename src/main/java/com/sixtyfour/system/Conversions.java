@@ -9,10 +9,10 @@ package com.sixtyfour.system;
  * 
  */
 public class Conversions {
-	
-    private static final double ACC_CORRECTOR=0.00000000001d;
-    
-    /**
+
+	private static final double ACC_CORRECTOR = 0.00000000001d;
+
+	/**
 	 * Compacts a C64 float from extended 6 byte representation to condensed 5
 	 * byte representation.
 	 * 
@@ -78,7 +78,7 @@ public class Conversions {
 
 		double a = 1d;
 		for (int i = 0; i < 126; i++) {
-			a = a*2d;
+			a = a * 2d;
 		}
 
 		beit = 0;
@@ -86,7 +86,7 @@ public class Conversions {
 		count = 0;
 
 		for (int i = 126; i >= -128 && beit < 4; i--) {
-			if (num+ACC_CORRECTOR >= a) {
+			if (num + ACC_CORRECTOR >= a) {
 				bit = 1;
 				if (flag == 0) {
 					ei = i;
@@ -105,7 +105,7 @@ public class Conversions {
 				}
 				num = num - a * bit;
 			}
-			a = a/2d;
+			a = a / 2d;
 		}
 
 		mem[0] -= 128;

@@ -97,12 +97,12 @@ public class Compactor {
 
 	public List<String> compact(CompilerConfig conf, List<String> input) {
 		Logger.log("Compacting code...");
-		ProgressListener pl=null;
-		if (conf!=null) {
-		    pl=conf.getProgressListener();
+		ProgressListener pl = null;
+		if (conf != null) {
+			pl = conf.getProgressListener();
 		}
-		if (pl!=null) {
-		    pl.start();
+		if (pl != null) {
+			pl.start();
 		}
 		strip(input);
 
@@ -123,8 +123,8 @@ public class Compactor {
 		Set<Integer> replaced = new HashSet<>();
 
 		for (int i = 0; i < input.size(); i++) {
-		    if (pl!=null && i%300==0) {
-			    pl.nextStep();
+			if (pl != null && i % 300 == 0) {
+				pl.nextStep();
 			}
 			String line = input.get(i).trim();
 			if (line.startsWith(";##END_COMPACT")) {
@@ -248,8 +248,8 @@ public class Compactor {
 		}
 
 		strip(input);
-		if (pl!=null) {
-		    pl.done();
+		if (pl != null) {
+			pl.done();
 		}
 		Logger.log("Compactor executed with results:");
 		Logger.log("Old size: " + oldSize);
