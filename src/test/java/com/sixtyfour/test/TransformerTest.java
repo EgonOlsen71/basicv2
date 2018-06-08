@@ -44,7 +44,7 @@ public class TransformerTest {
 		// testTransformer2();
 		// testTransformer4();
 		// testTransformer5();
-		// testTransformerFractal();
+		 testTransformerFractal();
 		// testTransformer6();
 		// testTransformer7();
 		// testTransformerPrime();
@@ -63,10 +63,10 @@ public class TransformerTest {
 		// testTransformer17();
 		// testTransformer18();
 		// testTransformer20();
-		 testTransformer22();
+		// testTransformer22();
 		// testTransformer23();
 		// testTransformerFrog();
-		// testTransformerAffine();
+		 testTransformerAffine();
 		// testTransformer24();
 		// testTransformer25();
 		// testTransformer26();
@@ -82,12 +82,20 @@ public class TransformerTest {
 		// testBbDemo();
 		// testOpenPrint();
 		// testScroll();
-		 testOpen();
+		// testOpen();
 		// testCmd();
 		// testTab();
 		//testArrays();
 		// testLoad();
-		 testFn2();
+		// testFn2();
+	    	testTwoFor();
+	}
+	
+	private static void testTwoFor() throws Exception {
+		System.out.println("\n\ntestTwoFor");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/twofor.bas");
+		Assembler assy = initTestEnvironment(vary, false);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++twofor.prg", true);
 	}
 
 	private static void testFn2() throws Exception {
