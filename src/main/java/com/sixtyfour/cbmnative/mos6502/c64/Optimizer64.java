@@ -349,6 +349,7 @@ public class Optimizer64 implements Optimizer {
 
 	private List<String> trackAndModifyRegisterUsage(List<String> code) {
 		Map<String, Integer[]> regState = new HashMap<>();
+		Set<Integer> swaps=new HashSet<>();
 		String lastReg = "";
 		for (int i = 0; i < code.size(); i++) {
 			String line = code.get(i);
@@ -385,17 +386,20 @@ public class Optimizer64 implements Optimizer {
 							if (state[0] < 2) {
 								regState.put(lastReg, new Integer[] { 2, state[1] });
 							} else {
-								// The value from the register is read without
-								// being written before again...don't optimize
-								// the initial setter away...
-								// ...so we swap the order of that setter to
-								// prevent this.
-								String l1 = code.get(state[1]);
-								String l0 = code.get(state[1] - 1);
-								code.set(state[1] - 1, l1);
-								code.set(state[1], l0);
-
-								Logger.log("Swapped: " + l0 + "/" + l1 + "@" + state[1]);
+								if (!swaps.contains(state[1])) {
+        							    	// The value from the register is read without
+        								// being written before again...don't optimize
+        								// the initial setter away...
+        								// ...so we swap the order of that setter to
+        								// prevent this.
+        								String l1 = code.get(state[1]);
+        								String l0 = code.get(state[1] - 1);
+        								code.set(state[1] - 1, l1);
+        								code.set(state[1], l0);
+        
+        								Logger.log("Swapped: " + l0 + "/" + l1 + "@" + state[1]);
+        								swaps.add(state[1]);
+								}
 							}
 						} else {
 							lastReg = "";
