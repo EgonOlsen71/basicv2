@@ -136,7 +136,7 @@ public class NativeCompiler {
 		}
 
 		if (conf.getCompactThreshold() > 1) {
-			nCode = new Compactor(conf.getCompactThreshold()).compact(nCode);
+			nCode = new Compactor(conf.getCompactThreshold()).compact(conf, nCode);
 		}
 		return nCode;
 	}

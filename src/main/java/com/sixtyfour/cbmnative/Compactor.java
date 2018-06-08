@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.sixtyfour.Logger;
+import com.sixtyfour.config.CompilerConfig;
 
 public class Compactor {
 
@@ -94,8 +95,15 @@ public class Compactor {
 		return input;
 	}
 
-	public List<String> compact(List<String> input) {
+	public List<String> compact(CompilerConfig conf, List<String> input) {
 		Logger.log("Compacting code...");
+		ProgressListener pl=null;
+		if (conf!=null) {
+		    pl=conf.getProgressListener();
+		}
+		if (pl!=null) {
+		    pl.start();
+		}
 		strip(input);
 
 		// for (String line : input) { System.out.println(line); }
@@ -115,6 +123,9 @@ public class Compactor {
 		Set<Integer> replaced = new HashSet<>();
 
 		for (int i = 0; i < input.size(); i++) {
+		    if (pl!=null && i%300==0) {
+			    pl.nextStep();
+			}
 			String line = input.get(i).trim();
 			if (line.startsWith(";##END_COMPACT")) {
 				break;
@@ -237,6 +248,9 @@ public class Compactor {
 		}
 
 		strip(input);
+		if (pl!=null) {
+		    pl.done();
+		}
 		Logger.log("Compactor executed with results:");
 		Logger.log("Old size: " + oldSize);
 		Logger.log("New size: " + input.size());
