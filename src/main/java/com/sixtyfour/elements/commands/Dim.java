@@ -154,7 +154,7 @@ public class Dim extends AbstractCommand {
 	}
 
 	private void redimed(Variable var) {
-		throw new RuntimeException("Redim'd array error: " + var.getName() + "/" + this);
+		throw new RuntimeException("Redim'd array error @ line "+this.lineNumber+": " + var.getName() + "/" + this);
 	}
 
 	@Override
@@ -168,7 +168,7 @@ public class Dim extends AbstractCommand {
 			List<Atom> pars = terms.get(var.getName());
 			for (Atom par : pars) {
 				if (((Number) par.eval(machine)).intValue() == 0) {
-					throw new RuntimeException("Arrays have to be defined static and can't have a zero size!");
+					throw new RuntimeException("Arrays have to be defined static and can't have a zero size @ line " + this.lineNumber);
 				}
 			}
 		}
