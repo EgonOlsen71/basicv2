@@ -2953,7 +2953,8 @@ LOADINT		LDA #<X_REG
 			JMP FILENOTFOUND
 LOADOK		RTS
 ;###################################
-OPEN		LDA #<Y_REG
+OPEN		JSR SETEMPTYSTR	; Prepare with an empty string
+			LDA #<Y_REG
 			LDY #>Y_REG
 			JSR REALFAC
 			JSR FACWORD
@@ -2986,6 +2987,18 @@ OPEN		LDA #<Y_REG
 			JSR SETNAMEPRT
 
 ALLPARAMS	JMP OPENCH
+;###################################
+SETEMPTYSTR
+			LDA #<EMPTYSTR
+			STA $BB
+			LDA #>EMPTYSTR
+			STA $BC
+			LDA #0
+			STA $B7
+			STA $B8
+			STA $BA
+			STA $B9
+			RTS
 ;###################################
 SETNAMEPRT	LDA G_REG
 			LDY G_REG+1

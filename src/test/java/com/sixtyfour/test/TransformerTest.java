@@ -82,13 +82,13 @@ public class TransformerTest {
 		// testBbDemo();
 		// testOpenPrint();
 		// testScroll();
-		// testOpen();
+		 testOpen();
 		// testCmd();
 		// testTab();
 		// testArrays();
 		// testLoad();
 		// testFn2();
-		testTwoFor();
+		//testTwoFor();
 	}
 
 	private static void testTwoFor() throws Exception {
