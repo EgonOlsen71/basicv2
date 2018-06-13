@@ -89,14 +89,14 @@ public class TransformerTest {
 		// testLoad();
 		// testFn2();
 		//testTwoFor();
-		testHypraComp();
+		testBrackets();
 	}
 
-	private static void testHypraComp() throws Exception {
-		System.out.println("\n\ntestHypraComp");
-		String[] vary = Loader.loadProgram("src/test/resources/transform/hypracomp.bas");
+	private static void testBrackets() throws Exception {
+		System.out.println("\n\ntestBrackets");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/testbrackets.bas");
 		Assembler assy = initTestEnvironment(vary, false);
-		FileWriter.writeAsPrg(assy.getProgram(), path + "++hypracomp.prg", true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++testbrackets.prg", true);
 	}
 
 	
