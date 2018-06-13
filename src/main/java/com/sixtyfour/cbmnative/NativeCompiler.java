@@ -174,7 +174,6 @@ public class NativeCompiler {
 				cmd.evalToCode(config, machine);
 			}
 		}
-
 		List<String> mCode = new ArrayList<String>();
 		for (Integer lineNumber : pCode.getLineNumbers()) {
 			Line line = pCode.getLines().get(lineNumber);
@@ -200,7 +199,7 @@ public class NativeCompiler {
 				}
 			}
 		}
-
+		
 		int os = mCode.size();
 		mCode = optimize(config, mCode);
 
@@ -209,6 +208,10 @@ public class NativeCompiler {
 		if (!getLastEntry(mCode).equals("RTS")) {
 			mCode.add("JSR END");
 			mCode.add("RTS");
+		}
+		if (!mCode.get(0).equals("0:")) {
+			// Add an artifical LINE_0 if not present to deal with native jumps to 0 cause by ON X GOTO Y,,,Z
+			mCode.add(0, "0:");
 		}
 		mCode.add(0, "JSR START");
 		mCode.add(0, "PROGRAMSTART:");

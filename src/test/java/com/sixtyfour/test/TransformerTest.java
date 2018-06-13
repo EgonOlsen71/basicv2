@@ -82,15 +82,24 @@ public class TransformerTest {
 		// testBbDemo();
 		// testOpenPrint();
 		// testScroll();
-		 testOpen();
+		// testOpen();
 		// testCmd();
 		// testTab();
 		// testArrays();
 		// testLoad();
 		// testFn2();
 		//testTwoFor();
+		testHypraComp();
 	}
 
+	private static void testHypraComp() throws Exception {
+		System.out.println("\n\ntestHypraComp");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/hypracomp.bas");
+		Assembler assy = initTestEnvironment(vary, false);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++hypracomp.prg", true);
+	}
+
+	
 	private static void testTwoFor() throws Exception {
 		System.out.println("\n\ntestTwoFor");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/twofor.bas");
@@ -863,7 +872,7 @@ public class TransformerTest {
 		conf.setNativeLanguageOptimizations(opt);
 		conf.setOptimizedLinker(opt);
 		conf.setLoopMode(LoopMode.REMOVE);
-		// conf.setCompactThreshold(4);
+		//conf.setCompactThreshold(3);
 
 		final Basic basic = new Basic(vary);
 		basic.compile(conf);
