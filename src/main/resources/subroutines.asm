@@ -1352,6 +1352,42 @@ ARRAYACCESS_STRING_INT
 			STA A_REG+1
 			RTS
 ;###################################
+ARRAYACCESS_INTEGER_SI
+			STA G_REG
+			STY G_REG+1
+			LDA #<X_REG
+			LDY #>X_REG
+			JSR REALFAC
+			JSR FACINT
+ARRAYACCESS_INTEGER_INT_SI
+			LDX G_REG
+			STX TMP_ZP
+			LDX G_REG+1
+			STX TMP_ZP+1
+			TAX
+			TYA
+			ASL
+			STA TMP2_ZP
+			TXA
+			ROL
+			STA TMP2_ZP+1
+			LDA TMP_ZP
+			CLC
+			ADC TMP2_ZP
+			STA TMP_ZP
+			LDA TMP_ZP+1
+			ADC TMP2_ZP+1
+			STA TMP_ZP+1
+			LDY #1
+			LDA (TMP_ZP),Y
+			TAX
+			DEY
+			LDA (TMP_ZP),Y
+			TAY
+			TXA
+			RTS
+;###################################
+;###################################
 ARRAYACCESS_INTEGER_S
 			STA G_REG
 			STY G_REG+1
@@ -3024,6 +3060,65 @@ CLOSE		LDA #<X_REG
 			JSR FACWORD
 			TYA				; file number into A
 			JMP CLOSECH
+;###################################
+FINX		LDA #<REAL_CONST_ONE
+			LDY #>REAL_CONST_ONE
+			JSR REALFAC
+			LDA #<X_REG
+			LDY #>X_REG
+			JSR MEMARG
+			JSR ARGADD
+			LDX #<X_REG
+			LDY #>X_REG
+			JMP FACMEM
+;###################################
+FDEX		LDA #<REAL_CONST_ONE
+			LDY #>REAL_CONST_ONE
+			JSR REALFAC
+			LDA #<X_REG
+			LDY #>X_REG
+			JSR MEMARG
+			JSR FACSUB
+			LDX #<X_REG
+			LDY #>X_REG
+			JMP FACMEM
+;###################################
+FIDEX		CPY #0
+			BNE FIDEXNOV
+			SEC
+			SBC #$1
+FIDEXNOV	DEY
+			JSR INTFAC
+			LDX #<X_REG
+			LDY #>X_REG
+			JMP FACMEM
+;###################################
+FIINX		INY
+			BNE FIINXNOV
+			CLC
+			ADC #$1
+FIINXNOV	JSR INTFAC
+			LDX #<X_REG
+			LDY #>X_REG
+			JMP FACMEM
+;###################################
+SUPERFIINX	INY
+			BNE SFIINXNOV
+			CLC
+			ADC #$1
+			CMP #$80
+			BEQ ILLEGALQUANTITY
+SFIINXNOV	RTS
+;###################################
+SUPERFIDEX	CPY #0
+			BNE SUPERFIDEXNOV
+			SEC
+			SBC #$1
+			CMP #$7F
+			BEQ ILLEGALQUANTITY
+SUPERFIDEXNOV
+			DEY
+			RTS
 ;###################################
 NEXTWOFOR	LDX #$0A
 			JMP $A437

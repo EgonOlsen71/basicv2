@@ -20,6 +20,7 @@ public class CompilerConfig {
 	private boolean deadStoreEliminationOfStrings = true;
 	private boolean optimizeConstants = true;
 	private boolean floatOptimizations = true;
+	private boolean intOptimizations = true;
 	private LoopMode loopMode = LoopMode.EXECUTE;
 	private ProgressListener progressListener;
 
@@ -142,6 +143,14 @@ public class CompilerConfig {
 
 	public void setFloatOptimizations(boolean floatOptimizations) {
 		this.floatOptimizations = floatOptimizations;
+	}
+
+	public boolean isIntOptimizations() {
+		return intOptimizations;
+	}
+
+	public void setIntOptimizations(boolean intOptimizations) {
+		this.intOptimizations = intOptimizations;
 	}
 
 }

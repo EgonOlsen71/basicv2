@@ -44,7 +44,7 @@ public class TransformerTest {
 		// testTransformer2();
 		// testTransformer4();
 		// testTransformer5();
-		// testTransformerFractal();
+//		 testTransformerFractal();
 		// testTransformer6();
 		// testTransformer7();
 		// testTransformerPrime();
@@ -66,7 +66,7 @@ public class TransformerTest {
 		// testTransformer22();
 		// testTransformer23();
 		// testTransformerFrog();
-		// testTransformerAffine();
+//		 testTransformerAffine();
 		// testTransformer24();
 		// testTransformer25();
 		// testTransformer26();
@@ -90,6 +90,26 @@ public class TransformerTest {
 		// testFn2();
 		//testTwoFor();
 		testBrackets();
+		testQuicksort();
+		//testInx();
+	}
+	
+	private static void testQuicksort() throws Exception {
+		System.out.println("\n\ntestQuicksort");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/quicksort.bas");
+		Assembler assy = initTestEnvironment(vary, false);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++quicksort.prg", true);
+		JsrProfiler profiler = new JsrProfiler(assy);
+		 assy.getCpu().setCpuTracer(profiler);
+		 Machine machine = executeTest(assy);
+		 printStats(profiler, machine);
+	}
+	
+	private static void testInx() throws Exception {
+		System.out.println("\n\ntestInx");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/testinx.bas");
+		Assembler assy = initTestEnvironment(vary, false);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++testinx.prg", true);
 	}
 
 	private static void testBrackets() throws Exception {
@@ -871,6 +891,7 @@ public class TransformerTest {
 		conf.setIntermediateLanguageOptimizations(opt);
 		conf.setNativeLanguageOptimizations(opt);
 		conf.setOptimizedLinker(opt);
+		conf.setIntOptimizations(opt);
 		conf.setLoopMode(LoopMode.REMOVE);
 		//conf.setCompactThreshold(3);
 

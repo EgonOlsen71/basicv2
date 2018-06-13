@@ -86,7 +86,7 @@ public class NativeOptimizer {
 					pg.nextStep();
 				}
 				oldCode = code.size();
-				code = applyPatterns(code);
+				code = applyPatterns(config, code);
 			} while (oldCode != code.size());
 			if (pg != null) {
 				pg.done();
@@ -95,7 +95,7 @@ public class NativeOptimizer {
 		return code;
 	}
 
-	private static List<String> applyPatterns(List<String> code) {
+	private static List<String> applyPatterns(CompilerConfig config, List<String> code) {
 		List<String> ret = new ArrayList<String>();
 		String[] lines = new String[MAX_AHEAD];
 		String[][] splittedLines = new String[MAX_AHEAD][];
@@ -185,6 +185,35 @@ public class NativeOptimizer {
 				}
 
 				// Special optimizations without a pattern definition...
+
+				if (config.isIntOptimizations()) {
+					// Not doing these optimizations also disables the
+					// corresponding ones in the native optimizer, because it
+					// will then never encounter a JSR FXXX call...
+
+					// MOV Y,#1{INTEGER}
+					// MOV X,T%{INTEGER}
+					// ADD X,Y
+					// This is actually not that great in itself, but the native
+					// optimizer can build upon it...
+					if (lines[0].equals("MOV Y,#1{INTEGER}") && lines[1].startsWith("MOV X") && lines[1].endsWith("%{INTEGER}") && lines[2].equals("ADD X,Y")) {
+						ret.add(lines[1]);
+						ret.add("JSR FINX");
+						i += 2;
+						continue;
+					}
+
+					// MOV Y,#1{INTEGER}
+					// MOV X,R%{INTEGER}
+					// SUB X,Y
+					// ...this neither...
+					if (lines[0].equals("MOV Y,#1{INTEGER}") && lines[1].startsWith("MOV X") && lines[1].endsWith("%{INTEGER}") && lines[2].equals("SUB X,Y")) {
+						ret.add(lines[1]);
+						ret.add("JSR FDEX");
+						i += 2;
+						continue;
+					}
+				}
 
 				// MOV Y,#128{INTEGER}
 				// MOV X,U{REAL}
