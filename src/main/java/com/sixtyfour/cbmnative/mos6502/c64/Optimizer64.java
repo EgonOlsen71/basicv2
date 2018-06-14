@@ -153,6 +153,7 @@ public class Optimizer64 implements Optimizer {
 			this.add(new Pattern(false, "Fast INTEGER DEC",new String[]{"{LINE0}","{LINE1}","JSR FIDEX"},"LDY {MEM0}","LDA {MEM0}","JSR INTFAC","LDX #<X_REG","LDY #>X_REG","JSR FACMEM","JSR FDEX"));
 			this.add(new Pattern(false, "Even faster INTEGER INC", new String[]{"JSR SUPERFIINX"}, "JSR FIINX","LDA #<X_REG","LDY #>X_REG","JSR REALFAC","JSR FACINT"));
 			this.add(new Pattern(false, "Even faster INTEGER DEC", new String[]{"JSR SUPERFIDEX"}, "JSR FIDEX","LDA #<X_REG","LDY #>X_REG","JSR REALFAC","JSR FACINT"));
+			this.add(new Pattern(false, "Store and load", new String[]{"{LINE0}","{LINE1}","NOP"}, "STY {MEM0}","STA {MEM0}","NOP","LDY {MEM0}","LDA {MEM0}"));
 		}
 	};
 

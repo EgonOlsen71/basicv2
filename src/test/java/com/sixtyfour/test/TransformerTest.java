@@ -70,7 +70,7 @@ public class TransformerTest {
 		// testTransformer24();
 		// testTransformer25();
 		// testTransformer26();
-		// testHilbert();
+		 testHilbert();
 		// testLines();
 		// testTransformer27();
 		// testConditions();
