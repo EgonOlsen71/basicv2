@@ -42,7 +42,7 @@ public class NativeOptimizer {
 		patterns.add(new NativePattern(new String[] { "INT X,Y", "INT X,X" }, new String[] { "{0}" }));
 		patterns.add(new NativePattern(new String[] { "POP C", "PUSH C" }, new String[] {})); // The
 																								// #-method
-																								// introduce
+																								// introduced
 																								// this...we
 																								// can
 																								// handle
@@ -57,11 +57,7 @@ public class NativeOptimizer {
 																								// actual
 																								// creation.
 
-		// patterns.add(new NativePattern(new String[] { "MOV Y,*", "PUSH Y",
-		// "MOV Y,*", "* X,Y", "POP Y" }, new String[] { "{2}", "{3}", "{0}"
-		// }));
 		patterns.add(new NativePattern(new String[] { "PUSH C", "MOV C*", "PUSH C", "CHGCTX #1", "MOV B*", "POP D", "POP C" }, new String[] { "{1:MOV C,>MOV D,}", "{3}", "{4}" }));
-
 		// The fact that NOPs are inserted between expressions now kills the
 		// fastfor-optimizer. This little hack revives it...
 		patterns.add(new NativePattern(new String[] { "MOV Y,#*", "PUSH Y", "NOP", "MOV Y,#*", "PUSH Y", "NOP" }, new String[] { "{0}", "{1}", "{3}", "{4}" }));
