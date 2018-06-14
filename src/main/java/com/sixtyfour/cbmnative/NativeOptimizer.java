@@ -126,12 +126,19 @@ public class NativeOptimizer {
 						boolean subMatch = true;
 						for (String sfs : parts) {
 							String sfo = sfs.replace("*", "");
-							if ((sfs.startsWith("*") && sfs.endsWith("*") && lines[p].contains(sfo))
-									|| (sfs.startsWith("*") && lines[p].endsWith(sfo) || (sfs.endsWith("*") && lines[p].startsWith(sfo)) || sfs.equals(lines[p]))) {
-								subMatch = true;
+							if (sfo.contains("?")) {
+							    String[] pps=sfo.split("\\?");
+							    if (lines[p].startsWith(pps[0]) && lines[p].endsWith(pps[1])) {
+								subMatch=true;
+							    }
 							} else {
-								subMatch = false;
-								break;
+        							if ((sfs.startsWith("*") && sfs.endsWith("*") && lines[p].contains(sfo))
+        									|| (sfs.startsWith("*") && lines[p].endsWith(sfo) || (sfs.endsWith("*") && lines[p].startsWith(sfo)) || sfs.equals(lines[p]))) {
+        								subMatch = true;
+        							} else {
+        								subMatch = false;
+        								break;
+        							}
 							}
 						}
 						match = subMatch;
