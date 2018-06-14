@@ -118,6 +118,16 @@ public class ConstantPropagator {
 				}
 			}
 		}
+		
+		// Convert 1+X to X+1...
+		if (t.getOperator().isPlus()) {
+			if (left.isConstant() && ((Number) left.eval(machine)).doubleValue() == 1d) {
+				t.setLeft(right);
+				t.setRight(left);
+				left=t.getLeft();
+				right=t.getRight();
+			}
+		}
 
 		// ... and some multiplications by shifts as well
 		if (t.getOperator().isMultiplication()) {

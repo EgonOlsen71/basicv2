@@ -16,6 +16,6 @@
 550 ifl%>r%then580
 560 h%=f%(l%):f%(l%)=f%(r%):f%(r%)=h%
 570 l%=l%+1:r%=r%-1:goto520
-580 r%(t%+1)=r%:l%(t%+1)=l%(t%):gosub500
-590 l%(t%+1)=l%:r%(t%+1)=r%(t%):gosub500
+580 r%(t%+1)=r%:l%(1+t%)=l%(t%):gosub500
+590 l%(t%+1)=l%:r%(1+t%)=r%(t%):gosub500
 600 t%=t%-1:return
