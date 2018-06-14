@@ -201,6 +201,7 @@ public class Transformer64 implements Transformer {
 		res.add("TMP2_REG\t.WORD 0");
 		res.add("TMP3_REG\t.WORD 0");
 		res.add("TMP4_REG\t.WORD 0");
+		res.add("AS_TMP\t.WORD 0");
 		res.add("STORE1\t.WORD 0");
 		res.add("STORE2\t.WORD 0");
 		res.add("STORE3\t.WORD 0");

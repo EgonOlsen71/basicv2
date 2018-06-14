@@ -61,7 +61,7 @@ public class NativeOptimizer {
 		// The fact that NOPs are inserted between expressions now kills the
 		// fastfor-optimizer. This little hack revives it...
 		patterns.add(new NativePattern(new String[] { "MOV Y,#*", "PUSH Y", "NOP", "MOV Y,#*", "PUSH Y", "NOP" }, new String[] { "{0}", "{1}", "{3}", "{4}" }));
-		//patterns.add(new NativePattern(new String[] { "MOV Y,?}","POP X"}, new String[] {"{1}","{0}"}));
+		patterns.add(new NativePattern(new String[] { "MOV Y,?}","POP X"}, new String[] {"{1}","{0}"}));
 	}
 
 	public static List<String> optimizeNative(CompilerConfig config, List<String> code, ProgressListener pg) {
@@ -130,7 +130,10 @@ public class NativeOptimizer {
 							if (sfo.contains("?")) {
 							    String[] pps=sfo.split("\\?");
 							    if (lines[p].startsWith(pps[0]) && lines[p].endsWith(pps[1])) {
-								subMatch=true;
+							    	subMatch=true;
+							    } else {
+							    	subMatch = false;
+    								break;
 							    }
 							} else {
         							if ((sfs.startsWith("*") && sfs.endsWith("*") && lines[p].contains(sfo))
