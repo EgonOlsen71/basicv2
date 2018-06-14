@@ -161,7 +161,7 @@ public class Pattern {
 
 		String ft = command.get(pos);
 		if (isJump.get(pos)) {
-			if (part.endsWith("{*}") && line.startsWith(ft)) {
+			if (part.endsWith("{*}") && line.startsWith(ft)) { // Fixen!...Texte vor dem {*} werden ignoriert...sollen sie aber nicht...
 				return inc(ix);
 			}
 		}
