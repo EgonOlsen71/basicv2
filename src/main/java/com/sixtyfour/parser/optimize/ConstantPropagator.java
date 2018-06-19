@@ -120,7 +120,7 @@ public class ConstantPropagator {
 		}
 		
 		// Convert 1+X to X+1...
-		if (t.getOperator().isPlus()) {
+		if (t.getOperator().isPlus() && t.getType(true) != Type.STRING) {
 			if (left.isConstant() && ((Number) left.eval(machine)).doubleValue() == 1d) {
 				t.setLeft(right);
 				t.setRight(left);
