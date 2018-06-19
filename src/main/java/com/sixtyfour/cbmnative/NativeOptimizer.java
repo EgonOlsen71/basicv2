@@ -62,6 +62,8 @@ public class NativeOptimizer {
 		// fastfor-optimizer. This little hack revives it...
 		patterns.add(new NativePattern(new String[] { "MOV Y,#*", "PUSH Y", "NOP", "MOV Y,#*", "PUSH Y", "NOP" }, new String[] { "{0}", "{1}", "{3}", "{4}" }));
 		patterns.add(new NativePattern(new String[] { "MOV Y,?}","POP X"}, new String[] {"{1}","{0}"}));
+		patterns.add(new NativePattern(new String[] { "PUSH X","NOP","POP X"}, new String[] {"NOP"}));
+		patterns.add(new NativePattern(new String[] { "PUSH Y","NOP","POP Y"}, new String[] {"NOP"}));
 	}
 
 	public static List<String> optimizeNative(CompilerConfig config, List<String> code, ProgressListener pg) {
