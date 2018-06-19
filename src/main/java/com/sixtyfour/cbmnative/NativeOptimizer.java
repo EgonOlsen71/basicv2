@@ -61,9 +61,9 @@ public class NativeOptimizer {
 		// The fact that NOPs are inserted between expressions now kills the
 		// fastfor-optimizer. This little hack revives it...
 		patterns.add(new NativePattern(new String[] { "MOV Y,#*", "PUSH Y", "NOP", "MOV Y,#*", "PUSH Y", "NOP" }, new String[] { "{0}", "{1}", "{3}", "{4}" }));
-		patterns.add(new NativePattern(new String[] { "MOV Y,?}","POP X"}, new String[] {"{1}","{0}"}));
-		patterns.add(new NativePattern(new String[] { "PUSH X","NOP","POP X"}, new String[] {"NOP"}));
-		patterns.add(new NativePattern(new String[] { "PUSH Y","NOP","POP Y"}, new String[] {"NOP"}));
+		patterns.add(new NativePattern(new String[] { "MOV Y,?}", "POP X" }, new String[] { "{1}", "{0}" }));
+		patterns.add(new NativePattern(new String[] { "PUSH X", "NOP", "POP X" }, new String[] { "NOP" }));
+		patterns.add(new NativePattern(new String[] { "PUSH Y", "NOP", "POP Y" }, new String[] { "NOP" }));
 	}
 
 	public static List<String> optimizeNative(CompilerConfig config, List<String> code, ProgressListener pg) {
@@ -130,21 +130,21 @@ public class NativeOptimizer {
 						for (String sfs : parts) {
 							String sfo = sfs.replace("*", "");
 							if (sfo.contains("?")) {
-							    String[] pps=sfo.split("\\?");
-							    if (lines[p].startsWith(pps[0]) && lines[p].endsWith(pps[1])) {
-							    	subMatch=true;
-							    } else {
-							    	subMatch = false;
-    								break;
-							    }
+								String[] pps = sfo.split("\\?");
+								if (lines[p].startsWith(pps[0]) && lines[p].endsWith(pps[1])) {
+									subMatch = true;
+								} else {
+									subMatch = false;
+									break;
+								}
 							} else {
-        							if ((sfs.startsWith("*") && sfs.endsWith("*") && lines[p].contains(sfo))
-        									|| (sfs.startsWith("*") && lines[p].endsWith(sfo) || (sfs.endsWith("*") && lines[p].startsWith(sfo)) || sfs.equals(lines[p]))) {
-        								subMatch = true;
-        							} else {
-        								subMatch = false;
-        								break;
-        							}
+								if ((sfs.startsWith("*") && sfs.endsWith("*") && lines[p].contains(sfo))
+										|| (sfs.startsWith("*") && lines[p].endsWith(sfo) || (sfs.endsWith("*") && lines[p].startsWith(sfo)) || sfs.equals(lines[p]))) {
+									subMatch = true;
+								} else {
+									subMatch = false;
+									break;
+								}
 							}
 						}
 						match = subMatch;
@@ -345,20 +345,25 @@ public class NativeOptimizer {
 									&& lines[10].startsWith("MOV X,")) {
 								if (lines[10].endsWith("}") && lines[11].equals("POP Y") && lines[12].equals("MOVB (Y),X") && lines[13].startsWith("MOV A,")
 										&& lines[14].equals("JSR NEXT")) {
-									String[] parts = lines[5].split(" |\\{");
-									String var = parts[1];
-									if (lines[13].contains(var + "{}") || lines[13].contains("#0{")) {
-										ret.add(lines[0]);
-										ret.add(lines[1]);
-										ret.add(lines[2]);
-										ret.add(lines[3]);
-										ret.add(lines[4]);
-										ret.add(lines[5]);
-										ret.add(lines[6]);
-										ret.add(lines[10]);
-										ret.add("JSR FASTFOR");
-										i += 14;
-										continue;
+									// Make sure that the loop variable is
+									// actually the poke's target...
+									// BY checking if MOV A,(I{REAL}) == MOV Y,I{REAL} after some replacements.
+									if (lines[6].replace("(", "").replace(")", "").replace("A,", "Y,").equals(lines[8])) {
+										String[] parts = lines[5].split(" |\\{");
+										String var = parts[1];
+										if (lines[13].contains(var + "{}") || lines[13].contains("#0{")) {
+											ret.add(lines[0]);
+											ret.add(lines[1]);
+											ret.add(lines[2]);
+											ret.add(lines[3]);
+											ret.add(lines[4]);
+											ret.add(lines[5]);
+											ret.add(lines[6]);
+											ret.add(lines[10]);
+											ret.add("JSR FASTFOR");
+											i += 14;
+											continue;
+										}
 									}
 								}
 							}

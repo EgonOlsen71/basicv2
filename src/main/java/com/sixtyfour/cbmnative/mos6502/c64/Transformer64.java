@@ -15,7 +15,6 @@ import com.sixtyfour.cbmnative.mos6502.generators.GeneratorContext;
 import com.sixtyfour.cbmnative.mos6502.generators.GeneratorList;
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.elements.Variable;
-import com.sixtyfour.parser.assembly.AssemblyParser;
 import com.sixtyfour.system.DataStore;
 import com.sixtyfour.system.Machine;
 
@@ -129,7 +128,9 @@ public class Transformer64 implements Transformer {
 		for (String line : code) {
 			String cmd = line;
 			line = convertConstantsToReal(line, platform);
-			line = AssemblyParser.truncateComments(line);
+			
+			// Intermediate code should contain no comments, so this actually hurts for Strings like "blah;"
+			//line = AssemblyParser.truncateComments(line);
 			String orgLine = line;
 
 			int sp = line.indexOf(" ");

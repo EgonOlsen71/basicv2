@@ -44,7 +44,7 @@ public class TransformerTest {
 		// testTransformer2();
 		// testTransformer4();
 		// testTransformer5();
-		 testTransformerFractal();
+		// testTransformerFractal();
 		// testTransformer6();
 		// testTransformer7();
 		// testTransformerPrime();
@@ -70,7 +70,7 @@ public class TransformerTest {
 		// testTransformer24();
 		// testTransformer25();
 		// testTransformer26();
-//		 testHilbert();
+		// testHilbert();
 		// testLines();
 		// testTransformer27();
 		// testConditions();
@@ -88,23 +88,41 @@ public class TransformerTest {
 		// testArrays();
 		// testLoad();
 		// testFn2();
-		//testTwoFor();
-//		testBrackets();
-//		testQuicksort();
-		//testInx();
+		// testTwoFor();
+		// testBrackets();
+		// testQuicksort();
+		// testInx();
+		// testLabyrinth();
+//		testFrosch();
 	}
-	
+
+	private static void testFrosch() throws Exception {
+		System.out.println("\n\ntestFrosch");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/frosch.bas");
+		Assembler assy = initTestEnvironment(vary, false);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++frosch.prg", true);
+		assy.getCpu().setCpuTracer(new MyTracer(assy));
+		executeTest(assy);
+	}
+
 	private static void testQuicksort() throws Exception {
 		System.out.println("\n\ntestQuicksort");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/quicksort.bas");
 		Assembler assy = initTestEnvironment(vary, false);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++quicksort.prg", true);
 		JsrProfiler profiler = new JsrProfiler(assy);
-		 assy.getCpu().setCpuTracer(profiler);
-		 Machine machine = executeTest(assy);
-		 printStats(profiler, machine);
+		assy.getCpu().setCpuTracer(profiler);
+		Machine machine = executeTest(assy);
+		printStats(profiler, machine);
 	}
-	
+
+	private static void testLabyrinth() throws Exception {
+		System.out.println("\n\ntestLabyrinth");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/irrgarten.bas");
+		Assembler assy = initTestEnvironment(vary, false);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++irrgarten.prg", true);
+	}
+
 	private static void testInx() throws Exception {
 		System.out.println("\n\ntestInx");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/testinx.bas");
@@ -119,7 +137,6 @@ public class TransformerTest {
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++testbrackets.prg", true);
 	}
 
-	
 	private static void testTwoFor() throws Exception {
 		System.out.println("\n\ntestTwoFor");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/twofor.bas");
@@ -833,6 +850,7 @@ public class TransformerTest {
 
 	@SuppressWarnings("unused")
 	private static class MyTracer implements CpuTracer {
+		int cnt=0;
 		private final Assembler assy;
 
 		private MyTracer(Assembler assy) {
@@ -848,10 +866,16 @@ public class TransformerTest {
 				int addr = 0x1abf;
 				int strBufPtr = assy.getRam()[addr] + 256 * assy.getRam()[addr + 1];
 				int strBufPtr2 = assy.getRam()[addr + 2] + 256 * assy.getRam()[addr + 3];
+				if (assy.getMachine().getRam()[115]!=230) {
+					System.out.println(assy.getMachine().getRam()[115]);
 				String memChunk = assy.getRam()[addr - 3] + ":" + (assy.getRam()[addr - 2] + 256 * assy.getRam()[addr - 1]);
 				System.out.println(opcodePc + " - " + opcode + " -> " + newPc + " / a=" + cpu.getAcc() + " / x=" + cpu.getX() + " / y=" + cpu.getY() + "/ z="
 						+ (cpu.getStatus() & 0b10) + " / 105=" + assy.getMachine().getRam()[105] + " / 106=" + assy.getMachine().getRam()[106] + "/" + line + " "
 						+ assy.getRam()[opcodePc + 1] + " / FAC=" + fac + " / FAC2=" + fac2 + " / " + strBufPtr + " / " + strBufPtr2 + " # " + memChunk);
+				if (cnt++>100) {
+					System.exit(0);
+				}
+				}
 
 			} else {
 				/*
@@ -893,7 +917,7 @@ public class TransformerTest {
 		conf.setOptimizedLinker(opt);
 		conf.setIntOptimizations(opt);
 		conf.setLoopMode(LoopMode.REMOVE);
-		//conf.setCompactThreshold(3);
+		// conf.setCompactThreshold(3);
 
 		final Basic basic = new Basic(vary);
 		basic.compile(conf);

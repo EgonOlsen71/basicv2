@@ -2261,7 +2261,6 @@ NUMOK		LDA TMP_REG
 			LDX #<Y_REG
 			LDY #>Y_REG
 			JMP FACMEM		; ...and return
-
 ;###################################
 GETSTR		LDA #0
 			STA CONCATBUFP	; Reset the work buffer
