@@ -92,16 +92,7 @@ public class TransformerTest {
 //		testBrackets();
 //		testQuicksort();
 		//testInx();
-		testMandelbrot();
 	}
-	
-	private static void testMandelbrot() throws Exception {
-		System.out.println("\n\ntestMandelbrot");
-		String[] vary = Loader.loadProgram("src/test/resources/transform/mandelbrot.bas");
-		Assembler assy = initTestEnvironment(vary, false);
-		FileWriter.writeAsPrg(assy.getProgram(), path + "++mandelbrot.prg", true);
-	}
-
 	
 	private static void testQuicksort() throws Exception {
 		System.out.println("\n\ntestQuicksort");
