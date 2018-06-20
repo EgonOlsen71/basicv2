@@ -149,6 +149,17 @@ public class ConstantPropagator {
 				}
 			}
 		}
+		
+		// Works around the ROM routines a=16777217:print 10*a,a*10 bug...
+		if (t.getOperator().isMultiplication()) {
+		    if (left.isConstant()  && ((Number) left.eval(machine)).doubleValue() == 10) {
+			t.setLeft(right);
+			t.setRight(left);
+			left=t.getLeft();
+			right=t.getRight();
+		    }
+		}
+		
 		// ****
 
 		if (!isConstant[0]) {
