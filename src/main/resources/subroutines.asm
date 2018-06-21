@@ -1872,7 +1872,8 @@ GOSUBNOOV	LDA TMP_ZP
 			STA FORSTACKP+1
 			RTS
 ;###################################
-GETNUMBER	LDA #0
+GETNUMBER	JSR COMPACT
+			LDA #0
 			STA CONCATBUFP	; Reset the work buffer
 			LDY #0
 			STY CMD_NUM			; Reset CMD target
@@ -2266,7 +2267,8 @@ NUMOK		LDA TMP_REG
 			LDY #>Y_REG
 			JMP FACMEM		; ...and return
 ;###################################
-GETSTR		LDA #0
+GETSTR		JSR COMPACT
+			LDA #0
 			STA CONCATBUFP	; Reset the work buffer
 			LDY #0
 			STY CMD_NUM		; Reset CMD target
