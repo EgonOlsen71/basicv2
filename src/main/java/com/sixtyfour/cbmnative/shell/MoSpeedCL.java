@@ -31,7 +31,7 @@ public class MoSpeedCL {
 
 	public static void main(String[] args) {
 		long s = System.currentTimeMillis();
-		System.out.println("*** MoSpeed - a Commodore BASIC V2 cross compiler");
+		System.out.println("*** MOSpeed - a Commodore BASIC V2 cross compiler");
 		System.out.println("(w) by EgonOlsen - https://github.com/EgonOlsen71");
 		System.out.println("-------------------------------------------------");
 		Map<String, String> cmds = new HashMap<>();
