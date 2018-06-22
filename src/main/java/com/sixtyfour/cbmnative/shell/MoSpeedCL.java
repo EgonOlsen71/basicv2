@@ -292,8 +292,8 @@ public class MoSpeedCL {
 		System.out.println("/varstart=xxxxx|$yyyy - the start address for variables. If none is given, they will be located right after the runtime code.");
 		System.out.println("/varend=xxxxx|$yyyy - the end address of the variable memory, i.e. in fact of the string memory.");
 		System.out.println("/runtimestart=xxxxx|$yyyy - the start address of the runtime's code. If none is given, it follows the program's code.");
-		System.out.println("/alloff - if specified, all optimizations will be turned off");
-		System.out.println("/vice - sets a path to the VICE executable. If specified, the compiled prg file will be started in VICE right away.");
+		System.out.println("/alloff=true|false - if specified, all optimizations will be turned off");
+		System.out.println("/vice=<path> - sets a path to the VICE executable. If specified, the compiled prg file will be started in VICE right away.");
 		System.out.println();
 	}
 
