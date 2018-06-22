@@ -55,7 +55,7 @@ public class Usr extends AbstractFunction {
 			throw new RuntimeException("USR in compiled code only supports 1 numeric parameter!");
 		}
 		if (pars.get(0).getType() == Type.STRING) {
-			throw new RuntimeException("Parameter for USR in compiled has to be numeric!");
+			throw new RuntimeException("Parameter for USR in compiled code has to be numeric!");
 		}
 
 		return super.evalToCode(config, machine);
