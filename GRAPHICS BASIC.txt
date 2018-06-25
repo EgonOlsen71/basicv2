@@ -12,7 +12,7 @@ Basic.registerExtension(new GraphicsBasic());
 Basic basic = new Basic(code);
 basic.run();
 
-Note that the extension is added to Basic in a static way, i.e. it is avialable to all Basic instances from there on. The included BASIC shell provides support for this extension by default.
+Note that the extension is added to Basic in a static way, i.e. it is available to all Basic instances from there on. The included BASIC shell provides support for this extension by default.
 
 
 Examples
