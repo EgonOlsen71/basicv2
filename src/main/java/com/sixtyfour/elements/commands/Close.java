@@ -40,8 +40,13 @@ public class Close extends AbstractCommand {
 		term = Parser.getTerm(config, this, linePart, machine, true);
 		pars = Parser.getParameters(term);
 
-		if (pars.size() != 1) {
+		if (pars.size() == 0) {
 			syntaxError(this);
+		}
+		
+		if (pars.size() > 1) {
+		    // If more parameters are given, use only the first one. This is stupid, but the BASIC interpreter behaves in the same way.
+		    pars=pars.subList(0, 1);
 		}
 		checkTypes(pars, linePart, Type.STRING);
 		return null;
