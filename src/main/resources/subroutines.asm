@@ -3091,8 +3091,8 @@ SETNAMEPRT	LDA G_REG
 
 SNPNOOV		LDA G_REG
 			LDY G_REG+1
-			STA $BB			; low byte of string paramter
-			STY $BC			; high byte of string paramter
+			STA $BB			; low byte of string parameter
+			STY $BC			; high byte of string parameter
 			RTS
 ;###################################
 CLOSE		LDA #<X_REG
