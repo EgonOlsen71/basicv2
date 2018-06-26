@@ -1,0 +1,95 @@
+MOSPeed is an optimizing BASIC cross compiler. Being a cross compiler, it runs on a PC but generates 6502-Machine language for the Commodore 64.
+
+
+Description
+
+MOSPeed is controlled on a PC via the command line/shell. It expects a BASIC V2 program in text file format, just like C64 Studio or CBM prg Studio are using it. It supports the usual placeholders like {clear}.
+MOSpeed is written in Java. It requires a Java runtime environment version 8 or higher.
+
+MOSpeed can be configured via command line parameters. It doesn't make use of compiler directives directly in the source code like some other compilers for the C64 do.
+
+The performance on average is between 10 and 20&nbsp;% higher than the performance of a BASIC-BOSS compiled program without any special variable declarations, but can be much higher in some special cases as well. On average, MOSpeed increases the performance of BASIC V2 programs by a factor of 3 to 5. 
+
+
+
+Loading, startup, controls
+
+MOSPeed is a command line application for the PC. Because MOSPeed is written in Java, the compiler is distributed as a JAR-file (@ https://github.com/EgonOlsen71/basicv2/tree/master/dist ). This distribution contains two script file - one for Windows (mospeed.cmd) and one for Linux (mospeed.sh), which can be used to start the compiler.
+
+The compiler needs at least the name/path of the source file to run or /? to display the integrated help text. Started with just the source file name, the compiler will create (assuming that the compile process went fine) a prg-file named like the source file but with two plus signs as prefix. For example: example.bas becomes ++example.prg
+
+The source code can use line numbers (as usual) but also labels, which the interpreter doesn't support. MOSpeed translates these label to line numbers at compile time.
+
+The compilation process can be configured by using various commaanf line parameters.
+
+
+
+Command line parameters
+
+These command line parameter can be appended directly to the call to start the compiler. Order doesn't matter.
+
+All parameters start with a /, alternatively a -sign can be used. 
+
+In the following, true|false means that the feature can be enabled (true) or disables (false).
+
+- /target=<target file>: Sets the name of the target file. If nothing is given, the name will be generated from the source file's name (as described above). It's possible to use a complete path name.
+
+- /platform=c64: In the future, multiple platforms will be supported (The VIC 20 at least). But for now, the only valid option is the c64.
+
+- /generatesrc=true|false: If true, the generated source codes for the assembly like intermediate language as well as for the 6502-Assembler|Assembly will be written to disk as well. Default is false.
+
+- /constfolding=true|false: If true, constants will be detected and replaced by their actual values. Examples are the often used addresses for VIC or SID. Default is true.
+
+- /constprop=true|false: If true, constant propagation will be used. I.e. constants won't only just detected directly, but also if calculations result in constant values. Default is true.
+
+- /ilangopt=true|false: If true, the generated intermediate code will be optimized. This increases the speed and usually reduces the size. Default is true.
+
+- /nlangopt=true|false: If true, the generated 6502-Assembly code will be optimized. This increases the speed and usually reduces the size. This optimization can take some time, depending on the size of the program. Default is true.
+
+- /smartlinker=true|false: If true, only used parts of the runtime will be linked to the actual program. If false, the complete runtime will be linked. Default is true.
+
+- /deadstoreopt=true|false: If true, dead, i.e. unused variable assigments will be detected and removed. In most cases, this is just fine but in some cases (for example when calling but not using the result of RND) it can cause the results of the compiled program to differ from the interpreted ones. This parameter affects integer and floating point variables only. Default is true.
+
+- /deadstoreoptstr=true|false: Just like /deadstoreopt, but for string variables. Default is true.
+
+- /loopopt=true|false: Detects and removes empty loops. These loops don't have to be empty in the source code, but if the values that are calculated inside them aren't actually used, they might get removed anyway. Default is true.
+
+- /floatopt=true|false: If true, various optimizations for floating point calculations will be used. In some case, caused by inaccuracies in the calculations, this can lead to small differences but in most cases, this shouldn't be a problem if it's even noticable. Default is true.
+
+- /intopt=true|false: If true, certain integer operations will be optimized. In general MOSpeed treats integer variables like the interpreter does for compatibility reasons. By using this parameter, this restriction can me loosened somewhat. Default is true.
+
+- /compactlevel=[0|3...]: If >=&nbsp;3, the generated code will be optimized for size. This has an impact on performance, but not in the same proportion as the size reduction. The higher the value, the less of a performance impact there will be, but the size reduction might be smaller as well. 4 or 5 are usually a good compromise, which often leads to a size reduction of 10 to 15&nbsp;% with a performance impact of 0.5- to 1&nbsp;%. Default is 0, which disables this optimization.
+
+- /progstart=xxxxx|$yyyy: Sets the start address of the compiled program. This value can be either decimal or hexadecimal. If it's <&nbsp;2100, a BASIC header to run the program will be added automatically, otherwise it won't. Default is 2072.
+
+- /varstart=xxxxx|$yyyy: Sets the start address of the variable/constants memory. This value can be either decimal or hexadecimal. If nothing is given, this memory will follow the memory used for the runtime. This is also the default.
+
+- /varend=xxxxx|$yyyy: Sets the end of the variable memory. This value can be either decimal or hexadecimal. Because the actual variable memory doesn't change at runtime, this actually sets the end of the string's heap memory. Make sure that the memory is readable, i.e. that it isn't shadowed by the ROM. Default is 40960.
+
+- /runtimestart=xxxxx|$yyyy: Sets the start address of the runtime code. This value can be either decimal or hexadecimal. If nothing is given, it will follow the actual program's memory. This is also the default.
+
+- /alloff=true|false: If true, all optimizations which are enabled by default will be turned off. Default is false.
+
+- /vice=<path>: This sets the path to an instance of the VICE|VICE-Emulator (or some other with similar behaviour). After a successful compilation, the compiled program will be started in that emulator. By default this doesn't happen.
+
+
+
+ Changes compared to BASIC 2.0 
+
+MOSpeed tries to stay compatible with the BASIC V2 interpreter when possible. However, there are some deviations.
+
+- LIST, CONT: Will be ignored.
+- NEW, STOP: Will be treated like END.
+- DIM with variables: While this actually isn't supported, to might work to a degree if MOSpeed can detect these variables as constants.
+- Limited support for USR: This function is supported, but only a single floating point value is allowed as input. Strings or multiple parameters are not allowed.
+- SYS with parameters: This option isn't supported. Even in the interpreter, it's more of a hack than anything else.
+- INPUT with double quotes: When using INPUT MOSpeed is a little more forgiving with double quotes.
+- Unified rounding: The interpreter chooses different approaches to rounding in different contexts. The rounding differs inside of functions, for example. An example: A=145/3*3 assigns 145 to A, but PEEK(145/3*3) reads from 144, not 145. MOSpeed unifies this behaviour, so that in this example, the outcome will always be 145 (just like in the BASIC 7.0 of the C128).
+- floating point accuracy: The results of floating point operations may show slight differences between the interpreter and MOSpeed, depending on the applied optimizations. In almost all cases, this shouldn't be a problem at all. In addition, MOSpeed tries to workaround a bug in the interpreter ROM, so that the results might turn out to be more precise.
+
+
+
+ Runtime errors 
+
+Runtime errors in the program (for example divisions by zero so similar) will be catched and printed out in most cases, but the Line number will always be 0.
+
