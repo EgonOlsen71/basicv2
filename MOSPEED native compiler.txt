@@ -11,7 +11,7 @@ MOSpeed is written in Java. It requires a Java runtime environment version 8 or 
 MOSpeed can be configured via command line parameters. It doesn't make use of compiler directives directly in 
 the source code like some other compilers for the C64 do.
 
-The performance on average is between 10 and 20&nbsp;% higher than the performance of a BASIC-BOSS compiled 
+The performance on average is between 10 and 20 % higher than the performance of a BASIC-BOSS compiled 
 program without any special variable declarations, but can be much higher in some special cases as well.
 On average, MOSpeed increases the performance of BASIC V2 programs by a factor of 3 to 5. 
 
@@ -84,13 +84,13 @@ problem if it's even noticable. Default is true.
 like the interpreter does for compatibility reasons. By using this parameter, this restriction can me loosened somewhat. 
 Default is true.
 
-- /compactlevel=[0|3...]: If >=&nbsp;3, the generated code will be optimized for size. This has an impact on performance, 
+- /compactlevel=[0|3...]: If >= 3, the generated code will be optimized for size. This has an impact on performance, 
 but not in the same proportion as the size reduction. The higher the value, the less of a performance impact there will be, 
 but the size reduction might be smaller as well. 4 or 5 are usually a good compromise, which often leads to a size 
-reduction of 10 to 15&nbsp;% with a performance impact of 0.5- to 1&nbsp;%. Default is 0, which disables this optimization.
+reduction of 10 to 15 % with a performance impact of 0.5 to 1%. Default is 0, which disables this optimization.
 
 - /progstart=xxxxx|$yyyy: Sets the start address of the compiled program. This value can be either decimal or hexadecimal. 
-If it's <&nbsp;2100, a BASIC header to run the program will be added automatically, otherwise it won't. Default is 2072.
+If it's < 2100, a BASIC header to run the program will be added automatically, otherwise it won't. Default is 2072.
 
 - /varstart=xxxxx|$yyyy: Sets the start address of the variable/constants memory. This value can be either decimal or hexadecimal. 
 If nothing is given, this memory will follow the memory used for the runtime. This is also the default.
