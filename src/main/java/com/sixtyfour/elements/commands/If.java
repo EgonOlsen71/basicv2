@@ -3,7 +3,9 @@ package com.sixtyfour.elements.commands;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sixtyfour.Logger;
 import com.sixtyfour.cbmnative.NativeCompiler;
+import com.sixtyfour.cbmnative.Util;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.Term;
@@ -11,8 +13,10 @@ import com.sixtyfour.parser.TermEnhancer;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.parser.logic.LogicParser;
 import com.sixtyfour.parser.logic.LogicTerm;
+import com.sixtyfour.parser.optimize.ConstantPropagator;
 import com.sixtyfour.system.BasicProgramCounter;
 import com.sixtyfour.system.Machine;
+import com.sixtyfour.util.VarUtils;
 
 /**
  * The IF command.
@@ -112,19 +116,46 @@ public class If extends AbstractCommand {
 
 	@Override
 	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
+	    
 		NativeCompiler compiler = NativeCompiler.getCompiler();
 		List<String> after = new ArrayList<String>();
-		// System.out.println(conditionalTerm+"    /    "+Parser.getTerm(conditionalTerm,
-		// machine, false, true));
-		List<String> expr = compiler.compileToPseudoCode(config, machine, Parser.getTerm(config, conditionalTerm, machine, false, true));
+		Term cTerm=Parser.getTerm(config, conditionalTerm, machine, false, true);
+		
+		int ic = ifCount++;
+		String label = "SKIP" + ic;
+		
+		if (config.isConstantFolding()) {
+        		boolean allConst=true;
+        		for (Term t:this.getAllTerms()) {
+        		    allConst&=ConstantPropagator.checkForConstant(config, machine, t);
+        		}
+        		
+        		if (allConst) {
+        		    float res=VarUtils.getFloat(cTerm.eval(machine));
+        		    if (res==0) {
+        			// @todo this isn't ideal as it keeps the actual conditional block in the code...it just doesn't execute it. But anyway, this optimization almost never triggers anyway...
+        			Logger.log("Removed conditional block at line "+this.lineNumber);
+        			List<String> expr=new ArrayList<>();
+        			expr.add("NOP");
+        			expr.add("JMP "+label);
+        			after.add(label + ":");
+        			CodeContainer cc = new CodeContainer(null, expr, after);
+        			List<CodeContainer> ccs = new ArrayList<CodeContainer>();
+        			ccs.add(cc);
+        			return ccs;
+        		    } else {
+        			Logger.log("Always execute conditional block at line "+this.lineNumber);
+        			return Util.createSingleCommand("NOP");
+        		    }
+        		}
+		}
+		
+		List<String> expr = compiler.compileToPseudoCode(config, machine, cTerm);
 		List<String> before = null;
 
 		String expPush = getPushRegister(expr.get(expr.size() - 1));
 		expr = expr.subList(0, expr.size() - 1); // Remove trailing PUSH
-													// X/PUSH_A
-		int ic = ifCount++;
-		String label = "SKIP" + ic;
-
+							 // X/PUSH_A
 		if (!compatibleConditionalBranches) {
 			// This combination might not work on a 6502 cpu, because the
 			// conditional branch target has to be within +-127/8 bytes

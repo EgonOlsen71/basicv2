@@ -96,6 +96,7 @@ public class ConstantFolder {
 			finalTerm.setOperator(Operator.NOP);
 			finalTerm.setLeft(conty);
 			finalTerm.setRight(new Constant<Integer>(0));
+			finalTerm.setConstant(true);
 		}
 	}
 }

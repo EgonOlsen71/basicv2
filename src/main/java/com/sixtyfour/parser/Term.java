@@ -50,6 +50,8 @@ public class Term implements Atom {
 	private Jitted jittedInstance = null;
 
 	private boolean jitRun = false;
+	
+	private boolean constant=false;
 
 	/**
 	 * Instantiates a new term based on the given expression.
@@ -200,7 +202,7 @@ public class Term implements Atom {
 	 */
 	@Override
 	public String toString() {
-		return "([" + key + "]\\l:" + left + "/" + this.operator + "\\r:" + right + ")";
+		return "([" + key + "]"+(constant?"!":"")+"\\l:" + left + "/" + this.operator + "\\r:" + right + ")";
 	}
 
 	@Override
@@ -630,7 +632,11 @@ public class Term implements Atom {
 	 */
 	@Override
 	public boolean isConstant() {
-		return false;
+	    	return constant;
+	}
+	
+	public void setConstant(boolean constant) {
+	    this.constant=constant;
 	}
 
 	private String filterCode(String code) {

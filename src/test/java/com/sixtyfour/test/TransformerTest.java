@@ -70,7 +70,7 @@ public class TransformerTest {
 		// testTransformer24();
 		// testTransformer25();
 		// testTransformer26();
-		 testHilbert();
+//		 testHilbert();
 		// testLines();
 		// testTransformer27();
 		// testConditions();
@@ -94,6 +94,7 @@ public class TransformerTest {
 		// testInx();
 		// testLabyrinth();
 //		testFrosch();
+	    	testIfTest();
 	}
 
 	private static void testFrosch() throws Exception {
@@ -237,6 +238,13 @@ public class TransformerTest {
 		String[] vary = Loader.loadProgram("src/test/resources/transform/lines.bas");
 		Assembler assy = initTestEnvironment(vary, false);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++testlines.prg", true);
+	}
+	
+	private static void testIfTest() throws Exception {
+		System.out.println("\n\ntestIfTest");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/iftest.bas");
+		Assembler assy = initTestEnvironment(vary, false);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++iftest.prg", true);
 	}
 
 	private static void testHilbert() throws Exception {
