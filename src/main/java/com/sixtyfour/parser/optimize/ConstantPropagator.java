@@ -118,14 +118,14 @@ public class ConstantPropagator {
 				}
 			}
 		}
-		
+
 		// Convert 1+X to X+1...
 		if (t.getOperator().isPlus() && t.getType(true) != Type.STRING) {
 			if (left.isConstant() && ((Number) left.eval(machine)).doubleValue() == 1d) {
 				t.setLeft(right);
 				t.setRight(left);
-				left=t.getLeft();
-				right=t.getRight();
+				left = t.getLeft();
+				right = t.getRight();
 			}
 		}
 
@@ -149,18 +149,18 @@ public class ConstantPropagator {
 				}
 			}
 		}
-		
-		// Works around the ROM routines a=16777217:print 10*a,a*10 bug...this doesn't cover all cases, but at least the trivial ones.
+
+		// Works around the ROM routines a=16777217:print 10*a,a*10 bug...this
+		// doesn't cover all cases, but at least the trivial ones.
 		if (t.getOperator().isMultiplication()) {
-		    if ((left.isConstant()  && ((Number) left.eval(machine)).doubleValue() == 10) || 
-			    ((right.isConstant()  && ((Number) right.eval(machine)).doubleValue() == 16777217))) {
-			t.setLeft(right);
-			t.setRight(left);
-			left=t.getLeft();
-			right=t.getRight();
-		    }
+			if ((left.isConstant() && ((Number) left.eval(machine)).doubleValue() == 10) || ((right.isConstant() && ((Number) right.eval(machine)).doubleValue() == 16777217))) {
+				t.setLeft(right);
+				t.setRight(left);
+				left = t.getLeft();
+				right = t.getRight();
+			}
 		}
-		
+
 		// ****
 
 		if (!isConstant[0]) {

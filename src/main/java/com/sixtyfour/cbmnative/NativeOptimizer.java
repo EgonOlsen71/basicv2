@@ -347,7 +347,8 @@ public class NativeOptimizer {
 										&& lines[14].equals("JSR NEXT")) {
 									// Make sure that the loop variable is
 									// actually the poke's target...
-									// BY checking if MOV A,(I{REAL}) == MOV Y,I{REAL} after some replacements.
+									// BY checking if MOV A,(I{REAL}) == MOV
+									// Y,I{REAL} after some replacements.
 									if (lines[6].replace("(", "").replace(")", "").replace("A,", "Y,").equals(lines[8])) {
 										String[] parts = lines[5].split(" |\\{");
 										String var = parts[1];

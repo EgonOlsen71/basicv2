@@ -2,14 +2,22 @@ package com.sixtyfour.parser.optimize;
 
 import java.util.Map;
 
+import com.sixtyfour.Basic;
+import com.sixtyfour.Logger;
+import com.sixtyfour.cbmnative.PCode;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.Constant;
 import com.sixtyfour.elements.Type;
+import com.sixtyfour.elements.commands.Command;
+import com.sixtyfour.elements.commands.If;
+import com.sixtyfour.elements.commands.Rem;
 import com.sixtyfour.parser.Atom;
+import com.sixtyfour.parser.Line;
 import com.sixtyfour.parser.Operator;
 import com.sixtyfour.parser.Term;
 import com.sixtyfour.parser.TermBuilder;
 import com.sixtyfour.system.Machine;
+import com.sixtyfour.util.VarUtils;
 
 /**
  * Optimizer for terms. It's used to simplify a term tree's structure or the
@@ -46,6 +54,46 @@ public class TermOptimizer {
 			return finalTerm;
 		} else {
 			return (Term) left;
+		}
+	}
+
+	/**
+	 * @param config
+	 * @param machine
+	 * @param basic
+	 */
+	public static void handleConstantConditions(CompilerConfig config, Machine machine, Basic basic) {
+		if (config.isConstantFolding()) {
+			PCode pCode = basic.getPCode();
+			for (Integer lineNumber : pCode.getLineNumbers()) {
+				Line line = pCode.getLines().get(lineNumber);
+				for (int i = 0; i < line.getCommands().size(); i++) {
+					Command cmd = line.getCommands().get(i);
+					if (cmd.isConditional()) {
+						boolean allConst = true;
+						for (Term t : cmd.getAllTerms()) {
+							allConst &= ConstantPropagator.checkForConstant(config, machine, t);
+							if (!allConst) {
+								break;
+							}
+						}
+						if (allConst) {
+							float res = VarUtils.getFloat(((If) cmd).getLogicTerm().eval(machine));
+							if (res == 0) {
+								Logger.log("Removed conditional block at line " + lineNumber);
+								for (int p = 0; p < line.getCommands().size(); p++) {
+									line.getCommands().set(p, new Rem());
+								}
+								break;
+							} else {
+								Logger.log("Always execute conditional block at line " + lineNumber);
+								line.getCommands().remove(i);
+								i--;
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 

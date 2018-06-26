@@ -44,7 +44,7 @@ public class TransformerTest {
 		// testTransformer2();
 		// testTransformer4();
 		// testTransformer5();
-//		 testTransformerFractal();
+		// testTransformerFractal();
 		// testTransformer6();
 		// testTransformer7();
 		// testTransformerPrime();
@@ -61,16 +61,16 @@ public class TransformerTest {
 		// testTransformerSqr();
 		// testTransformer16();
 		// testTransformer17();
-//		 testTransformer18();
+		// testTransformer18();
 		// testTransformer20();
 		// testTransformer22();
 		// testTransformer23();
-//		 testTransformerFrog();
-//		 testTransformerAffine();
+		// testTransformerFrog();
+		// testTransformerAffine();
 		// testTransformer24();
 		// testTransformer25();
 		// testTransformer26();
-//		 testHilbert();
+		// testHilbert();
 		// testLines();
 		// testTransformer27();
 		// testConditions();
@@ -93,8 +93,8 @@ public class TransformerTest {
 		// testQuicksort();
 		// testInx();
 		// testLabyrinth();
-//		testFrosch();
-	    	testIfTest();
+		// testFrosch();
+		testIfTest();
 	}
 
 	private static void testFrosch() throws Exception {
@@ -239,7 +239,7 @@ public class TransformerTest {
 		Assembler assy = initTestEnvironment(vary, false);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++testlines.prg", true);
 	}
-	
+
 	private static void testIfTest() throws Exception {
 		System.out.println("\n\ntestIfTest");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/iftest.bas");
@@ -858,7 +858,7 @@ public class TransformerTest {
 
 	@SuppressWarnings("unused")
 	private static class MyTracer implements CpuTracer {
-		int cnt=0;
+		int cnt = 0;
 		private final Assembler assy;
 
 		private MyTracer(Assembler assy) {
@@ -874,15 +874,15 @@ public class TransformerTest {
 				int addr = 0x1abf;
 				int strBufPtr = assy.getRam()[addr] + 256 * assy.getRam()[addr + 1];
 				int strBufPtr2 = assy.getRam()[addr + 2] + 256 * assy.getRam()[addr + 3];
-				if (assy.getMachine().getRam()[115]!=230) {
+				if (assy.getMachine().getRam()[115] != 230) {
 					System.out.println(assy.getMachine().getRam()[115]);
-				String memChunk = assy.getRam()[addr - 3] + ":" + (assy.getRam()[addr - 2] + 256 * assy.getRam()[addr - 1]);
-				System.out.println(opcodePc + " - " + opcode + " -> " + newPc + " / a=" + cpu.getAcc() + " / x=" + cpu.getX() + " / y=" + cpu.getY() + "/ z="
-						+ (cpu.getStatus() & 0b10) + " / 105=" + assy.getMachine().getRam()[105] + " / 106=" + assy.getMachine().getRam()[106] + "/" + line + " "
-						+ assy.getRam()[opcodePc + 1] + " / FAC=" + fac + " / FAC2=" + fac2 + " / " + strBufPtr + " / " + strBufPtr2 + " # " + memChunk);
-				if (cnt++>100) {
-					System.exit(0);
-				}
+					String memChunk = assy.getRam()[addr - 3] + ":" + (assy.getRam()[addr - 2] + 256 * assy.getRam()[addr - 1]);
+					System.out.println(opcodePc + " - " + opcode + " -> " + newPc + " / a=" + cpu.getAcc() + " / x=" + cpu.getX() + " / y=" + cpu.getY() + "/ z="
+							+ (cpu.getStatus() & 0b10) + " / 105=" + assy.getMachine().getRam()[105] + " / 106=" + assy.getMachine().getRam()[106] + "/" + line + " "
+							+ assy.getRam()[opcodePc + 1] + " / FAC=" + fac + " / FAC2=" + fac2 + " / " + strBufPtr + " / " + strBufPtr2 + " # " + memChunk);
+					if (cnt++ > 100) {
+						System.exit(0);
+					}
 				}
 
 			} else {

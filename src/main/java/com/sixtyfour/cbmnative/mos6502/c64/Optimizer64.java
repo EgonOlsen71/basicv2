@@ -42,8 +42,8 @@ public class Optimizer64 implements Optimizer {
 					"LDY {MEM0}", "LDA {MEM0}", "JSR INTFAC", "LDX #<{REG0}", "LDY #>{REG0}", "JSR FACMEM", "LDA #<{MEM1}", "LDY #>{MEM1}", "STA G_REG", "STY G_REG+1",
 					"JSR ARRAYACCESS{*}"));
 			this.add(new Pattern(false, "Array content is integer (store)", new String[] { "{LINE0}", "{LINE1}", "STY AS_TMP", "STA AS_TMP+1", "{LINE6}", "{LINE7}", "{LINE8}",
-					"{LINE9}", "JSR ARRAYSTORE_INT_INTEGER" }, "LDY {MEM0}", "LDA {MEM0}", "JSR INTFAC", "LDX #<Y_REG", "LDY #>Y_REG", "JSR FACMEM", "LDA #<{MEM1}", "LDY #>{MEM1}", "STA G_REG",
-					"STY G_REG+1", "JSR ARRAYSTORE_INTEGER"));
+					"{LINE9}", "JSR ARRAYSTORE_INT_INTEGER" }, "LDY {MEM0}", "LDA {MEM0}", "JSR INTFAC", "LDX #<Y_REG", "LDY #>Y_REG", "JSR FACMEM", "LDA #<{MEM1}",
+					"LDY #>{MEM1}", "STA G_REG", "STY G_REG+1", "JSR ARRAYSTORE_INTEGER"));
 
 			this.add(new Pattern("Quick copy into REG", new String[] { "{LINE0}", "{LINE1}", "STA TMP3_ZP", "STY TMP3_ZP+1", "{LINE3}", "{LINE4}", "JSR COPY2_XY" },
 					"LDA #<{MEM0}", "LDY #>{MEM0}", "JSR REALFAC", "LDX #<{REG0}", "LDY #>{REG0}", "JSR FACMEM"));
@@ -159,9 +159,10 @@ public class Optimizer64 implements Optimizer {
 			this.add(new Pattern(false, "Even faster INTEGER INC", new String[] { "JSR SUPERFIINX" }, "JSR FIINX", "LDA #<X_REG", "LDY #>X_REG", "JSR REALFAC", "JSR FACINT"));
 			this.add(new Pattern(false, "Even faster INTEGER DEC", new String[] { "JSR SUPERFIDEX" }, "JSR FIDEX", "LDA #<X_REG", "LDY #>X_REG", "JSR REALFAC", "JSR FACINT"));
 			this.add(new Pattern(false, "Store and load", new String[] { "{LINE0}", "{LINE1}", "NOP" }, "STY {MEM0}", "STA {MEM0}", "NOP", "LDY {MEM0}", "LDA {MEM0}"));
-			this.add(new Pattern(false, "Memory saving STROUT", new String[] {"JSR STROUTWL"}, "STA A_REG","STY A_REG+1","JSR STROUT"));
-			this.add(new Pattern(false, "Memory saving STROUTBRK", new String[] {"JSR STROUTBRKWL"}, "STA A_REG","STY A_REG+1","JSR STROUTBRK"));
-			this.add(new Pattern(false, "Simplified loading of A", new String[] {"{LINE0}","{LINE1}","STX A_REG", "STY A_REG+1","{LINE2}"}, "LDX #<{MEM0}","LDY #>{MEM0}","JSR FACMEM","LDA #<{MEM0}","LDY #>{MEM0}", "STA A_REG", "STY A_REG+1"));
+			this.add(new Pattern(false, "Memory saving STROUT", new String[] { "JSR STROUTWL" }, "STA A_REG", "STY A_REG+1", "JSR STROUT"));
+			this.add(new Pattern(false, "Memory saving STROUTBRK", new String[] { "JSR STROUTBRKWL" }, "STA A_REG", "STY A_REG+1", "JSR STROUTBRK"));
+			this.add(new Pattern(false, "Simplified loading of A", new String[] { "{LINE0}", "{LINE1}", "STX A_REG", "STY A_REG+1", "{LINE2}" }, "LDX #<{MEM0}", "LDY #>{MEM0}",
+					"JSR FACMEM", "LDA #<{MEM0}", "LDY #>{MEM0}", "STA A_REG", "STY A_REG+1"));
 		}
 	};
 

@@ -128,9 +128,10 @@ public class Transformer64 implements Transformer {
 		for (String line : code) {
 			String cmd = line;
 			line = convertConstantsToReal(line, platform);
-			
-			// Intermediate code should contain no comments, so this actually hurts for Strings like "blah;"
-			//line = AssemblyParser.truncateComments(line);
+
+			// Intermediate code should contain no comments, so this actually
+			// hurts for Strings like "blah;"
+			// line = AssemblyParser.truncateComments(line);
 			String orgLine = line;
 
 			int sp = line.indexOf(" ");

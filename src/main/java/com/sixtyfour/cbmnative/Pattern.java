@@ -162,8 +162,8 @@ public class Pattern {
 		String ft = command.get(pos);
 		if (isJump.get(pos)) {
 			if (part.endsWith("{*}") && line.startsWith(ft)) {
-				String stripped=part.replaceFirst(ft, "").trim().replace("{*}", "").trim();
-				String sline=line.replaceFirst(ft, "").trim();
+				String stripped = part.replaceFirst(ft, "").trim().replace("{*}", "").trim();
+				String sline = line.replaceFirst(ft, "").trim();
 				if (stripped.isEmpty() || sline.startsWith(stripped)) {
 					return inc(ix);
 				}

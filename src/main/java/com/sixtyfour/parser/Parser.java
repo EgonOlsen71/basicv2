@@ -691,7 +691,7 @@ public class Parser {
 						open = true;
 						start = i;
 					}
-					
+
 					if (c == ')') {
 						// Sadly, it's allowed in CBM Basic that Strings aren't
 						// terminated
@@ -770,7 +770,7 @@ public class Parser {
 		if (isTermPlaceholder(termWoBrackets)) {
 			return termMap.get(termWoBrackets);
 		}
-		String sterm=Parser.replaceStrings(term, '_');
+		String sterm = Parser.replaceStrings(term, '_');
 		if (!sterm.contains("(") && !sterm.contains(")")) {
 			Term t = new Term(term, termMap);
 			LogicTerm logicTerm = LogicParser.getTerm(config, term, machine, termMap);

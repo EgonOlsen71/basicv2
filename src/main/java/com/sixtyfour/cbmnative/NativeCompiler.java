@@ -20,6 +20,7 @@ import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.parser.optimize.ConstantFolder;
 import com.sixtyfour.parser.optimize.ConstantPropagator;
 import com.sixtyfour.parser.optimize.DeadStoreEliminator;
+import com.sixtyfour.parser.optimize.TermOptimizer;
 import com.sixtyfour.system.Machine;
 
 /**
@@ -164,6 +165,7 @@ public class NativeCompiler {
 		}
 
 		basic.modifyDelayLoops(config);
+		TermOptimizer.handleConstantConditions(config, machine, basic);
 
 		// Preexecute the DIMs to make the machine know them.
 		List<Command> cmds = basic.getMachine().getCommandList();
@@ -199,7 +201,7 @@ public class NativeCompiler {
 				}
 			}
 		}
-		
+
 		int os = mCode.size();
 		mCode = optimize(config, mCode);
 
@@ -210,7 +212,8 @@ public class NativeCompiler {
 			mCode.add("RTS");
 		}
 		if (!mCode.get(0).equals("0:")) {
-			// Add an artifical LINE_0 if not present to deal with native jumps to 0 cause by ON X GOTO Y,,,Z
+			// Add an artifical LINE_0 if not present to deal with native jumps
+			// to 0 cause by ON X GOTO Y,,,Z
 			mCode.add(0, "0:");
 		}
 		mCode.add(0, "JSR START");

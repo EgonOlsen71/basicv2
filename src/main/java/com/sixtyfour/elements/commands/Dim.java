@@ -154,7 +154,7 @@ public class Dim extends AbstractCommand {
 	}
 
 	private void redimed(Variable var) {
-		throw new RuntimeException("Redim'd array error @ line "+this.lineNumber+": " + var.getName() + "/" + this);
+		throw new RuntimeException("Redim'd array error @ line " + this.lineNumber + ": " + var.getName() + "/" + this);
 	}
 
 	@Override
