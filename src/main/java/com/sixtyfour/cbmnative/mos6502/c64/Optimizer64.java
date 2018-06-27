@@ -163,6 +163,7 @@ public class Optimizer64 implements Optimizer {
 			this.add(new Pattern(false, "Memory saving STROUTBRK", new String[] { "JSR STROUTBRKWL" }, "STA A_REG", "STY A_REG+1", "JSR STROUTBRK"));
 			this.add(new Pattern(false, "Simplified loading of A", new String[] { "{LINE0}", "{LINE1}", "STX A_REG", "STY A_REG+1", "{LINE2}" }, "LDX #<{MEM0}", "LDY #>{MEM0}",
 					"JSR FACMEM", "LDA #<{MEM0}", "LDY #>{MEM0}", "STA A_REG", "STY A_REG+1"));
+			this.add(new Pattern("Avoid PUSH/POP", new String[]{"JSR REALFAC"}, "JSR REALFACPUSH", "NOP", "JSR POPREAL"));
 		}
 	};
 
