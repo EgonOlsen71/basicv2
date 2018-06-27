@@ -45,6 +45,8 @@ public class Optimizer64 implements Optimizer {
 					"{LINE9}", "JSR ARRAYSTORE_INT_INTEGER" }, "LDY {MEM0}", "LDA {MEM0}", "JSR INTFAC", "LDX #<Y_REG", "LDY #>Y_REG", "JSR FACMEM", "LDA #<{MEM1}",
 					"LDY #>{MEM1}", "STA G_REG", "STY G_REG+1", "JSR ARRAYSTORE_INTEGER"));
 
+			this.add(new Pattern("Avoid PUSH/POP", new String[]{"JSR REALFAC"}, "JSR REALFACPUSH", "NOP", "JSR POPREAL"));
+			
 			this.add(new Pattern("Quick copy into REG", new String[] { "{LINE0}", "{LINE1}", "STA TMP3_ZP", "STY TMP3_ZP+1", "{LINE3}", "{LINE4}", "JSR COPY2_XY" },
 					"LDA #<{MEM0}", "LDY #>{MEM0}", "JSR REALFAC", "LDX #<{REG0}", "LDY #>{REG0}", "JSR FACMEM"));
 			this.add(new Pattern(false, "Simplified CMP with 0", new String[] { "{LINE0}", "LDA $61" }, "JSR REALFAC", "LDX #<{REG0}", "LDY #>{REG0}", "JSR FACMEM",
@@ -163,7 +165,6 @@ public class Optimizer64 implements Optimizer {
 			this.add(new Pattern(false, "Memory saving STROUTBRK", new String[] { "JSR STROUTBRKWL" }, "STA A_REG", "STY A_REG+1", "JSR STROUTBRK"));
 			this.add(new Pattern(false, "Simplified loading of A", new String[] { "{LINE0}", "{LINE1}", "STX A_REG", "STY A_REG+1", "{LINE2}" }, "LDX #<{MEM0}", "LDY #>{MEM0}",
 					"JSR FACMEM", "LDA #<{MEM0}", "LDY #>{MEM0}", "STA A_REG", "STY A_REG+1"));
-			this.add(new Pattern("Avoid PUSH/POP", new String[]{"JSR REALFAC"}, "JSR REALFACPUSH", "NOP", "JSR POPREAL"));
 		}
 	};
 
