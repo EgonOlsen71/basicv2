@@ -20,8 +20,7 @@ public class Gosub extends AbstractCommand {
 	private BasicProgramCounter pc = new BasicProgramCounter(0, 0); // Recycle
 																	// instance
 
-	/** The line number. */
-	private int lineNumber = 0;
+	private int targetLineNumber = 0;
 
 	/**
 	 * Instantiates a new gosub.
@@ -41,7 +40,7 @@ public class Gosub extends AbstractCommand {
 		super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine);
 		linePart = linePart.substring(5).trim();
 		try {
-			this.lineNumber = Integer.parseInt(linePart);
+			this.targetLineNumber = Integer.parseInt(linePart);
 		} catch (Exception e) {
 			throw new RuntimeException("Undef'd statement error: " + this);
 		}
@@ -57,13 +56,13 @@ public class Gosub extends AbstractCommand {
 	 */
 	@Override
 	public BasicProgramCounter execute(CompilerConfig config, Machine machine) {
-		pc.setLineNumber(lineNumber);
+		pc.setLineNumber(targetLineNumber);
 		machine.push(this);
 		return pc;
 	}
 
 	@Override
 	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
-		return Util.createSingleCommand("JSR GOSUB", "JSR " + lineNumber);
+		return Util.createSingleCommand("JSR GOSUB", "JSR " + targetLineNumber);
 	}
 }

@@ -19,7 +19,7 @@ public class Run extends AbstractCommand {
 																	// instance
 
 	/** The line number. */
-	private int lineNumber = -1;
+	private int targetLineNumber = -1;
 
 	/**
 	 * Instantiates a new run.
@@ -45,7 +45,7 @@ public class Run extends AbstractCommand {
 		linePart = linePart.substring(3).trim();
 		if (linePart.trim().length() > 0) {
 			try {
-				this.lineNumber = Integer.parseInt(linePart);
+				this.targetLineNumber = Integer.parseInt(linePart);
 			} catch (Exception e) {
 				throw new RuntimeException("Undef'd statement error: " + this);
 			}
@@ -65,8 +65,8 @@ public class Run extends AbstractCommand {
 		machine.resetMemory();
 		machine.getDataStore().restore();
 		pc.setLinePos(-1);
-		if (lineNumber != -1) {
-			pc.setLineNumber(lineNumber);
+		if (targetLineNumber != -1) {
+			pc.setLineNumber(targetLineNumber);
 		} else {
 			pc.setLineNumber(-1);
 			pc.setLineCnt(0);

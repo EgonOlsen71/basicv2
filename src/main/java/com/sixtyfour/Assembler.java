@@ -33,7 +33,7 @@ import com.sixtyfour.util.VarUtils;
 public class Assembler implements ProgramExecutor {
 	private String[] code = null;
 	private int codeStart = -1;
-	private int start = 0;
+	private int startAddr = 0;
 	private Machine machine = null;
 	private Program program = null;
 	private boolean running = false;
@@ -159,13 +159,13 @@ public class Assembler implements ProgramExecutor {
 						initial = false;
 					} else {
 						ProgramPart part = new ProgramPart();
-						part.setAddress(start);
+						part.setAddress(startAddr);
 						part.setEndAddress(addr);
 						part.setLineAddresses(createAndResetOpas(lineBreaks));
 						prg.addPart(part);
 					}
 					addr = cv.getValue();
-					start = addr;
+					startAddr = addr;
 				}
 				continue;
 			}
@@ -231,9 +231,9 @@ public class Assembler implements ProgramExecutor {
 			raiseError("Undefined label: " + lcon.getFirstDelayedLabel(), addr, cnt);
 		}
 
-		if (addr != start) {
+		if (addr != startAddr) {
 			ProgramPart part = new ProgramPart();
-			part.setAddress(start);
+			part.setAddress(startAddr);
 			part.setEndAddress(addr);
 			part.setLineAddresses(createAndResetOpas(lineBreaks));
 			prg.addPart(part);
@@ -243,7 +243,7 @@ public class Assembler implements ProgramExecutor {
 			part.setBytes(Arrays.copyOfRange(compileMachine.getRam(), part.getAddress(), part.getEndAddress()));
 		}
 
-		prg.setCodeStart(codeStart == -1 ? start : codeStart);
+		prg.setCodeStart(codeStart == -1 ? startAddr : codeStart);
 		program = prg;
 		for (int i = 0; i < prg.getParts().size(); i++) {
 			ProgramPart pp = prg.getParts().get(i);

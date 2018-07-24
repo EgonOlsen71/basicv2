@@ -20,8 +20,7 @@ public class Goto extends AbstractCommand {
 	private BasicProgramCounter pc = new BasicProgramCounter(0, 0); // Recycle
 																	// instance
 
-	/** The line number. */
-	private int lineNumber = 0;
+	private int targetLineNumber = 0;
 
 	/**
 	 * Instantiates a new goto.
@@ -41,7 +40,7 @@ public class Goto extends AbstractCommand {
 		super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine);
 		linePart = linePart.substring(4).trim();
 		try {
-			this.lineNumber = Integer.parseInt(linePart);
+			this.targetLineNumber = Integer.parseInt(linePart);
 		} catch (Exception e) {
 			throw new RuntimeException("Undef'd statement error: " + this);
 		}
@@ -57,12 +56,12 @@ public class Goto extends AbstractCommand {
 	 */
 	@Override
 	public BasicProgramCounter execute(CompilerConfig config, Machine machine) {
-		pc.setLineNumber(lineNumber);
+		pc.setLineNumber(targetLineNumber);
 		return pc;
 	}
 
 	@Override
 	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
-		return Util.createSingleCommand("JMP " + lineNumber);
+		return Util.createSingleCommand("JMP " + targetLineNumber);
 	}
 }

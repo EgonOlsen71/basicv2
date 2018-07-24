@@ -8,7 +8,7 @@ package com.sixtyfour.util;
 public class IntegerC {
 
 	private final static Integer[] CACHE = new Integer[4000];
-	private final static int offset = 2000;
+	private final static int OFFSET = 2000;
 
 	static {
 		for (int i = 0; i < CACHE.length; i++) {
@@ -22,7 +22,7 @@ public class IntegerC {
 	 */
 	public static Integer valueOf(int i) {
 		if (i >= -2000 && i <= 1999) {
-			return CACHE[i + offset];
+			return CACHE[i + OFFSET];
 		}
 		return Integer.valueOf(i);
 	}

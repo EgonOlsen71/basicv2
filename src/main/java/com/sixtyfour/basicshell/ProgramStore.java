@@ -19,9 +19,6 @@ public class ProgramStore {
 
 	private final TreeSet<String> store = new TreeSet<>(new LineComparator());
 
-	public ProgramStore() {
-	}
-
 	private int getLineNumber(String in) throws NumberFormatException {
 		StringBuilder buff = new StringBuilder();
 		for (int s = 0; s < in.length(); s++) {
