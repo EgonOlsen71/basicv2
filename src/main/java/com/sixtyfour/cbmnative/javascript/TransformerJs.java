@@ -42,6 +42,7 @@ public class TransformerJs implements Transformer {
 	res.add("var G_REG=0;");
 	res.add("var CMD_NUM=0;");
 	res.add("var CHANNEL=0;");
+	res.add("var JUMP_TARGET=0;");
 	
 	int cnt = 0;
 	List<String> strVars = new ArrayList<String>();

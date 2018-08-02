@@ -18,6 +18,7 @@ public class GeneratorListJs {
 		{
 			this.add(new NopJs());
 			this.add(new RtsJs());
+			this.add(new JsrJs());
 		}
 	});
 

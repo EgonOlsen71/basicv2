@@ -12,3 +12,11 @@ function execute() {
 		}
 	}
 }
+
+function START() {
+	//
+}
+
+function END() {
+	//
+}
