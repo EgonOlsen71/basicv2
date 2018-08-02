@@ -2,6 +2,8 @@ package com.sixtyfour.cbmnative.mos6502.generators;
 
 import java.util.List;
 
+import com.sixtyfour.cbmnative.Generator;
+
 /**
  * @author EgonOlsen
  * 

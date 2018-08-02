@@ -3,6 +3,8 @@ package com.sixtyfour.cbmnative.mos6502.generators;
 import java.util.List;
 import java.util.Map;
 
+import com.sixtyfour.cbmnative.Generator;
+import com.sixtyfour.cbmnative.GeneratorContext;
 import com.sixtyfour.elements.Type;
 
 public abstract class Compare implements Generator {

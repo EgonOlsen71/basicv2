@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import com.sixtyfour.cbmnative.Generator;
+
 public class GeneratorList {
 
 	private static final Generator LINE_NUMBER_GENERATOR = new LineNumberGenerator();

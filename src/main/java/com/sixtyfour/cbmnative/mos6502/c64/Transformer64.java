@@ -8,10 +8,10 @@ import java.util.Map;
 
 import com.sixtyfour.Loader;
 import com.sixtyfour.Logger;
+import com.sixtyfour.cbmnative.Generator;
+import com.sixtyfour.cbmnative.GeneratorContext;
 import com.sixtyfour.cbmnative.PlatformProvider;
 import com.sixtyfour.cbmnative.Transformer;
-import com.sixtyfour.cbmnative.mos6502.generators.Generator;
-import com.sixtyfour.cbmnative.mos6502.generators.GeneratorContext;
 import com.sixtyfour.cbmnative.mos6502.generators.GeneratorList;
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.elements.Variable;
