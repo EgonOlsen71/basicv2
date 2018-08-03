@@ -19,6 +19,19 @@ public class GeneratorListJs {
 			this.add(new NopJs());
 			this.add(new RtsJs());
 			this.add(new JsrJs());
+			this.add(new JmpJs());
+			this.add(new JneJs());
+			this.add(new MovJs());
+			this.add(new AddJs());
+			this.add(new SubJs());
+			this.add(new MulJs());
+			this.add(new DivJs());
+			this.add(new PopJs());
+			this.add(new PushJs());
+			this.add(new ShrJs());
+			this.add(new ShlJs());
+			this.add(new EqJs());
+			this.add(new CmpJs());
 		}
 	});
 

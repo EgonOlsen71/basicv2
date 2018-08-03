@@ -1,4 +1,4 @@
-package com.sixtyfour.cbmnative.mos6502.generators;
+package com.sixtyfour.cbmnative;
 
 import java.util.Locale;
 import java.util.Map;

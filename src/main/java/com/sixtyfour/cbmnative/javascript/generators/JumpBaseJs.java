@@ -31,10 +31,15 @@ public abstract class JumpBaseJs extends GeneratorBaseJs {
 			nCode.add("R" + cmd + "_" + CNT + ":");
 			CNT++;
 		} else {
+			String p1=parts[1].trim();
 			if (Character.isDigit(label.charAt(0)) || label.startsWith("SKIP") || label.startsWith("NSKIP")) {
-				nCode.add((cmd + " line_" + parts[1].trim()+(cmd.isEmpty()?"();":";")).trim());
+			    nCode.add(("return " + parts[1].trim() + ";").trim());
 			} else {
-				nCode.add((cmd + " " + parts[1].trim()+(cmd.isEmpty()?"();":";")).trim());
+			    String pre="";
+			    if (p1.equals("RETURN")) {
+				pre="return ";
+			    } 
+			    nCode.add(pre+(cmd + " " + p1+((cmd.isEmpty()&&!p1.endsWith(")"))?"();":";")).trim());
 			}
 		}
 	}

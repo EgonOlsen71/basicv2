@@ -1,7 +1,5 @@
 package com.sixtyfour.cbmnative;
 
-import com.sixtyfour.cbmnative.mos6502.generators.Operand;
-
 /**
  * @author EgonOlsen
  * 

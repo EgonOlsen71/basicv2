@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.sixtyfour.cbmnative.GeneratorContext;
+import com.sixtyfour.cbmnative.Operand;
+import com.sixtyfour.cbmnative.Operands;
 
 /**
  * @author EgonOlsen

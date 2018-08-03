@@ -5,6 +5,8 @@ import java.util.Locale;
 import java.util.Map;
 
 import com.sixtyfour.cbmnative.GeneratorContext;
+import com.sixtyfour.cbmnative.Operand;
+import com.sixtyfour.cbmnative.Operands;
 import com.sixtyfour.elements.Type;
 
 public class Movb extends GeneratorBase {

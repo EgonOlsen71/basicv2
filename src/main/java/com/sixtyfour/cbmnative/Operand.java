@@ -1,4 +1,4 @@
-package com.sixtyfour.cbmnative.mos6502.generators;
+package com.sixtyfour.cbmnative;
 
 import java.util.HashSet;
 import java.util.Set;

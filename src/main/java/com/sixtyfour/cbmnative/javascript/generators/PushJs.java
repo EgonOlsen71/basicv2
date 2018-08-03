@@ -4,24 +4,24 @@ import java.util.List;
 import java.util.Map;
 
 import com.sixtyfour.cbmnative.GeneratorContext;
+import com.sixtyfour.cbmnative.Operand;
+import com.sixtyfour.cbmnative.Operands;
 
 /**
  * @author EgonOlsen
  * 
  */
-public class RtsJs extends GeneratorBaseJs {
-
-	@Override
+public class PushJs extends GeneratorBaseJs {
+    @Override
 	public String getMnemonic() {
-		return "RTS";
+		return "PUSH";
 	}
 
 	@Override
 	public void generateCode(GeneratorContext context, String line, List<String> nCode, List<String> subCode, Map<String, String> name2label) {
-	    if (nCode.get(nCode.size()-1).startsWith("return")) {
-		return;
-	    }
-	    nCode.add("return;");
+		Operands ops = new Operands(line, name2label);
+		Operand target = ops.getTarget();
+		String from=getOpName(target);
+		nCode.add("_stack.push("+from+");");
 	}
-
 }

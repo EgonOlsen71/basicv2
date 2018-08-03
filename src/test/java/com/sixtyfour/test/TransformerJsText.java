@@ -28,10 +28,10 @@ public class TransformerJsText {
     private static List<String> initTestEnvironment(String[] vary) {
 	CompilerConfig conf = new CompilerConfig();
 	boolean opt = true;
-	conf.setConstantFolding(opt);
-	conf.setConstantPropagation(opt);
-	conf.setDeadStoreElimination(opt);
-	conf.setDeadStoreEliminationOfStrings(opt);
+	conf.setConstantFolding(false);
+	conf.setConstantPropagation(false);
+	conf.setDeadStoreElimination(false);
+	conf.setDeadStoreEliminationOfStrings(false);
 	conf.setIntermediateLanguageOptimizations(opt);
 	conf.setNativeLanguageOptimizations(opt);
 	conf.setOptimizedLinker(opt);
