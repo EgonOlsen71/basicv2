@@ -21,6 +21,7 @@ public class GeneratorListJs {
 			this.add(new JsrJs());
 			this.add(new JmpJs());
 			this.add(new JneJs());
+			this.add(new JeJs());
 			this.add(new MovJs());
 			this.add(new AddJs());
 			this.add(new SubJs());
