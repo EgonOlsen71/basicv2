@@ -108,6 +108,18 @@ function ARRAYSTORE_INTEGER() {
 	G_REG[Math.floor(X_REG)] = Math.floor(Y_REG);
 }
 
+function STR() {
+	A_REG=Y_REG.toString(10);
+}
+
+function CONCAT() {
+	A_REG=A_REG+B_REG;
+}
+
+function COMPACT() {
+	// Nothing to do in this context
+}
+
 function STROUT() {
 	out(A_REG);
 }
@@ -155,7 +167,18 @@ function READTID() {
 	var h=Math.floor(t/(1000 * 60 * 60));
 	var m=Math.floor((t-(h*(1000 * 60 * 60)))/(1000 * 60));
 	var s=Math.floor((t-(h*(1000 * 60 * 60))-m*(1000 * 60))/1000);
-	A_REG= ""+h+""+m+""+s;
+	h=fill(h);
+	m=fill(m);
+	s=fill(s);
+	A_REG= h+m+s;
+}
+
+function fill(num) {
+	num=num.toString(10);
+	if (num.length==1) {
+		num="0"+num;
+	}
+	return num;
 }
 
 function READSTATUS() {

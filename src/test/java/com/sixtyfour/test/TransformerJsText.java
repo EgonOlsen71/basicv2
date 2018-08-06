@@ -18,6 +18,7 @@ public class TransformerJsText {
     public static void main(String[] args) throws Exception {
 	test2();
 	testPrime();
+	testBeer();
     }
 
     private static void test2() throws Exception {
@@ -31,6 +32,12 @@ public class TransformerJsText {
 	List<String> js = initTestEnvironment(vary);
 	write(js, path + "++prime.html");
     }
+    
+    private static void testBeer() throws Exception {
+   	String[] vary = Loader.loadProgram("src/test/resources/transform/beer_transform.bas");
+   	List<String> js = initTestEnvironment(vary);
+   	write(js, path + "++beer.html");
+       }
 
     private static List<String> initTestEnvironment(String[] vary) {
 	CompilerConfig conf = new CompilerConfig();
