@@ -4,10 +4,10 @@ package com.sixtyfour.cbmnative.javascript.generators;
  * @author EgonOlsen
  * 
  */
-public class EqJs extends ComparisonJs {
+public class GteqJs extends ComparisonJs {
 
-    EqJs() {
-	super("EQ", "==");
+    GteqJs() {
+	super("GT", ">");
     }
 
 }

@@ -133,6 +133,7 @@ public class TransformerJs implements Transformer {
 		int pos = part.lastIndexOf("{");
 		String name = part.substring(0, pos);
 		name = name.replace("%", "_int");
+		name = name.replace("[]", "_array");
 		if (name.startsWith("#")) {
 		    Type type = Type.valueOf(part.substring(pos + 1, part.length() - 1));
 		    String keyName = name;
@@ -161,7 +162,7 @@ public class TransformerJs implements Transformer {
 			name2label.put(name, label);
 
 			Type type = Type.valueOf(part.substring(pos + 1, part.length() - 1));
-			if (name.contains("[]")) {
+			if (name.endsWith("_array")) {
 			    tmp.add("var " + label + "=new Array();");
 			} else {
 			    if (type == Type.INTEGER) {
@@ -173,7 +174,7 @@ public class TransformerJs implements Transformer {
 			    }
 			}
 			if (name.contains("$")) {
-			    if (name.contains("[]")) {
+			    if (name.endsWith("_array")) {
 				strArrayVars.addAll(tmp);
 			    } else {
 				strVars.addAll(tmp);

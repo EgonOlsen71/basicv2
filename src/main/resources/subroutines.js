@@ -92,6 +92,22 @@ function NEXT(variable) {
 	return;
 }
 
+function ARRAYACCESS_REAL() {
+	X_REG=G_REG[Math.floor(X_REG)];
+}
+
+function ARRAYACCESS_INTEGER() {
+	X_REG=Math.floor(G_REG[Math.floor(X_REG)]);
+}
+
+function ARRAYSTORE_REAL() {
+	G_REG[Math.floor(X_REG)]=Y_REG;
+}
+
+function ARRAYSTORE_INTEGER() {
+	G_REG[Math.floor(X_REG)]=Math.floor(Y_REG);
+}
+
 function WRITETID(value) {
 	//
 }

@@ -32,7 +32,14 @@ public class GeneratorListJs {
 			this.add(new ShrJs());
 			this.add(new ShlJs());
 			this.add(new EqJs());
+			this.add(new LtJs());
+			this.add(new GtJs());
+			this.add(new NeqJs());
+			this.add(new GteqJs());
+			this.add(new LteqJs());
 			this.add(new CmpJs());
+			this.add(new AndJs());
+			this.add(new IntJs());
 		}
 	});
 

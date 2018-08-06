@@ -17,12 +17,19 @@ public class TransformerJsText {
 
     public static void main(String[] args) throws Exception {
 	test2();
+	testPrime();
     }
 
     private static void test2() throws Exception {
 	String[] vary = Loader.loadProgram("src/test/resources/transform/test2.bas");
 	List<String> js = initTestEnvironment(vary);
 	write(js, path + "++test2.html");
+    }
+    
+    private static void testPrime() throws Exception {
+	String[] vary = Loader.loadProgram("src/test/resources/transform/prime_transform.bas");
+	List<String> js = initTestEnvironment(vary);
+	write(js, path + "++prime.html");
     }
 
     private static List<String> initTestEnvironment(String[] vary) {

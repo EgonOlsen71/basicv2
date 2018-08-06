@@ -34,17 +34,22 @@ public abstract class GeneratorBaseJs implements Generator {
     }
 
     protected String getOpName(Operand op) {
-	return op.isRegister() ? op.getRegisterName() : op.getAddress().replace("%", "_int");
+	String name = op.isRegister() ? op.getRegisterName()
+		: op.getAddress().replace("%", "_int").replace("[]", "_array");
+	if (name.endsWith("_array") && !name.startsWith("VAR_")) {
+	    name = "VAR_" + name;
+	}
+	return name;
     }
-    
+
     protected boolean isNumber(String line) {
-   	try {
-   	    Integer.parseInt(line);
-   	    return true;
-   	} catch (Exception e) {
-   	    return false;
-   	}
-       }
+	try {
+	    Integer.parseInt(line);
+	    return true;
+	} catch (Exception e) {
+	    return false;
+	}
+    }
 
     protected void truncInteger(List<String> nCode, Operand target) {
 	if (target.getType() == Type.INTEGER && !target.isRegister()) {
