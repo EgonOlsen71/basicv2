@@ -50,6 +50,8 @@ public class TransformerJs implements Transformer {
 	res.add("var _stack=new Array();");
 	res.add("var _forstack=new Array();");
 	res.add("var _zeroflag=0");
+	res.add("var _timeOffset=0");
+	res.add("var _time=0");
 
 	int cnt = 0;
 	List<String> strVars = new ArrayList<String>();
