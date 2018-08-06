@@ -18,7 +18,7 @@ public class LineNumberGeneratorJs implements Generator {
 	    Map<String, String> name2label) {
 	line = line.replace(":", "");
 	if (!line.equals("PROGRAMSTART")) {
-	    if (!nCode.get(nCode.size()-1).startsWith("return")) {
+	    if (!nCode.get(nCode.size()-1).startsWith("return") || nCode.get(nCode.size()-1).contains("$JUMP")) {
 		nCode.add("return " + (isNumber(line)?line:("\""+line+"\"")) + ";");
 	    }
 	    nCode.add("} ");

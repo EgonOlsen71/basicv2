@@ -22,7 +22,7 @@ public class TransformerJs implements Transformer {
     public List<String> transform(Machine machine, PlatformProvider platform, List<String> code) {
 	Logger.log("Compiling into javascript code...");
 
-	addGosubContinues(code);
+	addContinues(code);
 
 	List<String> res = new ArrayList<>();
 	List<String> consts = new ArrayList<String>();
@@ -45,7 +45,7 @@ public class TransformerJs implements Transformer {
 	res.add("var G_REG=0;");
 	res.add("var CMD_NUM=0;");
 	res.add("var CHANNEL=0;");
-	res.add("var JUMP_TARGET=0;");
+	res.add("var JUMP_TARGET=\"\";");
 	res.add("var _line=\"\";");
 	res.add("var _stack=new Array();");
 	res.add("var _forstack=new Array();");
@@ -93,14 +93,31 @@ public class TransformerJs implements Transformer {
 	return res;
     }
 
-    private void addGosubContinues(List<String> code) {
+    private void addContinues(List<String> code) {
 	int cnt = 0;
+	int forCnt=0;
 	for (int i = 0; i < code.size(); i++) {
 	    String line = code.get(i);
 	    if (line.equals("JSR GOSUB")) {
 		String cont="GOSUBCONT" + cnt++;
 		code.add(i + 2, cont+":");
 		code.set(i, "JSR GOSUB(\""+cont+"\")");
+	    } else if (line.equals("JSR INITFOR")) {
+		String cont="FORLOOP" + forCnt++;
+		String var=code.get(i-1);
+		var=var.substring(var.indexOf("(")+1, var.lastIndexOf("{"));
+		code.add(i + 2, cont+":");
+		code.set(i, "JSR INITFOR(\""+cont+"\",\"VAR_"+var+"\")");
+		code.set(i-1, "NOP");
+	    } else if (line.equals("JSR NEXT")) {
+		String var=code.get(i-1);
+		if (var.contains("{}")) {
+		    var="VAR_"+var.substring(var.indexOf("(")+1,var.indexOf("{"));
+		} else {
+		    var="0";
+		}
+		code.set(i-1, "NOP");
+		code.set(i, "JSR NEXT(\""+var+"\")");
 	    }
 	}
 

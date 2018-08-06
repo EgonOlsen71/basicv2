@@ -12,8 +12,6 @@ import com.sixtyfour.elements.Type;
  */
 public class JsrJs extends JumpBaseJs {
 
-	private static int forCnt = 0;
-
 	public JsrJs() {
 		super("", null);
 	}
@@ -25,20 +23,12 @@ public class JsrJs extends JumpBaseJs {
 
 	@Override
 	public void generateCode(GeneratorContext context, String line, List<String> nCode, List<String> subCode, Map<String, String> name2label) {
-		if (line.equals("JSR INITFOR")) {
-			String name = "FORLOOP" + (forCnt++);
-			nCode.add("LDA #<" + name);
-			nCode.add("STA JUMP_TARGET");
-			nCode.add("LDA #>" + name);
-			nCode.add("STA JUMP_TARGET+1");
-			super.generateCode(context, line, nCode, subCode, name2label);
-			nCode.add(name + ":");
-		} else if (line.equals("JSR ARRAYACCESS") || line.equals("JSR ARRAYSTORE")) {
+		if (line.equals("JSR ARRAYACCESS") || line.equals("JSR ARRAYSTORE")) {
 			Type type = context.getLastMoveSource().getType();
 			line += "_" + type.toString();
 			super.generateCode(context, line, nCode, subCode, name2label);
 		} else if (line.equals("JSR COPYSTR")) {
-			nCode.add(";ignored: JSR COPYSTR");
+			//nCode.add(";ignored: JSR COPYSTR");
 		} else {
 			super.generateCode(context, line, nCode, subCode, name2label);
 		}
