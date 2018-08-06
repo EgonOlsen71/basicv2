@@ -87,6 +87,8 @@ public class TransformerJs implements Transformer {
 	mnems.add("}");
 	res.addAll(consts);
 	res.addAll(datas);
+	vars.addAll(strVars);
+	vars.addAll(strArrayVars);
 	res.addAll(vars);
 	res.addAll(mnems);
 	res.addAll(subs);
@@ -168,11 +170,11 @@ public class TransformerJs implements Transformer {
 			    tmp.add("var " + label + "=new Array();");
 			} else {
 			    if (type == Type.INTEGER) {
-				consts.add("var " + label + "=0;");
+				tmp.add("var " + label + "=0;");
 			    } else if (type == Type.REAL) {
-				consts.add("var " + label + "=0.0;");
+				tmp.add("var " + label + "=0.0;");
 			    } else if (type == Type.STRING) {
-				consts.add("var " + label + "=\"\";");
+				tmp.add("var " + label + "=\"\";");
 			    }
 			}
 			if (name.contains("$")) {

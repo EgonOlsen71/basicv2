@@ -100,6 +100,10 @@ function ARRAYACCESS_INTEGER() {
 	X_REG = Math.floor(G_REG[Math.floor(X_REG)]);
 }
 
+function ARRAYACCESS_STRING() {
+	A_REG = G_REG[Math.floor(X_REG)];
+}
+
 function ARRAYSTORE_REAL() {
 	G_REG[Math.floor(X_REG)] = Y_REG;
 }
@@ -108,8 +112,32 @@ function ARRAYSTORE_INTEGER() {
 	G_REG[Math.floor(X_REG)] = Math.floor(Y_REG);
 }
 
+function ARRAYSTORE_STRING() {
+	G_REG[Math.floor(X_REG)] = A_REG;
+}
+
 function STR() {
 	A_REG=Y_REG.toString(10);
+}
+
+function VAL() {
+	X_REG=parseInt(B_REG.replace(/ /g,""), 10);
+}
+
+function LEN() {
+	X_REG=B_REG.length;
+}
+
+function CHR() {
+	A_REG=String.fromCharCode(Math.floor(Y_REG));
+}
+
+function ASC() {
+	if (B_REG.length==0) {
+		X_REG=0;
+		return;
+	}
+	X_REG=B_REG.charCodeAt(0);
 }
 
 function CONCAT() {

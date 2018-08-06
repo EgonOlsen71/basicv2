@@ -70,8 +70,8 @@ public class MovJs extends GeneratorBaseJs {
 
     private void sourceString(List<String> nCode, Operand source, Operand target) {
 	if (!checkSpecialReadVars(nCode, target, source)) {
-	    String from = source.getAddress();
-	    String to = target.getRegisterName();
+	    String from = getOpName(source);
+	    String to = getOpName(target);
 	    nCode.add(to + "=" + from + ";");
 	}
     }
