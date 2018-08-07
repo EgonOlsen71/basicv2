@@ -144,6 +144,29 @@ this.ASC = function() {
 	this.X_REG=this.B_REG.charCodeAt(0);
 }
 
+this.POS = function() {
+	this.X_REG=this._line.length;
+}
+
+this.TAB = function() {
+	var tb=Math.floor(this.Y_REG);
+	tb-=this._line.length;
+	for (var i=0;i<tb; i++) {
+		this._line+=" ";
+	}
+}
+
+this.SPC = function() {
+	var tb=Math.floor(this.Y_REG);
+	for (var i=0;i<tb; i++) {
+		this._line+=" ";
+	}
+}
+
+this.FRE = function() {
+	this.X_REG=65535;
+}
+
 this.CONCAT = function() {
 	this.A_REG=this.A_REG+this.B_REG;
 }
