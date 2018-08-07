@@ -21,6 +21,10 @@ this.execute = function() {
 	}
 }
 
+this.FASTFOR = function() {
+	throw new Error("Fast for optimization not supported for target JS!");
+}
+
 this.START = function() {
 	//
 }

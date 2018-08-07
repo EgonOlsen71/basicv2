@@ -8,6 +8,10 @@ import com.sixtyfour.cbmnative.Operand;
 import com.sixtyfour.cbmnative.Operands;
 import com.sixtyfour.elements.Type;
 
+/**
+ * @author EgonOlsen
+ * 
+ */
 public class MovJs extends GeneratorBaseJs {
 
     @Override

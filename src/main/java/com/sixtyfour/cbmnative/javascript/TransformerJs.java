@@ -50,6 +50,7 @@ public class TransformerJs implements Transformer {
 	res.add("this._line=\"\";");
 	res.add("this._stack=new Array();");
 	res.add("this._forstack=new Array();");
+	res.add("this._memory=Array.apply(null, Array(65535)).map(function () { return 0;});");
 	res.add("this._zeroflag=0");
 	res.add("this._timeOffset=0");
 	res.add("this._time=0");
@@ -111,7 +112,7 @@ public class TransformerJs implements Transformer {
 		String cont="FORLOOP" + forCnt++;
 		String var=code.get(i-1);
 		var=var.substring(var.indexOf("(")+1, var.lastIndexOf("{"));
-		code.add(i + 2, cont+":");
+		code.add(i + 1, cont+":");
 		code.set(i, "JSR INITFOR(\""+cont+"\",\"VAR_"+var+"\")");
 		code.set(i-1, "NOP");
 	    } else if (line.equals("JSR NEXT")) {

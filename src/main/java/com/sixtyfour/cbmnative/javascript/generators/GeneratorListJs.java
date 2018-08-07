@@ -23,6 +23,7 @@ public class GeneratorListJs {
 			this.add(new JneJs());
 			this.add(new JeJs());
 			this.add(new MovJs());
+			this.add(new MovbJs());
 			this.add(new AddJs());
 			this.add(new SubJs());
 			this.add(new MulJs());
@@ -40,6 +41,19 @@ public class GeneratorListJs {
 			this.add(new CmpJs());
 			this.add(new AndJs());
 			this.add(new IntJs());
+			this.add(new AbsJs());
+			this.add(new AtnJs());
+			this.add(new CosJs());
+			this.add(new SinJs());
+			this.add(new TanJs());
+			this.add(new RndJs());
+			this.add(new SqrJs());
+			this.add(new PowJs());
+			this.add(new SgnJs());
+			this.add(new BrkJs());
+			this.add(new OrJs());
+			this.add(new LogJs());
+			this.add(new ExpJs());
 		}
 	});
 

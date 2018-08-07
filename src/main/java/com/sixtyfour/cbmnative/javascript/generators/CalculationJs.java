@@ -11,21 +11,21 @@ import com.sixtyfour.cbmnative.Operands;
  * @author EgonOlsen
  * 
  */
-public abstract class ComparisonJs extends GeneratorBaseJs{
+public abstract class CalculationJs  extends GeneratorBaseJs {
 
     private String mnemonic;
-    private String operator;
+    private String calcString;
     
-    ComparisonJs(String mnemonic, String operator) {
+    CalculationJs(String mnemonic, String calcString) {
 	this.mnemonic=mnemonic;
-	this.operator=operator;
+	this.calcString=calcString;
     }
     
     @Override
     public String getMnemonic() {
 	return mnemonic;
     }
-    
+
     @Override
     public void generateCode(GeneratorContext context, String line, List<String> nCode, List<String> subCode,
 	    Map<String, String> name2label) {
@@ -36,7 +36,9 @@ public abstract class ComparisonJs extends GeneratorBaseJs{
 
 	String from = getOpName(source);
 	String to = getOpName(target);
-	nCode.add(to + "=(" + to + operator + from + "?-1:0);");
+	nCode.add(to +"="+calcString.replace("{to}", to).replace("{from}", from)+";");
+	truncInteger(nCode, target);
+
     }
     
 }

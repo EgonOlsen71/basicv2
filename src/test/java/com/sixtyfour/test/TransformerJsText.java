@@ -20,6 +20,7 @@ public class TransformerJsText {
 	testPrime();
 	testBeer();
 	test9();
+	test4();
     }
 
     private static void test2() throws Exception {
@@ -28,11 +29,17 @@ public class TransformerJsText {
 	write(js, path + "++test2.html");
     }
     
+    private static void test4() throws Exception {
+   	String[] vary = Loader.loadProgram("src/test/resources/transform/test4.bas");
+   	List<String> js = initTestEnvironment(vary);
+   	write(js, path + "++test4.html");
+    }
+    
     private static void test9() throws Exception {
    	String[] vary = Loader.loadProgram("src/test/resources/transform/test9.bas");
    	List<String> js = initTestEnvironment(vary);
    	write(js, path + "++test9.html");
-       }
+    }
     
     private static void testPrime() throws Exception {
 	String[] vary = Loader.loadProgram("src/test/resources/transform/prime_transform.bas");
@@ -49,15 +56,16 @@ public class TransformerJsText {
     private static List<String> initTestEnvironment(String[] vary) {
 	CompilerConfig conf = new CompilerConfig();
 	boolean opt = true;
-	conf.setConstantFolding(false);
-	conf.setConstantPropagation(false);
-	conf.setDeadStoreElimination(false);
-	conf.setDeadStoreEliminationOfStrings(false);
+	conf.setConstantFolding(opt);
+	conf.setConstantPropagation(opt);
+	conf.setDeadStoreElimination(opt);
+	conf.setDeadStoreEliminationOfStrings(opt);
 	conf.setIntermediateLanguageOptimizations(opt);
 	conf.setNativeLanguageOptimizations(opt);
 	conf.setOptimizedLinker(opt);
 	conf.setIntOptimizations(opt);
 	conf.setLoopMode(LoopMode.REMOVE);
+	conf.setLoopOptimizations(false);
 	// conf.setCompactThreshold(3);
 
 	final Basic basic = new Basic(vary);

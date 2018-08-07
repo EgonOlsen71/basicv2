@@ -21,6 +21,7 @@ public class CompilerConfig {
 	private boolean optimizeConstants = true;
 	private boolean floatOptimizations = true;
 	private boolean intOptimizations = true;
+	private boolean loopOptimizations = true;
 	private LoopMode loopMode = LoopMode.EXECUTE;
 	private ProgressListener progressListener;
 
@@ -151,6 +152,14 @@ public class CompilerConfig {
 
 	public void setIntOptimizations(boolean intOptimizations) {
 		this.intOptimizations = intOptimizations;
+	}
+
+	public boolean isLoopOptimizations() {
+	    return loopOptimizations;
+	}
+
+	public void setLoopOptimizations(boolean loopOptimizations) {
+	    this.loopOptimizations = loopOptimizations;
 	}
 
 }

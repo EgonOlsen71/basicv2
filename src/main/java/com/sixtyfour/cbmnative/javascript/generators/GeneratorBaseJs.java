@@ -39,6 +39,9 @@ public abstract class GeneratorBaseJs implements Generator {
 	if (name.endsWith("_array") && !name.startsWith("VAR_")) {
 	    name = "VAR_" + name;
 	}
+	if (isNumber(name)) {
+	    return name;
+	}
 	return "this."+name;
     }
 

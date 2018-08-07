@@ -16,7 +16,6 @@ public class NativeOptimizer {
 
 	private final static int MAX_AHEAD = 15;
 	private static List<NativePattern> patterns = new ArrayList<NativePattern>();
-	private static boolean optimizeSimpleForPokeLoops = true;
 
 	static {
 		patterns.add(new NativePattern(new String[] { "PUSH*", "POP*" }, new String[] { "MOV p1,p0" }));
@@ -336,7 +335,7 @@ public class NativeOptimizer {
 				}
 
 				// Detect and replace simple for-poke-loops
-				if (optimizeSimpleForPokeLoops && lines[14] != null) {
+				if (config.isLoopOptimizations() && lines[14] != null) {
 					if (lines[0].startsWith("MOV Y,") && (lines[0].endsWith("{INTEGER}") || lines[0].endsWith(".0{REAL}")) && lines[1].equals("PUSH Y")
 							&& lines[2].startsWith("MOV Y,") && (lines[2].endsWith("{INTEGER}") || lines[2].endsWith(".0{REAL}"))) {
 						if (lines[3].equals("PUSH Y") && lines[4].startsWith("MOV Y,") && (lines[4].endsWith("{INTEGER}") || lines[4].endsWith(".0{REAL}"))
