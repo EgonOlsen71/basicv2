@@ -11,7 +11,7 @@ import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.config.LoopMode;
 import com.sixtyfour.config.MemoryConfig;
 
-public class TransformerJsText {
+public class TransformerJsTest {
 
     private static String path = "compiled/";
 
@@ -22,6 +22,7 @@ public class TransformerJsText {
 	test9();
 	test4();
 	test16();
+	testFractal();
     }
 
     private static void test2() throws Exception {
@@ -48,6 +49,12 @@ public class TransformerJsText {
    	write(js, path + "++test16.html");
     }
     
+    private static void testFractal() throws Exception {
+   	String[] vary = Loader.loadProgram("src/test/resources/transform/js/fractal.bas");
+   	List<String> js = initTestEnvironment(vary);
+   	write(js, path + "++fractal.html");
+    }
+    
     private static void testPrime() throws Exception {
 	String[] vary = Loader.loadProgram("src/test/resources/transform/prime_transform.bas");
 	List<String> js = initTestEnvironment(vary);
@@ -65,14 +72,17 @@ public class TransformerJsText {
 	boolean opt = true;
 	conf.setConstantFolding(opt);
 	conf.setConstantPropagation(opt);
-	conf.setDeadStoreElimination(opt);
-	conf.setDeadStoreEliminationOfStrings(opt);
+	conf.setDeadStoreElimination(false);
+	conf.setDeadStoreEliminationOfStrings(false);
 	conf.setIntermediateLanguageOptimizations(opt);
 	conf.setNativeLanguageOptimizations(opt);
 	conf.setOptimizedLinker(opt);
-	conf.setIntOptimizations(opt);
 	conf.setLoopMode(LoopMode.REMOVE);
+	
+	// Disable these for JS-Target
 	conf.setLoopOptimizations(false);
+	conf.setIntOptimizations(false);
+	conf.setShiftOptimizations(false);
 	// conf.setCompactThreshold(3);
 
 	final Basic basic = new Basic(vary);

@@ -223,64 +223,66 @@ public class NativeOptimizer {
 					}
 				}
 
-				// MOV Y,#128{INTEGER}
-				// MOV X,U{REAL}
-				// DIV X,Y
-				if (lines[0].startsWith("MOV Y,#") && lines[0].endsWith("{INTEGER}") && lines[1].startsWith("MOV X,") && lines[2].equals("DIV X,Y")) {
-					String val = lines[0].replace("MOV Y,#", "").replace("{INTEGER}", "");
-					float vf = Float.parseFloat(val);
-					vf = (float) (Math.log(vf) / Math.log(2));
-					if (vf == (int) vf && vf >= 1 && vf <= 8) {
-						ret.add("MOV A,#" + (int) vf + "{INTEGER}");
-						ret.add(lines[1]);
-						ret.add("SHR X,A");
-						i += 2;
-						continue;
-					}
-				}
-
-				// MOV Y,#128{INTEGER}
-				// MOV X,U{REAL}
-				// MUL X,Y
-				if (lines[0].startsWith("MOV Y,#") && lines[0].endsWith("{INTEGER}") && lines[1].startsWith("MOV X,") && lines[2].equals("MUL X,Y")) {
-					String val = lines[0].replace("MOV Y,#", "").replace("{INTEGER}", "");
-					float vf = Float.parseFloat(val);
-					vf = (float) (Math.log(vf) / Math.log(2));
-					if (vf == (int) vf && vf >= 1 && vf <= 8) {
-						ret.add("MOV A,#" + (int) vf + "{INTEGER}");
-						ret.add(lines[1]);
-						ret.add("SHL X,A");
-						i += 2;
-						continue;
-					}
-				}
-
-				// MOV Y,#128{INTEGER}
-				// DIV X,Y
-				if (lines[0].startsWith("MOV Y,#") && lines[0].endsWith("{INTEGER}") && lines[1].equals("DIV X,Y")) {
-					String val = lines[0].replace("MOV Y,#", "").replace("{INTEGER}", "");
-					float vf = Float.parseFloat(val);
-					vf = (float) (Math.log(vf) / Math.log(2));
-					if (vf == (int) vf && vf >= 1 && vf <= 8) {
-						ret.add("MOV A,#" + (int) vf + "{INTEGER}");
-						ret.add("SHR X,A");
-						i += 1;
-						continue;
-					}
-				}
-
-				// MOV Y,#128{INTEGER}
-				// MUL X,Y
-				if (lines[0].startsWith("MOV Y,#") && lines[0].endsWith("{INTEGER}") && lines[1].equals("MUL X,Y")) {
-					String val = lines[0].replace("MOV Y,#", "").replace("{INTEGER}", "");
-					float vf = Float.parseFloat(val);
-					vf = (float) (Math.log(vf) / Math.log(2));
-					if (vf == (int) vf && vf >= 1 && vf <= 8) {
-						ret.add("MOV A,#" + (int) vf + "{INTEGER}");
-						ret.add("SHL X,A");
-						i += 1;
-						continue;
-					}
+				if (config.isShiftOptimizations()) {
+        				// MOV Y,#128{INTEGER}
+        				// MOV X,U{REAL}
+        				// DIV X,Y
+        				if (lines[0].startsWith("MOV Y,#") && lines[0].endsWith("{INTEGER}") && lines[1].startsWith("MOV X,") && lines[2].equals("DIV X,Y")) {
+        					String val = lines[0].replace("MOV Y,#", "").replace("{INTEGER}", "");
+        					float vf = Float.parseFloat(val);
+        					vf = (float) (Math.log(vf) / Math.log(2));
+        					if (vf == (int) vf && vf >= 1 && vf <= 8) {
+        						ret.add("MOV A,#" + (int) vf + "{INTEGER}");
+        						ret.add(lines[1]);
+        						ret.add("SHR X,A");
+        						i += 2;
+        						continue;
+        					}
+        				}
+        
+        				// MOV Y,#128{INTEGER}
+        				// MOV X,U{REAL}
+        				// MUL X,Y
+        				if (lines[0].startsWith("MOV Y,#") && lines[0].endsWith("{INTEGER}") && lines[1].startsWith("MOV X,") && lines[2].equals("MUL X,Y")) {
+        					String val = lines[0].replace("MOV Y,#", "").replace("{INTEGER}", "");
+        					float vf = Float.parseFloat(val);
+        					vf = (float) (Math.log(vf) / Math.log(2));
+        					if (vf == (int) vf && vf >= 1 && vf <= 8) {
+        						ret.add("MOV A,#" + (int) vf + "{INTEGER}");
+        						ret.add(lines[1]);
+        						ret.add("SHL X,A");
+        						i += 2;
+        						continue;
+        					}
+        				}
+        
+        				// MOV Y,#128{INTEGER}
+        				// DIV X,Y
+        				if (lines[0].startsWith("MOV Y,#") && lines[0].endsWith("{INTEGER}") && lines[1].equals("DIV X,Y")) {
+        					String val = lines[0].replace("MOV Y,#", "").replace("{INTEGER}", "");
+        					float vf = Float.parseFloat(val);
+        					vf = (float) (Math.log(vf) / Math.log(2));
+        					if (vf == (int) vf && vf >= 1 && vf <= 8) {
+        						ret.add("MOV A,#" + (int) vf + "{INTEGER}");
+        						ret.add("SHR X,A");
+        						i += 1;
+        						continue;
+        					}
+        				}
+        
+        				// MOV Y,#128{INTEGER}
+        				// MUL X,Y
+        				if (lines[0].startsWith("MOV Y,#") && lines[0].endsWith("{INTEGER}") && lines[1].equals("MUL X,Y")) {
+        					String val = lines[0].replace("MOV Y,#", "").replace("{INTEGER}", "");
+        					float vf = Float.parseFloat(val);
+        					vf = (float) (Math.log(vf) / Math.log(2));
+        					if (vf == (int) vf && vf >= 1 && vf <= 8) {
+        						ret.add("MOV A,#" + (int) vf + "{INTEGER}");
+        						ret.add("SHL X,A");
+        						i += 1;
+        						continue;
+        					}
+        				}
 				}
 
 				// MOV X,#6{INTEGER}

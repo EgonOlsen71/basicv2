@@ -36,7 +36,7 @@ public abstract class GeneratorBaseJs implements Generator {
     protected String getOpName(Operand op) {
 	String name = op.isRegister() ? op.getRegisterName()
 		: op.getAddress().replace("%", "_int").replace("[]", "_array");
-	if (name.endsWith("_array") && !name.startsWith("VAR_")) {
+	if ((name.endsWith("_array") || name.endsWith("_int"))  && !name.startsWith("VAR_")) {
 	    name = "VAR_" + name;
 	}
 	if (isNumber(name)) {

@@ -21,10 +21,6 @@ this.execute = function() {
 	}
 }
 
-this.FASTFOR = function() {
-	throw new Error("Fast for optimization not supported for target JS!");
-}
-
 this.START = function() {
 	//
 }
@@ -238,6 +234,18 @@ this.fill = function(num) {
 
 this.READSTATUS = function() {
 	return 0;
+}
+
+this.FINX = function() {
+	throw new Error("Fast inc optimization not supported for target JS!");
+}
+
+this.FDEX = function() {
+	throw new Error("Fast dec optimization not supported for target JS!");
+}
+
+this.FASTFOR = function() {
+	throw new Error("Fast for optimization not supported for target JS!");
 }
 
 this.out = function(txt) {

@@ -8,7 +8,7 @@ package com.sixtyfour.cbmnative.javascript.generators;
 public class ShlJs extends CalculationJs {
 
     public ShlJs() {
-	super("SHL", "{to}<<{from}");
+	super("SHL", "{to}*Math.pow(2,{from})");
     }
 
 }

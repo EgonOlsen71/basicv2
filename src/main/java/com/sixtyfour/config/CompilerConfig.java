@@ -22,6 +22,7 @@ public class CompilerConfig {
 	private boolean floatOptimizations = true;
 	private boolean intOptimizations = true;
 	private boolean loopOptimizations = true;
+	private boolean shiftOptimizations = true;
 	private LoopMode loopMode = LoopMode.EXECUTE;
 	private ProgressListener progressListener;
 
@@ -160,6 +161,14 @@ public class CompilerConfig {
 
 	public void setLoopOptimizations(boolean loopOptimizations) {
 	    this.loopOptimizations = loopOptimizations;
+	}
+
+	public boolean isShiftOptimizations() {
+	    return shiftOptimizations;
+	}
+
+	public void setShiftOptimizations(boolean shiftOptimizations) {
+	    this.shiftOptimizations = shiftOptimizations;
 	}
 
 }
