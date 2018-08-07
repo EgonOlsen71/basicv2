@@ -22,6 +22,6 @@ public class PopJs extends GeneratorBaseJs {
 		Operands ops = new Operands(line, name2label);
 		Operand target = ops.getTarget();
 		String to=getOpName(target);
-		nCode.add(to+"=_stack.pop();");
+		nCode.add(to+"=this._stack.pop();");
 	}
 }

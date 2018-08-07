@@ -24,7 +24,7 @@ public class JeJs extends JumpBaseJs {
     public void generateCode(GeneratorContext context, String line, List<String> nCode, List<String> subCode,
 	    Map<String, String> name2label) {
 	String[] parts = line.split(" ");
-	nCode.add("if (_zeroflag==0) {");
+	nCode.add("if (this._zeroflag==0) {");
 	nCode.add("return \""+parts[1].trim() + "\";}");
     }
 }

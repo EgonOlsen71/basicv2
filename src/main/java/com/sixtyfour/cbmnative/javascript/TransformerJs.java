@@ -34,24 +34,25 @@ public class TransformerJs implements Transformer {
 	subs.add("// *** SUBROUTINES ***");
 	subs.addAll(Arrays.asList(Loader.loadProgram(this.getClass().getResourceAsStream("/subroutines.js"))));
 
-	res.add("var X_REG=0.0;");
-	res.add("var Y_REG=0.0;");
-	res.add("var C_REG=0.0;");
-	res.add("var D_REG=0.0;");
-	res.add("var E_REG=0.0;");
-	res.add("var F_REG=0.0;");
-	res.add("var A_REG=0;");
-	res.add("var B_REG=0;");
-	res.add("var G_REG=0;");
-	res.add("var CMD_NUM=0;");
-	res.add("var CHANNEL=0;");
-	res.add("var JUMP_TARGET=\"\";");
-	res.add("var _line=\"\";");
-	res.add("var _stack=new Array();");
-	res.add("var _forstack=new Array();");
-	res.add("var _zeroflag=0");
-	res.add("var _timeOffset=0");
-	res.add("var _time=0");
+	res.add("function Compiled() {");
+	res.add("this.X_REG=0.0;");
+	res.add("this.Y_REG=0.0;");
+	res.add("this.C_REG=0.0;");
+	res.add("this.D_REG=0.0;");
+	res.add("this.E_REG=0.0;");
+	res.add("this.F_REG=0.0;");
+	res.add("this.A_REG=0;");
+	res.add("this.B_REG=0;");
+	res.add("this.G_REG=0;");
+	res.add("this.CMD_NUM=0;");
+	res.add("this.CHANNEL=0;");
+	res.add("this.JUMP_TARGET=\"\";");
+	res.add("this._line=\"\";");
+	res.add("this._stack=new Array();");
+	res.add("this._forstack=new Array();");
+	res.add("this._zeroflag=0");
+	res.add("this._timeOffset=0");
+	res.add("this._time=0");
 
 	int cnt = 0;
 	List<String> strVars = new ArrayList<String>();
@@ -82,7 +83,6 @@ public class TransformerJs implements Transformer {
 	    }
 	}
 
-	mnems.add(0, "execute();");
 	// close the last function body
 	mnems.add("}");
 	res.addAll(consts);
@@ -92,6 +92,7 @@ public class TransformerJs implements Transformer {
 	res.addAll(vars);
 	res.addAll(mnems);
 	res.addAll(subs);
+	res.add("}");
 	addFrame(res);
 
 	return res;
@@ -152,11 +153,11 @@ public class TransformerJs implements Transformer {
 			name = name.substring(1);
 
 			if (type == Type.INTEGER) {
-			    consts.add("var " + label + "=" + name + ";");
+			    consts.add("this." + label + "=" + name + ";");
 			} else if (type == Type.REAL) {
-			    consts.add("var " + label + "=" + name + ";");
+			    consts.add("this." + label + "=" + name + ";");
 			} else if (type == Type.STRING) {
-			    consts.add("var " + label + "=\"" + name + "\";");
+			    consts.add("this." + label + "=\"" + name + "\";");
 			}
 		    }
 		} else {
@@ -167,14 +168,14 @@ public class TransformerJs implements Transformer {
 
 			Type type = Type.valueOf(part.substring(pos + 1, part.length() - 1));
 			if (name.endsWith("_array")) {
-			    tmp.add("var " + label + "=new Array();");
+			    tmp.add("this." + label + "=new Array();");
 			} else {
 			    if (type == Type.INTEGER) {
-				tmp.add("var " + label + "=0;");
+				tmp.add("this." + label + "=0;");
 			    } else if (type == Type.REAL) {
-				tmp.add("var " + label + "=0.0;");
+				tmp.add("this." + label + "=0.0;");
 			    } else if (type == Type.STRING) {
-				tmp.add("var " + label + "=\"\";");
+				tmp.add("this." + label + "=\"\";");
 			    }
 			}
 			if (name.contains("$")) {
@@ -248,6 +249,7 @@ public class TransformerJs implements Transformer {
     private void addFrame(List<String> res) {
 	res.add(0, "<script type='text/javascript'>");
 	res.add(0, "<html>");
+	res.add("new Compiled().execute();");
 	res.add("</script>");
 	res.add("</html>");
     }

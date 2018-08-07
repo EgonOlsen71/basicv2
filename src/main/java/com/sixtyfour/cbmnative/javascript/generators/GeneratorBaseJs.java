@@ -11,7 +11,7 @@ public abstract class GeneratorBaseJs implements Generator {
     protected boolean checkSpecialWriteVars(List<String> nCode, Operand target, Operand source) {
 	if (target.getAddress().equals("VAR_TI$")) {
 	    String val = source.isRegister() ? source.getRegisterName() : source.getAddress();
-	    nCode.add("WRITETID(" + val + ");");
+	    nCode.add("this.WRITETID(this." + val + ");");
 	    return true;
 	}
 	return false;
@@ -20,13 +20,13 @@ public abstract class GeneratorBaseJs implements Generator {
     protected boolean checkSpecialReadVars(List<String> nCode, Operand target, Operand source) {
 	if (source.getAddress() != null) {
 	    if (source.getAddress().equals("VAR_ST")) {
-		nCode.add("READSTATUS();");
+		nCode.add("this.READSTATUS();");
 		return true;
 	    } else if (source.getAddress().equals("VAR_TI")) {
-		nCode.add("READTI();");
+		nCode.add("this.READTI();");
 		return true;
 	    } else if (source.getAddress().equals("VAR_TI$")) {
-		nCode.add("READTID();");
+		nCode.add("this.READTID();");
 		return true;
 	    }
 	}
@@ -39,7 +39,7 @@ public abstract class GeneratorBaseJs implements Generator {
 	if (name.endsWith("_array") && !name.startsWith("VAR_")) {
 	    name = "VAR_" + name;
 	}
-	return name;
+	return "this."+name;
     }
 
     protected boolean isNumber(String line) {

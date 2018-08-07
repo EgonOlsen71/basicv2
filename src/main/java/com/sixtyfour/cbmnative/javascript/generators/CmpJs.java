@@ -29,7 +29,7 @@ public class CmpJs extends GeneratorBaseJs {
 	String from = getOpName(source);
 	String to = getOpName(target);
 	
-	nCode.add("_zeroflag=(" + to + "==" + from + "?0:1);");
+	nCode.add("this._zeroflag=(" + to + "==" + from + "?0:1);");
     }
 
 }

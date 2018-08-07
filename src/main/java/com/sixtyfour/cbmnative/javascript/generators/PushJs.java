@@ -22,6 +22,6 @@ public class PushJs extends GeneratorBaseJs {
 		Operands ops = new Operands(line, name2label);
 		Operand target = ops.getTarget();
 		String from=getOpName(target);
-		nCode.add("_stack.push("+from+");");
+		nCode.add("this._stack.push("+from+");");
 	}
 }

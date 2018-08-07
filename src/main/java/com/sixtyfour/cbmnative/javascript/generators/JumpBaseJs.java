@@ -27,7 +27,7 @@ public abstract class JumpBaseJs extends GeneratorBaseJs {
 		String label = parts[1];
 		if (label.equals("($JUMP)") && antiCmd != null) {
 			nCode.add(antiCmd + " R" + cmd + "_" + CNT);
-			nCode.add("return JUMP_TARGET;");
+			nCode.add("return this.JUMP_TARGET;");
 			nCode.add("R" + cmd + "_" + CNT + ":");
 			CNT++;
 		} else {
@@ -35,9 +35,9 @@ public abstract class JumpBaseJs extends GeneratorBaseJs {
 			if (Character.isDigit(label.charAt(0)) || label.startsWith("SKIP") || label.startsWith("NSKIP")) {
 			    nCode.add(("return " + parts[1].trim() + ";").trim());
 			} else {
-			    String pre="";
+			    String pre="this.";
 			    if (p1.equals("RETURN")) {
-				pre="return ";
+				pre="return this.";
 			    } 
 			    nCode.add(pre+(cmd + " " + p1+((cmd.isEmpty()&&!p1.endsWith(")"))?"();":";")).trim());
 			}

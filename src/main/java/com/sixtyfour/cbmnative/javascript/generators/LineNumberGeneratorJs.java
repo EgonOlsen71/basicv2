@@ -28,7 +28,7 @@ public class LineNumberGeneratorJs implements Generator {
 	if (isNumber(line)) {
 	    prefix = "line_";
 	}
-	nCode.add("function " + prefix + line + "() {");
+	nCode.add("this."+prefix+line+" = function() {");
     }
 
     private static boolean isNumber(String line) {

@@ -1,14 +1,14 @@
-function execute() {
+this.execute = function() {
 	var lineNumber = 0;
 	var running = true;
 	var funcName = "PROGRAMSTART";
 	while (running) {
-		// console.log("Call(1): "+funcName);
+		//console.log("Call(1): "+funcName);
 		var nextLine = this[funcName]();
 		if (nextLine != null) {
 			lineNumber = nextLine;
 			if (lineNumber == "($JUMP)") {
-				lineNumber = JUMP_TARGET;
+				lineNumber = this.JUMP_TARGET;
 			}
 			if (Number.isInteger(lineNumber)) {
 				funcName = "line_" + lineNumber;
@@ -21,187 +21,187 @@ function execute() {
 	}
 }
 
-function START() {
+this.START = function() {
 	//
 }
 
-function END() {
+this.END = function() {
 	//
 }
 
-function GOSUB(gosubCont) {
-	_forstack.push(gosubCont);
-	_forstack.push(0);
+this.GOSUB = function(gosubCont) {
+	this._forstack.push(gosubCont);
+	this._forstack.push(0);
 }
 
-function RETURN() {
+this.RETURN = function() {
 	var val = 0;
-	if (_forstack.length == 0) {
+	if (this._forstack.length == 0) {
 		throw "RETURN without GOSUB error!";
 	}
 	do {
-		val = _forstack.pop();
+		val = this._forstack.pop();
 		if (val == 1) {
 			// skip FORs
-			_forstack.pop();
-			_forstack.pop();
-			_forstack.pop();
-			_forstack.pop();
+			this._forstack.pop();
+			this._forstack.pop();
+			this._forstack.pop();
+			this._forstack.pop();
 		}
 	} while (val != 0);
-	return _forstack.pop();
+	return this._forstack.pop();
 }
 
-function INITFOR(addr, variable) {
-	_forstack.push(_stack.pop()); // step
-	_forstack.push(_stack.pop()); // end
-	_forstack.push(addr); // address
-	_forstack.push(variable); // var ref
-	_forstack.push(1); // type
+this.INITFOR = function(addr, variable) {
+	this._forstack.push(this._stack.pop()); // step
+	this._forstack.push(this._stack.pop()); // end
+	this._forstack.push(addr); // address
+	this._forstack.push(variable); // var ref
+	this._forstack.push(1); // type
 }
 
-function NEXT(variable) {
+this.NEXT = function(variable) {
 	var found = false;
 	do {
-		if (_forstack.length == 0) {
+		if (this._forstack.length == 0) {
 			throw "NEXT without FOR error!";
 		}
-		var type = _forstack.pop();
+		var type = this._forstack.pop();
 		if (type == 0) {
 			throw "NEXT without FOR error!";
 		}
-		var stvar = _forstack.pop();
-		var addr = _forstack.pop();
-		var end = _forstack.pop();
-		var step = _forstack.pop();
+		var stvar = this._forstack.pop();
+		var addr = this._forstack.pop();
+		var end = this._forstack.pop();
+		var step = this._forstack.pop();
 		found = variable == "0" || variable == stvar;
 	} while (!found);
 	this[stvar] += step;
 	if ((step >= 0 && this[stvar] <= end) || step < 0 && this[stvar] >= end) {
 		// restore stack content if needed
-		_forstack.push(step); // step
-		_forstack.push(end); // end
-		_forstack.push(addr); // address
-		_forstack.push(stvar); // var ref
-		_forstack.push(1); // type
-		A_REG = 0;
-		JUMP_TARGET = addr;
+		this._forstack.push(step); // step
+		this._forstack.push(end); // end
+		this._forstack.push(addr); // address
+		this._forstack.push(stvar); // var ref
+		this._forstack.push(1); // type
+		this.A_REG = 0;
+		this.JUMP_TARGET = addr;
 		return;
 	}
-	A_REG = 1;
+	this.A_REG = 1;
 	return;
 }
 
-function ARRAYACCESS_REAL() {
-	X_REG = G_REG[Math.floor(X_REG)];
+this.ARRAYACCESS_REAL = function() {
+	this.X_REG = this.G_REG[Math.floor(this.X_REG)];
 }
 
-function ARRAYACCESS_INTEGER() {
-	X_REG = Math.floor(G_REG[Math.floor(X_REG)]);
+this.ARRAYACCESS_INTEGER = function() {
+	this.X_REG = Math.floor(this.G_REG[Math.floor(this.X_REG)]);
 }
 
-function ARRAYACCESS_STRING() {
-	A_REG = G_REG[Math.floor(X_REG)];
+this.ARRAYACCESS_STRING = function() {
+	this.A_REG = this.G_REG[Math.floor(this.X_REG)];
 }
 
-function ARRAYSTORE_REAL() {
-	G_REG[Math.floor(X_REG)] = Y_REG;
+this.ARRAYSTORE_REAL = function() {
+	this.G_REG[Math.floor(this.X_REG)] = this.Y_REG;
 }
 
-function ARRAYSTORE_INTEGER() {
-	G_REG[Math.floor(X_REG)] = Math.floor(Y_REG);
+this.ARRAYSTORE_INTEGER = function() {
+	this.G_REG[Math.floor(this.X_REG)] = Math.floor(this.Y_REG);
 }
 
-function ARRAYSTORE_STRING() {
-	G_REG[Math.floor(X_REG)] = A_REG;
+this.ARRAYSTORE_STRING = function() {
+	this.G_REG[Math.floor(this.X_REG)] = this.A_REG;
 }
 
-function STR() {
-	A_REG=Y_REG.toString(10);
+this.STR = function() {
+	this.A_REG=this.Y_REG.toString(10);
 }
 
-function VAL() {
-	X_REG=parseInt(B_REG.replace(/ /g,""), 10);
+this.VAL = function() {
+	this.X_REG=parseInt(this.B_REG.replace(/ /g,""), 10);
 }
 
-function LEN() {
-	X_REG=B_REG.length;
+this.LEN = function() {
+	this.X_REG=this.B_REG.length;
 }
 
-function CHR() {
-	A_REG=String.fromCharCode(Math.floor(Y_REG));
+this.CHR = function() {
+	this.A_REG=String.fromCharCode(Math.floor(this.Y_REG));
 }
 
-function ASC() {
-	if (B_REG.length==0) {
-		X_REG=0;
+this.ASC = function() {
+	if (this.B_REG.length==0) {
+		this.X_REG=0;
 		return;
 	}
-	X_REG=B_REG.charCodeAt(0);
+	this.X_REG=this.B_REG.charCodeAt(0);
 }
 
-function CONCAT() {
-	A_REG=A_REG+B_REG;
+this.CONCAT = function() {
+	this.A_REG=this.A_REG+this.B_REG;
 }
 
-function COMPACT() {
+this.COMPACT = function() {
 	// Nothing to do in this context
 }
 
-function STROUT() {
-	out(A_REG);
+this.STROUT = function() {
+	this.out(this.A_REG);
 }
 
-function REALOUT() {
-	out(X_REG);
+this.REALOUT = function() {
+	this.out(this.X_REG);
 }
 
-function INTOUT() {
-	out(X_REG);
+this.INTOUT = function() {
+	this.out(this.X_REG);
 }
 
-function CHECKCMD() {
-
+this.CHECKCMD = function() {
+	//
 }
 
-function LINEBREAK() {
-	out("\n");
+this.LINEBREAK = function() {
+	this.out("\n");
 }
 
-function TABOUT() {
-	out("\t");
+this.TABOUT = function() {
+	this.out("\t");
 }
 
-function WRITETID(value) {
+this.WRITETID = function(value) {
 	var d = new Date();
-	_time = d.getTime();
-	_timeOffset = parseInt(value.substring(0, 2), 10) * 1000 * 60 * 60
+	this._time = d.getTime();
+	this._timeOffset = parseInt(value.substring(0, 2), 10) * 1000 * 60 * 60
 			+ parseInt(value.substring(2, 4), 10) * 1000 * 60
 			+ parseInt(value.substring(4, 6), 10) * 1000;
 	
 }
 
-function READTI() {
+this.READTI = function() {
 	var d = new Date();
 	var t=d.getTime();
-	t=Math.floor((t-_time+_timeOffset)/(1000.0/60.0));
-	X_REG=t;
+	t=Math.floor((t-this._time+this._timeOffset)/(1000.0/60.0));
+	this.X_REG=t;
 }
 
-function READTID() {
+this.READTID = function() {
 	var d = new Date();
 	var t=d.getTime();
-	t=(t-_time+_timeOffset);
+	t=(t-this._time+this._timeOffset);
 	var h=Math.floor(t/(1000 * 60 * 60));
 	var m=Math.floor((t-(h*(1000 * 60 * 60)))/(1000 * 60));
 	var s=Math.floor((t-(h*(1000 * 60 * 60))-m*(1000 * 60))/1000);
-	h=fill(h);
-	m=fill(m);
-	s=fill(s);
-	A_REG= h+m+s;
+	h=this.fill(h);
+	m=this.fill(m);
+	s=this.fill(s);
+	this.A_REG= h+m+s;
 }
 
-function fill(num) {
+this.fill = function(num) {
 	num=num.toString(10);
 	if (num.length==1) {
 		num="0"+num;
@@ -209,17 +209,17 @@ function fill(num) {
 	return num;
 }
 
-function READSTATUS() {
+this.READSTATUS = function() {
 	return 0;
 }
 
-function out(txt) {
+this.out = function(txt) {
 	// console.log("["+txt+"]");
 	if (txt.indexOf && txt.indexOf("\n") != -1) {
-		_line += txt;
-		console.log(_line);
-		_line = "";
+		this._line += txt;
+		console.log(this._line);
+		this._line = "";
 	} else {
-		_line += txt;
+		this._line += txt;
 	}
 }
