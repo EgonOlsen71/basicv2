@@ -26,7 +26,14 @@ public class TransformerJsTest {
 	test22();
 	test18();
 	test15();
+	testLevenshtein();
     }
+    
+    private static void testLevenshtein() throws Exception {
+   	String[] vary = Loader.loadProgram("src/test/resources/transform/levenshtein.bas");
+   	List<String> js = initTestEnvironment(vary);
+   	write(js, path + "++levenshtein.html");
+       }
 
     private static void test2() throws Exception {
 	String[] vary = Loader.loadProgram("src/test/resources/transform/test2.bas");

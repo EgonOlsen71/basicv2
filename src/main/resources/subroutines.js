@@ -379,7 +379,7 @@ this.input = function() {
 // GET relies on INPUT here, because due to the single threaded nature of 
 // Javascript, the concept of a BASIC program constantly polling the keyboard
 // doesn't really work in this context unless you stuff the compiled program
-// into a web worker something like that.
+// into a web worker something or like that.
 this.get = function() {
 	var key=this.input();
 	if (!key) {
