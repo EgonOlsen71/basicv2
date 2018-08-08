@@ -56,19 +56,22 @@ this.INPUTSTR = function() {
 	this.A_REG=inp;
 }
 
-this.isNumeric = function(num) {
-	return !isNaN(parseFloat(num));
+this.GETSTR = function() {
+	this.A_REG=this.get();
 }
 
-this.input = function() {
-	if (this._inputQueue.length>0) {
-		return this._inputQueue.pop();
+this.GETNUMBER = function() {
+	this.Y_REG=0;
+	var fk=this.get();
+	if (fk && this.isNumeric(fk)) {
+		this.Y_REG=parseFloat(fk);
+	} else {
+		out("?syntax error");
 	}
-	var inp=prompt(this._line);
-	var parts=inp.split(",");
-	parts.reverse();
-	this._inputQueue.push.apply(this._inputQueue, parts);
-	return this._inputQueue.pop();
+}
+
+this.isNumeric = function(num) {
+	return !isNaN(parseFloat(num));
 }
 
 this.GOSUB = function(gosubCont) {
@@ -209,6 +212,30 @@ this.CONCAT = function() {
 	this.A_REG=this.A_REG+this.B_REG;
 }
 
+this.SEQ = function() {
+	this.X_REG=(this.A_REG===this.B_REG?-1:0);
+}
+
+this.SNEQ = function() {
+	this.X_REG=(this.A_REG===this.B_REG?0:-1);
+}
+
+this.SGT = function() {
+	this.X_REG=(this.A_REG>this.B_REG?-1:0);
+}
+
+this.SLT = function() {
+	this.X_REG=(this.A_REG<this.B_REG?-1:0);
+}
+
+this.SGTEQ = function() {
+	this.X_REG=(this.A_REG>=this.B_REG?-1:0);
+}
+
+this.SLTEQ = function() {
+	this.X_REG=(this.A_REG<=this.B_REG?-1:0);
+}
+
 this.COMPACT = function() {
 	// Nothing to do in this context
 }
@@ -290,8 +317,36 @@ this.FASTFOR = function() {
 	throw new Error("Fast for optimization not supported for target JS!");
 }
 
+// Here start the input/output code, that might be adopted to fit ones needs...
+
+this.input = function() {
+	if (this._inputQueue.length>0) {
+		return this._inputQueue.pop();
+	}
+	var inp=prompt(this._line);
+	if (inp) {
+		var parts=inp.split(",");
+		parts.reverse();
+		this._inputQueue.push.apply(this._inputQueue, parts);
+		return this._inputQueue.pop();
+	} else {
+		return "";
+	}
+}
+
+// GET relies on INPUT here, because due to the single threaded nature of 
+// Javascript, the concept of a BASIC program constantly polling the keyboard
+// doesn't really work in this context unless you stuff the compiled program
+// into a web worker something like that.
+this.get = function() {
+	var key=this.input();
+	if (!key) {
+		return ""
+	}
+	return key.substring(0,1);
+}
+
 this.out = function(txt) {
-	// console.log("["+txt+"]");
 	if (txt.indexOf && txt.indexOf("\n") != -1) {
 		this._line += txt;
 		console.log(this._line);
