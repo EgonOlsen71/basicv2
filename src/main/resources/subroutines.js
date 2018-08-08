@@ -218,6 +218,42 @@ this.CONCAT = function() {
 	this.A_REG=this.A_REG+this.B_REG;
 }
 
+this.MID = function() {
+	if (this.C_REG>this.B_REG.length) {
+		this.A_REG="";
+		return;
+	}
+	var end=this.C_REG-1+this.D_REG;
+	if (this.D_REG===-1) {
+		end=this.B_REG.length;
+	}
+	this.A_REG=this.B_REG.substring(this.C_REG-1, end);
+}
+
+this.LEFT = function() {
+	if (this.C_REG>this.B_REG.length) {
+		this.A_REG=this.B_REG;
+		return;
+	}
+	if (this.C_REG===0) {
+		this.A_REG="";
+		return;
+	}
+	this.A_REG=this.B_REG.substring(0, this.C_REG);
+}
+
+this.RIGHT = function() {
+	if (this.C_REG>this.B_REG.length) {
+		this.A_REG=this.B_REG;
+		return;
+	}
+	if (this.C_REG===0) {
+		this.A_REG="";
+		return;
+	}
+	this.A_REG=this.B_REG.substring(this.B_REG.length-this.C_REG);
+}
+
 this.SEQ = function() {
 	this.X_REG=(this.A_REG===this.B_REG?-1:0);
 }
