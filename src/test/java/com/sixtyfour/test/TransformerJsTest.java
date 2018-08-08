@@ -23,6 +23,7 @@ public class TransformerJsTest {
 	test4();
 	test16();
 	testFractal();
+	test22();
     }
 
     private static void test2() throws Exception {
@@ -47,6 +48,12 @@ public class TransformerJsTest {
    	String[] vary = Loader.loadProgram("src/test/resources/transform/test16.bas");
    	List<String> js = initTestEnvironment(vary);
    	write(js, path + "++test16.html");
+    }
+    
+    private static void test22() throws Exception {
+   	String[] vary = Loader.loadProgram("src/test/resources/transform/test22.bas");
+   	List<String> js = initTestEnvironment(vary);
+   	write(js, path + "++test22.html");
     }
     
     private static void testFractal() throws Exception {

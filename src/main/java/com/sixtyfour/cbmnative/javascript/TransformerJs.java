@@ -54,6 +54,7 @@ public class TransformerJs implements Transformer {
 	res.add("this._zeroflag=0");
 	res.add("this._timeOffset=0");
 	res.add("this._time=0");
+	res.add("this._inputQueue=new Array();");
 
 	int cnt = 0;
 	List<String> strVars = new ArrayList<String>();
