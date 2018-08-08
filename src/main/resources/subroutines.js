@@ -22,7 +22,13 @@ this.execute = function() {
 }
 
 this.START = function() {
-	//
+	if (!Array.prototype.fill) {
+		for (var i=0; i<this._memory.length; i++) {
+			this._memory[i]=0;
+		}
+	} else {
+		this._memory.fill(0);
+	}
 }
 
 this.END = function() {

@@ -50,7 +50,7 @@ public class TransformerJs implements Transformer {
 	res.add("this._line=\"\";");
 	res.add("this._stack=new Array();");
 	res.add("this._forstack=new Array();");
-	res.add("this._memory=Array.apply(null, Array(65535)).map(function () { return 0;});");
+	res.add("this._memory=new Array(65535);");
 	res.add("this._zeroflag=0");
 	res.add("this._timeOffset=0");
 	res.add("this._time=0");
