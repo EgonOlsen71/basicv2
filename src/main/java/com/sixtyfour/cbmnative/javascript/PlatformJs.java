@@ -19,7 +19,7 @@ public class PlatformJs implements PlatformProvider {
 
     @Override
     public Optimizer getOptimizer() {
-	return null;
+	return new OptimizerJs();
     }
 
     @Override
