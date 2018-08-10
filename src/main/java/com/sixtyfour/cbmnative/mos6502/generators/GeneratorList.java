@@ -54,6 +54,7 @@ public class GeneratorList {
 			this.add(new Atn());
 			this.add(new Log());
 			this.add(new Rnd());
+			this.add(new Xor());
 		}
 	});
 

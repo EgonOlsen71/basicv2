@@ -3102,6 +3102,28 @@ CLOSE		LDA #<X_REG
 			TYA				; file number into A
 			JMP CLOSECH
 ;###################################
+FACXOR		LDX #<TMP_FREG	; quite hacky XOR implementation...only needed for WAIT, so it doesn't really matter how optimal (not!) it is.
+			LDY #>TMP_FREG
+			JSR FACMEM
+			JSR ARGFAC
+			LDX #<TMP2_FREG
+			LDY #>TMP2_FREG
+			JSR FACMEM
+			LDA #<TMP_FREG
+			LDY #>TMP_FREG
+			JSR CMPFAC
+			BEQ XORZERO
+			LDA #<TMP_FREG
+			LDY #>TMP_FREG
+			JSR REALFAC
+			LDA #<TMP2_FREG
+			LDY #>TMP2_FREG
+			JSR MEMARG
+			JMP FACOR
+XORZERO		LDA #<REAL_CONST_ZERO
+			LDY #>REAL_CONST_ZERO
+			JMP REALFAC
+;###################################
 FINX		LDA #<REAL_CONST_ONE
 			LDY #>REAL_CONST_ONE
 			JSR REALFAC

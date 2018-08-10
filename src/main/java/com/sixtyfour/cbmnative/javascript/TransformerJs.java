@@ -14,6 +14,7 @@ import com.sixtyfour.cbmnative.PlatformProvider;
 import com.sixtyfour.cbmnative.Transformer;
 import com.sixtyfour.cbmnative.javascript.generators.GeneratorListJs;
 import com.sixtyfour.elements.Type;
+import com.sixtyfour.system.DataStore;
 import com.sixtyfour.system.Machine;
 
 public class TransformerJs implements Transformer {
@@ -35,6 +36,8 @@ public class TransformerJs implements Transformer {
 	subs.addAll(Arrays.asList(Loader.loadProgram(this.getClass().getResourceAsStream("/subroutines.js"))));
 
 	res.add("function Compiled() {");
+	
+	res.add("this.INIT = function() {");
 	res.add("this.X_REG=0.0;");
 	res.add("this.Y_REG=0.0;");
 	res.add("this.C_REG=0.0;");
@@ -47,6 +50,7 @@ public class TransformerJs implements Transformer {
 	res.add("this.CMD_NUM=0;");
 	res.add("this.CHANNEL=0;");
 	res.add("this.JUMP_TARGET=\"\";");
+	res.add("this.USR_PARAM=0;");
 	res.add("this._line=\"\";");
 	res.add("this._stack=new Array();");
 	res.add("this._forstack=new Array();");
@@ -84,6 +88,8 @@ public class TransformerJs implements Transformer {
 		}
 	    }
 	}
+	
+	datas=createDatas(machine);
 
 	// close the last function body
 	mnems.add("}");
@@ -92,6 +98,7 @@ public class TransformerJs implements Transformer {
 	vars.addAll(strVars);
 	vars.addAll(strArrayVars);
 	res.addAll(vars);
+	res.add("}");
 	res.addAll(mnems);
 	res.addAll(subs);
 	res.add("}");
@@ -100,6 +107,47 @@ public class TransformerJs implements Transformer {
 	return res;
     }
 
+    private List<String> createDatas(Machine machine) {
+	DataStore datas = machine.getDataStore();
+	List<String> ret = new ArrayList<String>();
+	if (datas.size()>0) {
+	String strDat="this._datas=[";
+	ret.add("this._dataPtr=0;");
+
+	datas.restore();
+	Object obj = null;
+	while ((obj = datas.read()) != null) {
+		Type type = Type.STRING;
+		if (obj instanceof Integer) {
+		    type = Type.INTEGER;
+		} else if (obj instanceof Float) {
+		    type = Type.REAL;
+		}
+
+		if (obj.toString().equals("\\0")) {
+			if (type == Type.STRING) {
+				obj = "";
+			} else if (type == Type.REAL) {
+				obj = 0.0f;
+			} else {
+				obj = 0;
+			}
+		}
+
+		if (type == Type.INTEGER) {
+			strDat+=obj.toString()+",";
+		} else if (type == Type.REAL) {
+		    strDat+=obj.toString()+",";
+		} else {
+		    strDat+="\""+obj.toString()+"\""+",";
+		}
+	}
+	strDat=strDat.substring(0, strDat.length()-1)+"];";
+	ret.add(strDat);
+	}
+	return ret;
+}
+    
     private void addContinues(List<String> code) {
 	int cnt = 0;
 	int forCnt=0;

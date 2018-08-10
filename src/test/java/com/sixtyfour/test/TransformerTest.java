@@ -44,10 +44,10 @@ public class TransformerTest {
 		// testTransformer2();
 		// testTransformer4();
 		// testTransformer5();
-		 testTransformerFractal();
+//		 testTransformerFractal();
 		// testTransformer6();
 		// testTransformer7();
-		 testTransformerPrime();
+//		 testTransformerPrime();
 		// testTransformerSqr();
 		// testTransformer8();
 		// testTransformer9();
@@ -65,19 +65,19 @@ public class TransformerTest {
 		// testTransformer20();
 		// testTransformer22();
 		// testTransformer23();
-		 testTransformerFrog();
-		 testTransformerAffine();
+//		 testTransformerFrog();
+//		 testTransformerAffine();
 		// testTransformer24();
 		// testTransformer25();
 		// testTransformer26();
-		 testHilbert();
-		 testLines();
+//		 testHilbert();
+//		 testLines();
 		// testTransformer27();
 		// testConditions();
 		// testTransformer28();
 		// testTransformer29();
 		// testTransformer30();
-		// testBenchmark();
+		 testBenchmark();
 		// testBreakout();
 		// testBbDemo();
 		// testOpenPrint();
@@ -94,7 +94,7 @@ public class TransformerTest {
 		// testInx();
 		// testLabyrinth();
 		// testFrosch();
-		testIfTest();
+//		testIfTest();
 	}
 
 	private static void testFrosch() throws Exception {

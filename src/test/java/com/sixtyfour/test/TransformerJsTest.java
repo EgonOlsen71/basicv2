@@ -27,7 +27,56 @@ public class TransformerJsTest {
 	test18();
 	test15();
 	testLevenshtein();
+	testCmd();
+	testOpen();
+	testData();
+	testLoad();
+	test17();
+	testRun();
+	testBenchmark();
     }
+    
+    private static void testBenchmark() throws Exception {
+   	String[] vary = Loader.loadProgram("src/test/resources/transform/js/benchmark2.bas");
+   	List<String> js = initTestEnvironment(vary);
+   	write(js, path + "++benchmark2.html");
+       }
+    
+    private static void testRun() throws Exception {
+   	String[] vary = Loader.loadProgram("src/test/resources/transform/testrun.bas");
+   	List<String> js = initTestEnvironment(vary);
+   	write(js, path + "++testrun.html");
+       }
+    
+    private static void test17() throws Exception {
+   	String[] vary = Loader.loadProgram("src/test/resources/transform/test17.bas");
+   	List<String> js = initTestEnvironment(vary);
+   	write(js, path + "++test17.html");
+    }
+    
+    private static void testLoad() throws Exception {
+   	String[] vary = Loader.loadProgram("src/test/resources/transform/testload.bas");
+   	List<String> js = initTestEnvironment(vary);
+   	write(js, path + "++testload.html");
+       }
+    
+    private static void testData() throws Exception {
+   	String[] vary = Loader.loadProgram("src/test/resources/transform/test23.bas");
+   	List<String> js = initTestEnvironment(vary);
+   	write(js, path + "++testdata.html");
+       }
+    
+    private static void testOpen() throws Exception {
+   	String[] vary = Loader.loadProgram("src/test/resources/transform/testopen.bas");
+   	List<String> js = initTestEnvironment(vary);
+   	write(js, path + "++testopen.html");
+       }
+    
+    private static void testCmd() throws Exception {
+   	String[] vary = Loader.loadProgram("src/test/resources/transform/testcmd.bas");
+   	List<String> js = initTestEnvironment(vary);
+   	write(js, path + "++testcmd.html");
+       }
     
     private static void testLevenshtein() throws Exception {
    	String[] vary = Loader.loadProgram("src/test/resources/transform/levenshtein.bas");

@@ -1,27 +1,35 @@
+this.restart = false;
+this.running = true;
+
 this.execute = function() {
-	var lineNumber = 0;
-	var running = true;
-	var funcName = "PROGRAMSTART";
-	while (running) {
-		//console.log("Call(1): "+funcName);
-		var nextLine = this[funcName]();
-		if (nextLine != null) {
-			lineNumber = nextLine;
-			if (lineNumber == "($JUMP)") {
-				lineNumber = this.JUMP_TARGET;
-			}
-			if (Number.isInteger(lineNumber)) {
-				funcName = "line_" + lineNumber;
+	do  {
+		var lineNumber = 0;
+		var funcName = "PROGRAMSTART";
+		this.restart=false;
+		this.running=true;
+		while (this.running) {
+			//console.log("Call(1): "+funcName);
+			var nextLine = this[funcName]();
+			if (nextLine != null) {
+				lineNumber = nextLine;
+				if (lineNumber == "($JUMP)") {
+					lineNumber = this.JUMP_TARGET;
+				}
+				if (Number.isInteger(lineNumber)) {
+					funcName = "line_" + lineNumber;
+				} else {
+					funcName = lineNumber;
+				}
 			} else {
-				funcName = lineNumber;
+				this.running = false;
 			}
-		} else {
-			running = false;
+			//console.log("state: "+this.running+"/"+this.restart+"/"+nextLine+"/"+funcName);
 		}
-	}
+	} while(this.restart);
 }
 
 this.START = function() {
+	this.INIT();
 	if (!Array.prototype.fill) {
 		for (var i=0; i<this._memory.length; i++) {
 			this._memory[i]=0;
@@ -29,6 +37,11 @@ this.START = function() {
 	} else {
 		this._memory.fill(0);
 	}
+}
+
+this.RUN = function() {
+	this.running=false;
+	this.restart=true;
 }
 
 this.END = function() {
@@ -319,7 +332,8 @@ this.READTI = function() {
 	var d = new Date();
 	var t=d.getTime();
 	t=Math.floor((t-this._time+this._timeOffset)/(1000.0/60.0));
-	this.X_REG=t;
+	//console.log("ti: "+t+"/"+this._time+"/"+this._timeOffset+"/"+(t-this._time+this._timeOffset));
+	this.Y_REG=t;
 }
 
 this.READTID = function() {
@@ -347,6 +361,18 @@ this.READSTATUS = function() {
 	return 0;
 }
 
+this.RESTORE = function() {
+	this._dataPtr=0;
+}
+
+this.READSTR = function() {
+	this.A_REG=this._datas[this._dataPtr++];
+}
+
+this.READNUMBER = function() {
+	this.Y_REG=this._datas[this._dataPtr++];
+}
+
 this.FINX = function() {
 	throw new Error("Fast inc optimization not supported for target JS!");
 }
@@ -357,6 +383,102 @@ this.FDEX = function() {
 
 this.FASTFOR = function() {
 	throw new Error("Fast for optimization not supported for target JS!");
+}
+
+this.OPEN = function() {
+	console.log("[OPEN not supported for JS, call ignored: "+this.B_REG+"/"+this.X_REG+"/"+this.C_REG+"/"+this.D_REG+"]");
+}
+
+this.CLOSE = function() {
+	console.log("[CLOSE not supported for JS, call ignored: "+this.X_REG+"]");
+}
+
+this.CMD = function() {
+	console.log("[CMD not supported for JS, call ignored: "+this.X_REG+"]");
+}
+
+this.STROUTCHANNEL = function() {
+	console.log("[PRINT# not supported for JS, redirected to normal PRINT]");
+	this.STROUT();
+}
+
+this.REALOUTCHANNEL = function() {
+	console.log("[PRINT# not supported for JS, redirected to normal PRINT]");
+	this.REALOUT();
+}
+
+this.LINEBREAKCHANNEL = function() {
+	console.log("[PRINT# not supported for JS, redirected to normal PRINT]");
+	this.LINEBREAK();
+}
+
+this.INTOUTCHANNEL = function() {
+	console.log("[PRINT# not supported for JS, redirected to normal PRINT]");
+	this.INTOUT();
+}
+
+this.INPUTNUMBERCHANNEL = function() {
+	console.log("[INPUT# not supported for JS, call ignored]");
+	this.X_REG=0;
+}
+
+this.INPUTSTRCHANNEL = function() {
+	console.log("[INPUT# not supported for JS, call ignored]");
+	this.A_REG="";
+}
+
+this.GETSTRCHANNEL = function() {
+	console.log("[GET# not supported for JS, call ignored]");
+	this.A_REG="";
+}
+
+this.GETNUMBERCHANNEL = function() {
+	console.log("[GET# not supported for JS, call ignored]");
+	this.X_REG=0;
+}
+
+this.TABOUTCHANNEL = function() {
+	console.log("[TAB not supported for JS in file mode, redirected to normal TAB]");
+	this.TAB();
+}
+
+this.SPCOUTCHANNEL = function() {
+	console.log("[SPC not supported for JS in file mode, redirected to normal SPC]");
+	this.SPC();
+}
+
+this.TABCHANNEL = function() {
+	console.log("[TAB not supported for JS in file mode, redirected to normal TAB]");
+	this.TAB();
+}
+
+this.SPCCHANNEL = function() {
+	console.log("[SPC not supported for JS in file mode, redirected to normal SPC]");
+	this.SPC();
+}
+
+this.LOAD = function() {
+	console.log("[LOAD not supported for JS in file mode, call ignored]");
+}
+
+this.SAVE = function() {
+	console.log("[SAVE not supported for JS in file mode, call ignored]");
+}
+
+this.VERIFY = function() {
+	console.log("[VERIFY not supported for JS in file mode, call ignored]");
+}
+
+this.USR = function() {
+	var addr=this._memory[785] + 256*this._memory[786];
+	this.USR_PARAM=this.X_REG;
+	var callStr="$"+addr.toString(16);
+	console.log("[Calling user function named "+callStr+"]");
+	try {
+		this[callStr]();
+	} catch {
+		console.log("[Function call failed]");
+	}
 }
 
 // Here start the input/output code, that might be adopted to fit ones needs...
