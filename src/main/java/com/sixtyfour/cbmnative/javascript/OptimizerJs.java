@@ -10,7 +10,7 @@ import com.sixtyfour.cbmnative.ProgressListener;
 
 public class OptimizerJs implements Optimizer {
 
-    private final static int MAX_AHEAD = 4;
+    private final static int MAX_AHEAD = 9;
 
     @Override
     public List<String> optimize(PlatformProvider platform, List<String> code) {
@@ -55,6 +55,39 @@ public class OptimizerJs implements Optimizer {
 		    i++;
 		    replaced = true;
 		}
+		
+		// Remove jumps to "empty" functions.
+		if (lines[0].startsWith("return") && lines[0].contains(" ") && (lines[4].startsWith("return") && lines[4].contains(" ") || (lines[5].startsWith("return") && lines[5].contains(" ") && lines[4].startsWith("//")))) {
+		    if (lines[4].startsWith("//")) {
+			for (int pp=4; pp<MAX_AHEAD-1; pp++) {
+			    lines[pp]=lines[pp+1];
+			}
+		    }
+		    String label=lines[0].split(" ")[1].replace(";","").trim();
+		    String label4=lines[4].split(" ")[1].replace(";","").trim();
+		    
+		    if (label.startsWith("\"")) {
+			label=label.substring(1, label.length()-1);
+		    } else {
+			label="line_"+label;
+		    }
+		    
+		    if (label4.startsWith("\"")) {
+			label4=label4.substring(1, label4.length()-1);
+		    } else {
+			label4="line_"+label4;
+		    }
+		    if (lines[1].startsWith("}") && lines[2].startsWith("//")) {
+			if (lines[3].startsWith("this."+label+" = function")) {
+			    if (lines[5].startsWith("}") && lines[6].startsWith("//")) {
+				if (lines[7].startsWith("this."+label4+" = function")) {
+				    replaced=true;
+				    ret.add(lines[4]);
+				}
+			    }
+			}
+		    }
+		}
 
 		if (!replaced) {
 		    ret.add(lines[0]);
@@ -62,7 +95,7 @@ public class OptimizerJs implements Optimizer {
 
 	    }
 	    Logger.log("Javascript code optimized in " + (System.currentTimeMillis() - s) + "ms");
-
+	    ret.add(code.get(code.size()-1));
 	    return ret;
 	}
 
