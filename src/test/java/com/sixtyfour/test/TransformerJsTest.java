@@ -34,7 +34,14 @@ public class TransformerJsTest {
 	test17();
 	testRun();
 	testBenchmark();
+	testCharFractal();
     }
+    
+    private static void testCharFractal() throws Exception {
+   	String[] vary = Loader.loadProgram("src/test/resources/transform/charfractal.bas");
+   	List<String> js = initTestEnvironment(vary);
+   	write(js, path + "++charfractal.html");
+       }
     
     private static void testBenchmark() throws Exception {
    	String[] vary = Loader.loadProgram("src/test/resources/transform/js/benchmark2.bas");
