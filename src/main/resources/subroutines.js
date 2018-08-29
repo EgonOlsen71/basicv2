@@ -513,7 +513,7 @@ this.get = function() {
 this.out = function(txt) {
 	if (txt.indexOf && txt.indexOf("\n") != -1) {
 		this._line += txt;
-		console.log(this._line);
+		this.outputter(this._line);
 		this._line = "";
 	} else {
 		this._line += txt;
