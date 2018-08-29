@@ -513,4 +513,9 @@ public class Transformer64 implements Transformer {
 		this.preferZeropage = optimizedTemp;
 	}
 
+	@Override
+	public List<String> createCaller(String calleeName) {
+	    return null;
+	}
+
 }

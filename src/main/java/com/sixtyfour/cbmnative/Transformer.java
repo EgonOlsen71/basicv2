@@ -15,6 +15,8 @@ public interface Transformer {
 	 */
 	List<String> transform(Machine machine, PlatformProvider romProvider, List<String> code);
 
+	List<String> createCaller(String calleeName);
+	
 	void setVariableStart(int variableStart);
 
 	int getStringMemoryEnd();

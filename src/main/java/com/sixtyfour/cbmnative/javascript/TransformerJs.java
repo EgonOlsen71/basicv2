@@ -102,7 +102,6 @@ public class TransformerJs implements Transformer {
 	res.addAll(mnems);
 	res.addAll(subs);
 	res.add("}");
-	addFrame(res);
 
 	return res;
     }
@@ -296,12 +295,18 @@ public class TransformerJs implements Transformer {
 	//
     }
 
-    private void addFrame(List<String> res) {
-	res.add(0, "<script type='text/javascript'>");
-	res.add(0, "<html>");
+    @Override
+    public List<String> createCaller(String calleeName) {
+	List<String> res=new ArrayList<>();
+	res.add("<html>");
+	res.add("<head>");
+	res.add("<script src='"+calleeName+"' type='text/javascript'></script>");
+	res.add("<script type='text/javascript'>");
 	res.add("new Compiled().execute();");
 	res.add("</script>");
+	res.add("</head><body></body>");
 	res.add("</html>");
+	return res;
     }
 
 }

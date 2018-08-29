@@ -14,6 +14,8 @@ import com.sixtyfour.Loader;
 import com.sixtyfour.cbmnative.NativeCompiler;
 import com.sixtyfour.cbmnative.PlatformProvider;
 import com.sixtyfour.cbmnative.ProgressListener;
+import com.sixtyfour.cbmnative.Transformer;
+import com.sixtyfour.cbmnative.javascript.PlatformJs;
 import com.sixtyfour.cbmnative.mos6502.c64.Platform64;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.config.LoopMode;
@@ -103,9 +105,27 @@ public class MoSpeedCL {
 		String ilTarget = null;
 		String nlTarget = null;
 
-		String targetFile = "++" + new File(srcFile).getName().replace(".bas", "") + ".prg";
+		PlatformProvider platform = new Platform64();
+		String appendix=".prg";
+		if (cmds.containsKey("platform")) {
+		    if (cmds.get("platform").equalsIgnoreCase("c64")) {
+			platform = new Platform64();
+			appendix=".prg";
+		    } else if (cmds.get("platform").equalsIgnoreCase("js")) {
+			platform = new PlatformJs();
+			appendix=".js";
+		    } else {
+			System.out.println("Target platform " + cmds.get("platform") + " not supported!");
+			exit(4);
+		    }
+		}
+		
+		String targetFile = "++" + new File(srcFile).getName().replace(".bas", "") + appendix;
 		if (cmds.containsKey("target")) {
 			targetFile = cmds.get("target");
+			if (appendix.equalsIgnoreCase(".js") && !targetFile.endsWith(".js")) {
+			    targetFile=targetFile+appendix;
+			}
 		}
 		boolean ok = delete(targetFile);
 		if (!ok) {
@@ -121,12 +141,6 @@ public class MoSpeedCL {
 				System.out.println("Can't delete generated source file: " + ilTarget + " / " + nlTarget);
 				exit(5);
 			}
-		}
-
-		PlatformProvider platform = new Platform64();
-		if (cmds.containsKey("platform") && !cmds.get("platform").equalsIgnoreCase("c64")) {
-			System.out.println("Target platform " + cmds.get("platform") + " not supported!");
-			exit(4);
 		}
 
 		System.out.println("Compiling " + srcFile + "...");
@@ -166,15 +180,12 @@ public class MoSpeedCL {
 			write(nCode, nlTarget);
 		}
 
-		Assembler assy = new Assembler(nCode);
-		assy.compile(cfg);
-		try {
-			System.out.println("Writing target file: " + targetFile);
-			FileWriter.writeAsPrg(assy.getProgram(), targetFile, memConfig.getProgramStart() == -1 || memConfig.getProgramStart() < 2100);
-		} catch (Exception e) {
-			System.out.println("Failed to write target file '" + targetFile + "': " + e.getMessage());
-			exit(9);
+		Assembler assy=null;
+		if (platform instanceof Platform64) {
+        		assy = new Assembler(nCode);
+        		assy.compile(cfg);
 		}
+		writeTargetFiles(memConfig, targetFile, nCode, assy, platform);
 		System.out.println(srcFile + " compiled in " + (System.currentTimeMillis() - s) + "ms!");
 
 		if (cmds.containsKey("vice")) {
@@ -182,6 +193,36 @@ public class MoSpeedCL {
 		}
 
 		exit(0);
+	}
+
+	private static void writeTargetFiles(MemoryConfig memConfig, String targetFile, List<String> ncode, Assembler assy, PlatformProvider platform) {
+	    if (platform instanceof Platform64) {
+        	    try {
+        	    	System.out.println("Writing target file: " + targetFile);
+        	    	FileWriter.writeAsPrg(assy.getProgram(), targetFile, memConfig.getProgramStart() == -1 || memConfig.getProgramStart() < 2100);
+        	    } catch (Exception e) {
+        	    	System.out.println("Failed to write target file '" + targetFile + "': " + e.getMessage());
+        	    	exit(9);
+        	    }
+	    } else if (platform instanceof PlatformJs) {
+		Transformer trsn=new PlatformJs().getTransformer();
+		try (PrintWriter pw = new PrintWriter(targetFile); PrintWriter cpw=new PrintWriter(targetFile.replace(".js", ".html"))) {
+		    System.out.println("Writing target files: " + targetFile);
+		    for (String line : ncode) {
+			pw.println(line);
+		    }
+		    String[] parts=targetFile.replace("\\","/").split("/");
+		    for (String line:trsn.createCaller(parts[parts.length-1])) {
+			cpw.println(line);
+		    }
+		} catch (Exception e) {
+		    System.out.println("Failed to write target file '" + targetFile + "': " + e.getMessage());
+    	    	exit(9);
+		}
+	    } else {
+		System.out.println("\n!!! Unsupported platform: " + platform);
+		exit(19);
+	    }
 	}
 
 	private static void runVice(Map<String, String> cmds, String targetFile) {
@@ -274,7 +315,7 @@ public class MoSpeedCL {
 		System.out.println("An existing file of the same name will be overwritten.\n\n");
 		System.out.println("Optional parameters (either with / or - as prefix):\n");
 		System.out.println("/target=<target file> -  the target file name");
-		System.out.println("/platform=c64 - the target platform, only c64 supported for now");
+		System.out.println("/platform=xxxx - the target platform. Options are c64 (for c64 compatible machine code) and js (for Javascript), default is c64");
 		System.out.println("/generatesrc=true|false -  writes the generated intermediate and assembly language programs to disk as well");
 		System.out.println("/constprop=true|false - enables/disables constant propagation optimizations");
 		System.out.println("/constfolding=true|false - enables/disables constant folding optimizations");
