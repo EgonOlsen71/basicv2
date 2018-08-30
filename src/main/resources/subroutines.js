@@ -1,7 +1,7 @@
 this.restart = false;
 this.running = true;
 
-this.execute = function() {
+this.execute = function(threaded) {
 	do  {
 		var lineNumber = 0;
 		var funcName = "PROGRAMSTART";
@@ -22,6 +22,9 @@ this.execute = function() {
 				}
 			} else {
 				this.running = false;
+			}
+			if (threaded) {
+				_self.postMessage(funcName);
 			}
 			//console.log("state: "+this.running+"/"+this.restart+"/"+nextLine+"/"+funcName);
 		}
@@ -476,7 +479,7 @@ this.USR = function() {
 	console.log("[Calling user function named "+callStr+"]");
 	try {
 		this[callStr]();
-	} catch {
+	} catch(e) {
 		console.log("[Function call failed]");
 	}
 }

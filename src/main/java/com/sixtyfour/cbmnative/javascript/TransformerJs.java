@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.sixtyfour.Loader;
 import com.sixtyfour.Logger;
@@ -35,6 +36,8 @@ public class TransformerJs implements Transformer {
 	subs.add("// *** SUBROUTINES ***");
 	subs.addAll(Arrays.asList(Loader.loadProgram(this.getClass().getResourceAsStream("/subroutines.js"))));
 
+	res.addAll(Arrays.asList(Loader.loadProgram(this.getClass().getResourceAsStream("/webworker.js"))));
+	
 	res.add("function Compiled(output) {");
 	
 	res.add("this.outputter=function(txt) {console.log(txt);}");
@@ -299,19 +302,9 @@ public class TransformerJs implements Transformer {
     }
 
     @Override
-    public List<String> createCaller(String calleeName) {
-	List<String> res=new ArrayList<>();
-	res.add("<html>");
-	res.add("<head>");
-	res.add("<script src='"+calleeName+"' type='text/javascript'></script>");
-	res.add("<script type='text/javascript'>");
-	res.add("var preout=function(txt) {document.getElementById('out').insertAdjacentHTML('beforeend',txt);};");
-	res.add("//window.onload=function() {new Compiled(preout).execute();}");
-	res.add("window.onload=function() {new Compiled().execute();}");
-	res.add("</script>");
-	res.add("</head><body><pre id='out'></pre></body>");
-	res.add("</html>");
-	return res;
+    public List<String> createCaller(final String calleeName) {
+	List<String> res=Arrays.asList(Loader.loadProgram(this.getClass().getResourceAsStream("/caller.js")));
+	return res.stream().map(p -> p.replace("{*}", calleeName)).collect(Collectors.toList());
     }
 
 }
