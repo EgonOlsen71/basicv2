@@ -304,7 +304,12 @@ public class TransformerJs implements Transformer {
     @Override
     public List<String> createCaller(final String calleeName) {
 	List<String> res=Arrays.asList(Loader.loadProgram(this.getClass().getResourceAsStream("/caller.js")));
-	return res.stream().map(p -> p.replace("{*}", calleeName)).collect(Collectors.toList());
+	List<String> ret=new ArrayList<>();
+	for (String line:res) {
+		ret.add(line.replace("{*}", calleeName));
+	}
+	return ret;
+	//return res.stream().map(p -> p.replace("{*}", calleeName)).collect(Collectors.toList());
     }
 
 }
