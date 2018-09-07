@@ -58,9 +58,11 @@ public class TermOptimizer {
 	}
 
 	/**
-	 * @param config
-	 * @param machine
-	 * @param basic
+	 * Evaluates conditional blocks and optimizes their executing if are are either always true or always false.
+	 * 
+	 * @param config the compiler configuration
+	 * @param machine the machine
+	 * @param basic the Basic instance
 	 */
 	public static void handleConstantConditions(CompilerConfig config, Machine machine, Basic basic) {
 		if (config.isConstantFolding()) {
@@ -98,11 +100,13 @@ public class TermOptimizer {
 	}
 
 	/**
-	 * @param machine
-	 * @param ret
-	 * @param termMap
-	 * @param builder
-	 * @return
+	 * Optimizes a term.
+	 * 
+	 * @param machine the machine
+	 * @param ret the term to optimize
+	 * @param termMap the mapping between placeholders and actual terms
+	 * @param builder the term builder instance
+	 * @return the optimized term
 	 */
 	public static Term optimizeTerm(CompilerConfig config, Machine machine, Term ret, Map<String, Term> termMap, TermBuilder builder) {
 		if (ret.getType(true) == Type.STRING) {

@@ -13,10 +13,39 @@ import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
 /**
+ * Folds constants, i.e. it detects if some expression is actually constant and replaces it with a single constant, if it is.
+ * 
  * @author EgonOlsen
  * 
  */
 public class ConstantFolder {
+
+	/**
+	 * Optimizes the term tree by folding constants where possible. The optimized terms are inserted directly into the term tree.
+	 * 
+	 * @param config the compiler configuration
+	 * @param machine the machine
+	 */
+	public static void foldConstants(CompilerConfig config, Machine machine) {
+		if (config.isConstantFolding()) {
+			Logger.log("Folding constants...");
+			for (Command cmd : machine.getCommandList()) {
+				for (Term cmdTerm : cmd.getAllTerms()) {
+					/*
+					 * if (cmdTerm != null && cmd.getTerm() != null) {
+					 * System.out.println(cmd.getName() + "/" + cmdTerm + "/" +
+					 * cmd.getTerm().getInitial() + "/" +
+					 * ConstantPropagator.checkForConstant(machine, cmdTerm)); }
+					 */
+					if (cmdTerm != null) {
+						foldConstants(config, cmdTerm, machine);
+						// System.out.println("> " + cmdTerm);
+					}
+				}
+			}
+		}
+	}
+
 	/**
 	 * Optimizes the term tree by folding constants where possible.
 	 * 
@@ -61,27 +90,7 @@ public class ConstantFolder {
 		}
 		return finalTerm;
 	}
-
-	public static void foldConstants(CompilerConfig config, Machine machine) {
-		if (config.isConstantFolding()) {
-			Logger.log("Folding constants...");
-			for (Command cmd : machine.getCommandList()) {
-				for (Term cmdTerm : cmd.getAllTerms()) {
-					/*
-					 * if (cmdTerm != null && cmd.getTerm() != null) {
-					 * System.out.println(cmd.getName() + "/" + cmdTerm + "/" +
-					 * cmd.getTerm().getInitial() + "/" +
-					 * ConstantPropagator.checkForConstant(machine, cmdTerm)); }
-					 */
-					if (cmdTerm != null) {
-						foldConstants(config, cmdTerm, machine);
-						// System.out.println("> " + cmdTerm);
-					}
-				}
-			}
-		}
-	}
-
+	
 	private static void setConstant(Term finalTerm, Machine machine, Atom left) {
 		Constant<?> conty = null;
 		Object val = finalTerm.eval(machine);

@@ -6,7 +6,7 @@ import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.system.Machine;
 
 /**
- * Interface for a term builder. Used to seperate the Parser's implementation
+ * Interface for a term builder. Used to separate the Parser's implementation
  * from the TermOptimizers request for this.
  * 
  * @author EgonOlsen

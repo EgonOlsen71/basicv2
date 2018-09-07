@@ -16,11 +16,20 @@ import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Term;
 
 /**
+ * Eliminates dead variable stores from the code.
+ * 
  * @author EgonOlsen
  * 
  */
 public class DeadStoreEliminator {
 
+	/**
+	 * Eliminates dead variable stores from the code.
+	 * 
+	 * @param config the compiler configuration
+	 * @param basic the Basic instance
+	 * @return true, if something has been optimized
+	 */
 	public static boolean eliminateDeadStores(CompilerConfig config, Basic basic) {
 		if (config.isDeadStoreElimination()) {
 			Logger.log("Eliminating dead stores...");
