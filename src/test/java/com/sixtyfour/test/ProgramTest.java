@@ -3,6 +3,7 @@ package com.sixtyfour.test;
 import com.sixtyfour.Basic;
 import com.sixtyfour.Loader;
 import com.sixtyfour.config.CompilerConfig;
+import com.sixtyfour.extensions.textmode.ConsoleSupport;
 
 /**
  * Basic tests for executing complete BASIC programs.
@@ -52,6 +53,7 @@ public class ProgramTest {
 	}
 	
 	private static void testCharFractal() {
+	    	Basic.registerExtension(new ConsoleSupport());
 		String[] vary = Loader.loadProgram("src/test/resources/basic/charfractal.bas");
 		Basic inty = new Basic(vary);
 		inty.run(config);

@@ -1,4 +1,4 @@
-5 print chr$(147);
+5 console 1:print chr$(147);
 7 ti$="000000"
 8 dimv,u,a,b,n,s,i,r,z,x,h,y,d
 10 x1=38:y1=22:ns=48:ne=33:z=0
@@ -10,3 +10,4 @@
 130 s=s+1:pokes,n:pokes+d,n:r=r+h:nextx:s=s+1:d=d-80:next
 10000 print"zeit: ";ti$;
 10010 geta$:if a$="" then 10010
+10020 console 0
