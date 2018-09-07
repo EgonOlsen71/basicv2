@@ -6,6 +6,8 @@ import java.util.Map;
 import com.sixtyfour.elements.Type;
 
 /**
+ * A class to represent the operands in intermediate code, like X and Y in MOV X,Y.
+ * 
  * @author EgonOlsen
  * 
  */
@@ -13,6 +15,12 @@ public class Operands {
 	private Operand target;
 	private Operand source;
 
+	/**
+	 * Creates a new instance.
+	 * 
+	 * @param command the command (including the operands)
+	 * @param name2label a mapping between names and labels
+	 */
 	public Operands(String command, Map<String, String> name2label) {
 		int pos = command.indexOf(" ");
 		if (pos == -1) {
@@ -41,18 +49,38 @@ public class Operands {
 		}
 	}
 
+	/**
+	 * Returns the target operand (i.e. the left one).
+	 * 
+	 * @return the operand
+	 */
 	public Operand getTarget() {
 		return target;
 	}
 
+	/**
+	 * Sets the target operand (i.e. the left one).
+	 * 
+	 * @param target the operand
+	 */
 	public void setTarget(Operand target) {
 		this.target = target;
 	}
 
+	/**
+	 * Returns the source operand (i.e. the right one).
+	 * 
+	 * @return the operand
+	 */
 	public Operand getSource() {
 		return source;
 	}
 
+	/**
+	 * Sets the source operand (i.e. the right one).
+	 * 
+	 * @param target the operand
+	 */
 	public void setSource(Operand source) {
 		this.source = source;
 	}

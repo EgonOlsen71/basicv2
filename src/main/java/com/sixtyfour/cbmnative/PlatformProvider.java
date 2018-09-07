@@ -1,38 +1,53 @@
 package com.sixtyfour.cbmnative;
 
 /**
+ * Interface for implementing a target platform.
+ * 
  * @author EgonOlsen
  * 
  */
 public interface PlatformProvider {
 
-	/**
-	 * @return
-	 */
-	int getStackSize();
+    /**
+     * Returns the stack size that should be used on the target platform.
+     * 
+     * @return the size
+     */
+    int getStackSize();
 
-	/**
-	 * @return
-	 */
-	int getForStackSize();
+    /**
+     * Returns the stack size of the for-next stack that should be used on the
+     * target platform.
+     * 
+     * @return the size
+     */
+    int getForStackSize();
 
-	/**
-	 * @return
-	 */
-	Optimizer getOptimizer();
+    /**
+     * Returns the optimizer that should be used on the target platform.
+     * 
+     * @return the optimizer or null, if none should be used
+     */
+    Optimizer getOptimizer();
 
-	/**
-	 * @return
-	 */
-	Transformer getTransformer();
+    /**
+     * Returns the transformer that should be used for the target platform.
+     * 
+     * @return the transformer
+     */
+    Transformer getTransformer();
 
-	/**
-	 * @return
-	 */
-	Unlinker getUnlinker();
+    /**
+     * Returns the unlinker that should be used on the target platform.
+     * 
+     * @return the unlinker or null, if none should be used
+     */
+    Unlinker getUnlinker();
 
-	/**
-	 * @return
-	 */
-	boolean useLooseTypes();
+    /**
+     * Returns true, if loose types are allowed. False if not.
+     * 
+     * @return Are they allowed?
+     */
+    boolean useLooseTypes();
 }

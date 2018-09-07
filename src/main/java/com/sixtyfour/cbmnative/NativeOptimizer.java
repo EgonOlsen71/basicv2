@@ -7,7 +7,7 @@ import com.sixtyfour.Logger;
 import com.sixtyfour.config.CompilerConfig;
 
 /**
- * An optimizer for the native code in pseudo assembly language.
+ * An optimizer for the native code in intermediate (pseudo) assembly language.
  * 
  * @author EgonOlsen
  * 
@@ -65,6 +65,14 @@ public class NativeOptimizer {
 		patterns.add(new NativePattern(new String[] { "PUSH Y", "NOP", "POP Y" }, new String[] { "NOP" }));
 	}
 
+	/**
+	 * Optimize the intermediate code
+	 * 
+	 * @param config the compiler configuration
+	 * @param code the code in intermediate language
+	 * @param pg an optional progress listener
+	 * @return the optimized code
+	 */
 	public static List<String> optimizeNative(CompilerConfig config, List<String> code, ProgressListener pg) {
 		if (config.isIntermediateLanguageOptimizations()) {
 			Logger.log("Running intermediate code optimizer...");
