@@ -18,7 +18,7 @@ import com.sixtyfour.config.CompilerConfig;
  * patterns, moving them into subroutines and replacing them by calls to these
  * subroutines. This reduces code size but increases execution time.
  * 
- * @author Foerster-H
+ * @author EgonOlsen
  *
  */
 public class Compactor {
