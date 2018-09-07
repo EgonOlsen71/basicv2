@@ -19,6 +19,8 @@ import com.sixtyfour.system.DataStore;
 import com.sixtyfour.system.Machine;
 
 /**
+ * The transformer for the C64 target platform. It generates 6502 assembly code linked together with a C64 specific runtime.
+ * 
  * @author EgonOlsen
  * 
  */

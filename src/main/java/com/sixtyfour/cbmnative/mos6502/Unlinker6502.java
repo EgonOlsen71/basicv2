@@ -10,6 +10,8 @@ import com.sixtyfour.Logger;
 import com.sixtyfour.cbmnative.Unlinker;
 
 /**
+ * An Unlinker implementation for C64/6502 assembly code.
+ * 
  * @author EgonOlsen
  * 
  */

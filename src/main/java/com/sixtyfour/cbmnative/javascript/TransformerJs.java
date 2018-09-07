@@ -17,6 +17,14 @@ import com.sixtyfour.elements.Type;
 import com.sixtyfour.system.DataStore;
 import com.sixtyfour.system.Machine;
 
+/**
+ * The transformer for the Javscript target platform. It generates Javascript
+ * code linked together with a Javascript runtime. The result can either be run
+ * directly in the browsers main thread or in a web worker.
+ * 
+ * @author EgonOlsen
+ *
+ */
 public class TransformerJs implements Transformer {
 
     @Override
@@ -36,12 +44,12 @@ public class TransformerJs implements Transformer {
 	subs.addAll(Arrays.asList(Loader.loadProgram(this.getClass().getResourceAsStream("/subroutines.js"))));
 
 	res.addAll(Arrays.asList(Loader.loadProgram(this.getClass().getResourceAsStream("/webworker.js"))));
-	
+
 	res.add("function Compiled(output) {");
-	
+
 	res.add("this.outputter=function(txt) {console.log(txt);}");
 	res.add("if (output) {this.outputter=output;}");
-	
+
 	res.add("this.INIT = function() {");
 	res.add("this.X_REG=0.0;");
 	res.add("this.Y_REG=0.0;");
@@ -93,8 +101,8 @@ public class TransformerJs implements Transformer {
 		}
 	    }
 	}
-	
-	datas=createDatas(machine);
+
+	datas = createDatas(machine);
 
 	// close the last function body
 	mnems.add("}");
@@ -114,13 +122,13 @@ public class TransformerJs implements Transformer {
     private List<String> createDatas(Machine machine) {
 	DataStore datas = machine.getDataStore();
 	List<String> ret = new ArrayList<String>();
-	if (datas.size()>0) {
-	String strDat="this._datas=[";
-	ret.add("this._dataPtr=0;");
+	if (datas.size() > 0) {
+	    String strDat = "this._datas=[";
+	    ret.add("this._dataPtr=0;");
 
-	datas.restore();
-	Object obj = null;
-	while ((obj = datas.read()) != null) {
+	    datas.restore();
+	    Object obj = null;
+	    while ((obj = datas.read()) != null) {
 		Type type = Type.STRING;
 		if (obj instanceof Integer) {
 		    type = Type.INTEGER;
@@ -129,54 +137,54 @@ public class TransformerJs implements Transformer {
 		}
 
 		if (obj.toString().equals("\\0")) {
-			if (type == Type.STRING) {
-				obj = "";
-			} else if (type == Type.REAL) {
-				obj = 0.0f;
-			} else {
-				obj = 0;
-			}
+		    if (type == Type.STRING) {
+			obj = "";
+		    } else if (type == Type.REAL) {
+			obj = 0.0f;
+		    } else {
+			obj = 0;
+		    }
 		}
 
 		if (type == Type.INTEGER) {
-			strDat+=obj.toString()+",";
+		    strDat += obj.toString() + ",";
 		} else if (type == Type.REAL) {
-		    strDat+=obj.toString()+",";
+		    strDat += obj.toString() + ",";
 		} else {
-		    strDat+="\""+obj.toString()+"\""+",";
+		    strDat += "\"" + obj.toString() + "\"" + ",";
 		}
-	}
-	strDat=strDat.substring(0, strDat.length()-1)+"];";
-	ret.add(strDat);
+	    }
+	    strDat = strDat.substring(0, strDat.length() - 1) + "];";
+	    ret.add(strDat);
 	}
 	return ret;
-}
-    
+    }
+
     private void addContinues(List<String> code) {
 	int cnt = 0;
-	int forCnt=0;
+	int forCnt = 0;
 	for (int i = 0; i < code.size(); i++) {
 	    String line = code.get(i);
 	    if (line.equals("JSR GOSUB")) {
-		String cont="GOSUBCONT" + cnt++;
-		code.add(i + 2, cont+":");
-		code.set(i, "JSR GOSUB(\""+cont+"\")");
+		String cont = "GOSUBCONT" + cnt++;
+		code.add(i + 2, cont + ":");
+		code.set(i, "JSR GOSUB(\"" + cont + "\")");
 	    } else if (line.equals("JSR INITFOR")) {
-		String cont="FORLOOP" + forCnt++;
-		String var=code.get(i-1);
-		var=var.substring(var.indexOf("(")+1, var.lastIndexOf("{"));
-		code.add(i + 1, cont+":");
-		code.set(i, "JSR INITFOR(\""+cont+"\",\"VAR_"+var+"\")");
-		code.set(i-1, "NOP");
+		String cont = "FORLOOP" + forCnt++;
+		String var = code.get(i - 1);
+		var = var.substring(var.indexOf("(") + 1, var.lastIndexOf("{"));
+		code.add(i + 1, cont + ":");
+		code.set(i, "JSR INITFOR(\"" + cont + "\",\"VAR_" + var + "\")");
+		code.set(i - 1, "NOP");
 	    } else if (line.equals("JSR NEXT")) {
-		String var=code.get(i-1);
+		String var = code.get(i - 1);
 		if (var.contains("{}")) {
-		    var="VAR_"+var.substring(var.indexOf("(")+1,var.indexOf("{"));
+		    var = "VAR_" + var.substring(var.indexOf("(") + 1, var.indexOf("{"));
 		} else {
-		    var="0";
+		    var = "0";
 		}
-		code.set(i-1, "NOP");
-		code.set(i, "JSR NEXT(\""+var+"\")");
+		code.set(i - 1, "NOP");
+		code.set(i, "JSR NEXT(\"" + var + "\")");
 	    }
 	}
 
@@ -302,13 +310,14 @@ public class TransformerJs implements Transformer {
 
     @Override
     public List<String> createCaller(final String calleeName) {
-	List<String> res=Arrays.asList(Loader.loadProgram(this.getClass().getResourceAsStream("/caller.js")));
-	List<String> ret=new ArrayList<>();
-	for (String line:res) {
-		ret.add(line.replace("{*}", calleeName));
+	List<String> res = Arrays.asList(Loader.loadProgram(this.getClass().getResourceAsStream("/caller.js")));
+	List<String> ret = new ArrayList<>();
+	for (String line : res) {
+	    ret.add(line.replace("{*}", calleeName));
 	}
 	return ret;
-	//return res.stream().map(p -> p.replace("{*}", calleeName)).collect(Collectors.toList());
+	// return res.stream().map(p -> p.replace("{*}",
+	// calleeName)).collect(Collectors.toList());
     }
 
 }

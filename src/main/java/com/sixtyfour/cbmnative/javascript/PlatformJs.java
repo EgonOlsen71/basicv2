@@ -5,6 +5,12 @@ import com.sixtyfour.cbmnative.PlatformProvider;
 import com.sixtyfour.cbmnative.Transformer;
 import com.sixtyfour.cbmnative.Unlinker;
 
+/**
+ * A PlatformProvider implementation for the Javascript target platform.
+ * 
+ * @author EgonOlsen
+ *
+ */
 public class PlatformJs implements PlatformProvider {
 
     @Override

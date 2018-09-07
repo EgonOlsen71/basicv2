@@ -6,6 +6,12 @@ import com.sixtyfour.cbmnative.Transformer;
 import com.sixtyfour.cbmnative.Unlinker;
 import com.sixtyfour.cbmnative.mos6502.Unlinker6502;
 
+/**
+ * A PlatformProvider implementation for the C64 target platform.
+ * 
+ * @author EgonOlsen
+ *
+ */
 public class Platform64 implements PlatformProvider {
 
 	@Override
