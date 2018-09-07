@@ -18,30 +18,31 @@ public class ProgramTest {
 	 *            the arguments
 	 */
 	public static void main(String[] args) {
-		testArray();
-		testPrime();
-		testJavaPrime();
-		testPrime();
-		for (int i = 0; i < 10; i++) {
-			testPrime2();
-		}
-		testConditions();
+//		testArray();
+//		testPrime();
+//		testJavaPrime();
+//		testPrime();
+//		for (int i = 0; i < 10; i++) {
+//			testPrime2();
+//		}
+		//testConditions();
 		// testVarious();
 		// testGosubReturn();
 		// testGosub();
 		// testMenu();
-		testBeer();
+		//testBeer();
 		// testRun();
 		// testInput();
-		testData();
+		//testData();
 		// testAdventure();
 		// testCalc();
-		testStuff();
+		//testStuff();
 		// testCalendar();
 		// testOtherPrime();
 		// testBio();
-		testIf();
-		testBuggedOn64();
+		//testIf();
+		//testBuggedOn64();
+	    testCharFractal();
 	}
 
 	private static void testArray() {
@@ -49,6 +50,14 @@ public class ProgramTest {
 		Basic inty = new Basic(vary);
 		inty.run(config);
 	}
+	
+	private static void testCharFractal() {
+		String[] vary = Loader.loadProgram("src/test/resources/basic/charfractal.bas");
+		Basic inty = new Basic(vary);
+		inty.run(config);
+
+	}
+	
 
 	private static void testBuggedOn64() {
 		String[] vary = Loader.loadProgram("src/test/resources/basic/buggy64.bas");

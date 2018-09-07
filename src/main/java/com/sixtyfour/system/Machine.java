@@ -219,7 +219,7 @@ public class Machine {
 				} else {
 					toRemove.clear();
 					for (int p = end; p >= i; p--) {
-						entry = stack.get(i);
+						entry = stack.get(p);
 						if (entry.isFor()) {
 							toRemove.add(entry);
 						}
@@ -229,6 +229,7 @@ public class Machine {
 				return (For) entry.getCommand();
 			}
 		}
+		
 		return null;
 	}
 

@@ -95,7 +95,7 @@ public class Next extends AbstractCommand {
 	public BasicProgramCounter execute(CompilerConfig config, Machine machine) {
 		For myFor = machine.peekFor(this.varName);
 		if (myFor == null) {
-			throw new RuntimeException("NEXT without FOR error: " + this);
+			throw new RuntimeException("NEXT without FOR error ("+varName+"): " + this);
 		}
 		boolean iterate = myFor.next(this, machine);
 		if (iterate) {
