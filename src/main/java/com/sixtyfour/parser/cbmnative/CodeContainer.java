@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * A wrapper class that contains lists of code lines.
+ * 
  * @author EgonOlsen
  * 
  */
