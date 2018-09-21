@@ -1,5 +1,6 @@
 <html>
 <head>
+<meta charset='UTF-8'>
 <script id='_compiledCode' src='{*}' type='text/javascript'></script>
 <script type='text/javascript'>
 var preout=function(txt) {document.getElementById('out').insertAdjacentHTML('beforeend',txt);};
