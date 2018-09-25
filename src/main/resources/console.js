@@ -9,6 +9,9 @@ function CbmConsoleClient(elem) {
 	
 	this.getHtml = function(pos, charCode, colorCode) {
 		var c=String.fromCharCode(charCode);
+		if (charCode==32) {
+			c="&nbsp;";
+		}
 		if (lastColor!=colorCode) {
 			c="<span style='color:"+_self.colors[colorCode]+"'>"+c;
 			lastColor=colorCode;
