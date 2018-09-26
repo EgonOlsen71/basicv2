@@ -1,14 +1,23 @@
 var _self=self;
+var instance=null;
+var conInstance=null;
+
 
 if (self) {
 	self.addEventListener('message', function(e) {
-	  if(e.data=="run") {
-		new Compiled().execute(true);
+	  if (instance) {
+			instance.registerKey(e.data);
 	  } else {
-		  var comp=new Compiled();
-		  var cons=new CbmConsole();
-		  cons.inject(comp, e.data);
-		  comp.execute(true);
+		  instance=new Compiled();
+		  if(e.data=="run") {
+			  instance.execute(true);
+		  } else {
+			  var comp=instance;
+			  var cons=new CbmConsole();
+			  conInstance=cons;
+			  cons.inject(comp, e.data);
+			  comp.execute(true);
+		  }
 	  }
 	}, false);
 }
@@ -21,6 +30,7 @@ function executeAsync(srcFile, func, cons) {
 	} else {
 		worker.postMessage("run");
 	}
+	return worker;
 }
 
 function CbmConsole() {	
@@ -38,7 +48,6 @@ function CbmConsole() {
 	this.reverseMode=false;
 	
 	var _selfy=this;
-	
 	
 	this.getPokeValue = function(ch) {
 		if (Number.isInteger(ch)) {
@@ -177,12 +186,9 @@ function CbmConsole() {
 					_selfy.graphicsMode=true;
 					break;
 				default:
-					if (pos) {
-						_selfy.vidMem[pos]=_selfy.getPokeValue(String.fromCharCode(code));
-						_selfy.colMem[pos]=_selfy.fontColor;
-						_selfy.x++;
-						break;
-					}
+					_selfy.vidMem[pos]=_selfy.getPokeValue(String.fromCharCode(code));
+					_selfy.colMem[pos]=_selfy.fontColor;
+					_selfy.x++;
 					break;
 				}
 			}	
@@ -193,19 +199,15 @@ function CbmConsole() {
 	}
 	
 	this.clearAtCursor = function(pos) {
-		if (pos) {
-			_selfy.vidMem[pos]=_selfy.getPokeValue(32);
-			_selfy.colMem[pos]=_selfy.fontColor;
-			_selfy.x++;
-		}
+		_selfy.vidMem[pos]=_selfy.getPokeValue(32);
+		_selfy.colMem[pos]=_selfy.fontColor;
+		_selfy.x++;
 	}
 	
 	this.setAtCursor = function(pos) {
-		if (pos) {
-			_selfy.vidMem[pos]=_selfy.getPokeValue(160);
-			_selfy.colMem[pos]=_selfy.fontColor;
-			_selfy.x++;
-		}
+		_selfy.vidMem[pos]=_selfy.getPokeValue(160);
+		_selfy.colMem[pos]=_selfy.fontColor;
+		_selfy.x++;
 	}
 	
 	this.inject = function(compiledCode, conElem) {
@@ -216,6 +218,10 @@ function CbmConsole() {
 		_selfy.charset=_selfy.createCharsetMapping();
 		
 		compiledCode.out = function(val) {
+			if (val==null) {
+				return;
+			}
+			val=""+val;
 			for(var i=0; i<val.length; i++) {
 				var c=val.charAt(i);
 				var pos=_selfy.x+_selfy.width*_selfy.y;
@@ -237,6 +243,7 @@ function CbmConsole() {
 					if (_selfy.isBreak(c)) {
 						_selfy.x=0;
 						_selfy.y++;
+						_selfy.reverseMode = false;
 					}
 				}
 				if (_selfy.x==_selfy.width) {
@@ -257,8 +264,18 @@ function CbmConsole() {
 			}
 			
 			_self.postMessage([_selfy.vidMem, _selfy.colMem, _selfy.bgColor]);
-			
-		}
+		};
+		
+		compiledCode.get = function() {
+			var key=this.keyPressed;
+			if (!key) {
+				return ""
+			}
+			this.timeOut=20;
+			this.keyPressed=null;
+			this._memory[198]=0;
+			return key.substring(0,1);
+		};
 	}
 	
 	this.isChar = function(c) {

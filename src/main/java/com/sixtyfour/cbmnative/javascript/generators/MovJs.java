@@ -91,11 +91,15 @@ public class MovJs extends GeneratorBaseJs {
     }
 
     private void indexedTargetInteger(List<String> nCode, Operand source, Operand target) {
-	noIndexArraySource(nCode, source, target);
+	String from = getOpName(source);
+	String to = getOpName(target);
+	nCode.add("this._memory["+to+"]" + "=" + from + ";");
     }
 
     private void indexedSourceTargetReal(List<String> nCode, Operand source, Operand target) {
-	noIndexArraySource(nCode, source, target);
+	String from = getOpName(source);
+	String to = getOpName(target);
+	nCode.add(to + "=" + "this._memory["+from + "];");
     }
 
     private void noIndexRealSource(List<String> nCode, Operand source, Operand target) {

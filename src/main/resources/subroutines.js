@@ -1,34 +1,82 @@
 this.restart = false;
 this.running = true;
+this.keyPressed=null;
+this.lineNumber = 0;
+this.timeOut=0;
+this.funcName = "PROGRAMSTART";
+
+this.registerKey= function(key) {
+	var k=key[1];
+	var ctx=this;
+	if (k.length>1) {
+		k=String.fromCharCode(key[2]);
+	}
+	if (key[0]) {
+		this.keyPressed=k;
+		this._memory[198]=1;
+		self.setTimeout(function() {
+			ctx.keyPressed=null;
+			ctx._memory[198]=0;
+		}, 200);
+	} else {
+		this.keyPressed=null;
+		this._memory[198]=0;
+	}
+}
 
 this.execute = function(threaded) {
-	do  {
-		var lineNumber = 0;
-		var funcName = "PROGRAMSTART";
-		this.restart=false;
-		this.running=true;
-		while (this.running) {
-			//console.log("Call(1): "+funcName);
-			var nextLine = this[funcName]();
-			if (nextLine != null) {
-				lineNumber = nextLine;
-				if (lineNumber == "($JUMP)") {
-					lineNumber = this.JUMP_TARGET;
-				}
-				if (Number.isInteger(lineNumber)) {
-					funcName = "line_" + lineNumber;
-				} else {
-					funcName = lineNumber;
-				}
-			} else {
-				this.running = false;
+	if (!threaded) {
+		do  {
+			this.reinit();
+			while (this.running) {
+				executeLine(threaded);
 			}
-			if (threaded) {
-				_self.postMessage(funcName);
-			}
-			//console.log("state: "+this.running+"/"+this.restart+"/"+nextLine+"/"+funcName);
+		} while(this.restart);
+	} else {
+		this.reinit();
+		this.executeThreaded();
+	}
+}
+
+this.executeThreaded = function() {
+	if (this.restart) {
+		this.reinit();
+	}
+	this.executeLine(true);
+	if (this.running) {
+		var ctx=this;
+		self.setTimeout(function() {
+			ctx.executeThreaded();
+		}, this.timeOut);
+		this.timeOut=0;
+	}
+}
+
+this.reinit = function() {
+	this.lineNumber = 0;
+	this.funcName = "PROGRAMSTART";
+	this.restart=false;
+	this.running=true;
+}
+
+this.executeLine = function(threaded) {
+	var nextLine = this[this.funcName]();
+	if (nextLine != null) {
+		this.lineNumber = nextLine;
+		if (this.lineNumber == "($JUMP)") {
+			this.lineNumber = this.JUMP_TARGET;
 		}
-	} while(this.restart);
+		if (Number.isInteger(this.lineNumber)) {
+			this.funcName = "line_" + this.lineNumber;
+		} else {
+			this.funcName = this.lineNumber;
+		}
+	} else {
+		this.running = false;
+	}
+	if (threaded) {
+		_self.postMessage(this.funcName);
+	}
 }
 
 this.START = function() {
@@ -188,7 +236,7 @@ this.STR = function() {
 }
 
 this.VAL = function() {
-	this.X_REG=parseFloat(this.B_REG.replace(/ /g,""));
+	this.X_REG=parseFloat((""+this.B_REG).replace(/ /g,""));
 }
 
 this.LEN = function() {
@@ -204,7 +252,12 @@ this.ASC = function() {
 		this.X_REG=0;
 		return;
 	}
-	this.X_REG=this.B_REG.charCodeAt(0);
+	var cc=this.B_REG.charCodeAt(0);
+	var c=this.B_REG.charAt(0);
+	if (c>='a' && c<='z') {
+		cc-=32;
+	}
+	this.X_REG=cc;
 }
 
 this.POS = function() {

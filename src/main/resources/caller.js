@@ -30,16 +30,21 @@ window.onload=function() {
 // Use this to execute it in an onscreen, C64 like console with basic support for PETSCII
 window.onload=function() {
 	var clientCon=new CbmConsoleClient(document.getElementById("con"));
-	executeAsync(document.getElementById('_compiledCode').src, function(e) {
+	var worker=executeAsync(document.getElementById('_compiledCode').src, function(e) {
 		if (Array.isArray(e.data)) {
 			clientCon.render(e.data[0], e.data[1], e.data[2]);
 		}		
 	}, document.getElementById('con'));
+	var el=document.getElementById('con');
+	el.onkeypress = function(event) {
+		worker.postMessage([true, event.key, event.which]);
+	};
+	el.focus();
 }
 */
 
 // Default, not a web worker and output into the console
 window.onload=function() {new Compiled().execute();}
 </script>
-</head><body><pre id='out'></pre><div id="con" class="con"></div></body>
+</head><body><pre id='out'></pre><div tabindex="0" id="con" class="con"></div></body>
 </html>
