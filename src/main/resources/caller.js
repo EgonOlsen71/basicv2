@@ -6,7 +6,7 @@
              src: url('CommodoreServer.ttf') format('truetype'); }
 			 
 .con {
-	font-family:petscii;-
+	font-family:petscii;
 }			 
 </style>
 <script id='_compiledCode' src='{*}' type='text/javascript'></script>

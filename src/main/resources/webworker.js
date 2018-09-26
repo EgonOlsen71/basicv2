@@ -41,6 +41,9 @@ function CbmConsole() {
 	
 	
 	this.getPokeValue = function(ch) {
+		if (Number.isInteger(ch)) {
+			ch=String.fromCharCode(ch);
+		}
 		return _selfy.charset.charCodeAt(_selfy.getConvertedChar(ch)+(_selfy.graphicsMode?0:256));		
 	}
 	
@@ -67,116 +70,122 @@ function CbmConsole() {
 		_selfy.colMem[offset]=_selfy.fontColor;
 	}
 	
-	this.processControlCode = function(code, pos) {
+	this.processControlCode = function(code, pos, withSpc) {
 		var col=-1;
-		switch(code) {
-			case 147:
-				_selfy.clearScreen();
-				_selfy.x=0;
-				_selfy.y=0;
-				break;
-			case 19:
-				_selfy.x=0;
-				_selfy.y=0;
-				break;
-			case 29:
-				_selfy.x++;
-				break;
-			case 157:
-				_selfy.x--;
-				break;
-			case 17:
-				_selfy.y++;
-				break;
-			case 145:
-				_selfy.y--;
-				break;
-			case 144:
-				col = 0;
-				break;
-			case 5:
-				col = 1;
-				break;
-			case 28:
-				col = 2;
-				break;
-			case 159:
-				col = 3;
-				break;
-			case 156:
-				col = 4;
-				break;
-			case 30:
-				col = 5;
-				break;
-			case 31:
-				col = 6;
-				break;
-			case 158:
-				col = 7;
-				break;
-			case 129:
-				col = 8;
-				break;
-			case 149:
-				col = 9;
-				break;
-			case 150:
-				col = 10;
-				break;
-			case 151:
-				col = 11;
-				break;
-			case 152:
-				col = 12;
-				break;
-			case 153:
-				col = 13;
-				break;
-			case 154:
-				col = 14;
-				break;
-			case 155:
-				col = 15;
-				break;
-			case 18:
-				_selfy.reverseMode = true;
-				break;
-			case 146:
-				_selfy.reverseMode = false;
-				break;
-			case 20:
-				_selfy.x--;
+		
+		if (withSpc && code==32) {
+			if (_selfy.reverseMode) {
+				_selfy.setAtCursor(pos);
+			} else {
 				_selfy.clearAtCursor(pos);
-				break;
-			case 148:
-				_selfy.shiftRight(pos);
-				_selfy.clearAtCursor(pos);
-				break;
-			case 13:
-				_selfy.reverseMode = false;
-				_selfy.y--;
-				break;
-			case 32:
-				if (_selfy.reverseMode) {
-					_selfy.setAtCursor(pos);
-				} else {
-					_selfy.clearAtCursor(pos);
-				}
-				_selfy.x++;
-				break;
-			case 14:
-				_selfy.graphicsMode=false;
-				break;
-			case 142:
-				_selfy.graphicsMode=true;
-				break;
-			default:
-				_selfy.vidMem[pos]=_selfy.getPokeValue(code);
-				_selfy.colMem[pos]=_selfy.fontColor;
-				_selfy.x++;
-				break;
 			}
+			_selfy.x++;
+		}
+		else {
+			switch(code) {
+				case 147:
+					_selfy.clearScreen();
+					_selfy.x=0;
+					_selfy.y=0;
+					break;
+				case 19:
+					_selfy.x=0;
+					_selfy.y=0;
+					break;
+				case 29:
+					_selfy.x++;
+					break;
+				case 157:
+					_selfy.x--;
+					break;
+				case 17:
+					_selfy.y++;
+					break;
+				case 145:
+					_selfy.y--;
+					break;
+				case 144:
+					col = 0;
+					break;
+				case 5:
+					col = 1;
+					break;
+				case 28:
+					col = 2;
+					break;
+				case 159:
+					col = 3;
+					break;
+				case 156:
+					col = 4;
+					break;
+				case 30:
+					col = 5;
+					break;
+				case 31:
+					col = 6;
+					break;
+				case 158:
+					col = 7;
+					break;
+				case 129:
+					col = 8;
+					break;
+				case 149:
+					col = 9;
+					break;
+				case 150:
+					col = 10;
+					break;
+				case 151:
+					col = 11;
+					break;
+				case 152:
+					col = 12;
+					break;
+				case 153:
+					col = 13;
+					break;
+				case 154:
+					col = 14;
+					break;
+				case 155:
+					col = 15;
+					break;
+				case 18:
+					_selfy.reverseMode = true;
+					break;
+				case 146:
+					_selfy.reverseMode = false;
+					break;
+				case 20:
+					_selfy.x--;
+					_selfy.clearAtCursor(pos);
+					break;
+				case 148:
+					_selfy.shiftRight(pos);
+					_selfy.clearAtCursor(pos);
+					break;
+				case 13:
+					_selfy.reverseMode = false;
+					_selfy.y++;
+					break;
+				case 14:
+					_selfy.graphicsMode=false;
+					break;
+				case 142:
+					_selfy.graphicsMode=true;
+					break;
+				default:
+					if (pos) {
+						_selfy.vidMem[pos]=_selfy.getPokeValue(String.fromCharCode(code));
+						_selfy.colMem[pos]=_selfy.fontColor;
+						_selfy.x++;
+						break;
+					}
+					break;
+				}
+			}	
 			
 			if (col!=-1) {
 				_selfy.fontColor=col;
@@ -184,15 +193,19 @@ function CbmConsole() {
 	}
 	
 	this.clearAtCursor = function(pos) {
-		_selfy.vidMem[pos]=_selfy.getPokeValue(32);
-		_selfy.colMem[pos]=_selfy.fontColor;
-		_selfy.x++;
+		if (pos) {
+			_selfy.vidMem[pos]=_selfy.getPokeValue(32);
+			_selfy.colMem[pos]=_selfy.fontColor;
+			_selfy.x++;
+		}
 	}
 	
 	this.setAtCursor = function(pos) {
-		_selfy.vidMem[pos]=_selfy.getPokeValue(160);
-		_selfy.colMem[pos]=_selfy.fontColor;
-		_selfy.x++;
+		if (pos) {
+			_selfy.vidMem[pos]=_selfy.getPokeValue(160);
+			_selfy.colMem[pos]=_selfy.fontColor;
+			_selfy.x++;
+		}
 	}
 	
 	this.inject = function(compiledCode, conElem) {
@@ -213,15 +226,13 @@ function CbmConsole() {
 						i=end;
 						var code=_selfy.getCode(subs);
 						if (code!=-1) {
-							_selfy.processControlCode(code, pos);
+							_selfy.processControlCode(code, pos, true);
 						}
 						continue;
 					}	
 				}
 				if (_selfy.isChar(c)) {
-					_selfy.vidMem[pos]=_selfy.getPokeValue(c);
-					_selfy.colMem[pos]=_selfy.fontColor;
-					_selfy.x++;
+					_selfy.processControlCode(c.charCodeAt(0), pos, false);
 				} else {
 					if (_selfy.isBreak(c)) {
 						_selfy.x=0;
