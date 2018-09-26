@@ -46,6 +46,7 @@ function CbmConsole() {
 	this.charset=null;
 	this.graphicsMode=true;
 	this.reverseMode=false;
+	this.compiledCode=null;
 	
 	var _selfy=this;
 	
@@ -80,7 +81,7 @@ function CbmConsole() {
 	}
 	
 	this.processControlCode = function(code, pos, withSpc) {
-		var col=-1;
+		var col=_selfy.compiledCode.getMemory()[646];
 		
 		if (withSpc && code==32) {
 			if (_selfy.reverseMode) {
@@ -195,6 +196,7 @@ function CbmConsole() {
 			
 			if (col!=-1) {
 				_selfy.fontColor=col;
+				_selfy.compiledCode.getMemory()[646]=col;
 			}
 	}
 	
@@ -216,6 +218,7 @@ function CbmConsole() {
 		
 		_selfy.fillMap();
 		_selfy.charset=_selfy.createCharsetMapping();
+		_selfy.compiledCode=compiledCode;
 		
 		compiledCode.out = function(val) {
 			if (val==null) {

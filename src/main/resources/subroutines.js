@@ -4,7 +4,11 @@ this.keyPressed=null;
 this.lineNumber = 0;
 this.timeOut=0;
 this.funcName = "PROGRAMSTART";
-this.batchSize=1000;
+this.batchSize=500;
+
+this.getMemory = function() {
+	return this._memory;
+}
 
 this.registerKey= function(key) {
 	var k=key[1];
@@ -92,6 +96,7 @@ this.START = function() {
 	} else {
 		this._memory.fill(0);
 	}
+	this._memory[646]=14;
 }
 
 this.RUN = function() {
