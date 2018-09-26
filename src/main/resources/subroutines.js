@@ -4,6 +4,7 @@ this.keyPressed=null;
 this.lineNumber = 0;
 this.timeOut=0;
 this.funcName = "PROGRAMSTART";
+this.batchSize=1000;
 
 this.registerKey= function(key) {
 	var k=key[1];
@@ -29,7 +30,7 @@ this.execute = function(threaded) {
 		do  {
 			this.reinit();
 			while (this.running) {
-				executeLine(threaded);
+				this.executeLine(threaded);
 			}
 		} while(this.restart);
 	} else {
@@ -39,10 +40,13 @@ this.execute = function(threaded) {
 }
 
 this.executeThreaded = function() {
-	if (this.restart) {
-		this.reinit();
-	}
-	this.executeLine(true);
+	var cnt=0;
+	do {
+		if (this.restart) {
+			this.reinit();
+		}
+		this.executeLine(true);
+	} while(this.running && cnt++<this.batchSize);
 	if (this.running) {
 		var ctx=this;
 		self.setTimeout(function() {
