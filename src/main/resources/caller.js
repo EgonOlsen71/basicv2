@@ -38,6 +38,7 @@ window.onload=function() {
 	var el=document.getElementById('con');
 	el.onkeypress = function(event) {
 		worker.postMessage([true, event.key, event.which]);
+		event.preventDefault();
 	};
 	el.focus();
 }
