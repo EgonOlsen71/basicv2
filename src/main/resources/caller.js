@@ -8,6 +8,7 @@
 .con {
 	font-family:petscii;
 	line-height: 1.0;
+	min-width: 700px;
 }			 
 </style>
 <script id='_compiledCode' src='{*}' type='text/javascript'></script>
