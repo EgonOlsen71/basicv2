@@ -18,6 +18,7 @@ public class RomTest {
 	private static CompilerConfig config = new CompilerConfig();
 
 	public static void main(String[] args) {
+		testConvertInt();
 		testRomAccess();
 		testRomCalc();
 		testRomAndBasicCalc();
@@ -25,6 +26,17 @@ public class RomTest {
 		testRomCalc3();
 	}
 
+	private static void testConvertInt() {
+	    	System.out.println("testConvertInt");
+		String[] code = {"*=$c000  \n","LDA #151","LDX #255","STA $62","STX $63","LDX #$90","SEC","JSR $BC49","RTS"};
+		Assembler asm = new Assembler(code);
+		asm.compile(config);
+		final Machine machine = asm.getMachine();
+		machine.addRoms();
+		asm.run(config);
+		System.out.println(Conversions.convertFloat(machine, 0x61));
+	}
+	
 	private static void testRomCalc3() {
 		System.out.println("testRomCalc3");
 		String[] code = Loader.loadProgram("src/test/resources/rom/math3.asm");
