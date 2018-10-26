@@ -22,6 +22,11 @@ public class Jsr extends JumpBase {
 	public String getMnemonic() {
 		return "JSR";
 	}
+	
+	@Override
+	public boolean mightBeSystemCallFromBasic() {
+		return true;
+	}
 
 	@Override
 	public void generateCode(GeneratorContext context, String line, List<String> nCode, List<String> subCode, Map<String, String> name2label) {
