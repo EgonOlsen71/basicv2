@@ -3,6 +3,7 @@ package com.sixtyfour.cbmnative.shell;
 import java.io.File;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -266,7 +267,13 @@ public class MoSpeedCL {
 			System.out.println("Failed to load source file: " + e.getMessage());
 			exit(6);
 		}
-		return src;
+		List<String> res=new ArrayList<>();
+		for (String line:src) {
+		    if (!line.trim().startsWith("!")) {
+			res.add(line);
+		    }
+		}
+		return res.toArray(new String[res.size()]);
 	}
 
 	private static void exit(int i) {
