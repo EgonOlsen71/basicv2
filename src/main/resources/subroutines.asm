@@ -605,7 +605,7 @@ CHR			LDA STRBUFP
 			ADC #2
 			STA STRBUFP
 			BCC NOCHR1
-			INC STRBUF+1
+			INC STRBUFP+1
 NOCHR1		RTS
 ;###################################
 CHRINT		TAX
@@ -626,7 +626,7 @@ CHRINT		TAX
 			ADC #2
 			STA STRBUFP
 			BCC NOCHR2
-			INC STRBUF+1
+			INC STRBUFP+1
 NOCHR2		RTS
 ;###################################
 WRITETID	LDY #0
@@ -2297,7 +2297,7 @@ SOMEKEY		TAX
 			ADC #2
 			STA STRBUFP
 			BCC GETSTR1
-			INC STRBUF+1
+			INC STRBUFP+1
 GETSTR1		RTS
 
 ;###################################
