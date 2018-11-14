@@ -44,6 +44,7 @@ public class Val extends AbstractFunction {
 		boolean hasPoint = false;
 		boolean hasE = false;
 		boolean hasSign = false;
+		str = str.trim();
 		for (int i = 0; i < str.length(); i++) {
 			char c = str.charAt(i);
 			if (Character.isDigit(c)) {
