@@ -1,5 +1,5 @@
 0 rem expression:
-1 x$="a*(b+e/(r+t)*11.6)+(12/t+3*2.8)*e+(e/(r+sin(t)*sin(a+cos(b+r))/e)*11.5)"
+1 x$="a*(b+e/-(r+t)*11.6)+(12/t+3*2.8)*e+(e/(r+sin(t)*sin(a+cos(b+r))/e)*11)"
 5 rem setup
 10 gosub 1000:gosub 1100
 20 gosub 1200:gosub 3000
@@ -30,7 +30,7 @@
 1210 dim sk(100):sp=0:return
 2000 rem evaluate expression
 2001 :
-2010 nu$="":we=0:wm=1:wf=0
+2010 nu$="":we=0:wm=1:wf=0:ng=1:lo=1
 2020 le=len(x$):fori=1tole
 2030 c$=mid$(x$,i,1)
 2040 ifc$>="a"andc$<="z"thengosub3100:goto2800
@@ -40,7 +40,8 @@
 2070 ifc$="("orc$=")"thengosub3600:goto2800
 2080 gosub 3800
 2800 next
-2810 wf=-1:gosub 20000:gosub 10100:re=sv
+2810 iflen(nu$)>0thensv=val(nu$):gosub 10000
+2820 wf=-1:gosub 20000:gosub 10100:re=sv
 2900 return
 3000 rem remove whitespaces
 3001 :
@@ -59,7 +60,7 @@
 3180 sv=p+5:gosub 10000
 3190 sv=we:gosub 10000
 3200 sv=0:gosub 10000
-3210 i=i+2:return
+3210 lo=0:i=i+2:return
 3300 forp=0tovc
 3310 ifc$=vn$(p)thennu$=str$(vv(p)):return
 3320 next
@@ -69,20 +70,27 @@
 3405 we=wm
 3410 ifc$="*"orc$="/"thenwe=wm+1:goto 3430
 3420 ifc$=chr$(94)thenwe=wm+2
-3430 iflen(nu$)>0thensv=val(nu$):gosub 10000
+3430 iflen(nu$)>0thensv=val(nu$)*ng:ng=1:gosub 10000:goto3440
+3431 ifc$="-"andlo=1thenng=-1*ng:return
 3440 wf=we:gosub 20000
 3450 gosub 10100:tv=sv
 3460 sv=p:gosub 10000
 3470 sv=we:gosub 10000
 3480 sv=tv:gosub 10000
-3490 nu$="":return
+3490 nu$="":lo=1:return
 3600 rem handle brackets
 3601 :
-3610 iflen(nu$)>0thensv=val(nu$):gosub 10000:nu$=""
-3620 ifc$="("thenwm=wm+10
-3630 ifc$=")"thenwm=wm-10
+3610 iflen(nu$)>0thensv=val(nu$)*ng:ng=1:gosub 10000:nu$=""
+3620 ifc$="("thenlo=1:wm=wm+10:ifng=-1thengosub3700
+3630 ifc$=")"thenlo=0:wm=wm-10
 3640 return
-3800 if(c$>="0"andc$<"9")orc$="."thennu$=nu$+c$:return
+3700 rem handle negation before bracket
+3710 ng=1
+3720 sv=2:gosub 10000
+3730 sv=wm-10+2:gosub 10000
+3740 sv=-1:gosub 10000
+3750 return
+3800 if(c$>="0"andc$<"9")orc$="."thennu$=nu$+c$:lo=0:return
 3810 print"syntax error in ";x$;" at position ";i;": ";c$:end
 10000 rem push value to stack
 10001 :
