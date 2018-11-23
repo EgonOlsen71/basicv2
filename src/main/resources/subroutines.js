@@ -398,7 +398,7 @@ this.READTI = function() {
 	var t=d.getTime();
 	t=Math.floor((t-this._time+this._timeOffset)/(1000.0/60.0));
 	//console.log("ti: "+t+"/"+this._time+"/"+this._timeOffset+"/"+(t-this._time+this._timeOffset));
-	this.Y_REG=t;
+	this.X_REG=t;
 }
 
 this.READTID = function() {
