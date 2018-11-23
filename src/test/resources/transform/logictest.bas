@@ -1,0 +1,1 @@
+10forx1=0to10:fory1=0to2:o=(1-((x1and1)=1))*(1-3*((y1and1)=1)):printo:next:next

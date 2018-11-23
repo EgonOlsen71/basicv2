@@ -14,6 +14,7 @@ import com.sixtyfour.elements.commands.Let;
 import com.sixtyfour.elements.functions.Function;
 import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Term;
+import com.sixtyfour.parser.logic.LogicTerm;
 
 /**
  * Eliminates dead variable stores from the code.
@@ -26,8 +27,10 @@ public class DeadStoreEliminator {
 	/**
 	 * Eliminates dead variable stores from the code.
 	 * 
-	 * @param config the compiler configuration
-	 * @param basic the Basic instance
+	 * @param config
+	 *            the compiler configuration
+	 * @param basic
+	 *            the Basic instance
 	 * @return true, if something has been optimized
 	 */
 	public static boolean eliminateDeadStores(CompilerConfig config, Basic basic) {
@@ -94,7 +97,11 @@ public class DeadStoreEliminator {
 		Atom left = term.getLeft();
 		Atom right = term.getRight();
 
-		if (left != null && left.isTerm()) {
+		if (left != null && left instanceof LogicTerm) {
+			found = findVariableInTerms(varName, new HashSet<>(LogicTerm.class.cast(left).getTerms()));
+		}
+
+		if (!found && left != null && left.isTerm()) {
 			found = findVariable(varName, (Term) left);
 		}
 		if (!found && right != null && right.isTerm()) {
@@ -103,6 +110,10 @@ public class DeadStoreEliminator {
 
 		if (!found && left != null && left instanceof Function) {
 			found = findVariable(varName, ((Function) left).getTerm());
+		}
+
+		if (!found && right != null && right instanceof LogicTerm) {
+			found = findVariableInTerms(varName, new HashSet<>(LogicTerm.class.cast(right).getTerms()));
 		}
 
 		if (!found && right != null && right instanceof Function) {
