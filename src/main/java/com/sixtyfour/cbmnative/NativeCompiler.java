@@ -30,7 +30,7 @@ import com.sixtyfour.system.Machine;
  * still higher level than real assembly code. That intermediate language code
  * is then compiled into actual native code that can be executed on the target
  * platform. It's also possible to omit the actual creation of real native code
- * and stop the process at the intermediate language level. Depending on the
+ * and stop the process at the native language level. Depending on the
  * target platform, the result can either be executed directly (in case of
  * Javascript) or has to be run through an assembler to create actual machine
  * code.
