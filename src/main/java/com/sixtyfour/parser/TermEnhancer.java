@@ -3,7 +3,7 @@ package com.sixtyfour.parser;
 import com.sixtyfour.util.VarUtils;
 
 /**
- * This is mainly used to modify exisitings terms by adding or removing stuff
+ * This is mainly used to modify existing terms by adding or removing stuff
  * from them to unify them or make them more accessible to the parser.
  * 
  * @author EgonOlsen
