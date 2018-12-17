@@ -43,7 +43,14 @@ public class ProgramTest {
 		// testBio();
 		//testIf();
 		//testBuggedOn64();
-	    testCharFractal();
+	    	//testCharFractal();
+	    	testEvalComp();
+	}
+	
+	private static void testEvalComp() {
+		String[] vary = Loader.loadProgram("src/test/resources/basic/eval.bas");
+		Basic inty = new Basic(vary);
+		inty.run(config);
 	}
 
 	private static void testArray() {
