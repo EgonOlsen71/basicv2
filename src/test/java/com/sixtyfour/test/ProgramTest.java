@@ -44,7 +44,14 @@ public class ProgramTest {
 		//testIf();
 		//testBuggedOn64();
 	    	//testCharFractal();
-	    	testEvalComp();
+	    //	testEvalComp();
+		testIfNot();
+	}
+	
+	private static void testIfNot() {
+		String[] vary = Loader.loadProgram("src/test/resources/basic/ifnot.bas");
+		Basic inty = new Basic(vary);
+		inty.run(config);
 	}
 	
 	private static void testEvalComp() {

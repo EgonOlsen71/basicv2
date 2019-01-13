@@ -91,7 +91,8 @@ public class LogicParser {
 				} else if (i == term.length() - 1) {
 					String toProcess = lastPart;
 					int startPos = lastStart;
-					String blockName = createLogicBlock(config, toProcess.substring(1, toProcess.length() - 1), blocks, machine, termMap);
+					String subt=toProcess.substring(1, toProcess.length() - 1);
+					String blockName = createLogicBlock(config, subt, blocks, machine, termMap);
 					int endy = Math.min(startPos + toProcess.length(), term.length());
 					term = term.substring(0, startPos) + blockName + (endy != term.length() ? term.substring(endy, term.length()) : "");
 					i = -1;
@@ -211,6 +212,7 @@ public class LogicParser {
 		String utp = Parser.replaceStrings(toProcess, '.');
 		int curPos = 0;
 		String minOp = null;
+		int open=0;
 		LogicTerm block = new LogicTerm("{l" + blocks.size() + "}");
 		do {
 			int minPos = 999999999;
@@ -237,11 +239,16 @@ public class LogicParser {
 			int closest = -1;
 			for (int i = 0; i < part.length(); i++) {
 				char c = part.charAt(i);
+				if (c=='(') {
+					open++;
+				} else if (c==')') {
+					open--;
+				}
 				if (c == '"') {
 					inString = !inString;
 				}
 				if (!inString) {
-					if (c == '<' || c == '>' || c == '=') {
+					if (open==0 && (c == '<' || c == '>' || c == '=')) {
 						closest = i;
 						break;
 					}

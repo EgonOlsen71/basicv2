@@ -1,0 +1,3 @@
+2466 IF(NOT(A<0))=-1goto2473:rem...
+2467 end
+2473 print"ok"
