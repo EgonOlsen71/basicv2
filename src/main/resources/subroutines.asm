@@ -148,7 +148,9 @@ ARRAYSKIP2	STA TMP_REG
 			JMP ARRAYLOOP				
 ARRAYQUIT	RTS
 ;###################################
-END			RTS
+END			LDX SP_SAVE
+			TXS
+			RTS
 ;###################################
 RUN			LDX SP_SAVE
 			TXS

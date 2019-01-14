@@ -77,7 +77,7 @@ public class TransformerTest {
 		// testTransformer28();
 		// testTransformer29();
 		// testTransformer30();
-		 testBenchmark();
+		// testBenchmark();
 		// testBreakout();
 		// testBbDemo();
 		// testOpenPrint();
@@ -95,8 +95,17 @@ public class TransformerTest {
 		// testLabyrinth();
 		// testFrosch();
 //		testIfTest();
+	    	testRunner();
+	    	//testIfNotTest();
 	}
 
+	private static void testRunner() throws Exception {
+		System.out.println("\n\ntestRunner");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/basicrunner.bas");
+		Assembler assy = initTestEnvironment(vary, false);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++basicrunner.prg", true);
+	}
+	
 	private static void testFrosch() throws Exception {
 		System.out.println("\n\ntestFrosch");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/frosch.bas");
@@ -245,6 +254,13 @@ public class TransformerTest {
 		String[] vary = Loader.loadProgram("src/test/resources/transform/iftest.bas");
 		Assembler assy = initTestEnvironment(vary, false);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++iftest.prg", true);
+	}
+	
+	private static void testIfNotTest() throws Exception {
+		System.out.println("\n\ntestIfNotTest");
+		String[] vary = Loader.loadProgram("src/test/resources/basic/ifnot.bas");
+		Assembler assy = initTestEnvironment(vary, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++ifnot.prg", true);
 	}
 
 	private static void testHilbert() throws Exception {

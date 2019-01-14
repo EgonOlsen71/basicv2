@@ -44,6 +44,7 @@ public class GeneratorList {
 			this.add(new Int());
 			this.add(new Pow());
 			this.add(new Nop());
+			this.add(new Not());
 			this.add(new Sqr());
 			this.add(new Exp());
 			this.add(new Abs());

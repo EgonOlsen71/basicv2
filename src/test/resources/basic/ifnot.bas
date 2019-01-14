@@ -1,3 +1,1 @@
-2466 IF(F)AND(not(LADS%(YS%,M+1)>0))goto2473:rem...
-2467 end
-2473 print"ok"
+15 print-1and(not(-12>0))

@@ -79,9 +79,10 @@ public class Dim extends AbstractCommand {
 		this.vars = new ArrayList<Variable>();
 		if (vars != null) {
 			for (VariableAndTerms var : vars) {
-				terms.put(var.getVarName(), var.getTerms());
 				// Some placeholder vars...
-				this.vars.add(new Variable(var.getVarName(), null));
+				Variable vary=new Variable(var.getVarName(), null);
+				this.vars.add(vary);
+				terms.put(vary.getName(), var.getTerms());
 			}
 		}
 		return null;
@@ -122,6 +123,9 @@ public class Dim extends AbstractCommand {
 			Variable var = vars.get(i);
 			if (!var.isArray()) {
 				List<Atom> pars = terms.get(var.getName());
+				if (pars == null) {
+				    throw new RuntimeException("Array dimensions missing @ line " + this.lineNumber + ": " + var.getName() + "/" + this);
+				}
 				int[] pis = new int[pars.size()];
 				int cnt = 0;
 				for (Atom par : pars) {
