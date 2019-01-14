@@ -271,7 +271,8 @@ public class Term implements Atom {
 				return cc;
 			}
 		} else {
-			List<String> n1 = left.evalToCode(config, machine).get(0).getExpression();
+		    
+		    	List<String> n1 = left.evalToCode(config, machine).get(0).getExpression();
 			List<String> n2 = right.evalToCode(config, machine).get(0).getExpression();
 
 			if (n1 == null || n2 == null) {
@@ -326,8 +327,8 @@ public class Term implements Atom {
 				ret.addAll(0, n2);
 				break;
 			case 9:
-				ret.add(0, "_");
-				n2.add(0, ":!");
+			    	ret.add("_");
+				n2.add(":!");
 				ret.addAll(0, n2);
 				break;
 			}

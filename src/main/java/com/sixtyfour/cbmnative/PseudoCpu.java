@@ -2068,6 +2068,7 @@ public class PseudoCpu {
 	calc(parts, new Calc() {
 	    @Override
 	    public Number calc(Number n1, Number n2) {
+		System.out.println(n1.intValue()+"/"+n2.intValue());
 		return n1.intValue() & n2.intValue();
 	    }
 

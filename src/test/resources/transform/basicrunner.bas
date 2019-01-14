@@ -92,6 +92,8 @@
 2509 IF(H)AND(B)thenS1XD%=-1:goto2582:rem MiutanEgySzintreKerultekEsBalraVan
 2510 IFLJ%thenS1XD%=1:goto2582:rem ha a legkozelebbi letra jobbra van
 2515 IFLB%thenS1XD%=-1:goto2582:rem ha a legkozelebbi letra balra van
+2520 remprintchr$(19);"                                                    "
+2525 remjj=((A)AND(AL)):printchr$(19);"a:";A,"al:";AL,"jj:";JJ;F,H,((notF)AND(notH))
 2535 if(F)AND(FL)thenS2YD%=-1:goto2582:rem ha S folott es van letra
 2540 if(A)AND(AL)thenS2YD%=1:rem elseHaSAlattEsVanLetra
 2582 RETURN
