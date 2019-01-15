@@ -45,6 +45,7 @@ public class GeneratorListJs {
 			this.add(new AtnJs());
 			this.add(new CosJs());
 			this.add(new SinJs());
+			this.add(new NotJs());
 			this.add(new TanJs());
 			this.add(new RndJs());
 			this.add(new SqrJs());
