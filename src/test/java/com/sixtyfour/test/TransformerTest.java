@@ -95,10 +95,18 @@ public class TransformerTest {
 		// testLabyrinth();
 		// testFrosch();
 //		testIfTest();
-	    	testRunner();
+	    	//testRunner();
 	    	//testIfNotTest();
+	    	testGcTest();
 	}
 
+	private static void testGcTest() throws Exception {
+		System.out.println("\n\ntestGcTest");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/gctest.bas");
+		Assembler assy = initTestEnvironment(vary, false);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++gctest.prg", true);
+	}
+	
 	private static void testRunner() throws Exception {
 		System.out.println("\n\ntestRunner");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/basicrunner.bas");
