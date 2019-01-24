@@ -1124,6 +1124,8 @@ REMEMBERLASTVAR
 			STA LASTVARP+1	; Remember this variable as the last written one
 			RTS
 ;###################################
+; Appends a reference to the variable at the end of the string in memory for
+; easier GC later...
 STOREVARREF
 			TYA
 			PHA				; Save Y reg
@@ -1169,8 +1171,6 @@ RESETROUTE	LDA CMD_NUM		; if CMD mode, disable channel output
 RESETROUTECMD
 			RTS
 ;###################################
-; Appends a reference to the variable at the end of the string in memory for
-; easier GC later...
 INTOUT		JMP REALOUT
 ;###################################
 INTOUTBRK  	JMP REALOUTBRK
