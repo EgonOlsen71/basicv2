@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.sixtyfour.cbmnative.crossoptimizer.PCodeOptimizer;
 import com.sixtyfour.parser.Line;
 
 /**
@@ -47,6 +48,10 @@ public class PCode {
      */
     public List<Integer> getLineNumbers() {
 	return lineNumbers;
+    }
+
+    public boolean optimize(){
+        return PCodeOptimizer.optimize(this);
     }
 
 }
