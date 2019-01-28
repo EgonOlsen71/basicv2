@@ -1,5 +1,6 @@
 package com.sixtyfour.cbmnative.crossoptimizer.passes;
 
+import com.sixtyfour.Logger;
 import com.sixtyfour.cbmnative.crossoptimizer.PCodeOptimizer;
 import com.sixtyfour.cbmnative.crossoptimizer.common.OrderedPCode;
 import com.sixtyfour.cbmnative.crossoptimizer.common.PCodeVisitor;
@@ -77,7 +78,7 @@ public class InlineOneBlockGosub {
         gotoNext.setTargetLineNumber(nextLineIndex);
         PCodeOptimizer.replaceOneCommandInLine(returnLine, gotoNext, "goto "+nextLineIndex);
 
-        System.out.println(lineWithGosub+": GOSUB " + gosub.getTargetLineNumber() + "' is converted to 'Goto' and method is inlined from range: (" + gosub.getTargetLineNumber() + ".."
+        Logger.log(lineWithGosub+": GOSUB " + gosub.getTargetLineNumber() + "' is converted to 'Goto' and method is inlined from range: (" + gosub.getTargetLineNumber() + ".."
                 + returnLine.getNumber() + ")");
     }
 
