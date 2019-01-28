@@ -102,7 +102,7 @@ public class InlineOneBlockGosub {
         List<Integer> singleGosubs = new ArrayList<>();
         for (int lineIndex : linesWithSingleGoSub) {
             Line line = orderedPCode.getLine(lineIndex);
-            Command c = line.getCommands().get(0);
+            //Command c = line.getCommands().get(0);
             Gosub gosub = line.getFirstCommand();
             int gosubTarget = gosub.getTargetLineNumber();
             int gosubCount = countedGoSubs.get(gosubTarget);
