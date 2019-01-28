@@ -51,11 +51,11 @@ public class InlineOneBlockGosub {
             Gosub gosub = line.getFirstCommand();
             Goto replaceGoto = new Goto();
             replaceGoto.setTargetLineNumber(gosub.getTargetLineNumber());
-            PCodeOptimizer.replaceOneCommandInLine(line, replaceGoto, "goto "+gosub.getTargetLineNumber());
+            PCodeOptimizer.replaceLastCommandInLine(line, replaceGoto, "goto "+gosub.getTargetLineNumber());
             int targetGosubStart = orderedPCode.getLineIndex(gosub.getTargetLineNumber());
             for (int targetReturn = targetGosubStart; ; targetReturn++) {
                 Line candidateReturnLine = orderedPCode.getLineDirect(targetReturn);
-                Return retCommand = candidateReturnLine.getFirstCommand(Return.class);
+                Return retCommand = candidateReturnLine.getAnyCommand(Return.class);
                 if (retCommand == null)
                     continue;
                 InlineCall(orderedPCode, lineWithGosub, gosub, candidateReturnLine);
@@ -66,7 +66,7 @@ public class InlineOneBlockGosub {
         }
         final int countReplacements = linesWithSingleGosub.size();
         if (countReplacements > 0) {
-            System.out.println("Inline gosub count: " + countReplacements);
+            Logger.log("Inline gosub count: " + countReplacements);
         }
         return countReplacements != 0;
     }
@@ -76,7 +76,7 @@ public class InlineOneBlockGosub {
         Goto gotoNext = new Goto();
         int nextLineIndex = orderedPCode.getLineDirect(gosubIndex + 1).getNumber();
         gotoNext.setTargetLineNumber(nextLineIndex);
-        PCodeOptimizer.replaceOneCommandInLine(returnLine, gotoNext, "goto "+nextLineIndex);
+        PCodeOptimizer.replaceLastCommandInLine(returnLine, gotoNext, "goto "+nextLineIndex);
 
         Logger.log(lineWithGosub+": GOSUB " + gosub.getTargetLineNumber() + "' is converted to 'Goto' and method is inlined from range: (" + gosub.getTargetLineNumber() + ".."
                 + returnLine.getNumber() + ")");

@@ -112,12 +112,13 @@ public class Line {
 	}
 
 	/**
-	 * Get first command
+	 * Get first of any matching command type in line
 	 */
-	public <T extends Command> T getFirstCommand(Class<T> clazz) {
-		final Command firstCommand = commands.get(0);
-		if(firstCommand.getClass().isAssignableFrom(clazz))
-		return (T) firstCommand;
+	public <T extends Command> T getAnyCommand(Class<T> clazz) {
+		for(Command command : commands) {
+			if (command.getClass().isAssignableFrom(clazz))
+				return (T) command;
+		}
 		return null;
 	}
 	/**

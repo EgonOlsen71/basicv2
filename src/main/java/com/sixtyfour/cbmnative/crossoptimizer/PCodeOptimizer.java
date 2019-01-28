@@ -10,10 +10,10 @@ import java.util.List;
 
 public class PCodeOptimizer {
 
-    public static void replaceOneCommandInLine(Line line, Command command, String code) {
+    public static void replaceLastCommandInLine(Line line, Command command, String code) {
         List<Command> originalRowCommands = line.getCommands();
-        originalRowCommands.clear();
-        originalRowCommands.add(command);
+        int lastIndex = originalRowCommands.size()-1;
+        originalRowCommands.set(lastIndex, command);
         line.setLine(code);
     }
 
