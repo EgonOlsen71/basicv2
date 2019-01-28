@@ -20,6 +20,14 @@ public class Goto extends AbstractCommand {
 	private BasicProgramCounter pc = new BasicProgramCounter(0, 0); // Recycle
 																	// instance
 
+	public int getTargetLineNumber() {
+		return targetLineNumber;
+	}
+
+	public void setTargetLineNumber(int targetLineNumber) {
+		this.targetLineNumber = targetLineNumber;
+	}
+
 	private int targetLineNumber = 0;
 
 	/**

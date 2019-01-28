@@ -56,7 +56,9 @@ Examples are the often used addresses for VIC or SID. Default is true.
 - /constprop=true|false: If true, constant propagation will be used. I.e. constants won't only just detected directly, 
 but also if calculations result in constant values. Default is true.
 
-- /ilangopt=true|false: If true, the generated intermediate code will be optimized. This increases the speed and usually 
+- /pcodeopt=true|false: If true, inlining and other high level optimizations will be performed. Default is false.
+
+- /ilangopt=true|false: If true, the generated intermediate code will be optimized. This increases the speed and usually
 reduces the size. Default is true.
 
 - /nlangopt=true|false: If true, the generated 6502-Assembly code will be optimized. This increases the speed and usually 
