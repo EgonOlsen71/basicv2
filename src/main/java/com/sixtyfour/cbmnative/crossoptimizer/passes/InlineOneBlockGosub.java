@@ -14,7 +14,7 @@ import java.util.*;
 
 
 /**
- * This code transform assumes makes the following transformation:
+ * This code transform makes the following transformation if gosub to N is unique:
  *
  * L: gosub N
  * L+1: ...
@@ -22,7 +22,7 @@ import java.util.*;
  * N: ...
  * return
  *
- * if the gosub to N is unique, the code is transformed to:
+ * Code is transformed to:
  *
  * L: goto N
  * L+1: ...
