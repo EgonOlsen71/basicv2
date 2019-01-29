@@ -20,6 +20,10 @@ public class Gosub extends AbstractCommand {
 	private BasicProgramCounter pc = new BasicProgramCounter(0, 0); // Recycle
 																	// instance
 
+	public int getTargetLineNumber() {
+		return targetLineNumber;
+	}
+
 	private int targetLineNumber = 0;
 
 	/**

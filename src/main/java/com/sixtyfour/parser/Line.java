@@ -112,6 +112,26 @@ public class Line {
 	}
 
 	/**
+	 * Get first of any matching command type in line
+	 */
+	@SuppressWarnings("unchecked")
+	public <T extends Command> T getAnyCommand(Class<T> clazz) {
+		for(Command command : commands) {
+			if (command.getClass().isAssignableFrom(clazz))
+				return (T) command;
+		}
+		return null;
+	}
+	/**
+	 * Get first command
+	 */
+	@SuppressWarnings("unchecked")
+	public <T extends Command> T getFirstCommand() {
+		final Command firstCommand = commands.get(0);
+		return (T) firstCommand;
+	}
+
+	/**
 	 * Returns the count/position of this line in the BASIC program.
 	 * 
 	 * @return the count
@@ -140,4 +160,7 @@ public class Line {
 		return number + " " + line;
 	}
 
+	public void setLine(String line) {
+		this.line = line;
+	}
 }

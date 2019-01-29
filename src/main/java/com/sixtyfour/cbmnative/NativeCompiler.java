@@ -212,6 +212,10 @@ public class NativeCompiler {
 	    ConstantPropagator.propagateConstants(config, machine);
 	    ConstantFolder.foldConstants(config, machine);
 	    DeadStoreEliminator.eliminateDeadStores(config, basic);
+
+	}
+	if(config.isPcodeOptimize()) {
+		pCode.optimize();
 	}
 
 	basic.modifyDelayLoops(config);
