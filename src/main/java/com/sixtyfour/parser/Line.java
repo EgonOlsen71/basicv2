@@ -114,6 +114,7 @@ public class Line {
 	/**
 	 * Get first of any matching command type in line
 	 */
+	@SuppressWarnings("unchecked")
 	public <T extends Command> T getAnyCommand(Class<T> clazz) {
 		for(Command command : commands) {
 			if (command.getClass().isAssignableFrom(clazz))
@@ -124,6 +125,7 @@ public class Line {
 	/**
 	 * Get first command
 	 */
+	@SuppressWarnings("unchecked")
 	public <T extends Command> T getFirstCommand() {
 		final Command firstCommand = commands.get(0);
 		return (T) firstCommand;
