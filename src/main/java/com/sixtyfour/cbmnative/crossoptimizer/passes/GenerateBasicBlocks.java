@@ -162,6 +162,9 @@ public class GenerateBasicBlocks {
             if(command instanceof Data){
                 analysis.addData(line.getNumber());
             }
+            if(command instanceof End){
+                analysis.addData(line.getNumber());
+            }
             analysis.addCommand(command);
             analysis.checkForJumps(line.getNumber(), command);
         });
