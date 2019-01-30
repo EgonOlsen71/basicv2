@@ -6,9 +6,11 @@ import com.sixtyfour.cbmnative.crossoptimizer.common.PCodeVisitor;
 import com.sixtyfour.elements.commands.*;
 import com.sixtyfour.parser.Line;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 /**
  * This transformation will join lines that are not targeted by GOTOs
@@ -105,37 +107,41 @@ public class GenerateBasicBlocks {
         boolean result = false;
         analyze(orderedPCode);
         List<Line> allLines = orderedPCode.getLines();
+        List<Integer> rowsMerged = new ArrayList<>();
         for (int rowIndex = 0; rowIndex < allLines.size() - 1; rowIndex++) {
             Line currentRow = orderedPCode.getLineDirect(rowIndex);
             if (analysis.isLineWithJumps(currentRow)) {
                 continue;
             }
-            boolean found = true;
-
-            while (found && (rowIndex + 1 < allLines.size())) {
-                found = false;
+            rowsMerged.clear();
+            rowsMerged.add(rowIndex);
+            while (rowIndex + 1 < allLines.size()) {
                 Line nextRow = orderedPCode.getLineDirect(rowIndex + 1);
                 if (analysis.isLineTargetedByJump(nextRow)) {
-                    continue;
+                    break;
                 }
                 result = true;
-                found = true;
-                joinTwoLines(orderedPCode, rowIndex);
+                joinTwoLines(orderedPCode, rowIndex, rowsMerged);
                 if (Analysis.isLineContainingJumps(currentRow))
+                {
                     break;
+                }
             }
+            final String joinedRowsStr = rowsMerged.stream().map(value -> value.toString())
+                    .collect(Collectors.joining(", "));
+            final String logMessage = "Rows: " + joinedRowsStr + " were merged as: '" + currentRow.getLine() + "'";
+            Logger.log(logMessage);
         }
         return result;
     }
 
-    private void joinTwoLines(OrderedPCode orderedPCode, int rowIndex) {
+    private void joinTwoLines(OrderedPCode orderedPCode, int rowIndex, List<Integer> rowsMerged) {
         assert orderedPCode.getLines().size() > rowIndex + 1;
         Line currentRow = orderedPCode.getLineDirect(rowIndex);
         Line nextRow = orderedPCode.getLineDirect(rowIndex + 1);
         currentRow.getCommands().addAll(nextRow.getCommands());
         currentRow.setLine(currentRow.getLine() + ":" + nextRow.getLine());
-        Logger.log("Rows: " + currentRow.getNumber() + " and " + nextRow.getNumber()
-                + " were merged as: '" + currentRow.getLine() + "'");
+        rowsMerged.add(nextRow.getNumber());
         orderedPCode.removeRow(nextRow.getNumber());
     }
 
