@@ -6,9 +6,11 @@ import com.sixtyfour.cbmnative.crossoptimizer.common.PCodeVisitor;
 import com.sixtyfour.elements.commands.*;
 import com.sixtyfour.parser.Line;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 /**
  * This transformation will join lines that are not targeted by GOTOs
@@ -35,20 +37,20 @@ public class GenerateBasicBlocks {
         public SortedSet<Integer> rowsWithGotoTarget = new TreeSet<>();
         public SortedSet<Integer> rowsWithJumps = new TreeSet<>();
 
-        public void addRow(int row) {
-            rowsWithGotoTarget.add(row);
-        }
-
         public void clear() {
             rowsWithGotoTarget.clear();
         }
 
         public void addStatement(Goto gotoStatement) {
-            addRow(gotoStatement.getTargetLineNumber());
+            rowsWithGotoTarget.add(gotoStatement.getTargetLineNumber());
+        }
+        public void addData(int currentRow) {
+            rowsWithGotoTarget.add(currentRow);
+            rowsWithJumps.add(currentRow);
         }
 
         public void addStatement(Gosub gotoStatement) {
-            addRow(gotoStatement.getTargetLineNumber());
+            rowsWithGotoTarget.add(gotoStatement.getTargetLineNumber());
         }
 
         public void addCommand(Command command) {
@@ -81,6 +83,9 @@ public class GenerateBasicBlocks {
             if (command instanceof Gosub) {
                 return true;
             }
+            if (command instanceof If) {
+                return true;
+            }
             if (command instanceof Goto) {
                 return true;
             }
@@ -105,43 +110,51 @@ public class GenerateBasicBlocks {
         boolean result = false;
         analyze(orderedPCode);
         List<Line> allLines = orderedPCode.getLines();
+        List<Integer> rowsMerged = new ArrayList<>();
         for (int rowIndex = 0; rowIndex < allLines.size() - 1; rowIndex++) {
             Line currentRow = orderedPCode.getLineDirect(rowIndex);
             if (analysis.isLineWithJumps(currentRow)) {
                 continue;
             }
-            boolean found = true;
-
-            while (found && (rowIndex + 1 < allLines.size())) {
-                found = false;
+            rowsMerged.clear();
+            rowsMerged.add(currentRow.getNumber());
+            while (rowIndex + 1 < allLines.size()) {
                 Line nextRow = orderedPCode.getLineDirect(rowIndex + 1);
                 if (analysis.isLineTargetedByJump(nextRow)) {
-                    continue;
+                    break;
                 }
                 result = true;
-                found = true;
-                joinTwoLines(orderedPCode, rowIndex);
-                if (Analysis.isLineContainingJumps(currentRow))
+                joinTwoLines(orderedPCode, rowIndex, rowsMerged);
+                if (Analysis.isLineContainingJumps(currentRow)) {
                     break;
+                }
+            }
+            if (rowsMerged.size() > 1) {
+                final String joinedRowsStr = rowsMerged.stream().map(Object::toString)
+                        .collect(Collectors.joining(", "));
+                final String logMessage = "Rows: " + joinedRowsStr + " were merged as: '" + currentRow.getLine() + "'";
+                Logger.log(logMessage);
             }
         }
         return result;
     }
 
-    private void joinTwoLines(OrderedPCode orderedPCode, int rowIndex) {
+    private void joinTwoLines(OrderedPCode orderedPCode, int rowIndex, List<Integer> rowsMerged) {
         assert orderedPCode.getLines().size() > rowIndex + 1;
         Line currentRow = orderedPCode.getLineDirect(rowIndex);
         Line nextRow = orderedPCode.getLineDirect(rowIndex + 1);
         currentRow.getCommands().addAll(nextRow.getCommands());
         currentRow.setLine(currentRow.getLine() + ":" + nextRow.getLine());
-        Logger.log("Rows: " + currentRow.getNumber() + " and " + nextRow.getNumber()
-                + " were merged as: '" + currentRow.getLine() + "'");
+        rowsMerged.add(nextRow.getNumber());
         orderedPCode.removeRow(nextRow.getNumber());
     }
 
     private void analyze(OrderedPCode orderedPCode) {
         PCodeVisitor visitor = new PCodeVisitor();
         visitor.accept(orderedPCode, (line, command, index) -> {
+            if(command instanceof Data){
+                analysis.addData(line.getNumber());
+            }
             analysis.addCommand(command);
             analysis.checkForJumps(line.getNumber(), command);
         });

@@ -1,5 +1,6 @@
 package com.sixtyfour.cbmnative.crossoptimizer;
 
+import com.sixtyfour.Logger;
 import com.sixtyfour.cbmnative.PCode;
 import com.sixtyfour.cbmnative.crossoptimizer.common.OrderedPCode;
 import com.sixtyfour.cbmnative.crossoptimizer.passes.GenerateBasicBlocks;
@@ -8,6 +9,7 @@ import com.sixtyfour.elements.commands.Command;
 import com.sixtyfour.parser.Line;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PCodeOptimizer {
 
@@ -17,6 +19,8 @@ public class PCodeOptimizer {
         originalRowCommands.set(lastIndex, command);
         line.setLine(code);
     }
+
+    static boolean DEBUG_PCODE_OPTIMIZER = true;
 
     public static boolean optimize(PCode pCode) {
         OrderedPCode orderedPCode = new OrderedPCode(pCode);
@@ -28,6 +32,14 @@ public class PCodeOptimizer {
         }
         GenerateBasicBlocks generateBasicBlocks = new GenerateBasicBlocks();
         result |= generateBasicBlocks.optimize(orderedPCode);
+
+        if (DEBUG_PCODE_OPTIMIZER) {
+            String fullCode = orderedPCode.getLines().stream()
+                    .map(line -> line.getNumber() + " " + line.getLine())
+                    .collect(Collectors.joining("\n"));
+            Logger.log(fullCode);
+        }
+
         return result;
     }
 
