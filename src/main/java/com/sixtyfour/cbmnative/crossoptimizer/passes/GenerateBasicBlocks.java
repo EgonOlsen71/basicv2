@@ -122,12 +122,11 @@ public class GenerateBasicBlocks {
                 }
                 result = true;
                 joinTwoLines(orderedPCode, rowIndex, rowsMerged);
-                if (Analysis.isLineContainingJumps(currentRow))
-                {
+                if (Analysis.isLineContainingJumps(currentRow)) {
                     break;
                 }
             }
-            if(rowsMerged.size()>1) {
+            if (rowsMerged.size() > 1) {
                 final String joinedRowsStr = rowsMerged.stream().map(Object::toString)
                         .collect(Collectors.joining(", "));
                 final String logMessage = "Rows: " + joinedRowsStr + " were merged as: '" + currentRow.getLine() + "'";
