@@ -37,20 +37,20 @@ public class GenerateBasicBlocks {
         public SortedSet<Integer> rowsWithGotoTarget = new TreeSet<>();
         public SortedSet<Integer> rowsWithJumps = new TreeSet<>();
 
-        public void addRow(int row) {
-            rowsWithGotoTarget.add(row);
-        }
-
         public void clear() {
             rowsWithGotoTarget.clear();
         }
 
         public void addStatement(Goto gotoStatement) {
-            addRow(gotoStatement.getTargetLineNumber());
+            rowsWithGotoTarget.add(gotoStatement.getTargetLineNumber());
+        }
+        public void addData(int currentRow) {
+            rowsWithGotoTarget.add(currentRow);
+            rowsWithJumps.add(currentRow);
         }
 
         public void addStatement(Gosub gotoStatement) {
-            addRow(gotoStatement.getTargetLineNumber());
+            rowsWithGotoTarget.add(gotoStatement.getTargetLineNumber());
         }
 
         public void addCommand(Command command) {
@@ -81,6 +81,9 @@ public class GenerateBasicBlocks {
 
         private static boolean isJumpCommand(Command command) {
             if (command instanceof Gosub) {
+                return true;
+            }
+            if (command instanceof If) {
                 return true;
             }
             if (command instanceof Goto) {
@@ -149,6 +152,9 @@ public class GenerateBasicBlocks {
     private void analyze(OrderedPCode orderedPCode) {
         PCodeVisitor visitor = new PCodeVisitor();
         visitor.accept(orderedPCode, (line, command, index) -> {
+            if(command instanceof Data){
+                analysis.addData(line.getNumber());
+            }
             analysis.addCommand(command);
             analysis.checkForJumps(line.getNumber(), command);
         });
