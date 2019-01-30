@@ -127,10 +127,12 @@ public class GenerateBasicBlocks {
                     break;
                 }
             }
-            final String joinedRowsStr = rowsMerged.stream().map(value -> value.toString())
-                    .collect(Collectors.joining(", "));
-            final String logMessage = "Rows: " + joinedRowsStr + " were merged as: '" + currentRow.getLine() + "'";
-            Logger.log(logMessage);
+            if(rowsMerged.size()>1) {
+                final String joinedRowsStr = rowsMerged.stream().map(Object::toString)
+                        .collect(Collectors.joining(", "));
+                final String logMessage = "Rows: " + joinedRowsStr + " were merged as: '" + currentRow.getLine() + "'";
+                Logger.log(logMessage);
+            }
         }
         return result;
     }
