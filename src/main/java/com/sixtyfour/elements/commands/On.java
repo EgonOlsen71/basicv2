@@ -23,6 +23,10 @@ public class On extends AbstractCommand {
 	private BasicProgramCounter pc = new BasicProgramCounter(0, 0); // Recycle
 																	// instance
 
+	public List<Integer> getLineNumbers() {
+		return lineNumbers;
+	}
+
 	/** The line numbers. */
 	private List<Integer> lineNumbers = new ArrayList<Integer>();
 

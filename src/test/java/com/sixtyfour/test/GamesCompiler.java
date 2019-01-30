@@ -2,7 +2,7 @@ package com.sixtyfour.test;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FilenameFilter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,26 +35,29 @@ public class GamesCompiler {
 		File src = new File("src/test/resources/games");
 		File dst = new File("compiled");
 		dst.mkdir();
-		File[] games = src.listFiles(new FilenameFilter() {
-			@Override
-			public boolean accept(File dir, String name) {
-				return name.endsWith(".bas");
-			}
-		});
+		File[] games = src.listFiles((dir, name) -> name.endsWith(".bas"));
+
+//		File poetry = new File("src/test/resources/games/02 - Poetry.bas");
+//		compileGame(poetry, dst);
 
 		for (File game : games) {
-			System.out.println("Compiling " + game);
-			String[] vary = Loader.loadProgram(new FileInputStream(game));
-			String gameName = game.getName();
-			Assembler assy = initTestEnvironment(gameName, vary, false, 30000, -1);
-			String target = dst.getPath() + "/+" + gameName.replace(".bas", ".prg");
-			System.out.println("Code ends at: " + assy.getProgram().getParts().get(0).getEndAddress());
-			System.out.println("Binary ends at: " + assy.getProgram().getParts().get(assy.getProgram().getParts().size() - 1).getEndAddress());
-			FileWriter.writeAsPrg(assy.getProgram(), target, assy.getProgram().getCodeStart() < 2100);
-
-			// assy.getCpu().setCpuTracer(new MySimpleTracer(assy));
-			// executeTest(assy);
+			compileGame(game, dst);
 		}
+
+	}
+
+	private static void compileGame(File game, File dst) throws IOException {
+		System.out.println("Compiling " + game);
+		String[] vary = Loader.loadProgram(new FileInputStream(game));
+		String gameName = game.getName();
+		Assembler assy = initTestEnvironment(gameName, vary, false, 30000, -1);
+		String target = dst.getPath() + "/+" + gameName.replace(".bas", ".prg");
+		System.out.println("Code ends at: " + assy.getProgram().getParts().get(0).getEndAddress());
+		System.out.println("Binary ends at: " + assy.getProgram().getParts().get(assy.getProgram().getParts().size() - 1).getEndAddress());
+		FileWriter.writeAsPrg(assy.getProgram(), target, assy.getProgram().getCodeStart() < 2100);
+
+		// assy.getCpu().setCpuTracer(new MySimpleTracer(assy));
+		// executeTest(assy);
 	}
 
 	private static Machine executeTest(CompilerConfig conf, final Assembler assy) {

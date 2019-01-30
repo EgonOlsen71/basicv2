@@ -44,6 +44,11 @@ public class GenerateBasicBlocks {
         public void addStatement(Goto gotoStatement) {
             rowsWithGotoTarget.add(gotoStatement.getTargetLineNumber());
         }
+        public void addStatement(On onStatement) {
+            for (int jumpTarget : onStatement.getLineNumbers()) {
+                rowsWithGotoTarget.add(jumpTarget);
+            }
+        }
         public void addData(int currentRow) {
             rowsWithGotoTarget.add(currentRow);
             rowsWithJumps.add(currentRow);
@@ -58,6 +63,8 @@ public class GenerateBasicBlocks {
                 addStatement((Gosub) command);
             } else if (command instanceof Goto) {
                 addStatement((Goto) command);
+            } else if (command instanceof On) {
+                addStatement((On) command);
             } else {
                 //command with no goto
                 return;
@@ -83,7 +90,7 @@ public class GenerateBasicBlocks {
             if (command instanceof Gosub) {
                 return true;
             }
-            if (command instanceof If) {
+            if (command instanceof On) {
                 return true;
             }
             if (command instanceof Goto) {

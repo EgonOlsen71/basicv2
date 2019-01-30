@@ -39,6 +39,9 @@ public class PCodeOptimizer {
                     .collect(Collectors.joining("\n"));
             Logger.log(fullCode);
         }
+        if (result) {
+            updatePcode(pCode, orderedPCode);
+        }
 
         return result;
     }
