@@ -159,11 +159,8 @@ public class GenerateBasicBlocks {
     private void analyze(OrderedPCode orderedPCode) {
         PCodeVisitor visitor = new PCodeVisitor();
         visitor.accept(orderedPCode, (line, command, index) -> {
-            if(command instanceof Data){
-                analysis.addData(line.getNumber());
-            }
             if(command instanceof End){
-                analysis.addData(line.getNumber());
+                analysis.rowsWithJumps.add(line.getNumber());
             }
             analysis.addCommand(command);
             analysis.checkForJumps(line.getNumber(), command);
