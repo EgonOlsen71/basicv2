@@ -2,6 +2,7 @@ package com.sixtyfour.cbmnative.crossoptimizer;
 
 import com.sixtyfour.cbmnative.PCode;
 import com.sixtyfour.cbmnative.crossoptimizer.common.OrderedPCode;
+import com.sixtyfour.cbmnative.crossoptimizer.passes.GenerateBasicBlocks;
 import com.sixtyfour.cbmnative.crossoptimizer.passes.InlineOneBlockGosub;
 import com.sixtyfour.elements.commands.Command;
 import com.sixtyfour.parser.Line;
@@ -25,6 +26,8 @@ public class PCodeOptimizer {
         if (result) {
             updatePcode(pCode, orderedPCode);
         }
+        GenerateBasicBlocks generateBasicBlocks = new GenerateBasicBlocks();
+        result |= generateBasicBlocks.optimize(orderedPCode);
         return result;
     }
 
