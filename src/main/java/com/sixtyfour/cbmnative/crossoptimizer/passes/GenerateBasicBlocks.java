@@ -114,7 +114,7 @@ public class GenerateBasicBlocks {
                 continue;
             }
             rowsMerged.clear();
-            rowsMerged.add(rowIndex);
+            rowsMerged.add(currentRow.getNumber());
             while (rowIndex + 1 < allLines.size()) {
                 Line nextRow = orderedPCode.getLineDirect(rowIndex + 1);
                 if (analysis.isLineTargetedByJump(nextRow)) {
