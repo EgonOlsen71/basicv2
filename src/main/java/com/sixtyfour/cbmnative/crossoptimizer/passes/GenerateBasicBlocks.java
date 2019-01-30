@@ -114,8 +114,12 @@ public class GenerateBasicBlocks {
     private Analysis analysis = new Analysis();
 
     public boolean optimize(OrderedPCode orderedPCode) {
-        boolean result = false;
         analyze(orderedPCode);
+        return applyOptimization(orderedPCode);
+    }
+
+    private boolean applyOptimization(OrderedPCode orderedPCode) {
+        boolean result = false;
         List<Line> allLines = orderedPCode.getLines();
         List<Integer> rowsMerged = new ArrayList<>();
         for (int rowIndex = 0; rowIndex < allLines.size() - 1; rowIndex++) {
@@ -160,6 +164,10 @@ public class GenerateBasicBlocks {
         PCodeVisitor visitor = new PCodeVisitor();
         visitor.accept(orderedPCode, (line, command, index) -> {
             if (command instanceof End) {
+                analysis.rowsWithJumps.add(line.getNumber());
+                return;
+            }
+            if (command instanceof Run) {
                 analysis.rowsWithJumps.add(line.getNumber());
                 return;
             }

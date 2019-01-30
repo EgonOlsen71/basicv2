@@ -37,9 +37,9 @@ public class GamesCompiler {
 		dst.mkdir();
 		File[] games = src.listFiles((dir, name) -> name.endsWith(".bas"));
 
-//		File poetry = new File("src/test/resources/games/02 - Poetry.bas");
+//		File poetry = new File("src/test/resources/games/04 - Quack.bas");
 //		compileGame(poetry, dst);
-
+//
 		for (File game : games) {
 			compileGame(game, dst);
 		}
