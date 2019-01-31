@@ -98,9 +98,17 @@ public class TransformerTest {
 	    	//testRunner();
 	    	//testIfNotTest();
 	    	//testGcTest();
-	    	testSprites();
+	    	//testSprites();
+	    	testHidden();
 	}
 
+	private static void testHidden() throws Exception {
+		System.out.println("\n\ntestHidden");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/hidden.bas");
+		Assembler assy = initTestEnvironment(vary, false);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++hidden.prg", true);
+	}
+	
 	private static void testSprites() throws Exception {
 		System.out.println("\n\ntestSprites");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/sprites.bas");
