@@ -97,9 +97,17 @@ public class TransformerTest {
 //		testIfTest();
 	    	//testRunner();
 	    	//testIfNotTest();
-	    	testGcTest();
+	    	//testGcTest();
+	    	testSprites();
 	}
 
+	private static void testSprites() throws Exception {
+		System.out.println("\n\ntestSprites");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/sprites.bas");
+		Assembler assy = initTestEnvironment(vary, false);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++sprites.prg", true);
+	}
+	
 	private static void testGcTest() throws Exception {
 		System.out.println("\n\ntestGcTest");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/gctest.bas");
