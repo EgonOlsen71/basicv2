@@ -1,33 +1,32 @@
 package com.sixtyfour.cbmnative.crossoptimizer.passes;
 
-import com.sixtyfour.Basic;
 import com.sixtyfour.Logger;
 import com.sixtyfour.cbmnative.crossoptimizer.common.OrderedPCode;
-import com.sixtyfour.config.CompilerConfig;
+import com.sixtyfour.cbmnative.crossoptimizer.common.PCodeUtilities;
 import com.sixtyfour.elements.commands.Command;
 import com.sixtyfour.elements.commands.Goto;
 import com.sixtyfour.parser.Line;
 
 import java.util.List;
 
+/**
+ * This transformation will inline a GOTO which returns back to the next line
+ * <p>
+ * Code transforms from:
+ * 10 PRINT "B": GOTO 150
+ * 20 ...
+ * 50 ....
+ * <p>
+ * 150 PRINT "A": GOTO 20
+ * <p>
+ * To:
+ * <p>
+ * 10 PRINT "B": PRINT "A"
+ * 20 ...
+ * 50 ....
+ * 150 PRINT "A": GOTO 20
+ */
 public class InlineSimpleOneLineBlock {
-    private static void removeLastLineCommand(Line line) {
-        String str = line.getLine();
-        int index = str.lastIndexOf(':');
-        line.getCommands().remove(line.getCommands().size() - 1);
-        if (index == -1) {
-            line.setLine("");
-            return;
-        }
-        line.setLine(str.substring(0, index - 1));
-    }
-
-    private static Line cloneLine(OrderedPCode orderedPCode, int line) {
-        Basic basic = new Basic(orderedPCode.getCode());
-        basic.compile(new CompilerConfig());
-        Line resultLine = basic.getPCode().getLines().get(line);
-        return resultLine;
-    }
 
     public boolean optimize(OrderedPCode orderedPCode) {
         boolean result = false;
@@ -54,18 +53,17 @@ public class InlineSimpleOneLineBlock {
     }
 
     private void inlineRow(Line line, Line targetLine, OrderedPCode orderedPCode) {
-        Line cloneLine = cloneLine(orderedPCode, targetLine.getNumber());
+        Line cloneLine = PCodeUtilities.cloneLine(orderedPCode, targetLine.getNumber());
         List<Command> clonedCommands = cloneLine.getCommands();
-        removeLastLineCommand(cloneLine);
+        PCodeUtilities.removeLastLineCommand(cloneLine);
 
         if (!line.getLine().contains(":")) {
             line.setLine(cloneLine.getLine());
         } else {
-            removeLastLineCommand(line);
+            PCodeUtilities.removeLastLineCommand(line);
             String injectedInlinedCode = line.getLine() + ":" + cloneLine.getLine();
             line.setLine(injectedInlinedCode);
         }
-
 
         line.getCommands().addAll(clonedCommands);
         Logger.log("Inline final goto of line: " + line.getNumber() + " and the code looks like this now: " +

@@ -49,10 +49,6 @@ public class GenerateBasicBlocks {
                 rowsWithGotoTarget.add(jumpTarget);
             }
         }
-        public void addData(int currentRow) {
-            rowsWithGotoTarget.add(currentRow);
-            rowsWithJumps.add(currentRow);
-        }
 
         public void addStatement(Gosub gotoStatement) {
             rowsWithGotoTarget.add(gotoStatement.getTargetLineNumber());

@@ -57,9 +57,9 @@ public class OrderedPCode {
     }
 
     public String getCode() {
-        String fullCode = getLines().stream()
+        final String result = getLines().stream()
                 .map(line -> line.getNumber() + " " + line.getLine())
                 .collect(Collectors.joining("\n"));
-        return fullCode;
+        return result;
     }
 }

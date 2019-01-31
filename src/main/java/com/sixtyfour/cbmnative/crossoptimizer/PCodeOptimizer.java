@@ -34,7 +34,7 @@ public class PCodeOptimizer {
 
         if (DEBUG_PCODE_OPTIMIZER) {
             String fullCode = orderedPCode.getCode();
-            Logger.log(fullCode);
+            Logger.log("Code after PCode optimizations: \n" + fullCode);
         }
         if (result) {
             updatePcode(pCode, orderedPCode);
