@@ -44,6 +44,11 @@ public class GenerateBasicBlocks {
         public void addStatement(Goto gotoStatement) {
             rowsWithGotoTarget.add(gotoStatement.getTargetLineNumber());
         }
+        public void addStatement(On onStatement) {
+            for (int jumpTarget : onStatement.getLineNumbers()) {
+                rowsWithGotoTarget.add(jumpTarget);
+            }
+        }
         public void addData(int currentRow) {
             rowsWithGotoTarget.add(currentRow);
             rowsWithJumps.add(currentRow);
@@ -58,6 +63,8 @@ public class GenerateBasicBlocks {
                 addStatement((Gosub) command);
             } else if (command instanceof Goto) {
                 addStatement((Goto) command);
+            } else if (command instanceof On) {
+                addStatement((On) command);
             } else {
                 //command with no goto
                 return;
@@ -83,7 +90,7 @@ public class GenerateBasicBlocks {
             if (command instanceof Gosub) {
                 return true;
             }
-            if (command instanceof If) {
+            if (command instanceof On) {
                 return true;
             }
             if (command instanceof Goto) {
@@ -107,8 +114,12 @@ public class GenerateBasicBlocks {
     private Analysis analysis = new Analysis();
 
     public boolean optimize(OrderedPCode orderedPCode) {
-        boolean result = false;
         analyze(orderedPCode);
+        return applyOptimization(orderedPCode);
+    }
+
+    private boolean applyOptimization(OrderedPCode orderedPCode) {
+        boolean result = false;
         List<Line> allLines = orderedPCode.getLines();
         List<Integer> rowsMerged = new ArrayList<>();
         for (int rowIndex = 0; rowIndex < allLines.size() - 1; rowIndex++) {
@@ -152,8 +163,17 @@ public class GenerateBasicBlocks {
     private void analyze(OrderedPCode orderedPCode) {
         PCodeVisitor visitor = new PCodeVisitor();
         visitor.accept(orderedPCode, (line, command, index) -> {
-            if(command instanceof Data){
-                analysis.addData(line.getNumber());
+            if (command instanceof End) {
+                analysis.rowsWithJumps.add(line.getNumber());
+                return;
+            }
+            if (command instanceof Run) {
+                analysis.rowsWithJumps.add(line.getNumber());
+                return;
+            }
+            if (command instanceof If) {
+                analysis.rowsWithJumps.add(line.getNumber());
+                return;
             }
             analysis.addCommand(command);
             analysis.checkForJumps(line.getNumber(), command);

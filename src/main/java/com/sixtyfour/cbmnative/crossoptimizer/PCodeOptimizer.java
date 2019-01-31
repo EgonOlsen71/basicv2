@@ -27,9 +27,6 @@ public class PCodeOptimizer {
         boolean result = false;
         InlineOneBlockGosub onlyOneMethodCallInliner = new InlineOneBlockGosub();
         result |= onlyOneMethodCallInliner.optimize(orderedPCode);
-        if (result) {
-            updatePcode(pCode, orderedPCode);
-        }
         GenerateBasicBlocks generateBasicBlocks = new GenerateBasicBlocks();
         result |= generateBasicBlocks.optimize(orderedPCode);
 
@@ -38,6 +35,9 @@ public class PCodeOptimizer {
                     .map(line -> line.getNumber() + " " + line.getLine())
                     .collect(Collectors.joining("\n"));
             Logger.log(fullCode);
+        }
+        if (result) {
+            updatePcode(pCode, orderedPCode);
         }
 
         return result;
