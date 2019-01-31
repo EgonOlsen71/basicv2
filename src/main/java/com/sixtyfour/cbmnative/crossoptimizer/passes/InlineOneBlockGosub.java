@@ -87,7 +87,7 @@ public class InlineOneBlockGosub {
         Set<Integer> excludedCandidates = new HashSet<>();
         List<Integer> linesWithSingleGoSub = new ArrayList<>();
         PCodeVisitor pCodeVisitor = new PCodeVisitor();
-        PCodeVisitor.IVisitor visitor = (Line l, Command command) -> {
+        PCodeVisitor.IVisitor visitor = (Line l, Command command, int idx) -> {
             Gosub gosub = (Gosub) command;
             int target = gosub.getTargetLineNumber();
 
@@ -102,7 +102,6 @@ public class InlineOneBlockGosub {
         List<Integer> singleGosubs = new ArrayList<>();
         for (int lineIndex : linesWithSingleGoSub) {
             Line line = orderedPCode.getLine(lineIndex);
-            //Command c = line.getCommands().get(0);
             Gosub gosub = line.getFirstCommand();
             int gosubTarget = gosub.getTargetLineNumber();
             int gosubCount = countedGoSubs.get(gosubTarget);

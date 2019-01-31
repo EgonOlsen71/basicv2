@@ -7,21 +7,20 @@ import java.util.*;
 
 public class OrderedPCode {
     List<Line> allLines = new ArrayList<>();
-    Map<Integer, Integer> rowMapping = new HashMap<>();
-    public OrderedPCode(PCode pCode){
+    SortedMap<Integer, Integer> rowMapping = new TreeMap<>();
+
+    public OrderedPCode(PCode pCode) {
         Collection<Line> lines = pCode.getLines().values();
         SortedMap<Integer, Line> orderedLines = new TreeMap<>();
-        for(Line line: lines){
+        for (Line line : lines) {
             orderedLines.put(line.getNumber(), line);
         }
         int pos = 0;
-        for(Line orderedLine: orderedLines.values()){
+        for (Line orderedLine : orderedLines.values()) {
             allLines.add(orderedLine);
             rowMapping.put(orderedLine.getNumber(), pos);
             pos++;
         }
-
-
     }
 
     public List<Line> getLines() {
@@ -39,5 +38,20 @@ public class OrderedPCode {
 
     public Line getLineDirect(int targetLine) {
         return allLines.get(targetLine);
+    }
+
+    public void removeRow(int number) {
+        int rowIndex = getLineIndex(number);
+        allLines.remove(rowIndex);
+        rebuildIndex();
+    }
+
+    private void rebuildIndex() {
+        rowMapping.clear();
+        int pos = 0;
+        for (Line l : allLines) {
+            rowMapping.put(l.getNumber(), pos);
+            pos++;
+        }
     }
 }
