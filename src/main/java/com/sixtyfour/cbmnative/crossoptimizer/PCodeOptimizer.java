@@ -5,11 +5,11 @@ import com.sixtyfour.cbmnative.PCode;
 import com.sixtyfour.cbmnative.crossoptimizer.common.OrderedPCode;
 import com.sixtyfour.cbmnative.crossoptimizer.passes.GenerateBasicBlocks;
 import com.sixtyfour.cbmnative.crossoptimizer.passes.InlineOneBlockGosub;
+import com.sixtyfour.cbmnative.crossoptimizer.passes.InlineSimpleOneLineBlock;
 import com.sixtyfour.elements.commands.Command;
 import com.sixtyfour.parser.Line;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class PCodeOptimizer {
 
@@ -29,12 +29,12 @@ public class PCodeOptimizer {
         result |= onlyOneMethodCallInliner.optimize(orderedPCode);
         GenerateBasicBlocks generateBasicBlocks = new GenerateBasicBlocks();
         result |= generateBasicBlocks.optimize(orderedPCode);
+        InlineSimpleOneLineBlock inlineSimpleOneLineBlock = new InlineSimpleOneLineBlock();
+        result |= inlineSimpleOneLineBlock.optimize(orderedPCode);
 
         if (DEBUG_PCODE_OPTIMIZER) {
-            String fullCode = orderedPCode.getLines().stream()
-                    .map(line -> line.getNumber() + " " + line.getLine())
-                    .collect(Collectors.joining("\n"));
-            Logger.log(fullCode);
+            String fullCode = orderedPCode.getCode();
+            Logger.log("Code after PCode optimizations: \n" + fullCode);
         }
         if (result) {
             updatePcode(pCode, orderedPCode);

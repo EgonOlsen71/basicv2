@@ -4,10 +4,11 @@ import com.sixtyfour.cbmnative.PCode;
 import com.sixtyfour.parser.Line;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class OrderedPCode {
-    List<Line> allLines = new ArrayList<>();
-    SortedMap<Integer, Integer> rowMapping = new TreeMap<>();
+    private final List<Line> allLines = new ArrayList<>();
+    private final SortedMap<Integer, Integer> rowMapping = new TreeMap<>();
 
     public OrderedPCode(PCode pCode) {
         Collection<Line> lines = pCode.getLines().values();
@@ -53,5 +54,12 @@ public class OrderedPCode {
             rowMapping.put(l.getNumber(), pos);
             pos++;
         }
+    }
+
+    public String getCode() {
+        final String result = getLines().stream()
+                .map(line -> line.getNumber() + " " + line.getLine())
+                .collect(Collectors.joining("\n"));
+        return result;
     }
 }
