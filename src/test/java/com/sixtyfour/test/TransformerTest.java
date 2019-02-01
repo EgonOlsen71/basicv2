@@ -107,6 +107,10 @@ public class TransformerTest {
 		String[] vary = Loader.loadProgram("src/test/resources/transform/hidden.bas");
 		Assembler assy = initTestEnvironment(vary, false);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++hidden.prg", true);
+		
+		vary = Loader.loadProgram("src/test/resources/transform/hidden_asm.bas");
+		assy = initTestEnvironment(vary, false);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++hidden_asm.prg", true);
 	}
 	
 	private static void testSprites() throws Exception {

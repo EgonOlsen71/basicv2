@@ -3,12 +3,14 @@
 DATA=$c000
 XP=$c1fb
 YP=$c1fd
-BL=$c1fe
 SP=$c1ff
 
 SCR=$0400
+VIC=$d000
 
 INIT:	
+		;LDA #1
+		;STA 53280
 		JSR IOOFF
 		LDA #0
 		STA I
@@ -22,6 +24,13 @@ INIT:
 		STA CN
 		STA OY
 		STA CG
+		
+		LDA XP
+		STA XT
+		LDA XP+1
+		STA XT+1
+		LDA YP
+		STA YT
 		
 		LDA #208
 		STA CA+1
@@ -39,7 +48,13 @@ UPPER:
 		
 		LDA #64		; calc addr of sprite block
 		STA T1
+		INC BL
 		LDA BL
+		CMP #15
+		BNE NOT15
+		LDA #13
+		STA BL
+NOT15:			
 		STA T2
 		JSR MUL
 		
@@ -127,7 +142,7 @@ SKIPDRAW:
 		
 NOCHK2:
 		LDA I
-		CMP #66
+		CMP #65
 		BCC CONT1
 		JMP EXIT
 CONT1:
@@ -190,6 +205,41 @@ NOCHK5:
 		JMP MAINLOOP
 EXIT:
 		JSR IOON
+RASTERWAIT:	
+		;LDA $d012	; wait for raster below sprite
+		;CMP YP
+		;BCC RASTERWAIT
+		
+		LDA SP
+		TAY
+		ASL
+		TAX
+		LDA XT
+		STA VIC,X
+		INX
+		LDA YT
+		STA VIC,X
+		
+		LDA BYT,Y
+		
+		LDX XT+1
+		BEQ LOW255
+
+		ORA $d010
+		STA $d010
+		
+		JMP RETURN
+LOW255:	
+		EOR #$ff
+		AND $d010
+		STA $d010
+RETURN:	
+		LDA BL
+		LDX SP
+		STA 2040,X
+		
+		;LDA #0
+		;STA 53280
 		RTS
 
 FILLCP:
@@ -226,14 +276,7 @@ DRAWRIGHT:
 		BCC DODRAW
 		RTS
 DODRAW:
-		LDA XP
-		
-	;	JSR IOON
-	;	LDA XP
-	;	STA 53280
-	;	JSR IOOFF
-	;	LDA XP
-		
+		LDA XP	
 		CLC
 		ADC #8
 		STA XP
@@ -253,15 +296,11 @@ CPSHIFT2:
 		DEX
 		BNE CPSHIFT2
 DCPSHIFT2:
-		LDA #$ff
-		STA MM
 		LDX CX
-		BEQ DCPSHIFT3
-CPSHIFT3:
-		ASL MM
-		DEX
-		BNE CPSHIFT3
-DCPSHIFT3:		
+		LDA POW,X
+		STA MM
+		LDA #$ff
+		
 		EOR CP
 		STA T1
 		LDA #$ff
@@ -336,6 +375,12 @@ CALCSCR:
 		LDY #0
 		STY T1+1
 		LDA ($22),Y
+		
+		CMP #126		;exclude this char code
+		BNE ENDCP
+		LDA #32
+ENDCP:		
+		
 		STA T1
 		
 		JSR MUL8
@@ -392,22 +437,18 @@ ENTERLOOP:
  		STY T1+1
  		RTS
  		
- IOOFF:	
- 		LDA 56334
- 		AND #254
- 		STA 56334
+IOOFF:	
+ 		SEI
  		LDA 1
  		AND #251
  		STA 1
  		RTS
  
- IOON:
+IOON:
 		LDA 1
 		ORA #4
 		STA 1
-		LDA 56334
-		ORA #1
-		STA 56334
+		CLI
 		RTS
 
 I		.byte 0
@@ -426,4 +467,9 @@ CX		.byte 0
 BS		.word 0
 T1		.word 0
 T2		.word 0
+XT 		.word 0
+YT		.byte 0
+POW		.byte $ff $fe $fc $f8 $f0 $e0 $c0 $80 $00
+BYT		.byte 1 2 4 8 16 32 64 128
+BL		.byte 13
 
