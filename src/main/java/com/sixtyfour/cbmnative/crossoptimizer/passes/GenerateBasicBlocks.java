@@ -157,8 +157,8 @@ public class GenerateBasicBlocks implements HighLevelOptimizer {
     }
 
     private void analyze(OrderedPCode orderedPCode) {
-        PCodeVisitor visitor = new PCodeVisitor();
-        visitor.accept(orderedPCode, (line, command, index) -> {
+        PCodeVisitor visitor = new PCodeVisitor(orderedPCode);
+        visitor.accept((line, command, index) -> {
             if (command instanceof End) {
                 analysis.rowsWithJumps.add(line.getNumber());
                 return;
