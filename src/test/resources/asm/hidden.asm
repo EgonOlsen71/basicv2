@@ -243,7 +243,7 @@ DODRAW:
 		JSR CALCSCR
 		JSR FILLCP
 		
-		LDA 8
+		LDA #8
 		SEC
 		SBC CX
 		TAX
