@@ -25,7 +25,7 @@
 950 return
 998 ::
 999 rem hide sprite behind certain chars
-1000 v=53248:ca=v+ro:s=1024:bi=pw(sp)
+1000 v=53248:ca=v+ro:s=1024
 1020 gosub 5000
 1040 bs=bl*64 
 1060 i=0:gosub 5020:ii=0:cg=0:oy=0
