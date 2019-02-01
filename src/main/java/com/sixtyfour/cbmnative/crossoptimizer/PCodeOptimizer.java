@@ -3,10 +3,7 @@ package com.sixtyfour.cbmnative.crossoptimizer;
 import com.sixtyfour.Logger;
 import com.sixtyfour.cbmnative.PCode;
 import com.sixtyfour.cbmnative.crossoptimizer.common.OrderedPCode;
-import com.sixtyfour.cbmnative.crossoptimizer.passes.GenerateBasicBlocks;
-import com.sixtyfour.cbmnative.crossoptimizer.passes.HighLevelOptimizer;
-import com.sixtyfour.cbmnative.crossoptimizer.passes.InlineSimpleGosubBlock;
-import com.sixtyfour.cbmnative.crossoptimizer.passes.InlineSimpleOneLineBlock;
+import com.sixtyfour.cbmnative.crossoptimizer.passes.*;
 import com.sixtyfour.elements.commands.Command;
 import com.sixtyfour.parser.Line;
 
@@ -23,7 +20,7 @@ public class PCodeOptimizer {
 
     private static void setup() {
         Optimizers.clear();
-        //Optimizers.add(new InlineOneBlockGosub());
+        Optimizers.add(new InlineOneBlockGosub());
         Optimizers.add(new GenerateBasicBlocks());
         Optimizers.add(new InlineSimpleOneLineBlock());
         Optimizers.add(new InlineSimpleGosubBlock());
