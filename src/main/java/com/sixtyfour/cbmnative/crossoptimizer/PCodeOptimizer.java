@@ -3,7 +3,10 @@ package com.sixtyfour.cbmnative.crossoptimizer;
 import com.sixtyfour.Logger;
 import com.sixtyfour.cbmnative.PCode;
 import com.sixtyfour.cbmnative.crossoptimizer.common.OrderedPCode;
-import com.sixtyfour.cbmnative.crossoptimizer.passes.*;
+import com.sixtyfour.cbmnative.crossoptimizer.passes.GenerateBasicBlocks;
+import com.sixtyfour.cbmnative.crossoptimizer.passes.HighLevelOptimizer;
+import com.sixtyfour.cbmnative.crossoptimizer.passes.InlineSimpleGosubBlock;
+import com.sixtyfour.cbmnative.crossoptimizer.passes.InlineSimpleOneLineBlock;
 import com.sixtyfour.elements.commands.Command;
 import com.sixtyfour.parser.Line;
 
@@ -20,7 +23,7 @@ public class PCodeOptimizer {
 
     private static void setup() {
         Optimizers.clear();
-        Optimizers.add(new InlineOneBlockGosub());
+        //Optimizers.add(new InlineOneBlockGosub());
         Optimizers.add(new GenerateBasicBlocks());
         Optimizers.add(new InlineSimpleOneLineBlock());
         Optimizers.add(new InlineSimpleGosubBlock());
@@ -39,9 +42,14 @@ public class PCodeOptimizer {
     public static boolean optimize(PCode pCode) {
         OrderedPCode orderedPCode = new OrderedPCode(pCode);
         boolean result = false;
-        for (HighLevelOptimizer optimizer : Optimizers) {
-            result |= optimizer.optimize(orderedPCode);
-        }
+        boolean found;
+        do {
+            found = false;
+            for (HighLevelOptimizer optimizer : Optimizers) {
+                found |= optimizer.optimize(orderedPCode);
+                result |= found;
+            }
+        } while (found);
         if (DEBUG_PCODE_OPTIMIZER) {
             String fullCode = orderedPCode.getCode();
             Logger.log("Code after PCode optimizations: \n" + fullCode);

@@ -1,6 +1,8 @@
 package com.sixtyfour.cbmnative.crossoptimizer.common;
 
+import com.sixtyfour.Basic;
 import com.sixtyfour.cbmnative.PCode;
+import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.parser.Line;
 
 import java.util.*;
@@ -54,6 +56,36 @@ public class OrderedPCode {
             rowMapping.put(l.getNumber(), pos);
             pos++;
         }
+    }
+
+    public OrderedPCode cloneInstance() {
+        Basic basic = new Basic(getCode());
+        basic.compile(new CompilerConfig());
+        return new OrderedPCode(basic.getPCode());
+    }
+
+    public OrderedPCode cloneInstanceWithLineReplaced(int line, String lineText) {
+        StringBuilder sb = new StringBuilder();
+        for (Line l : allLines) {
+            sb.append(l.getNumber()).append(" ");
+            if (line != l.getNumber()) {
+                sb.append(l.getLine());
+            } else {
+                sb.append(lineText);
+            }
+            sb.append('\n');
+        }
+        Basic basic = new Basic(sb.toString());
+        basic.compile(new CompilerConfig());
+        return new OrderedPCode(basic.getPCode());
+    }
+
+    public void reset(OrderedPCode other) {
+        this.allLines.clear();
+        allLines.addAll(other.allLines);
+        this.rowMapping.clear();
+        ;
+        this.rowMapping.putAll(other.rowMapping);
     }
 
     public String getCode() {
