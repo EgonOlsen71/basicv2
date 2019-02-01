@@ -32,7 +32,7 @@ import java.util.*;
  *
  *
  */
-public class InlineOneBlockGosub {
+public class InlineOneBlockGosub implements HighLevelOptimizer {
 
     private void addCount(Map<Integer, Integer> countedGoSubs, int targetLine) {
         Integer getTargetCount = countedGoSubs.get(targetLine);

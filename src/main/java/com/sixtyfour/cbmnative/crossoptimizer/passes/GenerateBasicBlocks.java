@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
  * 150 GOTO 10
  *
  */
-public class GenerateBasicBlocks {
+public class GenerateBasicBlocks implements HighLevelOptimizer {
 
     private static class Analysis {
         public SortedSet<Integer> rowsWithGotoTarget = new TreeSet<>();

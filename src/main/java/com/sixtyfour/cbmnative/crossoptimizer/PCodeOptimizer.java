@@ -4,14 +4,29 @@ import com.sixtyfour.Logger;
 import com.sixtyfour.cbmnative.PCode;
 import com.sixtyfour.cbmnative.crossoptimizer.common.OrderedPCode;
 import com.sixtyfour.cbmnative.crossoptimizer.passes.GenerateBasicBlocks;
+import com.sixtyfour.cbmnative.crossoptimizer.passes.HighLevelOptimizer;
 import com.sixtyfour.cbmnative.crossoptimizer.passes.InlineOneBlockGosub;
 import com.sixtyfour.cbmnative.crossoptimizer.passes.InlineSimpleOneLineBlock;
 import com.sixtyfour.elements.commands.Command;
 import com.sixtyfour.parser.Line;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PCodeOptimizer {
+
+    private final static List<HighLevelOptimizer> Optimizers = new ArrayList<>();
+
+    static {
+        setup();
+    }
+
+    private static void setup() {
+        Optimizers.clear();
+        Optimizers.add(new InlineOneBlockGosub());
+        Optimizers.add(new GenerateBasicBlocks());
+        Optimizers.add(new InlineSimpleOneLineBlock());
+    }
 
     public static void replaceLastCommandInLine(Line line, Command command, String code) {
         List<Command> originalRowCommands = line.getCommands();
@@ -20,18 +35,15 @@ public class PCodeOptimizer {
         line.setLine(code);
     }
 
+
     static boolean DEBUG_PCODE_OPTIMIZER = true;
 
     public static boolean optimize(PCode pCode) {
         OrderedPCode orderedPCode = new OrderedPCode(pCode);
         boolean result = false;
-        InlineOneBlockGosub onlyOneMethodCallInliner = new InlineOneBlockGosub();
-        result |= onlyOneMethodCallInliner.optimize(orderedPCode);
-        GenerateBasicBlocks generateBasicBlocks = new GenerateBasicBlocks();
-        result |= generateBasicBlocks.optimize(orderedPCode);
-        InlineSimpleOneLineBlock inlineSimpleOneLineBlock = new InlineSimpleOneLineBlock();
-        result |= inlineSimpleOneLineBlock.optimize(orderedPCode);
-
+        for (HighLevelOptimizer optimizer : Optimizers) {
+            result |= optimizer.optimize(orderedPCode);
+        }
         if (DEBUG_PCODE_OPTIMIZER) {
             String fullCode = orderedPCode.getCode();
             Logger.log("Code after PCode optimizations: \n" + fullCode);
