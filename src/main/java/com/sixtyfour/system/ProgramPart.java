@@ -98,7 +98,7 @@ public class ProgramPart implements Comparable<ProgramPart> {
 	}
 
 	/**
-	 * Returns the end address
+	 * Sets the end address
 	 * 
 	 * @param endAddress
 	 *            the end address

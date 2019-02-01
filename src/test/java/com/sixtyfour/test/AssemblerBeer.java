@@ -1,11 +1,14 @@
 package com.sixtyfour.test;
 
+import java.io.IOException;
+
 import com.sixtyfour.Assembler;
 import com.sixtyfour.Loader;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.plugins.CpuCallListener;
 import com.sixtyfour.system.Cpu;
 import com.sixtyfour.system.CpuTracer;
+import com.sixtyfour.system.FileWriter;
 import com.sixtyfour.system.Machine;
 
 public class AssemblerBeer {
@@ -20,6 +23,13 @@ public class AssemblerBeer {
 		String[] code = Loader.loadProgram("src/test/resources/asm/beer.asm");
 		Assembler asm = new Assembler(code);
 		asm.compile(config);
+		
+		try {
+		    FileWriter.writeAsDatas(asm.getProgram(), "src/test/resources/asm/+beerdatas.bas", 30000);
+		} catch (IOException e1) {
+		    e1.printStackTrace();
+		}
+		
 		Machine machine = asm.getMachine();
 
 		System.out.println(asm.toString());

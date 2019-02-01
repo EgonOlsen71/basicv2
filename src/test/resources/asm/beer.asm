@@ -1,6 +1,6 @@
 *=$c000
 
-SYSOUT=CHROUT
+SYSOUT=$FFD2
 MAX=99
 
    			LDX #MAX
