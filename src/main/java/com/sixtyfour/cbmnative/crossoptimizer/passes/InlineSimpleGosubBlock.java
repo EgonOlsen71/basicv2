@@ -2,13 +2,12 @@ package com.sixtyfour.cbmnative.crossoptimizer.passes;
 
 import com.sixtyfour.Logger;
 import com.sixtyfour.cbmnative.crossoptimizer.common.OrderedPCode;
-import com.sixtyfour.elements.commands.*;
+import com.sixtyfour.elements.commands.Command;
+import com.sixtyfour.elements.commands.Gosub;
+import com.sixtyfour.elements.commands.Return;
 import com.sixtyfour.parser.Line;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * This transform inlines a Gosub to a line that at the end has a return statement
@@ -18,8 +17,6 @@ public class InlineSimpleGosubBlock implements HighLevelOptimizer {
     boolean findGosubToInline(OrderedPCode orderedPCode) {
         for (Line l : orderedPCode.getLines()) {
             List<Command> commands = l.getCommands();
-            if (l.getAnyCommand(If.class) != null)
-                continue;
             for (int i = 0; i < commands.size(); i++) {
                 Command c = commands.get(i);
                 if (!(c instanceof Gosub)) {
@@ -50,51 +47,34 @@ public class InlineSimpleGosubBlock implements HighLevelOptimizer {
     }
 
 
-    public String joinStrings(List<String> items, String delimiter) {
-        final String result = items.stream()
-                .collect(Collectors.joining(delimiter));
-        return result;
-    }
-
-    private List<String> getCommandItemsAsStrings(Line line) {
-        String[] parts = line.getLine().split(":");
-        List<String> partsList = new ArrayList<>();
-        partsList.addAll(Arrays.stream(parts).collect(Collectors.toList()));
-        return partsList;
+    private static String removeLastCmd(String fullLine) {
+        int lastIndex = fullLine.lastIndexOf(":");
+        String bodyWithoutReturn = fullLine.substring(0, lastIndex);
+        return bodyWithoutReturn;
     }
 
     private void inlineRow(Line line, int indexGosub, Line targetLine, OrderedPCode orderedPCode) {
+        String newLine = inlineMethodCode(line, targetLine);
         Logger.log("Inline final GOSUB line:" + line.getNumber() + " at index: " + indexGosub + " and the code looks like this now: " +
-                line.getLine());
-        List<String> finalParts = extractParts(line, indexGosub, targetLine);
-        String newLine = joinStrings(finalParts, ":");
+                newLine);
 
         OrderedPCode newPcode = orderedPCode.cloneInstanceWithLineReplaced(line.getNumber(), newLine);
         orderedPCode.reset(newPcode);
     }
 
-    private List<String> extractParts(Line line, int indexGosub, Line targetLine) {
-        List<String> lineParts = getCommandItemsAsStrings(line);
-        List<String> targetParts = getCommandItemsAsStrings(targetLine);
-        targetParts.remove(targetParts.size() - 1);
-        List<String> finalParts = new ArrayList<>();
-        for (int i = 0; i < indexGosub; i++) {
-            finalParts.add(lineParts.get(i));
-        }
-        finalParts.addAll(targetParts);
-        lineParts.remove(indexGosub);
-        for (int i = indexGosub; i < lineParts.size(); i++) {
-            finalParts.add(lineParts.get(i));
-        }
+    private String inlineMethodCode(Line line, Line targetLine) {
+        String methodBody = removeLastCmd(targetLine.getLine());
 
-        return finalParts;
-    }
-
-    private Goto getLastCommandAsGoto(Line line) {
-        List<Command> cmds = line.getCommands();
-        Command last = cmds.get(cmds.size() - 1);
-        if (last instanceof Gosub)
-            return (Goto) last;
-        return null;
+        String lineCode = line.getLine();
+        String gosubText = "GOSUB" + targetLine.getNumber();
+        if (line.getLine().equals(gosubText)) {
+            return methodBody;
+        }
+        lineCode = lineCode.replaceAll(gosubText + ":", methodBody + ":");
+        if (lineCode.endsWith(gosubText)) {
+            lineCode = lineCode.substring(0, lineCode.length() - gosubText.length());
+            lineCode = lineCode + methodBody;
+        }
+        return lineCode;
     }
 }
