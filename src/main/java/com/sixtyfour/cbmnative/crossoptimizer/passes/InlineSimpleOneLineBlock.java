@@ -26,7 +26,7 @@ import java.util.List;
  * 50 ....
  * 150 PRINT "A": GOTO 20
  */
-public class InlineSimpleOneLineBlock {
+public class InlineSimpleOneLineBlock implements HighLevelOptimizer {
 
     public boolean optimize(OrderedPCode orderedPCode) {
         boolean result = false;

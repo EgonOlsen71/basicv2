@@ -32,7 +32,7 @@ import java.util.*;
  *
  *
  */
-public class InlineOneBlockGosub {
+public class InlineOneBlockGosub implements HighLevelOptimizer {
 
     private void addCount(Map<Integer, Integer> countedGoSubs, int targetLine) {
         Integer getTargetCount = countedGoSubs.get(targetLine);
@@ -86,7 +86,7 @@ public class InlineOneBlockGosub {
         Map<Integer, Integer> countedGoSubs = new HashMap<>();
         Set<Integer> excludedCandidates = new HashSet<>();
         List<Integer> linesWithSingleGoSub = new ArrayList<>();
-        PCodeVisitor pCodeVisitor = new PCodeVisitor();
+        PCodeVisitor pCodeVisitor = new PCodeVisitor(orderedPCode);
         PCodeVisitor.IVisitor visitor = (Line l, Command command, int idx) -> {
             Gosub gosub = (Gosub) command;
             int target = gosub.getTargetLineNumber();
@@ -98,7 +98,7 @@ public class InlineOneBlockGosub {
                 linesWithSingleGoSub.add(l.getNumber());
             }
         };
-        pCodeVisitor.accept(orderedPCode, "gosub", visitor);
+        pCodeVisitor.accept("gosub", visitor);
         List<Integer> singleGosubs = new ArrayList<>();
         for (int lineIndex : linesWithSingleGoSub) {
             Line line = orderedPCode.getLine(lineIndex);
