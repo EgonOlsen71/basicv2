@@ -14,7 +14,17 @@ import java.util.List;
  */
 public class InlineSimpleGosubBlock implements HighLevelOptimizer {
 
-    boolean findGosubToInline(OrderedPCode orderedPCode) {
+    public boolean optimize(OrderedPCode orderedPCode) {
+        boolean result = false;
+        boolean found;
+        do {
+            found = findGosubToInline(orderedPCode);
+            result |= found;
+        } while (found);
+        return result;
+    }
+
+    private boolean findGosubToInline(OrderedPCode orderedPCode) {
         for (Line l : orderedPCode.getLines()) {
             List<Command> commands = l.getCommands();
             for (int i = 0; i < commands.size(); i++) {
@@ -36,17 +46,6 @@ public class InlineSimpleGosubBlock implements HighLevelOptimizer {
 
     }
 
-    public boolean optimize(OrderedPCode orderedPCode) {
-        boolean result = false;
-        boolean found;
-        do {
-            found = findGosubToInline(orderedPCode);
-            result |= found;
-        } while (found);
-        return result;
-    }
-
-
     private static String removeLastCmd(String fullLine) {
         int lastIndex = fullLine.lastIndexOf(":");
         String bodyWithoutReturn = fullLine.substring(0, lastIndex);
@@ -67,6 +66,15 @@ public class InlineSimpleGosubBlock implements HighLevelOptimizer {
 
         String lineCode = line.getLine();
         String gosubText = "GOSUB" + targetLine.getNumber();
+        if (line.getLine().equals(gosubText)) {
+            return methodBody;
+        }
+        lineCode = lineCode.replaceAll(gosubText + ":", methodBody + ":");
+        if (lineCode.endsWith(gosubText)) {
+            lineCode = lineCode.substring(0, lineCode.length() - gosubText.length());
+            lineCode = lineCode + methodBody;
+        }
+        gosubText = "GOSUB " + targetLine.getNumber();
         if (line.getLine().equals(gosubText)) {
             return methodBody;
         }
