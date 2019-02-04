@@ -9,8 +9,6 @@ SCR=$0400
 VIC=$d000
 
 INIT:	
-		;LDA #1
-		;STA 53280
 		JSR IOOFF
 		LDA #0
 		STA I
@@ -72,17 +70,10 @@ NOT15:
 		JSR CHAROFFSET
 		
 MAINLOOP:		
-		LDA #<DATA
-		CLC
-		ADC I
-		STA $22
-		LDA #>DATA
-		ADC #0
-		STA $23
-		LDY #0
-		LDA ($22),Y
-		STA LA
+		LDX I
+		LDA DATA,X
 		BEQ SKIPDRAW
+		STA LA
 		
 		JSR FILLCP
 		
@@ -95,7 +86,6 @@ CPSHIFT:
 DCPSHIFT:
 		LDA #$ff
 		EOR CP
-		STA CP
 		AND LA
 		STA LA
 		
@@ -115,7 +105,6 @@ NOCHK1:
 		LDA BS+1
 		ADC #0
 		STA $23
-		LDY #0
 		LDA LA
 		STA ($22),Y
 
@@ -250,6 +239,7 @@ FILLCP:
 		LDA CH+1
 		ADC #0
 		STA $23
+		LDY #0
 		LDA ($22),Y
 		STA CP
 		RTS
@@ -300,13 +290,11 @@ DCPSHIFT2:
 		LDA POW,X
 		STA MM
 		LDA #$ff
-		
 		EOR CP
 		STA T1
 		LDA #$ff
 		EOR MM
 		AND T1
-		STA CP
 		ORA MM
 		AND LA
 		STA LA
