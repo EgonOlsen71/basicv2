@@ -54,6 +54,9 @@ public class InlineSimpleGosubBlock implements HighLevelOptimizer {
 
     private static String removeLastCmd(String fullLine) {
         int lastIndex = fullLine.lastIndexOf(":");
+        if (lastIndex == -1) {
+            return "";
+        }
         String bodyWithoutReturn = fullLine.substring(0, lastIndex);
         return bodyWithoutReturn;
     }
