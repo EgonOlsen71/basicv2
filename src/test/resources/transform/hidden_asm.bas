@@ -17,7 +17,7 @@
 110 if a$="s" then y=y+3:goto 115
 112 goto 60
 115 if y<50 then y=50
-116 if y>180 then y=180
+116 if y>250 then y=250
 117 goto 50
 118 if x<24 then x=24
 119 if x>320 then x=320
