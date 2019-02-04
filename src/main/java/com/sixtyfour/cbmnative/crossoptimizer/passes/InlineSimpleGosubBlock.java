@@ -4,6 +4,7 @@ import com.sixtyfour.Logger;
 import com.sixtyfour.cbmnative.crossoptimizer.common.OrderedPCode;
 import com.sixtyfour.elements.commands.Command;
 import com.sixtyfour.elements.commands.Gosub;
+import com.sixtyfour.elements.commands.If;
 import com.sixtyfour.elements.commands.Return;
 import com.sixtyfour.parser.Line;
 
@@ -34,6 +35,11 @@ public class InlineSimpleGosubBlock implements HighLevelOptimizer {
                 }
                 Gosub gosub = (Gosub) c;
                 Line targetLine = orderedPCode.getLine(gosub.getTargetLineNumber());
+                If anyIfInTarget = targetLine.getAnyCommand(If.class);
+                if (anyIfInTarget!=null) {
+                    continue;
+                }
+
                 List<Command> targetCommands = targetLine.getCommands();
                 Command lastTargetCommand = targetCommands.get(targetCommands.size() - 1);
                 if (lastTargetCommand instanceof Return) {
@@ -61,7 +67,7 @@ public class InlineSimpleGosubBlock implements HighLevelOptimizer {
         orderedPCode.reset(newPcode);
     }
 
-    private String inlineMethodCode(Line line, Line targetLine) {
+    private static String inlineMethodCode(Line line, Line targetLine) {
         String methodBody = removeLastCmd(targetLine.getLine());
 
         String lineCode = line.getLine();
@@ -69,15 +75,16 @@ public class InlineSimpleGosubBlock implements HighLevelOptimizer {
         if (line.getLine().equals(gosubText)) {
             return methodBody;
         }
-        lineCode = lineCode.replaceAll(gosubText + ":", methodBody + ":");
-        if (lineCode.endsWith(gosubText)) {
-            lineCode = lineCode.substring(0, lineCode.length() - gosubText.length());
-            lineCode = lineCode + methodBody;
-        }
+        lineCode = replaceInlineGosub(methodBody, lineCode, gosubText);
         gosubText = "GOSUB " + targetLine.getNumber();
         if (line.getLine().equals(gosubText)) {
             return methodBody;
         }
+        lineCode = replaceInlineGosub(methodBody, lineCode, gosubText);
+        return lineCode;
+    }
+
+    private static String replaceInlineGosub(String methodBody, String lineCode, String gosubText) {
         lineCode = lineCode.replaceAll(gosubText + ":", methodBody + ":");
         if (lineCode.endsWith(gosubText)) {
             lineCode = lineCode.substring(0, lineCode.length() - gosubText.length());

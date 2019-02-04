@@ -16,6 +16,7 @@ public class OrderedPCode {
         Collection<Line> lines = pCode.getLines().values();
         SortedMap<Integer, Line> orderedLines = new TreeMap<>();
         for (Line line : lines) {
+            line.setLine(line.getLine().toUpperCase());
             orderedLines.put(line.getNumber(), line);
         }
         int pos = 0;

@@ -20,7 +20,7 @@ public class PCodeOptimizer {
 
     private static void setup() {
         Optimizers.clear();
-        Optimizers.add(new InlineOneBlockGosub());
+        //Optimizers.add(new InlineOneBlockGosub());
         Optimizers.add(new GenerateBasicBlocks());
         Optimizers.add(new InlineSimpleOneLineBlock());
         Optimizers.add(new InlineSimpleGosubBlock());
