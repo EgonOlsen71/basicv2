@@ -13,7 +13,7 @@ public class CompilerConfig {
 
 	private boolean constantPropagation = true;
 	private boolean constantFolding = true;
-	private boolean pcodeOptimize = true;
+	private boolean pcodeOptimize = false;
 	private boolean intermediateLanguageOptimizations = true;
 	private boolean nativeLanguageOptimizations = true;
 	private boolean optimizedLinker = true;
