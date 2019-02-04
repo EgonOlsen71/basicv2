@@ -9,7 +9,7 @@
 50 xh=x/256:xl=x and 255
 52 poke49659,xl:poke49660,xh:poke49661,y
 55 sys 49664
-60 geta$:if a$="" then 60
+60 poke198,0:wait198,1:geta$
 70 if a$="x" then printchr$(147);:pokev+21,0:poke56325,40:end
 80 if a$="w" then y=y-3:goto 115
 90 if a$="a" then x=x-3:goto 118
