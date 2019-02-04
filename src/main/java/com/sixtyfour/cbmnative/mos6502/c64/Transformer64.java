@@ -83,6 +83,7 @@ public class Transformer64 implements Transformer {
 		res.add("FACOR = $AFE6");
 		res.add("FACMEM = $BBD7");
 		res.add("ARGFAC = $BBFC");
+		res.add("FACARG = $BC0C");
 		res.add("FACSTR = $BDDF");
 		res.add("FACINT = $B1AA");
 		res.add("RNDFAC = $BC1B");
