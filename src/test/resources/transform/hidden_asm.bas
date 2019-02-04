@@ -1,7 +1,7 @@
 5 poke 53280,0:poke 53281,0:poke646,15:poke650,128
 10 print chr$(147);"initializing sprites...";:v = 53248
 11 poke v+21,1
-12 poke 2040,13:poke53287,14
+12 poke 2040,13:poke53287,14:poke56325,29
 20 for n = 0 to 62:read q:poke832+n,q:poke896+n,q:poke 49152+n,q:next
 23 print"done":print"initializing machine code...";
 25 gosub 30000:print"done":gosub1000
@@ -10,7 +10,7 @@
 52 poke49659,xl:poke49660,xh:poke49661,y
 55 sys 49664
 60 geta$:if a$="" then 60
-70 if a$="x" then printchr$(147);:pokev+21,0:end
+70 if a$="x" then printchr$(147);:pokev+21,0:poke56325,40:end
 80 if a$="w" then y=y-3:goto 115
 90 if a$="a" then x=x-3:goto 118
 100 if a$="d" then x=x+3:goto 118
@@ -40,6 +40,7 @@
 1070 for p=x-6tox+6:of=p+y*40:poke1024+of,104:poke55296+of,15:next
 1075 y=y+1
 1080 for p=x-4tox+4:of=p+y*40:poke1024+of,104:poke55296+of,15:next
+1090 poke 781,5:poke782,4:sys58634:print"** use wasd to move, x to exit **"
 1100 next:return
 
 30000 for qq=49664 to 50559:read dq:pokeqq,dq:next
