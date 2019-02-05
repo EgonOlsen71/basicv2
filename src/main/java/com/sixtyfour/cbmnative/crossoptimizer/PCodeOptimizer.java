@@ -20,7 +20,7 @@ public class PCodeOptimizer {
 
     private static void setup() {
         Optimizers.clear();
-        Optimizers.add(new InlineOneBlockGosub());
+        //Optimizers.add(new InlineOneBlockGosub());
         Optimizers.add(new GenerateBasicBlocks());
         Optimizers.add(new InlineSimpleOneLineBlock());
         Optimizers.add(new InlineSimpleGosubBlock());
@@ -45,14 +45,15 @@ public class PCodeOptimizer {
             for (HighLevelOptimizer optimizer : Optimizers) {
                 found |= optimizer.optimize(orderedPCode);
                 result |= found;
+
             }
         } while (found);
-        if (DEBUG_PCODE_OPTIMIZER) {
-            String fullCode = orderedPCode.getCode();
-            Logger.log("Code after PCode optimizations: \n" + fullCode);
-        }
         if (result) {
             updatePcode(pCode, orderedPCode);
+            if (DEBUG_PCODE_OPTIMIZER) {
+                String fullCode = orderedPCode.getCode();
+                Logger.log("Code after PCode optimizations: \n" + fullCode);
+            }
         }
         return result;
     }
