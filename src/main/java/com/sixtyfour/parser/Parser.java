@@ -276,7 +276,7 @@ public class Parser {
 
 	/**
 	 * Replaces all strings (everything wrapped in ") with the given char. The
-	 * lenght of the term will stay the same. This is used to ease parsing in
+	 * length of the term will stay the same. This is used to ease parsing in
 	 * some cases.
 	 * 
 	 * @param term
