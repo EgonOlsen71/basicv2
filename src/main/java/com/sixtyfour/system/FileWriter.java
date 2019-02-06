@@ -84,24 +84,46 @@ public class FileWriter {
     /**
      * @param prg
      * @param fileName
+     * @param withBasicHeader
      * @throws IOException
      */
     public static void writeAsPrg(Program prg, String fileName, boolean withBasicHeader) throws IOException {
-	writeAsPrg(prg, new FileOutputStream(fileName), withBasicHeader);
+   	writeAsPrg(prg, new FileOutputStream(fileName), withBasicHeader, 2049);
+    }
+    
+    /**
+     * @param prg
+     * @param os
+     * @param withBasicHeader
+     * @throws IOException
+     */
+    public static void writeAsPrg(Program prg, OutputStream os, boolean withBasicHeader) throws IOException {
+	writeAsPrg(prg, os, withBasicHeader, 2049);
+    }
+    
+    /**
+     * @param prg
+     * @param fileName
+     * @throws IOException
+     */
+    public static void writeAsPrg(Program prg, String fileName, boolean withBasicHeader, int baseAddr) throws IOException {
+	writeAsPrg(prg, new FileOutputStream(fileName), withBasicHeader, baseAddr);
     }
 
     /**
      * @param prg
      * @param os
      */
-    public static void writeAsPrg(Program prg, OutputStream os, boolean withBasicHeader) throws IOException {
+    public static void writeAsPrg(Program prg, OutputStream os, boolean withBasicHeader, int baseAddr) throws IOException {
 	BufferedOutputStream bos = null;
 	int codeStart = prg.getCodeStart();
 	int codeStartOrg = codeStart;
 	int[] header = null;
+	int sa=baseAddr+23;
+	int ea=sa+228;
 	if (withBasicHeader) {
-	    if (codeStart >= 2072 && codeStart < 2300) {
-		header = new int[codeStart - 2049];
+	    if (codeStart >= sa && codeStart < ea) {
+		header = new int[codeStart - baseAddr];
 		System.arraycopy(HEADER, 0, header, 0, HEADER.length);
 		String hss = String.valueOf(codeStart);
 		for (int i = 0; i < hss.length(); i++) {
@@ -109,9 +131,9 @@ public class FileWriter {
 		    int cc = ((int) c - (int) '0') + 0x30;
 		    header[i + 5] = cc;
 		}
-		codeStart = 2049;
+		codeStart = baseAddr;
 	    } else {
-		throw new RuntimeException("Starting address out of range for a BASIC header: " + prg.getCodeStart());
+		throw new RuntimeException("Starting address out of range for a BASIC header: " + prg.getCodeStart()+"/"+baseAddr);
 	    }
 	}
 	try {
