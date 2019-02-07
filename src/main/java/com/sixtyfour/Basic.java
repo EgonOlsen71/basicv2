@@ -414,7 +414,7 @@ public class Basic implements ProgramExecutor {
 							
 							if (command instanceof Let && loops>0) {
 							    // If it's a LET after an IF, it must not be counted as a single assignment, because it might not happen at all.
-							    // This doesn't take assignment after conditional jumps into account, but...well...
+							    // This doesn't take assignments after (conditional) jumps into account, but...well...
 							    machine.trackVariableUsage(((Let) command).getVar(), false);
 							}
 							
