@@ -1,9 +1,9 @@
 ;###################################
 START		LDA ENDSTRBUF+1
 			BNE ENDGIVEN
-			LDA 51
+			LDA 55
 			STA ENDSTRBUF
-			LDA 52
+			LDA 56
 			STA ENDSTRBUF+1
 ENDGIVEN	LDA #<FPSTACK
 			LDY #>FPSTACK
