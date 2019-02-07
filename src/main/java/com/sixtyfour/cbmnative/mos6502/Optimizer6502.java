@@ -1,4 +1,4 @@
-package com.sixtyfour.cbmnative.mos6502.c64;
+package com.sixtyfour.cbmnative.mos6502;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,14 +15,14 @@ import com.sixtyfour.cbmnative.PlatformProvider;
 import com.sixtyfour.cbmnative.ProgressListener;
 
 /**
- * An optimizer implementation for the C64 target platform. Because it might run
+ * An optimizer implementation for the 6520 cpu. Because it might run
  * a large number of passes, it will take its time especially on larger
  * programs.
  * 
  * @author EgonOlsen
  * 
  */
-public class Optimizer64 implements Optimizer {
+public class Optimizer6502 implements Optimizer {
     private List<Pattern> patterns = new ArrayList<Pattern>() {
 	private static final long serialVersionUID = 1L;
 	{

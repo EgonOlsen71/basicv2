@@ -50,4 +50,18 @@ public interface PlatformProvider {
      * @return Are they allowed?
      */
     boolean useLooseTypes();
+    
+    /**
+     * Address, up to which it's feasible to add a BASIC header to the compiled code
+     * @return the address
+     */
+    int getMaxHeaderAddress();
+    
+    /**
+     * Default base address at which the BASIC ram usually starts on a platform.
+     * 
+     * @return the address
+     */
+    int getBaseAddress();
+    
 }

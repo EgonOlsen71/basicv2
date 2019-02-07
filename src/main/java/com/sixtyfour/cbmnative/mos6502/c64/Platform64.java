@@ -4,6 +4,7 @@ import com.sixtyfour.cbmnative.Optimizer;
 import com.sixtyfour.cbmnative.PlatformProvider;
 import com.sixtyfour.cbmnative.Transformer;
 import com.sixtyfour.cbmnative.Unlinker;
+import com.sixtyfour.cbmnative.mos6502.Optimizer6502;
 import com.sixtyfour.cbmnative.mos6502.Unlinker6502;
 
 /**
@@ -26,7 +27,7 @@ public class Platform64 implements PlatformProvider {
 
 	@Override
 	public Optimizer getOptimizer() {
-		return new Optimizer64();
+		return new Optimizer6502();
 	}
 
 	@Override
@@ -42,5 +43,15 @@ public class Platform64 implements PlatformProvider {
 	@Override
 	public boolean useLooseTypes() {
 		return true;
+	}
+
+	@Override
+	public int getMaxHeaderAddress() {
+	    return 2100;
+	}
+
+	@Override
+	public int getBaseAddress() {
+	    return 2049;
 	}
 }

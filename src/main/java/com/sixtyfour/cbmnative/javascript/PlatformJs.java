@@ -43,4 +43,14 @@ public class PlatformJs implements PlatformProvider {
 	return true;
     }
 
+    @Override
+    public int getMaxHeaderAddress() {
+	return 0;
+    }
+
+    @Override
+    public int getBaseAddress() {
+	return 0;
+    }
+
 }

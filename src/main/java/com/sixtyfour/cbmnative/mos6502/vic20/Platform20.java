@@ -4,8 +4,8 @@ import com.sixtyfour.cbmnative.Optimizer;
 import com.sixtyfour.cbmnative.PlatformProvider;
 import com.sixtyfour.cbmnative.Transformer;
 import com.sixtyfour.cbmnative.Unlinker;
+import com.sixtyfour.cbmnative.mos6502.Optimizer6502;
 import com.sixtyfour.cbmnative.mos6502.Unlinker6502;
-import com.sixtyfour.cbmnative.mos6502.c64.Optimizer64;
 
 /**
  * A PlatformProvider implementation for the VIC20 target platform.
@@ -17,17 +17,17 @@ public class Platform20 implements PlatformProvider {
 
 	@Override
 	public int getStackSize() {
-		return 20;
+		return 10;
 	}
 
 	@Override
 	public int getForStackSize() {
-		return 20;
+		return 10;
 	}
 
 	@Override
 	public Optimizer getOptimizer() {
-		return new Optimizer64();
+		return new Optimizer6502();
 	}
 
 	@Override
@@ -43,5 +43,15 @@ public class Platform20 implements PlatformProvider {
 	@Override
 	public boolean useLooseTypes() {
 		return true;
+	}
+
+	@Override
+	public int getMaxHeaderAddress() {
+	    return 4660;
+	}
+
+	@Override
+	public int getBaseAddress() {
+	    return 4609;
 	}
 }

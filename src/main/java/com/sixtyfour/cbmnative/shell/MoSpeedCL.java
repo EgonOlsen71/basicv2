@@ -18,6 +18,7 @@ import com.sixtyfour.cbmnative.ProgressListener;
 import com.sixtyfour.cbmnative.Transformer;
 import com.sixtyfour.cbmnative.javascript.PlatformJs;
 import com.sixtyfour.cbmnative.mos6502.c64.Platform64;
+import com.sixtyfour.cbmnative.mos6502.vic20.Platform20;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.config.LoopMode;
 import com.sixtyfour.config.MemoryConfig;
@@ -77,7 +78,7 @@ public class MoSpeedCL {
 
 		cfg.setConstantFolding(getOption("constfolding", cmds));
 		cfg.setConstantPropagation(getOption("constprop", cmds));
-		cfg.setPcodeOptimizations(getOption("pcodeopt", cmds));
+		cfg.setPcodeOptimizations(false /*getOption("pcodeopt", cmds)*/);
 		cfg.setDeadStoreElimination(getOption("deadstoreopt", cmds));
 		cfg.setDeadStoreEliminationOfStrings(getOption("deadstoreoptstr", cmds));
 		cfg.setIntermediateLanguageOptimizations(getOption("ilangopt", cmds));
@@ -110,12 +111,16 @@ public class MoSpeedCL {
 		PlatformProvider platform = new Platform64();
 		String appendix=".prg";
 		if (cmds.containsKey("platform")) {
-		    if (cmds.get("platform").equalsIgnoreCase("c64")) {
+		    String pl=cmds.get("platform");
+		    if (pl.equalsIgnoreCase("c64")) {
 			platform = new Platform64();
 			appendix=".prg";
-		    } else if (cmds.get("platform").equalsIgnoreCase("js")) {
+		    } else if (pl.equalsIgnoreCase("js")) {
 			platform = new PlatformJs();
 			appendix=".js";
+		    } else if (pl.equalsIgnoreCase("vic20") || pl.equalsIgnoreCase("vc20")) {
+			platform = new Platform20();
+			appendix=".prg";
 		    } else {
 			System.out.println("Target platform " + cmds.get("platform") + " not supported!");
 			exit(4);
@@ -183,7 +188,7 @@ public class MoSpeedCL {
 		}
 
 		Assembler assy=null;
-		if (platform instanceof Platform64) {
+		if (platform instanceof Platform64 || platform instanceof Platform20) {
         		assy = new Assembler(nCode);
         		assy.compile(cfg);
 		}
@@ -198,10 +203,10 @@ public class MoSpeedCL {
 	}
 
 	private static void writeTargetFiles(MemoryConfig memConfig, String targetFile, List<String> ncode, Assembler assy, PlatformProvider platform) {
-	    if (platform instanceof Platform64) {
+	    if (platform instanceof Platform64 || platform instanceof Platform20) {
         	    try {
-        	    	System.out.println("Writing target file: " + targetFile);
-        	    	FileWriter.writeAsPrg(assy.getProgram(), targetFile, memConfig.getProgramStart() == -1 || memConfig.getProgramStart() < 2100);
+        		System.out.println("Writing target file: " + targetFile);
+        	    	FileWriter.writeAsPrg(assy.getProgram(), targetFile, memConfig.getProgramStart() == -1 || memConfig.getProgramStart() < platform.getMaxHeaderAddress(), platform.getBaseAddress());
         	    } catch (Exception e) {
         	    	System.out.println("Failed to write target file '" + targetFile + "': " + e.getMessage());
         	    	exit(9);
@@ -323,7 +328,7 @@ public class MoSpeedCL {
 		System.out.println("An existing file of the same name will be overwritten.\n\n");
 		System.out.println("Optional parameters (either with / or - as prefix):\n");
 		System.out.println("/target=<target file> -  the target file name");
-		System.out.println("/platform=xxxx - the target platform. Options are c64 (for c64 compatible machine code) and js (for Javascript), default is c64");
+		System.out.println("/platform=xxxx - the target platform. Options are c64 (for c64 compatible machine code), vic20 or vc20 and js (for Javascript), default is c64");
 		System.out.println("/generatesrc=true|false -  writes the generated intermediate and assembly language programs to disk as well");
 		System.out.println("/constprop=true|false - enables/disables constant propagation optimizations");
 		System.out.println("/constfolding=true|false - enables/disables constant folding optimizations");
@@ -337,7 +342,7 @@ public class MoSpeedCL {
 		System.out.println("/floatopt=true|false - enables/disables some floating point optimizations, which might impact accuracy");
 		System.out.println("/intopt=true|false - enables/disables some integer optimizations");
 		System.out.println("/compactlevel=[3...] - sets the compactor level. The lower the level, the more compact (but slower) the code. 0 means off!");
-		System.out.println("/progstart=xxxxx|$yyyy - sets the start address for the compiled program. Below 2100, a BASIC header will be added automatically.");
+		System.out.println("/progstart=xxxxx|$yyyy - sets the start address for the compiled program. If close to the machine's BASIC start address, a BASIC header will be added automatically.");
 		System.out.println("/varstart=xxxxx|$yyyy - the start address for variables. If none is given, they will be located right after the runtime code.");
 		System.out.println("/varend=xxxxx|$yyyy - the end address of the variable memory, i.e. in fact of the string memory.");
 		System.out.println("/runtimestart=xxxxx|$yyyy - the start address of the runtime's code. If none is given, it follows the program's code.");
