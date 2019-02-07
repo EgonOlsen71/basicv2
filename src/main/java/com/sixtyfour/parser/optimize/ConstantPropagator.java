@@ -59,6 +59,10 @@ public class ConstantPropagator {
 		    if (cmd.isCommand("LET")) {
 			Let let = (Let) cmd;
 			Variable var = let.getVar();
+			
+			// This might over-optimize assigments which happen after the variable has been accessed for the first time,
+			// So that it's actually not constant but either 0 or the next, then constant value. I can't detect this case,
+			// but it should be very rare anyway. I've never encountered it except after a condition, which I do handle in Basic.java. 
 			if (machine.isAssignedOnce(var)) {
 			    if (var.isConstant()) {
 				continue;
