@@ -25,7 +25,7 @@ public class Transformer20 extends AbstractTransformer {
 	public Transformer20() {
 	    variableStart = -1;
 	    runtimeStart = -1;
-	    stringMemoryEnd = 0; // will be adjusted in the runtime according to 51/52
+	    stringMemoryEnd = 0; // will be adjusted in the runtime according to 55/56
 	    startAddress = 4632;
 	    preferZeropage = true;
 	}
