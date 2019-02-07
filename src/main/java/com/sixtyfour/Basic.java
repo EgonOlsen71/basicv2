@@ -397,6 +397,7 @@ public class Basic implements ProgramExecutor {
 
 				int pos = 0;
 				for (String part : parts) {
+				    	int loops=0;
 					do {
 						if (part.trim().length() > 0) {
 							Command command = Parser.getCommand(part);
@@ -410,7 +411,15 @@ public class Basic implements ProgramExecutor {
 
 							machine.addCommand(command);
 							cl.addCommand(command);
+							
+							if (command instanceof Let && loops>0) {
+							    // If it's a LET after an IF, it must not be counted as a single assignment, because it might not happen at all.
+							    // This doesn't take assignment after conditional jumps into account, but...well...
+							    machine.trackVariableUsage(((Let) command).getVar(), false);
+							}
+							
 							pos++;
+							loops++;
 							if (Rem.REM_MARKER.equals(part)) {
 								break;
 							}
