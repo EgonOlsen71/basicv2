@@ -8,7 +8,7 @@ It doesn't use any parts of the implementation of the original Commodore BASIC l
 It's a complete reimplementation in Java.
 
 It's basically two solutions in one. You can either compile the BASIC programs so that you can run them inside a Java environment/application using the runtime that the project provides.
-Or you can use the native cross compiler to compile it for the real C64 and run it on the actual machine or in an emulator. You'll find this compiler called MoSpeed as a command line application in the dist-directory (here: https://github.com/EgonOlsen71/basicv2/tree/master/dist ) of the project. It can be run on its own, you don't have to download/clone the whole project for this. There's also an experimental BASIC V2 -> Javascript compiler included. The result of that one is a set of html/js files that can be run in a browser.
+Or you can use the native cross compiler to compile it for the real C64 or VIC20 and run it on the actual machine or in an emulator. You'll find this compiler called MoSpeed as a command line application in the dist-directory (here: https://github.com/EgonOlsen71/basicv2/tree/master/dist ) of the project. It can be run on its own, you don't have to download/clone the whole project for this. There's also an experimental BASIC V2 -> Javascript compiler included. The result of that one is a set of html/js files that can be run in a browser.
 
 In addition, it offers a symbolic assembler that compiles assembly code into actual 6502 machine code. To execute these programs, it comes with a 6502 cpu emulation.
 
