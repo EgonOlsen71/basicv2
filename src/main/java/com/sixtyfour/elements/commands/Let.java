@@ -53,8 +53,7 @@ public class Let extends AbstractCommand {
 	/**
 	 * Sets the var.
 	 * 
-	 * @param var
-	 *            the new var
+	 * @param var the new var
 	 */
 	public void setVar(Variable var) {
 		this.var = var;
@@ -73,15 +72,20 @@ public class Let extends AbstractCommand {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String,
-	 * int, int, int, boolean, sixtyfour.system.Machine)
+	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String, int,
+	 * int, int, boolean, sixtyfour.system.Machine)
 	 */
 	@Override
-	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
+	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos,
+			boolean lastPos, Machine machine) {
 		super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine);
 		if (VarUtils.toUpper(linePart).startsWith("LET")) {
 			linePart = linePart.substring(3).trim();
 		}
+		// varExists is true, if the variable has been used in the code before. This isn't tracing, it just checks for
+		// occurences before regarding line numbers. So this isn't perfect, but still better than nothing. It's here
+		// to reduce the chance of over-optimizing when constant folding.
+		boolean varExist = Parser.hasVariableAdded(linePart, machine, true);
 		var = Parser.getVariable(linePart, machine);
 		VariableAndIndex vai = Parser.getIndexTerm(config, var, linePart, machine, true);
 		indexTerm = vai.getIndexTerm();
@@ -90,14 +94,15 @@ public class Let extends AbstractCommand {
 		if (term.getOperator().isDelimiter()) {
 			syntaxError(linePart);
 		}
-		if (!var.getType().equals(term.getType()) && (var.getType().equals(Type.STRING) || term.getType().equals(Type.STRING))) {
+		if (!var.getType().equals(term.getType())
+				&& (var.getType().equals(Type.STRING) || term.getType().equals(Type.STRING))) {
 			typeMismatch(linePart);
 		}
 		if (indexTerm != null) {
 			pars = Parser.getParameters(indexTerm);
 			pis = new int[pars.size()];
 		}
-		machine.trackVariableUsage(var, true);
+		machine.trackVariableUsage(var, !varExist);
 		return null;
 	}
 
@@ -117,8 +122,7 @@ public class Let extends AbstractCommand {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.
+	 * @see sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.
 	 * Machine)
 	 */
 	@Override
@@ -148,7 +152,8 @@ public class Let extends AbstractCommand {
 		String expPush = getPushRegister(expr.get(expr.size() - 1));
 		expr = expr.subList(0, expr.size() - 1);
 		if (indexTerm != null) {
-			before = compiler.compileToPseudoCode(config, machine, Parser.createIndexTerm(config, machine, pars, var.getDimensions()));
+			before = compiler.compileToPseudoCode(config, machine,
+					Parser.createIndexTerm(config, machine, pars, var.getDimensions()));
 			if (expPush.equals("X")) {
 				after.add("MOV Y,X");
 			} else if (expPush.equals("B")) {

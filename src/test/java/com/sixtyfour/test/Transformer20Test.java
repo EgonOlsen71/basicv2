@@ -27,6 +27,15 @@ public class Transformer20Test {
 		 testTransformerPrime();
 		 testTransformerBeer();
 		 testTransformerCharFractal();
+		 testTransformerFlightPath();
+	}
+	
+	private static void testTransformerFlightPath() throws Exception {
+		System.out.println("\n\ntestTransformerFlightPath");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/vic20/flightpath737.bas");
+
+		final Assembler assy = initTestEnvironment(vary);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++flightpath737.prg", true, 4609);
 	}
 
 	private static void testTransformerPrime() throws Exception {
@@ -39,20 +48,20 @@ public class Transformer20Test {
 
 	private static void testTransformerBeer() throws Exception {
 		System.out.println("\n\ntestTransformerBeer");
-		String[] vary = Loader.loadProgram("src/test/resources/transform/beer_transform20.bas");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/vic20/beer_transform20.bas");
 
 		final Assembler assy = initTestEnvironment(vary, false);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++testbeer20.prg", true, 4609);
 	}
-	
+
 	private static void testTransformerCharFractal() throws Exception {
 		System.out.println("\n\ntestTransformerCharFractal");
-		String[] vary = Loader.loadProgram("src/test/resources/transform/charfractal20.bas");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/vic20/charfractal20.bas");
 
 		final Assembler assy = initTestEnvironment(vary, false);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++charfractal20.prg", true, 4609);
 	}
-	
+
 	private static Assembler initTestEnvironment(String[] vary) {
 		return initTestEnvironment(vary, false);
 	}
@@ -75,7 +84,7 @@ public class Transformer20Test {
 		conf.setLoopMode(LoopMode.REMOVE);
 		conf.setCompactThreshold(4);
 
-		final Basic basic = new Basic(vary);
+		Basic basic = new Basic(vary);
 		basic.compile(conf);
 
 		List<String> mCode = NativeCompiler.getCompiler().compileToPseudeCode(conf, basic);
@@ -92,6 +101,7 @@ public class Transformer20Test {
 		}
 		System.out.println("------------------------------");
 
+		basic = new Basic(vary);
 		MemoryConfig memConfig = new MemoryConfig();
 		memConfig.setVariableStart(variableStart);
 		List<String> nCode = NativeCompiler.getCompiler().compile(conf, basic, memConfig, new Platform20());
@@ -104,7 +114,6 @@ public class Transformer20Test {
 
 		return assy;
 	}
-
 
 	@SuppressWarnings("unused")
 	private static class MySimpleTracer implements CpuTracer {
@@ -123,11 +132,13 @@ public class Transformer20Test {
 			if (line != null) {
 				cnt++;
 
-				System.out.println(Integer.toHexString(opcodePc) + " - " + Integer.toHexString(opcode) + " -> " + Integer.toHexString(newPc) + " / a=" + cpu.getAcc() + " / x="
-						+ cpu.getX() + " / y=" + cpu.getY() + "/ z=" + (cpu.getStatus() & 0b10) + "/ c=" + (cpu.getStatus() & 0b00000001) + " / TMP_ZP=" + printReg(105, assy)
-						+ " / TMP2_ZP=" + printReg(107, assy) + " / TMP3_ZP=" + printReg(34, assy) + "/" + line + " " + assy.getRam()[opcodePc + 1] + "/" + cnt + " - "
-						+ print16Bit(1024, assy) + "/" + print16Bit(1027, assy) + "/" + print16Bit(1030, assy) + "/" + print16Bit(1033, assy) + "/" + print16Bit(1036, assy)
-						+ " @ " + cpu.getClockTicks());
+				System.out.println(Integer.toHexString(opcodePc) + " - " + Integer.toHexString(opcode) + " -> "
+						+ Integer.toHexString(newPc) + " / a=" + cpu.getAcc() + " / x=" + cpu.getX() + " / y="
+						+ cpu.getY() + "/ z=" + (cpu.getStatus() & 0b10) + "/ c=" + (cpu.getStatus() & 0b00000001)
+						+ " / TMP_ZP=" + printReg(105, assy) + " / TMP2_ZP=" + printReg(107, assy) + " / TMP3_ZP="
+						+ printReg(34, assy) + "/" + line + " " + assy.getRam()[opcodePc + 1] + "/" + cnt + " - "
+						+ print16Bit(1024, assy) + "/" + print16Bit(1027, assy) + "/" + print16Bit(1030, assy) + "/"
+						+ print16Bit(1033, assy) + "/" + print16Bit(1036, assy) + " @ " + cpu.getClockTicks());
 
 			}
 

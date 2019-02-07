@@ -53,10 +53,8 @@ public class Parser {
 	 * Splits the line into its parts, i.e. into its different command blocks,
 	 * usually separated by a colon.
 	 * 
-	 * @param line
-	 *            the line to split
-	 * @param machine
-	 *            the machine
+	 * @param line    the line to split
+	 * @param machine the machine
 	 * @return the parts
 	 */
 	public static String[] getParts(Line line, Machine machine) {
@@ -88,8 +86,7 @@ public class Parser {
 	/**
 	 * Checks if is a text can be converted into an integer.
 	 * 
-	 * @param txt
-	 *            the txt
+	 * @param txt the txt
 	 * @return true, if it's actually an integer
 	 */
 	public static boolean isInteger(String txt) {
@@ -105,8 +102,7 @@ public class Parser {
 	 * Returns the command in that line part. In case that the line part is a
 	 * variable assignment, it will return the LET command.
 	 * 
-	 * @param linePart
-	 *            the line part
+	 * @param linePart the line part
 	 * @return the command
 	 */
 	public static Command getCommand(String linePart) {
@@ -128,13 +124,11 @@ public class Parser {
 	}
 
 	/**
-	 * Returns the variable of that line part, i.e. the left side of an
-	 * assigment if there is any.
+	 * Returns the variable of that line part, i.e. the left side of an assigment if
+	 * there is any.
 	 * 
-	 * @param linePart
-	 *            the line part
-	 * @param machine
-	 *            the machine
+	 * @param linePart the line part
+	 * @param machine  the machine
 	 * @return the variable or null, if there is none
 	 */
 	public static Variable getVariable(String linePart, Machine machine) {
@@ -142,27 +136,18 @@ public class Parser {
 	}
 
 	/**
-	 * Returns the variable of that line part, i.e. the left side of an
-	 * assigment if there is any.
+	 * Returns the variable of that line part, i.e. the left side of an assigment if
+	 * there is any.
 	 * 
-	 * @param linePart
-	 *            the line part
-	 * @param machine
-	 *            the machine
-	 * @param includingAssignment
-	 *            check if this is an actual assignment. If this is false,
-	 *            anything at the start will be interpreted as a variable.
+	 * @param linePart            the line part
+	 * @param machine             the machine
+	 * @param includingAssignment check if this is an actual assignment. If this is
+	 *                            false, anything at the start will be interpreted
+	 *                            as a variable.
 	 * @return the variable or null, if there is none
 	 */
 	public static Variable getVariable(String linePart, Machine machine, boolean includingAssignment) {
-		if (includingAssignment) {
-			int pos = linePart.indexOf('=');
-			if (pos == -1) {
-				throw new RuntimeException("Missing assignment: " + linePart);
-			}
-			linePart = linePart.substring(0, pos);
-		}
-		String ret = getVariableName(linePart);
+		String ret = extractName(linePart, includingAssignment);
 
 		if (!ret.endsWith("[]")) {
 			return machine.add(new Variable(ret, null));
@@ -172,13 +157,27 @@ public class Parser {
 	}
 
 	/**
+	 * Checks whether the machine instance already knows a variable of that name or
+	 * not.
+	 * 
+	 * @param linePart            the line part
+	 * @param machine             the machine
+	 * @param includingAssignment check if this is an actual assignment. If this is
+	 *                            false, anything at the start will be interpreted
+	 *                            as a variable.
+	 * @return is this variable already known?
+	 */
+	public static boolean hasVariableAdded(String linePart, Machine machine, boolean includingAssignment) {
+		String ret = extractName(linePart, includingAssignment);
+		return machine.getVariable(ret) != null;
+	}
+
+	/**
 	 * Returns the array variable of that line part including the terms used for
 	 * sizing it.
 	 * 
-	 * @param linePart
-	 *            the line part
-	 * @param machine
-	 *            the machine
+	 * @param linePart the line part
+	 * @param machine  the machine
 	 * @return the array variable and its terms
 	 */
 	public static List<VariableAndTerms> getArrayVariables(CompilerConfig config, String linePart, Machine machine) {
@@ -232,8 +231,7 @@ public class Parser {
 	/**
 	 * Returns the name of the variable in the line part.
 	 * 
-	 * @param linePart
-	 *            the line part
+	 * @param linePart the line part
 	 * @return the variable name or an empty string if there is none
 	 */
 	public static String getVariableName(String linePart) {
@@ -276,13 +274,11 @@ public class Parser {
 
 	/**
 	 * Replaces all strings (everything wrapped in ") with the given char. The
-	 * length of the term will stay the same. This is used to ease parsing in
-	 * some cases.
+	 * length of the term will stay the same. This is used to ease parsing in some
+	 * cases.
 	 * 
-	 * @param term
-	 *            the term
-	 * @param toReplaceWith
-	 *            the char to replace with
+	 * @param term          the term
+	 * @param toReplaceWith the char to replace with
 	 * @return the resulting string
 	 */
 	public static String replaceStrings(String term, char toReplaceWith) {
@@ -307,18 +303,16 @@ public class Parser {
 	/**
 	 * Returns an index term for accesing an array's element.
 	 * 
-	 * @param var
-	 *            the array variable
-	 * @param linePart
-	 *            the line part
-	 * @param machine
-	 *            the machine
-	 * @param checkForAssignment
-	 *            if true, only the left part of an assignment will be taken
-	 *            into account. If false, the whole string will.
+	 * @param var                the array variable
+	 * @param linePart           the line part
+	 * @param machine            the machine
+	 * @param checkForAssignment if true, only the left part of an assignment will
+	 *                           be taken into account. If false, the whole string
+	 *                           will.
 	 * @return the variable with its index term
 	 */
-	public static VariableAndIndex getIndexTerm(CompilerConfig config, Variable var, String linePart, Machine machine, boolean checkForAssignment) {
+	public static VariableAndIndex getIndexTerm(CompilerConfig config, Variable var, String linePart, Machine machine,
+			boolean checkForAssignment) {
 		if (var.getName().endsWith("[]")) {
 			// array
 			if (checkForAssignment) {
@@ -350,21 +344,17 @@ public class Parser {
 	}
 
 	/**
-	 * Returns a function that accesses the element of an array. Internally,
-	 * array access is handled as a function call on that array that returns an
-	 * element.
+	 * Returns a function that accesses the element of an array. Internally, array
+	 * access is handled as a function call on that array that returns an element.
 	 * 
-	 * @param linePart
-	 *            the line part
-	 * @param var
-	 *            the array variable
-	 * @param termMap
-	 *            the term map
-	 * @param machine
-	 *            the machine
+	 * @param linePart the line part
+	 * @param var      the array variable
+	 * @param termMap  the term map
+	 * @param machine  the machine
 	 * @return the variable and its array access function
 	 */
-	public static Function getArrayAccessFunction(CompilerConfig config, String linePart, Variable var, Map<String, Term> termMap, Machine machine) {
+	public static Function getArrayAccessFunction(CompilerConfig config, String linePart, Variable var,
+			Map<String, Term> termMap, Machine machine) {
 		ArrayAccess fun = new ArrayAccess();
 		int pos = linePart.indexOf('(');
 		int pos2 = linePart.lastIndexOf(')');
@@ -384,21 +374,17 @@ public class Parser {
 	}
 
 	/**
-	 * Returns the term that represents the term in the text. The result will be
-	 * a binary tree build out of terms with the returned term being the root
-	 * element.
+	 * Returns the term that represents the term in the text. The result will be a
+	 * binary tree build out of terms with the returned term being the root element.
 	 * 
-	 * @param term
-	 *            the term as text
-	 * @param machine
-	 *            the machine
-	 * @param stripAssignment
-	 *            if true, assignments will be stripped
-	 * @param checkForLogicTerm
-	 *            if true, logic terms will be checked for as well
+	 * @param term              the term as text
+	 * @param machine           the machine
+	 * @param stripAssignment   if true, assignments will be stripped
+	 * @param checkForLogicTerm if true, logic terms will be checked for as well
 	 * @return the resulting term
 	 */
-	public static Term getTerm(CompilerConfig config, String term, Machine machine, boolean stripAssignment, boolean checkForLogicTerm) {
+	public static Term getTerm(CompilerConfig config, String term, Machine machine, boolean stripAssignment,
+			boolean checkForLogicTerm) {
 		checkForInvalidChars(term);
 		Term ret = getTerm(config, term, machine, stripAssignment, checkForLogicTerm, null);
 		ret.setInitial(TermEnhancer.stripAssignment(term, stripAssignment));
@@ -406,45 +392,36 @@ public class Parser {
 	}
 
 	/**
-	 * Similar to getTerm() but omits some additional syntax checks. Used
-	 * internally only!
+	 * Similar to getTerm() but omits some additional syntax checks. Used internally
+	 * only!
 	 * 
-	 * @param term
-	 *            the term as text
-	 * @param machine
-	 *            the machine
-	 * @param stripAssignment
-	 *            if true, assignments will be stripped
-	 * @param checkForLogicTerm
-	 *            if true, logic terms will be checked for as well
+	 * @param term              the term as text
+	 * @param machine           the machine
+	 * @param stripAssignment   if true, assignments will be stripped
+	 * @param checkForLogicTerm if true, logic terms will be checked for as well
 	 * @return the resulting term
 	 */
-	public static Term getTermWithoutChecks(CompilerConfig config, String term, Machine machine, boolean stripAssignment, boolean checkForLogicTerm) {
+	public static Term getTermWithoutChecks(CompilerConfig config, String term, Machine machine,
+			boolean stripAssignment, boolean checkForLogicTerm) {
 		Term ret = getTerm(config, term, machine, stripAssignment, checkForLogicTerm, null);
 		ret.setInitial(TermEnhancer.stripAssignment(term, stripAssignment));
 		return ret;
 	}
 
 	/**
-	 * Returns the term that represents the term in the text. The result will be
-	 * a binary tree build out of terms with the returned term being the root
-	 * element.
+	 * Returns the term that represents the term in the text. The result will be a
+	 * binary tree build out of terms with the returned term being the root element.
 	 * 
-	 * @param config
-	 *            teh compiler's config
-	 * @param term
-	 *            the term as text
-	 * @param machine
-	 *            the machine
-	 * @param stripAssignment
-	 *            if true, assignments will be stripped
-	 * @param checkForLogicTerm
-	 *            if true, logic terms will be checked for as well
-	 * @param termMap
-	 *            the term map
+	 * @param config            teh compiler's config
+	 * @param term              the term as text
+	 * @param machine           the machine
+	 * @param stripAssignment   if true, assignments will be stripped
+	 * @param checkForLogicTerm if true, logic terms will be checked for as well
+	 * @param termMap           the term map
 	 * @return the resulting term
 	 */
-	public static Term getTerm(CompilerConfig config, String term, Machine machine, boolean stripAssignment, boolean checkForLogicTerm, Map<String, Term> termMap) {
+	public static Term getTerm(CompilerConfig config, String term, Machine machine, boolean stripAssignment,
+			boolean checkForLogicTerm, Map<String, Term> termMap) {
 		if (termMap == null) {
 			termMap = new HashMap<String, Term>();
 		}
@@ -460,21 +437,18 @@ public class Parser {
 	}
 
 	/**
-	 * Returns the term that represents the term in the text minus the command
-	 * at the start of it. The result will be a binary tree build out of terms
-	 * with the returned term being the root element.
+	 * Returns the term that represents the term in the text minus the command at
+	 * the start of it. The result will be a binary tree build out of terms with the
+	 * returned term being the root element.
 	 * 
-	 * @param command
-	 *            the command
-	 * @param term
-	 *            the term as text
-	 * @param machine
-	 *            the machine
-	 * @param checkForLogicTerm
-	 *            if true, logic terms will be checked for as well
+	 * @param command           the command
+	 * @param term              the term as text
+	 * @param machine           the machine
+	 * @param checkForLogicTerm if true, logic terms will be checked for as well
 	 * @return the term
 	 */
-	public static Term getTerm(CompilerConfig config, Command command, String term, Machine machine, boolean checkForLogicTerm) {
+	public static Term getTerm(CompilerConfig config, Command command, String term, Machine machine,
+			boolean checkForLogicTerm) {
 		checkForInvalidChars(term);
 		term = TermEnhancer.removeWhiteSpace(term.substring(command.getName().length()));
 		term = TermEnhancer.replaceScientificNotation(term);
@@ -487,12 +461,9 @@ public class Parser {
 	/**
 	 * Creates a term based on an array index.
 	 * 
-	 * @param machine
-	 *            the machine
-	 * @param pars
-	 *            the parameter list (i.e. the array indices)
-	 * @param dimensions
-	 *            the dimension of the array
+	 * @param machine    the machine
+	 * @param pars       the parameter list (i.e. the array indices)
+	 * @param dimensions the dimension of the array
 	 * @return the term
 	 */
 	public static Term createIndexTerm(CompilerConfig config, Machine machine, List<Atom> pars, int[] dimensions) {
@@ -510,7 +481,7 @@ public class Parser {
 				sb.append("(");
 			}
 			Atom atom = pars.get(i);
-			// System.out.println("Atom: "+atom+"             ## "+sb.toString()+"/"+atom.getClass());
+			// System.out.println("Atom: "+atom+" ## "+sb.toString()+"/"+atom.getClass());
 			if (!(atom instanceof Term)) {
 				if (atom instanceof Variable) {
 					sb.append(((Variable) atom).getUpperCaseName());
@@ -552,8 +523,7 @@ public class Parser {
 	/**
 	 * Removes multiple occurances of + from a String concatenation.
 	 * 
-	 * @param line
-	 *            the term
+	 * @param line the term
 	 * @return the cleaned up term
 	 */
 	public static String cleanStringConcats(String line) {
@@ -589,12 +559,11 @@ public class Parser {
 	}
 
 	/**
-	 * A term doesn't always represent an actual term to calculate. It can be
-	 * used as a wrapper for a set of parameters as well. This method returns
-	 * all parameters stored in a term tree in the correct order.
+	 * A term doesn't always represent an actual term to calculate. It can be used
+	 * as a wrapper for a set of parameters as well. This method returns all
+	 * parameters stored in a term tree in the correct order.
 	 * 
-	 * @param term
-	 *            the term
+	 * @param term the term
 	 * @return the parameters
 	 */
 	public static List<Atom> getParameters(Term term) {
@@ -612,8 +581,7 @@ public class Parser {
 	/**
 	 * Checks if an Atom is a number type.
 	 * 
-	 * @param atom
-	 *            the atom
+	 * @param atom the atom
 	 * @return true, if it's a number type
 	 */
 	public static boolean isNumberType(Atom atom) {
@@ -623,10 +591,8 @@ public class Parser {
 	/**
 	 * Returns the parameters.
 	 * 
-	 * @param atom
-	 *            the atom
-	 * @param results
-	 *            the results
+	 * @param atom    the atom
+	 * @param results the results
 	 * @return the parameters
 	 */
 	private static void getParameters(Atom atom, List<Atom> results) {
@@ -651,8 +617,7 @@ public class Parser {
 	/**
 	 * Returns true, if a part of a Term is a parameter and false otherwise.
 	 * 
-	 * @param atom
-	 *            the atom
+	 * @param atom the atom
 	 * @return true, if its a parameter
 	 */
 	private static boolean toAdd(Atom atom) {
@@ -665,17 +630,14 @@ public class Parser {
 	/**
 	 * Creates the terms.
 	 * 
-	 * @param term
-	 *            the term as text
-	 * @param termMap
-	 *            the term map
-	 * @param machine
-	 *            the machine
-	 * @param checkForLogicTerm
-	 *            if true, logic terms will be checked for as well
+	 * @param term              the term as text
+	 * @param termMap           the term map
+	 * @param machine           the machine
+	 * @param checkForLogicTerm if true, logic terms will be checked for as well
 	 * @return the term
 	 */
-	private static Term createTerms(CompilerConfig config, String term, Map<String, Term> termMap, Machine machine, boolean checkForLogicTerm) {
+	private static Term createTerms(CompilerConfig config, String term, Map<String, Term> termMap, Machine machine,
+			boolean checkForLogicTerm) {
 		try {
 			int start = 0;
 			boolean open = false;
@@ -742,11 +704,13 @@ public class Parser {
 			finalTerm = build(config, finalTerm, termMap, machine);
 			finalTerm.setKey("final");
 			if (!finalTerm.isComplete()) {
-				// System.out.println("Completing: "+finalTerm.getLeft()+"/"+finalTerm.getOperator());
+				// System.out.println("Completing:
+				// "+finalTerm.getLeft()+"/"+finalTerm.getOperator());
 				finalTerm.setOperator(Operator.NOP);
 				finalTerm.setRight(new Constant<Integer>(0));
 			}
-			finalTerm = ConstantFolder.foldConstants(config, TermOptimizer.optimizeTermTree(finalTerm, machine), machine);
+			finalTerm = ConstantFolder.foldConstants(config, TermOptimizer.optimizeTermTree(finalTerm, machine),
+					machine);
 			return finalTerm;
 		} catch (NumberFormatException nfe) {
 			nfe.printStackTrace();
@@ -757,15 +721,13 @@ public class Parser {
 	/**
 	 * Creates a logic term.
 	 * 
-	 * @param term
-	 *            the term as text
-	 * @param termMap
-	 *            the term map
-	 * @param machine
-	 *            the machine
+	 * @param term    the term as text
+	 * @param termMap the term map
+	 * @param machine the machine
 	 * @return the logic term
 	 */
-	private static Term createLogicTerm(CompilerConfig config, String term, Map<String, Term> termMap, Machine machine) {
+	private static Term createLogicTerm(CompilerConfig config, String term, Map<String, Term> termMap,
+			Machine machine) {
 		String termWoBrackets = term.replace("(", "").replace(")", "");
 		if (isTermPlaceholder(termWoBrackets)) {
 			return termMap.get(termWoBrackets);
@@ -787,12 +749,9 @@ public class Parser {
 	/**
 	 * Creates a term.
 	 * 
-	 * @param term
-	 *            the term as text
-	 * @param termMap
-	 *            the term map
-	 * @param machine
-	 *            the machine
+	 * @param term    the term as text
+	 * @param termMap the term map
+	 * @param machine the machine
 	 * @return the term
 	 */
 	private static Term createTerm(CompilerConfig config, String term, Map<String, Term> termMap, Machine machine) {
@@ -821,12 +780,9 @@ public class Parser {
 	/**
 	 * Builds the actual term content of a prefilled term.
 	 * 
-	 * @param t
-	 *            the prefilled term
-	 * @param termMap
-	 *            the term map
-	 * @param machine
-	 *            the machine
+	 * @param t       the prefilled term
+	 * @param termMap the term map
+	 * @param machine the machine
 	 * @return the final term
 	 */
 	private static Term build(CompilerConfig config, Term t, Map<String, Term> termMap, Machine machine) {
@@ -873,12 +829,9 @@ public class Parser {
 	 * Creates an atom from the part of a term. The result can be a constant, a
 	 * variable, a function or another term.
 	 * 
-	 * @param part
-	 *            the part
-	 * @param termMap
-	 *            the term map
-	 * @param machine
-	 *            the machine
+	 * @param part    the part
+	 * @param termMap the term map
+	 * @param machine the machine
 	 * @return the atom
 	 */
 	private static Atom createAtom(CompilerConfig config, String part, Map<String, Term> termMap, Machine machine) {
@@ -978,12 +931,11 @@ public class Parser {
 	}
 
 	/**
-	 * Checks if a part of a term is a term placeholder. Placeholders are
-	 * inserted at parse time. They represent parts of the term that have
-	 * already been evaluated to sub terms.
+	 * Checks if a part of a term is a term placeholder. Placeholders are inserted
+	 * at parse time. They represent parts of the term that have already been
+	 * evaluated to sub terms.
 	 * 
-	 * @param txt
-	 *            the txt
+	 * @param txt the txt
 	 * @return true, if its a term placeholder
 	 */
 	private static boolean isTermPlaceholder(String txt) {
@@ -991,15 +943,12 @@ public class Parser {
 	}
 
 	/**
-	 * Sets the postfix if the function has one. This applies to DEF FN
-	 * functions only.
+	 * Sets the postfix if the function has one. This applies to DEF FN functions
+	 * only.
 	 * 
-	 * @param linePart
-	 *            the line part
-	 * @param fun
-	 *            the fun
-	 * @param pos
-	 *            the pos
+	 * @param linePart the line part
+	 * @param fun      the fun
+	 * @param pos      the pos
 	 */
 	private static void setPostfix(String linePart, Function fun, int pos) {
 		if (fun.hasPostfix()) {
@@ -1016,8 +965,8 @@ public class Parser {
 	}
 
 	/**
-	 * Cleans the right part of a text from white space, but only if it's not a
-	 * DATA command line.
+	 * Cleans the right part of a text from white space, but only if it's not a DATA
+	 * command line.
 	 * 
 	 * @param sb
 	 * @return
@@ -1034,15 +983,13 @@ public class Parser {
 	/**
 	 * Returns the function of that line part.
 	 * 
-	 * @param linePart
-	 *            the line part
-	 * @param termMap
-	 *            the term map
-	 * @param machine
-	 *            the machine
+	 * @param linePart the line part
+	 * @param termMap  the term map
+	 * @param machine  the machine
 	 * @return the function
 	 */
-	private static Function getFunction(CompilerConfig config, String linePart, Map<String, Term> termMap, Machine machine) {
+	private static Function getFunction(CompilerConfig config, String linePart, Map<String, Term> termMap,
+			Machine machine) {
 		List<Function> functions = FunctionList.getFunctions();
 		Function fun = null;
 
@@ -1086,4 +1033,16 @@ public class Parser {
 			}
 		}
 	}
+
+	private static String extractName(String linePart, boolean includingAssignment) {
+		if (includingAssignment) {
+			int pos = linePart.indexOf('=');
+			if (pos == -1) {
+				throw new RuntimeException("Missing assignment: " + linePart);
+			}
+			linePart = linePart.substring(0, pos);
+		}
+		return getVariableName(linePart);
+	}
+
 }
