@@ -22,7 +22,7 @@ import com.sixtyfour.util.VarUtils;
 /**
  * The LET command.
  */
-public class Let extends AbstractCommand {
+public class Let extends AbstractCommand implements Assignment {
 
 	/** The var. */
 	private Variable var;
@@ -46,6 +46,7 @@ public class Let extends AbstractCommand {
 	 * 
 	 * @return the var
 	 */
+	@Override
 	public Variable getVar() {
 		return var;
 	}

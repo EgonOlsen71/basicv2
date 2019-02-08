@@ -11,6 +11,7 @@ import java.util.Set;
 import com.sixtyfour.cbmnative.PCode;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.config.LoopMode;
+import com.sixtyfour.elements.commands.Assignment;
 import com.sixtyfour.elements.commands.Command;
 import com.sixtyfour.elements.commands.CommandList;
 import com.sixtyfour.elements.commands.For;
@@ -412,10 +413,10 @@ public class Basic implements ProgramExecutor {
 							machine.addCommand(command);
 							cl.addCommand(command);
 							
-							if (command instanceof Let && loops>0) {
-							    // If it's a LET after an IF, it must not be counted as a single assignment, because it might not happen at all.
+							if (command instanceof Assignment && loops>0) {
+							    // If it's an assignment (LET) after an IF, it must not be counted as a single assignment, because it might not happen at all.
 							    // This doesn't take assignments after (conditional) jumps into account, but...well...
-							    machine.trackVariableUsage(((Let) command).getVar(), false);
+							    machine.trackVariableUsage(Assignment.class.cast(command).getVar(), false);
 							}
 							
 							pos++;
