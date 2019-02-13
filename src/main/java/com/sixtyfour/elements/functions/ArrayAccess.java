@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import com.sixtyfour.Logger;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.elements.Variable;
@@ -81,13 +82,16 @@ public class ArrayAccess extends AbstractFunction {
 		ret.add("_");
 		Variable vary = machine.getVariableUpperCase(variableName);
 		if (vary == null) {
-			throw new RuntimeException("Array not defined: " + variableName);
+		    	Variable tmpVar = new Variable(variableName, null, new int[]{10});
+		    	machine.add(tmpVar);
+			Logger.log("Array not defined: " + variableName+", defaulting to 10!");
+			vary=machine.getVariableUpperCase(variableName);
 		}
 
 		List<Atom> pars = Parser.getParameters(term);
 		int[] dimensions = vary.getDimensions();
 		if (pars.size() != dimensions.length) {
-			throw new RuntimeException("Array indices don't match: " + this + "/" + pars.size() + "/" + dimensions.length);
+			throw new RuntimeException("Array indices don't match ("+variableName+"): " + this + "/" + pars.size() + "/" + dimensions.length);
 		}
 
 		// System.out.println("Creating term: "+this.variableName+"/"+pars);
