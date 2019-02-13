@@ -30,9 +30,6 @@ public class Lst extends AbstractCommand {
 	@Override
 	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
 		super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine);
-		if (linePart.trim().length() > 4) {
-			syntaxError(this);
-		}
 		return null;
 	}
 
