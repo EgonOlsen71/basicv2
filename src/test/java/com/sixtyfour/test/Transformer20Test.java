@@ -28,6 +28,15 @@ public class Transformer20Test {
 		 testTransformerBeer();
 		 testTransformerCharFractal();
 		 testTransformerFlightPath();
+		 testTransformer3dMaze();
+	}
+	
+	private static void testTransformer3dMaze() throws Exception {
+		System.out.println("\n\ntestTransformer3dMaze");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/vic20/3dmaze.bas");
+
+		final Assembler assy = initTestEnvironment(vary);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++3dmaze.prg", true, 4609);
 	}
 	
 	private static void testTransformerFlightPath() throws Exception {
