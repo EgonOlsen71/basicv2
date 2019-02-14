@@ -68,13 +68,14 @@
 
 3300 if peek(1024+hx + 40*hy) = 32 then return
 3310 sl = sl + 1:sp(sl) = hx + 40*hy
-3320 x=8:y=0:t$="   ":gosub20000
-3330 x=8:y=0:t$=str$(sl):gosub20000
+3320 x=7:y=0:t$="    ":gosub20000
+3330 x=7:y=0:t$=str$(sl):gosub20000
+3332 poke1031,peek(1031)+128
 3340 poke1032,peek(1032)+128:poke1033,peek(1033)+128:poke1034,peek(1034)+128
 3350 sd = 16-sl/16	
-3360 x=38:y=0:t$="  ":gosub20000
-3370 x=38:y=0:t$=str$(17-sd):gosub20000
-3380 poke 1062, peek(1062)+128:poke 1063, peek(1063)+128
+3360 x=37:y=0:t$="   ":gosub20000
+3370 x=37:y=0:t$=str$(int(17-sd)):gosub20000
+3380 poke 1061, peek(1061)+128:poke 1062, peek(1062)+128:poke 1063, peek(1063)+128
 3390 gosub 3000
 3400 return
 
@@ -82,7 +83,7 @@
 10010 poke 53281,0:poke646,5
 10020 for i=1024 to 2023:pokei,32:next
 10025 for i=55296 to 56295:pokei, 5:next
-10030 x=0:y=0:t$="length: 4     xc-basic snake   sd: 1":gosub20000
+10030 x=0:y=0:t$="length: 4     cbmbasic snake   speed: 1":gosub20000
 10040 for i=1024 to 1063:poke i, peek(i)+128:next i
 10050 return
 20000 poke 780,0:poke 781,y:poke 782,x:sys 65520:printt$:return

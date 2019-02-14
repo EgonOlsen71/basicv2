@@ -101,8 +101,16 @@ public class TransformerTest {
 		// testSprites();
 		testHidden();
 		testFolding();
+		testCbmSnake();
 	}
 
+	private static void testCbmSnake() throws Exception {
+		System.out.println("\n\ntestCbmSnake");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/cbmsnake.bas");
+		Assembler assy = initTestEnvironment(vary, false);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++cbmsnake.prg", true);
+	}
+	
 	private static void testFolding() throws Exception {
 		System.out.println("\n\ntestFolding");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/folding.bas");
