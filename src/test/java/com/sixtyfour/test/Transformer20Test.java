@@ -29,6 +29,15 @@ public class Transformer20Test {
 		 testTransformerCharFractal();
 		 testTransformerFlightPath();
 		 testTransformer3dMaze();
+		 testTransformerKaleidoscope();
+	}
+	
+	private static void testTransformerKaleidoscope() throws Exception {
+		System.out.println("\n\ntestTransformerKaleidoscope");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/vic20/kaleidoscope.bas");
+
+		final Assembler assy = initTestEnvironment(vary);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++kaleidoscope.prg", true, 4609);
 	}
 	
 	private static void testTransformer3dMaze() throws Exception {
