@@ -2,7 +2,7 @@ package com.sixtyfour.system;
 
 /**
  * Converts back and forth between Java floats and the actual memory
- * representation, that the C64 uses.
+ * representation that the C64 uses.
  * 
  * 
  * @author EgonOlsen
