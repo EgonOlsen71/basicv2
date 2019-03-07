@@ -7,7 +7,7 @@ package com.sixtyfour.cbmnative.javascript.generators;
 public class AndJs extends CalculationJs {
 
     public AndJs() {
-	super("OR", "Math.floor({to}) | Math.floor({from})");
+	super("AND", "Math.floor({to}) & Math.floor({from})");
     }
 
 }

@@ -7,7 +7,7 @@ package com.sixtyfour.cbmnative.javascript.generators;
 public class GteqJs extends ComparisonJs {
 
     GteqJs() {
-	super("GT", ">");
+	super("GTEQ", ">=");
     }
 
 }
