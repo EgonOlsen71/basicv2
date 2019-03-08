@@ -59,7 +59,7 @@ public class TransformerPs implements Transformer {
 	res.add("$global:USR_PARAM=0");
 	res.add("$global:_line=\"\"");
 	res.add("$global:_stack=@()");
-	res.add("$global:_forstack=@();");
+	res.add("$global:_forstack=@()");
 	res.add("$global:_memory= foreach($i in 0..65535) { ,0 }");
 	res.add("$global:_zeroflag=0");
 	res.add("$global:_timeOffset=0");

@@ -56,9 +56,6 @@ function executeLine {
 
 function STARTPRG {
 	INIT
-	for ($i=0; $i -lt $global:_memory.length; $i++) {
-		$global:_memory[$i]=0
-	}
 	$global:_memory[646]=14
 }
 
@@ -143,7 +140,7 @@ function pop {
 	$len=$arr.length-1
 	$rv= $arr|select -First $len
 	if ($rv -eq $null) {
-		$rv=@()
+		return ,@()
 	}
 	return $rv
 }
@@ -209,10 +206,12 @@ function NEXT {
 		$global:_forstack=pop $global:_forstack
 		$found = $variable -eq "0" -or $variable -eq $stvar
 	} while (!$found)
-	$vv="$"+$stvar
-	invoke-expression ($vv=$vv+$step)
-	$vv=invoke-expression $vv
-	if (($step -ge 0 -and $vv -le $end) -or $step -lt 0 -and $vv -ge $end) {
+	$vv="$"+"global:"+$stvar
+	$vs=$vv
+	$vv=$vv+"="+$vv+"+"+$step
+	invoke-expression $vv
+	$vv=invoke-expression $vs
+	if (($step -ge 0 -and $vv -le $end) -or ($step -lt 0 -and $vv -ge $end)) {
 		$global:_forstack+=$step
 		$global:_forstack+=$end
 		$global:_forstack+=$addr
@@ -315,7 +314,7 @@ function MID {
 	if ($global:D_REG -eq -1) {
 		$end=$global:B_REG.length
 	}
-	$global:A_REG=$global:B_REG.SubString($global:C_REG-1, $end-$global:C_REG-1)
+	$global:A_REG=$global:B_REG.SubString($global:C_REG-1, $end-($global:C_REG-1))
 }
 
 function LEFT {

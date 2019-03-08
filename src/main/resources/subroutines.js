@@ -201,7 +201,7 @@ this.NEXT = function(variable) {
 		found = variable == "0" || variable == stvar;
 	} while (!found);
 	this[stvar] += step;
-	if ((step >= 0 && this[stvar] <= end) || step < 0 && this[stvar] >= end) {
+	if ((step >= 0 && this[stvar] <= end) || (step < 0 && this[stvar] >= end)) {
 		// restore stack content if needed
 		this._forstack.push(step); // step
 		this._forstack.push(end); // end
