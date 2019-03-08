@@ -33,6 +33,9 @@ public class JsrPs extends JumpBasePs {
 	} else if (line.equals("JSR START")) {
 	    line = "JSR STARTPRG";
 	    super.generateCode(context, line, nCode, subCode, name2label);
+	} else if (line.equals("JSR END")) {
+	    line = "JSR ENDPRG";
+	    super.generateCode(context, line, nCode, subCode, name2label);
 	} else {
 	    super.generateCode(context, line, nCode, subCode, name2label);
 	}

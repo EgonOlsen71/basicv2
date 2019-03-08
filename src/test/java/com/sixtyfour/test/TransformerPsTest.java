@@ -16,10 +16,17 @@ public class TransformerPsTest {
     private static String path = "compiled/";
 
     public static void main(String[] args) throws Exception {
-	//test2();
+	// test2();
 	testPrime();
 	testBeer();
 	testLevenshtein();
+	testCharFractal();
+    }
+
+    private static void testCharFractal() throws Exception {
+	String[] vary = Loader.loadProgram("src/test/resources/transform/charfractal.bas");
+	List<String> js = initTestEnvironment(vary);
+	write(js, path + "++charfractal.ps1");
     }
 
     private static void testLevenshtein() throws Exception {

@@ -10,7 +10,7 @@ function getMemory {
 }
 
 function registerKey {
-	$k = $host.ui.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+	$k = #$host.ui.RawUI.ReadKey("NoEcho,IncludeKeyDown")
 	if ($k -ne $null) {
 		$global:keyPressed=$k
 		$global:_memory[198]=1
@@ -64,7 +64,7 @@ function RUN {
 	$global:restart=$true
 }
 
-function END {
+function ENDPRG {
 	#
 }
 
@@ -262,7 +262,7 @@ function LEN {
 }
 
 function CHR {
-	$global:A_REG=[char] ([math]::floor($global:Y_REG))
+	$global:A_REG=[char][int]([math]::floor($global:Y_REG))
 }
 
 function ASC {
@@ -411,12 +411,12 @@ function READTID {
 	$t=millis
 	$t=($t-$global:_time+$global:_timeOffset)
 	$h=([math]::floor($t/(1000 * 60 * 60)))
-	$m=([math]::floor((t-(h*(1000 * 60 * 60)))/(1000 * 60)))
-	$s=([math]::floor((t-(h*(1000 * 60 * 60))-m*(1000 * 60))/1000))
+	$m=([math]::floor(($t-($h*(1000 * 60 * 60)))/(1000 * 60)))
+	$s=([math]::floor(($t-($h*(1000 * 60 * 60))-$m*(1000 * 60))/1000))
 	$h=fill $h
 	$m=fill $m
 	$s=fill $s
-	$global:A_REG= h+m+s
+	$global:A_REG= $h+$m+$s
 }
 
 function fill {
