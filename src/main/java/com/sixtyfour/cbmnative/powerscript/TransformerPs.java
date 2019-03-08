@@ -43,6 +43,11 @@ public class TransformerPs implements Transformer {
 
 	subs.addAll(Arrays.asList(Loader.loadProgram(this.getClass().getResourceAsStream("/subroutines.ps1"))));
 
+	res.add("#  TO RUN THIS, YOU MIGHT HAVE TO CHANGE POWERSHELL'S EXECUTION POLICY LIKE SO:");
+	res.add("#  Set-ExecutionPolicy RemoteSigned -scope CurrentUser");
+	res.add("#  or, restricted to the current process");
+	res.add("#  Set-ExecutionPolicy RemoteSigned -scope Process");
+	res.add("#");
 	res.add("function INIT {");
 	res.add("$global:X_REG=0.0");
 	res.add("$global:Y_REG=0.0");
