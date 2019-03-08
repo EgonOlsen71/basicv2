@@ -6,6 +6,7 @@ import com.sixtyfour.cbmnative.Transformer;
 import com.sixtyfour.cbmnative.Unlinker;
 import com.sixtyfour.cbmnative.mos6502.Optimizer6502;
 import com.sixtyfour.cbmnative.mos6502.Unlinker6502;
+import com.sixtyfour.config.CompilerConfig;
 
 /**
  * A PlatformProvider implementation for the VIC20 target platform.
@@ -53,5 +54,11 @@ public class Platform20 implements PlatformProvider {
 	@Override
 	public int getBaseAddress() {
 	    return 4609;
+	}
+
+	@Override
+	public void overrideConfig(CompilerConfig conf) {
+	    // TODO Auto-generated method stub
+	    
 	}
 }

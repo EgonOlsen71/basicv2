@@ -142,6 +142,7 @@ public class NativeCompiler {
      */
     public List<String> compile(CompilerConfig conf, Basic basic, MemoryConfig memConfig, PlatformProvider platform) {
 
+	platform.overrideConfig(conf);
 	Logger.log("Running native compiler...");
 	Logger.log("Parsing BASIC program into AST...");
 	basic.compile(conf);

@@ -1,5 +1,7 @@
 package com.sixtyfour.cbmnative;
 
+import com.sixtyfour.config.CompilerConfig;
+
 /**
  * Interface for implementing a target platform.
  * 
@@ -63,5 +65,12 @@ public interface PlatformProvider {
      * @return the address
      */
     int getBaseAddress();
+    
+    /**
+     * Can be implemented to override some config settings for a specific platform
+     * 
+     * @param conf the config
+     */
+    void overrideConfig(CompilerConfig conf);
     
 }

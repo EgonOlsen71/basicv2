@@ -4,6 +4,7 @@ import com.sixtyfour.cbmnative.Optimizer;
 import com.sixtyfour.cbmnative.PlatformProvider;
 import com.sixtyfour.cbmnative.Transformer;
 import com.sixtyfour.cbmnative.Unlinker;
+import com.sixtyfour.config.CompilerConfig;
 
 /**
  * A PlatformProvider implementation for the Powerscript target platform.
@@ -53,4 +54,11 @@ public class PlatformPs implements PlatformProvider {
 	return 0;
     }
 
+    @Override
+    public void overrideConfig(CompilerConfig conf) {
+	conf.setLoopOptimizations(false);
+	conf.setIntOptimizations(false);
+	conf.setShiftOptimizations(false);
+    }
+    
 }
