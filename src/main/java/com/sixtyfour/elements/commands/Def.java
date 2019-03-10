@@ -126,7 +126,7 @@ public class Def extends AbstractCommand {
 	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
 		Command cmd = machine.getFunction(fnName);
 		if (cmd != null && !cmd.getTerm().toString().equals(this.getTerm().toString())) {
-			throw new RuntimeException("Redef'd function error: " + fnName);
+			throw new RuntimeException("Redef'd function error: " + fnName+"/"+cmd.getTerm());
 		}
 		machine.setFunction(fnName, this);
 		NativeCompiler compiler = NativeCompiler.getCompiler();

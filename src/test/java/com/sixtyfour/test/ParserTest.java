@@ -32,10 +32,24 @@ public class ParserTest {
 		testPowerOf();
 		testAbs();
 		testStuff();
-		testMinusPower();
 		testConstants();
 		testAnd();
 		testAnd2();
+		testMinusPower();
+		testSin();
+	}
+
+	private static void testSin() {
+		System.out.println("testSin");
+		Machine machine = new Machine();
+		String term = "sin(23)--23";
+		//String term = "sin(23) blah";
+		String s = TermEnhancer.addBrackets(term);
+		System.out.println(s);
+		Term t = Parser.getTerm(config, term, machine, false, true);
+		System.out.println(t);
+		System.out.println(t.eval(machine));
+		
 	}
 
 	private static void testConstants() {
@@ -59,7 +73,9 @@ public class ParserTest {
 		System.out.println(t);
 		System.out.println(t.eval(machine));
 
-		term = "1*-3^2e1";
+		term = "2*-3^2e1";
+		//term="2*-3/3*+2^2";
+		//term="(2*-(1*(2^2)))";
 		s = TermEnhancer.addBrackets(term);
 		System.out.println(s);
 		t = Parser.getTerm(config, term, machine, false, true);
@@ -142,6 +158,23 @@ public class ParserTest {
 		Term res = Parser.getTerm(config, term, machine, false, true);
 		System.out.println(res);
 		System.out.println("Value: " + res.eval(machine));
+		
+		float a=23;
+		float b=41;
+		float c=0;
+		float d=123;
+		float f=141;
+		float g=3;
+		float z=1;
+		float t=11;
+		float r=21;
+		float p=55;
+		float u=22;
+		float o=45;
+		float i=67;
+		double rr=a * b * (-c*f+(t*r+-f*(g-z)-f*g/Math.pow(z, 4))) + Math.abs(-(d*u))*(p+(o*i*z))*z+u;
+		System.out.println("Real result: "+rr);
+		
 	}
 
 	/**

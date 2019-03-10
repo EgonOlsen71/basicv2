@@ -170,7 +170,7 @@ public class TransformerJsTest {
 	conf.setShiftOptimizations(false);
 	// conf.setCompactThreshold(3);
 
-	final Basic basic = new Basic(vary);
+	Basic basic = new Basic(vary);
 	basic.compile(conf);
 
 	List<String> mCode = NativeCompiler.getCompiler().compileToPseudeCode(conf, basic);
@@ -181,6 +181,7 @@ public class TransformerJsTest {
 	System.out.println("------------------------------");
 
 	MemoryConfig memConfig = new MemoryConfig();
+	basic = new Basic(vary);
 	List<String> nCode = NativeCompiler.getCompiler().compile(conf, basic, memConfig, new PlatformJs());
 	for (String line : nCode) {
 	    System.out.println(line);

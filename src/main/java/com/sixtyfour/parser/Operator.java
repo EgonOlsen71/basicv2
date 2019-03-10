@@ -17,8 +17,7 @@ public class Operator {
 	/**
 	 * Instantiates a new operator.
 	 * 
-	 * @param op
-	 *            the string the represents the operator
+	 * @param op the string the represents the operator
 	 */
 	public Operator(String op) {
 		op = op.trim();
@@ -37,8 +36,7 @@ public class Operator {
 	/**
 	 * Instantiates a new operator.
 	 * 
-	 * @param c
-	 *            the char the represents the operator
+	 * @param c the char the represents the operator
 	 */
 	public Operator(char c) {
 		this(Character.toString(c));
@@ -162,10 +160,18 @@ public class Operator {
 	}
 
 	/**
+	 * Returns true, if this instance reflects +-/*^
+	 * 
+	 * @return does it?
+	 */
+	public boolean isMathOperation() {
+		return isPlus() || isPower() || isMinus() || isMultiplication() || isDivision();
+	}
+
+	/**
 	 * Checks if a char is an actual operator.
 	 * 
-	 * @param c
-	 *            the char
+	 * @param c the char
 	 * @return true, if it's an operator
 	 */
 	public static boolean isOperator(char c) {
@@ -180,8 +186,7 @@ public class Operator {
 	/**
 	 * Checks if a char is a logic operator (AND or OR).
 	 * 
-	 * @param c
-	 *            the char
+	 * @param c the char
 	 * @return true, if it's a logic operator
 	 */
 	public static boolean isLogicOperator(char c) {
@@ -191,8 +196,7 @@ public class Operator {
 	/**
 	 * Checks if a char is a real operator, i.e. not NOP and not a delimiter.
 	 * 
-	 * @param c
-	 *            the char
+	 * @param c the char
 	 * @return true, if it's a real operator
 	 */
 	public static boolean isRealOperator(char c) {
@@ -210,8 +214,7 @@ public class Operator {
 	/**
 	 * Checks if a char is a comparison operator, i.e. <, > or =
 	 * 
-	 * @param c
-	 *            the char
+	 * @param c the char
 	 * @return true, if it's a comparison operator
 	 */
 	public static boolean isComparisonOperator(char c) {
@@ -230,8 +233,7 @@ public class Operator {
 	/**
 	 * Sets the type that this operator will "produce".
 	 * 
-	 * @param type
-	 *            the new type
+	 * @param type the new type
 	 */
 	public void setType(int type) {
 		this.type = type;

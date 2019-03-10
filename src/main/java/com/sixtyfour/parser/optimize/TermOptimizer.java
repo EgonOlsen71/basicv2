@@ -109,7 +109,7 @@ public class TermOptimizer {
 	 * @return the optimized term
 	 */
 	public static Term optimizeTerm(CompilerConfig config, Machine machine, Term ret, Map<String, Term> termMap, TermBuilder builder) {
-		if (ret.getType(true) == Type.STRING) {
+		if (ret.getType(true)  == Type.STRING) {
 			return ret;
 		}
 

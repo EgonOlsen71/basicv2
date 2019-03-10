@@ -3,8 +3,8 @@ package com.sixtyfour.parser;
 import com.sixtyfour.util.VarUtils;
 
 /**
- * This is mainly used to modify existing terms by adding or removing stuff
- * from them to unify them or make them more accessible to the parser.
+ * This is mainly used to modify existing terms by adding or removing stuff from
+ * them to unify them or make them more accessible to the parser.
  * 
  * @author EgonOlsen
  * 
@@ -13,13 +13,11 @@ public class TermEnhancer {
 
 	/**
 	 * Adds the brackets. This is used to simplify expression parsing later.
-	 * Actually, it might be better to convert the expressions from infix to RPN
-	 * and use a stack to evaluate them, but then again...I can't be bothered,
-	 * because this works as well and it's better suitable for JITting the
-	 * result.
+	 * Actually, it might be better to convert the expressions from infix to RPN and
+	 * use a stack to evaluate them, but then again...I can't be bothered, because
+	 * this works as well and it's better suitable for JITting the result.
 	 * 
-	 * @param term
-	 *            the term
+	 * @param term the term
 	 * @return the string
 	 */
 	public static String addBrackets(String term) {
@@ -34,11 +32,10 @@ public class TermEnhancer {
 	}
 
 	/**
-	 * Checks, if a text term's brackets are correctly placed. If not, it will
-	 * throw a RuntimeException.
+	 * Checks, if a text term's brackets are correctly placed. If not, it will throw
+	 * a RuntimeException.
 	 * 
-	 * @param term
-	 *            the term to check
+	 * @param term the term to check
 	 */
 	public static void checkBrackets(String term) {
 		int open = 0;
@@ -64,8 +61,7 @@ public class TermEnhancer {
 	/**
 	 * Removes the white spaces from a text.
 	 * 
-	 * @param txt
-	 *            the txt
+	 * @param txt the txt
 	 * @return the txt without the white spaces
 	 */
 	public static String removeWhiteSpace(String txt) {
@@ -84,17 +80,17 @@ public class TermEnhancer {
 	}
 
 	/**
-	 * Replaces logic BASIC operators in a term by a one-char representation.
-	 * The resulting term isn't valid BASIC anymore but it's easier to parse.
+	 * Replaces logic BASIC operators in a term by a one-char representation. The
+	 * resulting term isn't valid BASIC anymore but it's easier to parse.
 	 * 
-	 * @param term
-	 *            the term
+	 * @param term the term
 	 * @return the resulting term
 	 */
 	public static String replaceLogicOperators(String term) {
 		// Replace logic operators by placeholder chars. NOT actually hasn't
 		// two operands, but we abuse the current logic by faking it.
-		String[] replacers = { "OR", Operator.getOrOperator(), "AND", Operator.getAndOperator(), "NOT", "(0" + Operator.getNotOperator() };
+		String[] replacers = { "OR", Operator.getOrOperator(), "AND", Operator.getAndOperator(), "NOT",
+				"(0" + Operator.getNotOperator() };
 		term = removeWhiteSpace(term);
 		String uTerm = VarUtils.toUpper(term);
 		for (int i = 0; i < replacers.length; i += 2) {
@@ -131,11 +127,9 @@ public class TermEnhancer {
 	/**
 	 * Removes the assignment part of the "term", i.e. everything before the =
 	 * 
-	 * @param term
-	 *            the "term"
-	 * @param stripAssignment
-	 *            if true, the assignment will be removed (if any). If false,
-	 *            the string will be returned unchanged.
+	 * @param term            the "term"
+	 * @param stripAssignment if true, the assignment will be removed (if any). If
+	 *                        false, the string will be returned unchanged.
 	 * @return the new term
 	 */
 	public static String stripAssignment(String term, boolean stripAssignment) {
@@ -215,16 +209,14 @@ public class TermEnhancer {
 	}
 
 	/**
-	 * Adds brackets to a term based on the operator order. The resulting term
-	 * makes it clear which operations belong together without any knowledge
-	 * about the actual operator order needed.
+	 * Adds brackets to a term based on the operator order. The resulting term makes
+	 * it clear which operations belong together without any knowledge about the
+	 * actual operator order needed.
 	 * 
-	 * @param term
-	 *            the term
-	 * @param level
-	 *            the level, either 0,1 or 2. Three passes are needed to handle
-	 *            *,/ (level 0), ^(level 1) and <,>,= and combinations (level
-	 *            2). level 3 is for logic operators like AND, OR
+	 * @param term  the term
+	 * @param level the level, either 0,1 or 2. Three passes are needed to handle
+	 *              *,/ (level 0), ^(level 1) and <,>,= and combinations (level 2).
+	 *              level 3 is for logic operators like AND, OR
 	 * @return the resulting term
 	 */
 	private static String addBrackets(String term, int level) {
@@ -256,7 +248,8 @@ public class TermEnhancer {
 				}
 			}
 
-			if ((level == 2 && (c == '=' || c == '<' || c == '>')) || (level == 1 && (c == '*' || c == '/')) || (level == 0 && c == '^') || (level == 3 && (c == '&' || c == '°'))) {
+			if ((level == 2 && (c == '=' || c == '<' || c == '>')) || (level == 1 && (c == '*' || c == '/'))
+					|| (level == 0 && c == '^') || (level == 3 && (c == '&' || c == '°'))) {
 				int start = level != 3 ? findStart(term, i, level >= 2) : i + 1;
 				int end = findEnd(term, i, level >= 2);
 				if (start > 0 && term.charAt(start - 1) == '(' && end < term.length() && term.charAt(end) == ')') {
@@ -272,16 +265,15 @@ public class TermEnhancer {
 				sb.setLength(0);
 			}
 		}
+		//System.out.println("AB: " + term);
 		return term;
 	}
 
 	/**
 	 * Finds the position of the next delimiter.
 	 * 
-	 * @param term
-	 *            the term
-	 * @param pos
-	 *            the last position
+	 * @param term the term
+	 * @param pos  the last position
 	 * @return the next position
 	 */
 	private static int findNextDelimiter(String term, int pos) {
@@ -312,8 +304,7 @@ public class TermEnhancer {
 	 * Handles negations by adding an additional -1* in front of the negated
 	 * element. Something similar applies to terms like ++++2.
 	 * 
-	 * @param term
-	 *            the term
+	 * @param term the term
 	 * @return the resulting term
 	 */
 	private static String handleSigns(String term) {
@@ -355,7 +346,8 @@ public class TermEnhancer {
 		if (end == -1) {
 			sb.append(term.substring(0, i)).append(sign + "*").append(term.substring(i + 1));
 		} else {
-			sb.append(term.substring(0, i)).append("(" + sign + "*").append(term.substring(i + 1, end)).append(")").append(term.substring(end));
+			sb.append(term.substring(0, i)).append("(" + sign + "*").append(term.substring(i + 1, end)).append(")")
+					.append(term.substring(end));
 		}
 	}
 
@@ -407,17 +399,16 @@ public class TermEnhancer {
 	/**
 	 * Finds the end of a term starting at the current position.
 	 * 
-	 * @param term
-	 *            the term
-	 * @param pos
-	 *            the current position
+	 * @param term the term
+	 * @param pos  the current position
 	 * @return the end
 	 */
 	private static int findEnd(String term, int pos, boolean logicCheck) {
 		int brackets = 0;
 		boolean inString = false;
 		int st = pos + 1;
-		if (Operator.isComparisonOperator(term.charAt(pos)) && (pos < term.length() - 1) && Operator.isComparisonOperator(term.charAt(pos + 1))) {
+		if (Operator.isComparisonOperator(term.charAt(pos)) && (pos < term.length() - 1)
+				&& Operator.isComparisonOperator(term.charAt(pos + 1))) {
 			st++;
 		}
 		for (int i = st; i < term.length(); i++) {
@@ -430,8 +421,14 @@ public class TermEnhancer {
 					return i;
 				}
 
-				if (brackets == 0 && ((logicCheck ? Operator.isLogicOperator(c) : Operator.isOperator(c)) || c == ')')) {
-					return i;
+				if (brackets == 0
+						&& ((logicCheck ? Operator.isLogicOperator(c) : Operator.isOperator(c)) || c == ')')) {
+					if (!(!logicCheck && (c == '-' || c == '+') && i - 1 == pos)) {
+						// Handle term like 2*-2^2 correctly. The bracket is then not supposed to go
+						// between the * and the -
+						return i;
+					}
+					//return i;
 				}
 				if (c == '(') {
 					brackets++;
@@ -450,17 +447,16 @@ public class TermEnhancer {
 	/**
 	 * Finds the start of a term starting at the current position.
 	 * 
-	 * @param term
-	 *            the term
-	 * @param pos
-	 *            the current position
+	 * @param term the term
+	 * @param pos  the current position
 	 * @return the start
 	 */
 	private static int findStart(String term, int pos, boolean logicCheck) {
 		int brackets = 0;
 		boolean inString = false;
 		int st = pos - 1;
-		if (Operator.isComparisonOperator(term.charAt(pos)) && (pos > 1) && Operator.isComparisonOperator(term.charAt(pos - 1))) {
+		if (Operator.isComparisonOperator(term.charAt(pos)) && (pos > 1)
+				&& Operator.isComparisonOperator(term.charAt(pos - 1))) {
 			st--;
 		}
 		for (int i = st; i >= 0; i--) {
@@ -481,8 +477,8 @@ public class TermEnhancer {
 				// the
 				// parser doesn't allow for such numbers here, because they get
 				// resolved much earlier...anyway...
-				if (brackets == 0
-						&& (((logicCheck ? Operator.isLogicOperator(c) : Operator.isOperator(c)) && (c != '-' || (i > 0 && !Operator.isOperator(pc) && pc != '('))) || c == '(')) {
+				if (brackets == 0 && (((logicCheck ? Operator.isLogicOperator(c) : Operator.isOperator(c))
+						&& (c != '-' || (i > 0 && !Operator.isOperator(pc) && pc != '('))) || c == '(')) {
 					return i + 1;
 				}
 				if (c == ')') {

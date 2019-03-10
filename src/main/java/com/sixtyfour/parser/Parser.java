@@ -704,8 +704,7 @@ public class Parser {
 			finalTerm = build(config, finalTerm, termMap, machine);
 			finalTerm.setKey("final");
 			if (!finalTerm.isComplete()) {
-				// System.out.println("Completing:
-				// "+finalTerm.getLeft()+"/"+finalTerm.getOperator());
+				// System.out.println("Completing: "+finalTerm.getLeft()+"/"+finalTerm.getOperator()+"/"+finalTerm.getRight());
 				finalTerm.setOperator(Operator.NOP);
 				finalTerm.setRight(new Constant<Integer>(0));
 			}
@@ -766,8 +765,11 @@ public class Parser {
 			term = cleanStringConcats(term);
 			Term t = new Term(term, termMap);
 			t = build(config, t, termMap, machine);
-			// System.out.println(term+": "+t.getLeft()+" # "+t.getOperator() +
-			// " # "+t.getRight());
+			// System.out.println("ttt: "+term+": "+t.getLeft()+" # "+t.getOperator() + " # "+t.getRight());
+			// If there's an actual operator but no right operand, something is fishy...
+			if (t.getOperator() != null && t.getOperator().isMathOperation() && t.getRight() == null) {
+				throw new RuntimeException("Syntax error: " + term);
+			}
 			if (!t.isComplete()) {
 				t.setOperator(Operator.NOP);
 				t.setRight(new Constant<Integer>(0));
@@ -1011,6 +1013,9 @@ public class Parser {
 				} else {
 					setPostfix(linePart, fun, pos);
 					fun.parse(config, linePart.substring(pos + 1, pos2), machine);
+				}
+				if (pos2!=-1 && pos2<linePart.length()-1) {
+					throw new RuntimeException("Syntax error: " + linePart);
 				}
 				break;
 			}

@@ -37,7 +37,8 @@ public class GenerateBasicBlocks implements HighLevelOptimizer {
         public SortedSet<Integer> rowsWithGotoTarget = new TreeSet<>();
         public SortedSet<Integer> rowsWithJumps = new TreeSet<>();
 
-        public void clear() {
+        @SuppressWarnings("unused")
+		public void clear() {
             rowsWithGotoTarget.clear();
         }
 

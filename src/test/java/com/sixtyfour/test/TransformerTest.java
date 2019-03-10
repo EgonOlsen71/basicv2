@@ -44,10 +44,10 @@ public class TransformerTest {
 		// testTransformer2();
 		// testTransformer4();
 		// testTransformer5();
-//		 testTransformerFractal();
+		// testTransformerFractal();
 		// testTransformer6();
 		// testTransformer7();
-		testTransformerPrime();
+		//testTransformerPrime();
 		// testTransformerSqr();
 		// testTransformer8();
 		// testTransformer9();
@@ -59,7 +59,7 @@ public class TransformerTest {
 		// testTransformerBeer();
 		// testTransformer15();
 		// testTransformerSqr();
-		// testTransformer16();
+		 testTransformer16();
 		// testTransformer17();
 		// testTransformer18();
 		// testTransformer20();
