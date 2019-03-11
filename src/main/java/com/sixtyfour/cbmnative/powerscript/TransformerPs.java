@@ -255,8 +255,7 @@ public class TransformerPs implements Transformer {
 
 			Type type = Type.valueOf(part.substring(pos + 1, part.length() - 1));
 			if (name.endsWith("_array")) {
-
-			    Variable var = machine.getVariable(name.replace("_array", "[]"));
+			    Variable var = machine.getVariable(name.replace("_int","%").replace("_array", "[]"));
 			    @SuppressWarnings("unchecked")
 			    List<Object> vals = (List<Object>) var.getInternalValue();
 

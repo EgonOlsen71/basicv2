@@ -59,7 +59,7 @@ public abstract class GeneratorBasePs implements Generator {
     protected void truncInteger(List<String> nCode, Operand target) {
 	if (target.getType() == Type.INTEGER && !target.isRegister()) {
 	    String to = getOpName(target);
-	    nCode.add(to + "([math]::floor(" + to + "))");
+	    nCode.add(to + "=([math]::floor(" + to + "))");
 	}
     }
 

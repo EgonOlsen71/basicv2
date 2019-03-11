@@ -21,6 +21,13 @@ public class TransformerPsTest {
 	testLevenshtein();
 	testCharFractal();
 	testBenchmark2();
+	testLyrix();
+    }
+    
+    private static void testLyrix() throws Exception {
+	String[] vary = Loader.loadProgram("src/test/resources/basic/lyrix_raw.bas");
+	List<String> js = initTestEnvironment(vary);
+	write(js, path + "++lyrix.ps1");
     }
 
     private static void testBenchmark2() throws Exception {
