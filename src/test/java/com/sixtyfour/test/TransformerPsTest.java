@@ -16,11 +16,17 @@ public class TransformerPsTest {
     private static String path = "compiled/";
 
     public static void main(String[] args) throws Exception {
-	// test2();
 	testPrime();
 	testBeer();
 	testLevenshtein();
 	testCharFractal();
+	testBenchmark2();
+    }
+
+    private static void testBenchmark2() throws Exception {
+	String[] vary = Loader.loadProgram("src/test/resources/transform/benchmark2.bas");
+	List<String> js = initTestEnvironment(vary);
+	write(js, path + "++benchmark2.ps1");
     }
 
     private static void testCharFractal() throws Exception {
@@ -33,12 +39,6 @@ public class TransformerPsTest {
 	String[] vary = Loader.loadProgram("src/test/resources/transform/levenshtein.bas");
 	List<String> js = initTestEnvironment(vary);
 	write(js, path + "++levenshtein.ps1");
-    }
-
-    private static void test2() throws Exception {
-	String[] vary = Loader.loadProgram("src/test/resources/transform/test2.bas");
-	List<String> js = initTestEnvironment(vary);
-	write(js, path + "++test2.ps1");
     }
 
     private static void testPrime() throws Exception {

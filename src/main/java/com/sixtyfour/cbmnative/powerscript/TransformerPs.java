@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.sixtyfour.Loader;
 import com.sixtyfour.Logger;
@@ -102,6 +103,10 @@ public class TransformerPs implements Transformer {
 
 	datas = createDatas(machine);
 
+	consts = replaceBrackets(consts);
+	vars = replaceBrackets(vars);
+	datas = replaceBrackets(datas);
+
 	// close the last function body
 	mnems.add("}");
 	res.addAll(consts);
@@ -114,6 +119,29 @@ public class TransformerPs implements Transformer {
 	res.addAll(subs);
 
 	return res;
+    }
+
+    private List<String> replaceBrackets(List<String> lines) {
+	return lines.stream().map(p -> replaceInternal(p)).collect(Collectors.toList());
+    }
+
+    private String replaceInternal(String txt) {
+	StringBuilder sb = new StringBuilder();
+	boolean inString = false;
+	for (int i = 0; i < txt.length(); i++) {
+	    char c = txt.charAt(i);
+	    if (c == '\"') {
+		inString = !inString;
+	    }
+	    if (inString && c == '{') {
+		c = '[';
+	    }
+	    if (inString && c == '}') {
+		c = ']';
+	    }
+	    sb.append(c);
+	}
+	return sb.toString();
     }
 
     private List<String> createDatas(Machine machine) {
@@ -232,7 +260,7 @@ public class TransformerPs implements Transformer {
 			    @SuppressWarnings("unchecked")
 			    List<Object> vals = (List<Object>) var.getInternalValue();
 
-			    tmp.add("$global:" + label + "=foreach($i in 0.." + (vals.size()-1) + ") { ,"
+			    tmp.add("$global:" + conv(label) + "=foreach($i in 0.." + (vals.size() - 1) + ") { ,"
 				    + (type == Type.STRING ? "\"\"" : "0") + " }");
 			} else {
 			    if (type == Type.INTEGER) {
@@ -317,9 +345,7 @@ public class TransformerPs implements Transformer {
     }
 
     private String conv(String varName) {
-	if (varName.endsWith("$")) {
-	    varName = varName.substring(0, varName.length() - 1) + "_STR_";
-	}
+	varName = varName.replace("$", "_STR_");
 	return varName;
     }
 }

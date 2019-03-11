@@ -40,9 +40,7 @@ public abstract class GeneratorBasePs implements Generator {
 	    name = "VAR_" + name;
 	}
 
-	if (name.endsWith("$")) {
-	    name = name.substring(0, name.length() - 1) + "_STR_";
-	}
+	name = name.replace("$", "_STR_");
 	if (name.startsWith("$")) {
 	    name = name.substring(1);
 	}

@@ -138,11 +138,17 @@ function GOSUB {
 function pop {
 	param($arr)
 	$len=$arr.length-1
+	if ($len -lt 0) {
+    	throw "Stack underflow!"
+	}
 	$rv= $arr|select -First $len
 	if ($rv -eq $null) {
 		return ,@()
 	}
-	return $rv
+	if ($rv -isnot [system.array]) {
+		$rv=@($rv)
+	}
+	return ,$rv
 }
 
 function first {
