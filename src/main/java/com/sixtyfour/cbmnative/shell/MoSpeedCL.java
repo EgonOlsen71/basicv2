@@ -352,7 +352,7 @@ public class MoSpeedCL {
 	System.out.println("Optional parameters (either with / or - as prefix):\n");
 	System.out.println("/target=<target file> -  the target file name");
 	System.out.println(
-		"/platform=xxxx - the target platform. Options are c64 (for c64 compatible machine code), vic20 or vc20, js (for Javascript) and ps (for Powerscript/-shell), default is c64");
+		"/platform=xxxx - the target platform. Options are c64 (for c64 compatible machine code), vic20 or vc20, js (for Javascript) and ps (for Powershell/-script), default is c64");
 	System.out.println(
 		"/generatesrc=true|false -  writes the generated intermediate and assembly language programs to disk as well");
 	System.out.println("/constprop=true|false - enables/disables constant propagation optimizations");
