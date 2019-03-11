@@ -77,6 +77,9 @@ public class MovJs extends GeneratorBaseJs {
 	    String from = getOpName(source);
 	    String to = getOpName(target);
 	    nCode.add(to + "=" + from + ";");
+	} else {
+	    String to = getOpName(target);
+	    nCode.add(to + "=this.tmpy;");
 	}
     }
 
@@ -105,6 +108,9 @@ public class MovJs extends GeneratorBaseJs {
     private void noIndexRealSource(List<String> nCode, Operand source, Operand target) {
 	if (!checkSpecialReadVars(nCode, target, source)) {
 	    noIndexArraySource(nCode, source, target);
+	} else {
+	    String to = getOpName(target);
+	    nCode.add(to + "=this.tmpy;");
 	}
     }
 

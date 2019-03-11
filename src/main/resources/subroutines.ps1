@@ -4,6 +4,7 @@ $global:keyPressed = $null
 $global:lineNumber = 0
 $global:timeOut=0
 $global:funcName = "PROGRAMSTART"
+$global:tymp=0
 
 function getMemory {
 	return $global:_memory
@@ -410,7 +411,7 @@ function WRITETID {
 function READTI {
 	$t=millis
 	$t=([math]::floor(($t-$global:_time+$global:_timeOffset)/(1000.0/60.0)))
-	$global:X_REG=$t
+	$global:tmpy=$t
 }
 
 function READTID {
@@ -422,7 +423,7 @@ function READTID {
 	$h=fill $h
 	$m=fill $m
 	$s=fill $s
-	$global:A_REG= $h+$m+$s
+	$global:tmpy= $h+$m+$s
 }
 
 function fill {
@@ -435,7 +436,7 @@ function fill {
 }
 
 function READSTATUS {
-	return 0
+	$global:tmpy=0
 }
 
 function RESTORE {

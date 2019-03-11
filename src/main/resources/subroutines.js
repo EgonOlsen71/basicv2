@@ -5,6 +5,7 @@ this.lineNumber = 0;
 this.timeOut=0;
 this.funcName = "PROGRAMSTART";
 this.batchSize=500;
+this.tmpy=0;
 
 this.getMemory = function() {
 	return this._memory;
@@ -398,7 +399,7 @@ this.READTI = function() {
 	var t=d.getTime();
 	t=Math.floor((t-this._time+this._timeOffset)/(1000.0/60.0));
 	//console.log("ti: "+t+"/"+this._time+"/"+this._timeOffset+"/"+(t-this._time+this._timeOffset));
-	this.X_REG=t;
+	this.tmpy=t;
 }
 
 this.READTID = function() {
@@ -411,7 +412,7 @@ this.READTID = function() {
 	h=this.fill(h);
 	m=this.fill(m);
 	s=this.fill(s);
-	this.A_REG= h+m+s;
+	this.tmpy= h+m+s;
 }
 
 this.fill = function(num) {
@@ -423,7 +424,7 @@ this.fill = function(num) {
 }
 
 this.READSTATUS = function() {
-	return 0;
+	this.tmpy= 0;
 }
 
 this.RESTORE = function() {

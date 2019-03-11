@@ -77,6 +77,9 @@ public class MovPs extends GeneratorBasePs {
 	    String from = getOpName(source);
 	    String to = getOpName(target);
 	    nCode.add(to + "=" + from);
+	} else {
+	    String to = getOpName(target);
+	    nCode.add(to + "=$global:tmpy");
 	}
     }
 
@@ -105,6 +108,9 @@ public class MovPs extends GeneratorBasePs {
     private void noIndexRealSource(List<String> nCode, Operand source, Operand target) {
 	if (!checkSpecialReadVars(nCode, target, source)) {
 	    noIndexArraySource(nCode, source, target);
+	}  else {
+	    String to = getOpName(target);
+	    nCode.add(to + "=$global:tmpy");
 	}
     }
 
