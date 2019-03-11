@@ -554,6 +554,7 @@ this.input = function() {
 		return this._inputQueue.pop();
 	}
 	var inp=prompt(this._line);
+	this._line="";
 	if (inp) {
 		var parts=inp.split(",");
 		parts.reverse();
