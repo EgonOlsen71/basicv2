@@ -32,6 +32,7 @@ public class Pattern {
     private String name;
     private boolean looseTypes = false;
     private boolean simple = true;
+    private int loopCnt = 0;
 
     /**
      * Creates a new pattern.
@@ -111,7 +112,8 @@ public class Pattern {
     }
 
     /**
-     * Returns the current position in the pattern, i.e. up to which command does the pattern match the current code.
+     * Returns the current position in the pattern, i.e. up to which command
+     * does the pattern match the current code.
      * 
      * @return the position
      */
@@ -129,9 +131,11 @@ public class Pattern {
     }
 
     /**
-     * Applies the pattern, i.e. the matching parts in the code will be replaced by the replacement code.
+     * Applies the pattern, i.e. the matching parts in the code will be replaced
+     * by the replacement code.
      * 
-     * @param code the input code
+     * @param code
+     *            the input code
      * @return the optimized code
      */
     public List<String> apply(List<String> code) {
@@ -139,6 +143,7 @@ public class Pattern {
 	    List<String> first = code.subList(0, index);
 	    List<String> last = code.subList(end + 1, code.size());
 	    String[] replacement = null;
+	    boolean cntInc = false;
 	    if (this.replacement != null) {
 		replacement = Arrays.copyOf(this.replacement, this.replacement.length);
 		List<String> sub = new ArrayList<String>();
@@ -169,6 +174,15 @@ public class Pattern {
 				pos = replacement[i].indexOf("{MEM");
 				if (pos != -1) {
 				    replace(replacement, i, pos, 4, mems);
+				} else {
+				    pos = replacement[i].indexOf("{cnt}");
+				    if (pos != -1) {
+					if (!cntInc) {
+					    cntInc = true;
+					    loopCnt++;
+					}
+					replacement[i] = replacement[i].replace("{cnt}", "" + loopCnt);
+				    }
 				}
 			    }
 			}
@@ -191,9 +205,12 @@ public class Pattern {
     /**
      * Returns true, if the pattern matches with code at the current position.
      * 
-     * @param line the line of code to test against
-     * @param ix the index into the code
-     * @param const2Value a mapping from constants to their values
+     * @param line
+     *            the line of code to test against
+     * @param ix
+     *            the index into the code
+     * @param const2Value
+     *            a mapping from constants to their values
      * @return does it match?
      */
     public boolean matches(String line, int ix, Map<String, Number> const2Value) {
@@ -333,7 +350,7 @@ public class Pattern {
 	replacement[i] = fp + values[posi]
 		+ ((endi < replacement[i].length() - 1) ? replacement[i].substring(endi + 1) : "");
     }
-    
+
     private boolean isNumber(String lineRight) {
 	for (int i = 0; i < lineRight.length(); i++) {
 	    char c = lineRight.charAt(i);

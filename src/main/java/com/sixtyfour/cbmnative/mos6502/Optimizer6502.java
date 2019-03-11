@@ -15,9 +15,8 @@ import com.sixtyfour.cbmnative.PlatformProvider;
 import com.sixtyfour.cbmnative.ProgressListener;
 
 /**
- * An optimizer implementation for the 6520 cpu. Because it might run
- * a large number of passes, it will take its time especially on larger
- * programs.
+ * An optimizer implementation for the 6520 cpu. Because it might run a large
+ * number of passes, it will take its time especially on larger programs.
  * 
  * @author EgonOlsen
  * 
@@ -246,6 +245,9 @@ public class Optimizer6502 implements Optimizer {
 	    this.add(new Pattern(false, "Simplified loading of A",
 		    new String[] { "{LINE0}", "{LINE1}", "STX A_REG", "STY A_REG+1", "{LINE2}" }, "LDX #<{MEM0}",
 		    "LDY #>{MEM0}", "JSR FACMEM", "LDA #<{MEM0}", "LDY #>{MEM0}", "STA A_REG", "STY A_REG+1"));
+	    this.add(new Pattern(true, "Direct copy of floats into mem",
+		    new String[] { "LDX #4", "dcloop{cnt}:", "LDA {MEM0},X", "STA {MEM1},X", "DEX", "BPL dcloop{cnt}" },
+		    "LDA #<{MEM0}", "LDY #>{MEM0}", "JSR REALFAC", "LDX #<{MEM1}", "LDY #>{MEM1}", "JSR FACMEM"));
 	}
     };
 

@@ -79,7 +79,7 @@ public class Compactor {
 	for (Line consty : consts) {
 	    boolean used = false;
 	    for (String line : codePart) {
-		if (line.endsWith(consty.txt)) {
+		if (line.endsWith(consty.txt) || line.endsWith(consty.txt + ",X")) {
 		    used = true;
 		    break;
 		}
