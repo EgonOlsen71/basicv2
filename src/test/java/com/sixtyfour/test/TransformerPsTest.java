@@ -80,7 +80,7 @@ public class TransformerPsTest {
 	final Basic basic = new Basic(vary);
 	basic.compile(conf);
 
-	List<String> mCode = NativeCompiler.getCompiler().compileToPseudeCode(conf, basic);
+	List<String> mCode = NativeCompiler.getCompiler().compileToPseudoCode(conf, basic);
 	System.out.println("------------------------------");
 	for (String line : mCode) {
 	    System.out.println(line);

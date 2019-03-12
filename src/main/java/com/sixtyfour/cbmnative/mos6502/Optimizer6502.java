@@ -261,12 +261,19 @@ public class Optimizer6502 implements Optimizer {
 	// if (true) return input;
 	Logger.log("Optimizing native assembly code...");
 	long s = System.currentTimeMillis();
+	trimLines(input);
+	input = trackAndModifyRegisterUsage(input);
+	input = optimizeInternal(patterns, platform, input, pg);
+	input = applySpecialRules(platform, input);
+	input = removeNops(input);
+	Logger.log("Assembly code optimized in " + (System.currentTimeMillis() - s) + "ms");
+	return input;
+    }
+
+    private List<String> optimizeInternal(List<Pattern> patterns, PlatformProvider platform, List<String> input,
+	    ProgressListener pg) {
 	Map<String, Integer> type2count = new HashMap<>();
 	Map<String, Number> const2Value = extractConstants(input);
-	trimLines(input);
-
-	input = trackAndModifyRegisterUsage(input);
-
 	Set<Pattern> used = new HashSet<Pattern>();
 	boolean optimized = false;
 
@@ -325,6 +332,9 @@ public class Optimizer6502 implements Optimizer {
 
 		for (int i = stl; i < codeEnd; i++) {
 		    String line = input.get(i);
+		    if (line.trim().startsWith(";") && pattern.isSkipComments()) {
+			continue;
+		    }
 		    int sp = pattern.getPos();
 		    boolean matches = pattern.matches(line, i, const2Value);
 		    if (matches) {
@@ -367,10 +377,6 @@ public class Optimizer6502 implements Optimizer {
 	for (Map.Entry<String, Integer> cnts : type2count.entrySet()) {
 	    Logger.log("Optimization " + cnts.getKey() + " applied " + cnts.getValue() + " times!");
 	}
-
-	input = applySpecialRules(input);
-	input = removeNops(input);
-	Logger.log("Assembly code optimized in " + (System.currentTimeMillis() - s) + "ms");
 	return input;
     }
 
@@ -425,8 +431,9 @@ public class Optimizer6502 implements Optimizer {
 	return input;
     }
 
-    private List<String> applySpecialRules(List<String> input) {
+    private List<String> applySpecialRules(PlatformProvider platform, List<String> input) {
 	input = simplifyBranches(input);
+	input = applyAdditionalPatterns(platform, input);
 	return aggregateLoads(input);
     }
 
@@ -474,7 +481,7 @@ public class Optimizer6502 implements Optimizer {
 
 		if (state == null) {
 		    regState.put(reg, new Integer[] { 0, i }); // Unknown
-							       // stage...yet
+							       // state...yet
 		} else {
 		    if (code.get(i + 2).startsWith("JSR FACMEM")) {
 			regState.put(reg, new Integer[] { 1, i });
@@ -553,6 +560,24 @@ public class Optimizer6502 implements Optimizer {
 	    }
 	    ret.add(line);
 	}
+
+	return ret;
+    }
+
+    private List<String> applyAdditionalPatterns(PlatformProvider platform, List<String> ret) {
+	// Do another run with the normal optimizer method but with some additional rules
+	List<Pattern> others = new ArrayList<Pattern>();
+	Pattern tmpPat = new Pattern(true, "Simplified not equal comparison",
+		new String[] { "{LINE0}", "{LINE4}", "{LINE6}", "{LINE7}", "{LINE8}", "{LINE9}" }, "JSR CMPFAC",
+		"BNE {*}", "LDA #0", "JMP {*}", "{LABEL}", "LDA #$1", "{LABEL}", "{LABEL}", "BEQ {*}", "{LABEL}");
+	tmpPat.setSkipComments(true);
+	others.add(tmpPat);
+	tmpPat = new Pattern(true, "Simplified equal comparison",
+		new String[] { "{LINE0}", "{LINE4}", "{LINE6}", "{LINE7}", "{LINE8}|BEQ>BNE", "{LINE9}" }, "JSR CMPFAC",
+		"BEQ {*}", "LDA #0", "JMP {*}", "{LABEL}", "LDA #$1", "{LABEL}", "{LABEL}", "BEQ {*}", "{LABEL}");
+	tmpPat.setSkipComments(true);
+	others.add(tmpPat);
+	ret = optimizeInternal(others, platform, ret, null);
 	return ret;
     }
 

@@ -33,6 +33,7 @@ public class Pattern {
     private boolean looseTypes = false;
     private boolean simple = true;
     private int loopCnt = 0;
+    private boolean skipComments=false;
 
     /**
      * Creates a new pattern.
@@ -153,6 +154,15 @@ public class Pattern {
 		    }
 		}
 		for (int i = 0; i < replacement.length; i++) {
+		    String from="";
+		    String to="";
+		    if (replacement[i].contains("|")) {
+			int pos=replacement[i].indexOf("|");
+			int pos2=replacement[i].indexOf(">", pos);
+			from=replacement[i].substring(pos+1, pos2).trim();
+			to=replacement[i].substring(pos2+1).trim();
+			replacement[i]=replacement[i].substring(0, pos).trim();
+		    }
 		    if (replacement[i].startsWith("{LINE")) {
 			String postFix = "";
 			if (!replacement[i].endsWith("}")) {
@@ -187,6 +197,7 @@ public class Pattern {
 			    }
 			}
 		    }
+		    replacement[i]=replacement[i].replace(from, to);
 		}
 	    }
 	    List<String> eternity = replacement != null ? new ArrayList<String>(Arrays.asList(replacement))
@@ -404,6 +415,14 @@ public class Pattern {
 
     public int getSourceSize() {
 	return pattern.size();
+    }
+
+    public boolean isSkipComments() {
+	return skipComments;
+    }
+
+    public void setSkipComments(boolean skipComments) {
+	this.skipComments = skipComments;
     }
 
 }

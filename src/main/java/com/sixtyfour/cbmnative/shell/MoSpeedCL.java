@@ -171,6 +171,7 @@ public class MoSpeedCL {
 
 	Basic basic = new Basic(src);
 	try {
+	    System.out.println("Checking source file...");
 	    basic.compile(cfg);
 	} catch (Exception e) {
 	    System.out.println("\n!!! Error compiling BASIC program: " + e.getMessage());
@@ -180,10 +181,11 @@ public class MoSpeedCL {
 
 	try {
 	    if (genSrc) {
-		List<String> mCode = NativeCompiler.getCompiler().compileToPseudeCode(cfg, basic);
+		List<String> mCode = NativeCompiler.getCompiler().compileToPseudoCode(cfg, basic);
 		write(mCode, ilTarget);
 	    }
 
+	    //basic = new Basic(src);
 	    nCode = NativeCompiler.getCompiler().compile(cfg, basic, memConfig, platform);
 	} catch (Exception e) {
 	    System.out.println("\n!!! Error compiling: " + e.getMessage());

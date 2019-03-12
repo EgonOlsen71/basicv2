@@ -146,7 +146,7 @@ public class NativeCompiler {
 	Logger.log("Running native compiler...");
 	Logger.log("Parsing BASIC program into AST...");
 	basic.compile(conf);
-	List<String> mCode = NativeCompiler.getCompiler().compileToPseudeCode(conf, basic);
+	List<String> mCode = NativeCompiler.getCompiler().compileToPseudoCode(conf, basic);
 
 	Transformer tf = platform.getTransformer();
 	tf.setVariableStart(memConfig.getVariableStart());
@@ -193,7 +193,7 @@ public class NativeCompiler {
      *            the Basic instance that contains the actual BASIC program
      * @return the intermediate code
      */
-    public List<String> compileToPseudeCode(CompilerConfig config, Basic basic) {
+    public List<String> compileToPseudoCode(CompilerConfig config, Basic basic) {
 	Logger.log("Compiling into intermediate code...");
 
 	long s = System.currentTimeMillis();

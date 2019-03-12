@@ -296,14 +296,17 @@ public class Machine {
 
 	/**
 	 * Resets the memory. This will clean the 64KB of main memory as well as all
-	 * variables. It will not reset the cpu. It will ensure what previously
+	 * variables. It will not reset the cpu. It will ensure that previously
 	 * loaded ROM data has been restored.
 	 */
 	public void resetMemory() {
 		for (int i = 0; i < ram.length; i++) {
 			ram[i] = 0;
 		}
+		vars.clear();
 		clearVars();
+		clearCommandList();
+		functions.clear();
 		for (BasicExtension ex : Basic.getExtensions()) {
 			ex.reset(this);
 		}

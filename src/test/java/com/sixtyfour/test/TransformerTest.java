@@ -47,7 +47,7 @@ public class TransformerTest {
 		 testTransformerFractal();
 		// testTransformer6();
 		// testTransformer7();
-		//testTransformerPrime();
+		testTransformerPrime();
 		// testTransformerSqr();
 		// testTransformer8();
 		// testTransformer9();
@@ -102,6 +102,14 @@ public class TransformerTest {
 		testHidden();
 		testFolding();
 		testCbmSnake();
+		testIfTest2();
+	}
+	
+	private static void testIfTest2() throws Exception {
+		System.out.println("\n\ntestIfTest2");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/iftest2.bas");
+		Assembler assy = initTestEnvironment(vary, false);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++iftest2.prg", true);
 	}
 
 	private static void testCbmSnake() throws Exception {
@@ -991,7 +999,7 @@ public class TransformerTest {
 		Basic basic = new Basic(vary);
 		basic.compile(conf);
 
-		List<String> mCode = NativeCompiler.getCompiler().compileToPseudeCode(conf, basic);
+		List<String> mCode = NativeCompiler.getCompiler().compileToPseudoCode(conf, basic);
 		System.out.println("------------------------------");
 		for (String line : mCode) {
 			System.out.println(line);
