@@ -6,7 +6,7 @@ package com.sixtyfour.cbmnative.javascript.generators;
  */
 public class LogJs extends CalculationJs {
 
-    public LogJs() {
-	super("LOG", "Math.log({from})");
-    }
+	public LogJs() {
+		super("LOG", "Math.log({from})");
+	}
 }

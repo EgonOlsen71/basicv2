@@ -14,13 +14,12 @@ import java.util.List;
  */
 public interface Unlinker {
 
-    /**
-     * Removes unused parts from the runtime code.
-     * 
-     * @param code
-     *            the code
-     * @return the stripped code
-     */
-    List<String> unlink(List<String> code);
+	/**
+	 * Removes unused parts from the runtime code.
+	 * 
+	 * @param code the code
+	 * @return the stripped code
+	 */
+	List<String> unlink(List<String> code);
 
 }

@@ -32,8 +32,7 @@ public class MemoryDeviceProvider implements DeviceProvider {
 	/**
 	 * Instantiates a new memory device provider.
 	 * 
-	 * @param consoleOutput
-	 *            the console output
+	 * @param consoleOutput the console output
 	 */
 	public MemoryDeviceProvider(OutputChannel consoleOutput) {
 		this.consoleOutput = consoleOutput;
@@ -173,8 +172,7 @@ public class MemoryDeviceProvider implements DeviceProvider {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see sixtyfour.plugins.DeviceProvider#open(int, int, int,
-	 * java.lang.String)
+	 * @see sixtyfour.plugins.DeviceProvider#open(int, int, int, java.lang.String)
 	 */
 	public void open(int fileNumber, int device, int secondaryAddress, String fileName) {
 		FileWrapper file = new FileWrapper();
@@ -270,8 +268,7 @@ public class MemoryDeviceProvider implements DeviceProvider {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * sixtyfour.plugins.DeviceProvider#dump(sixtyfour.plugins.PrintConsumer,
+	 * @see sixtyfour.plugins.DeviceProvider#dump(sixtyfour.plugins.PrintConsumer,
 	 * sixtyfour.plugins.FileWrapper, int)
 	 */
 	@Override
@@ -317,8 +314,7 @@ public class MemoryDeviceProvider implements DeviceProvider {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.sixtyfour.plugins.PrintConsumer#systemPrint(int,
-	 * java.lang.String)
+	 * @see com.sixtyfour.plugins.PrintConsumer#systemPrint(int, java.lang.String)
 	 */
 	@Override
 	public void systemPrint(int id, String txt) {
@@ -328,8 +324,7 @@ public class MemoryDeviceProvider implements DeviceProvider {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.sixtyfour.plugins.PrintConsumer#systemPrintln(int,
-	 * java.lang.String)
+	 * @see com.sixtyfour.plugins.PrintConsumer#systemPrintln(int, java.lang.String)
 	 */
 	@Override
 	public void systemPrintln(int id, String txt) {
@@ -339,10 +334,8 @@ public class MemoryDeviceProvider implements DeviceProvider {
 	/**
 	 * Check read mode.
 	 * 
-	 * @param fileNumber
-	 *            the file number
-	 * @param file
-	 *            the file
+	 * @param fileNumber the file number
+	 * @param file       the file
 	 */
 	private void checkReadMode(int fileNumber, FileWrapper file) {
 		if (file == null) {
@@ -356,8 +349,7 @@ public class MemoryDeviceProvider implements DeviceProvider {
 	/**
 	 * Gets the file part.
 	 * 
-	 * @param fileNumber
-	 *            the file number
+	 * @param fileNumber the file number
 	 * @return the file part
 	 */
 	private String getFilePart(int fileNumber) {

@@ -56,10 +56,8 @@ public class Term implements Atom {
 	/**
 	 * Instantiates a new term based on the given expression.
 	 * 
-	 * @param expression
-	 *            the expression
-	 * @param termMap
-	 *            the current term mapping
+	 * @param expression the expression
+	 * @param termMap    the current term mapping
 	 */
 	public Term(String expression, Map<String, Term> termMap) {
 		this.setExpression(expression);
@@ -70,8 +68,7 @@ public class Term implements Atom {
 	 * Instantiates a new term with an Atom as left child and a 0 as the right
 	 * child. The operator is a NOP.
 	 * 
-	 * @param left
-	 *            the left child
+	 * @param left the left child
 	 */
 	public Term(Atom left) {
 		this.left = left;
@@ -110,8 +107,7 @@ public class Term implements Atom {
 	/**
 	 * Sets the left child.
 	 * 
-	 * @param left
-	 *            the new left child
+	 * @param left the new left child
 	 */
 	public void setLeft(Atom left) {
 		this.left = left;
@@ -129,8 +125,7 @@ public class Term implements Atom {
 	/**
 	 * Sets the right child.
 	 * 
-	 * @param right
-	 *            the new right child
+	 * @param right the new right child
 	 */
 	public void setRight(Atom right) {
 		this.right = right;
@@ -148,8 +143,7 @@ public class Term implements Atom {
 	/**
 	 * Sets the operator.
 	 * 
-	 * @param operator
-	 *            the new operator
+	 * @param operator the new operator
 	 */
 	public void setOperator(Operator operator) {
 		this.operator = operator;
@@ -167,16 +161,15 @@ public class Term implements Atom {
 	/**
 	 * Sets the expression.
 	 * 
-	 * @param expression
-	 *            the new expression
+	 * @param expression the new expression
 	 */
 	public void setExpression(String expression) {
 		this.expression = expression;
 	}
 
 	/**
-	 * Returns the key. The key is used for internal replacement of parts of a
-	 * term (as text) by placeholders.
+	 * Returns the key. The key is used for internal replacement of parts of a term
+	 * (as text) by placeholders.
 	 * 
 	 * @return the key
 	 */
@@ -185,11 +178,10 @@ public class Term implements Atom {
 	}
 
 	/**
-	 * Sets the key. The key is used for internal replacement of parts of a term
-	 * (as text) by placeholders.
+	 * Sets the key. The key is used for internal replacement of parts of a term (as
+	 * text) by placeholders.
 	 * 
-	 * @param key
-	 *            the new key
+	 * @param key the new key
 	 */
 	public void setKey(String key) {
 		this.key = key;
@@ -241,7 +233,8 @@ public class Term implements Atom {
 			if (ignoreMT) {
 				return Type.INTEGER;
 			}
-			throw new RuntimeException("Type mismatch error: " + this.toString() + " | " + left + " | " + right + " | " + t1 + "/" + t2 + "/" + operator.getType());
+			throw new RuntimeException("Type mismatch error: " + this.toString() + " | " + left + " | " + right + " | "
+					+ t1 + "/" + t2 + "/" + operator.getType());
 		}
 		type = t1;
 		return t1;
@@ -271,8 +264,8 @@ public class Term implements Atom {
 				return cc;
 			}
 		} else {
-		    
-		    	List<String> n1 = left.evalToCode(config, machine).get(0).getExpression();
+
+			List<String> n1 = left.evalToCode(config, machine).get(0).getExpression();
 			List<String> n2 = right.evalToCode(config, machine).get(0).getExpression();
 
 			if (n1 == null || n2 == null) {
@@ -327,7 +320,7 @@ public class Term implements Atom {
 				ret.addAll(0, n2);
 				break;
 			case 9:
-			    	ret.add("_");
+				ret.add("_");
 				n2.add(":!");
 				ret.addAll(0, n2);
 				break;
@@ -567,21 +560,18 @@ public class Term implements Atom {
 	/**
 	 * Sets the initial term.
 	 * 
-	 * @param initial
-	 *            the initial term
+	 * @param initial the initial term
 	 */
 	public void setInitial(String initial) {
 		this.initial = initial;
 	}
 
 	/**
-	 * Sets the initial term after evaluating the potential replacements in the
-	 * term map
+	 * Sets the initial term after evaluating the potential replacements in the term
+	 * map
 	 * 
-	 * @param term
-	 *            the initial term
-	 * @param termMap
-	 *            the current term mapping
+	 * @param term    the initial term
+	 * @param termMap the current term mapping
 	 */
 	public void setInitial(String term, Map<String, Term> termMap) {
 		boolean inString = false;
@@ -603,7 +593,8 @@ public class Term implements Atom {
 							if (st != null) {
 								term = term.substring(0, i) + "(" + st.getExpression() + ")" + term.substring(end + 1);
 								replaced = true;
-								// System.out.println("new term: "+term+"/"+key+"/"+termMap.get(key).getInitial());
+								// System.out.println("new term:
+								// "+term+"/"+key+"/"+termMap.get(key).getInitial());
 								break;
 							}
 						}
@@ -619,8 +610,7 @@ public class Term implements Atom {
 	 * Sets the Method instance, once this term has been compiled by the JIT
 	 * compiler
 	 * 
-	 * @param jitted
-	 *            the method
+	 * @param jitted the method
 	 */
 	public void setJittedMethod(Method jitted) {
 		this.jittedMethod = jitted;

@@ -57,8 +57,7 @@ public class For extends AbstractCommand {
 	/**
 	 * Sets the variable used for looping.
 	 * 
-	 * @param var
-	 *            the new variable
+	 * @param var the new variable
 	 */
 	public void setVar(Variable var) {
 		this.var = var;
@@ -91,11 +90,12 @@ public class For extends AbstractCommand {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String,
-	 * int, int, int, boolean, sixtyfour.system.Machine)
+	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String, int,
+	 * int, int, boolean, sixtyfour.system.Machine)
 	 */
 	@Override
-	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
+	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos,
+			boolean lastPos, Machine machine) {
 		super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine);
 		linePart = TermEnhancer.removeWhiteSpace(linePart.substring(this.name.length()));
 		String uLinePart = VarUtils.toUpper(linePart);
@@ -115,7 +115,8 @@ public class For extends AbstractCommand {
 			syntaxError(linePart);
 		}
 
-		if (!var.getType().equals(term.getType()) && !(var.getType().equals(Type.REAL) && term.getType().equals(Type.INTEGER))) {
+		if (!var.getType().equals(term.getType())
+				&& !(var.getType().equals(Type.REAL) && term.getType().equals(Type.INTEGER))) {
 			typeMismatch(linePart);
 		}
 
@@ -151,8 +152,7 @@ public class For extends AbstractCommand {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.
+	 * @see sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.
 	 * Machine)
 	 */
 	@Override
@@ -203,10 +203,8 @@ public class For extends AbstractCommand {
 	/**
 	 * Executes a next call for this for.
 	 * 
-	 * @param next
-	 *            the command that is associated with this for
-	 * @param machine
-	 *            the current machine
+	 * @param next    the command that is associated with this for
+	 * @param machine the current machine
 	 * @return true, if there will be a another iteration. false otherwise.
 	 */
 	public boolean next(Next next, Machine machine) {
@@ -235,19 +233,17 @@ public class For extends AbstractCommand {
 	/**
 	 * Sets the counter to the value that it would have after finishing the loop
 	 * 
-	 * @param machine
-	 *            the current machine
+	 * @param machine the current machine
 	 */
 	public void setToFinalValue(Machine machine) {
 		var.setValue(VarUtils.getFloat(endTerm.eval(machine)) + 1);
 	}
 
 	/**
-	 * Returns the number of steps that would be needed to count from start to
-	 * end using step.
+	 * Returns the number of steps that would be needed to count from start to end
+	 * using step.
 	 * 
-	 * @param machine
-	 *            the current machine
+	 * @param machine the current machine
 	 * @return the steps
 	 */
 	public int getSteps(Machine machine) {

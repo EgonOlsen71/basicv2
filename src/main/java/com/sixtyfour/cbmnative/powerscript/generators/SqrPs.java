@@ -6,7 +6,7 @@ package com.sixtyfour.cbmnative.powerscript.generators;
  */
 public class SqrPs extends CalculationPs {
 
-    public SqrPs() {
-	super("SQR", "([math]::sqrt({from}))");
-    }
+	public SqrPs() {
+		super("SQR", "([math]::sqrt({from}))");
+	}
 }

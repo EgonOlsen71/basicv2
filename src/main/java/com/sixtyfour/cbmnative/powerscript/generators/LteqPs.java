@@ -6,8 +6,8 @@ package com.sixtyfour.cbmnative.powerscript.generators;
  */
 public class LteqPs extends ComparisonPs {
 
-    LteqPs() {
-	super("LTEQ", " -le ");
-    }
+	LteqPs() {
+		super("LTEQ", " -le ");
+	}
 
 }

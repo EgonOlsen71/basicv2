@@ -21,7 +21,8 @@ public class DrawShape extends AbstractGraphicsCommand {
 	}
 
 	@Override
-	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
+	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos,
+			boolean lastPos, Machine machine) {
 		String ret = super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine, 3, 2);
 		checkTypes(pars, linePart, Type.STRING, Type.STRING, Type.STRING, Type.STRING, Type.STRING);
 		return ret;
@@ -42,7 +43,8 @@ public class DrawShape extends AbstractGraphicsCommand {
 		}
 		GraphicsDevice window = GraphicsDevice.getDevice(machine);
 		if (window != null) {
-			window.drawShape(VarUtils.getInt(id.eval(machine)), VarUtils.getInt(x.eval(machine)), VarUtils.getInt(y.eval(machine)), xd, yd);
+			window.drawShape(VarUtils.getInt(id.eval(machine)), VarUtils.getInt(x.eval(machine)),
+					VarUtils.getInt(y.eval(machine)), xd, yd);
 		}
 		return null;
 	}

@@ -17,10 +17,8 @@ public class VariableAndIndex {
 	/**
 	 * Instantiates a new variable and index term
 	 * 
-	 * @param variable
-	 *            the variable
-	 * @param indexTerm
-	 *            the index term
+	 * @param variable  the variable
+	 * @param indexTerm the index term
 	 */
 	public VariableAndIndex(Variable variable, Term indexTerm) {
 		this.setVariable(variable);
@@ -39,8 +37,7 @@ public class VariableAndIndex {
 	/**
 	 * Sets the index term.
 	 * 
-	 * @param indexTerm
-	 *            the new index term
+	 * @param indexTerm the new index term
 	 */
 	public void setIndexTerm(Term indexTerm) {
 		this.indexTerm = indexTerm;
@@ -58,8 +55,7 @@ public class VariableAndIndex {
 	/**
 	 * Sets the variable.
 	 * 
-	 * @param variable
-	 *            the new variable
+	 * @param variable the new variable
 	 */
 	public void setVariable(Variable variable) {
 		this.variable = variable;

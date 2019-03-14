@@ -31,8 +31,7 @@ public interface Command extends Atom {
 	/**
 	 * Checks if some string matches this command's name.
 	 * 
-	 * @param command
-	 *            the command string
+	 * @param command the command string
 	 * @return true, if it is this command
 	 */
 	boolean isCommand(String command);
@@ -40,8 +39,7 @@ public interface Command extends Atom {
 	/**
 	 * Clones a command with a given parameter string.
 	 * 
-	 * @param linePart
-	 *            the parameter string
+	 * @param linePart the parameter string
 	 * @return the command
 	 */
 	Command clone(String linePart);
@@ -54,9 +52,9 @@ public interface Command extends Atom {
 	Term getTerm();
 
 	/**
-	 * Gets all terms in case that the command uses more than one (for example
-	 * FOR, which has up to 3). For a normal command, the has one element, which
-	 * is the same one as getTerm() would return.
+	 * Gets all terms in case that the command uses more than one (for example FOR,
+	 * which has up to 3). For a normal command, the has one element, which is the
+	 * same one as getTerm() would return.
 	 * 
 	 * @return a list of terms
 	 */
@@ -65,37 +63,30 @@ public interface Command extends Atom {
 	/**
 	 * Sets the term that represents this command's parameters.
 	 * 
-	 * @param term
-	 *            the new term
+	 * @param term the new term
 	 */
 	void setTerm(Term term);
 
 	/**
-	 * Parses a string as this command. If successful, it sets this instances'
-	 * term to the parsed result.
+	 * Parses a string as this command. If successful, it sets this instances' term
+	 * to the parsed result.
 	 * 
-	 * @param linePart
-	 *            the parameter string
-	 * @param lineCnt
-	 *            the line counter
-	 * @param lineNumber
-	 *            the line number
-	 * @param linePos
-	 *            the position in the current line
-	 * @param lastPos
-	 *            true, if it's the last command in the line
-	 * @param machine
-	 *            the current machine
-	 * @return an optional string that be used by the parser. Only very few
-	 *         commands make use of this, most return null.
+	 * @param linePart   the parameter string
+	 * @param lineCnt    the line counter
+	 * @param lineNumber the line number
+	 * @param linePos    the position in the current line
+	 * @param lastPos    true, if it's the last command in the line
+	 * @param machine    the current machine
+	 * @return an optional string that be used by the parser. Only very few commands
+	 *         make use of this, most return null.
 	 */
-	String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine);
+	String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos,
+			Machine machine);
 
 	/**
 	 * Executes the command in the current machine's context.
 	 * 
-	 * @param machine
-	 *            the current machine
+	 * @param machine the current machine
 	 * @return a program counter instance that contains the current state after
 	 *         execution
 	 */

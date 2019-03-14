@@ -21,9 +21,8 @@ public class Runtime {
 	/**
 	 * The main method.
 	 * 
-	 * @param args
-	 *            the arguments. The first argument will be interpreted as the
-	 *            file name, following arguments will be ignored.
+	 * @param args the arguments. The first argument will be interpreted as the file
+	 *             name, following arguments will be ignored.
 	 */
 	public static void main(String[] args) {
 		if (args.length == 0) {

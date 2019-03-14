@@ -6,7 +6,7 @@ package com.sixtyfour.cbmnative.powerscript.generators;
  */
 public class AtnPs extends CalculationPs {
 
-    public AtnPs() {
-	super("ATN", "([math]::({from}))");
-    }
+	public AtnPs() {
+		super("ATN", "([math]::({from}))");
+	}
 }

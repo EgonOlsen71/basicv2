@@ -36,8 +36,8 @@ public class TemplateManager {
 	 * @param pathToTemplate
 	 * @return the template instance
 	 * @todo This method is synchronized, which is a very mindless way of making
-	 *       sure that nothing goes wrong here. This should be improved, but I
-	 *       can't be bothered right now.
+	 *       sure that nothing goes wrong here. This should be improved, but I can't
+	 *       be bothered right now.
 	 */
 	public synchronized Template getTemplate(String pathToTemplate) {
 		TemplateInfo existing = templateInfos.get(pathToTemplate);
@@ -70,7 +70,8 @@ public class TemplateManager {
 		}
 	}
 
-	private Template createTemplate(CompilerConfig config, String pathToTemplate, TemplateInfo existing, ThreadLocal<Template> tl) {
+	private Template createTemplate(CompilerConfig config, String pathToTemplate, TemplateInfo existing,
+			ThreadLocal<Template> tl) {
 		try {
 			Logger.log("Creating new template instance for " + pathToTemplate);
 			Template tmpl = TemplateFactory.getTemplate(config, new FileInputStream(pathToTemplate), null);

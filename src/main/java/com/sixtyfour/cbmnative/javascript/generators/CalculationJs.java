@@ -11,34 +11,34 @@ import com.sixtyfour.cbmnative.Operands;
  * @author EgonOlsen
  * 
  */
-public abstract class CalculationJs  extends GeneratorBaseJs {
+public abstract class CalculationJs extends GeneratorBaseJs {
 
-    private String mnemonic;
-    private String calcString;
-    
-    CalculationJs(String mnemonic, String calcString) {
-	this.mnemonic=mnemonic;
-	this.calcString=calcString;
-    }
-    
-    @Override
-    public String getMnemonic() {
-	return mnemonic;
-    }
+	private String mnemonic;
+	private String calcString;
 
-    @Override
-    public void generateCode(GeneratorContext context, String line, List<String> nCode, List<String> subCode,
-	    Map<String, String> name2label) {
-	Operands ops = new Operands(line, name2label);
+	CalculationJs(String mnemonic, String calcString) {
+		this.mnemonic = mnemonic;
+		this.calcString = calcString;
+	}
 
-	Operand source = ops.getSource();
-	Operand target = ops.getTarget();
+	@Override
+	public String getMnemonic() {
+		return mnemonic;
+	}
 
-	String from = getOpName(source);
-	String to = getOpName(target);
-	nCode.add(to +"="+calcString.replace("{to}", to).replace("{from}", from)+";");
-	truncInteger(nCode, target);
+	@Override
+	public void generateCode(GeneratorContext context, String line, List<String> nCode, List<String> subCode,
+			Map<String, String> name2label) {
+		Operands ops = new Operands(line, name2label);
 
-    }
-    
+		Operand source = ops.getSource();
+		Operand target = ops.getTarget();
+
+		String from = getOpName(source);
+		String to = getOpName(target);
+		nCode.add(to + "=" + calcString.replace("{to}", to).replace("{from}", from) + ";");
+		truncInteger(nCode, target);
+
+	}
+
 }

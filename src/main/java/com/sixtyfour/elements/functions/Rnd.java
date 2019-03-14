@@ -48,8 +48,7 @@ public class Rnd extends AbstractFunction {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * com.sixtyfour.elements.functions.AbstractFunction#toCode(com.sixtyfour
+	 * @see com.sixtyfour.elements.functions.AbstractFunction#toCode(com.sixtyfour
 	 * .system.Machine)
 	 */
 	@Override

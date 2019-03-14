@@ -48,17 +48,17 @@ public class Platform20 implements PlatformProvider {
 
 	@Override
 	public int getMaxHeaderAddress() {
-	    return 4660;
+		return 4660;
 	}
 
 	@Override
 	public int getBaseAddress() {
-	    return 4609;
+		return 4609;
 	}
 
 	@Override
 	public void overrideConfig(CompilerConfig conf) {
-	    // TODO Auto-generated method stub
-	    
+		// TODO Auto-generated method stub
+
 	}
 }

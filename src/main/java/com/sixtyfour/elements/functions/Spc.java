@@ -32,8 +32,7 @@ public class Spc extends AbstractFunction {
 	/**
 	 * Instantiates a new spc.
 	 * 
-	 * @param name
-	 *            the name
+	 * @param name the name
 	 */
 	protected Spc(String name) {
 		super(name);
@@ -47,12 +46,11 @@ public class Spc extends AbstractFunction {
 	}
 
 	/**
-	 * If set to false, this function can be called outside of PRINT, PRINT# and
-	 * CMD as well. Default is true (i.e. it can't, which is normal CBM BASIC
+	 * If set to false, this function can be called outside of PRINT, PRINT# and CMD
+	 * as well. Default is true (i.e. it can't, which is normal CBM BASIC
 	 * behaviour).
 	 * 
-	 * @param limited
-	 *            should it be limited
+	 * @param limited should it be limited
 	 */
 	public static void setLimitedToPrint(boolean limited) {
 		limitedToPrint = limited;
@@ -105,8 +103,7 @@ public class Spc extends AbstractFunction {
 	/**
 	 * Ensure context.
 	 * 
-	 * @param machine
-	 *            the machine
+	 * @param machine the machine
 	 */
 	protected void ensureContext(Machine machine) {
 		if (limitedToPrint) {

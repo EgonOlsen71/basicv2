@@ -21,7 +21,8 @@ public class BufferMode extends AbstractGraphicsCommand {
 	}
 
 	@Override
-	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
+	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos,
+			boolean lastPos, Machine machine) {
 		String ret = super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine, 1, 0);
 		checkTypes(pars, linePart, Type.STRING);
 		return ret;

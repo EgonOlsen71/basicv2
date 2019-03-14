@@ -18,14 +18,12 @@ public enum Type {
 	NONE;
 
 	/**
-	 * Checks if one type is assignable to another. This is the case if the
-	 * types are equal or either real or integer. Being assignable doesn't mean
-	 * that there's no accuracy loss when doing so.
+	 * Checks if one type is assignable to another. This is the case if the types
+	 * are equal or either real or integer. Being assignable doesn't mean that
+	 * there's no accuracy loss when doing so.
 	 * 
-	 * @param type1
-	 *            one type
-	 * @param type2
-	 *            another type
+	 * @param type1 one type
+	 * @param type2 another type
 	 * @return true, if these types can be assigned to each other
 	 */
 	public static boolean isAssignable(Type type1, Type type2) {

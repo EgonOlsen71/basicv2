@@ -29,13 +29,11 @@ import com.sixtyfour.util.VarUtils;
 public class TermOptimizer {
 
 	/**
-	 * Optimizes the term by removing redundant entries that made it into the
-	 * tree during its creation.
+	 * Optimizes the term by removing redundant entries that made it into the tree
+	 * during its creation.
 	 * 
-	 * @param finalTerm
-	 *            the final term
-	 * @param machine
-	 *            the machine
+	 * @param finalTerm the final term
+	 * @param machine   the machine
 	 * @return the optimized term
 	 */
 	public static Term optimizeTermTree(Term finalTerm, Machine machine) {
@@ -58,11 +56,12 @@ public class TermOptimizer {
 	}
 
 	/**
-	 * Evaluates conditional blocks and optimizes their executing if are are either always true or always false.
+	 * Evaluates conditional blocks and optimizes their executing if are are either
+	 * always true or always false.
 	 * 
-	 * @param config the compiler configuration
+	 * @param config  the compiler configuration
 	 * @param machine the machine
-	 * @param basic the Basic instance
+	 * @param basic   the Basic instance
 	 */
 	public static void handleConstantConditions(CompilerConfig config, Machine machine, Basic basic) {
 		if (config.isConstantFolding()) {
@@ -103,13 +102,14 @@ public class TermOptimizer {
 	 * Optimizes a term.
 	 * 
 	 * @param machine the machine
-	 * @param ret the term to optimize
+	 * @param ret     the term to optimize
 	 * @param termMap the mapping between placeholders and actual terms
 	 * @param builder the term builder instance
 	 * @return the optimized term
 	 */
-	public static Term optimizeTerm(CompilerConfig config, Machine machine, Term ret, Map<String, Term> termMap, TermBuilder builder) {
-		if (ret.getType(true)  == Type.STRING) {
+	public static Term optimizeTerm(CompilerConfig config, Machine machine, Term ret, Map<String, Term> termMap,
+			TermBuilder builder) {
+		if (ret.getType(true) == Type.STRING) {
 			return ret;
 		}
 

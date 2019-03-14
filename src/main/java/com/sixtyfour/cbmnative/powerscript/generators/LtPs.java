@@ -6,8 +6,8 @@ package com.sixtyfour.cbmnative.powerscript.generators;
  */
 public class LtPs extends ComparisonPs {
 
-    LtPs() {
-	super("LT", " -lt ");
-    }
+	LtPs() {
+		super("LT", " -lt ");
+	}
 
 }

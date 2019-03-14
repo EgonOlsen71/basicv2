@@ -20,10 +20,8 @@ public class VariableAndTerms {
 	/**
 	 * Instantiates a new variable and terms.
 	 * 
-	 * @param var
-	 *            the variable's name
-	 * @param terms
-	 *            the terms
+	 * @param var   the variable's name
+	 * @param terms the terms
 	 */
 	public VariableAndTerms(String var, List<Atom> terms) {
 		this.varName = var.endsWith("[]") ? var : (var + "[]");
@@ -42,8 +40,7 @@ public class VariableAndTerms {
 	/**
 	 * Sets the variable's name.
 	 * 
-	 * @param varName
-	 *            the new variable's name
+	 * @param varName the new variable's name
 	 */
 	public void setVarName(String varName) {
 		this.varName = varName;
@@ -61,8 +58,7 @@ public class VariableAndTerms {
 	/**
 	 * Sets the terms.
 	 * 
-	 * @param terms
-	 *            the new terms
+	 * @param terms the new terms
 	 */
 	public void setTerms(List<Atom> terms) {
 		this.terms = terms;

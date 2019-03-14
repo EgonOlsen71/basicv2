@@ -6,8 +6,8 @@ package com.sixtyfour.cbmnative.javascript.generators;
  */
 public class OrJs extends CalculationJs {
 
-    public OrJs() {
-	super("OR", "Math.floor({to}) | Math.floor({from})");
-    }
+	public OrJs() {
+		super("OR", "Math.floor({to}) | Math.floor({from})");
+	}
 
 }

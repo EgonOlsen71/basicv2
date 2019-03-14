@@ -6,7 +6,7 @@ package com.sixtyfour.cbmnative.powerscript.generators;
  */
 public class TanPs extends CalculationPs {
 
-    public TanPs() {
-	super("TAN", "([math]::tan({from}))");
-    }
+	public TanPs() {
+		super("TAN", "([math]::tan({from}))");
+	}
 }

@@ -32,12 +32,10 @@ public class Parameters {
 	}
 
 	/**
-	 * Sets the value. While this takes an Integer as parameter, only byte
-	 * values are valid. Everything else will be rejected and cause an
-	 * exception.
+	 * Sets the value. While this takes an Integer as parameter, only byte values
+	 * are valid. Everything else will be rejected and cause an exception.
 	 * 
-	 * @param value
-	 *            the value
+	 * @param value the value
 	 */
 	public void setValue(Integer value) {
 		if (value < -128 || value > 255) {
@@ -58,8 +56,7 @@ public class Parameters {
 	/**
 	 * Sets the address.
 	 * 
-	 * @param addr
-	 *            the address
+	 * @param addr the address
 	 */
 	public void setAddr(Integer addr) {
 		this.addr = addr;
@@ -77,8 +74,7 @@ public class Parameters {
 	/**
 	 * Sets if there is an additional X-index applied.
 	 * 
-	 * @param x
-	 *            X-index?
+	 * @param x X-index?
 	 */
 	public void setX(boolean x) {
 		this.x = x;
@@ -96,8 +92,7 @@ public class Parameters {
 	/**
 	 * Sets if there is an additional Y-index applied.
 	 * 
-	 * @param x
-	 *            Y-index?
+	 * @param x Y-index?
 	 */
 	public void setY(boolean y) {
 		this.y = y;
@@ -115,8 +110,7 @@ public class Parameters {
 	/**
 	 * Sets if indirect addressing is used.
 	 * 
-	 * @param indirect
-	 *            indirect addressing?
+	 * @param indirect indirect addressing?
 	 */
 	public void setIndirect(boolean indirect) {
 		this.indirect = indirect;
@@ -134,8 +128,7 @@ public class Parameters {
 	/**
 	 * Sets if this address parameter is located in the zeropage.
 	 * 
-	 * @param zeropage
-	 *            in the zeoropage?
+	 * @param zeropage in the zeoropage?
 	 */
 	public void setZeropage(boolean zeropage) {
 		this.zeropage = zeropage;
@@ -153,8 +146,7 @@ public class Parameters {
 	/**
 	 * Sets the register's name if applicable
 	 * 
-	 * @param register
-	 *            the name
+	 * @param register the name
 	 */
 	public void setRegister(String register) {
 		this.register = register;

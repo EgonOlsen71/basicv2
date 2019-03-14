@@ -6,8 +6,8 @@ package com.sixtyfour.cbmnative.javascript.generators;
  */
 public class LteqJs extends ComparisonJs {
 
-    LteqJs() {
-	super("LTEQ", "<=");
-    }
+	LteqJs() {
+		super("LTEQ", "<=");
+	}
 
 }

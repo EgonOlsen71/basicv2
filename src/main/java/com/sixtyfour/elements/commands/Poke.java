@@ -36,11 +36,12 @@ public class Poke extends AbstractCommand {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String,
-	 * int, int, int, boolean, sixtyfour.system.Machine)
+	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String, int,
+	 * int, int, boolean, sixtyfour.system.Machine)
 	 */
 	@Override
-	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
+	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos,
+			boolean lastPos, Machine machine) {
 		super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine);
 		term = Parser.getTerm(config, this, linePart, machine, true);
 		pars = Parser.getParameters(term);
@@ -79,8 +80,7 @@ public class Poke extends AbstractCommand {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.
+	 * @see sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.
 	 * Machine)
 	 */
 	@Override

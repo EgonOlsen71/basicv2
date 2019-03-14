@@ -6,8 +6,8 @@ package com.sixtyfour.cbmnative.javascript.generators;
  */
 public class MulJs extends CalculationJs {
 
-    public MulJs() {
-	super("MUL", "{to}*{from}");
-    }
+	public MulJs() {
+		super("MUL", "{to}*{from}");
+	}
 
 }

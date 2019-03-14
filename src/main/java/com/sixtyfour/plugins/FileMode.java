@@ -22,8 +22,7 @@ public enum FileMode {
 	/**
 	 * Instantiates a new file mode.
 	 * 
-	 * @param shortCut
-	 *            the short cut
+	 * @param shortCut the short cut
 	 */
 	FileMode(char shortCut) {
 		this.shortCut = shortCut;
@@ -32,8 +31,7 @@ public enum FileMode {
 	/**
 	 * Gets the file mode.
 	 * 
-	 * @param mode
-	 *            the mode
+	 * @param mode the mode
 	 * @return the file mode
 	 */
 	public static FileMode getFileMode(String mode) {

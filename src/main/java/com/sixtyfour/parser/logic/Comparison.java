@@ -44,8 +44,11 @@ public class Comparison implements LogicBlock {
 				ret = true;
 			} else {
 				int res = lo.toString().compareTo(ro.toString());
-				ret = (comparator.equals(Comparator.EQUAL) && res == 0) || (comparator.equals(Comparator.LARGER) && res > 0) || (comparator.equals(Comparator.SMALLER) && res < 0)
-						|| (comparator.equals(Comparator.LARGER_OR_EQUAL) && res >= 0) || (comparator.equals(Comparator.SMALLER_OR_EQUAL) && res <= 0)
+				ret = (comparator.equals(Comparator.EQUAL) && res == 0)
+						|| (comparator.equals(Comparator.LARGER) && res > 0)
+						|| (comparator.equals(Comparator.SMALLER) && res < 0)
+						|| (comparator.equals(Comparator.LARGER_OR_EQUAL) && res >= 0)
+						|| (comparator.equals(Comparator.SMALLER_OR_EQUAL) && res <= 0)
 						|| (comparator.equals(Comparator.NOT_EQUAL) && res != 0);
 			}
 		} else {
@@ -57,8 +60,11 @@ public class Comparison implements LogicBlock {
 				ret = lon.floatValue() != 0;
 			} else {
 				float res = lon.floatValue() - ron.floatValue();
-				ret = (comparator.equals(Comparator.EQUAL) && res == 0) || (comparator.equals(Comparator.LARGER) && res > 0) || (comparator.equals(Comparator.SMALLER) && res < 0)
-						|| (comparator.equals(Comparator.LARGER_OR_EQUAL) && res >= 0) || (comparator.equals(Comparator.SMALLER_OR_EQUAL) && res <= 0)
+				ret = (comparator.equals(Comparator.EQUAL) && res == 0)
+						|| (comparator.equals(Comparator.LARGER) && res > 0)
+						|| (comparator.equals(Comparator.SMALLER) && res < 0)
+						|| (comparator.equals(Comparator.LARGER_OR_EQUAL) && res >= 0)
+						|| (comparator.equals(Comparator.SMALLER_OR_EQUAL) && res <= 0)
 						|| (comparator.equals(Comparator.NOT_EQUAL) && res != 0);
 			}
 		}
@@ -97,8 +103,7 @@ public class Comparison implements LogicBlock {
 	/**
 	 * Sets the left term.
 	 * 
-	 * @param left
-	 *            the new left term
+	 * @param left the new left term
 	 */
 	public void setLeft(Term left) {
 		this.left = left;
@@ -116,8 +121,7 @@ public class Comparison implements LogicBlock {
 	/**
 	 * Sets the right term.
 	 * 
-	 * @param right
-	 *            the new right term
+	 * @param right the new right term
 	 */
 	public void setRight(Term right) {
 		this.right = right;
@@ -135,8 +139,7 @@ public class Comparison implements LogicBlock {
 	/**
 	 * Sets the comparator.
 	 * 
-	 * @param comparator
-	 *            the new comparator
+	 * @param comparator the new comparator
 	 */
 	public void setComparator(Comparator comparator) {
 		this.comparator = comparator;

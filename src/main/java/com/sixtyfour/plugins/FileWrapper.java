@@ -57,8 +57,7 @@ public class FileWrapper {
 	/**
 	 * Sets the record length.
 	 * 
-	 * @param recordLength
-	 *            the new record length
+	 * @param recordLength the new record length
 	 */
 	public void setRecordLength(int recordLength) {
 		this.recordLength = recordLength;
@@ -76,8 +75,7 @@ public class FileWrapper {
 	/**
 	 * Sets the file name.
 	 * 
-	 * @param fileName
-	 *            the new file name
+	 * @param fileName the new file name
 	 */
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
@@ -95,8 +93,7 @@ public class FileWrapper {
 	/**
 	 * Sets the device number.
 	 * 
-	 * @param deviceNumber
-	 *            the new device number
+	 * @param deviceNumber the new device number
 	 */
 	public void setDeviceNumber(int deviceNumber) {
 		this.deviceNumber = deviceNumber;
@@ -114,8 +111,7 @@ public class FileWrapper {
 	/**
 	 * Sets the secondary address.
 	 * 
-	 * @param secondaryAddress
-	 *            the new secondary address
+	 * @param secondaryAddress the new secondary address
 	 */
 	public void setSecondaryAddress(int secondaryAddress) {
 		this.secondaryAddress = secondaryAddress;
@@ -133,8 +129,7 @@ public class FileWrapper {
 	/**
 	 * Sets the content.
 	 * 
-	 * @param content
-	 *            the new content
+	 * @param content the new content
 	 */
 	public void setContent(List<String> content) {
 		this.content = content;
@@ -144,8 +139,7 @@ public class FileWrapper {
 	/**
 	 * Prints the.
 	 * 
-	 * @param txt
-	 *            the txt
+	 * @param txt the txt
 	 */
 	public void print(String txt) {
 		// System.out.print(txt);
@@ -165,8 +159,7 @@ public class FileWrapper {
 	/**
 	 * Sets the file type.
 	 * 
-	 * @param fileType
-	 *            the new file type
+	 * @param fileType the new file type
 	 */
 	public void setFileType(FileType fileType) {
 		this.fileType = fileType;
@@ -184,8 +177,7 @@ public class FileWrapper {
 	/**
 	 * Sets the file mode.
 	 * 
-	 * @param mode
-	 *            the new file mode
+	 * @param mode the new file mode
 	 */
 	public void setFileMode(FileMode mode) {
 		this.mode = mode;

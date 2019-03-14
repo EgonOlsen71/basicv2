@@ -27,10 +27,8 @@ public class DeadStoreEliminator {
 	/**
 	 * Eliminates dead variable stores from the code.
 	 * 
-	 * @param config
-	 *            the compiler configuration
-	 * @param basic
-	 *            the Basic instance
+	 * @param config the compiler configuration
+	 * @param basic  the Basic instance
 	 * @return true, if something has been optimized
 	 */
 	public static boolean eliminateDeadStores(CompilerConfig config, Basic basic) {

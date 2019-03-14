@@ -12,15 +12,12 @@ import com.sixtyfour.system.Machine;
 public interface LogicOp {
 
 	/**
-	 * Evaluates "state" LogicOp LogicBlock, for example
-	 * "true AND block.eval(machine)" if state is true and the operation is AND.
+	 * Evaluates "state" LogicOp LogicBlock, for example "true AND
+	 * block.eval(machine)" if state is true and the operation is AND.
 	 * 
-	 * @param machine
-	 *            the machine
-	 * @param state
-	 *            the current state to apply the operation to
-	 * @param block
-	 *            the logic block to apply the operation to
+	 * @param machine the machine
+	 * @param state   the current state to apply the operation to
+	 * @param block   the logic block to apply the operation to
 	 * @return the result of the evaluation
 	 */
 	boolean eval(Machine machine, boolean state, LogicBlock block);

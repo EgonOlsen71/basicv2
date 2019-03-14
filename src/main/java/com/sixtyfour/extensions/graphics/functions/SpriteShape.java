@@ -41,7 +41,8 @@ public class SpriteShape extends AbstractFunction {
 
 		GraphicsDevice window = GraphicsDevice.getDevice(machine);
 		if (window != null) {
-			return window.spriteShape(machine, VarUtils.getInt(addr.eval(machine)), VarUtils.getInt(type.eval(machine)) == 1);
+			return window.spriteShape(machine, VarUtils.getInt(addr.eval(machine)),
+					VarUtils.getInt(type.eval(machine)) == 1);
 		}
 		throw new RuntimeException("Graphics mode not enabled!");
 	}

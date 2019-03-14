@@ -6,7 +6,7 @@ package com.sixtyfour.cbmnative.powerscript.generators;
  */
 public class IntPs extends CalculationPs {
 
-    public IntPs() {
-	super("INT", "([math]::floor({from}))");
-    }
+	public IntPs() {
+		super("INT", "([math]::floor({from}))");
+	}
 }

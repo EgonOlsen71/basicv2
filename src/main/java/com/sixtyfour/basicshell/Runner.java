@@ -54,8 +54,7 @@ public class Runner implements Runnable {
 	 * Executes a command in "direct mode" by shoehorning it into a one line
 	 * program.
 	 * 
-	 * @param command
-	 *            the command the execute
+	 * @param command the command the execute
 	 */
 	public void executeDirectCommand(final String command) {
 		Future<?> f = BasicShell.executor.submit(new Runnable() {
@@ -93,8 +92,7 @@ public class Runner implements Runnable {
 	/**
 	 * Start BASIC task
 	 * 
-	 * @param synchronous
-	 *            if true the caller is blocked
+	 * @param synchronous if true the caller is blocked
 	 */
 	public void start(boolean synchronous) {
 		Future<?> f = BasicShell.executor.submit(this);

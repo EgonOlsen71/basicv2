@@ -135,8 +135,7 @@ public class TemplateOutputChannel implements OutputChannel {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.sixtyfour.plugins.PrintConsumer#systemPrint(int,
-	 * java.lang.String)
+	 * @see com.sixtyfour.plugins.PrintConsumer#systemPrint(int, java.lang.String)
 	 */
 	@Override
 	public void systemPrint(int id, String txt) {
@@ -146,8 +145,7 @@ public class TemplateOutputChannel implements OutputChannel {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.sixtyfour.plugins.PrintConsumer#systemPrintln(int,
-	 * java.lang.String)
+	 * @see com.sixtyfour.plugins.PrintConsumer#systemPrintln(int, java.lang.String)
 	 */
 	@Override
 	public void systemPrintln(int id, String txt) {

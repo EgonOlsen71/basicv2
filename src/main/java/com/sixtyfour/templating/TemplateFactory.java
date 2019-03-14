@@ -21,8 +21,7 @@ public class TemplateFactory {
 	/**
 	 * Gets the template.
 	 * 
-	 * @param input
-	 *            the inputstream of the template file
+	 * @param input the inputstream of the template file
 	 * @return the template
 	 */
 	public static Template getTemplate(CompilerConfig config, InputStream input) {
@@ -32,10 +31,8 @@ public class TemplateFactory {
 	/**
 	 * Gets the template.
 	 * 
-	 * @param input
-	 *            the inputstream of the template file
-	 * @param variables
-	 *            the variables to prefill the template with
+	 * @param input     the inputstream of the template file
+	 * @param variables the variables to prefill the template with
 	 * @return the template
 	 */
 	public static Template getTemplate(CompilerConfig config, InputStream input, Map<String, Object> variables) {

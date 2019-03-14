@@ -14,51 +14,51 @@ import com.sixtyfour.config.CompilerConfig;
  */
 public class PlatformJs implements PlatformProvider {
 
-    @Override
-    public int getStackSize() {
-	return 100;
-    }
+	@Override
+	public int getStackSize() {
+		return 100;
+	}
 
-    @Override
-    public int getForStackSize() {
-	return 100;
-    }
+	@Override
+	public int getForStackSize() {
+		return 100;
+	}
 
-    @Override
-    public Optimizer getOptimizer() {
-	return new OptimizerJs();
-    }
+	@Override
+	public Optimizer getOptimizer() {
+		return new OptimizerJs();
+	}
 
-    @Override
-    public Transformer getTransformer() {
-	return new TransformerJs();
-    }
+	@Override
+	public Transformer getTransformer() {
+		return new TransformerJs();
+	}
 
-    @Override
-    public Unlinker getUnlinker() {
-	return null;
-    }
+	@Override
+	public Unlinker getUnlinker() {
+		return null;
+	}
 
-    @Override
-    public boolean useLooseTypes() {
-	return true;
-    }
+	@Override
+	public boolean useLooseTypes() {
+		return true;
+	}
 
-    @Override
-    public int getMaxHeaderAddress() {
-	return 0;
-    }
+	@Override
+	public int getMaxHeaderAddress() {
+		return 0;
+	}
 
-    @Override
-    public int getBaseAddress() {
-	return 0;
-    }
+	@Override
+	public int getBaseAddress() {
+		return 0;
+	}
 
-    @Override
-    public void overrideConfig(CompilerConfig conf) {
-	conf.setLoopOptimizations(false);
-	conf.setIntOptimizations(false);
-	conf.setShiftOptimizations(false);
-    }
+	@Override
+	public void overrideConfig(CompilerConfig conf) {
+		conf.setLoopOptimizations(false);
+		conf.setIntOptimizations(false);
+		conf.setShiftOptimizations(false);
+	}
 
 }

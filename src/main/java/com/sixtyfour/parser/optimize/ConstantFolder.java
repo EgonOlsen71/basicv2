@@ -13,7 +13,8 @@ import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
 /**
- * Folds constants, i.e. it detects if some expression is actually constant and replaces it with a single constant, if it is.
+ * Folds constants, i.e. it detects if some expression is actually constant and
+ * replaces it with a single constant, if it is.
  * 
  * @author EgonOlsen
  * 
@@ -21,9 +22,10 @@ import com.sixtyfour.util.VarUtils;
 public class ConstantFolder {
 
 	/**
-	 * Optimizes the term tree by folding constants where possible. The optimized terms are inserted directly into the term tree.
+	 * Optimizes the term tree by folding constants where possible. The optimized
+	 * terms are inserted directly into the term tree.
 	 * 
-	 * @param config the compiler configuration
+	 * @param config  the compiler configuration
 	 * @param machine the machine
 	 */
 	public static void foldConstants(CompilerConfig config, Machine machine) {
@@ -49,10 +51,8 @@ public class ConstantFolder {
 	/**
 	 * Optimizes the term tree by folding constants where possible.
 	 * 
-	 * @param finalTerm
-	 *            the final term
-	 * @param machine
-	 *            the machine
+	 * @param finalTerm the final term
+	 * @param machine   the machine
 	 * @return the optimized term
 	 */
 	public static Term foldConstants(CompilerConfig config, Term finalTerm, Machine machine) {
@@ -90,7 +90,7 @@ public class ConstantFolder {
 		}
 		return finalTerm;
 	}
-	
+
 	private static void setConstant(Term finalTerm, Machine machine, Atom left) {
 		Constant<?> conty = null;
 		Object val = finalTerm.eval(machine);

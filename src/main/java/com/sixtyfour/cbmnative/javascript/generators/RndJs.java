@@ -6,7 +6,7 @@ package com.sixtyfour.cbmnative.javascript.generators;
  */
 public class RndJs extends CalculationJs {
 
-    public RndJs() {
-	super("RND", "Math.random()");
-    }
+	public RndJs() {
+		super("RND", "Math.random()");
+	}
 }

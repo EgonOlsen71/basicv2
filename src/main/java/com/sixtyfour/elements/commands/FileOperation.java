@@ -23,8 +23,7 @@ public abstract class FileOperation extends AbstractCommand {
 	/**
 	 * Instantiates a new file operation.
 	 * 
-	 * @param name
-	 *            the name
+	 * @param name the name
 	 */
 	public FileOperation(String name) {
 		super(name);
@@ -86,11 +85,12 @@ public abstract class FileOperation extends AbstractCommand {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String,
-	 * int, int, int, boolean, sixtyfour.system.Machine)
+	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String, int,
+	 * int, int, boolean, sixtyfour.system.Machine)
 	 */
 	@Override
-	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
+	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos,
+			boolean lastPos, Machine machine) {
 		super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine);
 		linePart = TermEnhancer.removeWhiteSpace(linePart);
 		linePart = linePart.substring(this.name.length());

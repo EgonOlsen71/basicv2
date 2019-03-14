@@ -36,11 +36,12 @@ public class Run extends AbstractCommand {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String,
-	 * int, int, int, boolean, sixtyfour.system.Machine)
+	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String, int,
+	 * int, int, boolean, sixtyfour.system.Machine)
 	 */
 	@Override
-	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
+	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos,
+			boolean lastPos, Machine machine) {
 		super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine);
 		linePart = linePart.substring(3).trim();
 		if (linePart.trim().length() > 0) {
@@ -56,8 +57,7 @@ public class Run extends AbstractCommand {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.
+	 * @see sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.
 	 * Machine)
 	 */
 	@Override

@@ -17,11 +17,12 @@ public class RtsPs extends GeneratorBasePs {
 	}
 
 	@Override
-	public void generateCode(GeneratorContext context, String line, List<String> nCode, List<String> subCode, Map<String, String> name2label) {
-	    if (nCode.get(nCode.size()-1).startsWith("return")) {
-		return;
-	    }
-	    nCode.add("return;");
+	public void generateCode(GeneratorContext context, String line, List<String> nCode, List<String> subCode,
+			Map<String, String> name2label) {
+		if (nCode.get(nCode.size() - 1).startsWith("return")) {
+			return;
+		}
+		nCode.add("return;");
 	}
 
 }

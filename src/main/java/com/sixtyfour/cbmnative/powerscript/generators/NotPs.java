@@ -6,7 +6,7 @@ package com.sixtyfour.cbmnative.powerscript.generators;
  */
 public class NotPs extends CalculationPs {
 
-    public NotPs() {
-	super("NOT", " (-bnot {from}) ");
-    }
+	public NotPs() {
+		super("NOT", " (-bnot {from}) ");
+	}
 }

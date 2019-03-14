@@ -19,8 +19,7 @@ public class StackEntry {
 	/**
 	 * Instantiates a new stack entry.
 	 * 
-	 * @param command
-	 *            the command
+	 * @param command the command
 	 */
 	public StackEntry(Command command) {
 		this.command = command;

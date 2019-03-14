@@ -6,8 +6,8 @@ package com.sixtyfour.cbmnative.javascript.generators;
  */
 public class XorJs extends CalculationJs {
 
-    public XorJs() {
-	super("XOR", "Math.floor({to}) ^ Math.floor({from})");
-    }
+	public XorJs() {
+		super("XOR", "Math.floor({to}) ^ Math.floor({from})");
+	}
 
 }

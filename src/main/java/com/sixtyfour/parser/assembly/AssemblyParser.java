@@ -24,8 +24,7 @@ public class AssemblyParser {
 	/**
 	 * Gets the mnemonic for a line or null if there is no such thing.
 	 * 
-	 * @param linePart
-	 *            the line
+	 * @param linePart the line
 	 * @return the mnemonic or null
 	 */
 	public static Mnemonic getMnemonic(String linePart) {
@@ -49,8 +48,7 @@ public class AssemblyParser {
 	/**
 	 * Removes comments from a line. Comments are marked as ";"
 	 * 
-	 * @param linePart
-	 *            the line
+	 * @param linePart the line
 	 * @return the line without the comments
 	 */
 	public static String truncateComments(String linePart) {
@@ -75,12 +73,11 @@ public class AssemblyParser {
 
 	/**
 	 * Gets the label (and code) of a line. If a line contains a label and a
-	 * mnemonic, getMnemonic() above will return null. This method will return
-	 * the label and rest of the line, so that the rest can be used to call
+	 * mnemonic, getMnemonic() above will return null. This method will return the
+	 * label and rest of the line, so that the rest can be used to call
 	 * getMnemonic() again.
 	 * 
-	 * @param linePart
-	 *            the line
+	 * @param linePart the line
 	 * @return the label and code or null if there is no such thing
 	 */
 	public static LabelAndCode getLabel(String linePart) {
@@ -97,37 +94,31 @@ public class AssemblyParser {
 	}
 
 	/**
-	 * Returns the value of an expression in the code. If the expression can't
-	 * be evaluated to a number, an exception will occur. If the number is
-	 * actually a label that hasn't been defined yet, the current address will
-	 * be returned instead and an information will be added to the
-	 * LabelsContainer that indicates that additional work has to be done once
-	 * the label is known later in the parsing process.
+	 * Returns the value of an expression in the code. If the expression can't be
+	 * evaluated to a number, an exception will occur. If the number is actually a
+	 * label that hasn't been defined yet, the current address will be returned
+	 * instead and an information will be added to the LabelsContainer that
+	 * indicates that additional work has to be done once the label is known later
+	 * in the parsing process.
 	 * 
-	 * @param number
-	 *            the number
-	 * @param addr
-	 *            the current address
-	 * @param ccon
-	 *            a container for constants
-	 * @param lcon
-	 *            a container for labels
-	 * @param low
-	 *            do we want the low byte only?
-	 * @param high
-	 *            do we want the high byte only?
-	 * @param isDataLine
-	 *            does the line contain an actual command or is it some data
-	 *            like .BYTE
+	 * @param number     the number
+	 * @param addr       the current address
+	 * @param ccon       a container for constants
+	 * @param lcon       a container for labels
+	 * @param low        do we want the low byte only?
+	 * @param high       do we want the high byte only?
+	 * @param isDataLine does the line contain an actual command or is it some data
+	 *                   like .BYTE
 	 * @return the number
 	 */
-	public static int getValue(CompilerConfig config, String number, int addr, ConstantsContainer ccon, LabelsContainer lcon, boolean low, boolean high, int addrAdd,
-			boolean isDataLine) {
+	public static int getValue(CompilerConfig config, String number, int addr, ConstantsContainer ccon,
+			LabelsContainer lcon, boolean low, boolean high, int addrAdd, boolean isDataLine) {
 		number = number.trim();
 		if (number.endsWith("\\")) {
 			number = number.substring(0, number.length() - 1);
 		}
-		if (!number.startsWith("$") && !number.startsWith("%") && !Character.isDigit(number.charAt(0)) && !(number.startsWith("-"))) {
+		if (!number.startsWith("$") && !number.startsWith("%") && !Character.isDigit(number.charAt(0))
+				&& !(number.startsWith("-"))) {
 			ConstantValue cv = ccon.get(number);
 			if (cv != null) {
 				// System.out.println("Assigned: "+cv.getValue());
@@ -168,8 +159,7 @@ public class AssemblyParser {
 	/**
 	 * Returns the low byte of a value.
 	 * 
-	 * @param val
-	 *            the value
+	 * @param val the value
 	 * @return the low byte
 	 */
 	public static int getLowByte(int val) {
@@ -179,8 +169,7 @@ public class AssemblyParser {
 	/**
 	 * Returns the high byte of a value.
 	 * 
-	 * @param val
-	 *            the value
+	 * @param val the value
 	 * @return the high byte
 	 */
 	public static int getHighByte(int val) {
@@ -213,18 +202,17 @@ public class AssemblyParser {
 	}
 
 	/**
-	 * Returns an array containing the binary data defined in the code. Binary
-	 * data can be defined by either .text or .byte
+	 * Returns an array containing the binary data defined in the code. Binary data
+	 * can be defined by either .text or .byte
 	 * 
-	 * @param addr
-	 *            the current address
-	 * @param data
-	 *            the data to be parsed
+	 * @param addr the current address
+	 * @param data the data to be parsed
 	 * @param lcon
 	 * @param ccon
 	 * @return the actual data
 	 */
-	public static int[] getBinaryData(CompilerConfig config, int addr, String data, ConstantsContainer ccon, LabelsContainer lcon) {
+	public static int[] getBinaryData(CompilerConfig config, int addr, String data, ConstantsContainer ccon,
+			LabelsContainer lcon) {
 		List<Integer> ram = new ArrayList<Integer>();
 		data = data.trim();
 		String datupper = VarUtils.toUpper(data);
@@ -339,13 +327,11 @@ public class AssemblyParser {
 	}
 
 	/**
-	 * Returns the constant that is defined in the given line. It's possible to
-	 * do calculations in the right hand side of the assignment as well.
+	 * Returns the constant that is defined in the given line. It's possible to do
+	 * calculations in the right hand side of the assignment as well.
 	 * 
-	 * @param linePart
-	 *            the constant definition
-	 * @param ccon
-	 *            a container for constants
+	 * @param linePart the constant definition
+	 * @param ccon     a container for constants
 	 * @return the new constant or null if there is none
 	 */
 	public static ConstantValue getConstant(CompilerConfig config, String linePart, ConstantsContainer ccon) {
@@ -355,7 +341,8 @@ public class AssemblyParser {
 			String left = linePart.substring(0, pos).trim();
 			String right = linePart.substring(pos + 1).trim();
 
-			if (ccon != null && (right.contains("+") || right.contains("-") || right.contains("*") || right.contains("/"))) {
+			if (ccon != null
+					&& (right.contains("+") || right.contains("-") || right.contains("*") || right.contains("/"))) {
 				return getConstantParsed(config, left, right, ccon, true);
 			}
 
@@ -373,18 +360,15 @@ public class AssemblyParser {
 	 * Uses the Basic interpreter to parse the right hand side of a constant's
 	 * assignment.
 	 * 
-	 * @param left
-	 *            the left hand side of the assignment
-	 * @param right
-	 *            the right hand side of the assignment
-	 * @param ccon
-	 *            a container for constants
-	 * @param raiseError
-	 *            if true, an error will be raised if a constant can't be found.
-	 *            Otherwise, null will be returned
+	 * @param left       the left hand side of the assignment
+	 * @param right      the right hand side of the assignment
+	 * @param ccon       a container for constants
+	 * @param raiseError if true, an error will be raised if a constant can't be
+	 *                   found. Otherwise, null will be returned
 	 * @return the new constant
 	 */
-	public static ConstantValue getConstantParsed(CompilerConfig config, String left, String right, ConstantsContainer ccon, boolean raiseError) {
+	public static ConstantValue getConstantParsed(CompilerConfig config, String left, String right,
+			ConstantsContainer ccon, boolean raiseError) {
 		// Uses the Basic parser's term parsing method to evaluate the
 		// constant's assignment.
 		// Due to limitations in Basic V2, we have to convert the variable names

@@ -6,8 +6,8 @@ package com.sixtyfour.cbmnative.powerscript.generators;
  */
 public class PowPs extends CalculationPs {
 
-    public PowPs() {
-	super("POW", "([math]::pow({to},{from}))");
-    }
+	public PowPs() {
+		super("POW", "([math]::pow({to},{from}))");
+	}
 
 }

@@ -6,8 +6,8 @@ package com.sixtyfour.cbmnative.javascript.generators;
  */
 public class PowJs extends CalculationJs {
 
-    public PowJs() {
-	super("POW", "Math.pow({to},{from})");
-    }
+	public PowJs() {
+		super("POW", "Math.pow({to},{from})");
+	}
 
 }

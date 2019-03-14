@@ -25,10 +25,8 @@ public class StaticTemplateCallListener implements SystemCallListener {
 	/**
 	 * Instantiates a new static template call listener.
 	 * 
-	 * @param parts
-	 *            the parts
-	 * @param out
-	 *            the out
+	 * @param parts the parts
+	 * @param out   the out
 	 */
 	public StaticTemplateCallListener(Map<Integer, TemplatePart> parts, TemplateOutputChannel out, Machine machine) {
 		this.parts = parts;

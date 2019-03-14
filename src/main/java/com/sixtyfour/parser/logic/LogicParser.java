@@ -21,8 +21,7 @@ public class LogicParser {
 	/**
 	 * Checks if a term is a logic term.
 	 * 
-	 * @param term
-	 *            the term
+	 * @param term the term
 	 * @return true, if it's a logic term
 	 */
 	public static boolean isLogicTerm(String term) {
@@ -33,10 +32,8 @@ public class LogicParser {
 	/**
 	 * Returns the logic term that represents the term in the text.
 	 * 
-	 * @param term
-	 *            the term as text
-	 * @param machine
-	 *            the machine
+	 * @param term    the term as text
+	 * @param machine the machine
 	 * @return the logic term
 	 */
 	public static LogicTerm getTerm(CompilerConfig config, String term, Machine machine) {
@@ -46,12 +43,9 @@ public class LogicParser {
 	/**
 	 * Returns the logic term that represents the term in the text.
 	 * 
-	 * @param term
-	 *            the term as text
-	 * @param machine
-	 *            the machine
-	 * @param termMap
-	 *            the term map
+	 * @param term    the term as text
+	 * @param machine the machine
+	 * @param termMap the term map
 	 * @return the logic term
 	 */
 	public static LogicTerm getTerm(CompilerConfig config, String term, Machine machine, Map<String, Term> termMap) {
@@ -91,10 +85,11 @@ public class LogicParser {
 				} else if (i == term.length() - 1) {
 					String toProcess = lastPart;
 					int startPos = lastStart;
-					String subt=toProcess.substring(1, toProcess.length() - 1);
+					String subt = toProcess.substring(1, toProcess.length() - 1);
 					String blockName = createLogicBlock(config, subt, blocks, machine, termMap);
 					int endy = Math.min(startPos + toProcess.length(), term.length());
-					term = term.substring(0, startPos) + blockName + (endy != term.length() ? term.substring(endy, term.length()) : "");
+					term = term.substring(0, startPos) + blockName
+							+ (endy != term.length() ? term.substring(endy, term.length()) : "");
 					i = -1;
 					inString = false;
 					lastPart = term;
@@ -113,8 +108,7 @@ public class LogicParser {
 	/**
 	 * Processes logic operations.
 	 * 
-	 * @param term
-	 *            the term
+	 * @param term the term
 	 * @return the string
 	 */
 	public static String processLogicOperations(String term) {
@@ -197,22 +191,19 @@ public class LogicParser {
 	 * Creates a logic block. A logic block is similar to a Term but for logic
 	 * operations.
 	 * 
-	 * @param toProcess
-	 *            the text to process
-	 * @param blocks
-	 *            the current blocks
-	 * @param machine
-	 *            the machine
-	 * @param termMap
-	 *            the term map
+	 * @param toProcess the text to process
+	 * @param blocks    the current blocks
+	 * @param machine   the machine
+	 * @param termMap   the term map
 	 * @return the name of the block
 	 */
-	private static String createLogicBlock(CompilerConfig config, String toProcess, Map<String, LogicTerm> blocks, Machine machine, Map<String, Term> termMap) {
+	private static String createLogicBlock(CompilerConfig config, String toProcess, Map<String, LogicTerm> blocks,
+			Machine machine, Map<String, Term> termMap) {
 		String[] delims = { "OR", "AND" };
 		String utp = Parser.replaceStrings(toProcess, '.');
 		int curPos = 0;
 		String minOp = null;
-		int open=0;
+		int open = 0;
 		LogicTerm block = new LogicTerm("{l" + blocks.size() + "}");
 		do {
 			int minPos = 999999999;
@@ -239,16 +230,16 @@ public class LogicParser {
 			int closest = -1;
 			for (int i = 0; i < part.length(); i++) {
 				char c = part.charAt(i);
-				if (c=='(') {
+				if (c == '(') {
 					open++;
-				} else if (c==')') {
+				} else if (c == ')') {
 					open--;
 				}
 				if (c == '"') {
 					inString = !inString;
 				}
 				if (!inString) {
-					if (open==0 && (c == '<' || c == '>' || c == '=')) {
+					if (open == 0 && (c == '<' || c == '>' || c == '=')) {
 						closest = i;
 						break;
 					}
@@ -345,8 +336,7 @@ public class LogicParser {
 	/**
 	 * Calculates the difference in the number of opening and closing brackets.
 	 * 
-	 * @param term
-	 *            the term
+	 * @param term the term
 	 * @return the difference
 	 */
 	private static int getBracketDelta(String term) {
@@ -371,8 +361,7 @@ public class LogicParser {
 	/**
 	 * Strip strings from a term.
 	 * 
-	 * @param term
-	 *            the term
+	 * @param term the term
 	 * @return the term with the strings
 	 */
 	private static String stripStrings(String term) {
@@ -396,10 +385,8 @@ public class LogicParser {
 	/**
 	 * Finds the end bracket starting at the current position.
 	 * 
-	 * @param term
-	 *            the term
-	 * @param pos
-	 *            the current position
+	 * @param term the term
+	 * @param pos  the current position
 	 * @return the position of the end bracket
 	 */
 	private static int findEndBracket(String term, int pos) {

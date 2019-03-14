@@ -52,7 +52,8 @@ public class CompilerConfig {
 	public void setPcodeOptimizations(boolean pcodeOptimize) {
 		this.pcodeOptimize = pcodeOptimize;
 	}
-	public boolean isPcodeOptimize(){
+
+	public boolean isPcodeOptimize() {
 		return pcodeOptimize;
 	}
 
@@ -105,8 +106,7 @@ public class CompilerConfig {
 	}
 
 	/**
-	 * Returns the current loop mode that will be used when compiling the
-	 * program.
+	 * Returns the current loop mode that will be used when compiling the program.
 	 * 
 	 * @return the loop mode
 	 */
@@ -115,11 +115,10 @@ public class CompilerConfig {
 	}
 
 	/**
-	 * Sets the loop mode. This has to be set before compiling/running a program
-	 * to have an effect.
+	 * Sets the loop mode. This has to be set before compiling/running a program to
+	 * have an effect.
 	 * 
-	 * @param loopMode
-	 *            the loop mode, EXECUTE is default
+	 * @param loopMode the loop mode, EXECUTE is default
 	 */
 	public void setLoopMode(LoopMode loopMode) {
 		this.loopMode = loopMode;
@@ -164,19 +163,19 @@ public class CompilerConfig {
 	}
 
 	public boolean isLoopOptimizations() {
-	    return loopOptimizations;
+		return loopOptimizations;
 	}
 
 	public void setLoopOptimizations(boolean loopOptimizations) {
-	    this.loopOptimizations = loopOptimizations;
+		this.loopOptimizations = loopOptimizations;
 	}
 
 	public boolean isShiftOptimizations() {
-	    return shiftOptimizations;
+		return shiftOptimizations;
 	}
 
 	public void setShiftOptimizations(boolean shiftOptimizations) {
-	    this.shiftOptimizations = shiftOptimizations;
+		this.shiftOptimizations = shiftOptimizations;
 	}
 
 }

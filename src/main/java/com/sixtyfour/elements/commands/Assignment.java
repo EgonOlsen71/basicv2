@@ -8,6 +8,6 @@ import com.sixtyfour.elements.Variable;
  */
 public interface Assignment {
 
-    Variable getVar();
+	Variable getVar();
 
 }

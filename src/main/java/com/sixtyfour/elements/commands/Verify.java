@@ -29,8 +29,7 @@ public class Verify extends FileOperation {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.
+	 * @see sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.
 	 * Machine)
 	 */
 	@Override
@@ -49,7 +48,8 @@ public class Verify extends FileOperation {
 				device.verify((String) pars.get(0).eval(machine), VarUtils.getInt(pars.get(1).eval(machine)), 0);
 				break;
 			case 3:
-				device.verify((String) pars.get(0).eval(machine), VarUtils.getInt(pars.get(1).eval(machine)), VarUtils.getInt(pars.get(2).eval(machine)));
+				device.verify((String) pars.get(0).eval(machine), VarUtils.getInt(pars.get(1).eval(machine)),
+						VarUtils.getInt(pars.get(2).eval(machine)));
 				break;
 			default:
 				syntaxError(this);

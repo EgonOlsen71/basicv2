@@ -6,8 +6,8 @@ package com.sixtyfour.cbmnative.powerscript.generators;
  */
 public class OrPs extends CalculationPs {
 
-    public OrPs() {
-	super("OR", "(([math]::floor({to})) -bor ([math]::floor({from})))");
-    }
+	public OrPs() {
+		super("OR", "(([math]::floor({to})) -bor ([math]::floor({from})))");
+	}
 
 }

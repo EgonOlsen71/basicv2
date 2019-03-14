@@ -6,8 +6,8 @@ package com.sixtyfour.cbmnative.powerscript.generators;
  */
 public class GtPs extends ComparisonPs {
 
-    GtPs() {
-	super("GT", " -gt ");
-    }
+	GtPs() {
+		super("GT", " -gt ");
+	}
 
 }

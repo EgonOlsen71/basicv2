@@ -6,8 +6,8 @@ package com.sixtyfour.cbmnative.powerscript.generators;
  */
 public class EqPs extends ComparisonPs {
 
-    EqPs() {
-	super("EQ", " -eq ");
-    }
+	EqPs() {
+		super("EQ", " -eq ");
+	}
 
 }

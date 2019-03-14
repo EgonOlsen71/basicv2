@@ -17,12 +17,9 @@ public class FontProvider {
 	/**
 	 * Provides a (cached) font instance with the given attributes.
 	 * 
-	 * @param fontName
-	 *            the font's name
-	 * @param style
-	 *            the style (0=plain, 1=bold, 2=italic)
-	 * @param size
-	 *            the size in pixels
+	 * @param fontName the font's name
+	 * @param style    the style (0=plain, 1=bold, 2=italic)
+	 * @param size     the size in pixels
 	 * @return the font
 	 */
 	public static Font getFont(String fontName, int style, int size) {

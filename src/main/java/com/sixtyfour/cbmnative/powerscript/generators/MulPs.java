@@ -6,8 +6,8 @@ package com.sixtyfour.cbmnative.powerscript.generators;
  */
 public class MulPs extends CalculationPs {
 
-    public MulPs() {
-	super("MUL", "{to}*{from}");
-    }
+	public MulPs() {
+		super("MUL", "{to}*{from}");
+	}
 
 }

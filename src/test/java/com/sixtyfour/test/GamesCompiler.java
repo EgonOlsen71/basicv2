@@ -41,6 +41,7 @@ public class GamesCompiler {
 //		compileGame(poetry, dst);
 //
 		for (File game : games) {
+			//if (game.getName().contains("Higher"))
 			compileGame(game, dst);
 		}
 

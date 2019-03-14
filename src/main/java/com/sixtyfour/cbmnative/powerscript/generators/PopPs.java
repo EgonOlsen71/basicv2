@@ -18,11 +18,12 @@ public class PopPs extends GeneratorBasePs {
 	}
 
 	@Override
-	public void generateCode(GeneratorContext context, String line, List<String> nCode, List<String> subCode, Map<String, String> name2label) {
+	public void generateCode(GeneratorContext context, String line, List<String> nCode, List<String> subCode,
+			Map<String, String> name2label) {
 		Operands ops = new Operands(line, name2label);
 		Operand target = ops.getTarget();
-		String to=getOpName(target);
-		nCode.add(to+"= first $global:_stack");
+		String to = getOpName(target);
+		nCode.add(to + "= first $global:_stack");
 		nCode.add("$global:_stack=pop $global:_stack");
 	}
 }

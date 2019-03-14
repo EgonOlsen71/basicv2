@@ -9,7 +9,8 @@ package com.sixtyfour.parser.logic;
  */
 public enum Comparator {
 
-	NOT_EQUAL("<>"), LARGER_OR_EQUAL(">=", "=>"), SMALLER_OR_EQUAL("<=", "=<"), EQUAL("="), LARGER(">"), SMALLER("<"), EXISTS();
+	NOT_EQUAL("<>"), LARGER_OR_EQUAL(">=", "=>"), SMALLER_OR_EQUAL("<=", "=<"), EQUAL("="), LARGER(">"), SMALLER("<"),
+	EXISTS();
 
 	/** The term */
 	private String[] term;
@@ -17,8 +18,7 @@ public enum Comparator {
 	/**
 	 * Instantiates a new comparator.
 	 * 
-	 * @param term
-	 *            the term
+	 * @param term the term
 	 */
 	private Comparator(String... term) {
 		this.term = term;
@@ -27,8 +27,7 @@ public enum Comparator {
 	/**
 	 * Return the comparator that matches a given term.
 	 * 
-	 * @param term
-	 *            the term
+	 * @param term the term
 	 * @return the matching comparator or null, if none matches
 	 */
 	public static Comparator getComparator(String term) {

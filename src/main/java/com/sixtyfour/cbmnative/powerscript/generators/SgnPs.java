@@ -6,7 +6,7 @@ package com.sixtyfour.cbmnative.powerscript.generators;
  */
 public class SgnPs extends CalculationPs {
 
-    public SgnPs() {
-	super("SGN", "([math]::sign({from}))");
-    }
+	public SgnPs() {
+		super("SGN", "([math]::sign({from}))");
+	}
 }

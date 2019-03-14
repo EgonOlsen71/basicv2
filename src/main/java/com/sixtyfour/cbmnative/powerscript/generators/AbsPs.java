@@ -6,7 +6,7 @@ package com.sixtyfour.cbmnative.powerscript.generators;
  */
 public class AbsPs extends CalculationPs {
 
-    public AbsPs() {
-	super("ABS", "([math]::abs({from}))");
-    }
+	public AbsPs() {
+		super("ABS", "([math]::abs({from}))");
+	}
 }

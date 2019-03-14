@@ -6,7 +6,7 @@ package com.sixtyfour.cbmnative.javascript.generators;
  */
 public class NotJs extends CalculationJs {
 
-    public NotJs() {
-	super("NOT", "~{from}");
-    }
+	public NotJs() {
+		super("NOT", "~{from}");
+	}
 }

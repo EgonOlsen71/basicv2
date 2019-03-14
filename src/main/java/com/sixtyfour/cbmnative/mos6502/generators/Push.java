@@ -19,7 +19,8 @@ public class Push extends GeneratorBase {
 	}
 
 	@Override
-	public void generateCode(GeneratorContext context, String line, List<String> nCode, List<String> subCode, Map<String, String> name2label) {
+	public void generateCode(GeneratorContext context, String line, List<String> nCode, List<String> subCode,
+			Map<String, String> name2label) {
 		Operands ops = new Operands(line, name2label);
 		// Logger.log(line + " -- " + ops.getTarget());
 		Operand target = ops.getTarget();

@@ -30,74 +30,64 @@ public class Graphics {
 	private final static int COLOR_MEMORY = 55296;
 
 	/**
-	 * Converts the content of a hires screen from memory into an image. It can
-	 * take actual colors into account. Otherwise, it will map the pixels to
-	 * default colors.
+	 * Converts the content of a hires screen from memory into an image. It can take
+	 * actual colors into account. Otherwise, it will map the pixels to default
+	 * colors.
 	 * 
-	 * @param machine
-	 *            the machine
-	 * @param bitmapStartAddress
-	 *            the start address of the graphics memory
-	 * @param textramStartAddress
-	 *            the start address of the text memory. Only needed, if
-	 *            withColors is true.
-	 * @param multiColor
-	 *            is multicolor mode being used?
-	 * @param withColors
-	 *            if true, colors from text/color ram will be taken into
-	 *            account. If false, default colors will be used.
+	 * @param machine             the machine
+	 * @param bitmapStartAddress  the start address of the graphics memory
+	 * @param textramStartAddress the start address of the text memory. Only needed,
+	 *                            if withColors is true.
+	 * @param multiColor          is multicolor mode being used?
+	 * @param withColors          if true, colors from text/color ram will be taken
+	 *                            into account. If false, default colors will be
+	 *                            used.
 	 * @return the image (always 320*200)
 	 */
-	public static BufferedImage createImage(Machine machine, int bitmapStartAddress, int textramStartAddress, boolean multiColor, boolean withColors) {
+	public static BufferedImage createImage(Machine machine, int bitmapStartAddress, int textramStartAddress,
+			boolean multiColor, boolean withColors) {
 		return createImage(machine.getRam(), bitmapStartAddress, textramStartAddress, multiColor, withColors);
 	}
 
 	/**
-	 * Converts the content of a hires screen from memory into an image. It can
-	 * take actual colors into account. Otherwise, it will map the pixels to
-	 * default colors.
+	 * Converts the content of a hires screen from memory into an image. It can take
+	 * actual colors into account. Otherwise, it will map the pixels to default
+	 * colors.
 	 * 
-	 * @param ram
-	 *            the ram content
-	 * @param bitmapStartAddress
-	 *            the start address of the graphics memory
-	 * @param textramStartAddress
-	 *            the start address of the text memory. Only needed, if
-	 *            withColors is true.
-	 * @param multiColor
-	 *            is multicolor mode being used?
-	 * @param withColors
-	 *            if true, colors from text/color ram will be taken into
-	 *            account. If false, default colors will be used.
+	 * @param ram                 the ram content
+	 * @param bitmapStartAddress  the start address of the graphics memory
+	 * @param textramStartAddress the start address of the text memory. Only needed,
+	 *                            if withColors is true.
+	 * @param multiColor          is multicolor mode being used?
+	 * @param withColors          if true, colors from text/color ram will be taken
+	 *                            into account. If false, default colors will be
+	 *                            used.
 	 * @return the image (always 320*200)
 	 */
-	public static BufferedImage createImage(int[] ram, int bitmapStartAddress, int textramStartAddress, boolean multiColor, boolean withColors) {
+	public static BufferedImage createImage(int[] ram, int bitmapStartAddress, int textramStartAddress,
+			boolean multiColor, boolean withColors) {
 		BufferedImage bi = new BufferedImage(320, 200, BufferedImage.TYPE_INT_RGB);
 		fillImage(ram, bitmapStartAddress, textramStartAddress, multiColor, withColors, bi);
 		return bi;
 	}
 
 	/**
-	 * Fills an image with the content of a hires screen from memory. It can
-	 * take actual colors into account. Otherwise, it will map the pixels to
-	 * default colors.
+	 * Fills an image with the content of a hires screen from memory. It can take
+	 * actual colors into account. Otherwise, it will map the pixels to default
+	 * colors.
 	 * 
-	 * @param ram
-	 *            the ram content
-	 * @param bitmapStartAddress
-	 *            the start address of the graphics memory
-	 * @param textramStartAddress
-	 *            the start address of the text memory. Only needed, if
-	 *            withColors is true.
-	 * @param multiColor
-	 *            is multicolor mode being used?
-	 * @param withColors
-	 *            if true, colors from text/color ram will be taken into
-	 *            account. If false, default colors will be used.
-	 * @param bi
-	 *            The image instance to be filled
+	 * @param ram                 the ram content
+	 * @param bitmapStartAddress  the start address of the graphics memory
+	 * @param textramStartAddress the start address of the text memory. Only needed,
+	 *                            if withColors is true.
+	 * @param multiColor          is multicolor mode being used?
+	 * @param withColors          if true, colors from text/color ram will be taken
+	 *                            into account. If false, default colors will be
+	 *                            used.
+	 * @param bi                  The image instance to be filled
 	 */
-	public static void fillImage(int[] ram, int bitmapStartAddress, int textramStartAddress, boolean multiColor, boolean withColors, BufferedImage bi) {
+	public static void fillImage(int[] ram, int bitmapStartAddress, int textramStartAddress, boolean multiColor,
+			boolean withColors, BufferedImage bi) {
 		int[] mc = new int[] { 0, BLUE, GREEN, RED };
 
 		if (!withColors) {
@@ -110,14 +100,12 @@ public class Graphics {
 	/**
 	 * Saves an image as PNG file.
 	 * 
-	 * @param bi
-	 *            the image
-	 * @param os
-	 *            the output stream. It will be closed when this method
-	 *            terminates.
+	 * @param bi the image
+	 * @param os the output stream. It will be closed when this method terminates.
 	 */
 	public static void savePng(BufferedImage bi, OutputStream os) {
-		try (BufferedOutputStream bos = new BufferedOutputStream(os); ImageOutputStream ios = ImageIO.createImageOutputStream(bos)) {
+		try (BufferedOutputStream bos = new BufferedOutputStream(os);
+				ImageOutputStream ios = ImageIO.createImageOutputStream(bos)) {
 			Iterator<ImageWriter> itty = ImageIO.getImageWritersBySuffix("png");
 			if (itty.hasNext()) {
 				ImageWriter iw = (ImageWriter) itty.next();
@@ -130,7 +118,8 @@ public class Graphics {
 		}
 	}
 
-	private static void createWithRamColors(int startAddress, int textramStartAddress, boolean multiColor, BufferedImage bi, int[] ram) {
+	private static void createWithRamColors(int startAddress, int textramStartAddress, boolean multiColor,
+			BufferedImage bi, int[] ram) {
 		int bgColor = Colors.COLORS[ram[53281] & 0xFF];
 		if (!multiColor) {
 			for (int x = 0; x < 320; x += 8) {
@@ -140,7 +129,8 @@ public class Graphics {
 					int col = ram[p] & 0xff;
 					int s = 128;
 					for (int b = 0; b < 8; b++) {
-						int c = (col & s) == s ? (Colors.COLORS[ram[textramStartAddress + ramPos] >> 4]) : (Colors.COLORS[ram[textramStartAddress + ramPos] & 0b00001111]);
+						int c = (col & s) == s ? (Colors.COLORS[ram[textramStartAddress + ramPos] >> 4])
+								: (Colors.COLORS[ram[textramStartAddress + ramPos] & 0b00001111]);
 						s >>= 1;
 						bi.setRGB(x + b, y, c);
 					}
@@ -181,7 +171,8 @@ public class Graphics {
 		}
 	}
 
-	private static void createWithDefaultColors(int startAddress, boolean multiColor, BufferedImage bi, int[] ram, int[] mc) {
+	private static void createWithDefaultColors(int startAddress, boolean multiColor, BufferedImage bi, int[] ram,
+			int[] mc) {
 		if (!multiColor) {
 			for (int x = 0; x < 320; x += 8) {
 				for (int y = 0; y < 200; y++) {

@@ -38,8 +38,7 @@ public class Program {
 	/**
 	 * Adds a new part to a program.
 	 * 
-	 * @param part
-	 *            the new part
+	 * @param part the new part
 	 */
 	public void addPart(ProgramPart part) {
 		parts.add(part);
@@ -60,8 +59,7 @@ public class Program {
 	/**
 	 * Sets a new starting address.
 	 * 
-	 * @param codeStart
-	 *            the new address
+	 * @param codeStart the new address
 	 */
 	public void setCodeStart(int codeStart) {
 		this.codeStart = codeStart;

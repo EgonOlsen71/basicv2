@@ -11,7 +11,8 @@ import com.sixtyfour.cbmnative.mos6502.AbstractTransformer;
 import com.sixtyfour.system.Machine;
 
 /**
- * The transformer for the C64 target platform. It generates 6502 assembly code linked together with a C64 specific runtime.
+ * The transformer for the C64 target platform. It generates 6502 assembly code
+ * linked together with a C64 specific runtime.
  * 
  * @author EgonOlsen
  * 
@@ -19,13 +20,13 @@ import com.sixtyfour.system.Machine;
 public class Transformer64 extends AbstractTransformer {
 
 	public Transformer64() {
-	    variableStart = -1;
-	    runtimeStart = -1;
-	    stringMemoryEnd = 0xa000; // will be adjusted in the runtime according to 51/52
-	    startAddress = 2072;
-	    preferZeropage = true;
+		variableStart = -1;
+		runtimeStart = -1;
+		stringMemoryEnd = 0xa000; // will be adjusted in the runtime according to 51/52
+		startAddress = 2072;
+		preferZeropage = true;
 	}
-	
+
 	@Override
 	public List<String> transform(Machine machine, PlatformProvider platform, List<String> code) {
 		Logger.log("Compiling into native assembly code...");

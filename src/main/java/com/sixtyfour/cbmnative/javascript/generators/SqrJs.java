@@ -6,7 +6,7 @@ package com.sixtyfour.cbmnative.javascript.generators;
  */
 public class SqrJs extends CalculationJs {
 
-    public SqrJs() {
-	super("SQR", "Math.sqrt({from})");
-    }
+	public SqrJs() {
+		super("SQR", "Math.sqrt({from})");
+	}
 }

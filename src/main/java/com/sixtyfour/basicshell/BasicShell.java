@@ -78,8 +78,8 @@ public class BasicShell {
 	}
 
 	/**
-	 * Returns length of the output string before the last one Needed by some
-	 * input statements
+	 * Returns length of the output string before the last one Needed by some input
+	 * statements
 	 * 
 	 * @return Lengh of penultimate output
 	 */
@@ -137,7 +137,8 @@ public class BasicShell {
 						String s = toTextArea.take();
 						mainTextArea.append(s);
 						mainTextArea.setCaretPosition(mainTextArea.getDocument().getLength());
-						if (runner != null && runner.getRunningBasic() != null && runner.getRunningBasic().isRunning()) {
+						if (runner != null && runner.getRunningBasic() != null
+								&& runner.getRunningBasic().isRunning()) {
 							if ((cnt++) % 1000 == 0) {
 								Thread.sleep(1);
 							}
@@ -145,7 +146,8 @@ public class BasicShell {
 						Thread.yield();
 
 						if (mainTextArea.getText().length() > 100000) {
-							mainTextArea.setText(mainTextArea.getText().substring(mainTextArea.getText().length() - 70000));
+							mainTextArea
+									.setText(mainTextArea.getText().substring(mainTextArea.getText().length() - 70000));
 						}
 
 					} catch (InterruptedException e) {
@@ -218,8 +220,7 @@ public class BasicShell {
 	/**
 	 * Return line at specified position
 	 * 
-	 * @param linenum
-	 *            Line number
+	 * @param linenum Line number
 	 * @return Line as String
 	 */
 	private String getLineAt(int linenum) {
@@ -245,8 +246,8 @@ public class BasicShell {
 	}
 
 	/**
-   * 
-   */
+	* 
+	*/
 	private void dir() {
 		File[] filesInFolder = new File(".").listFiles();
 		if (filesInFolder != null) {

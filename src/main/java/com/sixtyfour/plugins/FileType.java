@@ -20,8 +20,7 @@ public enum FileType {
 	/**
 	 * Instantiates a new file type.
 	 * 
-	 * @param shortCut
-	 *            the short cut
+	 * @param shortCut the short cut
 	 */
 	FileType(char shortCut) {
 		this.shortCut = shortCut;
@@ -30,8 +29,7 @@ public enum FileType {
 	/**
 	 * Gets the file type.
 	 * 
-	 * @param type
-	 *            the type
+	 * @param type the type
 	 * @return the file type
 	 */
 	public static FileType getFileType(String type) {

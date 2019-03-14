@@ -80,8 +80,7 @@ public class Basic implements ProgramExecutor {
 	 * Instantiates a new instance for a BASIC program. No
 	 * interpretation/compilation will take place at this stage.
 	 * 
-	 * @param code
-	 *            the basic code
+	 * @param code the basic code
 	 */
 	public Basic(String code) {
 		this(code.split("\n"));
@@ -91,11 +90,9 @@ public class Basic implements ProgramExecutor {
 	 * Instantiates a new instance for a BASIC program. No
 	 * interpretation/compilation will take place at this stage.
 	 * 
-	 * @param code
-	 *            the basic code
-	 * @param machine
-	 *            the machine instance that should be used to run the code. If
-	 *            null is given, a new one will be created.
+	 * @param code    the basic code
+	 * @param machine the machine instance that should be used to run the code. If
+	 *                null is given, a new one will be created.
 	 */
 	public Basic(String code, Machine machine) {
 		this(code.split("\n"), machine);
@@ -103,12 +100,11 @@ public class Basic implements ProgramExecutor {
 
 	/**
 	 * Instantiates a new instance for a BASIC program. No
-	 * interpretation/compilation will take place at this stage. This
-	 * constructor takes an array of code lines as input. Each code line should
-	 * represent a line in the BASIC program.
+	 * interpretation/compilation will take place at this stage. This constructor
+	 * takes an array of code lines as input. Each code line should represent a line
+	 * in the BASIC program.
 	 * 
-	 * @param code
-	 *            the basic code
+	 * @param code the basic code
 	 */
 	public Basic(String[] code) {
 		this(code, null);
@@ -116,15 +112,13 @@ public class Basic implements ProgramExecutor {
 
 	/**
 	 * Instantiates a new instance for a BASIC program. No
-	 * interpretation/compilation will take place at this stage. This
-	 * constructor takes an array of code lines as input. Each code line should
-	 * represent a line in the BASIC program.
+	 * interpretation/compilation will take place at this stage. This constructor
+	 * takes an array of code lines as input. Each code line should represent a line
+	 * in the BASIC program.
 	 * 
-	 * @param code
-	 *            the basic code
-	 * @param machine
-	 *            the machine instance that should be used to run the code. If
-	 *            null is given, a new one will be created.
+	 * @param code    the basic code
+	 * @param machine the machine instance that should be used to run the code. If
+	 *                null is given, a new one will be created.
 	 */
 	public Basic(String[] code, Machine machine) {
 		this.code = Arrays.copyOf(code, code.length);
@@ -136,13 +130,13 @@ public class Basic implements ProgramExecutor {
 	}
 
 	/**
-	 * Enables an experimental JIT-compiler with a default compile threshold of
-	 * 0. This works only if the application runs on a JDK installation. It
-	 * won't work with a JRE. A JIT might help to improve performance for
-	 * complex calculations. If your program doesn't do these, it might not even
-	 * kick in or the additional overhead might slow your program down. Keep in
-	 * mind that compiling the code by the JIT takes some time as well. If the
-	 * JIT compiler kicks in, you'll see some console output about it.
+	 * Enables an experimental JIT-compiler with a default compile threshold of 0.
+	 * This works only if the application runs on a JDK installation. It won't work
+	 * with a JRE. A JIT might help to improve performance for complex calculations.
+	 * If your program doesn't do these, it might not even kick in or the additional
+	 * overhead might slow your program down. Keep in mind that compiling the code
+	 * by the JIT takes some time as well. If the JIT compiler kicks in, you'll see
+	 * some console output about it.
 	 */
 	public void enableJit() {
 		machine.setJit(new Jit());
@@ -150,18 +144,16 @@ public class Basic implements ProgramExecutor {
 
 	/**
 	 * Enables an experimental JIT-compiler with a given compile threshold. This
-	 * works only if the application runs on a JDK installation. It won't work
-	 * with a JRE. One might have to play around with the threshold to find a
-	 * value which actually speed up the application. If the threshold is <=0,
-	 * then the JIT compiler will try to auto-detect when to compile. A JIT
-	 * might help to improve performance for complex calculations. If your
-	 * program doesn't do these, it might not even kick in or the additional
-	 * overhead might slow your program down. Keep in mind that compiling the
-	 * code by the JIT takes some time as well. If the JIT compiler kicks in,
-	 * you'll see some console output about it.
+	 * works only if the application runs on a JDK installation. It won't work with
+	 * a JRE. One might have to play around with the threshold to find a value which
+	 * actually speed up the application. If the threshold is <=0, then the JIT
+	 * compiler will try to auto-detect when to compile. A JIT might help to improve
+	 * performance for complex calculations. If your program doesn't do these, it
+	 * might not even kick in or the additional overhead might slow your program
+	 * down. Keep in mind that compiling the code by the JIT takes some time as
+	 * well. If the JIT compiler kicks in, you'll see some console output about it.
 	 * 
-	 * @param compileThreshold
-	 *            the compile threshold
+	 * @param compileThreshold the compile threshold
 	 */
 	public void enableJit(int compileThreshold) {
 		machine.setJit(new Jit(compileThreshold));
@@ -170,13 +162,12 @@ public class Basic implements ProgramExecutor {
 	/**
 	 * Static method to register a BASIC extension. This is static, because all
 	 * registered extensions are available in all Basic instances. Adding an
-	 * extension multiple times does no harm, but only the first added instance
-	 * will be active. This version of the method takes an actual instance of
-	 * the extension. If another instance of the same extension has already been
-	 * added, nothing will happen.
+	 * extension multiple times does no harm, but only the first added instance will
+	 * be active. This version of the method takes an actual instance of the
+	 * extension. If another instance of the same extension has already been added,
+	 * nothing will happen.
 	 * 
-	 * @param extension
-	 *            the extension instance to add
+	 * @param extension the extension instance to add
 	 */
 	public static void registerExtension(BasicExtension extension) {
 		String name = extension.getClass().getName();
@@ -191,12 +182,11 @@ public class Basic implements ProgramExecutor {
 	/**
 	 * Static method to register a BASIC extension. This is static, because all
 	 * registered extensions are available in all Basic instances. Adding an
-	 * extension multiple times does no harm, but only the first added instance
-	 * will be active. This version of the method takes the extension's class
-	 * instead of an actual instance.
+	 * extension multiple times does no harm, but only the first added instance will
+	 * be active. This version of the method takes the extension's class instead of
+	 * an actual instance.
 	 * 
-	 * @param extension
-	 *            the extension class to add
+	 * @param extension the extension class to add
 	 */
 	public static void registerExtension(Class<? extends BasicExtension> clazz) {
 		try {
@@ -207,8 +197,8 @@ public class Basic implements ProgramExecutor {
 	}
 
 	/**
-	 * Returns all active instances of added extensions. If there are none, an
-	 * empty will be returned.
+	 * Returns all active instances of added extensions. If there are none, an empty
+	 * will be returned.
 	 * 
 	 * @return the active extensions
 	 */
@@ -241,16 +231,15 @@ public class Basic implements ProgramExecutor {
 	/**
 	 * Sets a new machine.
 	 * 
-	 * @param machine
-	 *            the new machine
+	 * @param machine the new machine
 	 */
 	public void setMachine(Machine machine) {
 		this.machine = machine;
 	}
 
 	/**
-	 * Gets the machine's cpu. This cpu is used to execute machine language
-	 * code, not for running basic programs.
+	 * Gets the machine's cpu. This cpu is used to execute machine language code,
+	 * not for running basic programs.
 	 * 
 	 * @return
 	 */
@@ -260,8 +249,8 @@ public class Basic implements ProgramExecutor {
 	}
 
 	/**
-	 * Returns the compiled program wrapped into a PCode instance. This method
-	 * isn't needed for normal usage.
+	 * Returns the compiled program wrapped into a PCode instance. This method isn't
+	 * needed for normal usage.
 	 * 
 	 * @return the PCode instance
 	 */
@@ -272,11 +261,9 @@ public class Basic implements ProgramExecutor {
 	/**
 	 * Gets the value of a string variable.
 	 * 
-	 * @param name
-	 *            the name of the variable including the "$" postfix, case
-	 *            doesn't matter
-	 * @return the variable's value or null, if the variable doesn't exist
-	 *         (yet).
+	 * @param name the name of the variable including the "$" postfix, case doesn't
+	 *             matter
+	 * @return the variable's value or null, if the variable doesn't exist (yet).
 	 */
 	public String getStringVariable(String name) {
 		Object obj = machine.getVariable(VarUtils.toUpper(name)).getValue();
@@ -289,11 +276,9 @@ public class Basic implements ProgramExecutor {
 	/**
 	 * Gets the value of an integer variable.
 	 * 
-	 * @param name
-	 *            the name of the variable including the "%" postfix, case
-	 *            doesn't matter
-	 * @return the variable's value or null, if the variable doesn't exist
-	 *         (yet).
+	 * @param name the name of the variable including the "%" postfix, case doesn't
+	 *             matter
+	 * @return the variable's value or null, if the variable doesn't exist (yet).
 	 */
 	public Integer getIntegerVariable(String name) {
 		Object obj = machine.getVariable(VarUtils.toUpper(name)).getValue();
@@ -306,10 +291,8 @@ public class Basic implements ProgramExecutor {
 	/**
 	 * Gets the value of a floating point variable.
 	 * 
-	 * @param name
-	 *            the name of the variable, case doesn't matter
-	 * @return the variable's value or null, if the variable doesn't exist
-	 *         (yet).
+	 * @param name the name of the variable, case doesn't matter
+	 * @return the variable's value or null, if the variable doesn't exist (yet).
 	 */
 	public Float getFloatVariable(String name) {
 		Object obj = machine.getVariable(VarUtils.toUpper(name)).getValue();
@@ -320,14 +303,12 @@ public class Basic implements ProgramExecutor {
 	}
 
 	/**
-	 * Gets the value of an array variable. The actual datatype depends on the
-	 * type of the variable and is either String, Integer or Float.
+	 * Gets the value of an array variable. The actual datatype depends on the type
+	 * of the variable and is either String, Integer or Float.
 	 * 
-	 * @param name
-	 *            the name of the variable, [] postfix is optional, case doesn't
-	 *            matter
-	 * @return the variable's value or null, if the variable doesn't exist
-	 *         (yet).
+	 * @param name the name of the variable, [] postfix is optional, case doesn't
+	 *             matter
+	 * @return the variable's value or null, if the variable doesn't exist (yet).
 	 */
 	@SuppressWarnings("unchecked")
 	public Object[] getArrayVariable(String name) {
@@ -342,9 +323,9 @@ public class Basic implements ProgramExecutor {
 	}
 
 	/**
-	 * Compiles the code. This can be called before calling the actual run
-	 * method to precompile the code. It doesn't have to though, because run()
-	 * will call it on its own if needed.
+	 * Compiles the code. This can be called before calling the actual run method to
+	 * precompile the code. It doesn't have to though, because run() will call it on
+	 * its own if needed.
 	 */
 	@Override
 	public void compile(CompilerConfig config) {
@@ -352,13 +333,12 @@ public class Basic implements ProgramExecutor {
 	}
 
 	/**
-	 * Compiles the code. This can be called before calling the actual run
-	 * method to precompile the code. It doesn't have to though, because run()
-	 * will call it on its own if needed.
+	 * Compiles the code. This can be called before calling the actual run method to
+	 * precompile the code. It doesn't have to though, because run() will call it on
+	 * its own if needed.
 	 * 
-	 * @param resetMachine
-	 *            if true, the compile will happen on a clean machine. If false,
-	 *            it it will reuse existing variable definitions
+	 * @param resetMachine if true, the compile will happen on a clean machine. If
+	 *                     false, it it will reuse existing variable definitions
 	 */
 	public void compile(CompilerConfig config, boolean resetMachine) {
 		long start = System.nanoTime();
@@ -398,7 +378,7 @@ public class Basic implements ProgramExecutor {
 
 				int pos = 0;
 				for (String part : parts) {
-				    	int loops=0;
+					int loops = 0;
 					do {
 						if (part.trim().length() > 0) {
 							Command command = Parser.getCommand(part);
@@ -408,17 +388,20 @@ public class Basic implements ProgramExecutor {
 							if (!command.keepSpaces()) {
 								part = TermEnhancer.removeWhiteSpace(part);
 							}
-							part = command.parse(config, part, lineCnt, cl.getNumber(), pos, (pos == parts.length - 1), machine);
+							part = command.parse(config, part, lineCnt, cl.getNumber(), pos, (pos == parts.length - 1),
+									machine);
 
 							machine.addCommand(command);
 							cl.addCommand(command);
-							
-							if (command instanceof Assignment && loops>0) {
-							    // If it's an assignment (LET) after an IF, it must not be counted as a single assignment, because it might not happen at all.
-							    // This doesn't take assignments after (conditional) jumps into account, but...well...
-							    machine.trackVariableUsage(Assignment.class.cast(command).getVar(), false);
+
+							if (command instanceof Assignment && loops > 0) {
+								// If it's an assignment (LET) after an IF, it must not be counted as a single
+								// assignment, because it might not happen at all.
+								// This doesn't take assignments after (conditional) jumps into account,
+								// but...well...
+								machine.trackVariableUsage(Assignment.class.cast(command).getVar(), false);
 							}
-							
+
 							pos++;
 							loops++;
 							if (Rem.REM_MARKER.equals(part)) {
@@ -434,7 +417,8 @@ public class Basic implements ProgramExecutor {
 				}
 			} catch (Throwable t) {
 				String msg = t.getMessage();
-				String err = "Error in line " + (cl != null ? cl.getNumber() : "??") + (msg != null ? (": " + msg) : "");
+				String err = "Error in line " + (cl != null ? cl.getNumber() : "??")
+						+ (msg != null ? (": " + msg) : "");
 				machine.getOutputChannel().systemPrintln(0, err);
 				throw t;
 			}
@@ -443,15 +427,16 @@ public class Basic implements ProgramExecutor {
 		modifyDelayLoops(config);
 
 		compiled = true;
-		Logger.log(machine.getCommandList().size() + " commands compiled in: " + (System.nanoTime() - start) / 1000000L + "ms");
+		Logger.log(machine.getCommandList().size() + " commands compiled in: " + (System.nanoTime() - start) / 1000000L
+				+ "ms");
 	}
 
 	/**
-	 * Starts a previously compiled BASIC program. This method is similar to
-	 * run() with the exception that it requires the code to be compiled
-	 * already. If it isn't, it will exit with a RuntimeException. This can be
-	 * useful, it you want to re-run the same program multiple times without
-	 * compiling it over and over again.
+	 * Starts a previously compiled BASIC program. This method is similar to run()
+	 * with the exception that it requires the code to be compiled already. If it
+	 * isn't, it will exit with a RuntimeException. This can be useful, it you want
+	 * to re-run the same program multiple times without compiling it over and over
+	 * again.
 	 */
 	@Override
 	public void start(CompilerConfig config) {
@@ -463,9 +448,9 @@ public class Basic implements ProgramExecutor {
 	}
 
 	/**
-	 * Runs the program. If needed, this will call compile() as well. This will
-	 * wipe the memory clear and resets all variables as well. If you don't want
-	 * this, use start() instead or call compile() before calling run().
+	 * Runs the program. If needed, this will call compile() as well. This will wipe
+	 * the memory clear and resets all variables as well. If you don't want this,
+	 * use start() instead or call compile() before calling run().
 	 */
 	@Override
 	public void run(CompilerConfig config) {
@@ -482,13 +467,12 @@ public class Basic implements ProgramExecutor {
 	}
 
 	/**
-	 * Executes a single command in the context of this instance's machine.
-	 * Please note that this might happen in parallel with another command of
-	 * the actual problem, so depending on the given command, this can have some
-	 * side effects at runtime.
+	 * Executes a single command in the context of this instance's machine. Please
+	 * note that this might happen in parallel with another command of the actual
+	 * problem, so depending on the given command, this can have some side effects
+	 * at runtime.
 	 * 
-	 * @param cmd
-	 *            the command to execute
+	 * @param cmd the command to execute
 	 */
 	public void executeSingleCommand(CompilerConfig config, String cmd) {
 		if (cmd == null || cmd.isEmpty()) {
@@ -514,8 +498,7 @@ public class Basic implements ProgramExecutor {
 	}
 
 	/**
-	 * Stops a currently running program after the next commands has been
-	 * executed.
+	 * Stops a currently running program after the next commands has been executed.
 	 */
 	@Override
 	public void runStop() {
@@ -524,9 +507,9 @@ public class Basic implements ProgramExecutor {
 	}
 
 	/**
-	 * Returns the RAM's content. The RAM is a representation of 64KB of 8bit
-	 * wide memory. However, the returned array is of type int[]. It will
-	 * contains values in the range of[0..255] only though.
+	 * Returns the RAM's content. The RAM is a representation of 64KB of 8bit wide
+	 * memory. However, the returned array is of type int[]. It will contains values
+	 * in the range of[0..255] only though.
 	 * 
 	 * @return the RAM
 	 */
@@ -551,8 +534,7 @@ public class Basic implements ProgramExecutor {
 	 * reading keyboard input. The default implementation is based on the Java
 	 * console, which has only limited support for reading single key strokes.
 	 * 
-	 * @param inputProvider
-	 *            the new input provider
+	 * @param inputProvider the new input provider
 	 */
 	public void setInputProvider(InputProvider inputProvider) {
 		machine.setInputProvider(inputProvider);
@@ -570,17 +552,15 @@ public class Basic implements ProgramExecutor {
 	/**
 	 * Sets the output channel. By default, this is the console.
 	 * 
-	 * @param outputChannel
-	 *            the new output channel
+	 * @param outputChannel the new output channel
 	 */
 	public void setOutputChannel(OutputChannel outputChannel) {
 		machine.setOutputChannel(outputChannel);
 	}
 
 	/**
-	 * Returns the system call listener. The system call listener listens for
-	 * SYS calls of the program. The default implementation just ignores these
-	 * calls.
+	 * Returns the system call listener. The system call listener listens for SYS
+	 * calls of the program. The default implementation just ignores these calls.
 	 * 
 	 * @return the system call listener
 	 */
@@ -589,22 +569,20 @@ public class Basic implements ProgramExecutor {
 	}
 
 	/**
-	 * Sets the system call listener. The system call listener listens for SYS
-	 * calls of the program. The default implementation just ignores these
-	 * calls.
+	 * Sets the system call listener. The system call listener listens for SYS calls
+	 * of the program. The default implementation just ignores these calls.
 	 * 
-	 * @param scl
-	 *            the new system call listener
+	 * @param scl the new system call listener
 	 */
 	public void setSystemCallListener(SystemCallListener scl) {
 		machine.setSystemCallListener(scl);
 	}
 
 	/**
-	 * Returns the memory listener. The memory listener listens for PEEKs and
-	 * POKEs. In addition to reading from/writing to the RAM, which happens
-	 * anyway, the listener method get called for each PEEK or POKE. The default
-	 * implementation does nothing.
+	 * Returns the memory listener. The memory listener listens for PEEKs and POKEs.
+	 * In addition to reading from/writing to the RAM, which happens anyway, the
+	 * listener method get called for each PEEK or POKE. The default implementation
+	 * does nothing.
 	 * 
 	 * @return the memory listener
 	 */
@@ -613,13 +591,12 @@ public class Basic implements ProgramExecutor {
 	}
 
 	/**
-	 * Sets the memory listener. The memory listener listens for PEEKs and
-	 * POKEs. In addition to reading from/writing to the RAM, which happens
-	 * anyway, the listener method get called for each PEEK or POKE. The default
-	 * implementation does nothing.
+	 * Sets the memory listener. The memory listener listens for PEEKs and POKEs. In
+	 * addition to reading from/writing to the RAM, which happens anyway, the
+	 * listener method get called for each PEEK or POKE. The default implementation
+	 * does nothing.
 	 * 
-	 * @param memoryListener
-	 *            the new memory listener
+	 * @param memoryListener the new memory listener
 	 */
 	public void setMemoryListener(MemoryListener memoryListener) {
 		machine.setMemoryListener(memoryListener);
@@ -637,8 +614,7 @@ public class Basic implements ProgramExecutor {
 	/**
 	 * If set to true, the current line number will be printed out at runtime.
 	 * 
-	 * @param printLineNumbers
-	 *            Should line numbers be printed out?
+	 * @param printLineNumbers Should line numbers be printed out?
 	 */
 	public void setPrintLineNumbers(boolean printLineNumbers) {
 		this.printLineNumbers = printLineNumbers;
@@ -647,8 +623,7 @@ public class Basic implements ProgramExecutor {
 	/**
 	 * Pauses/resumes the program
 	 * 
-	 * @param paused
-	 *            true for pause, false for resume
+	 * @param paused true for pause, false for resume
 	 */
 	public void setPause(boolean paused) {
 		this.paused = paused;
@@ -685,8 +660,7 @@ public class Basic implements ProgramExecutor {
 	/**
 	 * Sets a new Tracer
 	 * 
-	 * @param tracer
-	 *            the tracer
+	 * @param tracer the tracer
 	 */
 	public void setTracer(Tracer tracer) {
 		this.tracer = tracer;
@@ -704,15 +678,14 @@ public class Basic implements ProgramExecutor {
 	/**
 	 * Returns the current code enhancer instance.
 	 * 
-	 * @param codeEnhancer
-	 *            the instance
+	 * @param codeEnhancer the instance
 	 */
 	public void setCodeEnhancer(CodeEnhancer codeEnhancer) {
 		this.codeEnhancer = codeEnhancer;
 	}
 
 	/**
-   */
+	*/
 	private void runInternal(CompilerConfig config) {
 		long start = System.nanoTime();
 		if (codeEnhancer != null) {
@@ -729,10 +702,8 @@ public class Basic implements ProgramExecutor {
 	}
 
 	/**
-	 * @param lineCnt
-	 *            the line cnt
-	 * @param pos
-	 *            the pos
+	 * @param lineCnt the line cnt
+	 * @param pos     the pos
 	 */
 	private void execute(CompilerConfig config, int lineCnt, int pos) {
 		if (lineNumbers.size() == 0) {
@@ -834,11 +805,10 @@ public class Basic implements ProgramExecutor {
 	}
 
 	/**
-	 * Modifies loops according to the corresponding setting in the
-	 * CompilerConfig. Usually, there's no need to call this method directly.
+	 * Modifies loops according to the corresponding setting in the CompilerConfig.
+	 * Usually, there's no need to call this method directly.
 	 * 
-	 * @param config
-	 *            the config
+	 * @param config the config
 	 */
 	public void modifyDelayLoops(CompilerConfig config) {
 		LoopMode loopMode = config.getLoopMode();
@@ -883,7 +853,8 @@ public class Basic implements ProgramExecutor {
 				if (forLine != -1 && nextLine != -1) {
 					lines.get(forLine).getCommands().set(forPos, new Delay((For) forCmd, loopMode == LoopMode.DELAY));
 					lines.get(nextLine).getCommands().set(nextPos, new Rem());
-					Logger.log("Replaced for-loop at line " + forLine + " with " + (loopMode == LoopMode.DELAY ? "a delay" : "an empty operation!"));
+					Logger.log("Replaced for-loop at line " + forLine + " with "
+							+ (loopMode == LoopMode.DELAY ? "a delay" : "an empty operation!"));
 					forLine = -1;
 					nextLine = -1;
 					forPos = -1;
@@ -897,11 +868,10 @@ public class Basic implements ProgramExecutor {
 	}
 
 	/**
-	 * Removes all the commands in the list from the program by replacing them
-	 * with NOPs (i.e. instances of REM).
+	 * Removes all the commands in the list from the program by replacing them with
+	 * NOPs (i.e. instances of REM).
 	 * 
-	 * @param toRemove
-	 *            the commands to remove
+	 * @param toRemove the commands to remove
 	 */
 	public void removeCommands(List<Command> toRemove) {
 		this.machine.removeCommands(toRemove);
@@ -921,7 +891,8 @@ public class Basic implements ProgramExecutor {
 				Command cmd = cmds.get(i);
 				if (remSet.contains(cmd)) {
 					cmds.set(i, new Rem());
-					Logger.log("Eliminated dead store to " + ((Let) cmd).getVar().getUpperCaseName() + " from line " + num);
+					Logger.log("Eliminated dead store to " + ((Let) cmd).getVar().getUpperCaseName() + " from line "
+							+ num);
 				}
 			}
 			lineCnt++;
