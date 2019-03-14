@@ -2727,9 +2727,8 @@ FACNOTNULL	CMP #$81
 			LDA $65
 			BNE NORMALAND
 			LDA $66
-			AND #$80
-			CMP #$80
-			BNE NORMALAND
+			ROL
+			BCC NORMALAND
 			LDA $69			; Check if there's a -1 in ARG
 			CMP #$81
 			BNE NORMALAND
@@ -2743,9 +2742,8 @@ FACNOTNULL	CMP #$81
 			LDA $6D
 			BNE NORMALAND
 			LDA $6E
-			AND #$80
-			CMP #$80
-			BNE NORMALAND
+			ROL
+			BCC NORMALAND
 			RTS				; both, FAC1 and ARG contain -1...then we leave FAC1 untouched and return
 NORMALAND	JMP ARGAND
 ;###################################
@@ -2769,9 +2767,8 @@ CHECKFACOR	LDA $61			; Check if there's a -1 in FAC1
 			LDA $65
 			BNE NORMALOR
 			LDA $66
-			AND #$80
-			CMP #$80
-			BNE NORMALOR
+			ROL
+			BCC NORMALOR
 CHECKARGOR	LDA $69			; Check if there's a -1 in ARG
 			BNE CHECKARGOR2
 			RTS 			; ARG is actually 0? Then the value of FAC doesn't change. We can exit here
