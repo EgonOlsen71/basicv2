@@ -36,52 +36,6 @@ public class FileWriter {
 	}
 
 	/**
-	 * Writes the program into a file that contains the BASIC program to read the
-	 * program from datas.
-	 * 
-	 * @param prg
-	 * @param fileOutputStream
-	 */
-	private static void writeAsDatas(Program prg, FileOutputStream fileOutputStream, int lineNumber) {
-		List<ProgramPart> parts = new ArrayList<>(prg.getParts());
-		Collections.sort(parts);
-
-		try (PrintWriter pw = new PrintWriter(fileOutputStream)) {
-			for (ProgramPart part : parts) {
-				pw.println((lineNumber++) + " for qq=" + part.getAddress() + " to " + (part.getEndAddress() - 1)
-						+ ":read dq:pokeqq,dq:next");
-			}
-			pw.println((lineNumber++) + " return");
-
-			StringBuilder sb = new StringBuilder();
-			for (ProgramPart part : parts) {
-				for (int bite : part.getBytes()) {
-					boolean first = false;
-					if (sb.length() == 0) {
-						sb.append(lineNumber++).append(" data ");
-						first = true;
-					}
-					if (!first) {
-						sb.append(",");
-					}
-					sb.append(((int) bite) & 0xff);
-					if (sb.length() > 70) {
-						pw.println(sb.toString());
-						sb.setLength(0);
-					}
-				}
-				if (sb.length() > 0 && !sb.toString().endsWith(" data ")) {
-					pw.println(sb.toString());
-				}
-				sb.setLength(0);
-			}
-		} catch (Exception e) {
-			Logger.log("Failed to write data file!", e);
-			throw e;
-		}
-	}
-
-	/**
 	 * @param prg
 	 * @param fileName
 	 * @param withBasicHeader
@@ -101,9 +55,12 @@ public class FileWriter {
 		writeAsPrg(prg, os, withBasicHeader, 2049);
 	}
 
+
 	/**
 	 * @param prg
 	 * @param fileName
+	 * @param withBasicHeader
+	 * @param baseAddr
 	 * @throws IOException
 	 */
 	public static void writeAsPrg(Program prg, String fileName, boolean withBasicHeader, int baseAddr)
@@ -111,9 +68,13 @@ public class FileWriter {
 		writeAsPrg(prg, new FileOutputStream(fileName), withBasicHeader, baseAddr);
 	}
 
+	
 	/**
 	 * @param prg
 	 * @param os
+	 * @param withBasicHeader
+	 * @param baseAddr
+	 * @throws IOException
 	 */
 	public static void writeAsPrg(Program prg, OutputStream os, boolean withBasicHeader, int baseAddr)
 			throws IOException {
@@ -195,5 +156,51 @@ public class FileWriter {
 			}
 		}
 
+	}
+	
+	/**
+	 * Writes the program into a file that contains the BASIC program to read the
+	 * program from datas.
+	 * 
+	 * @param prg
+	 * @param fileOutputStream
+	 */
+	private static void writeAsDatas(Program prg, FileOutputStream fileOutputStream, int lineNumber) {
+		List<ProgramPart> parts = new ArrayList<>(prg.getParts());
+		Collections.sort(parts);
+
+		try (PrintWriter pw = new PrintWriter(fileOutputStream)) {
+			for (ProgramPart part : parts) {
+				pw.println((lineNumber++) + " for qq=" + part.getAddress() + " to " + (part.getEndAddress() - 1)
+						+ ":read dq:pokeqq,dq:next");
+			}
+			pw.println((lineNumber++) + " return");
+
+			StringBuilder sb = new StringBuilder();
+			for (ProgramPart part : parts) {
+				for (int bite : part.getBytes()) {
+					boolean first = false;
+					if (sb.length() == 0) {
+						sb.append(lineNumber++).append(" data ");
+						first = true;
+					}
+					if (!first) {
+						sb.append(",");
+					}
+					sb.append(((int) bite) & 0xff);
+					if (sb.length() > 70) {
+						pw.println(sb.toString());
+						sb.setLength(0);
+					}
+				}
+				if (sb.length() > 0 && !sb.toString().endsWith(" data ")) {
+					pw.println(sb.toString());
+				}
+				sb.setLength(0);
+			}
+		} catch (Exception e) {
+			Logger.log("Failed to write data file!", e);
+			throw e;
+		}
 	}
 }
