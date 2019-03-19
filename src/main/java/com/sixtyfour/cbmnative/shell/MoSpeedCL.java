@@ -77,6 +77,8 @@ public class MoSpeedCL {
 			exit(12);
 		}
 
+		boolean addrHeader=getOptionInt("addressheader", cmds);
+		
 		cfg.setConstantFolding(getOption("constfolding", cmds));
 		cfg.setConstantPropagation(getOption("constprop", cmds));
 		cfg.setPcodeOptimizations(false /* getOption("pcodeopt", cmds) */);
@@ -200,7 +202,7 @@ public class MoSpeedCL {
 			assy = new Assembler(nCode);
 			assy.compile(cfg);
 		}
-		writeTargetFiles(memConfig, targetFile, nCode, assy, platform);
+		writeTargetFiles(memConfig, targetFile, nCode, assy, platform, addrHeader);
 		System.out.println(srcFile + " compiled in " + (System.currentTimeMillis() - s) + "ms!");
 
 		if (cmds.containsKey("vice")) {
@@ -211,14 +213,14 @@ public class MoSpeedCL {
 	}
 
 	private static void writeTargetFiles(MemoryConfig memConfig, String targetFile, List<String> ncode, Assembler assy,
-			PlatformProvider platform) {
+			PlatformProvider platform, boolean addrHeader) {
 		if (platform instanceof Platform64 || platform instanceof Platform20) {
 			try {
 				System.out.println("Writing target file: " + targetFile);
 				FileWriter.writeAsPrg(assy.getProgram(), targetFile,
 						memConfig.getProgramStart() == -1
 								|| memConfig.getProgramStart() < platform.getMaxHeaderAddress(),
-						platform.getBaseAddress());
+								addrHeader?platform.getBaseAddress():-1);
 			} catch (Exception e) {
 				System.out.println("Failed to write target file '" + targetFile + "': " + e.getMessage());
 				exit(9);
@@ -315,6 +317,10 @@ public class MoSpeedCL {
 		if (options.containsKey("alloff")) {
 			return false;
 		}
+		return getOptionInt(option, options);
+	}
+
+	private static boolean getOptionInt(String option, Map<String, String> options) {
 		option = option.toLowerCase(Locale.ENGLISH);
 		if (options.containsKey(option)) {
 			return Boolean.valueOf(options.get(option));
@@ -366,6 +372,7 @@ public class MoSpeedCL {
 		System.out.println("/deadstoreopt=true|false - enables/disables dead store elimination for numbers");
 		System.out.println("/deadstoreoptstr=true|false - enables/disables dead store elimination for strings");
 		System.out.println("/loopopt=true|false - enables/disables the removal of empty loops");
+		System.out.println("/addressheader=true|false - enables/disables the writing of the two address header bytes. Settings this to false will prevent the BASIC header from being written as well.");
 		System.out.println(
 				"/floatopt=true|false - enables/disables some floating point optimizations, which might impact accuracy");
 		System.out.println("/intopt=true|false - enables/disables some integer optimizations");

@@ -123,6 +123,9 @@ public class FileWriter {
 		int[] header = null;
 		int sa = baseAddr + 23;
 		int ea = sa + 228;
+		if (baseAddr == -1) {
+			withBasicHeader = false;
+		}
 		if (withBasicHeader) {
 			if (codeStart >= sa && codeStart < ea) {
 				header = new int[codeStart - baseAddr];
@@ -144,16 +147,18 @@ public class FileWriter {
 			Collections.sort(parts);
 
 			bos = new BufferedOutputStream(os);
-			if (!withBasicHeader) {
-				bos.write(parts.get(0).getAddress() % 256);
-				bos.write(parts.get(0).getAddress() >> 8);
-			} else {
-				bos.write(codeStart % 256);
-				bos.write(codeStart >> 8);
-			}
-			if (header != null) {
-				for (int b : header) {
-					bos.write(b);
+			if (baseAddr != -1) {
+				if (!withBasicHeader) {
+					bos.write(parts.get(0).getAddress() % 256);
+					bos.write(parts.get(0).getAddress() >> 8);
+				} else {
+					bos.write(codeStart % 256);
+					bos.write(codeStart >> 8);
+				}
+				if (header != null) {
+					for (int b : header) {
+						bos.write(b);
+					}
 				}
 			}
 			int lastEnd = -1;

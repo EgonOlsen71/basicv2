@@ -77,6 +77,9 @@ Default is true.
 - /loopopt=true|false: Detects and removes empty loops. These loops don't have to be empty in the source code, 
 but if the values that are calculated inside them aren't actually used, they might get removed anyway. Default is true.
 
+- /addressheader=true|false - enables/disables the writing of the two address header bytes. Settings this to false will
+prevent the BASIC header from being written as well. Default is true.
+
 - /floatopt=true|false: If true, various optimizations for floating point calculations will be used. In some case, 
 caused by inaccuracies in the calculations, this can lead to small differences but in most cases, this shouldn't be a 
 problem if it's even noticable. Default is true.
