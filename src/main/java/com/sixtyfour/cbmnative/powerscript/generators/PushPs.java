@@ -12,16 +12,17 @@ import com.sixtyfour.cbmnative.Operands;
  * 
  */
 public class PushPs extends GeneratorBasePs {
-    @Override
+	@Override
 	public String getMnemonic() {
 		return "PUSH";
 	}
 
 	@Override
-	public void generateCode(GeneratorContext context, String line, List<String> nCode, List<String> subCode, Map<String, String> name2label) {
+	public void generateCode(GeneratorContext context, String line, List<String> nCode, List<String> subCode,
+			Map<String, String> name2label) {
 		Operands ops = new Operands(line, name2label);
 		Operand target = ops.getTarget();
-		String from=getOpName(target);
-		nCode.add("$global:_stack+="+from);
+		String from = getOpName(target);
+		nCode.add("$global:_stack+=" + from);
 	}
 }

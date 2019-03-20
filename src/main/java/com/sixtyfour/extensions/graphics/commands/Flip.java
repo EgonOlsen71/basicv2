@@ -21,12 +21,12 @@ public class Flip extends AbstractCommand {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * com.sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String,
+	 * @see com.sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String,
 	 * int, int, int, boolean, com.sixtyfour.system.Machine)
 	 */
 	@Override
-	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
+	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos,
+			boolean lastPos, Machine machine) {
 		super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine);
 		if (linePart.trim().length() > 4) {
 			throw new RuntimeException("Syntax error: " + this);
@@ -37,8 +37,7 @@ public class Flip extends AbstractCommand {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.
+	 * @see sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.
 	 * Machine)
 	 */
 	@Override

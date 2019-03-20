@@ -32,8 +32,7 @@ public abstract class MultiVariableCommand extends AbstractCommand {
 	/**
 	 * Instantiates a new multi variable command.
 	 * 
-	 * @param name
-	 *            the name
+	 * @param name the name
 	 */
 	public MultiVariableCommand(String name) {
 		super(name);
@@ -52,7 +51,8 @@ public abstract class MultiVariableCommand extends AbstractCommand {
 		return ret;
 	}
 
-	final protected List<CodeContainer> evalToCode(CompilerConfig config, Machine machine, String strCall, String numberCall) {
+	final protected List<CodeContainer> evalToCode(CompilerConfig config, Machine machine, String strCall,
+			String numberCall) {
 		NativeCompiler compiler = NativeCompiler.getCompiler();
 		List<CodeContainer> ccs = new ArrayList<CodeContainer>();
 		boolean added = false;
@@ -78,13 +78,15 @@ public abstract class MultiVariableCommand extends AbstractCommand {
 
 			if (indexTerm != null) {
 				List<Atom> pars = Parser.getParameters(indexTerm);
-				before.addAll(compiler.compileToPseudoCode(config, machine, Parser.createIndexTerm(config, machine, pars, var.getDimensions())));
+				before.addAll(compiler.compileToPseudoCode(config, machine,
+						Parser.createIndexTerm(config, machine, pars, var.getDimensions())));
 
 				after.add("POP X");
 				after.add("MOV G," + getVariableLabel(config, machine, var));
 				after.add("JSR ARRAYSTORE");
 			} else {
-				after.add("MOV " + getVariableLabel(config, machine, var) + "," + (var.getType() == Type.STRING ? "A" : "Y"));
+				after.add("MOV " + getVariableLabel(config, machine, var) + ","
+						+ (var.getType() == Type.STRING ? "A" : "Y"));
 			}
 
 			CodeContainer cc = new CodeContainer(before, expr, after);
@@ -93,7 +95,8 @@ public abstract class MultiVariableCommand extends AbstractCommand {
 		return ccs;
 	}
 
-	final protected List<CodeContainer> evalToCodeFile(CompilerConfig config, Machine machine, String strCall, String numberCall) {
+	final protected List<CodeContainer> evalToCodeFile(CompilerConfig config, Machine machine, String strCall,
+			String numberCall) {
 		NativeCompiler compiler = NativeCompiler.getCompiler();
 		List<CodeContainer> ccs = new ArrayList<CodeContainer>();
 
@@ -118,13 +121,15 @@ public abstract class MultiVariableCommand extends AbstractCommand {
 
 			if (indexTerm != null) {
 				List<Atom> pars = Parser.getParameters(indexTerm);
-				expr = compiler.compileToPseudoCode(config, machine, Parser.createIndexTerm(config, machine, pars, var.getDimensions()));
+				expr = compiler.compileToPseudoCode(config, machine,
+						Parser.createIndexTerm(config, machine, pars, var.getDimensions()));
 
 				after.add("POP X");
 				after.add("MOV G," + getVariableLabel(config, machine, var));
 				after.add("JSR ARRAYSTORE");
 			} else {
-				after.add("MOV " + getVariableLabel(config, machine, var) + "," + (var.getType() == Type.STRING ? "A" : "Y"));
+				after.add("MOV " + getVariableLabel(config, machine, var) + ","
+						+ (var.getType() == Type.STRING ? "A" : "Y"));
 			}
 
 			CodeContainer cc = new CodeContainer(before, expr, after);
@@ -136,10 +141,8 @@ public abstract class MultiVariableCommand extends AbstractCommand {
 	/**
 	 * Gets the variable at a position.
 	 * 
-	 * @param machine
-	 *            the machine
-	 * @param i
-	 *            the position
+	 * @param machine the machine
+	 * @param i       the position
 	 * @return the variable
 	 */
 	final protected Variable getVariable(Machine machine, int i) {
@@ -155,13 +158,10 @@ public abstract class MultiVariableCommand extends AbstractCommand {
 	/**
 	 * Only lets characters pass that can be part of numbers.
 	 * 
-	 * @param machine
-	 *            the machine
-	 * @param input
-	 *            the input character
-	 * @param checkColon
-	 *            if true, : will cause an ?Extra ignored message. Otherwise, it
-	 *            will cause an exception.
+	 * @param machine    the machine
+	 * @param input      the input character
+	 * @param checkColon if true, : will cause an ?Extra ignored message. Otherwise,
+	 *                   it will cause an exception.
 	 * @return the character
 	 */
 	final protected Character ensureNumberKey(Machine machine, Character input, boolean checkColon) {
@@ -181,10 +181,8 @@ public abstract class MultiVariableCommand extends AbstractCommand {
 	/**
 	 * Creates the variables needed based on the input string.
 	 * 
-	 * @param linePart
-	 *            the string that defines the variables
-	 * @param machine
-	 *            the machine
+	 * @param linePart the string that defines the variables
+	 * @param machine  the machine
 	 */
 	final protected void fillVariables(CompilerConfig config, String linePart, Machine machine) {
 		int brackets = 0;

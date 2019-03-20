@@ -6,8 +6,8 @@ package com.sixtyfour.cbmnative.javascript.generators;
  */
 public class GtJs extends ComparisonJs {
 
-    GtJs() {
-	super("GT", ">");
-    }
+	GtJs() {
+		super("GT", ">");
+	}
 
 }

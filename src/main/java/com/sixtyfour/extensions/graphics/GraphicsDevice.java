@@ -68,7 +68,8 @@ public class GraphicsDevice implements PrintConsumer {
 	private Map<Integer, Shape> shapes = new HashMap<Integer, Shape>();
 	private int cursorX = 0;
 	private int cursorY = 0;
-	private RenderingHints noAa = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+	private RenderingHints noAa = new RenderingHints(RenderingHints.KEY_ANTIALIASING,
+			RenderingHints.VALUE_ANTIALIAS_OFF);
 	private RenderingHints aa = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 	private Queue<Character> keysPressed = new LinkedList<Character>();
 
@@ -76,8 +77,7 @@ public class GraphicsDevice implements PrintConsumer {
 	 * Returns an existing device for machine. If there is none, null will be
 	 * returned.
 	 * 
-	 * @param machine
-	 *            the machine
+	 * @param machine the machine
 	 * @return the device or null
 	 */
 	public static GraphicsDevice getDevice(Machine machine) {
@@ -88,12 +88,9 @@ public class GraphicsDevice implements PrintConsumer {
 	 * Opens a new device for a machine. If there is one already, that will be
 	 * returned regardless of its size.
 	 * 
-	 * @param machine
-	 *            the machine
-	 * @param x
-	 *            the width
-	 * @param y
-	 *            the height
+	 * @param machine the machine
+	 * @param x       the width
+	 * @param y       the height
 	 * @return a GraphicsDevice instance for the machine
 	 */
 	public static GraphicsDevice openDevice(Machine machine, int x, int y) {
@@ -179,8 +176,8 @@ public class GraphicsDevice implements PrintConsumer {
 	/**
 	 * Sets the buffer mode to single/double buffering.
 	 * 
-	 * @param doubleBuffer
-	 *            true for double buffering, false for single (which is default)
+	 * @param doubleBuffer true for double buffering, false for single (which is
+	 *                     default)
 	 */
 	public void setBufferMode(boolean doubleBuffer) {
 		if (doubleBuffer) {
@@ -205,8 +202,7 @@ public class GraphicsDevice implements PrintConsumer {
 	/**
 	 * Adds a shape to this device.
 	 * 
-	 * @param shape
-	 *            the shape
+	 * @param shape the shape
 	 */
 	public void addShape(Shape shape) {
 		shapes.put(shape.getId(), shape);
@@ -215,8 +211,7 @@ public class GraphicsDevice implements PrintConsumer {
 	/**
 	 * Adds a shape loaded from the given filename to the device.
 	 * 
-	 * @param shapeName
-	 *            the filename of the shape
+	 * @param shapeName the filename of the shape
 	 * @return the id of the added shape
 	 */
 	public int addShape(String shapeName) {
@@ -235,14 +230,10 @@ public class GraphicsDevice implements PrintConsumer {
 	/**
 	 * Sets the current draw color.
 	 * 
-	 * @param r
-	 *            red
-	 * @param g
-	 *            green
-	 * @param b
-	 *            blue
-	 * @param a
-	 *            alpha
+	 * @param r red
+	 * @param g green
+	 * @param b blue
+	 * @param a alpha
 	 */
 	public void color(int r, int g, int b, int a) {
 		color = new Color(r & 0xff, g & 0xff, b & 0xff, a & 0xff);
@@ -255,14 +246,10 @@ public class GraphicsDevice implements PrintConsumer {
 	/**
 	 * Draws a line.
 	 * 
-	 * @param xs
-	 *            x start
-	 * @param ys
-	 *            y start
-	 * @param xe
-	 *            x end
-	 * @param ye
-	 *            y end
+	 * @param xs x start
+	 * @param ys y start
+	 * @param xe x end
+	 * @param ye y end
 	 */
 	public void line(int xs, int ys, int xe, int ye) {
 		getContext().drawLine(xs, ys, xe, ye);
@@ -272,10 +259,8 @@ public class GraphicsDevice implements PrintConsumer {
 	/**
 	 * Plots a point.
 	 * 
-	 * @param x
-	 *            x coordinate
-	 * @param y
-	 *            y coordinate
+	 * @param x x coordinate
+	 * @param y y coordinate
 	 */
 	public void plot(int x, int y) {
 		if (x >= 0 && x < width && y >= 0 && y < height) {
@@ -287,14 +272,10 @@ public class GraphicsDevice implements PrintConsumer {
 	/**
 	 * Draws a circle.
 	 * 
-	 * @param x
-	 *            x coordinate of the midpoint
-	 * @param y
-	 *            y coordinate of the midpoint
-	 * @param xr
-	 *            the radius in x direction
-	 * @param yr
-	 *            the radius in y direction
+	 * @param x  x coordinate of the midpoint
+	 * @param y  y coordinate of the midpoint
+	 * @param xr the radius in x direction
+	 * @param yr the radius in y direction
 	 */
 	public void circle(int x, int y, int xr, int yr) {
 		if (filled) {
@@ -308,14 +289,10 @@ public class GraphicsDevice implements PrintConsumer {
 	/**
 	 * Draws a rectangle.
 	 * 
-	 * @param x1
-	 *            x of the upper left corner
-	 * @param y1
-	 *            y of the upper left corner
-	 * @param x2
-	 *            x of the lower right corner
-	 * @param y2
-	 *            y of the lower right corner
+	 * @param x1 x of the upper left corner
+	 * @param y1 y of the upper left corner
+	 * @param x2 x of the lower right corner
+	 * @param y2 y of the lower right corner
 	 */
 	public void rect(int x1, int y1, int x2, int y2) {
 		if (filled) {
@@ -328,11 +305,10 @@ public class GraphicsDevice implements PrintConsumer {
 	}
 
 	/**
-	 * Sets the fill mode. If set to true, circles and rectangles will be
-	 * filled. If false, their outlines will be drawn (which is default).
+	 * Sets the fill mode. If set to true, circles and rectangles will be filled. If
+	 * false, their outlines will be drawn (which is default).
 	 * 
-	 * @param filled
-	 *            fill them?
+	 * @param filled fill them?
 	 */
 	public void setFillMode(boolean filled) {
 		this.filled = filled;
@@ -349,10 +325,8 @@ public class GraphicsDevice implements PrintConsumer {
 	/**
 	 * Does a flood fill at position x,y.
 	 * 
-	 * @param x
-	 *            the x position of the seed point
-	 * @param y
-	 *            the y position of the seed point
+	 * @param x the x position of the seed point
+	 * @param y the y position of the seed point
 	 */
 	public void fill(int x, int y) {
 		if (pixels == null) {
@@ -366,13 +340,12 @@ public class GraphicsDevice implements PrintConsumer {
 	/**
 	 * Saves the current image into a PNG file.
 	 * 
-	 * @param machine
-	 *            the machine
-	 * @param name
-	 *            the name of the target file
+	 * @param machine the machine
+	 * @param name    the name of the target file
 	 */
 	public void save(Machine machine, String name) {
-		try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(name)); ImageOutputStream ios = ImageIO.createImageOutputStream(bos)) {
+		try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(name));
+				ImageOutputStream ios = ImageIO.createImageOutputStream(bos)) {
 			Iterator<ImageWriter> itty = ImageIO.getImageWritersBySuffix("png");
 			if (itty.hasNext()) {
 				ImageWriter iw = (ImageWriter) itty.next();
@@ -388,16 +361,11 @@ public class GraphicsDevice implements PrintConsumer {
 	/**
 	 * Draws a (scaled) shape.
 	 * 
-	 * @param id
-	 *            the id of the shape
-	 * @param x
-	 *            x of the upper left corner
-	 * @param y
-	 *            y of the upper left corner
-	 * @param xd
-	 *            the width
-	 * @param yd
-	 *            the height
+	 * @param id the id of the shape
+	 * @param x  x of the upper left corner
+	 * @param y  y of the upper left corner
+	 * @param xd the width
+	 * @param yd the height
 	 */
 	public void drawShape(int id, int x, int y, int xd, int yd) {
 		Shape shape = shapes.get(id);
@@ -411,16 +379,11 @@ public class GraphicsDevice implements PrintConsumer {
 	/**
 	 * Draws a rotated/scaled shape.
 	 * 
-	 * @param id
-	 *            the id of the shape
-	 * @param x
-	 *            x of the upper left corner when not rotated or scaled
-	 * @param y
-	 *            y of the upper left corner when not rotated or scaled
-	 * @param zoom
-	 *            the zoom factor (uniform!)
-	 * @param rot
-	 *            the rotation angle in radians
+	 * @param id   the id of the shape
+	 * @param x    x of the upper left corner when not rotated or scaled
+	 * @param y    y of the upper left corner when not rotated or scaled
+	 * @param zoom the zoom factor (uniform!)
+	 * @param rot  the rotation angle in radians
 	 */
 	public void drawRotatedShape(int id, int x, int y, float zoom, float rot) {
 		Shape shape = shapes.get(id);
@@ -445,10 +408,8 @@ public class GraphicsDevice implements PrintConsumer {
 	/**
 	 * Sets the cursor to a position.
 	 * 
-	 * @param x
-	 *            the x position
-	 * @param y
-	 *            the y position
+	 * @param x the x position
+	 * @param y the y position
 	 */
 	public void setCursor(int x, int y) {
 		this.cursorX = x;
@@ -458,12 +419,9 @@ public class GraphicsDevice implements PrintConsumer {
 	/**
 	 * Sets the current font.
 	 * 
-	 * @param fontName
-	 *            the font's name
-	 * @param style
-	 *            the font's style (0=plain, 1=bold, 2=italic)
-	 * @param size
-	 *            the font's size
+	 * @param fontName the font's name
+	 * @param style    the font's style (0=plain, 1=bold, 2=italic)
+	 * @param size     the font's size
 	 */
 	public void setFont(String fontName, int style, int size) {
 		Font font = FontProvider.getFont(fontName, style, size);
@@ -499,8 +457,7 @@ public class GraphicsDevice implements PrintConsumer {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.sixtyfour.plugins.PrintConsumer#systemPrint(int,
-	 * java.lang.String)
+	 * @see com.sixtyfour.plugins.PrintConsumer#systemPrint(int, java.lang.String)
 	 */
 	@Override
 	public void systemPrint(int id, String txt) {
@@ -510,8 +467,7 @@ public class GraphicsDevice implements PrintConsumer {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.sixtyfour.plugins.PrintConsumer#systemPrintln(int,
-	 * java.lang.String)
+	 * @see com.sixtyfour.plugins.PrintConsumer#systemPrintln(int, java.lang.String)
 	 */
 	@Override
 	public void systemPrintln(int id, String txt) {
@@ -521,8 +477,7 @@ public class GraphicsDevice implements PrintConsumer {
 	/**
 	 * Sets the anti.aliasing mode.
 	 * 
-	 * @param useAA
-	 *            Should AA be used?
+	 * @param useAA Should AA be used?
 	 */
 	public void setAAMode(boolean useAA) {
 		if (useAA) {
@@ -536,22 +491,16 @@ public class GraphicsDevice implements PrintConsumer {
 	}
 
 	/**
-	 * Copies a region of the screen buffer into another one. xs,ys define the
-	 * upper left and xe,ye the lower right corner of the region to copy. xt and
-	 * yt define the upper left position of the target region.
+	 * Copies a region of the screen buffer into another one. xs,ys define the upper
+	 * left and xe,ye the lower right corner of the region to copy. xt and yt define
+	 * the upper left position of the target region.
 	 * 
-	 * @param xs
-	 *            x of the upper left corner of the region to copy
-	 * @param ys
-	 *            y of the upper left corner of the region to copy
-	 * @param xe
-	 *            x of the lower right corner of the region to copy
-	 * @param ye
-	 *            y of the lower right corner of the region to copy
-	 * @param xt
-	 *            x of the upper left corner of the target region
-	 * @param yt
-	 *            y of the upper left corner of the target region
+	 * @param xs x of the upper left corner of the region to copy
+	 * @param ys y of the upper left corner of the region to copy
+	 * @param xe x of the lower right corner of the region to copy
+	 * @param ye y of the lower right corner of the region to copy
+	 * @param xt x of the upper left corner of the target region
+	 * @param yt y of the upper left corner of the target region
 	 */
 	public void copy(int xs, int ys, int xe, int ye, int xt, int yt) {
 		int tmp = 0;
@@ -571,14 +520,10 @@ public class GraphicsDevice implements PrintConsumer {
 	/**
 	 * Copies a region of the screen buffer into a shape and returns the id.
 	 * 
-	 * @param xs
-	 *            x of the upper left corner of the region to copy
-	 * @param ys
-	 *            y of the upper left corner of the region to copy
-	 * @param xe
-	 *            x of the lower right corner of the region to copy
-	 * @param ye
-	 *            y of the lower right corner of the region to copy
+	 * @param xs x of the upper left corner of the region to copy
+	 * @param ys y of the upper left corner of the region to copy
+	 * @param xe x of the lower right corner of the region to copy
+	 * @param ye y of the lower right corner of the region to copy
 	 * @return the new shappe's id
 	 */
 	public int getShape(int xs, int ys, int xe, int ye) {
@@ -592,15 +537,13 @@ public class GraphicsDevice implements PrintConsumer {
 	}
 
 	/**
-	 * Creates a new shape and links its image content to the one of an open
-	 * PETSCII console. If no console is open, an empty shape will be returned.
+	 * Creates a new shape and links its image content to the one of an open PETSCII
+	 * console. If no console is open, an empty shape will be returned.
 	 * 
-	 * @param machine
-	 *            the Machine
+	 * @param machine the Machine
 	 * 
-	 * @param update
-	 *            if 0, updates to the console won't show up in the shape. If 1,
-	 *            they will.
+	 * @param update  if 0, updates to the console won't show up in the shape. If 1,
+	 *                they will.
 	 * 
 	 * @return the new shape's ID
 	 */
@@ -615,7 +558,8 @@ public class GraphicsDevice implements PrintConsumer {
 			return shape.getId();
 		} else {
 			BufferedImage conImg = console.getScreen();
-			BufferedImage shapeImage = new BufferedImage(conImg.getWidth(), conImg.getHeight(), BufferedImage.TYPE_INT_ARGB);
+			BufferedImage shapeImage = new BufferedImage(conImg.getWidth(), conImg.getHeight(),
+					BufferedImage.TYPE_INT_ARGB);
 			Graphics2D sg = shapeImage.createGraphics();
 			sg.drawImage(conImg, 0, 0, conImg.getWidth(), conImg.getHeight(), null);
 			sg.dispose();
@@ -628,12 +572,9 @@ public class GraphicsDevice implements PrintConsumer {
 	/**
 	 * Converts a sprite from C64 ram to a shape.
 	 * 
-	 * @param machine
-	 *            the machine
-	 * @param address
-	 *            the address of the sprite
-	 * @param multicolor
-	 *            is it a multi-color sprite?
+	 * @param machine    the machine
+	 * @param address    the address of the sprite
+	 * @param multicolor is it a multi-color sprite?
 	 * @return the id of the converted sprite/shape
 	 */
 	public int spriteShape(Machine machine, int address, boolean multicolor) {
@@ -686,9 +627,8 @@ public class GraphicsDevice implements PrintConsumer {
 	/**
 	 * Reads a key from the keyboard when the graphics output window has focus.
 	 * 
-	 * @param allowedChars
-	 *            a string that contains all the allowed chars. If empty or
-	 *            null, there's no limitation.
+	 * @param allowedChars a string that contains all the allowed chars. If empty or
+	 *                     null, there's no limitation.
 	 * @return the key or null
 	 */
 	public Character gget(String allowedChars) {

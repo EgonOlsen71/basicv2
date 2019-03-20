@@ -58,7 +58,8 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 	private int cursorY = 0;
 	private boolean reverseMode = false;
 	private boolean graphicsFontUsed = true;
-	private RenderingHints noAa = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+	private RenderingHints noAa = new RenderingHints(RenderingHints.KEY_ANTIALIASING,
+			RenderingHints.VALUE_ANTIALIAS_OFF);
 	private Queue<Character> keysPressed = new LinkedList<Character>();
 	private SystemCallListener oldSystemCallListener = null;
 	private MemoryListener oldMemoryListener = null;
@@ -89,8 +90,7 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 	 * Returns an existing device for machine. If there is none, null will be
 	 * returned.
 	 * 
-	 * @param machine
-	 *            the machine
+	 * @param machine the machine
 	 * @return the device or null
 	 */
 	public static ConsoleDevice getDevice(Machine machine) {
@@ -101,15 +101,12 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 	 * Opens a new device for a machine. If there is one already, that will be
 	 * returned regardless of its size.
 	 * 
-	 * @param machine
-	 *            the machine
-	 * @param consoleType
-	 *            the type of the console, >0 for a visible console, else hidden
+	 * @param machine     the machine
+	 * @param consoleType the type of the console, >0 for a visible console, else
+	 *                    hidden
 	 * @param clear
-	 * @param x
-	 *            the width
-	 * @param y
-	 *            the height
+	 * @param x           the width
+	 * @param y           the height
 	 * @return a GraphicsDevice instance for the machine
 	 */
 	public static ConsoleDevice openDevice(Machine machine, int consoleType, boolean clear, int x, int y) {
@@ -170,7 +167,8 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 			public void keyTyped(KeyEvent e) {
 				if (inputMode) {
 					char c = e.getKeyChar();
-					if (Character.isDigit(c) || Character.isAlphabetic(c) || Character.isWhitespace(c) || "#-.,:;'+*/\"!§$%&/()][}{ß?´`".indexOf(c) != -1) {
+					if (Character.isDigit(c) || Character.isAlphabetic(c) || Character.isWhitespace(c)
+							|| "#-.,:;'+*/\"!§$%&/()][}{ß?´`".indexOf(c) != -1) {
 						if (Character.isWhitespace(c)) {
 							c = ' ';
 						}
@@ -402,8 +400,7 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.sixtyfour.plugins.PrintConsumer#systemPrint(int,
-	 * java.lang.String)
+	 * @see com.sixtyfour.plugins.PrintConsumer#systemPrint(int, java.lang.String)
 	 */
 	@Override
 	public void systemPrint(int id, String txt) {
@@ -413,8 +410,7 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.sixtyfour.plugins.PrintConsumer#systemPrintln(int,
-	 * java.lang.String)
+	 * @see com.sixtyfour.plugins.PrintConsumer#systemPrintln(int, java.lang.String)
 	 */
 	@Override
 	public void systemPrintln(int id, String txt) {
@@ -538,8 +534,7 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 	/**
 	 * Sets the used charset to either lower or not lower (i.e. upper) case.
 	 * 
-	 * @param isLower
-	 *            is it lower case?
+	 * @param isLower is it lower case?
 	 */
 	public void setFontMode(boolean isLower) {
 		setCharset(!isLower);
@@ -547,8 +542,8 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 	}
 
 	/**
-	 * Toggles the current charset between lower case and upper/grapchis
-	 * characters mode.
+	 * Toggles the current charset between lower case and upper/grapchis characters
+	 * mode.
 	 */
 	public void toggleFontMode() {
 		setCharset(!this.graphicsFontUsed);

@@ -6,7 +6,7 @@ package com.sixtyfour.cbmnative.javascript.generators;
  */
 public class IntJs extends CalculationJs {
 
-    public IntJs() {
-	super("INT", "Math.floor({from})");
-    }
+	public IntJs() {
+		super("INT", "Math.floor({from})");
+	}
 }

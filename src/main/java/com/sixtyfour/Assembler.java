@@ -43,8 +43,7 @@ public class Assembler implements ProgramExecutor {
 	 * Instantiates a new compiler for an assembler program. No
 	 * interpretation/compilation will take place at this stage.
 	 * 
-	 * @param code
-	 *            the assembler code
+	 * @param code the assembler code
 	 */
 	public Assembler(String code) {
 		this(code.split("\n"));
@@ -52,12 +51,11 @@ public class Assembler implements ProgramExecutor {
 
 	/**
 	 * Instantiates a new compiler for an assembler program. No
-	 * interpretation/compilation will take place at this stage. This
-	 * constructor takes an array of code lines as input. Each code line should
-	 * represent a line in the assembler program.
+	 * interpretation/compilation will take place at this stage. This constructor
+	 * takes an array of code lines as input. Each code line should represent a line
+	 * in the assembler program.
 	 * 
-	 * @param code
-	 *            the assembler code
+	 * @param code the assembler code
 	 */
 	public Assembler(String[] code) {
 		this(code, null);
@@ -65,12 +63,11 @@ public class Assembler implements ProgramExecutor {
 
 	/**
 	 * Instantiates a new compiler for an assembler program. No
-	 * interpretation/compilation will take place at this stage. This
-	 * constructor takes an list of code lines as input. Each code line should
-	 * represent a line in the assembler program.
+	 * interpretation/compilation will take place at this stage. This constructor
+	 * takes an list of code lines as input. Each code line should represent a line
+	 * in the assembler program.
 	 * 
-	 * @param code
-	 *            the assembler code
+	 * @param code the assembler code
 	 */
 	public Assembler(List<String> code) {
 		this(code.toArray(new String[code.size()]), null);
@@ -80,11 +77,9 @@ public class Assembler implements ProgramExecutor {
 	 * Instantiates a new compiler for an assembler program. No
 	 * interpretation/compilation will take place at this stage.
 	 * 
-	 * @param code
-	 *            the assembler code
-	 * @param machine
-	 *            the machine instance that should be used to run the code. If
-	 *            null is given, a new one will be created.
+	 * @param code    the assembler code
+	 * @param machine the machine instance that should be used to run the code. If
+	 *                null is given, a new one will be created.
 	 */
 	public Assembler(String code, Machine machine) {
 		this(code.split("\n"), machine);
@@ -92,15 +87,13 @@ public class Assembler implements ProgramExecutor {
 
 	/**
 	 * Instantiates a new compiler for an assembler program. No
-	 * interpretation/compilation will take place at this stage. This
-	 * constructor takes an array of code lines as input. Each code line should
-	 * represent a line in the assembler program.
+	 * interpretation/compilation will take place at this stage. This constructor
+	 * takes an array of code lines as input. Each code line should represent a line
+	 * in the assembler program.
 	 * 
-	 * @param code
-	 *            the assembler code
-	 * @param machine
-	 *            the machine instance that should be used to run the code. If
-	 *            null is given, a new one will be created.
+	 * @param code    the assembler code
+	 * @param machine the machine instance that should be used to run the code. If
+	 *                null is given, a new one will be created.
 	 */
 	public Assembler(String[] code, Machine machine) {
 		this.code = Arrays.copyOf(code, code.length);
@@ -112,14 +105,13 @@ public class Assembler implements ProgramExecutor {
 	}
 
 	/**
-	 * Compiles the code. This can be called before calling the actual run
-	 * method to precompile the code. It doesn't have to though, because run()
-	 * will call it on its own if needed. After compilation, the compiled
-	 * program can be obtained via getProgram(); The compiled Program instance
-	 * has a starting address set that is based on the first block of actual
-	 * opcodes in the assembler listing. If this assumption isn't true for a
-	 * particular program, you have to set the value manually before executing
-	 * the actual program.
+	 * Compiles the code. This can be called before calling the actual run method to
+	 * precompile the code. It doesn't have to though, because run() will call it on
+	 * its own if needed. After compilation, the compiled program can be obtained
+	 * via getProgram(); The compiled Program instance has a starting address set
+	 * that is based on the first block of actual opcodes in the assembler listing.
+	 * If this assumption isn't true for a particular program, you have to set the
+	 * value manually before executing the actual program.
 	 */
 	@Override
 	public void compile(CompilerConfig config) {
@@ -256,9 +248,9 @@ public class Assembler implements ProgramExecutor {
 	}
 
 	/**
-	 * Runs the program. This will also compile it if needed (i.e. if it hasn't
-	 * been done before), unpause and reset the cpu and execute the program in a
-	 * 6502 emulation.
+	 * Runs the program. This will also compile it if needed (i.e. if it hasn't been
+	 * done before), unpause and reset the cpu and execute the program in a 6502
+	 * emulation.
 	 */
 	@Override
 	public void run(CompilerConfig config) {
@@ -274,8 +266,8 @@ public class Assembler implements ProgramExecutor {
 	}
 
 	/**
-	 * Similar to run(), but the program won't be compiled automatically and the
-	 * cpu won't be reset.
+	 * Similar to run(), but the program won't be compiled automatically and the cpu
+	 * won't be reset.
 	 */
 	@Override
 	public void start(CompilerConfig config) {
@@ -300,8 +292,8 @@ public class Assembler implements ProgramExecutor {
 	}
 
 	/**
-	 * Gets the machine's cpu. This cpu is used to execute machine language
-	 * code. It's a 6502 emulation. If you want to add tracing or get more
+	 * Gets the machine's cpu. This cpu is used to execute machine language code.
+	 * It's a 6502 emulation. If you want to add tracing or get more
 	 * options/details, this is the place to go.
 	 * 
 	 * @return
@@ -312,9 +304,9 @@ public class Assembler implements ProgramExecutor {
 	}
 
 	/**
-	 * Returns the RAM's content. The RAM is a representation of 64KB of 8bit
-	 * wide memory. However, the returned array is of type int[]. It will
-	 * contains values in the range of[0..255] only though.
+	 * Returns the RAM's content. The RAM is a representation of 64KB of 8bit wide
+	 * memory. However, the returned array is of type int[]. It will contains values
+	 * in the range of[0..255] only though.
 	 * 
 	 * @return the RAM
 	 */
@@ -324,8 +316,7 @@ public class Assembler implements ProgramExecutor {
 	}
 
 	/**
-	 * Stops a currently running program after the next commands has been
-	 * executed.
+	 * Stops a currently running program after the next commands has been executed.
 	 */
 	@Override
 	public void runStop() {
@@ -333,8 +324,8 @@ public class Assembler implements ProgramExecutor {
 	}
 
 	/**
-	 * Gets the compiled program. If compile() hasn't been called yet, null will
-	 * be returned.
+	 * Gets the compiled program. If compile() hasn't been called yet, null will be
+	 * returned.
 	 * 
 	 * @return the program or null
 	 */
@@ -345,8 +336,7 @@ public class Assembler implements ProgramExecutor {
 	/**
 	 * Returns the code line associated to an address.
 	 * 
-	 * @param addr
-	 *            the address
+	 * @param addr the address
 	 * @return the code line or null if none could be found
 	 */
 	public String getCodeLine(int addr) {
@@ -354,19 +344,18 @@ public class Assembler implements ProgramExecutor {
 	}
 
 	/**
-	 * Sets a new program. Actually, there's no need to call this method in
-	 * normal code.
+	 * Sets a new program. Actually, there's no need to call this method in normal
+	 * code.
 	 * 
-	 * @param program
-	 *            the new program
+	 * @param program the new program
 	 */
 	public void setProgram(Program program) {
 		this.program = program;
 	}
 
 	/**
-	 * Dumps the compiled program into a kind of monitor view. If the program
-	 * hasn't been compiled yet, an empty string will be returned.
+	 * Dumps the compiled program into a kind of monitor view. If the program hasn't
+	 * been compiled yet, an empty string will be returned.
 	 */
 	@Override
 	public String toString() {

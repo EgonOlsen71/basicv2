@@ -85,9 +85,9 @@ public class Unlinker6502 implements Unlinker {
 			if (used) {
 				ret.addAll(subSubs);
 			} /*
-			 * else { System.out.println("Block from " + subSubs.get(1) +
-			 * " not used, removing it!"); }
-			 */
+				 * else { System.out.println("Block from " + subSubs.get(1) +
+				 * " not used, removing it!"); }
+				 */
 			i = end;
 		}
 

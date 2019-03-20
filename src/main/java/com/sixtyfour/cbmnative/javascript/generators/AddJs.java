@@ -6,8 +6,8 @@ package com.sixtyfour.cbmnative.javascript.generators;
  */
 public class AddJs extends CalculationJs {
 
-    public AddJs() {
-	super("ADD", "{to}+{from}");
-    }
+	public AddJs() {
+		super("ADD", "{to}+{from}");
+	}
 
 }

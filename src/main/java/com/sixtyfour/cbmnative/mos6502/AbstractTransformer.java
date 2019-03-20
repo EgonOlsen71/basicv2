@@ -28,7 +28,7 @@ public abstract class AbstractTransformer implements Transformer {
 	protected int stringMemoryEnd = 0;
 	protected int startAddress = 0;
 	protected boolean preferZeropage = true;
-    
+
 	protected List<String> createDatas(Machine machine) {
 		DataStore datas = machine.getDataStore();
 		List<String> ret = new ArrayList<String>();
@@ -148,8 +148,8 @@ public abstract class AbstractTransformer implements Transformer {
 		return val;
 	}
 
-	protected int extractData(PlatformProvider platform, Machine machine, List<String> consts, List<String> vars, List<String> strVars, List<String> strArrayVars,
-			Map<String, String> name2label, int cnt, String line) {
+	protected int extractData(PlatformProvider platform, Machine machine, List<String> consts, List<String> vars,
+			List<String> strVars, List<String> strArrayVars, Map<String, String> name2label, int cnt, String line) {
 		String[] parts = line.split(",", 2);
 		List<String> tmp = new ArrayList<String>();
 		for (int p = 0; p < parts.length; p++) {
@@ -255,125 +255,124 @@ public abstract class AbstractTransformer implements Transformer {
 	}
 
 	protected void addStructures(Machine machine, PlatformProvider platform, List<String> code, List<String> res,
-		List<String> consts, List<String> vars, List<String> mnems, List<String> subs) {
-	    Map<String, String> name2label = new HashMap<String, String>();
-	    int cnt = 0;
+			List<String> consts, List<String> vars, List<String> mnems, List<String> subs) {
+		Map<String, String> name2label = new HashMap<String, String>();
+		int cnt = 0;
 
-	    List<String> strVars = new ArrayList<String>();
-	    List<String> strArrayVars = new ArrayList<String>();
-	    GeneratorContext context = new GeneratorContext();
-	    for (String line : code) {
-	    	String cmd = line;
-	    	line = convertConstantsToReal(line, platform);
+		List<String> strVars = new ArrayList<String>();
+		List<String> strArrayVars = new ArrayList<String>();
+		GeneratorContext context = new GeneratorContext();
+		for (String line : code) {
+			String cmd = line;
+			line = convertConstantsToReal(line, platform);
 
-	    	// Intermediate code should contain no comments, so this actually
-	    	// hurts for Strings like "blah;"
-	    	// line = AssemblyParser.truncateComments(line);
-	    	String orgLine = line;
+			// Intermediate code should contain no comments, so this actually
+			// hurts for Strings like "blah;"
+			// line = AssemblyParser.truncateComments(line);
+			String orgLine = line;
 
-	    	int sp = line.indexOf(" ");
-	    	if (sp != -1) {
-	    		line = line.substring(sp).trim();
-	    	}
+			int sp = line.indexOf(" ");
+			if (sp != -1) {
+				line = line.substring(sp).trim();
+			}
 
-	    	cnt = extractData(platform, machine, consts, vars, strVars, strArrayVars, name2label, cnt, line);
+			cnt = extractData(platform, machine, consts, vars, strVars, strArrayVars, name2label, cnt, line);
 
-	    	Generator pm = GeneratorList.getGenerator(orgLine);
-	    	if (pm != null) {
-	    		pm.generateCode(context, orgLine, mnems, subs, name2label);
-	    	} else {
-	    		if (cmd.endsWith(":")) {
-	    			mnems.add(cmd);
-	    		} else {
-	    			mnems.add("; ignored: " + cmd);
-	    		}
-	    	}
-	    }
+			Generator pm = GeneratorList.getGenerator(orgLine);
+			if (pm != null) {
+				pm.generateCode(context, orgLine, mnems, subs, name2label);
+			} else {
+				if (cmd.endsWith(":")) {
+					mnems.add(cmd);
+				} else {
+					mnems.add("; ignored: " + cmd);
+				}
+			}
+		}
 
-	    if (!mnems.get(mnems.size() - 1).equals("RTS")) {
-	    	mnems.add("RTS");
-	    }
+		if (!mnems.get(mnems.size() - 1).equals("RTS")) {
+			mnems.add("RTS");
+		}
 
-	    List<String> inits = createInitScript(vars);
-	    List<String> datas = createDatas(machine);
+		List<String> inits = createInitScript(vars);
+		List<String> datas = createDatas(machine);
 
-	    subs.addAll(inits);
-	    subs.add("; *** SUBROUTINES END ***");
-	    subs.add("SQRTTABLE");
-	    subs.add(".BYTE 03 11 18 25 32 38 44 50");
-	    subs.add(".BYTE 58 69 79 89 98 107 115 123");
-	    res.addAll(mnems);
-	    res.addAll(subs);
-	    res.addAll(consts);
-	    res.addAll(datas);
-	    res.add("CONSTANTS_END");
-	    if (!strVars.contains("; VAR: TI$")) {
-	    	strVars.add("; VAR: TI$");
-	    	strVars.add("VAR_TI$ .WORD EMPTYSTR");
-	    }
+		subs.addAll(inits);
+		subs.add("; *** SUBROUTINES END ***");
+		subs.add("SQRTTABLE");
+		subs.add(".BYTE 03 11 18 25 32 38 44 50");
+		subs.add(".BYTE 58 69 79 89 98 107 115 123");
+		res.addAll(mnems);
+		res.addAll(subs);
+		res.addAll(consts);
+		res.addAll(datas);
+		res.add("CONSTANTS_END");
+		if (!strVars.contains("; VAR: TI$")) {
+			strVars.add("; VAR: TI$");
+			strVars.add("VAR_TI$ .WORD EMPTYSTR");
+		}
+		vars.add("STRINGVARS_START");
+		vars.addAll(strVars);
+		vars.add("STRINGVARS_END");
+		vars.add("STRINGARRAYS_START");
+		vars.addAll(strArrayVars);
+		vars.add("STRINGARRAYS_END");
 
-	    vars.add("STRINGVARS_START");
-	    vars.addAll(strVars);
-	    vars.add("STRINGVARS_END");
-	    vars.add("STRINGARRAYS_START");
-	    vars.addAll(strArrayVars);
-	    vars.add("STRINGARRAYS_END");
-
-	    res.addAll(vars);
-	    res.add("VARIABLES_END");
-	    res.add("; *** INTERNAL ***");
-	    res.add("X_REG\t.REAL 0.0");
-	    res.add("Y_REG\t.REAL 0.0");
-	    res.add("C_REG\t.REAL 0.0");
-	    res.add("D_REG\t.REAL 0.0");
-	    res.add("E_REG\t.REAL 0.0");
-	    res.add("F_REG\t.REAL 0.0");
-	    res.add("A_REG\t.WORD 0");
-	    res.add("B_REG\t.WORD 0");
-	    res.add("G_REG\t.WORD 0");
-	    res.add("CMD_NUM\t.BYTE 0");
-	    res.add("CHANNEL\t.BYTE 0");
-	    res.add("SP_SAVE\t.BYTE 0");
-	    if (!preferZeropage) {
-	    	res.add("TMP_REG\t.WORD 0");
-	    }
-	    res.add("TMP2_REG\t.WORD 0");
-	    res.add("TMP3_REG\t.WORD 0");
-	    res.add("TMP4_REG\t.WORD 0");
-	    res.add("AS_TMP\t.WORD 0");
-	    res.add("STORE1\t.WORD 0");
-	    res.add("STORE2\t.WORD 0");
-	    res.add("STORE3\t.WORD 0");
-	    res.add("GCSTART\t.WORD 0");
-	    res.add("GCLEN\t.WORD 0");
-	    res.add("GCWORK\t.WORD 0");
-	    res.add("TMP_FREG\t.REAL 0");
-	    res.add("TMP2_FREG\t.REAL 0");
-	    res.add("TMP_FLAG\t.BYTE 0");
-	    // res.add("JUMP_TARGET\t.WORD 0");
-	    res.add("REAL_CONST_ONE\t.REAL 1.0");
-	    res.add("REAL_CONST_ZERO\t.REAL 0.0");
-	    res.add("REAL_CONST_MINUS_ONE\t.REAL -1.0");
-	    res.add("EMPTYSTR\t.BYTE 0");
-	    res.add("FPSTACKP\t.WORD FPSTACK");
-	    res.add("FORSTACKP\t.WORD FORSTACK");
-	    res.add("DATASP\t.WORD DATAS");
-	    res.add("LASTVAR\t.WORD 0");
-	    res.add("LASTVARP\t.WORD 0");
-	    res.add("HIGHP\t.WORD STRBUF");
-	    res.add("STRBUFP\t.WORD STRBUF");
-	    res.add("ENDSTRBUF\t.WORD " + this.stringMemoryEnd);
-	    res.add("INPUTQUEUEP\t.BYTE 0");
-	    res.add("CONCATBUFP\t.BYTE 0");
-	    res.add("PROGRAMEND");
-	    // Don't stick anything here between CONCATBUFP and CONCATBUF...
-	    res.add("CONCATBUF\t.ARRAY 256");
-	    res.add("INPUTQUEUE\t.ARRAY $0F");
-	    res.add("FPSTACK .ARRAY " + Math.min(256, platform.getStackSize() * 5));
-	    res.add("FORSTACK .ARRAY " + Math.min(1024, platform.getForStackSize() * 17));
-	    res.add("STRBUF\t.BYTE 0");
+		res.addAll(vars);
+		res.add("VARIABLES_END");
+		res.add("; *** INTERNAL ***");
+		res.add("X_REG\t.REAL 0.0");
+		res.add("Y_REG\t.REAL 0.0");
+		res.add("C_REG\t.REAL 0.0");
+		res.add("D_REG\t.REAL 0.0");
+		res.add("E_REG\t.REAL 0.0");
+		res.add("F_REG\t.REAL 0.0");
+		res.add("A_REG\t.WORD 0");
+		res.add("B_REG\t.WORD 0");
+		res.add("G_REG\t.WORD 0");
+		res.add("CMD_NUM\t.BYTE 0");
+		res.add("CHANNEL\t.BYTE 0");
+		res.add("SP_SAVE\t.BYTE 0");
+		if (!preferZeropage) {
+			res.add("TMP_REG\t.WORD 0");
+		}
+		res.add("TMP2_REG\t.WORD 0");
+		res.add("TMP3_REG\t.WORD 0");
+		res.add("TMP4_REG\t.WORD 0");
+		res.add("AS_TMP\t.WORD 0");
+		res.add("STORE1\t.WORD 0");
+		res.add("STORE2\t.WORD 0");
+		res.add("STORE3\t.WORD 0");
+		res.add("GCSTART\t.WORD 0");
+		res.add("GCLEN\t.WORD 0");
+		res.add("GCWORK\t.WORD 0");
+		res.add("TMP_FREG\t.REAL 0");
+		res.add("TMP2_FREG\t.REAL 0");
+		res.add("TMP_FLAG\t.BYTE 0");
+		// res.add("JUMP_TARGET\t.WORD 0");
+		res.add("REAL_CONST_ONE\t.REAL 1.0");
+		res.add("REAL_CONST_ZERO\t.REAL 0.0");
+		res.add("REAL_CONST_MINUS_ONE\t.REAL -1.0");
+		res.add("EMPTYSTR\t.BYTE 0");
+		res.add("FPSTACKP\t.WORD FPSTACK");
+		res.add("FORSTACKP\t.WORD FORSTACK");
+		res.add("DATASP\t.WORD DATAS");
+		res.add("LASTVAR\t.WORD 0");
+		res.add("LASTVARP\t.WORD 0");
+		res.add("HIGHP\t.WORD STRBUF");
+		res.add("STRBUFP\t.WORD STRBUF");
+		res.add("ENDSTRBUF\t.WORD " + this.stringMemoryEnd);
+		res.add("INPUTQUEUEP\t.BYTE 0");
+		res.add("CONCATBUFP\t.BYTE 0");
+		res.add("PROGRAMEND");
+		// Don't stick anything here between CONCATBUFP and CONCATBUF...
+		res.add("CONCATBUF\t.ARRAY 256");
+		res.add("INPUTQUEUE\t.ARRAY $0F");
+		res.add("FPSTACK .ARRAY " + Math.min(256, platform.getStackSize() * 5));
+		res.add("FORSTACK .ARRAY " + Math.min(1024, platform.getForStackSize() * 17));
+		res.add("STRBUF\t.BYTE 0");
 	}
-	
+
 	@Override
 	public void setVariableStart(int variableStart) {
 		this.variableStart = variableStart;
@@ -426,7 +425,7 @@ public abstract class AbstractTransformer implements Transformer {
 
 	@Override
 	public List<String> createCaller(String calleeName) {
-	    return null;
+		return null;
 	}
-	
+
 }

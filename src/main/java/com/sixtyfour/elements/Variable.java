@@ -24,8 +24,8 @@ public class Variable implements Atom {
 	private String name;
 
 	/**
-   * 
-   */
+	* 
+	*/
 	private String upperCaseName;
 
 	/** The type. */
@@ -47,14 +47,11 @@ public class Variable implements Atom {
 	/**
 	 * Instantiates a new array variable.
 	 * 
-	 * @param name
-	 *            the name of the variable
-	 * @param values
-	 *            the values in form of a list.
-	 * @param dimensions
-	 *            the dimensions. If this variable is a multi-dimensional array,
-	 *            the list of values will be mapped according to these
-	 *            dimensions.
+	 * @param name       the name of the variable
+	 * @param values     the values in form of a list.
+	 * @param dimensions the dimensions. If this variable is a multi-dimensional
+	 *                   array, the list of values will be mapped according to these
+	 *                   dimensions.
 	 */
 	public Variable(String name, List<Object> values, int... dimensions) {
 		this(name, values == null ? new ArrayList<Object>(calcSize(dimensions)) : (Object) values);
@@ -66,12 +63,10 @@ public class Variable implements Atom {
 	/**
 	 * Instantiates a new variable with a simple value.
 	 * 
-	 * @param name
-	 *            the name of the variable
-	 * @param value
-	 *            the value. Depending on the type (determined by the name),
-	 *            this value will be parsed into the actual instance type. If
-	 *            value is null, a default value will be created instead.
+	 * @param name  the name of the variable
+	 * @param value the value. Depending on the type (determined by the name), this
+	 *              value will be parsed into the actual instance type. If value is
+	 *              null, a default value will be created instead.
 	 */
 	public Variable(String name, Object value) {
 		// Check name for validity
@@ -184,9 +179,9 @@ public class Variable implements Atom {
 	}
 
 	/**
-	 * Checks if the variable is an actual array. This method is allowed to
-	 * return false an array variables that are supposed to be arrays but
-	 * haven't been initialized yet.
+	 * Checks if the variable is an actual array. This method is allowed to return
+	 * false an array variables that are supposed to be arrays but haven't been
+	 * initialized yet.
 	 * 
 	 * @return true, if it is an array
 	 */
@@ -195,9 +190,9 @@ public class Variable implements Atom {
 	}
 
 	/**
-	 * Checks if the variable is supposed to be an array, but might not have
-	 * been initialized as such yet. This will return true an all array
-	 * variables, initialized or not.
+	 * Checks if the variable is supposed to be an array, but might not have been
+	 * initialized as such yet. This will return true an all array variables,
+	 * initialized or not.
 	 * 
 	 * @return true, if it is supposed to be an array
 	 */
@@ -221,8 +216,7 @@ public class Variable implements Atom {
 	/**
 	 * Sets the type.
 	 * 
-	 * @param type
-	 *            the new type
+	 * @param type the new type
 	 */
 	public void setType(Type type) {
 		this.type = type;
@@ -240,8 +234,7 @@ public class Variable implements Atom {
 	/**
 	 * Sets the name.
 	 * 
-	 * @param name
-	 *            the new name
+	 * @param name the new name
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -344,8 +337,7 @@ public class Variable implements Atom {
 	/**
 	 * Sets the value of a non-array variable.
 	 * 
-	 * @param value
-	 *            the new value
+	 * @param value the new value
 	 */
 	public void setValue(Object value) {
 		if (array) {
@@ -375,8 +367,7 @@ public class Variable implements Atom {
 	/**
 	 * Gets the value of an array element.
 	 * 
-	 * @param pos
-	 *            the position in the array
+	 * @param pos the position in the array
 	 * @return the value
 	 */
 	@SuppressWarnings("unchecked")
@@ -388,7 +379,8 @@ public class Variable implements Atom {
 		int cnt = 0;
 
 		if (pos.length != dimensions.length) {
-			throw new RuntimeException("Array indices don't match: " + this + "/" + pos.length + "/" + dimensions.length);
+			throw new RuntimeException(
+					"Array indices don't match: " + this + "/" + pos.length + "/" + dimensions.length);
 		}
 
 		if (pos.length == 1) {
@@ -413,10 +405,8 @@ public class Variable implements Atom {
 	/**
 	 * Sets the value of an array element.
 	 * 
-	 * @param val
-	 *            the value
-	 * @param pos
-	 *            the position in the array
+	 * @param val the value
+	 * @param pos the position in the array
 	 * @return the value
 	 */
 	@SuppressWarnings("unchecked")
@@ -460,8 +450,7 @@ public class Variable implements Atom {
 	/**
 	 * Increments the variable's value by the given value.
 	 * 
-	 * @param value
-	 *            the value to add
+	 * @param value the value to add
 	 * @return the new value
 	 */
 	public float inc(float value) {
@@ -497,11 +486,10 @@ public class Variable implements Atom {
 	}
 
 	/**
-	 * Marks the variable as persistent in a machines context, i.e. it "belongs"
-	 * to that machine.
+	 * Marks the variable as persistent in a machines context, i.e. it "belongs" to
+	 * that machine.
 	 * 
-	 * @param persistent
-	 *            is it persistent
+	 * @param persistent is it persistent
 	 */
 	public void setPersistent(boolean persistent) {
 		this.persistent = persistent;
@@ -541,8 +529,7 @@ public class Variable implements Atom {
 	/**
 	 * Calc size.
 	 * 
-	 * @param dimensions
-	 *            the dimensions
+	 * @param dimensions the dimensions
 	 * @return the int
 	 */
 	private static int calcSize(int[] dimensions) {

@@ -6,7 +6,7 @@ package com.sixtyfour.cbmnative.javascript.generators;
  */
 public class SinJs extends CalculationJs {
 
-    public SinJs() {
-	super("SIN", "Math.sin({from})");
-    }
+	public SinJs() {
+		super("SIN", "Math.sin({from})");
+	}
 }

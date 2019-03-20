@@ -20,15 +20,11 @@ public class DelayedLabel {
 	/**
 	 * Creates a new instance.
 	 * 
-	 * @param label
-	 *            the label's name
-	 * @param low
-	 *            low byte only?
-	 * @param high
-	 *            high byte only?
-	 * @param isDataLine
-	 *            does the line contain an actual command or is it some data
-	 *            like .BYTE
+	 * @param label      the label's name
+	 * @param low        low byte only?
+	 * @param high       high byte only?
+	 * @param isDataLine does the line contain an actual command or is it some data
+	 *                   like .BYTE
 	 */
 	public DelayedLabel(String label, boolean low, boolean high, int add, boolean isDataLine) {
 		// System.out.println("HONK: Label created: "+label+"/"+add);
@@ -51,8 +47,7 @@ public class DelayedLabel {
 	/**
 	 * Sets the label's name.
 	 * 
-	 * @param label
-	 *            the name
+	 * @param label the name
 	 */
 	public void setLabel(String label) {
 		this.label = label;
@@ -70,8 +65,7 @@ public class DelayedLabel {
 	/**
 	 * Sets if low byte only?
 	 * 
-	 * @param low
-	 *            low byte only?
+	 * @param low low byte only?
 	 */
 	public void setLow(boolean low) {
 		this.low = low;
@@ -89,8 +83,7 @@ public class DelayedLabel {
 	/**
 	 * Sets if high byte only?
 	 * 
-	 * @param high
-	 *            high byte only?
+	 * @param high high byte only?
 	 */
 	public void setHigh(boolean high) {
 		this.high = high;
@@ -125,11 +118,9 @@ public class DelayedLabel {
 	}
 
 	/**
-	 * Sets if the line contains an actual command or if it is some data like
-	 * .BYTE
+	 * Sets if the line contains an actual command or if it is some data like .BYTE
 	 * 
-	 * @param dataLine
-	 *            which type of line is it?
+	 * @param dataLine which type of line is it?
 	 */
 	public void setDataLine(boolean dataLine) {
 		this.dataLine = dataLine;

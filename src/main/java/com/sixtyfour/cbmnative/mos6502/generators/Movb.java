@@ -19,9 +19,10 @@ public class Movb extends GeneratorBase {
 	}
 
 	@Override
-	public void generateCode(GeneratorContext context, String line, List<String> nCode, List<String> subCode, Map<String, String> name2label) {
+	public void generateCode(GeneratorContext context, String line, List<String> nCode, List<String> subCode,
+			Map<String, String> name2label) {
 		Operands ops = new Operands(line, name2label);
-		// Logger.log(line + " -- " + ops.getTarget() + "  |||  " +
+		// Logger.log(line + " -- " + ops.getTarget() + " ||| " +
 		// ops.getSource());
 
 		MOV_CNT++;
@@ -47,7 +48,9 @@ public class Movb extends GeneratorBase {
 				if (target.isRegister() && source.isConstant()) {
 					indexedTargetWithConstant(nCode, source, target);
 				} else {
-					throw new RuntimeException("Invalid index mode (at least one side isn't a register and source isn't a constant value either!): " + line);
+					throw new RuntimeException(
+							"Invalid index mode (at least one side isn't a register and source isn't a constant value either!): "
+									+ line);
 				}
 			} else {
 				if (target.isIndexed()) {
@@ -62,7 +65,8 @@ public class Movb extends GeneratorBase {
 	private void indexedTargetWithConstant(List<String> nCode, Operand source, Operand target) {
 		createIndexedTargetCode(nCode, target);
 
-		nCode.add("LDA #$" + Integer.toHexString((int) Float.parseFloat(source.getValue().substring(1))).toUpperCase(Locale.ENGLISH));
+		nCode.add("LDA #$" + Integer.toHexString((int) Float.parseFloat(source.getValue().substring(1)))
+				.toUpperCase(Locale.ENGLISH));
 		nCode.add("MOVBSELF" + MOV_CNT + ":");
 		nCode.add("STA $FFFF");
 

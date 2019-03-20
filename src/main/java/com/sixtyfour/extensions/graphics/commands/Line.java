@@ -21,7 +21,8 @@ public class Line extends AbstractGraphicsCommand {
 	}
 
 	@Override
-	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
+	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos,
+			boolean lastPos, Machine machine) {
 		String ret = super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine, 4, 0);
 		checkTypes(pars, linePart, Type.STRING, Type.STRING, Type.STRING, Type.STRING);
 		return ret;
@@ -35,7 +36,8 @@ public class Line extends AbstractGraphicsCommand {
 		Atom ye = pars.get(3);
 		GraphicsDevice window = GraphicsDevice.getDevice(machine);
 		if (window != null) {
-			window.line(VarUtils.getInt(xs.eval(machine)), VarUtils.getInt(ys.eval(machine)), VarUtils.getInt(xe.eval(machine)), VarUtils.getInt(ye.eval(machine)));
+			window.line(VarUtils.getInt(xs.eval(machine)), VarUtils.getInt(ys.eval(machine)),
+					VarUtils.getInt(xe.eval(machine)), VarUtils.getInt(ye.eval(machine)));
 		}
 		return null;
 	}

@@ -29,9 +29,8 @@ public class LogicTerm implements LogicBlock {
 	/**
 	 * Instantiates a new logic term.
 	 * 
-	 * @param name
-	 *            the name, which is an internal marker for this block used at
-	 *            parse time.
+	 * @param name the name, which is an internal marker for this block used at
+	 *             parse time.
 	 */
 	public LogicTerm(String name) {
 		ops.add(new LogicAnd());
@@ -41,10 +40,8 @@ public class LogicTerm implements LogicBlock {
 	/**
 	 * Adds a new logic block to the term.
 	 * 
-	 * @param block
-	 *            the new block
-	 * @param op
-	 *            the operation used between the two
+	 * @param block the new block
+	 * @param op    the operation used between the two
 	 */
 	public void add(LogicBlock block, LogicOp op) {
 		blocks.add(block);
@@ -126,8 +123,7 @@ public class LogicTerm implements LogicBlock {
 	/**
 	 * Sets the name.
 	 * 
-	 * @param name
-	 *            the new name
+	 * @param name the new name
 	 */
 	public void setName(String name) {
 		this.name = name;

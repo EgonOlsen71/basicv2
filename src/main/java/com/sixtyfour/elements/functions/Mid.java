@@ -37,8 +37,7 @@ public class Mid extends AbstractFunction {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * com.sixtyfour.elements.functions.AbstractFunction#evalToExpression(com
+	 * @see com.sixtyfour.elements.functions.AbstractFunction#evalToExpression(com
 	 * .sixtyfour.system.Machine)
 	 */
 	@Override

@@ -40,8 +40,8 @@ public class Jit {
 
 	/**
 	 * Creates a new Jit. A Jit has to be assigned to the current instance of
-	 * Machine. This constructor creates a JIT with the default threshold of 0,
-	 * i.e. the JIT compiler will try to auto-detect when to compile.
+	 * Machine. This constructor creates a JIT with the default threshold of 0, i.e.
+	 * the JIT compiler will try to auto-detect when to compile.
 	 */
 	public Jit() {
 		this(0);
@@ -50,10 +50,10 @@ public class Jit {
 	/**
 	 * Creates a new Jit. A Jit has to be assigned to the current instance of
 	 * Machine. This constructor creates a JIT with a user defined count of
-	 * "compileThreshold" methods to compile, i.e. the actual bytecode
-	 * generation kicks in when compileThreshold expressions are marked as
-	 * potentially jittable. If the threshold is <=0, then the JIT compiler will
-	 * try to auto-detect when to compile.
+	 * "compileThreshold" methods to compile, i.e. the actual bytecode generation
+	 * kicks in when compileThreshold expressions are marked as potentially
+	 * jittable. If the threshold is <=0, then the JIT compiler will try to
+	 * auto-detect when to compile.
 	 * 
 	 * @param compileThreshold
 	 */
@@ -63,11 +63,10 @@ public class Jit {
 	}
 
 	/**
-	 * Adds a variable to the compiled code. Used internally, no need to call
-	 * this from an application.
+	 * Adds a variable to the compiled code. Used internally, no need to call this
+	 * from an application.
 	 * 
-	 * @param var
-	 *            the variable to add
+	 * @param var the variable to add
 	 * @return the position in the JIT's list
 	 */
 	public void addVariable(Variable var) {
@@ -82,13 +81,11 @@ public class Jit {
 	}
 
 	/**
-	 * Adds a method that evaluates an expression. Used internally, no need to
-	 * call this from an application.
+	 * Adds a method that evaluates an expression. Used internally, no need to call
+	 * this from an application.
 	 * 
-	 * @param term
-	 *            the term that forms the expression
-	 * @param machine
-	 *            the current machine
+	 * @param term    the term that forms the expression
+	 * @param machine the current machine
 	 */
 	public boolean addMethod(Term term, Machine machine) {
 		synchronized (sync) {
@@ -102,7 +99,8 @@ public class Jit {
 				if (cody == null || cody.length() < 80) {
 					return true;
 				}
-				code.append("\npublic final Object m").append(term.getId()).append("() {").append("return ").append(cody.trim()).append(";}\n");
+				code.append("\npublic final Object m").append(term.getId()).append("() {").append("return ")
+						.append(cody.trim()).append(";}\n");
 				jittedTerms.add(term);
 				lastAdd = System.currentTimeMillis();
 
@@ -115,9 +113,9 @@ public class Jit {
 	}
 
 	/**
-	 * Triggers the JIT to check if a compilation might be useful to do now. If
-	 * yes, it will compile the code that it has marked so far. If not, nothing
-	 * will happen.
+	 * Triggers the JIT to check if a compilation might be useful to do now. If yes,
+	 * it will compile the code that it has marked so far. If not, nothing will
+	 * happen.
 	 */
 	public void autoCompile() {
 		if (lastAdd > 0 && compileThreshold <= 0 && !failed) {
@@ -131,8 +129,7 @@ public class Jit {
 	/**
 	 * Calls the actual compiled bytecode of a Term.
 	 * 
-	 * @param term
-	 *            the term
+	 * @param term the term
 	 * @return the result
 	 */
 	public Object call(Term term) {
@@ -169,7 +166,8 @@ public class Jit {
 
 							StringBuilder varStr = new StringBuilder();
 							for (Variable var : vars) {
-								varStr.append("\npublic Variable ").append(VarUtils.relabel(var.getName())).append("=null;\n");
+								varStr.append("\npublic Variable ").append(VarUtils.relabel(var.getName()))
+										.append("=null;\n");
 							}
 							source = source.replace("[vars]", varStr.toString());
 
@@ -179,13 +177,15 @@ public class Jit {
 							Files.write(sourceFile.toPath(), source.getBytes(StandardCharsets.UTF_8));
 							JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 							if (compiler == null) {
-								Logger.log("Unable to run JIT-Compiler! Please run this application using a JDK, not a JRE!");
+								Logger.log(
+										"Unable to run JIT-Compiler! Please run this application using a JDK, not a JRE!");
 								failed = true;
 								return;
 							}
 							compiler.run(null, null, null, sourceFile.getPath());
 
-							URLClassLoader classLoader = URLClassLoader.newInstance(new URL[] { new File(".").toURI().toURL() });
+							URLClassLoader classLoader = URLClassLoader
+									.newInstance(new URL[] { new File(".").toURI().toURL() });
 							Class<?> cls = Class.forName(clazzName, true, classLoader);
 							Jitted jittedCode = (Jitted) cls.newInstance();
 							jittedCode.setVars(vars.toArray(new Variable[vars.size()]));
@@ -194,13 +194,14 @@ public class Jit {
 								jittedCode.getClass().getField(VarUtils.relabel(var.getName())).set(jittedCode, var);
 							}
 
-							Logger.log("JIT-Compiler executed in " + (System.currentTimeMillis() - s) + "ms, " + jittedTerms.size() + " methods compiled into " + clazzName
-									+ ".class!");
+							Logger.log("JIT-Compiler executed in " + (System.currentTimeMillis() - s) + "ms, "
+									+ jittedTerms.size() + " methods compiled into " + clazzName + ".class!");
 
 							for (Term jittedTerm : jittedTerms) {
 								try {
 									jittedTerm.setJittedInstance(jittedCode);
-									jittedTerm.setJittedMethod(jittedCode.getClass().getMethod("m" + jittedTerm.getId()));
+									jittedTerm
+											.setJittedMethod(jittedCode.getClass().getMethod("m" + jittedTerm.getId()));
 								} catch (Exception e) {
 									throw new RuntimeException("Internal JIT error: " + jittedTerm, e);
 								}

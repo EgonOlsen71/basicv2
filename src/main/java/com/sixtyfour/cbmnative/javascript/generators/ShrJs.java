@@ -6,8 +6,8 @@ package com.sixtyfour.cbmnative.javascript.generators;
  */
 public class ShrJs extends CalculationJs {
 
-    public ShrJs() {
-	super("SHR", "{to}/Math.pow(2,{from})");
-    }
+	public ShrJs() {
+		super("SHR", "{to}/Math.pow(2,{from})");
+	}
 
 }

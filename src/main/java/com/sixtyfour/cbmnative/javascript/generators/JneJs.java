@@ -11,20 +11,20 @@ import com.sixtyfour.cbmnative.GeneratorContext;
  */
 public class JneJs extends JumpBaseJs {
 
-    public JneJs() {
-	super("", null);
-    }
+	public JneJs() {
+		super("", null);
+	}
 
-    @Override
-    public String getMnemonic() {
-	return "JNE";
-    }
+	@Override
+	public String getMnemonic() {
+		return "JNE";
+	}
 
-    @Override
-    public void generateCode(GeneratorContext context, String line, List<String> nCode, List<String> subCode,
-	    Map<String, String> name2label) {
-	String[] parts = line.split(" ");
-	nCode.add("if (this._zeroflag==1) {");
-	nCode.add("return \""+parts[1].trim() + "\";}");
-    }
+	@Override
+	public void generateCode(GeneratorContext context, String line, List<String> nCode, List<String> subCode,
+			Map<String, String> name2label) {
+		String[] parts = line.split(" ");
+		nCode.add("if (this._zeroflag==1) {");
+		nCode.add("return \"" + parts[1].trim() + "\";}");
+	}
 }

@@ -6,8 +6,8 @@ package com.sixtyfour.cbmnative.javascript.generators;
  */
 public class NeqJs extends ComparisonJs {
 
-    NeqJs() {
-	super("NEQ", "!=");
-    }
+	NeqJs() {
+		super("NEQ", "!=");
+	}
 
 }

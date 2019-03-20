@@ -6,7 +6,7 @@ package com.sixtyfour.cbmnative.powerscript.generators;
  */
 public class CosPs extends CalculationPs {
 
-    public CosPs() {
-	super("COS", "([math]::cos({from}))");
-    }
+	public CosPs() {
+		super("COS", "([math]::cos({from}))");
+	}
 }

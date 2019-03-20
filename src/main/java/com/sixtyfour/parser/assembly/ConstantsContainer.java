@@ -16,8 +16,7 @@ public class ConstantsContainer {
 	/**
 	 * Puts a constant into the container.
 	 * 
-	 * @param val
-	 *            the new constant
+	 * @param val the new constant
 	 */
 	public void put(ConstantValue val) {
 		constants.put(val.getName(), val);
@@ -26,8 +25,7 @@ public class ConstantsContainer {
 	/**
 	 * Gets a constant from the container or null, if it doesn't exist.
 	 * 
-	 * @param name
-	 *            the name of the constant
+	 * @param name the name of the constant
 	 * @return the constant or null
 	 */
 	public ConstantValue get(String name) {

@@ -6,8 +6,8 @@ package com.sixtyfour.cbmnative.powerscript.generators;
  */
 public class DivPs extends CalculationPs {
 
-    public DivPs()  {
-	super("DIV", "{to}/{from}");
-    }
+	public DivPs() {
+		super("DIV", "{to}/{from}");
+	}
 
 }

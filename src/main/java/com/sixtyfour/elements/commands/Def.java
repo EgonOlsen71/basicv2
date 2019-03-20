@@ -48,11 +48,12 @@ public class Def extends AbstractCommand {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String,
-	 * int, int, int, boolean, sixtyfour.system.Machine)
+	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String, int,
+	 * int, int, boolean, sixtyfour.system.Machine)
 	 */
 	@Override
-	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
+	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos,
+			boolean lastPos, Machine machine) {
 		super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine);
 		linePart = TermEnhancer.removeWhiteSpace(linePart);
 		int pos = linePart.indexOf('(');
@@ -114,8 +115,7 @@ public class Def extends AbstractCommand {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * sixtyfour.elements.commands.AbstractCommand#eval(sixtyfour.system.Machine
-	 * )
+	 * sixtyfour.elements.commands.AbstractCommand#eval(sixtyfour.system.Machine )
 	 */
 	@Override
 	public Object eval(Machine machine) {
@@ -126,7 +126,7 @@ public class Def extends AbstractCommand {
 	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
 		Command cmd = machine.getFunction(fnName);
 		if (cmd != null && !cmd.getTerm().toString().equals(this.getTerm().toString())) {
-			throw new RuntimeException("Redef'd function error: " + fnName+"/"+cmd.getTerm());
+			throw new RuntimeException("Redef'd function error: " + fnName + "/" + cmd.getTerm());
 		}
 		machine.setFunction(fnName, this);
 		NativeCompiler compiler = NativeCompiler.getCompiler();
@@ -162,8 +162,7 @@ public class Def extends AbstractCommand {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.
+	 * @see sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.
 	 * Machine)
 	 */
 	@Override

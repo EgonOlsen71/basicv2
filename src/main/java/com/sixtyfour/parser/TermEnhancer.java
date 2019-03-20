@@ -265,7 +265,7 @@ public class TermEnhancer {
 				sb.setLength(0);
 			}
 		}
-		//System.out.println("AB: " + term);
+		// System.out.println("AB: " + term);
 		return term;
 	}
 
@@ -428,7 +428,7 @@ public class TermEnhancer {
 						// between the * and the -
 						return i;
 					}
-					//return i;
+					// return i;
 				}
 				if (c == '(') {
 					brackets++;

@@ -14,17 +14,16 @@ import com.sixtyfour.system.Machine;
 public interface Atom {
 
 	/**
-	 * Returns the Type that this Atom is supposed to return when calling the
-	 * eval() method.
+	 * Returns the Type that this Atom is supposed to return when calling the eval()
+	 * method.
 	 * 
 	 * @return the type
 	 */
 	Type getType();
 
 	/**
-	 * Returns the Type that this Atom is supposed to return when calling the
-	 * eval() method. This method ignores mismatching types and returns REAL
-	 * instead.
+	 * Returns the Type that this Atom is supposed to return when calling the eval()
+	 * method. This method ignores mismatching types and returns REAL instead.
 	 * 
 	 * @return the type
 	 */
@@ -33,18 +32,16 @@ public interface Atom {
 	/**
 	 * Evaluates this Atom in the context of the current machine state.
 	 * 
-	 * @param machine
-	 *            the machine
-	 * @return the result of the evaluation. This will be either null, an
-	 *         Integer, a Float or a String.
+	 * @param machine the machine
+	 * @return the result of the evaluation. This will be either null, an Integer, a
+	 *         Float or a String.
 	 */
 	Object eval(Machine machine);
 
 	/**
 	 * "Evaluates" an Atom to "native" code.
 	 * 
-	 * @param machine
-	 *            the machine
+	 * @param machine the machine
 	 * @return the result list
 	 */
 	List<CodeContainer> evalToCode(CompilerConfig config, Machine machine);
@@ -57,18 +54,18 @@ public interface Atom {
 	boolean isTerm();
 
 	/**
-	 * Converts some Atoms into Java-Code. If that's not possible, null has to
-	 * be returned
+	 * Converts some Atoms into Java-Code. If that's not possible, null has to be
+	 * returned
 	 * 
 	 * @return the code or null
 	 */
 	String toCode(Machine machine);
 
 	/**
-	 * Returns is this atom is safe to be considered constant, i.e. it's known
-	 * not to change during execution. If this returns false, that doesn't mean
-	 * that the actual atom isn't constant. It just means that we don't know for
-	 * sure or maybe just don't care for this particular type.
+	 * Returns is this atom is safe to be considered constant, i.e. it's known not
+	 * to change during execution. If this returns false, that doesn't mean that the
+	 * actual atom isn't constant. It just means that we don't know for sure or
+	 * maybe just don't care for this particular type.
 	 * 
 	 * @return is it constant?
 	 */

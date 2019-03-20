@@ -40,8 +40,7 @@ public class Rotator {
 	/**
 	 * Sets the zoom. Below 1 zooms out, larger than 1 zooms in
 	 * 
-	 * @param zoom
-	 *            float the zoom
+	 * @param zoom float the zoom
 	 */
 	public void setZoom(float zoom) {
 		orgZoom = zoom;
@@ -65,10 +64,8 @@ public class Rotator {
 	/**
 	 * Sets the rotation pivot in the target picture's coordinate system.
 	 * 
-	 * @param xp
-	 *            int x-position of the pivot
-	 * @param yp
-	 *            int y-position of the pivot
+	 * @param xp int x-position of the pivot
+	 * @param yp int y-position of the pivot
 	 */
 	public void setRotationPivot(int xp, int yp) {
 		int shft = 0;
@@ -86,14 +83,11 @@ public class Rotator {
 	/**
 	 * Creates a rotated and zoomed picture
 	 * 
-	 * @param xPos
-	 *            float the x-position of the rotation pivot relative to the
-	 *            source bitmap
-	 * @param yPos
-	 *            float the y-position of the rotation pivot relative to the
-	 *            source bitmap
-	 * @param angle
-	 *            float the turning angle
+	 * @param xPos  float the x-position of the rotation pivot relative to the
+	 *              source bitmap
+	 * @param yPos  float the y-position of the rotation pivot relative to the
+	 *              source bitmap
+	 * @param angle float the turning angle
 	 * @return Image the picture
 	 */
 	public BufferedImage createView(float xPos, float yPos, float angle) {

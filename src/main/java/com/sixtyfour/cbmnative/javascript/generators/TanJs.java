@@ -6,7 +6,7 @@ package com.sixtyfour.cbmnative.javascript.generators;
  */
 public class TanJs extends CalculationJs {
 
-    public TanJs() {
-	super("TAN", "Math.tan({from})");
-    }
+	public TanJs() {
+		super("TAN", "Math.tan({from})");
+	}
 }

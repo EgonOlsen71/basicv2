@@ -6,7 +6,7 @@ package com.sixtyfour.cbmnative.powerscript.generators;
  */
 public class LogPs extends CalculationPs {
 
-    public LogPs() {
-	super("LOG", "([math]::log({from}))");
-    }
+	public LogPs() {
+		super("LOG", "([math]::log({from}))");
+	}
 }

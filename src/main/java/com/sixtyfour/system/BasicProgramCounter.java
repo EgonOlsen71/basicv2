@@ -30,10 +30,8 @@ public class BasicProgramCounter {
 	/**
 	 * Instantiates a new program counter.
 	 * 
-	 * @param cnt
-	 *            the line count
-	 * @param pos
-	 *            the position in the line
+	 * @param cnt the line count
+	 * @param pos the position in the line
 	 */
 	public BasicProgramCounter(int cnt, int pos) {
 		this.lineCnt = cnt;
@@ -52,8 +50,7 @@ public class BasicProgramCounter {
 	/**
 	 * Sets the position in the line.
 	 * 
-	 * @param linePos
-	 *            the new line position
+	 * @param linePos the new line position
 	 */
 	public void setLinePos(int linePos) {
 		this.linePos = linePos;
@@ -71,8 +68,7 @@ public class BasicProgramCounter {
 	/**
 	 * Sets the line count.
 	 * 
-	 * @param lineCnt
-	 *            the new line count
+	 * @param lineCnt the new line count
 	 */
 	public void setLineCnt(int lineCnt) {
 		this.lineCnt = lineCnt;
@@ -90,8 +86,7 @@ public class BasicProgramCounter {
 	/**
 	 * Sets if the program is supposed to end.
 	 * 
-	 * @param end
-	 *            Is it?
+	 * @param end Is it?
 	 */
 	public void setEnd(boolean end) {
 		this.end = end;
@@ -109,8 +104,7 @@ public class BasicProgramCounter {
 	/**
 	 * Sets the line number.
 	 * 
-	 * @param lineNumber
-	 *            the new line number
+	 * @param lineNumber the new line number
 	 */
 	public void setLineNumber(int lineNumber) {
 		this.lineNumber = lineNumber;
@@ -128,8 +122,7 @@ public class BasicProgramCounter {
 	/**
 	 * Sets if the program is supposed to skip the rest of the line.
 	 * 
-	 * @param skip
-	 *            Is it?
+	 * @param skip Is it?
 	 */
 	public void setSkip(boolean skip) {
 		this.skip = skip;
@@ -147,8 +140,7 @@ public class BasicProgramCounter {
 	/**
 	 * Sets if the program is supposed to stop.
 	 * 
-	 * @param stop
-	 *            Is it?
+	 * @param stop Is it?
 	 */
 	public void setStop(boolean stop) {
 		this.stop = stop;
@@ -166,8 +158,7 @@ public class BasicProgramCounter {
 	/**
 	 * Sets if the runtime has encountered a list command.
 	 * 
-	 * @param list
-	 *            Has it?
+	 * @param list Has it?
 	 */
 	public void setList(boolean list) {
 		this.list = list;

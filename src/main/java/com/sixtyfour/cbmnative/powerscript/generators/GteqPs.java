@@ -6,8 +6,8 @@ package com.sixtyfour.cbmnative.powerscript.generators;
  */
 public class GteqPs extends ComparisonPs {
 
-    GteqPs() {
-	super("GTEQ", " -ge ");
-    }
+	GteqPs() {
+		super("GTEQ", " -ge ");
+	}
 
 }

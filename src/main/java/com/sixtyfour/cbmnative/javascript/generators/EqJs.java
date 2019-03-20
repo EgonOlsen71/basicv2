@@ -6,8 +6,8 @@ package com.sixtyfour.cbmnative.javascript.generators;
  */
 public class EqJs extends ComparisonJs {
 
-    EqJs() {
-	super("EQ", "==");
-    }
+	EqJs() {
+		super("EQ", "==");
+	}
 
 }

@@ -21,7 +21,8 @@ public abstract class JumpBaseJs extends GeneratorBaseJs {
 	}
 
 	@Override
-	public void generateCode(GeneratorContext context, String line, List<String> nCode, List<String> subCode, Map<String, String> name2label) {
+	public void generateCode(GeneratorContext context, String line, List<String> nCode, List<String> subCode,
+			Map<String, String> name2label) {
 		// Logger.log(line);
 		String[] parts = line.split(" ");
 		String label = parts[1];
@@ -31,15 +32,15 @@ public abstract class JumpBaseJs extends GeneratorBaseJs {
 			nCode.add("R" + cmd + "_" + CNT + ":");
 			CNT++;
 		} else {
-			String p1=parts[1].trim();
+			String p1 = parts[1].trim();
 			if (Character.isDigit(label.charAt(0)) || label.startsWith("SKIP") || label.startsWith("NSKIP")) {
-			    nCode.add(("return " + parts[1].trim() + ";").trim());
+				nCode.add(("return " + parts[1].trim() + ";").trim());
 			} else {
-			    String pre="this.";
-			    if (p1.equals("RETURN")) {
-				pre="return this.";
-			    } 
-			    nCode.add(pre+(cmd + " " + p1+((cmd.isEmpty()&&!p1.endsWith(")"))?"();":";")).trim());
+				String pre = "this.";
+				if (p1.equals("RETURN")) {
+					pre = "return this.";
+				}
+				nCode.add(pre + (cmd + " " + p1 + ((cmd.isEmpty() && !p1.endsWith(")")) ? "();" : ";")).trim());
 			}
 		}
 	}

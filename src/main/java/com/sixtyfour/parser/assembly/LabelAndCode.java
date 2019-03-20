@@ -15,10 +15,8 @@ public class LabelAndCode {
 	/**
 	 * Creates a new instance.
 	 * 
-	 * @param label
-	 *            the label
-	 * @param code
-	 *            the code
+	 * @param label the label
+	 * @param code  the code
 	 */
 	public LabelAndCode(String label, String code) {
 		this.setLabel(label);
@@ -37,8 +35,7 @@ public class LabelAndCode {
 	/**
 	 * Sets the label
 	 * 
-	 * @param label
-	 *            the label
+	 * @param label the label
 	 */
 	public void setLabel(String label) {
 		this.label = label;
@@ -56,8 +53,7 @@ public class LabelAndCode {
 	/**
 	 * Sets the code
 	 * 
-	 * @param code
-	 *            the code
+	 * @param code the code
 	 */
 	public void setCode(String code) {
 		this.code = code;

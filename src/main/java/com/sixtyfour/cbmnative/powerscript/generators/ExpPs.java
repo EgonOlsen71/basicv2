@@ -6,7 +6,7 @@ package com.sixtyfour.cbmnative.powerscript.generators;
  */
 public class ExpPs extends CalculationPs {
 
-    public ExpPs() {
-	super("EXP", "([math]::exp({from}))");
-    }
+	public ExpPs() {
+		super("EXP", "([math]::exp({from}))");
+	}
 }

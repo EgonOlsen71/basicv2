@@ -23,8 +23,7 @@ public interface Function extends Atom {
 	/**
 	 * Checks if some string matches this function's name.
 	 * 
-	 * @param function
-	 *            the function
+	 * @param function the function
 	 * @return true, if is function
 	 */
 	boolean isFunction(String function);
@@ -46,19 +45,16 @@ public interface Function extends Atom {
 	/**
 	 * Sets the term to which the function should be applied to.
 	 * 
-	 * @param term
-	 *            the new term
+	 * @param term the new term
 	 */
 	void setTerm(Term term);
 
 	/**
-	 * Parses a string as this function. If successful, it sets this instances'
-	 * term to the parsed result.
+	 * Parses a string as this function. If successful, it sets this instances' term
+	 * to the parsed result.
 	 * 
-	 * @param linePart
-	 *            the input string
-	 * @param machine
-	 *            the current machine
+	 * @param linePart the input string
+	 * @param machine  the current machine
 	 */
 	void parse(CompilerConfig config, String linePart, Machine machine);
 
@@ -72,23 +68,22 @@ public interface Function extends Atom {
 	/**
 	 * Sets the function's name. This is used for user defined functions only.
 	 * 
-	 * @param functionName
-	 *            the function's name
+	 * @param functionName the function's name
 	 */
 	void setFunctionName(String functionName);
 
 	/**
-	 * Returns true, if the function call will return the same value every time
-	 * it's called with the same input. This is true for mathematical functions
-	 * and such but false for RND or PEEK.
+	 * Returns true, if the function call will return the same value every time it's
+	 * called with the same input. This is true for mathematical functions and such
+	 * but false for RND or PEEK.
 	 * 
 	 * @return
 	 */
 	boolean isDeterministic();
 
 	/**
-	 * Returns the actual string that defines this function (i.e. how it has
-	 * been written in the code).
+	 * Returns the actual string that defines this function (i.e. how it has been
+	 * written in the code).
 	 * 
 	 * @return the string
 	 */

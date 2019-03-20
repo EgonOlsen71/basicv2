@@ -18,8 +18,7 @@ public class RamSystemCallListener implements SystemCallListener {
 	/**
 	 * Creates a new instance.
 	 * 
-	 * @param machine
-	 *            the machine to use
+	 * @param machine the machine to use
 	 */
 	public RamSystemCallListener(Machine machine) {
 		this.machine = machine;

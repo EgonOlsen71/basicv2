@@ -39,7 +39,8 @@ public class Operand {
 	}
 
 	/**
-	 * Gets the name of the register of the operand. This is the name that it gets in native code.
+	 * Gets the name of the register of the operand. This is the name that it gets
+	 * in native code.
 	 * 
 	 * @return the name
 	 */
@@ -88,7 +89,7 @@ public class Operand {
 	public String getAddress() {
 		return address;
 	}
-	
+
 	/**
 	 * Sets the address.
 	 * 

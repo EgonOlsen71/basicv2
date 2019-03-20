@@ -15,18 +15,15 @@ public interface OutputChannel extends PrintConsumer {
 	/**
 	 * Sets the cursor position.
 	 * 
-	 * @param cursor
-	 *            the new cursor position
+	 * @param cursor the new cursor position
 	 */
 	void setCursor(int cursor);
 
 	/**
 	 * Sets the print consumer.
 	 * 
-	 * @param otherConsumer
-	 *            the print consumer
-	 * @param channel
-	 *            the channel
+	 * @param otherConsumer the print consumer
+	 * @param channel       the channel
 	 */
 	void setPrintConsumer(PrintConsumer otherConsumer, int channel);
 

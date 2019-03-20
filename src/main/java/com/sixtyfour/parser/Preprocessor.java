@@ -50,12 +50,11 @@ public class Preprocessor {
 	private final static int START = 100;
 
 	/**
-	 * Converts a BASIC program with labels and without line numbers into one
-	 * with line numbers only. If the code can't be converted properly, this
-	 * method will throw an exception.
+	 * Converts a BASIC program with labels and without line numbers into one with
+	 * line numbers only. If the code can't be converted properly, this method will
+	 * throw an exception.
 	 * 
-	 * @param code
-	 *            the code with labels
+	 * @param code the code with labels
 	 * @return the code with line numbers
 	 */
 	public static String[] convertToLineNumbers(String[] code) {

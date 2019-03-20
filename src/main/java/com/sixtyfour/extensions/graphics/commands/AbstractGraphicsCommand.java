@@ -20,7 +20,8 @@ public abstract class AbstractGraphicsCommand extends AbstractCommand {
 		super(name);
 	}
 
-	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine, int parCount, int addPars) {
+	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos,
+			boolean lastPos, Machine machine, int parCount, int addPars) {
 		super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine);
 		term = Parser.getTerm(config, this, linePart, machine, true);
 		pars = Parser.getParameters(term);

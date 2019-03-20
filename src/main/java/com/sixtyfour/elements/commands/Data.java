@@ -24,10 +24,11 @@ public class Data extends AbstractCommand {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String,
-	 * int, int, int, boolean, sixtyfour.system.Machine)
+	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String, int,
+	 * int, int, boolean, sixtyfour.system.Machine)
 	 */
-	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
+	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos,
+			boolean lastPos, Machine machine) {
 		super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine);
 		List<String> parts = getParts(linePart.substring(4), lastPos);
 
@@ -55,10 +56,8 @@ public class Data extends AbstractCommand {
 	/**
 	 * Gets the parts.
 	 * 
-	 * @param line
-	 *            the line
-	 * @param lastPos
-	 *            the last pos
+	 * @param line    the line
+	 * @param lastPos the last pos
 	 * @return the parts
 	 */
 	private List<String> getParts(String line, boolean lastPos) {
@@ -115,8 +114,7 @@ public class Data extends AbstractCommand {
 	/**
 	 * Gets the text.
 	 * 
-	 * @param sb
-	 *            the sb
+	 * @param sb the sb
 	 * @return the text
 	 */
 	private String getText(StringBuilder sb) {

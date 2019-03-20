@@ -6,7 +6,7 @@ package com.sixtyfour.cbmnative.powerscript.generators;
  */
 public class SinPs extends CalculationPs {
 
-    public SinPs() {
-	super("SIN", "([math]::sin({from}))");
-    }
+	public SinPs() {
+		super("SIN", "([math]::sin({from}))");
+	}
 }

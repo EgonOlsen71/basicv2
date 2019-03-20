@@ -12,8 +12,7 @@ import com.sixtyfour.util.VarUtils;
 /**
  * A constant of some type.
  * 
- * @param <T>
- *            the generic type
+ * @param <T> the generic type
  */
 public class Constant<T> implements Atom {
 
@@ -26,8 +25,7 @@ public class Constant<T> implements Atom {
 	/**
 	 * Instantiates a new constant.
 	 * 
-	 * @param value
-	 *            the value
+	 * @param value the value
 	 */
 	public Constant(T value) {
 		this.value = value;

@@ -41,8 +41,7 @@ public class Cpu {
 	/**
 	 * Creates a new cpu for a given machine.
 	 * 
-	 * @param machine
-	 *            the machine
+	 * @param machine the machine
 	 */
 	Cpu(Machine machine) {
 		this.machine = machine;
@@ -60,8 +59,7 @@ public class Cpu {
 	/**
 	 * Sets a new cpu tracer.
 	 * 
-	 * @param cpuTracer
-	 *            the tracer
+	 * @param cpuTracer the tracer
 	 */
 	public void setCpuTracer(CpuTracer cpuTracer) {
 		this.cpuTracer = cpuTracer;
@@ -70,8 +68,7 @@ public class Cpu {
 	/**
 	 * Returns the abstract instruction in human readable form.
 	 * 
-	 * @param opcode
-	 *            the opcode to check
+	 * @param opcode the opcode to check
 	 * @return the instruction
 	 */
 	public String getInstruction(int opcode) {
@@ -86,8 +83,8 @@ public class Cpu {
 	}
 
 	/**
-	 * Returns the number of clock ticks that has passed. Each executed command
-	 * will increase this number by the appropriate amount.
+	 * Returns the number of clock ticks that has passed. Each executed command will
+	 * increase this number by the appropriate amount.
 	 * 
 	 * @return the number of clock ticks
 	 */
@@ -96,11 +93,10 @@ public class Cpu {
 	}
 
 	/**
-	 * Sets a new clock tick count. This can be used to reset the counter.
-	 * Setting this value has no effect on the actual execution of the program.
+	 * Sets a new clock tick count. This can be used to reset the counter. Setting
+	 * this value has no effect on the actual execution of the program.
 	 * 
-	 * @param ticks
-	 *            the new number of ticks
+	 * @param ticks the new number of ticks
 	 */
 	public void setClockTicks(long ticks) {
 		this.ticks = ticks;
@@ -115,8 +111,8 @@ public class Cpu {
 	}
 
 	/**
-	 * Causes a maskable interrupt. This has to be done from a thread other than
-	 * the actual execution thread.
+	 * Causes a maskable interrupt. This has to be done from a thread other than the
+	 * actual execution thread.
 	 */
 	public synchronized void irq() {
 		irq = true;
@@ -133,8 +129,7 @@ public class Cpu {
 	 * Pauses/unpauses the cpu. This has to be done from a thread other than the
 	 * actual execution thread.
 	 * 
-	 * @param paused
-	 *            should we pause?
+	 * @param paused should we pause?
 	 */
 	public void setPaused(boolean paused) {
 		this.paused = paused;
@@ -161,8 +156,7 @@ public class Cpu {
 	/**
 	 * Sets the accumulator's content.
 	 * 
-	 * @param acc
-	 *            the new content
+	 * @param acc the new content
 	 */
 	public void setAcc(int acc) {
 		this.acc = acc & 0xff;
@@ -180,8 +174,7 @@ public class Cpu {
 	/**
 	 * Sets the X register's content.
 	 * 
-	 * @param x
-	 *            the content
+	 * @param x the content
 	 */
 	public void setX(int x) {
 		this.x = x & 0xff;
@@ -199,8 +192,7 @@ public class Cpu {
 	/**
 	 * Sets the Y register's content.
 	 * 
-	 * @param y
-	 *            the content
+	 * @param y the content
 	 */
 	public void setY(int y) {
 		this.y = y & 0xff;
@@ -218,8 +210,7 @@ public class Cpu {
 	/**
 	 * Sets the status register's content.
 	 * 
-	 * @param status
-	 *            the new content
+	 * @param status the new content
 	 */
 	public void setStatus(int status) {
 		this.status = status & 0xff;
@@ -314,16 +305,15 @@ public class Cpu {
 	/**
 	 * Sets the stack pointer.
 	 * 
-	 * @param stackPointer
-	 *            the stack pointer
+	 * @param stackPointer the stack pointer
 	 */
 	public void setStackPointer(int stackPointer) {
 		this.stackPointer = stackPointer;
 	}
 
 	/**
-	 * Should the execution stops once it encounters a BRK (opcode 0)? Default
-	 * is true.
+	 * Should the execution stops once it encounters a BRK (opcode 0)? Default is
+	 * true.
 	 * 
 	 * @return Should it?
 	 */
@@ -335,8 +325,7 @@ public class Cpu {
 	 * Sets if the execution should stop once it encounters a BRK (opcode 0)?
 	 * Default is true.
 	 * 
-	 * @param exitOnBreak
-	 *            Should it?
+	 * @param exitOnBreak Should it?
 	 */
 	public void setExitOnBreak(boolean exitOnBreak) {
 		this.exitOnBreak = exitOnBreak;
@@ -360,8 +349,7 @@ public class Cpu {
 	/**
 	 * Runs a program on the cpu.
 	 * 
-	 * @param prg
-	 *            the program
+	 * @param prg the program
 	 */
 	public void execute(Program prg) {
 		machine.putProgram(prg);
@@ -371,8 +359,7 @@ public class Cpu {
 	/**
 	 * Runs a program that already resides in the machine's memory.
 	 * 
-	 * @param startAddress
-	 *            the start address of the program in memory
+	 * @param startAddress the start address of the program in memory
 	 */
 	public void execute(int startAddress) {
 		pc = startAddress;
@@ -425,7 +412,8 @@ public class Cpu {
 				}
 			}
 
-			// System.out.println("cmd: "+Integer.toHexString(cmd)+"/"+ram[pc]+"/"+ram[pc-1]+"/"+pc+"/"+ram[3448]);
+			// System.out.println("cmd:
+			// "+Integer.toHexString(cmd)+"/"+ram[pc]+"/"+ram[pc-1]+"/"+pc+"/"+ram[3448]);
 
 			switch (cmd) {
 
@@ -1034,7 +1022,8 @@ public class Cpu {
 				if (cpuTracer != null) {
 					cpuTracer.exception(this, cmd, lastPc, pc);
 				}
-				throw new RuntimeException(pc + ": Illegal opcode @:" + Integer.toHexString(lastPc) + "/" + Integer.toHexString(pc) + " $" + Integer.toHexString(cmd));
+				throw new RuntimeException(pc + ": Illegal opcode @:" + Integer.toHexString(lastPc) + "/"
+						+ Integer.toHexString(pc) + " $" + Integer.toHexString(cmd));
 			}
 
 			if (cpuTracer != null) {
@@ -2040,8 +2029,7 @@ public class Cpu {
 	/**
 	 * Set a new CpuCallListener.
 	 * 
-	 * @param cpuCallListener
-	 *            the new listener
+	 * @param cpuCallListener the new listener
 	 */
 	public void setCpuCallListener(CpuCallListener cpuCallListener) {
 		this.cpuCallListener = cpuCallListener;
@@ -2111,7 +2099,8 @@ public class Cpu {
 		setFlags(a, a, negative, zero, false, false, false);
 	}
 
-	private void setFlags(int a, int oldA, boolean negative, boolean zero, boolean overflow, boolean carry, boolean wasAdd) {
+	private void setFlags(int a, int oldA, boolean negative, boolean zero, boolean overflow, boolean carry,
+			boolean wasAdd) {
 		if (negative) {
 			status = (status & 0b01111111) | (a & 0b10000000);
 		}

@@ -83,8 +83,10 @@ public class Let extends AbstractCommand implements Assignment {
 		if (VarUtils.toUpper(linePart).startsWith("LET")) {
 			linePart = linePart.substring(3).trim();
 		}
-		// varExists is true, if the variable has been used in the code before. This isn't tracing, it just checks for
-		// occurences before regarding line numbers. So this isn't perfect, but still better than nothing. It's here
+		// varExists is true, if the variable has been used in the code before. This
+		// isn't tracing, it just checks for
+		// occurences before regarding line numbers. So this isn't perfect, but still
+		// better than nothing. It's here
 		// to reduce the chance of over-optimizing when constant folding.
 		boolean varExist = Parser.hasVariableAdded(linePart, machine, true);
 		var = Parser.getVariable(linePart, machine);

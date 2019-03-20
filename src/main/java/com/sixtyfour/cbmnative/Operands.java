@@ -6,7 +6,8 @@ import java.util.Map;
 import com.sixtyfour.elements.Type;
 
 /**
- * A class to represent the operands in intermediate code, like X and Y in MOV X,Y.
+ * A class to represent the operands in intermediate code, like X and Y in MOV
+ * X,Y.
  * 
  * @author EgonOlsen
  * 
@@ -18,7 +19,7 @@ public class Operands {
 	/**
 	 * Creates a new instance.
 	 * 
-	 * @param command the command (including the operands)
+	 * @param command    the command (including the operands)
 	 * @param name2label a mapping between names and labels
 	 */
 	public Operands(String command, Map<String, String> name2label) {

@@ -12,8 +12,7 @@ public interface Jitted {
 	/**
 	 * Sets the variables that the compiled code accesses
 	 * 
-	 * @param vars
-	 *            the variables
+	 * @param vars the variables
 	 */
 	void setVars(Variable[] vars);
 }

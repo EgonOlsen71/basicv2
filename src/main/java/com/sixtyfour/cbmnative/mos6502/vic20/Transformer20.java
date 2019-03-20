@@ -11,8 +11,9 @@ import com.sixtyfour.cbmnative.mos6502.AbstractTransformer;
 import com.sixtyfour.system.Machine;
 
 /**
- * The transformer for the VIC20 target platform. It generates 6502 assembly code linked together with a VIC20 specific runtime 
- * (which is in fact the same one as the C64 uses for now).
+ * The transformer for the VIC20 target platform. It generates 6502 assembly
+ * code linked together with a VIC20 specific runtime (which is in fact the same
+ * one as the C64 uses for now).
  * 
  * @author EgonOlsen
  * 
@@ -23,13 +24,13 @@ public class Transformer20 extends AbstractTransformer {
 	 * 
 	 */
 	public Transformer20() {
-	    variableStart = -1;
-	    runtimeStart = -1;
-	    stringMemoryEnd = 0; // will be adjusted in the runtime according to 55/56
-	    startAddress = 4632;
-	    preferZeropage = true;
+		variableStart = -1;
+		runtimeStart = -1;
+		stringMemoryEnd = 0; // will be adjusted in the runtime according to 55/56
+		startAddress = 4632;
+		preferZeropage = true;
 	}
-	
+
 	@Override
 	public List<String> transform(Machine machine, PlatformProvider platform, List<String> code) {
 		Logger.log("Compiling into native assembly code...");
@@ -89,7 +90,7 @@ public class Transformer20 extends AbstractTransformer {
 		res.add("WRITETIS = $C9E7"); // ok
 		res.add("GETTI = $DE68"); // ok
 		res.add("GETTIME = $CF7E"); // ok
-		res.add("COPYTIME = $CF87");  // ok
+		res.add("COPYTIME = $CF87"); // ok
 		res.add("TI2FAC = $CF84"); // ok
 		res.add("CHROUT = $FFD2"); // ok
 		res.add("PRINTSTRS = $CB25"); // ok

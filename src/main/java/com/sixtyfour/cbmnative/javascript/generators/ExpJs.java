@@ -6,7 +6,7 @@ package com.sixtyfour.cbmnative.javascript.generators;
  */
 public class ExpJs extends CalculationJs {
 
-    public ExpJs() {
-	super("EXP", "Math.exp({from})");
-    }
+	public ExpJs() {
+		super("EXP", "Math.exp({from})");
+	}
 }

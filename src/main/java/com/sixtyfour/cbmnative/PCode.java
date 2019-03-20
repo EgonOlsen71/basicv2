@@ -15,43 +15,41 @@ import com.sixtyfour.parser.Line;
  *
  */
 public class PCode {
-    private Map<Integer, Line> lines = new HashMap<Integer, Line>();
+	private Map<Integer, Line> lines = new HashMap<Integer, Line>();
 
-    private List<Integer> lineNumbers = new ArrayList<Integer>();
+	private List<Integer> lineNumbers = new ArrayList<Integer>();
 
-    /**
-     * Creates a new instance.
-     * 
-     * @param lineNumbers
-     *            a list of line numbers
-     * @param lines
-     *            the line number to line mapping
-     */
-    public PCode(List<Integer> lineNumbers, Map<Integer, Line> lines) {
-	this.lineNumbers.addAll(lineNumbers);
-	this.lines.putAll(lines);
-    }
+	/**
+	 * Creates a new instance.
+	 * 
+	 * @param lineNumbers a list of line numbers
+	 * @param lines       the line number to line mapping
+	 */
+	public PCode(List<Integer> lineNumbers, Map<Integer, Line> lines) {
+		this.lineNumbers.addAll(lineNumbers);
+		this.lines.putAll(lines);
+	}
 
-    /**
-     * Returns the mapping from line numbers to lines.
-     * 
-     * @return the mapping
-     */
-    public Map<Integer, Line> getLines() {
-	return lines;
-    }
+	/**
+	 * Returns the mapping from line numbers to lines.
+	 * 
+	 * @return the mapping
+	 */
+	public Map<Integer, Line> getLines() {
+		return lines;
+	}
 
-    /**
-     * Returns the list of line numbers.
-     * 
-     * @return the line numbers
-     */
-    public List<Integer> getLineNumbers() {
-	return lineNumbers;
-    }
+	/**
+	 * Returns the list of line numbers.
+	 * 
+	 * @return the line numbers
+	 */
+	public List<Integer> getLineNumbers() {
+		return lineNumbers;
+	}
 
-    public boolean optimize(){
-        return PCodeOptimizer.optimize(this);
-    }
+	public boolean optimize() {
+		return PCodeOptimizer.optimize(this);
+	}
 
 }

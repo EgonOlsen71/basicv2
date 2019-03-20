@@ -13,8 +13,8 @@ public class LogicOr implements LogicOp {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see sixtyfour.parser.logic.LogicOp#eval(sixtyfour.system.Machine,
-	 * boolean, sixtyfour.parser.logic.LogicBlock)
+	 * @see sixtyfour.parser.logic.LogicOp#eval(sixtyfour.system.Machine, boolean,
+	 * sixtyfour.parser.logic.LogicBlock)
 	 */
 	@Override
 	public boolean eval(Machine machine, boolean state, LogicBlock block) {

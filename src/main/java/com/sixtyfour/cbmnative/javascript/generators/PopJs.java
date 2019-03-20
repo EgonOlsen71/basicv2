@@ -18,10 +18,11 @@ public class PopJs extends GeneratorBaseJs {
 	}
 
 	@Override
-	public void generateCode(GeneratorContext context, String line, List<String> nCode, List<String> subCode, Map<String, String> name2label) {
+	public void generateCode(GeneratorContext context, String line, List<String> nCode, List<String> subCode,
+			Map<String, String> name2label) {
 		Operands ops = new Operands(line, name2label);
 		Operand target = ops.getTarget();
-		String to=getOpName(target);
-		nCode.add(to+"=this._stack.pop();");
+		String to = getOpName(target);
+		nCode.add(to + "=this._stack.pop();");
 	}
 }

@@ -21,15 +21,13 @@ public abstract class AbstractMnemonic implements Mnemonic {
 	protected int[] opcodes = null;
 
 	/**
-	 * Creates a new instance for a mnemonic of the given name. The list of
-	 * opcodes has to have a length of 12 and has to contain opcodes for all the
-	 * possible addressing modes that the mnemonic can use. Those that it can't
-	 * use have to be 0.
+	 * Creates a new instance for a mnemonic of the given name. The list of opcodes
+	 * has to have a length of 12 and has to contain opcodes for all the possible
+	 * addressing modes that the mnemonic can use. Those that it can't use have to
+	 * be 0.
 	 * 
-	 * @param name
-	 *            the name
-	 * @param opcodes
-	 *            the list of opcodes
+	 * @param name    the name
+	 * @param opcodes the list of opcodes
 	 */
 	public AbstractMnemonic(String name, int[] opcodes) {
 		this.name = name;
@@ -40,7 +38,8 @@ public abstract class AbstractMnemonic implements Mnemonic {
 	}
 
 	@Override
-	public int parse(CompilerConfig config, String linePart, int addr, Machine machine, ConstantsContainer ccon, LabelsContainer lcon) {
+	public int parse(CompilerConfig config, String linePart, int addr, Machine machine, ConstantsContainer ccon,
+			LabelsContainer lcon) {
 		linePart = linePart.trim().substring(3);
 		Parameters pars = this.parseParameters(config, linePart, addr, ccon, lcon);
 
@@ -52,7 +51,8 @@ public abstract class AbstractMnemonic implements Mnemonic {
 			raiseSyntaxError(linePart);
 		}
 
-		if (opcodes[0] != 0 && pars != null && !isSingle() && this.getOptionalParameter() != null && this.getOptionalParameter().equalsIgnoreCase(pars.getRegister())) {
+		if (opcodes[0] != 0 && pars != null && !isSingle() && this.getOptionalParameter() != null
+				&& this.getOptionalParameter().equalsIgnoreCase(pars.getRegister())) {
 			// Stuff like ROR A...the A can be ignored then.
 			pars = null;
 		}
@@ -99,7 +99,8 @@ public abstract class AbstractMnemonic implements Mnemonic {
 							if (offset <= 127 && offset >= -128) {
 								addr = storeByte(ram, opcodes[11], offset, addr);
 							} else {
-								throw new RuntimeException("Destination address out of range: " + pars.getAddr() + "/" + addr + "/" + offset);
+								throw new RuntimeException("Destination address out of range: " + pars.getAddr() + "/"
+										+ addr + "/" + offset);
 							}
 						}
 					}
@@ -244,7 +245,8 @@ public abstract class AbstractMnemonic implements Mnemonic {
 		return addr;
 	}
 
-	protected Parameters parseParameters(CompilerConfig config, String pars, int addr, ConstantsContainer ccon, LabelsContainer lcon) {
+	protected Parameters parseParameters(CompilerConfig config, String pars, int addr, ConstantsContainer ccon,
+			LabelsContainer lcon) {
 		pars = TermEnhancer.removeWhiteSpace(pars);
 
 		if (pars.isEmpty()) {
@@ -274,7 +276,8 @@ public abstract class AbstractMnemonic implements Mnemonic {
 		String part1 = indexed ? pars.substring(0, indexedPos) : pars;
 		String part2 = indexed ? VarUtils.toUpper(pars.substring(indexedPos + 1)) : "";
 
-		if (isIndirect && !((part2.isEmpty() && part1.endsWith(")")) || (part2.endsWith(")") && part2.startsWith("X")) || (part1.endsWith(")") && part2.startsWith("Y")))) {
+		if (isIndirect && !((part2.isEmpty() && part1.endsWith(")")) || (part2.endsWith(")") && part2.startsWith("X"))
+				|| (part1.endsWith(")") && part2.startsWith("Y")))) {
 			throw new RuntimeException("Invalid indirect addressing: " + pars);
 		}
 

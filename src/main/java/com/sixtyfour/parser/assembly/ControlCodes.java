@@ -5,7 +5,8 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * A mapper for converting control codes in the modern cross platform IDE style into actual PETSCII characters.
+ * A mapper for converting control codes in the modern cross platform IDE style
+ * into actual PETSCII characters.
  * 
  * @author EgonOlsen
  * 

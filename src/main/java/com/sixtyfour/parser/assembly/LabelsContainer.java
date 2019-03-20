@@ -26,8 +26,7 @@ public class LabelsContainer {
 	/**
 	 * Creates a new LabelsContainer for a machine.
 	 * 
-	 * @param machine
-	 *            the machine
+	 * @param machine the machine
 	 */
 	public LabelsContainer(Machine machine) {
 		this.machine = machine;
@@ -36,10 +35,8 @@ public class LabelsContainer {
 	/**
 	 * Puts a new label with an address into the container.
 	 * 
-	 * @param label
-	 *            the label
-	 * @param value
-	 *            its address/value
+	 * @param label the label
+	 * @param value its address/value
 	 */
 	public void put(String label, int value) {
 		// System.out.println("HONK: Label stored: " + label + "/" + value);
@@ -63,15 +60,18 @@ public class LabelsContainer {
 
 				int opcode = ram[targetAddr];
 				if (!dl.isDataLine() && MnemonicList.getConditonalBranches().contains(opcode)) {
-					// System.out.println("Applied conditional delayed Label: "+entry.getValue()+"/"+entry.getKey()+"/"+value+"/"+opcode);
+					// System.out.println("Applied conditional delayed Label:
+					// "+entry.getValue()+"/"+entry.getKey()+"/"+value+"/"+opcode);
 					int offset = value - (targetAddr + 2);
 					if (offset <= 127 && offset >= -128) {
 						ram[++targetAddr] = AssemblyParser.getLowByte(offset);
 					} else {
-						throw new RuntimeException("Destination address out of range: " + opcode + "/" + value + "/" + targetAddr + "/" + offset + "/" + label);
+						throw new RuntimeException("Destination address out of range: " + opcode + "/" + value + "/"
+								+ targetAddr + "/" + offset + "/" + label);
 					}
 				} else {
-					// System.out.println("Applied delayed Label: "+entry.getValue()+"@"+Integer.toHexString(targetAddr)+"/"+value);
+					// System.out.println("Applied delayed Label:
+					// "+entry.getValue()+"@"+Integer.toHexString(targetAddr)+"/"+value);
 					if (dl.isLow()) {
 						ram[++targetAddr] = AssemblyParser.getLowByte(value);
 					} else if (dl.isHigh()) {
@@ -121,11 +121,10 @@ public class LabelsContainer {
 	}
 
 	/**
-	 * Gets the address/value for a label name. If there is no such label, null
-	 * will be returned.
+	 * Gets the address/value for a label name. If there is no such label, null will
+	 * be returned.
 	 * 
-	 * @param name
-	 *            the name of the label
+	 * @param name the name of the label
 	 * @return the address or null
 	 */
 	public Integer get(String name) {
@@ -138,19 +137,13 @@ public class LabelsContainer {
 	 * labels' addresses/values will automatically applied to the code by the
 	 * container once the label gets known.
 	 * 
-	 * @param addr
-	 *            the address of reference to the label
-	 * @param label
-	 *            the label's name
-	 * @param low
-	 *            low byte only?
-	 * @param high
-	 *            high byte only?
-	 * @param addrAdd
-	 *            an optional address offset
-	 * @param isDataLine
-	 *            does the line contain an actual command or is it some data
-	 *            like .BYTE
+	 * @param addr       the address of reference to the label
+	 * @param label      the label's name
+	 * @param low        low byte only?
+	 * @param high       high byte only?
+	 * @param addrAdd    an optional address offset
+	 * @param isDataLine does the line contain an actual command or is it some data
+	 *                   like .BYTE
 	 */
 	public void addDelayedLabelRef(int addr, String label, boolean low, boolean high, int addrAdd, boolean isDataLine) {
 		delayed.put(addr, new DelayedLabel(truncateAdd(label), low, high, addrAdd, isDataLine));

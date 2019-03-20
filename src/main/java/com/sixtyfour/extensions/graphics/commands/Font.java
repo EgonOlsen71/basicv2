@@ -21,7 +21,8 @@ public class Font extends AbstractGraphicsCommand {
 	}
 
 	@Override
-	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
+	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos,
+			boolean lastPos, Machine machine) {
 		String ret = super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine, 2, 1);
 		checkTypes(pars, linePart, null, Type.STRING, Type.STRING);
 		if (!pars.get(0).getType().equals(Type.STRING)) {

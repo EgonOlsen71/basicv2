@@ -24,13 +24,10 @@ public interface ConstantValue {
 	int getValue();
 
 	/**
-	 * Applies the constant, i.e. write the constant into ram at the given
-	 * address.
+	 * Applies the constant, i.e. write the constant into ram at the given address.
 	 * 
-	 * @param machine
-	 *            the current machine
-	 * @param address
-	 *            the address
+	 * @param machine the current machine
+	 * @param address the address
 	 * @return the new address after the newly written byte(s)
 	 */
 	int apply(Machine machine, int address);

@@ -48,8 +48,7 @@ public class Dim extends AbstractCommand {
 	/**
 	 * Sets the var.
 	 * 
-	 * @param vars
-	 *            the new var
+	 * @param vars the new var
 	 */
 	public void setVar(List<Variable> vars) {
 		this.vars = vars;
@@ -68,11 +67,12 @@ public class Dim extends AbstractCommand {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String,
-	 * int, int, int, boolean, sixtyfour.system.Machine)
+	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String, int,
+	 * int, int, boolean, sixtyfour.system.Machine)
 	 */
 	@Override
-	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
+	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos,
+			boolean lastPos, Machine machine) {
 		super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine);
 		List<VariableAndTerms> vars = Parser.getArrayVariables(config, linePart, machine);
 		terms = new HashMap<String, List<Atom>>();
@@ -80,7 +80,7 @@ public class Dim extends AbstractCommand {
 		if (vars != null) {
 			for (VariableAndTerms var : vars) {
 				// Some placeholder vars...
-				Variable vary=new Variable(var.getVarName(), null);
+				Variable vary = new Variable(var.getVarName(), null);
 				this.vars.add(vary);
 				terms.put(vary.getName(), var.getTerms());
 			}
@@ -113,8 +113,7 @@ public class Dim extends AbstractCommand {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.
+	 * @see sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.
 	 * Machine)
 	 */
 	@Override
@@ -124,7 +123,8 @@ public class Dim extends AbstractCommand {
 			if (!var.isArray()) {
 				List<Atom> pars = terms.get(var.getName());
 				if (pars == null) {
-				    throw new RuntimeException("Array dimensions missing @ line " + this.lineNumber + ": " + var.getName() + "/" + this);
+					throw new RuntimeException(
+							"Array dimensions missing @ line " + this.lineNumber + ": " + var.getName() + "/" + this);
 				}
 				int[] pis = new int[pars.size()];
 				int cnt = 0;
@@ -172,7 +172,8 @@ public class Dim extends AbstractCommand {
 			List<Atom> pars = terms.get(var.getName());
 			for (Atom par : pars) {
 				if (((Number) par.eval(machine)).intValue() == 0) {
-					throw new RuntimeException("Arrays have to be defined static and can't have a zero size @ line " + this.lineNumber);
+					throw new RuntimeException(
+							"Arrays have to be defined static and can't have a zero size @ line " + this.lineNumber);
 				}
 			}
 		}

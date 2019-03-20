@@ -35,8 +35,7 @@ public class DataStore {
 	 * Adds a date. Internally, this will be converted to either an Integer or a
 	 * Float or it will remain a String.
 	 * 
-	 * @param data
-	 *            the data
+	 * @param data the data
 	 */
 	public void add(String data) {
 		try {

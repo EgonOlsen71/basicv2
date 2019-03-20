@@ -37,8 +37,7 @@ public class Print extends AbstractCommand {
 	/**
 	 * Instantiates print.
 	 * 
-	 * @param name
-	 *            the name
+	 * @param name the name
 	 */
 	protected Print(String name) {
 		super(name);
@@ -57,11 +56,12 @@ public class Print extends AbstractCommand {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String,
-	 * int, int, int, boolean, sixtyfour.system.Machine)
+	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String, int,
+	 * int, int, boolean, sixtyfour.system.Machine)
 	 */
 	@Override
-	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
+	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos,
+			boolean lastPos, Machine machine) {
 		super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine);
 		List<PrintPart> parts = getParts(linePart.substring(linePart.startsWith("?") ? 1 : 5));
 		if (parts.size() == 0) {
@@ -93,8 +93,7 @@ public class Print extends AbstractCommand {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.
+	 * @see sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.
 	 * Machine)
 	 */
 	@Override
@@ -105,12 +104,9 @@ public class Print extends AbstractCommand {
 	/**
 	 * Execute.
 	 * 
-	 * @param machine
-	 *            the machine
-	 * @param consumer
-	 *            the consumer
-	 * @param printId
-	 *            the print id
+	 * @param machine  the machine
+	 * @param consumer the consumer
+	 * @param printId  the print id
 	 * @return the program counter
 	 */
 	protected BasicProgramCounter execute(Machine machine, PrintConsumer consumer, int printId) {
@@ -275,8 +271,7 @@ public class Print extends AbstractCommand {
 	/**
 	 * Gets the parts.
 	 * 
-	 * @param line
-	 *            the line
+	 * @param line the line
 	 * @return the parts
 	 */
 	protected List<PrintPart> getParts(String line) {
@@ -298,7 +293,8 @@ public class Print extends AbstractCommand {
 					// "blah"a"blah")...and that's not
 					// some function call
 					String part = sb.toString();
-					if (!part.endsWith("(") && (part.length() > 0 && !Operator.isOperator(part.charAt(part.length() - 1)))) {
+					if (!part.endsWith("(")
+							&& (part.length() > 0 && !Operator.isOperator(part.charAt(part.length() - 1)))) {
 						sb.setLength(0);
 						PrintPart pp = new PrintPart(part, ' ');
 						res.add(pp);
@@ -325,8 +321,8 @@ public class Print extends AbstractCommand {
 
 				boolean end = i == line.length() - 1;
 
-				if (end
-						|| (brackets == 0 && (c == '"' || (c == ')' && nc != '=' && nc != '<' && nc != '>') || c == ',' || c == ';' || (c == '$' && nc != '(') || (c == '%' && nc != '(')))) {
+				if (end || (brackets == 0 && (c == '"' || (c == ')' && nc != '=' && nc != '<' && nc != '>') || c == ','
+						|| c == ';' || (c == '$' && nc != '(') || (c == '%' && nc != '(')))) {
 					if (end || !Operator.isRealOperator(nc) || c == ';' || c == ',') {
 						if (end || c == '"' || c == ')' || c == '%' || c == '$') {
 							if (end) {
@@ -402,8 +398,9 @@ public class Print extends AbstractCommand {
 					sub = sub.toLowerCase(Locale.ENGLISH);
 					char cn = line.charAt(i);
 					if ((Character.isDigit(c) || c == '.' || c == ')')
-							&& ((!hadLetter && cn == '(') || Character.isLetter(cn) || (c == '.' && cn == '.') || (c == ')' && Character.isLetterOrDigit(cn))) && cn != 'e'
-							&& !sub.startsWith("and") && !sub.startsWith("or")) {
+							&& ((!hadLetter && cn == '(') || Character.isLetter(cn) || (c == '.' && cn == '.')
+									|| (c == ')' && Character.isLetterOrDigit(cn)))
+							&& cn != 'e' && !sub.startsWith("and") && !sub.startsWith("or")) {
 						line = line.substring(0, i) + ";" + line.substring(i);
 						i++;
 						hadLetter = false;
@@ -432,10 +429,8 @@ public class Print extends AbstractCommand {
 		/**
 		 * Instantiates a new prints the part.
 		 * 
-		 * @param part
-		 *            the part
-		 * @param delimiter
-		 *            the delimiter
+		 * @param part      the part
+		 * @param delimiter the delimiter
 		 */
 		public PrintPart(String part, char delimiter) {
 			this.part = part;
@@ -456,8 +451,7 @@ public class Print extends AbstractCommand {
 	/**
 	 * Clean.
 	 * 
-	 * @param txt
-	 *            the txt
+	 * @param txt the txt
 	 * @return the string
 	 */
 	protected String clean(String txt) {

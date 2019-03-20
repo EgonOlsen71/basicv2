@@ -44,8 +44,7 @@ public class Next extends AbstractCommand {
 	/**
 	 * Sets the variables name.
 	 * 
-	 * @param varName
-	 *            the new variables name
+	 * @param varName the new variables name
 	 */
 	public void setVarName(String varName) {
 		this.varName = varName;
@@ -54,11 +53,12 @@ public class Next extends AbstractCommand {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String,
-	 * int, int, int, boolean, sixtyfour.system.Machine)
+	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String, int,
+	 * int, int, boolean, sixtyfour.system.Machine)
 	 */
 	@Override
-	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
+	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos,
+			boolean lastPos, Machine machine) {
 		super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine);
 		linePart = VarUtils.toUpper(linePart.substring(4)).trim();
 
@@ -87,15 +87,14 @@ public class Next extends AbstractCommand {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.
+	 * @see sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.
 	 * Machine)
 	 */
 	@Override
 	public BasicProgramCounter execute(CompilerConfig config, Machine machine) {
 		For myFor = machine.peekFor(this.varName);
 		if (myFor == null) {
-			throw new RuntimeException("NEXT without FOR error ("+varName+"): " + this);
+			throw new RuntimeException("NEXT without FOR error (" + varName + "): " + this);
 		}
 		boolean iterate = myFor.next(this, machine);
 		if (iterate) {

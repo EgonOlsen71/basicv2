@@ -6,8 +6,8 @@ package com.sixtyfour.cbmnative.powerscript.generators;
  */
 public class AddPs extends CalculationPs {
 
-    public AddPs() {
-	super("ADD", "{to}+{from}");
-    }
+	public AddPs() {
+		super("ADD", "{to}+{from}");
+	}
 
 }

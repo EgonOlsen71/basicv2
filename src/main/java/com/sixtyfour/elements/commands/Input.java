@@ -37,8 +37,7 @@ public class Input extends MultiVariableCommand {
 	/**
 	 * Instantiates a new input.
 	 * 
-	 * @param name
-	 *            the name
+	 * @param name the name
 	 */
 	protected Input(String name) {
 		super(name);
@@ -57,11 +56,12 @@ public class Input extends MultiVariableCommand {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String,
-	 * int, int, int, boolean, sixtyfour.system.Machine)
+	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String, int,
+	 * int, int, boolean, sixtyfour.system.Machine)
 	 */
 	@Override
-	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
+	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos,
+			boolean lastPos, Machine machine) {
 		super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine);
 		linePart = TermEnhancer.removeWhiteSpace(linePart);
 		linePart = linePart.substring(5).trim();
@@ -131,13 +131,15 @@ public class Input extends MultiVariableCommand {
 
 			if (indexTerm != null) {
 				List<Atom> pars = Parser.getParameters(indexTerm);
-				before = compiler.compileToPseudoCode(config, machine, Parser.createIndexTerm(config, machine, pars, var.getDimensions()));
+				before = compiler.compileToPseudoCode(config, machine,
+						Parser.createIndexTerm(config, machine, pars, var.getDimensions()));
 
 				after.add("POP X");
 				after.add("MOV G," + getVariableLabel(config, machine, var));
 				after.add("JSR ARRAYSTORE");
 			} else {
-				after.add("MOV " + getVariableLabel(config, machine, var) + "," + (var.getType() == Type.STRING ? "A" : "Y"));
+				after.add("MOV " + getVariableLabel(config, machine, var) + ","
+						+ (var.getType() == Type.STRING ? "A" : "Y"));
 			}
 
 			CodeContainer cc = new CodeContainer(before, expr, after);
@@ -159,8 +161,7 @@ public class Input extends MultiVariableCommand {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.
+	 * @see sixtyfour.elements.commands.AbstractCommand#execute(sixtyfour.system.
 	 * Machine)
 	 */
 	@Override

@@ -6,8 +6,8 @@ package com.sixtyfour.cbmnative.javascript.generators;
  */
 public class LtJs extends ComparisonJs {
 
-    LtJs() {
-	super("LT", "<");
-    }
+	LtJs() {
+		super("LT", "<");
+	}
 
 }

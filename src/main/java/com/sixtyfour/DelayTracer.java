@@ -18,9 +18,9 @@ public class DelayTracer implements Tracer {
 	private long lastTicks = 0;
 
 	/**
-	 * Creates a new DelayTracer. This implementation tries to calculate the
-	 * delay time to achieve the desired commands/second rate based on the
-	 * average execution time.
+	 * Creates a new DelayTracer. This implementation tries to calculate the delay
+	 * time to achieve the desired commands/second rate based on the average
+	 * execution time.
 	 * 
 	 * @param commandsPerSecond
 	 */

@@ -6,7 +6,7 @@ package com.sixtyfour.cbmnative.powerscript.generators;
  */
 public class RndPs extends CalculationPs {
 
-    public RndPs() {
-	super("RND", " get-random -Minimum 0.0 -Maximum 1.0 ");
-    }
+	public RndPs() {
+		super("RND", " get-random -Minimum 0.0 -Maximum 1.0 ");
+	}
 }

@@ -6,8 +6,8 @@ package com.sixtyfour.cbmnative.javascript.generators;
  */
 public class SubJs extends CalculationJs {
 
-    public SubJs() {
-	super("SUB", "{to}-{from}");
-    }
+	public SubJs() {
+		super("SUB", "{to}-{from}");
+	}
 
 }

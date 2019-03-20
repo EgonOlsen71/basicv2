@@ -50,7 +50,8 @@ public class Shape {
 	}
 
 	public void rotateAndPaint(Graphics2D context, int x, int y, float zoom, float rot) {
-		int md = (int) ((Math.sqrt(shape.getWidth() * shape.getWidth() + shape.getHeight() * shape.getHeight()) + 0.5d) * Math.max(1, zoom));
+		int md = (int) ((Math.sqrt(shape.getWidth() * shape.getWidth() + shape.getHeight() * shape.getHeight()) + 0.5d)
+				* Math.max(1, zoom));
 		md = (md / 256) * 512;
 		if (md < 256) {
 			md = 256;
@@ -58,7 +59,8 @@ public class Shape {
 
 		boolean created = false;
 		if (rotator == null || targetSize < md) {
-			// System.out.println("Created new Rotator: "+md+"/"+targetSize+"/"+(targetSize<md)+"/"+(rotator==null));
+			// System.out.println("Created new Rotator:
+			// "+md+"/"+targetSize+"/"+(targetSize<md)+"/"+(rotator==null));
 			rotator = new Rotator(shape, md, false);
 			rotator.setRotationPivot(md / 2, md / 2);
 			created = true;

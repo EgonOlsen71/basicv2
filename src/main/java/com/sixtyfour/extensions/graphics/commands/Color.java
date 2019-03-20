@@ -24,7 +24,8 @@ public class Color extends AbstractGraphicsCommand {
 	}
 
 	@Override
-	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
+	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos,
+			boolean lastPos, Machine machine) {
 		String ret = super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine, 3, 1);
 		checkTypes(pars, linePart, Type.STRING, Type.STRING, Type.STRING, Type.STRING);
 		return ret;
@@ -44,7 +45,8 @@ public class Color extends AbstractGraphicsCommand {
 
 		GraphicsDevice window = GraphicsDevice.getDevice(machine);
 		if (window != null) {
-			window.color(VarUtils.getInt(r.eval(machine)), VarUtils.getInt(g.eval(machine)), VarUtils.getInt(b.eval(machine)), VarUtils.getInt(a.eval(machine)));
+			window.color(VarUtils.getInt(r.eval(machine)), VarUtils.getInt(g.eval(machine)),
+					VarUtils.getInt(b.eval(machine)), VarUtils.getInt(a.eval(machine)));
 		}
 		return null;
 	}

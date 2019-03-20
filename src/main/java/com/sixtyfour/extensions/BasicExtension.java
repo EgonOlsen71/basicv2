@@ -22,8 +22,8 @@ public interface BasicExtension {
 	List<Command> getCommands();
 
 	/**
-	 * Returns all functions of this extension. If null, no new functions will
-	 * be recognized.
+	 * Returns all functions of this extension. If null, no new functions will be
+	 * recognized.
 	 * 
 	 * @return the new functions or null
 	 */
@@ -32,8 +32,7 @@ public interface BasicExtension {
 	/**
 	 * Called when a machine instance gets reset.
 	 * 
-	 * @param machine
-	 *            the machine instance
+	 * @param machine the machine instance
 	 */
 	void reset(Machine machine);
 

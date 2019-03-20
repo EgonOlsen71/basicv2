@@ -6,8 +6,8 @@ package com.sixtyfour.cbmnative.powerscript.generators;
  */
 public class ShrPs extends CalculationPs {
 
-    public ShrPs() {
-	super("SHR", "({to}/([math]::pow(2,{from})))");
-    }
+	public ShrPs() {
+		super("SHR", "({to}/([math]::pow(2,{from})))");
+	}
 
 }

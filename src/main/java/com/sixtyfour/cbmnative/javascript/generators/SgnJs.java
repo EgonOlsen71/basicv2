@@ -6,7 +6,7 @@ package com.sixtyfour.cbmnative.javascript.generators;
  */
 public class SgnJs extends CalculationJs {
 
-    public SgnJs() {
-	super("SGN", "Math.sign({from})");
-    }
+	public SgnJs() {
+		super("SGN", "Math.sign({from})");
+	}
 }

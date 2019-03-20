@@ -6,7 +6,7 @@ package com.sixtyfour.cbmnative.javascript.generators;
  */
 public class AtnJs extends CalculationJs {
 
-    public AtnJs() {
-	super("ATN", "Math.atan({from})");
-    }
+	public AtnJs() {
+		super("ATN", "Math.atan({from})");
+	}
 }

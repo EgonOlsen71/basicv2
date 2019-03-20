@@ -14,16 +14,15 @@ public enum LoopMode {
 	 */
 	EXECUTE,
 	/**
-	 * In this mode, the loop will be replaced by a delay that is close to what
-	 * an actual C64 would need to execute that loop. The loop's counter
-	 * variable will contain the correct end value after the wait though. Delay
-	 * isn't supported for native compilation and will be handled just like
-	 * REMOVE internally.
+	 * In this mode, the loop will be replaced by a delay that is close to what an
+	 * actual C64 would need to execute that loop. The loop's counter variable will
+	 * contain the correct end value after the wait though. Delay isn't supported
+	 * for native compilation and will be handled just like REMOVE internally.
 	 */
 	DELAY,
 	/**
-	 * In this mode, the loop won't be executed at all. The loop's counter
-	 * variable will contain the correct end value anyway.
+	 * In this mode, the loop won't be executed at all. The loop's counter variable
+	 * will contain the correct end value anyway.
 	 */
 	REMOVE;
 

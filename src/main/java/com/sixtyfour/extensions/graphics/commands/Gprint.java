@@ -30,7 +30,8 @@ public class Gprint extends Print {
 	}
 
 	@Override
-	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
+	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos,
+			boolean lastPos, Machine machine) {
 		this.lineCnt = lineCnt;
 		this.linePos = linePos;
 		this.lineNumber = lineNumber;

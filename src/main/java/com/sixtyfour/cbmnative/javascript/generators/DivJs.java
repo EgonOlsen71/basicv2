@@ -6,8 +6,8 @@ package com.sixtyfour.cbmnative.javascript.generators;
  */
 public class DivJs extends CalculationJs {
 
-    public DivJs()  {
-	super("DIV", "{to}/{from}");
-    }
+	public DivJs() {
+		super("DIV", "{to}/{from}");
+	}
 
 }

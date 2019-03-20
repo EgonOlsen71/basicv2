@@ -45,7 +45,8 @@ public class GetShape extends AbstractFunction {
 
 		GraphicsDevice window = GraphicsDevice.getDevice(machine);
 		if (window != null) {
-			return window.getShape(VarUtils.getInt(xs.eval(machine)), VarUtils.getInt(ys.eval(machine)), VarUtils.getInt(xe.eval(machine)), VarUtils.getInt(ye.eval(machine)));
+			return window.getShape(VarUtils.getInt(xs.eval(machine)), VarUtils.getInt(ys.eval(machine)),
+					VarUtils.getInt(xe.eval(machine)), VarUtils.getInt(ye.eval(machine)));
 		}
 		throw new RuntimeException("Graphics mode not enabled!");
 	}

@@ -28,8 +28,7 @@ public class TemplatePart {
 	/**
 	 * Instantiates a new template part.
 	 * 
-	 * @param staticText
-	 *            the static text
+	 * @param staticText the static text
 	 */
 	public TemplatePart(String staticText) {
 		content.append(staticText);
@@ -48,8 +47,7 @@ public class TemplatePart {
 	/**
 	 * Append.
 	 * 
-	 * @param txt
-	 *            the txt
+	 * @param txt the txt
 	 */
 	public void append(String txt) {
 		content.append(txt);
@@ -67,8 +65,7 @@ public class TemplatePart {
 	/**
 	 * Sets the first line.
 	 * 
-	 * @param firstLine
-	 *            the new first line
+	 * @param firstLine the new first line
 	 */
 	public void setFirstLine(int firstLine) {
 		this.firstLine = firstLine;
@@ -86,8 +83,7 @@ public class TemplatePart {
 	/**
 	 * Sets the last line.
 	 * 
-	 * @param lastLine
-	 *            the new last line
+	 * @param lastLine the new last line
 	 */
 	public void setLastLine(int lastLine) {
 		this.lastLine = lastLine;

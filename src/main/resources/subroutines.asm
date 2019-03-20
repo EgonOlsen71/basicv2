@@ -41,22 +41,19 @@ INITNARRAY
 			STA TMP_ZP
 			STY TMP_ZP+1
 			LDY #0
-NINITLOOP	LDA #0
-			STA (TMP_ZP),Y
-			INC TMP_ZP
-			BNE NLOOPNOV
-			INC TMP_ZP+1
-NLOOPNOV	SEC
-			LDA TMP2_ZP
-			SBC #1
-			STA TMP2_ZP
-			BCS NLOOPNOV2
-			DEC TMP2_ZP+1
-NLOOPNOV2	LDA TMP2_ZP
-			BNE NINITLOOP
-			LDA TMP2_ZP+1
-			BNE NINITLOOP
-			RTS
+            		LDA #0
+NINITLOOP	STA (TMP_ZP),Y
+            		INC TMP_ZP
+            		BNE NLOOPNOV
+            		INC TMP_ZP+1
+NLOOPNOV	LDX TMP2_ZP       
+            		BNE NLOOPNOV2
+            		DEC TMP2_ZP+1       
+NLOOPNOV2	DEC TMP2_ZP
+            		BNE NINITLOOP
+            		LDX TMP2_ZP+1
+            		BNE NINITLOOP  
+            		RTS
 ;###################################
 INITSTRARRAY 
 			STA TMP_ZP
@@ -140,8 +137,10 @@ ARRAYLOOP	CLC
 			BCC ARRAYSKIP1
 			INY
 ARRAYSKIP1	CPY #>STRINGARRAYS_END
+			BEQ ARRAYSC
 			BCC ARRAYSKIP2
-			CMP #<STRINGARRAYS_END
+			JMP ARRAYQUIT
+ARRAYSC		CMP #<STRINGARRAYS_END
 			BCS ARRAYQUIT
 ARRAYSKIP2	STA TMP_REG
 			STY TMP_REG+1
@@ -2727,9 +2726,8 @@ FACNOTNULL	CMP #$81
 			LDA $65
 			BNE NORMALAND
 			LDA $66
-			AND #$80
-			CMP #$80
-			BNE NORMALAND
+			ROL
+			BCC NORMALAND
 			LDA $69			; Check if there's a -1 in ARG
 			CMP #$81
 			BNE NORMALAND
@@ -2743,9 +2741,8 @@ FACNOTNULL	CMP #$81
 			LDA $6D
 			BNE NORMALAND
 			LDA $6E
-			AND #$80
-			CMP #$80
-			BNE NORMALAND
+			ROL
+			BCC NORMALAND
 			RTS				; both, FAC1 and ARG contain -1...then we leave FAC1 untouched and return
 NORMALAND	JMP ARGAND
 ;###################################
@@ -2769,9 +2766,8 @@ CHECKFACOR	LDA $61			; Check if there's a -1 in FAC1
 			LDA $65
 			BNE NORMALOR
 			LDA $66
-			AND #$80
-			CMP #$80
-			BNE NORMALOR
+			ROL
+			BCC NORMALOR
 CHECKARGOR	LDA $69			; Check if there's a -1 in ARG
 			BNE CHECKARGOR2
 			RTS 			; ARG is actually 0? Then the value of FAC doesn't change. We can exit here

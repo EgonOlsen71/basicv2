@@ -13,11 +13,10 @@ public class Conversions {
 	private static final double ACC_CORRECTOR = 0.00000000001d;
 
 	/**
-	 * Compacts a C64 float from extended 6 byte representation to condensed 5
-	 * byte representation.
+	 * Compacts a C64 float from extended 6 byte representation to condensed 5 byte
+	 * representation.
 	 * 
-	 * @param number
-	 *            the number in 6 byte format
+	 * @param number the number in 6 byte format
 	 * @return the number in 5 byte format
 	 */
 	public static int[] compactFloat(int[] number) {
@@ -30,8 +29,7 @@ public class Conversions {
 	/**
 	 * Extracts the 6 byte representation from a 5 byte one.
 	 * 
-	 * @param number
-	 *            the number in 5 byte format
+	 * @param number the number in 5 byte format
 	 * @return the number in 6 byte format
 	 */
 	public static int[] extractFloat(int[] number) {
@@ -45,8 +43,7 @@ public class Conversions {
 	/**
 	 * Converts a float from Java into C64 format (extended, i.e. 6 bytes)
 	 * 
-	 * @param number
-	 *            the number to convert
+	 * @param number the number to convert
 	 * @return the result
 	 */
 	public static int[] convertFloat(float number) {
@@ -56,8 +53,7 @@ public class Conversions {
 	/**
 	 * Converts a double from Java into C64 format (extended, i.e. 6 bytes)
 	 * 
-	 * @param number
-	 *            the number to convert
+	 * @param number the number to convert
 	 * @return the result
 	 */
 	public static int[] convertDouble(double number) {
@@ -122,24 +118,21 @@ public class Conversions {
 	/**
 	 * Converts a float from C64 6 byte format into Java format.
 	 * 
-	 * @param machine
-	 *            the current machine
-	 * @param addr
-	 *            the address, where the float is stored (0x61 for FAC(1))
+	 * @param machine the current machine
+	 * @param addr    the address, where the float is stored (0x61 for FAC(1))
 	 * @return the float value
 	 */
 	public static float convertFloat(Machine machine, int addr) {
 		int[] ram = machine.getRam();
-		return convertFloat(ram[addr] & 0xff, ram[addr + 5] & 0x80, ram[addr + 4] & 0xff, ram[addr + 3] & 0xff, ram[addr + 2] & 0xff, ram[addr + 1] & 0xff);
+		return convertFloat(ram[addr] & 0xff, ram[addr + 5] & 0x80, ram[addr + 4] & 0xff, ram[addr + 3] & 0xff,
+				ram[addr + 2] & 0xff, ram[addr + 1] & 0xff);
 	}
 
 	/**
 	 * Converts a float from C64 5 byte format into Java format.
 	 * 
-	 * @param machine
-	 *            the current machine
-	 * @param addr
-	 *            the address, where the float is stored
+	 * @param machine the current machine
+	 * @param addr    the address, where the float is stored
 	 * @return the float value
 	 */
 	public static float convertCompactFloat(Machine machine, int addr) {
@@ -154,19 +147,13 @@ public class Conversions {
 	/**
 	 * Converts a float from C64 format into Java format.
 	 * 
-	 * @param exp
-	 *            the exponent
-	 * @param neg
-	 *            the negative flag (either 0 for positive or 0xFF for negative
+	 * @param exp the exponent
+	 * @param neg the negative flag (either 0 for positive or 0xFF for negative
 	 *            values)
-	 * @param m1
-	 *            the mantissa, part 1
-	 * @param m2
-	 *            the mantissa, part 2
-	 * @param m3
-	 *            the mantissa, part 3
-	 * @param m4
-	 *            the mantissa, part 4
+	 * @param m1  the mantissa, part 1
+	 * @param m2  the mantissa, part 2
+	 * @param m3  the mantissa, part 3
+	 * @param m4  the mantissa, part 4
 	 * @return the float value
 	 */
 	public static float convertFloat(int exp, int neg, int m1, int m2, int m3, int m4) {
@@ -174,26 +161,21 @@ public class Conversions {
 			return 0;
 		}
 		double expf = exp - 128;
-		double man = ((neg != 0 ? -1d : 1d) * ((m4 | 0x80) * Math.pow(2d, -8d) + m3 * (Math.pow(2d, -16d)) + m2 * (Math.pow(2d, -24d)) + m1 * (Math.pow(2d, -32d))));
+		double man = ((neg != 0 ? -1d : 1d) * ((m4 | 0x80) * Math.pow(2d, -8d) + m3 * (Math.pow(2d, -16d))
+				+ m2 * (Math.pow(2d, -24d)) + m1 * (Math.pow(2d, -32d))));
 		return (float) (man * Math.pow(2, expf));
 	}
 
 	/**
 	 * Converts a float from C64 format into Java format as a double.
 	 * 
-	 * @param exp
-	 *            the exponent
-	 * @param neg
-	 *            the negative flag (either 0 for positive or 0xFF for negative
+	 * @param exp the exponent
+	 * @param neg the negative flag (either 0 for positive or 0xFF for negative
 	 *            values)
-	 * @param m1
-	 *            the mantissa, part 1
-	 * @param m2
-	 *            the mantissa, part 2
-	 * @param m3
-	 *            the mantissa, part 3
-	 * @param m4
-	 *            the mantissa, part 4
+	 * @param m1  the mantissa, part 1
+	 * @param m2  the mantissa, part 2
+	 * @param m3  the mantissa, part 3
+	 * @param m4  the mantissa, part 4
 	 * @return the float value
 	 */
 	public static double convertDouble(int exp, int neg, int m1, int m2, int m3, int m4) {
@@ -201,7 +183,8 @@ public class Conversions {
 			return 0;
 		}
 		double expf = exp - 128;
-		double man = ((neg != 0 ? -1d : 1d) * ((m4 | 0x80) * Math.pow(2d, -8d) + m3 * (Math.pow(2d, -16d)) + m2 * (Math.pow(2d, -24d)) + m1 * (Math.pow(2d, -32d))));
+		double man = ((neg != 0 ? -1d : 1d) * ((m4 | 0x80) * Math.pow(2d, -8d) + m3 * (Math.pow(2d, -16d))
+				+ m2 * (Math.pow(2d, -24d)) + m1 * (Math.pow(2d, -32d))));
 		return (double) (man * Math.pow(2, expf));
 	}
 }

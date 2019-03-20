@@ -42,8 +42,7 @@ public abstract class AbstractFunction implements Function {
 	/**
 	 * Instantiates a new abstract function.
 	 * 
-	 * @param name
-	 *            the name
+	 * @param name the name
 	 */
 	public AbstractFunction(String name) {
 		this.name = VarUtils.toUpper(name);
@@ -197,8 +196,7 @@ public abstract class AbstractFunction implements Function {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * sixtyfour.elements.functions.Function#setFunctionName(java.lang.String)
+	 * @see sixtyfour.elements.functions.Function#setFunctionName(java.lang.String)
 	 */
 	@Override
 	public void setFunctionName(String functionName) {

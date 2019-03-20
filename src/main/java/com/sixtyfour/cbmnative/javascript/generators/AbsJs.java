@@ -6,7 +6,7 @@ package com.sixtyfour.cbmnative.javascript.generators;
  */
 public class AbsJs extends CalculationJs {
 
-    public AbsJs() {
-	super("ABS", "Math.abs({from})");
-    }
+	public AbsJs() {
+		super("ABS", "Math.abs({from})");
+	}
 }

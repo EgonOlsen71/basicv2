@@ -21,7 +21,8 @@ public class Circle extends AbstractGraphicsCommand {
 	}
 
 	@Override
-	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
+	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos,
+			boolean lastPos, Machine machine) {
 		String ret = super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine, 3, 1);
 		checkTypes(pars, linePart, Type.STRING, Type.STRING, Type.STRING, Type.STRING);
 		return ret;
@@ -40,7 +41,8 @@ public class Circle extends AbstractGraphicsCommand {
 		GraphicsDevice window = GraphicsDevice.getDevice(machine);
 		if (window != null) {
 			int xri = VarUtils.getInt(xr.eval(machine));
-			window.circle(VarUtils.getInt(xs.eval(machine)), VarUtils.getInt(ys.eval(machine)), xri, xr == yr ? xri : VarUtils.getInt(yr.eval(machine)));
+			window.circle(VarUtils.getInt(xs.eval(machine)), VarUtils.getInt(ys.eval(machine)), xri,
+					xr == yr ? xri : VarUtils.getInt(yr.eval(machine)));
 		}
 		return null;
 	}

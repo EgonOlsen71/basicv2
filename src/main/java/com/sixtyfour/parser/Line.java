@@ -25,10 +25,8 @@ public class Line {
 	/**
 	 * Instantiates a new line.
 	 * 
-	 * @param number
-	 *            the line number
-	 * @param line
-	 *            the line's content
+	 * @param number the line number
+	 * @param line   the line's content
 	 */
 	public Line(int number, String line) {
 		this.line = line;
@@ -38,8 +36,7 @@ public class Line {
 	/**
 	 * Creates a new Line instance based on a line of the BASIC program,
 	 * 
-	 * @param line
-	 *            the line as text
+	 * @param line the line as text
 	 * @return the line instance
 	 */
 	public static Line getLine(String line) {
@@ -53,8 +50,8 @@ public class Line {
 	}
 
 	/**
-	 * Adds the dummy remark to lines that end with a : only. This eases parsing
-	 * the line later.
+	 * Adds the dummy remark to lines that end with a : only. This eases parsing the
+	 * line later.
 	 */
 	public void addDummyRemark() {
 		// Just to ease parsing of data commands (because that's the only
@@ -94,8 +91,7 @@ public class Line {
 	/**
 	 * Adds the command to the list of commands of this line.
 	 * 
-	 * @param command
-	 *            the command to add
+	 * @param command the command to add
 	 */
 	public void addCommand(Command command) {
 		commands.add(command);
@@ -116,12 +112,13 @@ public class Line {
 	 */
 	@SuppressWarnings("unchecked")
 	public <T extends Command> T getAnyCommand(Class<T> clazz) {
-		for(Command command : commands) {
+		for (Command command : commands) {
 			if (command.getClass().isAssignableFrom(clazz))
 				return (T) command;
 		}
 		return null;
 	}
+
 	/**
 	 * Get first command
 	 */
@@ -143,8 +140,7 @@ public class Line {
 	/**
 	 * Sets the count of this line in the BASIC program.
 	 * 
-	 * @param count
-	 *            the count
+	 * @param count the count
 	 */
 	public void setCount(int count) {
 		this.count = count;

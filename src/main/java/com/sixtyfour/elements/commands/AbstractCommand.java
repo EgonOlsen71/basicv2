@@ -44,8 +44,7 @@ public abstract class AbstractCommand implements Command {
 	/**
 	 * Instantiates a new abstract command.
 	 * 
-	 * @param name
-	 *            the name
+	 * @param name the name
 	 */
 	public AbstractCommand(String name) {
 		this.name = VarUtils.toUpper(name);
@@ -171,11 +170,12 @@ public abstract class AbstractCommand implements Command {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see sixtyfour.elements.commands.Command#parse(java.lang.String, int,
-	 * int, int, boolean, sixtyfour.system.Machine)
+	 * @see sixtyfour.elements.commands.Command#parse(java.lang.String, int, int,
+	 * int, boolean, sixtyfour.system.Machine)
 	 */
 	@Override
-	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos, boolean lastPos, Machine machine) {
+	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos,
+			boolean lastPos, Machine machine) {
 		this.lineCnt = lineCnt;
 		this.linePos = linePos;
 		this.lineNumber = lineNumber;
@@ -185,8 +185,7 @@ public abstract class AbstractCommand implements Command {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * sixtyfour.elements.commands.Command#execute(sixtyfour.system.Machine)
+	 * @see sixtyfour.elements.commands.Command#execute(sixtyfour.system.Machine)
 	 */
 	@Override
 	public BasicProgramCounter execute(CompilerConfig config, Machine machine) {

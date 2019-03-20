@@ -50,10 +50,8 @@ public class Template {
 	/**
 	 * Instantiates a new template.
 	 * 
-	 * @param template
-	 *            the template's content
-	 * @param variables
-	 *            the variables to prefill the template with
+	 * @param template  the template's content
+	 * @param variables the variables to prefill the template with
 	 */
 	public Template(CompilerConfig config, String template, Map<String, Object> variables) {
 		if (variables != null) {
@@ -65,21 +63,17 @@ public class Template {
 	/**
 	 * Sets a variable to a new value.
 	 * 
-	 * @param name
-	 *            the name of the variable in the template's basic code
-	 * @param value
-	 *            the new value
+	 * @param name  the name of the variable in the template's basic code
+	 * @param value the new value
 	 */
 	public void setVariable(String name, Object value) {
 		vars.put(name, value);
 	}
 
 	/**
-	 * Sets all variables to new values. Old variables will be cleared before
-	 * this.
+	 * Sets all variables to new values. Old variables will be cleared before this.
 	 * 
-	 * @param variables
-	 *            the new variables
+	 * @param variables the new variables
 	 */
 	public void setVariables(Map<String, Object> variables) {
 		vars.clear();
@@ -87,12 +81,11 @@ public class Template {
 	}
 
 	/**
-	 * Similar to setVariables, but the names don't have to follow BASIC's
-	 * naming conventions. This method will take care that they do, i.e. Floats
-	 * will keeps their name, Integers will get a "%" added and Strings a "$".
+	 * Similar to setVariables, but the names don't have to follow BASIC's naming
+	 * conventions. This method will take care that they do, i.e. Floats will keeps
+	 * their name, Integers will get a "%" added and Strings a "$".
 	 * 
-	 * @param variables
-	 *            the new variables
+	 * @param variables the new variables
 	 */
 	public void setVariablesWithType(Map<String, Object> variables) {
 		vars.clear();
@@ -116,8 +109,8 @@ public class Template {
 	}
 
 	/**
-	 * Returns the BASIC code that has been created by parsing the template.
-	 * This is the code that will actually be compiled and executed.
+	 * Returns the BASIC code that has been created by parsing the template. This is
+	 * the code that will actually be compiled and executed.
 	 * 
 	 * @return the code
 	 */
@@ -128,8 +121,7 @@ public class Template {
 	/**
 	 * Gets a variable's value.
 	 * 
-	 * @param name
-	 *            the name of the variable in the template's basic code
+	 * @param name the name of the variable in the template's basic code
 	 * @return the variable
 	 */
 	public Object getVariable(String name) {
@@ -171,12 +163,10 @@ public class Template {
 	}
 
 	/**
-	 * Sets the path of the template in the file system. The template itself
-	 * doesn't do anything with this information, so it doesn't have to exist in
-	 * all cases.
+	 * Sets the path of the template in the file system. The template itself doesn't
+	 * do anything with this information, so it doesn't have to exist in all cases.
 	 * 
-	 * @param path
-	 *            the path
+	 * @param path the path
 	 */
 	public void setPath(String path) {
 		this.path = path;
@@ -185,8 +175,7 @@ public class Template {
 	/**
 	 * Gets the current machine instance of the internal Basic instance.
 	 * 
-	 * @param machine
-	 *            the machine
+	 * @param machine the machine
 	 */
 	public Machine getMachine() {
 		return basic.getMachine();
@@ -195,8 +184,7 @@ public class Template {
 	/**
 	 * Injects a new machine instance into the internal Basic instance.
 	 * 
-	 * @param machine
-	 *            the machine
+	 * @param machine the machine
 	 */
 	public void setMachine(Machine machine) {
 		basic.setMachine(machine);
@@ -217,8 +205,7 @@ public class Template {
 	/**
 	 * Parses the template.
 	 * 
-	 * @param template
-	 *            the template
+	 * @param template the template
 	 */
 	private void parseTemplate(CompilerConfig config, String template) {
 		int pl = template.toLowerCase(Locale.ENGLISH).indexOf("<!labels>");
@@ -291,7 +278,8 @@ public class Template {
 						}
 
 						if (firstLine <= lastLine) {
-							throw new RuntimeException("Line numbers (" + firstLine + "/" + lastLine + ") too close, can't insert static content into template!");
+							throw new RuntimeException("Line numbers (" + firstLine + "/" + lastLine
+									+ ") too close, can't insert static content into template!");
 						}
 
 						lastLine = addStaticPart(lastLine, code, prior, firstLine, labels);

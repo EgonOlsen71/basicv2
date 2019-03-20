@@ -32,16 +32,15 @@ public class ProgramPart implements Comparable<ProgramPart> {
 	/**
 	 * Returns the address in memory at which this part belongs.
 	 * 
-	 * @param address
-	 *            the address
+	 * @param address the address
 	 */
 	public void setAddress(int address) {
 		this.address = address;
 	}
 
 	/**
-	 * Returns the actual bytes of this part. As usual, this is returned as an
-	 * array of int[] but actually contains bytes.
+	 * Returns the actual bytes of this part. As usual, this is returned as an array
+	 * of int[] but actually contains bytes.
 	 * 
 	 * @return the bytes
 	 */
@@ -59,8 +58,8 @@ public class ProgramPart implements Comparable<ProgramPart> {
 	}
 
 	/**
-	 * Sets the bytes of this part. As usual, this is set as an array of int[]
-	 * but actually has to contain bytes.
+	 * Sets the bytes of this part. As usual, this is set as an array of int[] but
+	 * actually has to contain bytes.
 	 * 
 	 * @param bytes
 	 */
@@ -69,8 +68,8 @@ public class ProgramPart implements Comparable<ProgramPart> {
 	}
 
 	/**
-	 * Returns the addresses on which the actual opcodes start. This isn't
-	 * needed for execution but for debugging output only.
+	 * Returns the addresses on which the actual opcodes start. This isn't needed
+	 * for execution but for debugging output only.
 	 * 
 	 * @return the addresses
 	 */
@@ -81,8 +80,7 @@ public class ProgramPart implements Comparable<ProgramPart> {
 	/**
 	 * Sets the addresses on which the actual opcodes start.
 	 * 
-	 * @param lineAddresses
-	 *            the addresses
+	 * @param lineAddresses the addresses
 	 */
 	public void setLineAddresses(int[] lineAddresses) {
 		this.lineAddresses = lineAddresses;
@@ -100,8 +98,7 @@ public class ProgramPart implements Comparable<ProgramPart> {
 	/**
 	 * Sets the end address
 	 * 
-	 * @param endAddress
-	 *            the end address
+	 * @param endAddress the end address
 	 */
 	public void setEndAddress(int endAddress) {
 		this.endAddress = endAddress;
