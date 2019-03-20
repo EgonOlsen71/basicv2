@@ -44,10 +44,10 @@ public class TransformerTest {
 		// testTransformer2();
 		// testTransformer4();
 		// testTransformer5();
-		 testTransformerFractal();
+		// testTransformerFractal();
 		// testTransformer6();
 		// testTransformer7();
-		testTransformerPrime();
+		//testTransformerPrime();
 		// testTransformerSqr();
 		// testTransformer8();
 		// testTransformer9();
@@ -59,7 +59,7 @@ public class TransformerTest {
 		// testTransformerBeer();
 		// testTransformer15();
 		// testTransformerSqr();
-		 testTransformer16();
+		// testTransformer16();
 		// testTransformer17();
 		// testTransformer18();
 		// testTransformer20();
@@ -99,10 +99,18 @@ public class TransformerTest {
 		// testIfNotTest();
 		// testGcTest();
 		// testSprites();
-		testHidden();
-		testFolding();
-		testCbmSnake();
-		testIfTest2();
+		//testHidden();
+		//testFolding();
+		//testCbmSnake();
+		//testIfTest2();
+		testPetsci();
+	}
+	
+	private static void testPetsci() throws Exception {
+		System.out.println("\n\ntestPetsci");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/petscitest.bas");
+		Assembler assy = initTestEnvironment(vary, false);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++petscitest.prg", true);
 	}
 	
 	private static void testIfTest2() throws Exception {
