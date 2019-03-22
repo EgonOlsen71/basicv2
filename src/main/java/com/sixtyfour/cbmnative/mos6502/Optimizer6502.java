@@ -249,9 +249,14 @@ public class Optimizer6502 implements Optimizer {
 			this.add(new Pattern(true, "Direct copy of floats into mem",
 					new String[] { "LDX #4", "dcloop{cnt}:", "LDA {MEM0},X", "STA {MEM1},X", "DEX", "BPL dcloop{cnt}" },
 					"LDA #<{MEM0}", "LDY #>{MEM0}", "JSR REALFAC", "LDX #<{MEM1}", "LDY #>{MEM1}", "JSR FACMEM"));
+			this.add(new Pattern(true, "Direct compare(<>) of floats",
+					new String[] { "LDX #4", "dceloop{cnt}:", "LDA {MEM0},X", "CMP {MEM1},X", "{LINE9}", "DEX", "BPL dceloop{cnt}" },
+					"LDA #<{MEM0}",	"LDY #>{MEM0}", "JSR REALFAC", "LDA #<{MEM1}", "LDY #>{MEM1}", "JSR CMPFAC", "{LABEL}", 
+					"{LABEL}", "{LABEL}", "BEQ {*}"));
 		}
 	};
-
+	
+	
 	@Override
 	public List<String> optimize(PlatformProvider platform, List<String> input) {
 		return optimize(platform, input, null);
@@ -546,6 +551,16 @@ public class Optimizer6502 implements Optimizer {
 				new String[] { "{LINE0}", "{LINE4}", "{LINE6}", "{LINE7}", "{LINE8}|BEQ>BNE", "{LINE9}" }, "JSR CMPFAC",
 				"BEQ {*}", "LDA #0", "JMP {*}", "{LABEL}", "LDA #$1", "{LABEL}", "{LABEL}", "BEQ {*}", "{LABEL}");
 		tmpPat.setSkipComments(true);
+		others.add(tmpPat);
+		tmpPat = new Pattern(true, "Direct compare(=) of floats",
+				new String[] { "LDX #4", "dceloop{cnt}:", "LDA {MEM0},X", "CMP {MEM1},X", "{LINE9}", "DEX", "BPL dceloop{cnt}" },
+				"LDA #<{MEM0}",	"LDY #>{MEM0}", "JSR REALFAC", "LDA #<{MEM1}", "LDY #>{MEM1}", "JSR CMPFAC", "{LABEL}", 
+				"{LABEL}", "{LABEL}", "BNE {*}");
+		others.add(tmpPat);
+		tmpPat = new Pattern(true, "Direct compare(<>) of floats",
+				new String[] { "LDX #4", "dceloop{cnt}:", "LDA {MEM0},X", "CMP {MEM1},X", "{LINE9}|BEQ LINE_SKIP>BNE LINE_NSKIP", "DEX", "BPL dceloop{cnt}", "{LINE9}|BEQ>JMP" },
+				"LDA #<{MEM0}",	"LDY #>{MEM0}", "JSR REALFAC", "LDA #<{MEM1}", "LDY #>{MEM1}", "JSR CMPFAC", "{LABEL}", 
+				"{LABEL}", "{LABEL}", "BEQ {*}");
 		others.add(tmpPat);
 		ret = optimizeInternal(others, platform, ret, null);
 		return ret;

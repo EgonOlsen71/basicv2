@@ -2658,6 +2658,10 @@ SHR			LDA $61
 			BCS SHROK
 			LDA #0
 			STA $66
+			STA $65
+			STA $64
+			STA $63
+			STA $62
 SHROK		STA $61
 			RTS
 ;###################################
@@ -2668,6 +2672,10 @@ SHL			LDA $61
 			BCC SHLOK
 			LDA #0
 			STA $66
+			STA $65
+			STA $64
+			STA $63
+			STA $62
 			LDA #$FF
 SHLOK		STA $61
 			RTS
@@ -2707,8 +2715,12 @@ COPIED0		INY
 ;###################################
 FASTAND		LDA $69			; Check ARG for 0
 			BNE CHECKFAC	
-			STA $61
 			STA $66			; if so, set FAC to 0 and exit
+			STA $65
+			STA $64
+			STA $63
+			STA $62
+			STA $61
 			RTS
 CHECKFAC	LDA $61			; Check if there's a -1 in FAC1
 			BNE FACNOTNULL
