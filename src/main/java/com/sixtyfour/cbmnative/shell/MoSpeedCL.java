@@ -220,7 +220,7 @@ public class MoSpeedCL {
 				FileWriter.writeAsPrg(assy.getProgram(), targetFile,
 						memConfig.getProgramStart() == -1
 								|| memConfig.getProgramStart() < platform.getMaxHeaderAddress(),
-								addrHeader?platform.getBaseAddress():-1);
+								platform.getBaseAddress(), addrHeader);
 			} catch (Exception e) {
 				System.out.println("Failed to write target file '" + targetFile + "': " + e.getMessage());
 				exit(9);
@@ -372,7 +372,7 @@ public class MoSpeedCL {
 		System.out.println("/deadstoreopt=true|false - enables/disables dead store elimination for numbers");
 		System.out.println("/deadstoreoptstr=true|false - enables/disables dead store elimination for strings");
 		System.out.println("/loopopt=true|false - enables/disables the removal of empty loops");
-		System.out.println("/addressheader=true|false - enables/disables the writing of the two address header bytes. Settings this to false will prevent the BASIC header from being written as well.");
+		System.out.println("/addressheader=true|false - enables/disables the writing of the two address header bytes.");
 		System.out.println(
 				"/floatopt=true|false - enables/disables some floating point optimizations, which might impact accuracy");
 		System.out.println("/intopt=true|false - enables/disables some integer optimizations");

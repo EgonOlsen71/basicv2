@@ -37,7 +37,7 @@ public class Transformer20Test {
 		String[] vary = Loader.loadProgram("src/test/resources/transform/vic20/kaleidoscope.bas");
 
 		final Assembler assy = initTestEnvironment(vary);
-		FileWriter.writeAsPrg(assy.getProgram(), path + "++kaleidoscope.prg", true, 4609);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++kaleidoscope.prg", true, 4609, true);
 	}
 	
 	private static void testTransformer3dMaze() throws Exception {
@@ -45,7 +45,7 @@ public class Transformer20Test {
 		String[] vary = Loader.loadProgram("src/test/resources/transform/vic20/3dmaze.bas");
 
 		final Assembler assy = initTestEnvironment(vary);
-		FileWriter.writeAsPrg(assy.getProgram(), path + "++3dmaze.prg", true, 4609);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++3dmaze.prg", true, 4609, true);
 	}
 	
 	private static void testTransformerFlightPath() throws Exception {
@@ -53,7 +53,7 @@ public class Transformer20Test {
 		String[] vary = Loader.loadProgram("src/test/resources/transform/vic20/flightpath737.bas");
 
 		final Assembler assy = initTestEnvironment(vary);
-		FileWriter.writeAsPrg(assy.getProgram(), path + "++flightpath737.prg", true, 4609);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++flightpath737.prg", true, 4609, true);
 	}
 
 	private static void testTransformerPrime() throws Exception {
@@ -61,7 +61,7 @@ public class Transformer20Test {
 		String[] vary = Loader.loadProgram("src/test/resources/transform/prime_transform.bas");
 
 		final Assembler assy = initTestEnvironment(vary);
-		FileWriter.writeAsPrg(assy.getProgram(), path + "++prime20.prg", true, 4609);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++prime20.prg", true, 4609, true);
 	}
 
 	private static void testTransformerBeer() throws Exception {
@@ -69,7 +69,7 @@ public class Transformer20Test {
 		String[] vary = Loader.loadProgram("src/test/resources/transform/vic20/beer_transform20.bas");
 
 		final Assembler assy = initTestEnvironment(vary, false);
-		FileWriter.writeAsPrg(assy.getProgram(), path + "++testbeer20.prg", true, 4609);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++testbeer20.prg", true, 4609, true);
 	}
 
 	private static void testTransformerCharFractal() throws Exception {
@@ -77,7 +77,7 @@ public class Transformer20Test {
 		String[] vary = Loader.loadProgram("src/test/resources/transform/vic20/charfractal20.bas");
 
 		final Assembler assy = initTestEnvironment(vary, false);
-		FileWriter.writeAsPrg(assy.getProgram(), path + "++charfractal20.prg", true, 4609);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++charfractal20.prg", true, 4609, true);
 	}
 
 	private static Assembler initTestEnvironment(String[] vary) {

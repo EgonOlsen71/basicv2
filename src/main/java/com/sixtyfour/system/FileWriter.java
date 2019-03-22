@@ -42,7 +42,7 @@ public class FileWriter {
 	 * @throws IOException
 	 */
 	public static void writeAsPrg(Program prg, String fileName, boolean withBasicHeader) throws IOException {
-		writeAsPrg(prg, new FileOutputStream(fileName), withBasicHeader, 2049);
+		writeAsPrg(prg, new FileOutputStream(fileName), withBasicHeader, 2049, true);
 	}
 
 	/**
@@ -52,7 +52,7 @@ public class FileWriter {
 	 * @throws IOException
 	 */
 	public static void writeAsPrg(Program prg, OutputStream os, boolean withBasicHeader) throws IOException {
-		writeAsPrg(prg, os, withBasicHeader, 2049);
+		writeAsPrg(prg, os, withBasicHeader, 2049, true);
 	}
 
 
@@ -63,9 +63,9 @@ public class FileWriter {
 	 * @param baseAddr
 	 * @throws IOException
 	 */
-	public static void writeAsPrg(Program prg, String fileName, boolean withBasicHeader, int baseAddr)
+	public static void writeAsPrg(Program prg, String fileName, boolean withBasicHeader, int baseAddr, boolean withAddressBytes)
 			throws IOException {
-		writeAsPrg(prg, new FileOutputStream(fileName), withBasicHeader, baseAddr);
+		writeAsPrg(prg, new FileOutputStream(fileName), withBasicHeader, baseAddr, withAddressBytes);
 	}
 
 	
@@ -76,7 +76,7 @@ public class FileWriter {
 	 * @param baseAddr
 	 * @throws IOException
 	 */
-	public static void writeAsPrg(Program prg, OutputStream os, boolean withBasicHeader, int baseAddr)
+	public static void writeAsPrg(Program prg, OutputStream os, boolean withBasicHeader, int baseAddr, boolean withAddressBytes)
 			throws IOException {
 		BufferedOutputStream bos = null;
 		int codeStart = prg.getCodeStart();
@@ -84,9 +84,6 @@ public class FileWriter {
 		int[] header = null;
 		int sa = baseAddr + 23;
 		int ea = sa + 228;
-		if (baseAddr == -1) {
-			withBasicHeader = false;
-		}
 		if (withBasicHeader) {
 			if (codeStart >= sa && codeStart < ea) {
 				header = new int[codeStart - baseAddr];
@@ -108,7 +105,7 @@ public class FileWriter {
 			Collections.sort(parts);
 
 			bos = new BufferedOutputStream(os);
-			if (baseAddr != -1) {
+			if (withAddressBytes) {
 				if (!withBasicHeader) {
 					bos.write(parts.get(0).getAddress() % 256);
 					bos.write(parts.get(0).getAddress() >> 8);
@@ -116,11 +113,11 @@ public class FileWriter {
 					bos.write(codeStart % 256);
 					bos.write(codeStart >> 8);
 				}
-				if (header != null) {
-					for (int b : header) {
-						bos.write(b);
-					}
-				}
+			}
+			if (header != null) {
+			    for (int b : header) {
+				bos.write(b);
+			    }
 			}
 			int lastEnd = -1;
 			int cnt = 0;
