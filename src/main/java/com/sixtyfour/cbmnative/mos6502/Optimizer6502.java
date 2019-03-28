@@ -249,10 +249,6 @@ public class Optimizer6502 implements Optimizer {
 			this.add(new Pattern(true, "Direct copy of floats into mem",
 					new String[] { "LDX #4", "dcloop{cnt}:", "LDA {MEM0},X", "STA {MEM1},X", "DEX", "BPL dcloop{cnt}" },
 					"LDA #<{MEM0}", "LDY #>{MEM0}", "JSR REALFAC", "LDX #<{MEM1}", "LDY #>{MEM1}", "JSR FACMEM"));
-			this.add(new Pattern(true, "Direct compare(<>) of floats",
-					new String[] { "LDX #4", "dceloop{cnt}:", "LDA {MEM0},X", "CMP {MEM1},X", "{LINE9}", "DEX", "BPL dceloop{cnt}" },
-					"LDA #<{MEM0}",	"LDY #>{MEM0}", "JSR REALFAC", "LDA #<{MEM1}", "LDY #>{MEM1}", "JSR CMPFAC", "{LABEL}", 
-					"{LABEL}", "{LABEL}", "BEQ {*}"));
 		}
 	};
 	
@@ -558,7 +554,7 @@ public class Optimizer6502 implements Optimizer {
 				"{LABEL}", "{LABEL}", "BNE {*}");
 		others.add(tmpPat);
 		tmpPat = new Pattern(true, "Direct compare(<>) of floats",
-				new String[] { "LDX #4", "dceloop{cnt}:", "LDA {MEM0},X", "CMP {MEM1},X", "{LINE9}|BEQ LINE_SKIP>BNE LINE_NSKIP", "DEX", "BPL dceloop{cnt}", "{LINE9}|BEQ>JMP" },
+				new String[] { "LDX #4", "dcneloop{cnt}:", "LDA {MEM0},X", "CMP {MEM1},X", "{LINE9}|BEQ LINE_SKIP>BNE LINE_NSKIP", "DEX", "BPL dcneloop{cnt}", "{LINE9}|BEQ>JMP" },
 				"LDA #<{MEM0}",	"LDY #>{MEM0}", "JSR REALFAC", "LDA #<{MEM1}", "LDY #>{MEM1}", "JSR CMPFAC", "{LABEL}", 
 				"{LABEL}", "{LABEL}", "BEQ {*}");
 		others.add(tmpPat);
