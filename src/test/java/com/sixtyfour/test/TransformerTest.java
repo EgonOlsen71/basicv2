@@ -102,8 +102,16 @@ public class TransformerTest {
 		//testHidden();
 		//testFolding();
 		//testCbmSnake();
-		testIfTest2();
+		//testIfTest2();
 		//testPetsci();
+	    	testWayout();
+	}
+	
+	private static void testWayout() throws Exception {
+		System.out.println("\n\ntestWayout");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/wayout.bas");
+		Assembler assy = initTestEnvironment(vary, false);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++wayout.prg", true);
 	}
 	
 	private static void testPetsci() throws Exception {
