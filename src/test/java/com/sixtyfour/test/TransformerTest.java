@@ -104,7 +104,15 @@ public class TransformerTest {
 		//testCbmSnake();
 		//testIfTest2();
 		//testPetsci();
-	    	testWayout();
+	    	//testWayout();
+	    	testCtest();
+	}
+	
+	private static void testCtest() throws Exception {
+		System.out.println("\n\ntestCtest");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/ctest.bas");
+		Assembler assy = initTestEnvironment(vary, false);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++ctest.prg", true);
 	}
 	
 	private static void testWayout() throws Exception {
