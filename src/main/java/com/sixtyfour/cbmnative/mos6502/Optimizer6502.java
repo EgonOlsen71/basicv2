@@ -246,7 +246,7 @@ public class Optimizer6502 implements Optimizer {
 			this.add(new Pattern(false, "Simplified loading of A",
 					new String[] { "{LINE0}", "{LINE1}", "STX A_REG", "STY A_REG+1", "{LINE2}" }, "LDX #<{MEM0}",
 					"LDY #>{MEM0}", "JSR FACMEM", "LDA #<{MEM0}", "LDY #>{MEM0}", "STA A_REG", "STY A_REG+1"));
-			this.add(new Pattern(true, "Direct copy of floats into mem",
+			this.add(new Pattern(false, "Direct copy of floats into mem",
 					new String[] { "LDX #4", "dcloop{cnt}:", "LDA {MEM0},X", "STA {MEM1},X", "DEX", "BPL dcloop{cnt}" },
 					"LDA #<{MEM0}", "LDY #>{MEM0}", "JSR REALFAC", "LDX #<{MEM1}", "LDY #>{MEM1}", "JSR FACMEM"));
 		}
@@ -357,7 +357,7 @@ public class Optimizer6502 implements Optimizer {
 							lastPattern = pcnt;
 						}
 						break;
-					}
+					} 
 					if (pattern.getPos() == 0 && sp > 1) {
 						i--;
 					}
@@ -538,22 +538,22 @@ public class Optimizer6502 implements Optimizer {
 		// Do another run with the normal optimizer method but with some additional
 		// rules
 		List<Pattern> others = new ArrayList<Pattern>();
-		Pattern tmpPat = new Pattern(true, "Simplified not equal comparison",
+		Pattern tmpPat = new Pattern(false, "Simplified not equal comparison",
 				new String[] { "{LINE0}", "{LINE4}", "{LINE6}", "{LINE7}", "{LINE8}", "{LINE9}" }, "JSR CMPFAC",
 				"BNE {*}", "LDA #0", "JMP {*}", "{LABEL}", "LDA #$1", "{LABEL}", "{LABEL}", "BEQ {*}", "{LABEL}");
 		tmpPat.setSkipComments(true);
 		others.add(tmpPat);
-		tmpPat = new Pattern(true, "Simplified equal comparison",
+		tmpPat = new Pattern(false, "Simplified equal comparison",
 				new String[] { "{LINE0}", "{LINE4}", "{LINE6}", "{LINE7}", "{LINE8}|BEQ>BNE", "{LINE9}" }, "JSR CMPFAC",
 				"BEQ {*}", "LDA #0", "JMP {*}", "{LABEL}", "LDA #$1", "{LABEL}", "{LABEL}", "BEQ {*}", "{LABEL}");
 		tmpPat.setSkipComments(true);
 		others.add(tmpPat);
-		tmpPat = new Pattern(true, "Direct compare(=) of floats",
+		tmpPat = new Pattern(false, "Direct compare(=) of floats",
 				new String[] { "LDX #4", "dceloop{cnt}:", "LDA {MEM0},X", "CMP {MEM1},X", "{LINE9}", "DEX", "BPL dceloop{cnt}" },
 				"LDA #<{MEM0}",	"LDY #>{MEM0}", "JSR REALFAC", "LDA #<{MEM1}", "LDY #>{MEM1}", "JSR CMPFAC", "{LABEL}", 
 				"{LABEL}", "{LABEL}", "BNE {*}");
 		others.add(tmpPat);
-		tmpPat = new Pattern(true, "Direct compare(<>) of floats",
+		tmpPat = new Pattern(false, "Direct compare(<>) of floats",
 				new String[] { "LDX #4", "dcneloop{cnt}:", "LDA {MEM0},X", "CMP {MEM1},X", "{LINE9}|BEQ LINE_SKIP>BNE LINE_NSKIP", "DEX", "BPL dcneloop{cnt}", "{LINE9}|BEQ>JMP" },
 				"LDA #<{MEM0}",	"LDY #>{MEM0}", "JSR REALFAC", "LDA #<{MEM1}", "LDY #>{MEM1}", "JSR CMPFAC", "{LABEL}", 
 				"{LABEL}", "{LABEL}", "BEQ {*}");

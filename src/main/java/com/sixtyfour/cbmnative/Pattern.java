@@ -77,7 +77,7 @@ public class Pattern {
 	/**
 	 * Creates a new pattern.
 	 * 
-	 * @param simple      if true, the pattern will be applied just once
+	 * @param simple      if false, the pattern will be applied just once
 	 * @param name        the (descriptive) name of the pattern
 	 * @param replacement the replacement code
 	 * @param parts       the code to be replaced
