@@ -3,7 +3,7 @@
 2 forj=1to128:fori=1024to2023:pokei,peek(i)+o:next:next:return
 3 forj=1to256:fori=1024to2023:pokei,(peek(i)+1)and255:next:next:return
 4 forj=1to128:fori=1024to2023:pokei,peek(i)+1:next:next:return
-10 print"wähle test:"
+10 print"waehle test:"
 12 print" 1. 256 tests m/ variablen (schnell 256)
 14 print" 2. 128 tests m/ variablen (schnell 128)
 16 print" 3. 256 tests m/ konstant
