@@ -49,23 +49,7 @@ public class NativeOptimizer {
 		patterns.add(new NativePattern(new String[] { "MOV Y,#*", "MOV G,Y" }, new String[] { "{0:MOV Y,>MOV G,}" }));
 		patterns.add(new NativePattern(new String[] { "MOV X,#*", "MOV G,Y" }, new String[] { "{0:MOV X,>MOV G,}" }));
 		patterns.add(new NativePattern(new String[] { "INT X,Y", "INT X,X" }, new String[] { "{0}" }));
-		patterns.add(new NativePattern(new String[] { "POP C", "PUSH C" }, new String[] {})); // The
-																								// #-method
-																								// introduced
-																								// this...we
-																								// can
-																								// handle
-																								// it
-																								// here
-																								// more
-																								// easily
-																								// than
-																								// to
-																								// avoid
-																								// the
-																								// actual
-																								// creation.
-
+		patterns.add(new NativePattern(new String[] { "POP C", "PUSH C" }, new String[] {})); 
 		patterns.add(new NativePattern(
 				new String[] { "PUSH C", "MOV C*", "PUSH C", "CHGCTX #1", "MOV B*", "POP D", "POP C" },
 				new String[] { "{1:MOV C,>MOV D,}", "{3}", "{4}" }));
@@ -323,7 +307,7 @@ public class NativeOptimizer {
 					i += 1;
 					continue;
 				}
-
+				
 				if (lines[0].contains("INTEGER") && lines[0].startsWith("MOV Y,#")
 						&& (lines[1].equals("MOV X,(Y)") || lines[1].equals("MOVB X,(Y)"))) {
 					try {
