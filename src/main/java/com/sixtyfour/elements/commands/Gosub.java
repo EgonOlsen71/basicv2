@@ -44,6 +44,9 @@ public class Gosub extends AbstractCommand {
 			boolean lastPos, Machine machine) {
 		super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine);
 		linePart = linePart.substring(5).trim();
+		if (linePart.isEmpty()) {
+			linePart="0";
+		}
 		try {
 			this.targetLineNumber = Integer.parseInt(linePart);
 		} catch (Exception e) {
