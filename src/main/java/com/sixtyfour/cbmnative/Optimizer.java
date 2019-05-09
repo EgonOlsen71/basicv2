@@ -3,7 +3,7 @@ package com.sixtyfour.cbmnative;
 import java.util.List;
 
 /**
- * Interface from implementing an optimizer.
+ * Interface for implementing an optimizer.
  * 
  * @author EgonOlsen
  * 
