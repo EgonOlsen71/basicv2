@@ -24,8 +24,16 @@ public class JitTest {
 		testJittedTerm();
 		testComplexCalculation();
 		testFractal();
+		testMp2();
 	}
 
+	private static void testMp2() {
+	    String[] prime = Loader.loadProgram("src/test/resources/basic/mp2.bas");
+		Basic inty = new Basic(prime);
+		inty.enableJit(3);
+		inty.run(config);
+	}
+	
 	private static void testJittedTerm() {
 		System.out.println("testStuff");
 		Machine machine = new Machine();
@@ -62,7 +70,7 @@ public class JitTest {
 		String[] vary = Loader.loadProgram("src/test/resources/ext/fractal.bas");
 		Basic.registerExtension(new GraphicsBasic());
 		Basic inty = new Basic(vary);
-		inty.enableJit(3);
+		inty.enableJit(1);
 		inty.run(config);
 	}
 }
