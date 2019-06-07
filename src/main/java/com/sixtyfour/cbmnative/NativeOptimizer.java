@@ -237,9 +237,9 @@ public class NativeOptimizer {
 					// MOV Y,#128{INTEGER}
 					// MOV X,U{REAL}
 					// DIV X,Y
-					if (lines[0].startsWith("MOV Y,#") && lines[0].endsWith("{INTEGER}")
+					if (lines[0].startsWith("MOV Y,#") && (lines[0].endsWith("{INTEGER}") || lines[0].endsWith(".0{REAL}"))
 							&& lines[1].startsWith("MOV X,") && lines[2].equals("DIV X,Y")) {
-						String val = lines[0].replace("MOV Y,#", "").replace("{INTEGER}", "");
+						String val = lines[0].replace("MOV Y,#", "").replace("{INTEGER}", "").replace(".0{REAL}", "");
 						float vf = Float.parseFloat(val);
 						vf = (float) (Math.log(vf) / Math.log(2));
 						if (vf == (int) vf && vf >= 1 && vf <= 8) {
@@ -254,9 +254,9 @@ public class NativeOptimizer {
 					// MOV Y,#128{INTEGER}
 					// MOV X,U{REAL}
 					// MUL X,Y
-					if (lines[0].startsWith("MOV Y,#") && lines[0].endsWith("{INTEGER}")
+					if (lines[0].startsWith("MOV Y,#") && (lines[0].endsWith("{INTEGER}") || lines[0].endsWith(".0{REAL}"))
 							&& lines[1].startsWith("MOV X,") && lines[2].equals("MUL X,Y")) {
-						String val = lines[0].replace("MOV Y,#", "").replace("{INTEGER}", "");
+						String val = lines[0].replace("MOV Y,#", "").replace("{INTEGER}", "").replace(".0{REAL}", "");
 						float vf = Float.parseFloat(val);
 						vf = (float) (Math.log(vf) / Math.log(2));
 						if (vf == (int) vf && vf >= 1 && vf <= 8) {
@@ -270,9 +270,9 @@ public class NativeOptimizer {
 
 					// MOV Y,#128{INTEGER}
 					// DIV X,Y
-					if (lines[0].startsWith("MOV Y,#") && lines[0].endsWith("{INTEGER}")
+					if (lines[0].startsWith("MOV Y,#") && (lines[0].endsWith("{INTEGER}") || lines[0].endsWith(".0{REAL}"))
 							&& lines[1].equals("DIV X,Y")) {
-						String val = lines[0].replace("MOV Y,#", "").replace("{INTEGER}", "");
+						String val = lines[0].replace("MOV Y,#", "").replace("{INTEGER}", "").replace(".0{REAL}", "");
 						float vf = Float.parseFloat(val);
 						vf = (float) (Math.log(vf) / Math.log(2));
 						if (vf == (int) vf && vf >= 1 && vf <= 8) {
@@ -285,9 +285,9 @@ public class NativeOptimizer {
 
 					// MOV Y,#128{INTEGER}
 					// MUL X,Y
-					if (lines[0].startsWith("MOV Y,#") && lines[0].endsWith("{INTEGER}")
+					if (lines[0].startsWith("MOV Y,#") && (lines[0].endsWith("{INTEGER}") || lines[0].endsWith(".0{REAL}"))
 							&& lines[1].equals("MUL X,Y")) {
-						String val = lines[0].replace("MOV Y,#", "").replace("{INTEGER}", "");
+						String val = lines[0].replace("MOV Y,#", "").replace("{INTEGER}", "").replace(".0{REAL}", "");
 						float vf = Float.parseFloat(val);
 						vf = (float) (Math.log(vf) / Math.log(2));
 						if (vf == (int) vf && vf >= 1 && vf <= 8) {

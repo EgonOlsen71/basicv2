@@ -1,5 +1,7 @@
 package com.sixtyfour.parser;
 
+import java.math.BigDecimal;
+
 import com.sixtyfour.util.VarUtils;
 
 /**
@@ -193,9 +195,23 @@ public class TermEnhancer {
 				}
 				if (num.length() > 0) {
 					int l = sb.length();
-					sb.append("*(10^" + num.toString() + "))");
-					int p = findStart(sb.toString(), l);
-					sb.insert(p, "(");
+					int p = findStart(sb.toString(), l-1);
+					boolean rep=false;
+					try {
+					    // try to get rid of the scientific notation, at least at this stage
+					    String vv=sb.substring(p, l)+"e"+num.toString();
+					    sb.setLength(p);
+					    sb.append(new BigDecimal(vv).toPlainString());
+					    rep=true;
+					} catch(Exception e) {
+					    //
+					}
+					if (!rep) {
+					    	// old, hack replacement. This is ok for the java based runtime but a performance killer
+					    	// when compiled to native. It's still here as a fallback, but it should actually never be triggered!
+        					sb.append("*(10^" + num.toString() + "))");
+        					sb.insert(p, "(");
+					}
 					i = np;
 				} else {
 					sb.append(c);
