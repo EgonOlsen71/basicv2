@@ -198,7 +198,7 @@ public class TermEnhancer {
 					int p = findStart(sb.toString(), l-1);
 					boolean rep=false;
 					try {
-					    // try to get rid of the scientific notation, at least at this stage
+					    // try to get rid of the scientific notations, at least at this stage
 					    String vv=sb.substring(p, l)+"e"+num.toString();
 					    sb.setLength(p);
 					    sb.append(new BigDecimal(vv).toPlainString());
@@ -207,8 +207,8 @@ public class TermEnhancer {
 					    //
 					}
 					if (!rep) {
-					    	// old, hack replacement. This is ok for the java based runtime but a performance killer
-					    	// when compiled to native. It's still here as a fallback, but it should actually never be triggered!
+					    	// old, hacky replacement. This is ok for the java based runtime but a performance killer
+					    	// when compiled to native code. It's still here as a fallback, but it should actually never be triggered!
         					sb.append("*(10^" + num.toString() + "))");
         					sb.insert(p, "(");
 					}
