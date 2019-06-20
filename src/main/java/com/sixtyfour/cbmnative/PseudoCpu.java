@@ -325,6 +325,9 @@ public class PseudoCpu {
 				case "MUL":
 					mul(parts);
 					break;
+				case "NEG":
+					neg(parts);
+					break;
 				case "DIV":
 					div(parts);
 					break;
@@ -2169,6 +2172,20 @@ public class PseudoCpu {
 			@Override
 			public String op() {
 				return "*_";
+			}
+		});
+	}
+	
+	private void neg(String[] parts) {
+		calc(parts, new Calc() {
+			@Override
+			public Number calc(Number n1, Number n2) {
+				return -1 * n2.floatValue();
+			}
+
+			@Override
+			public String op() {
+				return "NEG(_)";
 			}
 		});
 	}

@@ -56,6 +56,7 @@ public class GeneratorListJs {
 			this.add(new LogJs());
 			this.add(new ExpJs());
 			this.add(new XorJs());
+			this.add(new NegJs());
 		}
 	});
 

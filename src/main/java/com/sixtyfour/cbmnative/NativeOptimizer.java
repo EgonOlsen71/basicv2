@@ -60,6 +60,10 @@ public class NativeOptimizer {
 		patterns.add(new NativePattern(new String[] { "MOV Y,?}", "POP X" }, new String[] { "{1}", "{0}" }));
 		patterns.add(new NativePattern(new String[] { "PUSH X", "NOP", "POP X" }, new String[] { "NOP" }));
 		patterns.add(new NativePattern(new String[] { "PUSH Y", "NOP", "POP Y" }, new String[] { "NOP" }));
+		// The {0} is actually not needed, because it loads a -1 that's never used into ARG. However, removing it
+		// disables some other optimizations at this stage and we don't want that.
+		patterns.add(new NativePattern(new String[] { "MOV X,#-1{INTEGER}","MUL X,Y"}, new String[]{"{0}", "NEG X,Y"}));
+		patterns.add(new NativePattern(new String[] { "MOV Y,#-1{INTEGER}","MUL X,Y"}, new String[]{"MOV Y,X", "NEG X,Y"}));
 	}
 
 	/**

@@ -2678,6 +2678,11 @@ SHL			LDA $61
 			LDA #$FF
 SHLOK		STA $61
 			RTS
+;###################################
+NEG			LDA $66
+			EOR #$FF
+			STA $66
+			RTS
 ;### HELPER ########################
 ;###################################
 INCTMPZP	LDA TMP_ZP

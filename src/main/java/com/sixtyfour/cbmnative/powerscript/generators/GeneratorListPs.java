@@ -56,6 +56,7 @@ public class GeneratorListPs {
 			this.add(new LogPs());
 			this.add(new ExpPs());
 			this.add(new XorPs());
+			this.add(new NegPs());
 		}
 	});
 
