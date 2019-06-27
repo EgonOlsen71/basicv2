@@ -102,7 +102,7 @@ public class MoSpeedCL {
 				}
 				cfg.setCompactThreshold(level);
 			} catch (Exception e) {
-				System.out.println("Invalid compator level: " + cmds.get("compactlevel"));
+				System.out.println("Invalid compactor level: " + cmds.get("compactlevel"));
 
 			}
 		}
