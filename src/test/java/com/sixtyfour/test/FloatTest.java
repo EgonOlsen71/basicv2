@@ -20,8 +20,8 @@ public class FloatTest {
 		testConversions();
 		testConversions2();
 
-		int[] num = Conversions.convertDouble(-1d);
-		System.out.println("-1: " + Arrays.toString(num));
+		int[] num = Conversions.convertDouble(8d);
+		System.out.println("8: " + Arrays.toString(num));
 
 		testExponentHack();
 	}
