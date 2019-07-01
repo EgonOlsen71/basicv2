@@ -16,6 +16,8 @@ public class AssemblerTest {
 	private static CompilerConfig config = new CompilerConfig();
 
 	public static void main(String[] args) {
+		testMul();
+		/*
 		testLda();
 		testLdx();
 		testLdy();
@@ -47,9 +49,26 @@ public class AssemblerTest {
 		testCpuCallListener();
 		testConstants();
 		testE46();
-		testFastCopy();
+		testFastCopy();*/
 	}
 
+	private static void testMul() {
+		System.out.println("\ntestMul");
+		String[] code = Loader.loadProgram("src/test/resources/asm/mul.asm");
+		Assembler asm = new Assembler(code);
+		asm.compile(config);
+		Machine machine = asm.getMachine();
+		machine.addRoms();
+		asm.run(config);
+		System.out.println(asm.toString());
+		
+		int[] ram = machine.getRam();
+		for (int i = 1024; i < 1500; i++) {
+			System.out.print((char) ram[i]);
+		}
+		System.out.println();
+	}
+	
 	private static void testFastCopy() {
 		System.out.println("\ntestFastCopy");
 		String[] code = Loader.loadProgram("src/test/resources/asm/fastcopy.asm");

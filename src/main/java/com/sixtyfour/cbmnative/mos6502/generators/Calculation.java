@@ -17,11 +17,20 @@ public abstract class Calculation implements Generator {
 	protected String comment = null;
 	protected String systemCall = null;
 	protected String mnemonic = null;
+	protected boolean skipArgTransfer = false;
 
 	protected Calculation(String mnemonic, String comment, String systemCall) {
 		this.mnemonic = mnemonic;
 		this.comment = comment;
 		this.systemCall = systemCall;
+		this.skipArgTransfer = false;
+	}
+
+	protected Calculation(String mnemonic, String comment, String systemCall, boolean skipArgTransfer) {
+		this.mnemonic = mnemonic;
+		this.comment = comment;
+		this.systemCall = systemCall;
+		this.skipArgTransfer = skipArgTransfer;
 	}
 
 	@Override
@@ -57,9 +66,11 @@ public abstract class Calculation implements Generator {
 			nCode.add("LDA #<" + target.getAddress());
 			nCode.add("LDY #>" + target.getAddress());
 		}
-
-		nCode.add("; Real in (A/Y) to ARG");
-		nCode.add("JSR MEMARG"); // Real in (A/Y) to ARG
+		
+		if (!skipArgTransfer) {
+			nCode.add("; Real in (A/Y) to ARG");
+			nCode.add("JSR MEMARG"); // Real in (A/Y) to ARG
+		}
 		nCode.add(comment);
 		nCode.add(systemCall);
 

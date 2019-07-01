@@ -57,6 +57,7 @@ public class Transformer64 extends AbstractTransformer {
 		res.add("ARGAND = $AFE9");
 		res.add("ARGDIV = $BB14");
 		res.add("FACMUL = $BA30");
+		res.add("MEMMUL = $BA28");
 		res.add("FACADD = $B867");
 		res.add("FACLOG = $B9EA");
 		res.add("FACSQR = $BF71");

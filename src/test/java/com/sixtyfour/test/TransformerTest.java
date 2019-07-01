@@ -105,7 +105,23 @@ public class TransformerTest {
 		//testIfTest2();
 		//testPetsci();
 	    	//testWayout();
-	    	testCtest();
+	    	//testCtest();
+		test10test();
+		test10adv();
+	}
+	
+	private static void test10adv() throws Exception {
+		System.out.println("\n\ntest10adv");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/10_line_adv.bas");
+		Assembler assy = initTestEnvironment(vary, false);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++10_line_adv.bas.prg", true);
+	}
+	
+	private static void test10test() throws Exception {
+		System.out.println("\n\ntest10test");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/10test.bas");
+		Assembler assy = initTestEnvironment(vary, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++10test.prg", true);
 	}
 	
 	private static void testCtest() throws Exception {
@@ -114,6 +130,7 @@ public class TransformerTest {
 		Assembler assy = initTestEnvironment(vary, false);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++ctest.prg", true);
 	}
+	
 	
 	private static void testWayout() throws Exception {
 		System.out.println("\n\ntestWayout");

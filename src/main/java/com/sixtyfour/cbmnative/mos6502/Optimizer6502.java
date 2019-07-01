@@ -115,6 +115,11 @@ public class Optimizer6502 implements Optimizer {
 					"LDX #<{REG0}", "LDY #>{REG0}", "JSR COPY2_XY", "LDX #<{REG1}", "LDY #>{REG1}", "JSR COPY2_XY",
 					"LDA #<{REG0}", "LDY #>{REG0}", "JSR REALFAC", "LDA #<{REG1}", "LDY #>{REG1}", "JSR MEMARG",
 					"JSR {*}"));
+			this.add(new Pattern(false, "Variable used twice in calculation (mul)",
+					new String[] { "{LINE3}", "{LINE4}", "{LINE5}", "TXA", "{LINE10}", "{LINE8}", "{LINE9}", "{LINE10}",
+							"{LINE11}" },
+					"LDX #<{REG0}", "LDY #>{REG0}", "JSR COPY2_XY", "LDX #<{REG1}", "LDY #>{REG1}", "JSR COPY2_XY",
+					"LDA #<{REG0}", "LDY #>{REG0}", "JSR REALFAC", "LDA #<{REG1}", "LDY #>{REG1}", "JSR MEMMUL"));
 			this.add(new Pattern("Avoid INTEGER->REAL conversion", true,
 					new String[] { "LDA #<{CONST0}R", "LDY #>{CONST0}R", "JSR REALFAC" }, "LDY {CONST0}",
 					"LDA {CONST0}", "JSR INTFAC"));
@@ -128,6 +133,16 @@ public class Optimizer6502 implements Optimizer {
 					"STA TMP3_ZP", "STY TMP3_ZP+1", "LDX #<{REG0}", "LDY #>{REG0}", "JSR COPY2_XY", "LDA #<{MEM1}",
 					"LDY #>{MEM1}", "STA {REG1}", "STY {REG1}", "JSR {*}", "JSR POPREAL", "LDA #<{REG0}",
 					"LDY #>{REG0}", "JSR MEMARG"));
+			this.add(new Pattern(false, "Array value used twice in calculation (mul)",
+					new String[] { "{LINE0}", "{LINE1}", "{LINE2}", "{LINE3}", "{LINE4}", "{LINE5}", "{LINE6}",
+							"{LINE7}", "{LINE8}", "{LINE9}", "{LINE10}", "{LINE11}", "{LINE12}", "{LINE13}", "{LINE14}",
+							"{LINE12}", "{LINE13}", "JSR MEMMUL" },
+					"LDA #<{MEM0}", "LDY #>{MEM0}", "STA TMP3_ZP", "STY TMP3_ZP+1", "LDX #<{REG0}", "LDY #>{REG0}",
+					"JSR COPY2_XY", "LDA #<{MEM1}", "LDY #>{MEM1}", "STA {REG1}", "STY {REG1}", "JSR {*}",
+					"LDA #<{REG0}", "LDY #>{REG0}", "JSR REALFAC", "JSR PUSHREAL", "LDA #<{MEM0}", "LDY #>{MEM0}",
+					"STA TMP3_ZP", "STY TMP3_ZP+1", "LDX #<{REG0}", "LDY #>{REG0}", "JSR COPY2_XY", "LDA #<{MEM1}",
+					"LDY #>{MEM1}", "STA {REG1}", "STY {REG1}", "JSR {*}", "JSR POPREAL", "LDA #<{REG0}",
+					"LDY #>{REG0}", "JSR MEMMUL"));
 			this.add(new Pattern("Constant directly into FAC",
 					new String[] { "LDA #0", "STA $61", "{LINE2}", "{LINE3}", "LDA #0", "STA $63", "STA $64", "STA $65",
 							"LDY #128", "STY $62", "INY", "STY $61", "LDY #$FF", "STY $66", "{LINE6}", "{LINE8}" },
@@ -145,6 +160,12 @@ public class Optimizer6502 implements Optimizer {
 					"JSR COPY2_XY", "LDA #<{MEM1}", "LDY #>{MEM1}", "STA TMP3_ZP", "STY TMP3_ZP+1", "LDX #<{REG1}",
 					"LDY #>{REG1}", "JSR COPY2_XY", "LDA #<{REG0}", "LDY #>{REG0}", "JSR REALFAC", "LDA #<{REG1}",
 					"LDY #>{REG1}", "JSR MEMARG", "JSR {*}"));
+			this.add(new Pattern(false, "Highly simplified loading for calculations (mul)",
+					new String[] { "{LINE0}", "{LINE1}", "JSR REALFAC", "{LINE7}", "{LINE8}", "{LINE19}" },
+					"LDA #<{MEM0}", "LDY #>{MEM0}", "STA TMP3_ZP", "STY TMP3_ZP+1", "LDX #<{REG0}", "LDY #>{REG0}",
+					"JSR COPY2_XY", "LDA #<{MEM1}", "LDY #>{MEM1}", "STA TMP3_ZP", "STY TMP3_ZP+1", "LDX #<{REG1}",
+					"LDY #>{REG1}", "JSR COPY2_XY", "LDA #<{REG0}", "LDY #>{REG0}", "JSR REALFAC", "LDA #<{REG1}",
+					"LDY #>{REG1}", "JSR MEMMUL"));
 			this.add(new Pattern(false, "NEXT with no variable name simplified",
 					new String[] { "LDA #0", "STA A_REG", "STA A_REG+1", "JSR NEXT" }, "LDY {CONST0}", "LDA {CONST0}",
 					"STY A_REG", "STA A_REG+1", "JSR NEXT"));
@@ -170,6 +191,9 @@ public class Optimizer6502 implements Optimizer {
 					new String[] { "{LINE0}", "{LINE4}", "{LINE5}", "{LINE6}", "{LINE7}" }, "JSR POPREAL",
 					"LDX #<{REG0}", "LDY #>{REG0}", "JSR FACMEM", "LDA #<{REG1}", "LDY #>{REG1}", "JSR MEMARG",
 					"JSR {*}"));
+			this.add(new Pattern(false, "POP, REG0, VAR0 -> direct calc (mul)",
+					new String[] { "{LINE0}", "{LINE4}", "{LINE5}", "{LINE6}" }, "JSR POPREAL",
+					"LDX #<{REG0}", "LDY #>{REG0}", "JSR FACMEM", "LDA #<{REG1}", "LDY #>{REG1}", "JSR MEMMUL"));
 			this.add(new Pattern(false, "POP, REG0, VAR0 -> to WORD", new String[] { "{LINE0}", "{LINE4}" },
 					"JSR POPREAL", "LDX #<{REG0}", "LDY #>{REG0}", "JSR FACMEM", "JSR FACWORD"));
 			this.add(new Pattern(false, "Load and PUSH combined", new String[] { "JSR REALFACPUSH" }, "JSR REALFAC",
@@ -463,7 +487,7 @@ public class Optimizer6502 implements Optimizer {
 					if (line.startsWith("JSR FACMEM")) {
 						regState.put(lastReg, new Integer[] { 1, state[1] });
 					} else {
-						if (line.startsWith("JSR REALFAC") || line.startsWith("JSR MEMARG")) {
+						if (line.startsWith("JSR REALFAC") || line.startsWith("JSR MEMARG") || line.startsWith("JSR MEMMUL")) {
 
 							if (state[0] < 2) {
 								regState.put(lastReg, new Integer[] { 2, state[1] });
