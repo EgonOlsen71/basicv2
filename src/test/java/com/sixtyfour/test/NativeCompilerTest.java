@@ -107,6 +107,7 @@ public class NativeCompilerTest {
 		// testStringExpression10();
 		// testStringExpression11();
 		// testFrog();
+	    	test10Line();
 	}
 
 	private static void testFiles() {
@@ -237,6 +238,12 @@ public class NativeCompilerTest {
 		BufferedImage bi = Graphics.createImage(pc.getRam(), 8000, 1024, true, false);
 		FileOutputStream fos = new FileOutputStream("fractal_native.png");
 		Graphics.savePng(bi, fos);
+	}
+	
+	private static void test10Line() {
+		System.out.println("\n\ntest10Line");
+		String[] adv = Loader.loadProgram("src/test/resources/transform/10test.bas");
+		compileAndUnoptRun(adv);
 	}
 
 	private static void testBeer() {
@@ -400,6 +407,23 @@ public class NativeCompilerTest {
 		Basic basic = new Basic(prg);
 		basic.compile(config);
 		return runCompiled(basic);
+	}
+	
+	private static PseudoCpu compileAndUnoptRun(String[] prg) {
+		Basic basic = new Basic(prg);
+		CompilerConfig config = new CompilerConfig();
+		config.setConstantFolding(false);
+		config.setConstantPropagation(false);
+		basic.compile(config);
+		List<String> mCode =  NativeCompiler.getCompiler().compileToPseudoCode(config, basic);
+		System.out.println("------------------------------");
+		for (String line : mCode) {
+			System.out.println(line);
+		}
+		System.out.println("------------------------------");
+		PseudoCpu pc = new PseudoCpu();
+		pc.execute(config, basic.getMachine(), mCode);
+		return pc;
 	}
 
 	private static PseudoCpu runCompiled(Basic basic) {

@@ -704,7 +704,6 @@ RESTOREPOINTERS
 ;###################################
 COMPACT
 			LDY #0
-
 GCBUFNE		LDA (TMP_ZP),Y		; Get the source's length
 			STA TMP4_REG		; ...and store it
 			LDA STRBUFP+1		; First, check if the new string would fit into memory...
@@ -2309,6 +2308,8 @@ GETSTR1		RTS
 
 ;###################################
 SGTEQ		JSR CMPSTRGTEQ
+			LDA #0
+			STA CONCATBUFP			; reset the concat buffer
 			LDA TMP3_ZP
 			BNE NOTSGTEQ
 			LDA #<REAL_CONST_MINUS_ONE
@@ -2321,6 +2322,9 @@ SGTEQ		JSR CMPSTRGTEQ
 NOTSGTEQ	LDA #0
 			STA X_REG
 			STA X_REG+1
+			STA X_REG+2
+			STA X_REG+3
+			STA X_REG+4
 			RTS
 
 ;###################################
@@ -2407,6 +2411,8 @@ SLT			LDA A_REG
 
 ;###################################
 SGT			JSR CMPSTRGT
+			LDA #0
+			STA CONCATBUFP			; reset the concat buffer
 			LDA TMP3_ZP
 			BNE NOTSGT
 			LDA #<REAL_CONST_MINUS_ONE
@@ -2419,6 +2425,9 @@ SGT			JSR CMPSTRGT
 NOTSGT		LDA #0				; If the exponent is 0, the whole number is...
 			STA X_REG
 			STA X_REG+1
+			STA X_REG+2
+			STA X_REG+3
+			STA X_REG+4
 			RTS
 
 ;###################################
@@ -2480,6 +2489,8 @@ STRSGTRES	STX TMP3_ZP
 			
 ;###################################
 SEQ			JSR CMPSTR
+			LDA #0
+			STA CONCATBUFP			; reset the concat buffer
 			LDA TMP3_ZP
 			BNE NOTSEQ
 			LDA #<REAL_CONST_MINUS_ONE
@@ -2492,10 +2503,15 @@ SEQ			JSR CMPSTR
 NOTSEQ		LDA #0
 			STA X_REG
 			STA X_REG+1
+			STA X_REG+2
+			STA X_REG+3
+			STA X_REG+4
 			RTS
 
 ;###################################
 SNEQ		JSR CMPSTR
+			LDA #0
+			STA CONCATBUFP			; reset the concat buffer
 			LDA TMP3_ZP
 			BEQ NOTSEQ
 			LDA #<REAL_CONST_MINUS_ONE

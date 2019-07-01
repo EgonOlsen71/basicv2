@@ -27,7 +27,7 @@ public class Optimizer6502 implements Optimizer {
 		private static final long serialVersionUID = 1L;
 		{
 
-			this.add(new Pattern("Simplified setting to 0", new String[] { "LDA #0", "STA {MEM0}", "STA {MEM0}+1" },
+			this.add(new Pattern("Simplified setting to 0", new String[] { "LDA #0", "STA {MEM0}", "STA {MEM0}+1"/*, "STA {MEM0}+2","STA {MEM0}+3","STA {MEM0}+4"*/ },
 					"LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC", "LDX #<{MEM0}", "LDY #>{MEM0}", "JSR FACMEM"));
 			this.add(new Pattern(false, "Faster logic OR", new String[] { "JSR FASTOR" }, "JSR FACOR"));
 			this.add(new Pattern(false, "Faster logic AND", new String[] { "JSR FASTAND" }, "JSR ARGAND"));
@@ -214,7 +214,7 @@ public class Optimizer6502 implements Optimizer {
 			this.add(new Pattern(false, "CMP (MEM) != 0(2)", new String[] { "LDA {MEM0}", "{LINE6}", "{LINE7}" },
 					"LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC", "LDA #<{MEM0}", "LDY #>{MEM0}", "JSR CMPFAC",
 					"{LABEL}", "BNE {*}"));
-			this.add(new Pattern(false, "Direct loading of 0", new String[] { "LDA #$0", "STA $61" }, "LDA #<{#0.0}",
+			this.add(new Pattern(false, "Direct loading of 0", new String[] { "LDA #$0", "STA $61","STA $62","STA $63","STA $64","STA $65","STA $66" }, "LDA #<{#0.0}",
 					"LDY #>{#0.0}", "JSR REALFAC"));
 
 			this.add(new Pattern(false, "FAC into REG?, REG? into FAC (2)",
