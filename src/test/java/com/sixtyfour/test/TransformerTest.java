@@ -107,7 +107,7 @@ public class TransformerTest {
 	    	//testWayout();
 	    	//testCtest();
 		test10test();
-		test10adv();
+		//test10adv();
 	}
 	
 	private static void test10adv() throws Exception {
@@ -120,7 +120,7 @@ public class TransformerTest {
 	private static void test10test() throws Exception {
 		System.out.println("\n\ntest10test");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/10test.bas");
-		Assembler assy = initTestEnvironment(vary, true);
+		Assembler assy = initTestEnvironment(vary, true, -1, false);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++10test.prg", true);
 	}
 	
@@ -1024,8 +1024,12 @@ public class TransformerTest {
 	}
 
 	private static Assembler initTestEnvironment(String[] vary, boolean executePseudo, int variableStart) {
+		return initTestEnvironment(vary, executePseudo, -1, true);
+	}
+	
+	private static Assembler initTestEnvironment(String[] vary, boolean executePseudo, int variableStart, boolean opti) {
 		CompilerConfig conf = new CompilerConfig();
-		boolean opt = true;
+		boolean opt = opti;
 		conf.setConstantFolding(opt);
 		conf.setConstantPropagation(opt);
 		conf.setDeadStoreElimination(opt);

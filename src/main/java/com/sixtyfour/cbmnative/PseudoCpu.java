@@ -772,6 +772,9 @@ public class PseudoCpu {
 		case "MID":
 			mid(parts);
 			return;
+		case "BUFFERRESET":
+			// Nothing to do
+			return;
 		case "LEFT":
 			left(parts);
 			return;
