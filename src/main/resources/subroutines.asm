@@ -284,6 +284,11 @@ EXITSTRFUNC	PLA
 			STA (TMP_ZP),Y		; restore the first byte of the source string on the stack
 			RTS
 ;###################################
+; The concept of this buffer is slightly flawed as it doesn't work correctly when
+; there's a concatenation of strings that includes calls to string function that itself
+; rely on concatenated strings. Like "z"+str$(val("1"+"8"))+"o"
+; In that case, the wrong buffer content will be concatenated. Not sure what to do about it though...
+; So far, this case never happened in the real world...:-)
 CONCAT		LDX CONCATBUFP
 			BNE BUFFERUSED		;Checks if the buffer already contains some data
 			LDA A_REG			;No? Then the first content is stored in A_REG
