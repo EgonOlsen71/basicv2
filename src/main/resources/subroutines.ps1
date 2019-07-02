@@ -312,6 +312,9 @@ function CONCAT {
 	$global:A_REG=$global:A_REG+$global:B_REG
 }
 
+function BUFFERRESET {
+}
+
 function MID {
 	if ($global:C_REG -gt $global:B_REG.length) {
 		$global:A_REG=""

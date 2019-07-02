@@ -297,6 +297,10 @@ this.CONCAT = function() {
 	this.A_REG=this.A_REG+this.B_REG;
 }
 
+this.BUFFERRESET = function() {
+	// Nothing to do in this context
+}
+
 this.MID = function() {
 	if (this.C_REG>this.B_REG.length) {
 		this.A_REG="";
