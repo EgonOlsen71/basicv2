@@ -13,8 +13,6 @@ ENDGIVEN	LDA #<FPSTACK
 			LDY #>FORSTACK
 			STA FORSTACKP
 			STY FORSTACKP+1
-			LDA #0
-			STA CONCATBUFP
 			LDA #<STRBUF
 			LDY #>STRBUF
 			STA STRBUFP
@@ -247,14 +245,10 @@ STRFUNCINT 	LDA B_REG			;the source string
 			LDY #0
 			RTS
 ;###################################
-BUFFERRESET	LDA #0
-			STA CONCATBUFP
-			RTS
-;###################################
 ; Generic function for string function like for left$, right$ and mid$. It reuses the actual code to
 ; copy strings for an assignment but it jumps into it at a "copy only" stage. However, it still assumes
-; that the source pointer points towards the length of the source string and it resets the concat buffer pointer.
-; These are both behaviours that we have to adapt to, so we are adjusting and/or saving/restoring some values here.
+; that the source pointer points towards the length of the source string.
+; We have to adapt to that behaviours, so we are adjusting and/or saving/restoring some values here.
 STRFUNC		LDA TMP_REG+1
 			BEQ STARTATZERO
 			LDA TMP_ZP
@@ -266,8 +260,6 @@ STRFUNC		LDA TMP_REG+1
 STARTATZERO	LDY #0
 			LDA (TMP_ZP),Y
 			PHA					; save the first byte of the source string on the stack
-			LDA CONCATBUFP		; save the current concatbuffer position...
-			PHA
 			LDA TMP_REG
 			BNE STRFUNCNZ
 			LDA #<EMPTYSTR
@@ -282,52 +274,72 @@ STRFUNCNZ	STA (TMP_ZP),Y
 			STY TMP2_ZP+1
 			JSR COPYONLY
 EXITSTRFUNC	PLA
-			STA CONCATBUFP		; and restore it (because COPYONLY nulls it)
-			PLA
 			LDY #0
 			STA (TMP_ZP),Y		; restore the first byte of the source string on the stack
 			RTS
 ;###################################
-; The concept of this buffer is slightly flawed as it doesn't work correctly when
-; there's a concatenation of strings that includes calls to string function that itself
-; rely on concatenated strings. Like "z"+str$(val("1"+"8"))+"o"
-; In that case, the wrong buffer content will be concatenated. Not sure what to do about it though...
-; So far, this case never happened in the real world...:-)
-CONCAT		LDX CONCATBUFP
-			BNE BUFFERUSED		;Checks if the buffer already contains some data
-			LDA A_REG			;No? Then the first content is stored in A_REG
+CONCAT		LDA A_REG
 			STA TMP_ZP
 			LDA A_REG+1
 			STA TMP_ZP+1
-			JSR COPY2CONCAT		;...copy into the buffer
-BUFFERUSED	LDA B_REG			;copy the content to append
+			LDA STRBUFP		; adjust A_REG so that it points to the new tmp buffer
+			STA A_REG
+			STA TMP3_ZP
+			LDA STRBUFP+1
+			STA A_REG+1
+			STA TMP3_ZP+1
+			LDY #0
+			LDA (TMP_ZP),Y	
+			TAX
+			LDA B_REG			
+			STA TMP2_ZP
+			LDA B_REG+1
+			STA TMP2_ZP+1
+			TXA
+			CLC	
+			ADC (TMP2_ZP),Y
+			BCC CCSTRFITS
+			JMP STRINGTOOLONG
+CCSTRFITS	STA (TMP3_ZP),Y
+			INC TMP3_ZP
+			BNE CCNOOV2
+			INC TMP3_ZP+1
+CCNOOV2		CLC
+			ADC STRBUFP
+			PHP
+			CLC
+			ADC #3
+			STA STRBUFP
+			BCC CCNOCS1
+			INC STRBUFP+1
+CCNOCS1		PLP
+			BCC CCSTRFITS2
+			INC STRBUFP+1
+CCSTRFITS2	JSR COPY2CONCAT		;...copy into the buffer
+			LDA B_REG			;set the content to append
 			STA TMP_ZP
 			LDA B_REG+1
 			STA TMP_ZP+1
-			JSR COPY2CONCAT		;..and copy it
-			LDA #<CONCATBUFP	; adjust A_REG so that it points to the buffer
-			STA A_REG
-			LDA #>CONCATBUFP
-			STA A_REG+1
-			RTS
+			JMP COPY2CONCAT		;..and copy it
 ;###################################
 COPY2CONCAT	LDY #0
 			LDA (TMP_ZP),Y
 			BEQ NOC2C			; Nothing to append, skip
 			STA TMP2_ZP
 			INC TMP_ZP
-			BNE COPY2CONT
-			INC TMP_ZP+1
-COPY2CONT	LDX CONCATBUFP
-COPY2LOOP	LDA (TMP_ZP),Y
-			STA CONCATBUF,X
-			INY
-			INX
-			BNE MEMORYOK
-			JMP STRINGTOOLONG
-MEMORYOK	CPY TMP2_ZP
 			BNE COPY2LOOP
-			STX CONCATBUFP
+			INC TMP_ZP+1
+COPY2LOOP	LDA (TMP_ZP),Y
+			STA (TMP3_ZP),Y
+			INY
+			CPY TMP2_ZP
+			BNE COPY2LOOP
+			TYA
+			CLC
+			ADC TMP3_ZP			; Update tmp pointer in concat memory
+			STA TMP3_ZP
+			BCC NOC2C
+			INC TMP3_ZP+1		
 NOC2C		RTS
 ;###################################
 ; Special loop to handle the common for-poke-next-case
@@ -486,7 +498,6 @@ STRINT		LDY #0
 STRLOOP		INY
 			LDA $00FF,Y
 			BNE STRLOOP
-			INY
 			STY $FE
 			TYA
 			TAX			; Length in X
@@ -494,11 +505,7 @@ STRLOOP		INY
 			LDY #>A_REG
 			STA TMP2_ZP
 			STY TMP2_ZP+1
-			LDA CONCATBUFP	; save the current concatbuffer position...
-			PHA
 			JSR COPYONLY
-			PLA
-			STA CONCATBUFP	; and restore it (because COPYONLY nulls it)
 			RTS
 ;###################################
 USR			LDA #<Y_REG
@@ -1051,9 +1058,7 @@ LOOP		LDA (TMP_ZP),Y	; Copy the actual string
 			STA (TMP3_ZP),Y
 			DEY
 			BNE LOOP
-EXITCOPY	LDA #0
-			STA CONCATBUFP	; Reset the work buffer
-			RTS
+EXITCOPY	RTS
 ;###################################
 ; Special copy routine that handles the case that a string is >highp but might interleave with the temp data that has to be copied into it.
 ; Therefor, this routine copies from lower to higher addresses and not vice versa like the simpler one above.
@@ -1104,8 +1109,6 @@ SKIPLOWAS1	PLP
 			INC HIGHP+1
 SKIPLOWAS2	LDA HIGHP+1
 			STA STRBUFP+1
-			LDA #0
-			STA CONCATBUFP	; Reset the work buffer
 			JSR STOREVARREF
 			RTS
 ;###################################
@@ -1265,8 +1268,6 @@ PRINTSTR	JSR PRINTSTRS
 			STA STRBUFP
 			LDA HIGHP+1
 			STA STRBUFP+1
-			LDA #0
-			STA CONCATBUFP	; Reset the work buffer
 			JSR RESETROUTE
 			RTS
 ;###################################
@@ -1288,8 +1289,6 @@ PRINTSTR2	JSR PRINTSTRS
 			STA STRBUFP
 			LDA HIGHP+1
 			STA STRBUFP+1
-			LDA #0
-			STA CONCATBUFP	; Reset the work buffer
 			LDA #$0D
 			JSR CHROUT
 			JMP RESETROUTE 	;RTS is implicit
@@ -1888,8 +1887,6 @@ GOSUBNOOV	LDA TMP_ZP
 			RTS
 ;###################################
 GETNUMBER	JSR COMPACT
-			LDA #0
-			STA CONCATBUFP	; Reset the work buffer
 			LDY #0
 			STY CMD_NUM			; Reset CMD target
 			JSR GETIN
@@ -2110,9 +2107,7 @@ CIEND		LDA #0
 			RTS					; ...and exit
 					
 ;###################################
-INPUTSTR	LDA #0
-			STA CONCATBUFP	; Reset the work buffer
-			LDA #$0
+INPUTSTR	LDA #$0
 INPUTSTR2	STA TMP_REG+1
 			LDA #$0
 			STA TMP_REG
@@ -2185,16 +2180,10 @@ INISSTR		LDA #<A_REG
 			LDY #>A_REG
 			STA TMP2_ZP
 			STY TMP2_ZP+1
-			LDA CONCATBUFP	; save the current concatbuffer position...
-			PHA
 			JSR COPYONLY
-			PLA
-			STA CONCATBUFP	; and restore it (because COPYONLY nulls it)
 			RTS
 ;###################################
-INPUTNUMBER	LDA #0
-			STA CONCATBUFP	; Reset the work buffer
-			LDA #$1
+INPUTNUMBER	LDA #$1
 			JSR INPUTSTR2
 			LDA TMP_ZP
 			STA $22
@@ -2283,8 +2272,6 @@ NUMOK		LDA TMP_REG
 			JMP FACMEM		; ...and return
 ;###################################
 GETSTR		JSR COMPACT
-			LDA #0
-			STA CONCATBUFP	; Reset the work buffer
 			LDY #0
 			STY CMD_NUM		; Reset CMD target
 			JSR GETIN
@@ -2317,8 +2304,6 @@ GETSTR1		RTS
 
 ;###################################
 SGTEQ		JSR CMPSTRGTEQ
-			LDA #0
-			STA CONCATBUFP			; reset the concat buffer
 			LDA TMP3_ZP
 			BNE NOTSGTEQ
 			LDA #<REAL_CONST_MINUS_ONE
@@ -2420,8 +2405,6 @@ SLT			LDA A_REG
 
 ;###################################
 SGT			JSR CMPSTRGT
-			LDA #0
-			STA CONCATBUFP			; reset the concat buffer
 			LDA TMP3_ZP
 			BNE NOTSGT
 			LDA #<REAL_CONST_MINUS_ONE
@@ -2498,8 +2481,6 @@ STRSGTRES	STX TMP3_ZP
 			
 ;###################################
 SEQ			JSR CMPSTR
-			LDA #0
-			STA CONCATBUFP			; reset the concat buffer
 			LDA TMP3_ZP
 			BNE NOTSEQ
 			LDA #<REAL_CONST_MINUS_ONE
@@ -2519,8 +2500,6 @@ NOTSEQ		LDA #0
 
 ;###################################
 SNEQ		JSR CMPSTR
-			LDA #0
-			STA CONCATBUFP			; reset the concat buffer
 			LDA TMP3_ZP
 			BEQ NOTSEQ
 			LDA #<REAL_CONST_MINUS_ONE

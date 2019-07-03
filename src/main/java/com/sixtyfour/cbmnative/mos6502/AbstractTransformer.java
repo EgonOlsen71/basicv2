@@ -363,10 +363,7 @@ public abstract class AbstractTransformer implements Transformer {
 		res.add("STRBUFP\t.WORD STRBUF");
 		res.add("ENDSTRBUF\t.WORD " + this.stringMemoryEnd);
 		res.add("INPUTQUEUEP\t.BYTE 0");
-		res.add("CONCATBUFP\t.BYTE 0");
 		res.add("PROGRAMEND");
-		// Don't stick anything here between CONCATBUFP and CONCATBUF...
-		res.add("CONCATBUF\t.ARRAY 256");
 		res.add("INPUTQUEUE\t.ARRAY $0F");
 		res.add("FPSTACK .ARRAY " + Math.min(256, platform.getStackSize() * 5));
 		res.add("FORSTACK .ARRAY " + Math.min(1024, platform.getForStackSize() * 17));

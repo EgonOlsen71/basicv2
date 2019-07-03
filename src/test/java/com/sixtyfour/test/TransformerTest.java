@@ -56,7 +56,7 @@ public class TransformerTest {
 		// testTransformer12();
 		// testTransformer13();
 		// testTransformer14();
-		// testTransformerBeer();
+		 testTransformerBeer();
 		// testTransformer15();
 		// testTransformerSqr();
 		// testTransformer16();
@@ -107,13 +107,13 @@ public class TransformerTest {
 	    	//testWayout();
 	    	//testCtest();
 		test10test();
-		//test10adv();
+		test10adv();
 	}
 	
 	private static void test10adv() throws Exception {
 		System.out.println("\n\ntest10adv");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/10_line_adv.bas");
-		Assembler assy = initTestEnvironment(vary, false);
+		Assembler assy = initTestEnvironment(vary, false, -1, false);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++10_line_adv.bas.prg", true);
 	}
 	

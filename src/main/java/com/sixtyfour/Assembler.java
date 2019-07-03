@@ -205,6 +205,9 @@ public class Assembler implements ProgramExecutor {
 				String lineUpper = VarUtils.toUpper(line.trim());
 				int[] data = AssemblyParser.getBinaryData(config, addr, line, ccon, lcon);
 				lineBreaks.add(addr);
+				if (addr+data.length>compileMachine.getRam().length) {
+				    raiseError("Out of target memory: " + data.length, addr, cnt);
+				}
 				System.arraycopy(data, 0, compileMachine.getRam(), addr, data.length);
 				if (lineUpper.startsWith(".STRG")) {
 					// If it's a string, the length might have changed due to

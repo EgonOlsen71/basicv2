@@ -330,7 +330,6 @@ public class NativeCompiler {
 		Deque<String> yStack = new LinkedList<String>();
 		Deque<Boolean> stringStack = new LinkedList<Boolean>();
 		boolean withStrings = false;
-		boolean withConcat = false;
 		boolean left = false;
 		boolean right = false;
 		boolean isArrayAccess = false;
@@ -637,7 +636,6 @@ public class NativeCompiler {
 					break;
 				case ".":
 					withStrings = true;
-					withConcat = true;
 					code.add("JSR CONCAT");
 					break;
 				case "USR":
@@ -653,14 +651,9 @@ public class NativeCompiler {
 					break;
 				case "VAL":
 					code.add("JSR VAL");
-					if (withConcat) {
-					    code.add("JSR BUFFERRESET");
-					    withConcat=false;
-					}
 					break;
 				case "ASC":
 					code.add("JSR ASC");
-					withConcat=false;
 					break;
 				case "LEN":
 					code.add("JSR LEN");
@@ -692,28 +685,16 @@ public class NativeCompiler {
 					code.add("POP D");
 					code.add("POP C");
 					code.add("JSR MID");
-					if (withConcat) {
-					    code.add("JSR BUFFERRESET");
-					    withConcat=false;
-					}
 					break;
 				case "LEFT":
 					withStrings = true;
 					code.add("POP C");
 					code.add("JSR LEFT");
-					if (withConcat) {
-					    code.add("JSR BUFFERRESET");
-					    withConcat=false;
-					}
 					break;
 				case "RIGHT":
 					withStrings = true;
 					code.add("POP C");
 					code.add("JSR RIGHT");
-					if (withConcat) {
-					    code.add("JSR BUFFERRESET");
-					    withConcat=false;
-					}
 					break;
 				case "CMP =":
 					code.add("EQ " + regs);
@@ -736,27 +717,21 @@ public class NativeCompiler {
 				case "SCMP =":
 					code.add("JSR SEQ");
 					// For comparisons, buffer reset is already done in the runtime
-					withConcat=false;
 					break;
 				case "SCMP >":
 					code.add("JSR SGT");
-					withConcat=false;
 					break;
 				case "SCMP <":
 					code.add("JSR SLT");
-					withConcat=false;
 					break;
 				case "SCMP >=":
 					code.add("JSR SGTEQ");
-					withConcat=false;
 					break;
 				case "SCMP <=":
 					code.add("JSR SLTEQ");
-					withConcat=false;
 					break;
 				case "SCMP <>":
 					code.add("JSR SNEQ");
-					withConcat=false;
 					break;
 				case "PAR":
 					if (getLastEntry(code).startsWith("MOV " + sr)) {
