@@ -1,5 +1,2 @@
 @echo off
-set oldDir=%CD%
-cd /D "%~dp0"
-call java -Xmx768m -cp basicv2.jar;dist/basicv2.jar com.sixtyfour.cbmnative.shell.MoSpeedCL %*
-cd /D %oldDir%
+java -Xmx768m -cp %~dp0/basicv2.jar;basicv2.jar;dist/basicv2.jar com.sixtyfour.cbmnative.shell.MoSpeedCL %*
