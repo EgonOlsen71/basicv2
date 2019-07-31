@@ -22,7 +22,7 @@ public class Transformer64 extends AbstractTransformer {
 	public Transformer64() {
 		variableStart = -1;
 		runtimeStart = -1;
-		stringMemoryEnd = 0xa000; // will be adjusted in the runtime according to 51/52
+		stringMemoryEnd = 0xa000; // will be adjusted in the runtime according to 55/56
 		startAddress = 2072;
 		preferZeropage = true;
 	}
