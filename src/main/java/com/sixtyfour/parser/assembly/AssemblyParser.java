@@ -215,7 +215,7 @@ public class AssemblyParser {
 
     /**
      * Returns an array containing the binary data defined in the code. Binary
-     * data can be defined by either .text or .byte
+     * data can be defined by either .text, .strg, .byte, .word, .real or .array
      * 
      * @param addr
      *            the current address
