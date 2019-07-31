@@ -16,49 +16,58 @@ import com.sixtyfour.config.CompilerConfig;
  */
 public class Platform20 implements PlatformProvider {
 
-	@Override
-	public int getStackSize() {
-		return 10;
-	}
+    private int maxHeaderAddr = 4660;
+    private int baseAddr = 4609;
 
-	@Override
-	public int getForStackSize() {
-		return 10;
-	}
+    @Override
+    public int getStackSize() {
+	return 10;
+    }
 
-	@Override
-	public Optimizer getOptimizer() {
-		return new Optimizer6502();
-	}
+    @Override
+    public int getForStackSize() {
+	return 10;
+    }
 
-	@Override
-	public Transformer getTransformer() {
-		return new Transformer20();
-	}
+    @Override
+    public Optimizer getOptimizer() {
+	return new Optimizer6502();
+    }
 
-	@Override
-	public Unlinker getUnlinker() {
-		return new Unlinker6502();
-	}
+    @Override
+    public Transformer getTransformer() {
+	Transformer trans = new Transformer20();
+	trans.setStartAddress(baseAddr + 23);
+	return trans;
+    }
 
-	@Override
-	public boolean useLooseTypes() {
-		return true;
-	}
+    @Override
+    public Unlinker getUnlinker() {
+	return new Unlinker6502();
+    }
 
-	@Override
-	public int getMaxHeaderAddress() {
-		return 4660;
-	}
+    @Override
+    public boolean useLooseTypes() {
+	return true;
+    }
 
-	@Override
-	public int getBaseAddress() {
-		return 4609;
-	}
+    @Override
+    public int getMaxHeaderAddress() {
+	return maxHeaderAddr;
+    }
 
-	@Override
-	public void overrideConfig(CompilerConfig conf) {
-		// TODO Auto-generated method stub
+    @Override
+    public int getBaseAddress() {
+	return baseAddr;
+    }
 
-	}
+    @Override
+    public void overrideConfig(CompilerConfig conf) {
+	// TODO Auto-generated method stub
+    }
+
+    public void setNewBaseAddress(int addr) {
+	baseAddr = addr;
+	maxHeaderAddr = addr + 51;
+    }
 }
