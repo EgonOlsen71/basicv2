@@ -16,7 +16,7 @@ public class AssemblerTest {
 	private static CompilerConfig config = new CompilerConfig();
 
 	public static void main(String[] args) {
-		testMul();
+		//testMul();
 		/*
 		testLda();
 		testLdx();
@@ -50,6 +50,7 @@ public class AssemblerTest {
 		testConstants();
 		testE46();
 		testFastCopy();*/
+		testCalc();
 	}
 
 	private static void testMul() {
@@ -67,6 +68,16 @@ public class AssemblerTest {
 			System.out.print((char) ram[i]);
 		}
 		System.out.println();
+	}
+	
+	private static void testCalc() {
+		System.out.println("\ntestCalc");
+		String[] code = Loader.loadProgram("src/test/resources/asm/calcconst.asm");
+		Assembler asm = new Assembler(code);
+		asm.compile(config);
+		for (int i = 0; i < 17; i++) {
+			System.out.print(Integer.toHexString(asm.getProgram().getParts().get(0).getBytes()[i] & 0xff) + ",");
+		}
 	}
 	
 	private static void testFastCopy() {

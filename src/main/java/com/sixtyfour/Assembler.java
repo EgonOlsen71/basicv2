@@ -174,7 +174,11 @@ public class Assembler implements ProgramExecutor {
 						} else {
 							mne = AssemblyParser.getMnemonic(lac.getCode());
 						}
+						// Store it as a label...
 						lcon.put(lac.getLabel(), addr);
+						// ...and as a constant as well
+						ConstantValue cvl = AssemblyParser.getConstant(config, lac.getLabel()+"="+addr, ccon);
+						ccon.put(cvl);
 						line = lac.getCode();
 					} else {
 						raiseError("Syntax error at: " + oLine + "/" + addr, addr, cnt);
@@ -219,9 +223,10 @@ public class Assembler implements ProgramExecutor {
 				addr += data.length;
 				flagAddress(usedAddrs, oldAddr, addr);
 			}
-
 		}
 
+		ccon.applyDelayedData(compileMachine);
+		
 		if (lcon.hasDelayedLabels()) {
 			raiseError("Undefined label: " + lcon.getFirstDelayedLabel(), addr, cnt);
 		}

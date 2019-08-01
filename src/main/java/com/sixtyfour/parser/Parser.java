@@ -587,6 +587,22 @@ public class Parser {
 	public static boolean isNumberType(Atom atom) {
 		return atom.getType().equals(Type.INTEGER) || atom.getType().equals(Type.REAL);
 	}
+	
+	/**
+	 * Returns true, if a text represents a function name. Otherwise false.
+	 * 
+	 * @param linePart the text
+	 * @return true, if it's a function name
+	 */
+	public static boolean isFunction(String linePart) {
+		List<Function> functions = FunctionList.getFunctions();
+		for (Function function : functions) {
+			if (function.isFunction(linePart)) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	/**
 	 * Returns the parameters.

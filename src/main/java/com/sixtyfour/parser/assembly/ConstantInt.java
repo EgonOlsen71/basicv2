@@ -1,7 +1,5 @@
 package com.sixtyfour.parser.assembly;
 
-import com.sixtyfour.system.Machine;
-
 /**
  * An integer constant (i.e. a 16bit value)
  * 
@@ -30,13 +28,6 @@ public class ConstantInt implements ConstantValue {
 		return name + "=" + value;
 	}
 
-	@Override
-	public int apply(Machine machine, int address) {
-		int[] ram = machine.getRam();
-		ram[address++] = AssemblyParser.getLowByte(value);
-		ram[address++] = AssemblyParser.getHighByte(value);
-		return address;
-
-	}
+	
 
 }
