@@ -179,7 +179,7 @@ public class AssemblyParser {
 					return labelAddr + addrAdd;
 				}
 			}
-
+			
 			// No constant and no label found...might be a delayed label..
 			lcon.addDelayedLabelRef(addr, number, low, high, addrAdd, isDataLine);
 			return addr;

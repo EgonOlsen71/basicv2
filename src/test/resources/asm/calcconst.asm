@@ -15,4 +15,6 @@ entry
 
 LDA #0
 STA 53280
+JMP end
+end:
 RTS
