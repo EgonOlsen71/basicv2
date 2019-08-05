@@ -39,19 +39,19 @@ INITNARRAY
 			STA TMP_ZP
 			STY TMP_ZP+1
 			LDY #0
-            		LDA #0
+    		LDA #0
 NINITLOOP	STA (TMP_ZP),Y
-            		INC TMP_ZP
-            		BNE NLOOPNOV
-            		INC TMP_ZP+1
+    		INC TMP_ZP
+    		BNE NLOOPNOV
+    		INC TMP_ZP+1
 NLOOPNOV	LDX TMP2_ZP       
-            		BNE NLOOPNOV2
-            		DEC TMP2_ZP+1       
+    		BNE NLOOPNOV2
+    		DEC TMP2_ZP+1       
 NLOOPNOV2	DEC TMP2_ZP
-            		BNE NINITLOOP
-            		LDX TMP2_ZP+1
-            		BNE NINITLOOP  
-            		RTS
+    		BNE NINITLOOP
+    		LDX TMP2_ZP+1
+    		BNE NINITLOOP  
+    		RTS
 ;###################################
 INITSTRARRAY 
 			STA TMP_ZP
