@@ -8,7 +8,7 @@
 10020 pa$=of$+mid$(nu$,sa+1,en-sa)
 10030 va=val(pa$)
 10040 if not(va>0 and va<di and en+1<=len(nu$)) then 10100
-10050 if len(nn$)>0 then nn$=nn$+"0"
+10050 if len(nn$)>0 then nn$=nn$+"0":pr$=nn$:gosub30000:gosub20000
 10060 en=en+1
 10070 goto 10020
 10100 wn=int(va/di):ws=wn*di
