@@ -30,7 +30,7 @@ named like the source file but with two plus signs as prefix. For example: examp
 The source code can use line numbers (as usual) but also labels, which the interpreter doesn't support.
 MOSpeed translates these label to line numbers at compile time.
 
-The compilation process can be configured by using various commaanf line parameters.
+The compilation process can be configured by using various command line parameters.
 
 
 
@@ -45,7 +45,7 @@ In the following, true|false means that the feature can be enabled (true) or dis
 - /target=<target file>: Sets the name of the target file. If nothing is given, the name will be generated from the source 
 file's name (as described above). It's possible to use a complete path name.
 
-- /platform=c64: Sets the target platform. Supported are c64 for C64-compatible machine language and js for Javascript. Default is c64.
+- /platform=xxxx: the target platform. Options are c64 (for c64 compatible machine code), vic20 or vc20, js (for Javascript) and ps (for Powershell/-script), default is c64
 
 - /generatesrc=true|false: If true, the generated source codes for the assembly like intermediate language as well as for the 
 6502-Assembler|Assembly will be written to disk as well. Default is false.
@@ -111,6 +111,9 @@ If nothing is given, it will follow the actual program's memory. This is also th
 - /vice=<path>: This sets the path to an instance of the VICE|VICE-Emulator (or some other with similar behaviour). 
 After a successful compilation, the compiled program will be started in that emulator. By default this doesn't happen.
 
+- /memconfig=0|3|8 - the memory configuration in case of VIC20 as the target machine. 0 means 'unexpanded', 3 means with a 3k expansion, 
+8 means with an 8k or larger expansion. Default is 8.
+
 
 
 Changes compared to BASIC 2.0 
@@ -140,7 +143,9 @@ BASIC 7.0 of the C128).
 and MOSpeed, depending on the applied optimizations. In almost all cases, this shouldn't be a problem at all. In addition,
 MOSpeed tries to workaround a bug in the interpreter ROM, so that the results might turn out to be more precise.
 
-- IF with Strings and without a comparison operator: BASIC V2 will print out OK for A$="":B$="YEAH":IFA$THEN?"OK", even though A$ is empty. The reason is that it's not using the variable inside the IF (A$ in this case), but the last assigned one, in this case B$. MOSpeed always tests against the variables given after the IF.
+- IF with Strings and without a comparison operator: BASIC V2 will print out OK for A$="":B$="YEAH":IFA$THEN?"OK", even though A$ is empty.
+ The reason is that it's not using the variable inside the IF (A$ in this case), but the last assigned one, in this case B$. 
+ MOSpeed always tests against the variables given after the IF.
 
 
 
