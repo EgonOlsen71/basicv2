@@ -138,7 +138,7 @@ public class Compactor {
 				if (!cl.trim().isEmpty() && !cl.startsWith(";") && !cl.contains(".")) {
 					// Actually, this should never happen because of the way in
 					// which this algorithm works and how the constant list has
-					// been created
+					// been created...but it does happen anyway...;-)
 					Logger.log("Blocking entry: " + cl);
 					clear = false;
 				}
