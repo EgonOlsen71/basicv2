@@ -282,7 +282,7 @@ public abstract class AbstractTransformer implements Transformer {
 			if (pm != null) {
 				pm.generateCode(context, orgLine, mnems, subs, name2label);
 			} else {
-				if (cmd.endsWith(":")) {
+				if (cmd.endsWith(":") || cmd.startsWith("CONT")) {
 					mnems.add(cmd);
 				} else {
 					mnems.add("; ignored: " + cmd);
