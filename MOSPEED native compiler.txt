@@ -120,7 +120,7 @@ Changes compared to BASIC 2.0
 
 MOSpeed tries to stay compatible with the BASIC V2 interpreter when possible. However, there are some deviations.
 
-- LIST, CONT: Will be ignored.
+- LIST: Will be ignored.
 
 - NEW, STOP: Will be treated like END.
 
