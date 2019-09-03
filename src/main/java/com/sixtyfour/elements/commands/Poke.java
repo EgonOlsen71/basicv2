@@ -70,8 +70,7 @@ public class Poke extends AbstractCommand {
 
 		if (val.isTerm()) {
 			ret.add((Term) val);
-		}
-		if (val instanceof Variable) {
+		} else if (val instanceof Variable) {
 			ret.add(new Term(val));
 		}
 		return ret;
