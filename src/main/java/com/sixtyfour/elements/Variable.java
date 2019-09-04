@@ -84,7 +84,7 @@ public class Variable implements Atom {
 			}
 		}
 
-		if (Character.isDigit(un.charAt(0))) {
+		if (!Character.isAlphabetic(un.charAt(0))) {
 			throw new RuntimeException("Syntax error: " + un);
 		}
 

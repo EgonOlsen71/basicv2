@@ -24,6 +24,7 @@ public class CompilerConfig {
 	private boolean intOptimizations = true;
 	private boolean loopOptimizations = true;
 	private boolean shiftOptimizations = true;
+	private boolean nonDecimalNumbersAware=false;
 	private LoopMode loopMode = LoopMode.EXECUTE;
 	private ProgressListener progressListener;
 
@@ -176,6 +177,14 @@ public class CompilerConfig {
 
 	public void setShiftOptimizations(boolean shiftOptimizations) {
 		this.shiftOptimizations = shiftOptimizations;
+	}
+
+	public boolean isNonDecimalNumbersAware() {
+	    return nonDecimalNumbersAware;
+	}
+
+	public void setNonDecimalNumbersAware(boolean nonDecimalNumbersAware) {
+	    this.nonDecimalNumbersAware = nonDecimalNumbersAware;
 	}
 
 }

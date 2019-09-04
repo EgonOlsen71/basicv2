@@ -427,6 +427,7 @@ public class Parser {
 		}
 		term = TermEnhancer.stripAssignment(term, stripAssignment);
 		term = TermEnhancer.replaceScientificNotation(term);
+		term = TermEnhancer.handleNonDecimalNumbers(config, term);
 		term = TermEnhancer.addBrackets(term);
 		Term ret = createTerms(config, term, termMap, machine, checkForLogicTerm);
 		if (Parser.optimizeConstantExpressions) {
@@ -452,6 +453,7 @@ public class Parser {
 		checkForInvalidChars(term);
 		term = TermEnhancer.removeWhiteSpace(term.substring(command.getName().length()));
 		term = TermEnhancer.replaceScientificNotation(term);
+		term = TermEnhancer.handleNonDecimalNumbers(config, term);
 		term = TermEnhancer.addBrackets(term);
 		Term ret = createTerms(config, term, new HashMap<String, Term>(), machine, checkForLogicTerm);
 		ret.setInitial(term);

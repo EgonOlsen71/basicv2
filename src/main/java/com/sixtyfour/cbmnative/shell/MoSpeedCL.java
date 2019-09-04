@@ -90,6 +90,7 @@ public class MoSpeedCL {
 		cfg.setOptimizedLinker(getOption("smartlinker", cmds));
 		cfg.setFloatOptimizations(getOption("floatopt", cmds));
 		cfg.setIntOptimizations(getOption("intopt", cmds));
+		cfg.setNonDecimalNumbersAware(getOptionIntDefault("nondecimals", cmds, false));
 		cfg.setLoopMode(getOption("loopopt", cmds) ? LoopMode.REMOVE : LoopMode.EXECUTE);
 
 		cfg.setProgressListener(new DotPrintingProgressListener());
@@ -329,11 +330,15 @@ public class MoSpeedCL {
 	}
 
 	private static boolean getOptionInt(String option, Map<String, String> options) {
+		return getOptionIntDefault(option, options, true);
+	}
+	
+	private static boolean getOptionIntDefault(String option, Map<String, String> options, boolean def) {
 		option = option.toLowerCase(Locale.ENGLISH);
 		if (options.containsKey(option)) {
 			return Boolean.valueOf(options.get(option));
 		}
-		return true;
+		return def;
 	}
 
 	private static int getNumber(String option, Map<String, String> options) {
