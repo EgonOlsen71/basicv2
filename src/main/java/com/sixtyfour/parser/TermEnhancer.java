@@ -36,6 +36,16 @@ public class TermEnhancer {
 	return addBrackets(addBrackets(addBrackets(addBrackets(handleSigns(replaceLogicOperators(term)), 3), 2), 0), 1);
     }
 
+    /**
+     * Handles non-decimal numbers indicated by $ for hexadecimal and % for binary
+     * by replacing them with their decimal equivalents. 
+     * The CompilerConfig has to have this feature enabled or otherwise, the term
+     * won't be modified.
+     * 
+     * @param conf the compiler's configuration	
+     * @param term the term
+     * @return the modified term
+     */
     public static String handleNonDecimalNumbers(CompilerConfig conf, String term) {
 	final int NONE = 0;
 	final int BIN = 1;
