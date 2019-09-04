@@ -2011,7 +2011,7 @@ public class Cpu {
 		pc++;
 		push(ram, getHigh(pc));
 		push(ram, getLow(pc));
-		push(ram, status | 0b00010000);
+		push(ram, (status & 0b11110111) | 0b00010000);
 		pc = getWord(ram[0xFFFE], ram[0xFFFF]);
 		brk = exitOnBreak;
 		ticks += 7;
