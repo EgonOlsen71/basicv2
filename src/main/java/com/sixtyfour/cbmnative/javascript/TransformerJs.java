@@ -13,6 +13,8 @@ import com.sixtyfour.cbmnative.GeneratorContext;
 import com.sixtyfour.cbmnative.PlatformProvider;
 import com.sixtyfour.cbmnative.Transformer;
 import com.sixtyfour.cbmnative.javascript.generators.GeneratorListJs;
+import com.sixtyfour.cbmnative.mos6502.AbstractTransformer;
+import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.system.DataStore;
 import com.sixtyfour.system.Machine;
@@ -28,7 +30,7 @@ import com.sixtyfour.system.Machine;
 public class TransformerJs implements Transformer {
 
 	@Override
-	public List<String> transform(Machine machine, PlatformProvider platform, List<String> code) {
+	public List<String> transform(CompilerConfig config, Machine machine, PlatformProvider platform, List<String> code) {
 		Logger.log("Compiling into javascript code...");
 
 		addContinues(code);
@@ -42,6 +44,7 @@ public class TransformerJs implements Transformer {
 
 		subs.add("// *** SUBROUTINES ***");
 		subs.addAll(Arrays.asList(Loader.loadProgram(this.getClass().getResourceAsStream("/subroutines.js"))));
+		AbstractTransformer.addExtensionSubroutines(subs, "js");
 
 		res.addAll(Arrays.asList(Loader.loadProgram(this.getClass().getResourceAsStream("/webworker.js"))));
 

@@ -30,6 +30,14 @@ public interface BasicExtension {
 	List<Function> getFunctions();
 
 	/**
+	 * Returns a list oof optional runtime libaries that are needed for this
+	 * extension to be natively compiled.
+	 * 
+	 * @return the list or null
+	 */
+	List<String> getAdditionalIncludes();
+
+	/**
 	 * Called when a machine instance gets reset.
 	 * 
 	 * @param machine the machine instance

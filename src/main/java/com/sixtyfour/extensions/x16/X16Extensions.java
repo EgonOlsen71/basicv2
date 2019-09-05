@@ -46,4 +46,14 @@ public class X16Extensions implements BasicExtension {
 		//
 	}
 
+	@Override
+	public List<String> getAdditionalIncludes() {
+		return new ArrayList<String>() {
+			private static final long serialVersionUID = 1L;
+			{
+				this.add("x16");
+			}
+		};
+	}
+
 }

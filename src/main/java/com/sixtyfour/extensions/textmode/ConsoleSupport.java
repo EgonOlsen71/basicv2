@@ -45,5 +45,10 @@ public class ConsoleSupport implements BasicExtension {
 			window.dispose();
 		}
 	}
+	
+	@Override
+	public List<String> getAdditionalIncludes() {
+		return null;
+	}
 
 }

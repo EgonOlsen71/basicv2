@@ -97,7 +97,11 @@ public class GraphicsBasic implements BasicExtension {
 		if (window != null) {
 			window.dispose();
 		}
-
+	}
+	
+	@Override
+	public List<String> getAdditionalIncludes() {
+		return null;
 	}
 
 }

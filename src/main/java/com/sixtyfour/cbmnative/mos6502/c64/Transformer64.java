@@ -8,6 +8,7 @@ import com.sixtyfour.Loader;
 import com.sixtyfour.Logger;
 import com.sixtyfour.cbmnative.PlatformProvider;
 import com.sixtyfour.cbmnative.mos6502.AbstractTransformer;
+import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.system.Machine;
 
 /**
@@ -28,7 +29,7 @@ public class Transformer64 extends AbstractTransformer {
 	}
 
 	@Override
-	public List<String> transform(Machine machine, PlatformProvider platform, List<String> code) {
+	public List<String> transform(CompilerConfig config, Machine machine, PlatformProvider platform, List<String> code) {
 		Logger.log("Compiling into native assembly code...");
 		List<String> res = new ArrayList<>();
 		List<String> consts = new ArrayList<String>();
@@ -42,7 +43,8 @@ public class Transformer64 extends AbstractTransformer {
 		subs.add("; *** SUBROUTINES ***");
 
 		subs.addAll(Arrays.asList(Loader.loadProgram(this.getClass().getResourceAsStream("/subroutines.asm"))));
-
+		AbstractTransformer.addExtensionSubroutines(subs, "asm");
+		
 		consts.add("; *** CONSTANTS ***");
 		if (variableStart >= 0) {
 			consts.add("*=$" + Integer.toHexString(variableStart));

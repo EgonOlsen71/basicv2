@@ -13,7 +13,9 @@ import com.sixtyfour.cbmnative.Generator;
 import com.sixtyfour.cbmnative.GeneratorContext;
 import com.sixtyfour.cbmnative.PlatformProvider;
 import com.sixtyfour.cbmnative.Transformer;
+import com.sixtyfour.cbmnative.mos6502.AbstractTransformer;
 import com.sixtyfour.cbmnative.powerscript.generators.GeneratorListPs;
+import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.elements.Variable;
 import com.sixtyfour.system.DataStore;
@@ -30,7 +32,7 @@ import com.sixtyfour.system.Machine;
 public class TransformerPs implements Transformer {
 
 	@Override
-	public List<String> transform(Machine machine, PlatformProvider platform, List<String> code) {
+	public List<String> transform(CompilerConfig config, Machine machine, PlatformProvider platform, List<String> code) {
 		Logger.log("Compiling into powerscript code...");
 
 		addContinues(code);
@@ -43,6 +45,7 @@ public class TransformerPs implements Transformer {
 		List<String> datas = new ArrayList<String>();
 
 		subs.addAll(Arrays.asList(Loader.loadProgram(this.getClass().getResourceAsStream("/subroutines.ps1"))));
+		AbstractTransformer.addExtensionSubroutines(subs, "ps1");
 
 		res.add("#  TO RUN THIS, YOU MIGHT HAVE TO CHANGE POWERSHELL'S EXECUTION POLICY LIKE SO:");
 		res.add("#  Set-ExecutionPolicy RemoteSigned -scope CurrentUser");

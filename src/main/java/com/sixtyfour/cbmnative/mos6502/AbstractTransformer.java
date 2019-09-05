@@ -1,10 +1,13 @@
 package com.sixtyfour.cbmnative.mos6502;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.sixtyfour.Basic;
+import com.sixtyfour.Loader;
 import com.sixtyfour.cbmnative.Generator;
 import com.sixtyfour.cbmnative.GeneratorContext;
 import com.sixtyfour.cbmnative.PlatformProvider;
@@ -12,6 +15,7 @@ import com.sixtyfour.cbmnative.Transformer;
 import com.sixtyfour.cbmnative.mos6502.generators.GeneratorList;
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.elements.Variable;
+import com.sixtyfour.extensions.BasicExtension;
 import com.sixtyfour.system.DataStore;
 import com.sixtyfour.system.Machine;
 
@@ -28,6 +32,23 @@ public abstract class AbstractTransformer implements Transformer {
 	protected int stringMemoryEnd = 0;
 	protected int startAddress = 0;
 	protected boolean preferZeropage = true;
+
+	public static void addExtensionSubroutines(List<String> addTo, String postFix) {
+		List<BasicExtension> exts = Basic.getExtensions();
+		if (exts != null) {
+			for (BasicExtension ext : exts) {
+				try {
+					for (String inc : ext.getAdditionalIncludes()) {
+						List<String> adds = Arrays.asList(
+								Loader.loadProgram(AbstractTransformer.class.getResourceAsStream("/ext/" + inc + "." + postFix)));
+						addTo.addAll(adds);
+					}
+				} catch (Exception e) {
+					// ignore
+				}
+			}
+		}
+	}
 
 	protected List<String> createDatas(Machine machine) {
 		DataStore datas = machine.getDataStore();

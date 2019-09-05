@@ -161,7 +161,7 @@ public class NativeCompiler {
 					+ ") must not be lower than variable memory (" + memConfig.getVariableStart() + ")!");
 		}
 
-		List<String> nCode = tf.transform(basic.getMachine(), platform, mCode);
+		List<String> nCode = tf.transform(conf, basic.getMachine(), platform, mCode);
 		if (platform.getOptimizer() != null && conf.isNativeLanguageOptimizations()) {
 			nCode = platform.getOptimizer().optimize(platform, nCode, conf.getProgressListener());
 		}
