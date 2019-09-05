@@ -43,7 +43,7 @@ public class Compactor {
 	 * @return the native code with inlined integer constants
 	 */
 	public List<String> inlineIntegerConstants(List<String> nCode) {
-		//if (true) return nCode;
+		// if (true) return nCode;
 		Map<String, Number> const2Value = Util.extractNumberConstants(nCode);
 		int reps = 0;
 		for (int i = 0; i < nCode.size(); i++) {
@@ -66,7 +66,7 @@ public class Compactor {
 					}
 					String newLine = line.substring(0, pos) + "#" + ival;
 					nCode.set(i, newLine);
-					//System.out.println("Replaced " + line + " with " + newLine);
+					// System.out.println("Replaced " + line + " with " + newLine);
 					reps++;
 				}
 			}
@@ -128,7 +128,7 @@ public class Compactor {
 		}
 
 		Logger.log("Number of unused constants: " + notUsed.size());
-		//notUsed.forEach(p -> System.out.println(p.txt));
+		// notUsed.forEach(p -> System.out.println(p.txt));
 
 		for (Line consty : notUsed) {
 			int pos = consty.position;

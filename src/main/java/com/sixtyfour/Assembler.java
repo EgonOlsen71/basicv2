@@ -177,7 +177,7 @@ public class Assembler implements ProgramExecutor {
 						// Store it as a label...
 						lcon.put(lac.getLabel(), addr);
 						// ...and as a constant as well
-						ConstantValue cvl = AssemblyParser.getConstant(config, lac.getLabel()+"="+addr, ccon);
+						ConstantValue cvl = AssemblyParser.getConstant(config, lac.getLabel() + "=" + addr, ccon);
 						ccon.put(cvl);
 						line = lac.getCode();
 					} else {
@@ -209,8 +209,8 @@ public class Assembler implements ProgramExecutor {
 				String lineUpper = VarUtils.toUpper(line.trim());
 				int[] data = AssemblyParser.getBinaryData(config, addr, line, ccon, lcon);
 				lineBreaks.add(addr);
-				if (addr+data.length>compileMachine.getRam().length) {
-				    raiseError("Out of target memory: " + data.length, addr, cnt);
+				if (addr + data.length > compileMachine.getRam().length) {
+					raiseError("Out of target memory: " + data.length, addr, cnt);
 				}
 				System.arraycopy(data, 0, compileMachine.getRam(), addr, data.length);
 				if (lineUpper.startsWith(".STRG")) {
@@ -226,7 +226,7 @@ public class Assembler implements ProgramExecutor {
 		}
 
 		ccon.applyDelayedData(compileMachine);
-		
+
 		if (lcon.hasDelayedLabels()) {
 			raiseError("Undefined label: " + lcon.getFirstDelayedLabel(), addr, cnt);
 		}

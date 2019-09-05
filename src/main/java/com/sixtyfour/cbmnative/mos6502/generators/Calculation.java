@@ -66,7 +66,7 @@ public abstract class Calculation implements Generator {
 			nCode.add("LDA #<" + target.getAddress());
 			nCode.add("LDY #>" + target.getAddress());
 		}
-		
+
 		if (!skipArgTransfer) {
 			nCode.add("; Real in (A/Y) to ARG");
 			nCode.add("JSR MEMARG"); // Real in (A/Y) to ARG

@@ -28,6 +28,4 @@ public class ConstantInt implements ConstantValue {
 		return name + "=" + value;
 	}
 
-	
-
 }

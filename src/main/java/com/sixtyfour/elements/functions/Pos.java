@@ -48,4 +48,13 @@ public class Pos extends AbstractFunction {
 		return false;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.sixtyfour.elements.functions.AbstractFunction#getParameterCount()
+	 */
+	public int getParameterCount() {
+		return 1;
+	}
+
 }

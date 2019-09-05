@@ -55,7 +55,6 @@ public class FileWriter {
 		writeAsPrg(prg, os, withBasicHeader, 2049, true);
 	}
 
-
 	/**
 	 * @param prg
 	 * @param fileName
@@ -63,12 +62,11 @@ public class FileWriter {
 	 * @param baseAddr
 	 * @throws IOException
 	 */
-	public static void writeAsPrg(Program prg, String fileName, boolean withBasicHeader, int baseAddr, boolean withAddressBytes)
-			throws IOException {
+	public static void writeAsPrg(Program prg, String fileName, boolean withBasicHeader, int baseAddr,
+			boolean withAddressBytes) throws IOException {
 		writeAsPrg(prg, new FileOutputStream(fileName), withBasicHeader, baseAddr, withAddressBytes);
 	}
 
-	
 	/**
 	 * @param prg
 	 * @param os
@@ -76,8 +74,8 @@ public class FileWriter {
 	 * @param baseAddr
 	 * @throws IOException
 	 */
-	public static void writeAsPrg(Program prg, OutputStream os, boolean withBasicHeader, int baseAddr, boolean withAddressBytes)
-			throws IOException {
+	public static void writeAsPrg(Program prg, OutputStream os, boolean withBasicHeader, int baseAddr,
+			boolean withAddressBytes) throws IOException {
 		BufferedOutputStream bos = null;
 		int codeStart = prg.getCodeStart();
 		int codeStartOrg = codeStart;
@@ -115,9 +113,9 @@ public class FileWriter {
 				}
 			}
 			if (header != null) {
-			    for (int b : header) {
-				bos.write(b);
-			    }
+				for (int b : header) {
+					bos.write(b);
+				}
 			}
 			int lastEnd = -1;
 			int cnt = 0;
@@ -154,7 +152,7 @@ public class FileWriter {
 		}
 
 	}
-	
+
 	/**
 	 * Writes the program into a file that contains the BASIC program to read the
 	 * program from datas.

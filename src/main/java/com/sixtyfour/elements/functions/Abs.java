@@ -59,4 +59,13 @@ public class Abs extends AbstractFunction {
 		return (term.getType().equals(Type.REAL) ? "(float)" : "(int)") + "Math.abs(" + inter + ")";
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.sixtyfour.elements.functions.AbstractFunction#getParameterCount()
+	 */
+	public int getParameterCount() {
+		return 1;
+	}
+
 }

@@ -17,33 +17,33 @@ import com.sixtyfour.system.Machine;
  */
 public class X16Extensions implements BasicExtension {
 
-    private final static List<Command> COMMANDS = Collections.unmodifiableList(new ArrayList<Command>() {
-	private static final long serialVersionUID = 1L;
-	{
-	    this.add(new Vpoke());
+	private final static List<Command> COMMANDS = Collections.unmodifiableList(new ArrayList<Command>() {
+		private static final long serialVersionUID = 1L;
+		{
+			this.add(new Vpoke());
+		}
+	});
+
+	private final static List<Function> FUNCTIONS = Collections.unmodifiableList(new ArrayList<Function>() {
+		private static final long serialVersionUID = 1L;
+		{
+			this.add(new Vpeek());
+		}
+	});
+
+	@Override
+	public List<Command> getCommands() {
+		return COMMANDS;
 	}
-    });
 
-    private final static List<Function> FUNCTIONS = Collections.unmodifiableList(new ArrayList<Function>() {
-	private static final long serialVersionUID = 1L;
-	{
-	    this.add(new Vpeek());
+	@Override
+	public List<Function> getFunctions() {
+		return FUNCTIONS;
 	}
-    });
 
-    @Override
-    public List<Command> getCommands() {
-	return COMMANDS;
-    }
-
-    @Override
-    public List<Function> getFunctions() {
-	return FUNCTIONS;
-    }
-
-    @Override
-    public void reset(Machine machine) {
-	//
-    }
+	@Override
+	public void reset(Machine machine) {
+		//
+	}
 
 }

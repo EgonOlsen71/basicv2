@@ -30,5 +30,4 @@ public class ConstantByte implements ConstantValue {
 		return name + "=" + value;
 	}
 
-	
 }

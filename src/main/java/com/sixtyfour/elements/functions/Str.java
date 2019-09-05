@@ -47,4 +47,13 @@ public class Str extends AbstractFunction {
 		return str;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.sixtyfour.elements.functions.AbstractFunction#getParameterCount()
+	 */
+	public int getParameterCount() {
+		return 1;
+	}
+
 }

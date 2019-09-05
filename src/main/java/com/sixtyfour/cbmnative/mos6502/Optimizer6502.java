@@ -27,7 +27,9 @@ public class Optimizer6502 implements Optimizer {
 		private static final long serialVersionUID = 1L;
 		{
 
-			this.add(new Pattern("Simplified setting to 0", new String[] { "LDA #0", "STA {MEM0}", "STA {MEM0}+1"/*, "STA {MEM0}+2","STA {MEM0}+3","STA {MEM0}+4"*/ },
+			this.add(new Pattern("Simplified setting to 0",
+					new String[] { "LDA #0", "STA {MEM0}",
+							"STA {MEM0}+1"/* , "STA {MEM0}+2","STA {MEM0}+3","STA {MEM0}+4" */ },
 					"LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC", "LDX #<{MEM0}", "LDY #>{MEM0}", "JSR FACMEM"));
 			this.add(new Pattern(false, "Faster logic OR", new String[] { "JSR FASTOR" }, "JSR FACOR"));
 			this.add(new Pattern(false, "Faster logic AND", new String[] { "JSR FASTAND" }, "JSR ARGAND"));
@@ -192,8 +194,8 @@ public class Optimizer6502 implements Optimizer {
 					"LDX #<{REG0}", "LDY #>{REG0}", "JSR FACMEM", "LDA #<{REG1}", "LDY #>{REG1}", "JSR MEMARG",
 					"JSR {*}"));
 			this.add(new Pattern(false, "POP, REG0, VAR0 -> direct calc (mul)",
-					new String[] { "{LINE0}", "{LINE4}", "{LINE5}", "{LINE6}" }, "JSR POPREAL",
-					"LDX #<{REG0}", "LDY #>{REG0}", "JSR FACMEM", "LDA #<{REG1}", "LDY #>{REG1}", "JSR MEMMUL"));
+					new String[] { "{LINE0}", "{LINE4}", "{LINE5}", "{LINE6}" }, "JSR POPREAL", "LDX #<{REG0}",
+					"LDY #>{REG0}", "JSR FACMEM", "LDA #<{REG1}", "LDY #>{REG1}", "JSR MEMMUL"));
 			this.add(new Pattern(false, "POP, REG0, VAR0 -> to WORD", new String[] { "{LINE0}", "{LINE4}" },
 					"JSR POPREAL", "LDX #<{REG0}", "LDY #>{REG0}", "JSR FACMEM", "JSR FACWORD"));
 			this.add(new Pattern(false, "Load and PUSH combined", new String[] { "JSR REALFACPUSH" }, "JSR REALFAC",
@@ -238,8 +240,9 @@ public class Optimizer6502 implements Optimizer {
 			this.add(new Pattern(false, "CMP (MEM) != 0(2)", new String[] { "LDA {MEM0}", "{LINE6}", "{LINE7}" },
 					"LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC", "LDA #<{MEM0}", "LDY #>{MEM0}", "JSR CMPFAC",
 					"{LABEL}", "BNE {*}"));
-			this.add(new Pattern(false, "Direct loading of 0", new String[] { "LDA #$0", "STA $61","STA $62","STA $63","STA $64","STA $65","STA $66" }, "LDA #<{#0.0}",
-					"LDY #>{#0.0}", "JSR REALFAC"));
+			this.add(new Pattern(false, "Direct loading of 0",
+					new String[] { "LDA #$0", "STA $61", "STA $62", "STA $63", "STA $64", "STA $65", "STA $66" },
+					"LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC"));
 
 			this.add(new Pattern(false, "FAC into REG?, REG? into FAC (2)",
 					new String[] { "{LINE0}", "{LINE1}", "{LINE2}" }, "LDY #>{REG0}", "LDX #<{REG0}", "JSR FACMEM",
@@ -275,8 +278,7 @@ public class Optimizer6502 implements Optimizer {
 					"LDA #<{MEM0}", "LDY #>{MEM0}", "JSR REALFAC", "LDX #<{MEM1}", "LDY #>{MEM1}", "JSR FACMEM"));
 		}
 	};
-	
-	
+
 	@Override
 	public List<String> optimize(PlatformProvider platform, List<String> input) {
 		return optimize(platform, input, null);
@@ -381,7 +383,7 @@ public class Optimizer6502 implements Optimizer {
 							lastPattern = pcnt;
 						}
 						break;
-					} 
+					}
 					if (pattern.getPos() == 0 && sp > 1) {
 						i--;
 					}
@@ -487,7 +489,8 @@ public class Optimizer6502 implements Optimizer {
 					if (line.startsWith("JSR FACMEM")) {
 						regState.put(lastReg, new Integer[] { 1, state[1] });
 					} else {
-						if (line.startsWith("JSR REALFAC") || line.startsWith("JSR MEMARG") || line.startsWith("JSR MEMMUL")) {
+						if (line.startsWith("JSR REALFAC") || line.startsWith("JSR MEMARG")
+								|| line.startsWith("JSR MEMMUL")) {
 
 							if (state[0] < 2) {
 								regState.put(lastReg, new Integer[] { 2, state[1] });
@@ -573,13 +576,15 @@ public class Optimizer6502 implements Optimizer {
 		tmpPat.setSkipComments(true);
 		others.add(tmpPat);
 		tmpPat = new Pattern(false, "Direct compare(=) of floats",
-				new String[] { "LDX #4", "dceloop{cnt}:", "LDA {MEM0},X", "CMP {MEM1},X", "{LINE9}", "DEX", "BPL dceloop{cnt}" },
-				"LDA #<{MEM0}",	"LDY #>{MEM0}", "JSR REALFAC", "LDA #<{MEM1}", "LDY #>{MEM1}", "JSR CMPFAC", "{LABEL}", 
+				new String[] { "LDX #4", "dceloop{cnt}:", "LDA {MEM0},X", "CMP {MEM1},X", "{LINE9}", "DEX",
+						"BPL dceloop{cnt}" },
+				"LDA #<{MEM0}", "LDY #>{MEM0}", "JSR REALFAC", "LDA #<{MEM1}", "LDY #>{MEM1}", "JSR CMPFAC", "{LABEL}",
 				"{LABEL}", "{LABEL}", "BNE {*}");
 		others.add(tmpPat);
 		tmpPat = new Pattern(false, "Direct compare(<>) of floats",
-				new String[] { "LDX #4", "dcneloop{cnt}:", "LDA {MEM0},X", "CMP {MEM1},X", "{LINE9}|BEQ LINE_SKIP>BNE LINE_NSKIP", "DEX", "BPL dcneloop{cnt}", "{LINE9}|BEQ>JMP" },
-				"LDA #<{MEM0}",	"LDY #>{MEM0}", "JSR REALFAC", "LDA #<{MEM1}", "LDY #>{MEM1}", "JSR CMPFAC", "{LABEL}", 
+				new String[] { "LDX #4", "dcneloop{cnt}:", "LDA {MEM0},X", "CMP {MEM1},X",
+						"{LINE9}|BEQ LINE_SKIP>BNE LINE_NSKIP", "DEX", "BPL dcneloop{cnt}", "{LINE9}|BEQ>JMP" },
+				"LDA #<{MEM0}", "LDY #>{MEM0}", "JSR REALFAC", "LDA #<{MEM1}", "LDY #>{MEM1}", "JSR CMPFAC", "{LABEL}",
 				"{LABEL}", "{LABEL}", "BEQ {*}");
 		others.add(tmpPat);
 		ret = optimizeInternal(others, platform, ret, null);

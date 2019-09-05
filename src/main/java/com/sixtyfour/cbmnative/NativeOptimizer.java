@@ -49,7 +49,7 @@ public class NativeOptimizer {
 		patterns.add(new NativePattern(new String[] { "MOV Y,#*", "MOV G,Y" }, new String[] { "{0:MOV Y,>MOV G,}" }));
 		patterns.add(new NativePattern(new String[] { "MOV X,#*", "MOV G,Y" }, new String[] { "{0:MOV X,>MOV G,}" }));
 		patterns.add(new NativePattern(new String[] { "INT X,Y", "INT X,X" }, new String[] { "{0}" }));
-		patterns.add(new NativePattern(new String[] { "POP C", "PUSH C" }, new String[] {})); 
+		patterns.add(new NativePattern(new String[] { "POP C", "PUSH C" }, new String[] {}));
 		patterns.add(new NativePattern(
 				new String[] { "PUSH C", "MOV C*", "PUSH C", "CHGCTX #1", "MOV B*", "POP D", "POP C" },
 				new String[] { "{1:MOV C,>MOV D,}", "{3}", "{4}" }));
@@ -60,10 +60,16 @@ public class NativeOptimizer {
 		patterns.add(new NativePattern(new String[] { "MOV Y,?}", "POP X" }, new String[] { "{1}", "{0}" }));
 		patterns.add(new NativePattern(new String[] { "PUSH X", "NOP", "POP X" }, new String[] { "NOP" }));
 		patterns.add(new NativePattern(new String[] { "PUSH Y", "NOP", "POP Y" }, new String[] { "NOP" }));
-		// The {0} is actually not needed, because it loads a -1 that's never used into ARG. However, removing it
+		// The {0} is actually not needed, because it loads a -1 that's never used into
+		// ARG. However, removing it
 		// disables some other optimizations at this stage and we don't want that.
-		patterns.add(new NativePattern(new String[] { "MOV X,#-1{INTEGER}","MUL X,Y"}, new String[]{"{0}", "NEG X,Y"}));
-		patterns.add(new NativePattern(new String[] { "MOV Y,#-1{INTEGER}","MUL X,Y"}, new String[]{"MOV Y,X", "NEG X,Y"}));
+		patterns.add(
+				new NativePattern(new String[] { "MOV X,#-1{INTEGER}", "MUL X,Y" }, new String[] { "{0}", "NEG X,Y" }));
+		patterns.add(new NativePattern(new String[] { "MOV Y,#-1{INTEGER}", "MUL X,Y" },
+				new String[] { "MOV Y,X", "NEG X,Y" }));
+		patterns.add(new NativePattern(new String[] { "MOV C,X", "PUSH C" }, new String[] { "PUSH X" }));
+		patterns.add(new NativePattern(new String[] { "PUSH C",	"MOV Y,#*","POP C"}, new String[] { "{1}" }));
+
 	}
 
 	/**
@@ -241,7 +247,8 @@ public class NativeOptimizer {
 					// MOV Y,#128{INTEGER}
 					// MOV X,U{REAL}
 					// DIV X,Y
-					if (lines[0].startsWith("MOV Y,#") && (lines[0].endsWith("{INTEGER}") || lines[0].endsWith(".0{REAL}"))
+					if (lines[0].startsWith("MOV Y,#")
+							&& (lines[0].endsWith("{INTEGER}") || lines[0].endsWith(".0{REAL}"))
 							&& lines[1].startsWith("MOV X,") && lines[2].equals("DIV X,Y")) {
 						String val = lines[0].replace("MOV Y,#", "").replace("{INTEGER}", "").replace(".0{REAL}", "");
 						float vf = Float.parseFloat(val);
@@ -258,7 +265,8 @@ public class NativeOptimizer {
 					// MOV Y,#128{INTEGER}
 					// MOV X,U{REAL}
 					// MUL X,Y
-					if (lines[0].startsWith("MOV Y,#") && (lines[0].endsWith("{INTEGER}") || lines[0].endsWith(".0{REAL}"))
+					if (lines[0].startsWith("MOV Y,#")
+							&& (lines[0].endsWith("{INTEGER}") || lines[0].endsWith(".0{REAL}"))
 							&& lines[1].startsWith("MOV X,") && lines[2].equals("MUL X,Y")) {
 						String val = lines[0].replace("MOV Y,#", "").replace("{INTEGER}", "").replace(".0{REAL}", "");
 						float vf = Float.parseFloat(val);
@@ -274,7 +282,8 @@ public class NativeOptimizer {
 
 					// MOV Y,#128{INTEGER}
 					// DIV X,Y
-					if (lines[0].startsWith("MOV Y,#") && (lines[0].endsWith("{INTEGER}") || lines[0].endsWith(".0{REAL}"))
+					if (lines[0].startsWith("MOV Y,#")
+							&& (lines[0].endsWith("{INTEGER}") || lines[0].endsWith(".0{REAL}"))
 							&& lines[1].equals("DIV X,Y")) {
 						String val = lines[0].replace("MOV Y,#", "").replace("{INTEGER}", "").replace(".0{REAL}", "");
 						float vf = Float.parseFloat(val);
@@ -289,7 +298,8 @@ public class NativeOptimizer {
 
 					// MOV Y,#128{INTEGER}
 					// MUL X,Y
-					if (lines[0].startsWith("MOV Y,#") && (lines[0].endsWith("{INTEGER}") || lines[0].endsWith(".0{REAL}"))
+					if (lines[0].startsWith("MOV Y,#")
+							&& (lines[0].endsWith("{INTEGER}") || lines[0].endsWith(".0{REAL}"))
 							&& lines[1].equals("MUL X,Y")) {
 						String val = lines[0].replace("MOV Y,#", "").replace("{INTEGER}", "").replace(".0{REAL}", "");
 						float vf = Float.parseFloat(val);
@@ -311,7 +321,7 @@ public class NativeOptimizer {
 					i += 1;
 					continue;
 				}
-				
+
 				if (lines[0].contains("INTEGER") && lines[0].startsWith("MOV Y,#")
 						&& (lines[1].equals("MOV X,(Y)") || lines[1].equals("MOVB X,(Y)"))) {
 					try {

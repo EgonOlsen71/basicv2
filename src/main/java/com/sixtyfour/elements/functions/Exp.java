@@ -39,4 +39,13 @@ public class Exp extends AbstractFunction {
 		throw new RuntimeException("Type mismatch error: " + term.getType());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.sixtyfour.elements.functions.AbstractFunction#getParameterCount()
+	 */
+	public int getParameterCount() {
+		return 1;
+	}
+
 }

@@ -58,4 +58,13 @@ public class Sqr extends AbstractFunction {
 		return "(float) Math.sqrt(" + inter + ")";
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.sixtyfour.elements.functions.AbstractFunction#getParameterCount()
+	 */
+	public int getParameterCount() {
+		return 1;
+	}
+
 }

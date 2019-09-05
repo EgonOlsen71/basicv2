@@ -54,4 +54,13 @@ public class Log extends AbstractFunction {
 		return "(float) Math.log(" + inter + ")";
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.sixtyfour.elements.functions.AbstractFunction#getParameterCount()
+	 */
+	public int getParameterCount() {
+		return 1;
+	}
+
 }

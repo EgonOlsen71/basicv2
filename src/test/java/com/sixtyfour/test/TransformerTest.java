@@ -113,14 +113,14 @@ public class TransformerTest {
 	private static void test10adv() throws Exception {
 		System.out.println("\n\ntest10adv");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/10_line_adv.bas");
-		Assembler assy = initTestEnvironment(vary, false, -1, false);
+		Assembler assy = initTestEnvironment(vary, false, -1, true);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++10_line_adv.bas.prg", true);
 	}
 	
 	private static void test10test() throws Exception {
 		System.out.println("\n\ntest10test");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/10test.bas");
-		Assembler assy = initTestEnvironment(vary, true, -1, false);
+		Assembler assy = initTestEnvironment(vary, true, -1, true);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++10test.prg", true);
 	}
 	

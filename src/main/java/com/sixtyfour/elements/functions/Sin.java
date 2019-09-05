@@ -54,4 +54,13 @@ public class Sin extends AbstractFunction {
 		return "(float) Math.sin(" + inter + ")";
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.sixtyfour.elements.functions.AbstractFunction#getParameterCount()
+	 */
+	public int getParameterCount() {
+		return 1;
+	}
+
 }

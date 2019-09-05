@@ -14,7 +14,8 @@ import com.sixtyfour.system.BasicProgramCounter;
  */
 public class Cont extends AbstractCommand {
 
-    	private static int contCount = 0;
+	private static int contCount = 0;
+
 	/**
 	 * Instantiates a new cont.
 	 */
@@ -51,7 +52,7 @@ public class Cont extends AbstractCommand {
 
 	@Override
 	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
-	    contCount++;
-	    return Util.createSingleCommand("CONT"+contCount+": JMP CONT"+contCount);
+		contCount++;
+		return Util.createSingleCommand("CONT" + contCount + ": JMP CONT" + contCount);
 	}
 }

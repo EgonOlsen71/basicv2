@@ -89,4 +89,12 @@ public interface Function extends Atom {
 	 */
 	String getInitialCall();
 
+	/**
+	 * Returns the number of parameters that this functions expects at least. May
+	 * return 0, if no number has been specified.
+	 * 
+	 * @return the minimum number or 0
+	 */
+	int getParameterCount();
+
 }

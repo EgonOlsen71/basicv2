@@ -332,7 +332,7 @@ public class MoSpeedCL {
 	private static boolean getOptionInt(String option, Map<String, String> options) {
 		return getOptionIntDefault(option, options, true);
 	}
-	
+
 	private static boolean getOptionIntDefault(String option, Map<String, String> options, boolean def) {
 		option = option.toLowerCase(Locale.ENGLISH);
 		if (options.containsKey(option)) {
@@ -385,7 +385,8 @@ public class MoSpeedCL {
 		System.out.println("/deadstoreopt=true|false - enables/disables dead store elimination for numbers");
 		System.out.println("/deadstoreoptstr=true|false - enables/disables dead store elimination for strings");
 		System.out.println("/loopopt=true|false - enables/disables the removal of empty loops");
-		System.out.println("/addressheader=true|false - enables/disables the writing of the two address header bytes. Default is true.");
+		System.out.println(
+				"/addressheader=true|false - enables/disables the writing of the two address header bytes. Default is true.");
 		System.out.println(
 				"/floatopt=true|false - enables/disables some floating point optimizations, which might impact accuracy");
 		System.out.println("/intopt=true|false - enables/disables some integer optimizations");

@@ -589,7 +589,7 @@ public class Parser {
 	public static boolean isNumberType(Atom atom) {
 		return atom.getType().equals(Type.INTEGER) || atom.getType().equals(Type.REAL);
 	}
-	
+
 	/**
 	 * Returns true, if a text represents a function name. Otherwise false.
 	 * 

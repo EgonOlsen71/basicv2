@@ -55,4 +55,13 @@ public class Rnd extends AbstractFunction {
 	public String toCode(Machine machine) {
 		return "(float) Math.random()";
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.sixtyfour.elements.functions.AbstractFunction#getParameterCount()
+	 */
+	public int getParameterCount() {
+		return 1;
+	}
 }

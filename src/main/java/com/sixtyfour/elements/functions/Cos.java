@@ -54,4 +54,13 @@ public class Cos extends AbstractFunction {
 		return "(float) Math.cos(" + inter + ")";
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.sixtyfour.elements.functions.AbstractFunction#getParameterCount()
+	 */
+	public int getParameterCount() {
+		return 1;
+	}
+
 }

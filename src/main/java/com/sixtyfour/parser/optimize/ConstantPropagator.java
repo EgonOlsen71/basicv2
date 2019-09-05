@@ -145,16 +145,15 @@ public class ConstantPropagator {
 				}
 			}
 		}
-		
+
 		// Swap X+Constant to Constant+X
 		/*
-		// While this helps with performance, it increases the size. The performance gain is somewhere in the 0.05% range, so it's not really worth it.
-		if (false && t.getType(true) != Type.STRING && !t.getLeft().isConstant() && t.getRight().isConstant() && t.getOperator().isPlus()) {
-		    Atom rt=t.getRight();
-		    t.setRight(t.getLeft());
-		    t.setLeft(rt);
-		}
-		*/
+		 * // While this helps with performance, it increases the size. The performance
+		 * gain is somewhere in the 0.05% range, so it's not really worth it. if (false
+		 * && t.getType(true) != Type.STRING && !t.getLeft().isConstant() &&
+		 * t.getRight().isConstant() && t.getOperator().isPlus()) { Atom
+		 * rt=t.getRight(); t.setRight(t.getLeft()); t.setLeft(rt); }
+		 */
 
 		// Convert 1+X to X+1...
 		if (t.getOperator().isPlus() && t.getType(true) != Type.STRING) {

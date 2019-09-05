@@ -23,7 +23,7 @@ public class DelayedLabel {
 	 * @param label      the label's name
 	 * @param low        low byte only?
 	 * @param high       high byte only?
-	 * @param add		the address
+	 * @param add        the address
 	 * @param isDataLine does the line contain an actual command or is it some data
 	 *                   like .BYTE
 	 */

@@ -1230,7 +1230,7 @@ public class PseudoCpu {
 		int ti = getIndex("X");
 		regs[ti] = memory[addr];
 	}
-	
+
 	private void left(String[] parts) {
 		String ch = readString(regs[B].intValue());
 		int end = regs[C].intValue();
@@ -2189,7 +2189,7 @@ public class PseudoCpu {
 			}
 		});
 	}
-	
+
 	private void neg(String[] parts) {
 		calc(parts, new Calc() {
 			@Override

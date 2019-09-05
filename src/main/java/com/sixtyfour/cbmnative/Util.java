@@ -45,7 +45,7 @@ public class Util {
 		ccs.add(cc);
 		return ccs;
 	}
-	
+
 	/**
 	 * Extracts all number constants from an assembly source.
 	 * 

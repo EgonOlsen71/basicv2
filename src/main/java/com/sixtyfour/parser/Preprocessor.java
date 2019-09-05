@@ -72,9 +72,10 @@ public class Preprocessor {
 				if (pos != -1) {
 					String label = line.substring(0, pos).trim();
 					Command com = Parser.getCommand(label);
-					if (com == null || (label.length()>com.getName().length() && label.charAt(com.getName().length())=='_')) {
+					if (com == null || (label.length() > com.getName().length()
+							&& label.charAt(com.getName().length()) == '_')) {
 						label2line.put(label, ln);
-						System.out.println("Adding: "+label+"/"+ln);
+						System.out.println("Adding: " + label + "/" + ln);
 						line = line.substring(pos + 1).trim();
 						if (line.isEmpty()) {
 							line = "rem jump target";

@@ -87,6 +87,15 @@ public abstract class AbstractFunction implements Function {
 	/*
 	 * (non-Javadoc)
 	 * 
+	 * @see com.sixtyfour.elements.functions.Function#getParameterCount()
+	 */
+	public int getParameterCount() {
+		return 0;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#clone()
 	 */
 	public Function clone() {
@@ -161,6 +170,11 @@ public abstract class AbstractFunction implements Function {
 	@Override
 	public void parse(CompilerConfig config, String linePart, Machine machine) {
 		this.setTerm(Parser.getTerm(config, linePart, machine, false, true));
+		if (getParameterCount() > 0) {
+			if (Parser.getParameters(term).size() > getParameterCount()) {
+				throw new RuntimeException("Syntax error: " + linePart);
+			}
+		}
 	}
 
 	/*

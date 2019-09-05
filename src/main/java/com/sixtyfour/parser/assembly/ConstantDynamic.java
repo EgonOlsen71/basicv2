@@ -34,11 +34,13 @@ public class ConstantDynamic implements ConstantValue {
 	private ConstantValue apply() {
 		ConstantValue cv = AssemblyParser.getConstant(config, name + "=" + value, ccon);
 		if (cv instanceof ConstantDynamic) {
-			// This happens, if the constant can't be resolved when it's first used. This might be ok,
-			// because it's a simple label anyway...or it's an error because it's a calculation based
+			// This happens, if the constant can't be resolved when it's first used. This
+			// might be ok,
+			// because it's a simple label anyway...or it's an error because it's a
+			// calculation based
 			// on an unresolved label. But I can't detect this here...:-(
-		    return new ConstantByte(name, 0);
-			
+			return new ConstantByte(name, 0);
+
 		}
 		return cv;
 	}

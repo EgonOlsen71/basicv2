@@ -21,5 +21,4 @@ public interface ConstantValue {
 	 */
 	int getValue();
 
-	
 }

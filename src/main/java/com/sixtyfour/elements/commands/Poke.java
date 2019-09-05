@@ -32,7 +32,7 @@ public class Poke extends AbstractCommand {
 	public Poke() {
 		super("POKE");
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 

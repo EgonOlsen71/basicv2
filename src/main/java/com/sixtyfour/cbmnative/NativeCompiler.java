@@ -22,6 +22,7 @@ import com.sixtyfour.parser.optimize.ConstantPropagator;
 import com.sixtyfour.parser.optimize.DeadStoreEliminator;
 import com.sixtyfour.parser.optimize.TermOptimizer;
 import com.sixtyfour.system.Machine;
+import com.sixtyfour.util.CompilerException;
 
 /**
  * Compiles the BASIC program into native code. This process happens in three
@@ -526,6 +527,10 @@ public class NativeCompiler {
 					right = true;
 				}
 
+				if (tr == null) {
+					throw new CompilerException();
+				}
+
 				if (!tr.equals(sr)) {
 					if (!code.isEmpty() && getLastEntry(code).startsWith("MOV " + sr)
 							&& !getLastEntry(code).equals("MOV " + sr + "," + tr)
@@ -660,7 +665,7 @@ public class NativeCompiler {
 					code.add("JSR LEN");
 					break;
 				case "VPEEK":
-				    	code.add("POP C");
+					code.add("POP C");
 					code.add("JSR VPEEK");
 					break;
 				case "TAB":

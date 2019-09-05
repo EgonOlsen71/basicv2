@@ -8,6 +8,6 @@ public class Mul extends Calculation {
 
 	public Mul() {
 		super("MUL", "; FAC = ARG * FAC", "JSR MEMMUL", true);
-		//super("MUL", "; FAC = ARG * FAC", "JSR FACMUL", false);
+		// super("MUL", "; FAC = ARG * FAC", "JSR FACMUL", false);
 	}
 }

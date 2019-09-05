@@ -44,4 +44,13 @@ public class Fre extends AbstractFunction {
 	public boolean isDeterministic() {
 		return false;
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.sixtyfour.elements.functions.AbstractFunction#getParameterCount()
+	 */
+	public int getParameterCount() {
+		return 1;
+	}
 }
