@@ -66,6 +66,7 @@ public class NativeCompiler {
 			this.add("LEN");
 			this.add("USR");
 			this.add("PEEK");
+			this.add("VPEEK");
 			this.add("MID");
 			this.add("PAR");
 			this.add("SINGLEPAR");
@@ -657,6 +658,9 @@ public class NativeCompiler {
 					break;
 				case "LEN":
 					code.add("JSR LEN");
+					break;
+				case "VPEEK":
+					code.add("JSR VPEEK");
 					break;
 				case "TAB":
 					code.add("JSR TAB");

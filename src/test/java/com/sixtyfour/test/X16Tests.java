@@ -24,14 +24,30 @@ public class X16Tests {
 
     public static void main(String[] args) throws Exception {
 	testVpoke();
+	testVpeek();
+	testVpokePeek();
     }
 
+    private static void testVpokePeek() throws Exception {
+	System.out.println("\n\ntestVpokePeek");
+	String[] vary = Loader.loadProgram("src/test/resources/x16/vpokepeek.bas");
+	Assembler assy = initTestEnvironment(vary, false, -1, false);
+	FileWriter.writeAsPrg(assy.getProgram(), path + "++vpokepeek.prg", true);
+    }
+    
     private static void testVpoke() throws Exception {
 	System.out.println("\n\ntestVpoke");
 	String[] vary = Loader.loadProgram("src/test/resources/x16/vpoke.bas");
 	Assembler assy = initTestEnvironment(vary, false, -1, false);
 	FileWriter.writeAsPrg(assy.getProgram(), path + "++vpoke.prg", true);
     }
+    
+    private static void testVpeek() throws Exception {
+   	System.out.println("\n\ntestVpeek");
+   	String[] vary = Loader.loadProgram("src/test/resources/x16/vpeek.bas");
+   	Assembler assy = initTestEnvironment(vary, false, -1, false);
+   	FileWriter.writeAsPrg(assy.getProgram(), path + "++vpeek.prg", true);
+       }
 
     private static Assembler initTestEnvironment(String[] vary) {
 	return initTestEnvironment(vary, false);

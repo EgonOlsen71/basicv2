@@ -8,6 +8,7 @@ import com.sixtyfour.elements.commands.Command;
 import com.sixtyfour.elements.functions.Function;
 import com.sixtyfour.extensions.BasicExtension;
 import com.sixtyfour.extensions.x16.commands.Vpoke;
+import com.sixtyfour.extensions.x16.functions.Vpeek;
 import com.sixtyfour.system.Machine;
 
 /**
@@ -23,6 +24,13 @@ public class X16Extensions implements BasicExtension {
 	}
     });
 
+    private final static List<Function> FUNCTIONS = Collections.unmodifiableList(new ArrayList<Function>() {
+	private static final long serialVersionUID = 1L;
+	{
+	    this.add(new Vpeek());
+	}
+    });
+
     @Override
     public List<Command> getCommands() {
 	return COMMANDS;
@@ -30,7 +38,7 @@ public class X16Extensions implements BasicExtension {
 
     @Override
     public List<Function> getFunctions() {
-	return null;
+	return FUNCTIONS;
     }
 
     @Override

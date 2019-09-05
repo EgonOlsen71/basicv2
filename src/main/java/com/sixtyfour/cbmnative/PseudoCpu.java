@@ -891,6 +891,9 @@ public class PseudoCpu {
 		case "OPEN":
 			open(parts);
 			return;
+		case "VPEEK":
+			vpeek(parts);
+			return;
 		case "CLOSE":
 			close(parts);
 			return;
@@ -1220,6 +1223,14 @@ public class PseudoCpu {
 		copyStringResult(snum);
 	}
 
+	private void vpeek(String[] parts) {
+		@SuppressWarnings("unused")
+		int bank = regs[Y].intValue();
+		int addr = regs[C].intValue();
+		int ti = getIndex("X");
+		regs[ti] = memory[addr];
+	}
+	
 	private void left(String[] parts) {
 		String ch = readString(regs[B].intValue());
 		int end = regs[C].intValue();
