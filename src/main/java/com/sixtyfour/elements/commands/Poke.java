@@ -21,10 +21,10 @@ import com.sixtyfour.util.VarUtils;
 public class Poke extends AbstractCommand {
 
 	/** The pars. */
-	private List<Atom> pars;
+	protected List<Atom> pars;
 
-	private Atom addr = null;
-	private Atom val = null;
+	protected Atom addr = null;
+	protected Atom val = null;
 
 	/**
 	 * Instantiates a new poke.
@@ -32,7 +32,7 @@ public class Poke extends AbstractCommand {
 	public Poke() {
 		super("POKE");
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
