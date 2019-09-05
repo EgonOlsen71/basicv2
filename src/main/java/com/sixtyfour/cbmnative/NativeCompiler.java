@@ -660,6 +660,7 @@ public class NativeCompiler {
 					code.add("JSR LEN");
 					break;
 				case "VPEEK":
+				    	code.add("POP C");
 					code.add("JSR VPEEK");
 					break;
 				case "TAB":
