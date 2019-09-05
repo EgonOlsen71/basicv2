@@ -31,6 +31,7 @@ import com.sixtyfour.plugins.DeviceProvider;
 import com.sixtyfour.plugins.SystemCallListener;
 import com.sixtyfour.system.DataStore;
 import com.sixtyfour.system.Machine;
+import com.sixtyfour.util.ConstantExtractor;
 import com.sixtyfour.util.VarUtils;
 
 /**
@@ -102,6 +103,7 @@ public class PseudoCpu {
 	private SystemCallListener callListener = null;
 	private int memoryLimit = MEM_SIZE;
 	private boolean sharedRam = false;
+	private Map<String, Integer> constMap = ConstantExtractor.getAllConstantMaps();
 
 	/**
 	 * Executes the intermediate code.
@@ -2252,6 +2254,17 @@ public class PseudoCpu {
 		regs[si] = rti;
 	}
 
+	private int parseInt(String txt) {
+		try {
+			return Integer.parseInt(txt);
+		} catch (NumberFormatException e) {
+			if (constMap.containsKey(txt)) {
+				return constMap.get(txt);
+			}
+			throw e;
+		}
+	}
+
 	private void mov(String[] parts) {
 		String[] ops = split(parts[1], ",");
 		String target = ops[0];
@@ -2265,8 +2278,8 @@ public class PseudoCpu {
 
 		if (ti == -1 && si == -1) {
 			// constant into memory
-			int addr = Integer.parseInt(target);
-			int val = Integer.parseInt(source.substring(0, source.indexOf("{")).replace("#", "").trim()) & 0xff;
+			int addr = parseInt(target);
+			int val = parseInt(source.substring(0, source.indexOf("{")).replace("#", "").trim()) & 0xff;
 			memory[addr] = val;
 			return;
 		}
@@ -2292,11 +2305,28 @@ public class PseudoCpu {
 				}
 			} else {
 				// From register into fixed memory address
-				int addr = Integer.parseInt(target);
-				int val = regs[si].intValue() & 0xff;
-				memory[addr] = val;
-				if (sharedRam) {
-					machine.getMemoryListener().poke(addr, val);
+				if (!target.contains(":")) {
+					int addr = parseInt(target);
+					int val = regs[si].intValue() & 0xff;
+					memory[addr] = val;
+					if (sharedRam) {
+						machine.getMemoryListener().poke(addr, val);
+					}
+				} else {
+					String[] trs = target.split(":");
+					int val = regs[si].intValue() & 0xff;
+					int lo = val & 255;
+					int hi = val >> 8;
+					int addr = parseInt(trs[0].trim());
+					memory[addr] = lo;
+					if (sharedRam) {
+						machine.getMemoryListener().poke(addr, lo);
+					}
+					addr = parseInt(trs[1].trim());
+					memory[addr] = hi;
+					if (sharedRam) {
+						machine.getMemoryListener().poke(addr, hi);
+					}
 				}
 			}
 		} else {

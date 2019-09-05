@@ -15,8 +15,7 @@ public class ProgramTest {
 	/**
 	 * The main method.
 	 * 
-	 * @param args
-	 *            the arguments
+	 * @param args the arguments
 	 */
 	public static void main(String[] args) {
 //		testArray();
@@ -26,34 +25,34 @@ public class ProgramTest {
 //		for (int i = 0; i < 10; i++) {
 //			testPrime2();
 //		}
-		//testConditions();
+		// testConditions();
 		// testVarious();
 		// testGosubReturn();
 		// testGosub();
 		// testMenu();
-		//testBeer();
+		// testBeer();
 		// testRun();
 		// testInput();
-		//testData();
+		// testData();
 		// testAdventure();
 		// testCalc();
-		//testStuff();
+		// testStuff();
 		// testCalendar();
 		// testOtherPrime();
 		// testBio();
-		//testIf();
-		//testBuggedOn64();
-	    	//testCharFractal();
-	    //	testEvalComp();
+		// testIf();
+		// testBuggedOn64();
+		// testCharFractal();
+		// testEvalComp();
 		testIfNot();
 	}
-	
+
 	private static void testIfNot() {
 		String[] vary = Loader.loadProgram("src/test/resources/basic/ifnot.bas");
 		Basic inty = new Basic(vary);
 		inty.run(config);
 	}
-	
+
 	private static void testEvalComp() {
 		String[] vary = Loader.loadProgram("src/test/resources/basic/eval.bas");
 		Basic inty = new Basic(vary);
@@ -65,15 +64,14 @@ public class ProgramTest {
 		Basic inty = new Basic(vary);
 		inty.run(config);
 	}
-	
+
 	private static void testCharFractal() {
-	    	Basic.registerExtension(new ConsoleSupport());
+		Basic.registerExtension(new ConsoleSupport());
 		String[] vary = Loader.loadProgram("src/test/resources/basic/charfractal.bas");
 		Basic inty = new Basic(vary);
 		inty.run(config);
 
 	}
-	
 
 	private static void testBuggedOn64() {
 		String[] vary = Loader.loadProgram("src/test/resources/basic/buggy64.bas");

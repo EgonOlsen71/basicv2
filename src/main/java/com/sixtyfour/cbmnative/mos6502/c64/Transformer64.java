@@ -52,7 +52,9 @@ public class Transformer64 extends AbstractTransformer {
 		consts.add("CONSTANTS");
 		vars.add("; *** VARIABLES ***");
 		vars.add("VARIABLES");
-
+		
+		addExtensionConstants(res);
+		
 		res.add("SGNFAC = $BC2B");
 		res.add("MEMARG = $BA8C");
 		res.add("ARGADD = $B86A");

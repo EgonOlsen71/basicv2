@@ -2,7 +2,9 @@ package com.sixtyfour.extensions.x16;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.sixtyfour.elements.commands.Command;
 import com.sixtyfour.elements.functions.Function;
@@ -52,6 +54,20 @@ public class X16Extensions implements BasicExtension {
 			private static final long serialVersionUID = 1L;
 			{
 				this.add("x16");
+			}
+		};
+	}
+
+	@Override
+	public Map<String, Integer> getLabel2Constant() {
+		return new HashMap<String, Integer>() {
+			private static final long serialVersionUID = 1L;
+			{
+				this.put("VERAREG", Integer.parseInt("9F20", 16));
+				this.put("VERAHI", Integer.parseInt("9F20", 16));
+				this.put("VERAMID", Integer.parseInt("9F21", 16));
+				this.put("VERALO", Integer.parseInt("9F22", 16));
+				this.put("VERADAT", Integer.parseInt("9F23", 16));
 			}
 		};
 	}

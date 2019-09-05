@@ -1,10 +1,12 @@
 package com.sixtyfour.cbmnative.javascript.generators;
 
 import java.util.List;
+import java.util.Map;
 
 import com.sixtyfour.cbmnative.Generator;
 import com.sixtyfour.cbmnative.Operand;
 import com.sixtyfour.elements.Type;
+import com.sixtyfour.util.ConstantExtractor;
 
 public abstract class GeneratorBaseJs implements Generator {
 
@@ -39,7 +41,7 @@ public abstract class GeneratorBaseJs implements Generator {
 		if ((name.endsWith("_array") || name.endsWith("_int")) && !name.startsWith("VAR_")) {
 			name = "VAR_" + name;
 		}
-		if (isNumber(name)) {
+		if (isRealNumber(name)) {
 			return name;
 		}
 		return "this." + name;
@@ -47,10 +49,34 @@ public abstract class GeneratorBaseJs implements Generator {
 
 	protected boolean isNumber(String line) {
 		try {
+			parseInt(line);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+	
+	protected boolean isRealNumber(String line) {
+		try {
 			Integer.parseInt(line);
 			return true;
 		} catch (Exception e) {
 			return false;
+		}
+	}
+
+	protected int parseInt(String txt) {
+		try {
+			return Integer.parseInt(txt);
+		} catch (NumberFormatException e) {
+			Map<String, Integer> constMap = ConstantExtractor.getAllConstantMaps();
+			if (constMap.containsKey(txt)) {
+				return constMap.get(txt);
+			}
+			if (constMap.containsKey(txt.replace("this.", ""))) {
+				return constMap.get(txt.replace("this.", ""));
+			}
+			throw e;
 		}
 	}
 

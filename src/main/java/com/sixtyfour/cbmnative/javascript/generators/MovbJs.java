@@ -77,20 +77,30 @@ public class MovbJs extends MovJs {
 
 	private void noIndexRealSource(List<String> nCode, Operand source, Operand target) {
 		String from = getOpName(source);
-		String to = getOpName(target);
-
-		if (isNumber(from)) {
-			from = "this._memory[" + from + "]";
+		String addr = target.getAddress();
+		if (addr == null || !addr.contains(":")) {
+			fillMemory(nCode, target, from);
+		} else {
+			String[] as = addr.split(":");
+			target.setAddress(as[0].trim());
+			fillMemory(nCode, target, from);
+			target.setAddress(as[1].trim());
+			fillMemory(nCode, target, from + " >> 8");
 		}
-		if (isNumber(to)) {
-			to = "this._memory[" + to + "]";
-		}
-
-		nCode.add(to + "=Math.floor(" + from + ") & 255;");
 	}
 
 	private void noIndexIntegerSource(List<String> nCode, Operand source, Operand target) {
 		noIndexRealSource(nCode, source, target);
 	}
 
+	private void fillMemory(List<String> nCode, Operand target, String from) {
+		String to = getOpName(target);
+		if (isNumber(from)) {
+			from = "this._memory[" + from + "]";
+		}
+		if (isNumber(to)) {
+			to = "this._memory[" + to + "]";
+		}
+		nCode.add(to + "=Math.floor(" + from + ") & 255;");
+	}
 }

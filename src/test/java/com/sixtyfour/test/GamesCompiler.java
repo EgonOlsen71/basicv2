@@ -41,7 +41,7 @@ public class GamesCompiler {
 //		compileGame(poetry, dst);
 //
 		for (File game : games) {
-			//if (game.getName().contains("Invaders"))
+			// if (game.getName().contains("Invaders"))
 			compileGame(game, dst);
 		}
 
@@ -54,7 +54,8 @@ public class GamesCompiler {
 		Assembler assy = initTestEnvironment(gameName, vary, false, 30000, -1);
 		String target = dst.getPath() + "/+" + gameName.replace(".bas", ".prg");
 		System.out.println("Code ends at: " + assy.getProgram().getParts().get(0).getEndAddress());
-		System.out.println("Binary ends at: " + assy.getProgram().getParts().get(assy.getProgram().getParts().size() - 1).getEndAddress());
+		System.out.println("Binary ends at: "
+				+ assy.getProgram().getParts().get(assy.getProgram().getParts().size() - 1).getEndAddress());
 		FileWriter.writeAsPrg(assy.getProgram(), target, assy.getProgram().getCodeStart() < 2100);
 
 		// assy.getCpu().setCpuTracer(new MySimpleTracer(assy));
@@ -136,7 +137,8 @@ public class GamesCompiler {
 		}
 	}
 
-	private static Assembler initTestEnvironment(String name, String[] vary, boolean executePseudo, int variableStart, int stringMemoryEnd) {
+	private static Assembler initTestEnvironment(String name, String[] vary, boolean executePseudo, int variableStart,
+			int stringMemoryEnd) {
 		CompilerConfig conf = new CompilerConfig();
 		boolean optis = true;
 		conf.setConstantFolding(optis);
@@ -177,7 +179,8 @@ public class GamesCompiler {
 		}
 
 		System.out.println("Program '" + name + "' starts at " + start);
-		List<String> nCode = NativeCompiler.getCompiler().compile(conf, basic, new MemoryConfig(start, -1, variableStart, stringMemoryEnd), new Platform64());
+		List<String> nCode = NativeCompiler.getCompiler().compile(conf, basic,
+				new MemoryConfig(start, -1, variableStart, stringMemoryEnd), new Platform64());
 		for (String line : nCode) {
 			System.out.println(line);
 		}
@@ -205,9 +208,11 @@ public class GamesCompiler {
 			if (line != null) {
 				cnt++;
 
-				System.out.println(Integer.toHexString(opcodePc) + " - " + Integer.toHexString(opcode) + " -> " + Integer.toHexString(newPc) + " / a=" + cpu.getAcc() + " / x="
-						+ cpu.getX() + " / y=" + cpu.getY() + "/ z=" + (cpu.getStatus() & 0b10) + " / TMP_ZP=" + printReg(105, assy) + " / TMP2_ZP=" + printReg(107, assy)
-						+ " / TMP3_ZP=" + printReg(34, assy) + "/" + line + " " + assy.getRam()[opcodePc + 1] + "/" + cnt + " - FAC1:"
+				System.out.println(Integer.toHexString(opcodePc) + " - " + Integer.toHexString(opcode) + " -> "
+						+ Integer.toHexString(newPc) + " / a=" + cpu.getAcc() + " / x=" + cpu.getX() + " / y="
+						+ cpu.getY() + "/ z=" + (cpu.getStatus() & 0b10) + " / TMP_ZP=" + printReg(105, assy)
+						+ " / TMP2_ZP=" + printReg(107, assy) + " / TMP3_ZP=" + printReg(34, assy) + "/" + line + " "
+						+ assy.getRam()[opcodePc + 1] + "/" + cnt + " - FAC1:"
 						+ Conversions.convertFloat(assy.getMachine(), 0x61) + " @ " + cpu.getClockTicks());
 
 			}

@@ -49,6 +49,7 @@ public class AssemblyParserTest {
 	private static void testConstants() {
 		System.out.println(AssemblyParser.getConstant(config, "*=$c000", null));
 		System.out.println(AssemblyParser.getConstant(config, "BSOUTy = 63424", null));
-		System.out.println(AssemblyParser.getConstant(config, AssemblyParser.truncateComments("*=$c001 ;This is a comment!;;;"), null));
+		System.out.println(AssemblyParser.getConstant(config,
+				AssemblyParser.truncateComments("*=$c001 ;This is a comment!;;;"), null));
 	}
 }

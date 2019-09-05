@@ -107,7 +107,7 @@ public class NativeCompilerTest {
 		// testStringExpression10();
 		// testStringExpression11();
 		// testFrog();
-	    	test10Line();
+		test10Line();
 	}
 
 	private static void testFiles() {
@@ -192,7 +192,8 @@ public class NativeCompilerTest {
 	@SuppressWarnings("unused")
 	private static void testFrog() {
 		System.out.println("\n\ntestFrog");
-		String[] rd = Preprocessor.convertToLineNumbers(Loader.loadProgram("src/test/resources/transform/frog_transform.bas"));
+		String[] rd = Preprocessor
+				.convertToLineNumbers(Loader.loadProgram("src/test/resources/transform/frog_transform.bas"));
 		Basic basic = new Basic(rd);
 		basic.compile(config);
 		ConsoleDevice cd = ConsoleDevice.openDevice(basic.getMachine(), 1, true, 640, 400);
@@ -239,7 +240,7 @@ public class NativeCompilerTest {
 		FileOutputStream fos = new FileOutputStream("fractal_native.png");
 		Graphics.savePng(bi, fos);
 	}
-	
+
 	private static void test10Line() {
 		System.out.println("\n\ntest10Line");
 		String[] adv = Loader.loadProgram("src/test/resources/transform/10test.bas");
@@ -408,14 +409,14 @@ public class NativeCompilerTest {
 		basic.compile(config);
 		return runCompiled(basic);
 	}
-	
+
 	private static PseudoCpu compileAndUnoptRun(String[] prg) {
 		Basic basic = new Basic(prg);
 		CompilerConfig config = new CompilerConfig();
 		config.setConstantFolding(false);
 		config.setConstantPropagation(false);
 		basic.compile(config);
-		List<String> mCode =  NativeCompiler.getCompiler().compileToPseudoCode(config, basic);
+		List<String> mCode = NativeCompiler.getCompiler().compileToPseudoCode(config, basic);
 		System.out.println("------------------------------");
 		for (String line : mCode) {
 			System.out.println(line);
@@ -492,13 +493,14 @@ public class NativeCompilerTest {
 	private static void testArrayAccessTotal() {
 		System.out.println("\n\ntestArrayAccessTotal");
 		Machine machine = new Machine();
-		List<Object> objs = new ArrayList<Object>(Arrays.asList(new Float[] { 93f, 2.3f, 4.5f, 4.1f, 1.1f, .21f, 1.1f, 2.3f, 4.5f, 6.6f, 2.2f, 1.3f, 4.5f, 4.5f, 1f, 2.2f, 3.1f,
-				2.3f, 5.5f, 6.6f }));
+		List<Object> objs = new ArrayList<Object>(Arrays.asList(new Float[] { 93f, 2.3f, 4.5f, 4.1f, 1.1f, .21f, 1.1f,
+				2.3f, 4.5f, 6.6f, 2.2f, 1.3f, 4.5f, 4.5f, 1f, 2.2f, 3.1f, 2.3f, 5.5f, 6.6f }));
 		machine.add(new Variable("A[]", objs, 1, 9));
 		machine.add(new Variable("B[]", objs, 19));
 		machine.add(new Variable("C", 0));
 		machine.add(new Variable("D%", 2));
-		List<Object> objs2 = new ArrayList<Object>(Arrays.asList(new String[] { "AAA", "BBB", "CCC", "DDD", "EEE", "FFF", "GGG", "HHH", "JJJ", "KKK", "LLL", "MMM", "NNN", "OOO" }));
+		List<Object> objs2 = new ArrayList<Object>(Arrays.asList(new String[] { "AAA", "BBB", "CCC", "DDD", "EEE",
+				"FFF", "GGG", "HHH", "JJJ", "KKK", "LLL", "MMM", "NNN", "OOO" }));
 		machine.add(new Variable("AA$[]", objs2, 1, 7));
 		machine.add(new Variable("B$[]", objs2, 13));
 		String term = "B(4)+6+B(1)+ASC(B$(ASC(\"A\")-A(0,C))+\" \")";
@@ -509,8 +511,8 @@ public class NativeCompilerTest {
 	private static void testArrayAccess1() {
 		System.out.println("\n\ntestArrayAccess1");
 		Machine machine = new Machine();
-		List<Object> objs = new ArrayList<Object>(Arrays.asList(new Float[] { 1.2f, 2.3f, 4.5f, 4.1f, 1.1f, .21f, 1.1f, 2.3f, 4.5f, 6.6f, 2.2f, 1.3f, 4.5f, 4.5f, 1f, 2.2f, 3.1f,
-				2.3f, 5.5f, 6.6f }));
+		List<Object> objs = new ArrayList<Object>(Arrays.asList(new Float[] { 1.2f, 2.3f, 4.5f, 4.1f, 1.1f, .21f, 1.1f,
+				2.3f, 4.5f, 6.6f, 2.2f, 1.3f, 4.5f, 4.5f, 1f, 2.2f, 3.1f, 2.3f, 5.5f, 6.6f }));
 		machine.add(new Variable("A[]", objs, 1, 9));
 		machine.add(new Variable("B[]", objs, 19));
 		machine.add(new Variable("C", 4.2f));
@@ -522,7 +524,8 @@ public class NativeCompilerTest {
 	private static void testStringArrayAccess0() {
 		System.out.println("\n\ntestStringArrayAccess0");
 		Machine machine = new Machine();
-		List<Object> objs = new ArrayList<Object>(Arrays.asList(new String[] { "AAA", "BBB", "CCC", "DDD", "EEE", "FFF", "GGG", "HHH", "JJJ", "KKK", "LLL", "MMM", "NNN", "OOO" }));
+		List<Object> objs = new ArrayList<Object>(Arrays.asList(new String[] { "AAA", "BBB", "CCC", "DDD", "EEE", "FFF",
+				"GGG", "HHH", "JJJ", "KKK", "LLL", "MMM", "NNN", "OOO" }));
 		machine.add(new Variable("AA$[]", objs, 1, 7));
 		machine.add(new Variable("B$[]", objs, 13));
 		machine.add(new Variable("A$", "Hello"));
@@ -533,7 +536,8 @@ public class NativeCompilerTest {
 	private static void testStringArrayAccess1() {
 		System.out.println("\n\ntestStringArrayAccess1");
 		Machine machine = new Machine();
-		List<Object> objs = new ArrayList<Object>(Arrays.asList(new String[] { "AAA", "BBB", "CCC", "DDD", "EEE", "FFF", "GGG", "HHH", "JJJ", "KKK", "LLL", "MMM", "NNN", "OOO" }));
+		List<Object> objs = new ArrayList<Object>(Arrays.asList(new String[] { "AAA", "BBB", "CCC", "DDD", "EEE", "FFF",
+				"GGG", "HHH", "JJJ", "KKK", "LLL", "MMM", "NNN", "OOO" }));
 		machine.add(new Variable("AA$[]", objs, 1, 7));
 		machine.add(new Variable("B$[]", objs, 13));
 		machine.add(new Variable("A$", "Hello"));
@@ -601,8 +605,8 @@ public class NativeCompilerTest {
 	private static void testArrayAccess0() {
 		System.out.println("\n\ntestArrayAccess0");
 		Machine machine = new Machine();
-		List<Object> objs = new ArrayList<Object>(Arrays.asList(new Float[] { 1.2f, 2.3f, 4.5f, 4.1f, 1.1f, .21f, 1.1f, 2.3f, 4.5f, 6.6f, 2.2f, 1.3f, 4.5f, 4.5f, 1f, 2.2f, 3.1f,
-				2.3f, 5.5f, 6.6f }));
+		List<Object> objs = new ArrayList<Object>(Arrays.asList(new Float[] { 1.2f, 2.3f, 4.5f, 4.1f, 1.1f, .21f, 1.1f,
+				2.3f, 4.5f, 6.6f, 2.2f, 1.3f, 4.5f, 4.5f, 1f, 2.2f, 3.1f, 2.3f, 5.5f, 6.6f }));
 		machine.add(new Variable("A[]", objs, 1, 9));
 		machine.add(new Variable("B[]", objs, 19));
 		machine.add(new Variable("C", 4.2f));
@@ -615,8 +619,8 @@ public class NativeCompilerTest {
 	private static void testArrayAccess01() {
 		System.out.println("\n\ntestArrayAccess01");
 		Machine machine = new Machine();
-		List<Object> objs = new ArrayList<Object>(Arrays.asList(new Float[] { 1.2f, 2.3f, 4.5f, 4.1f, 1.1f, .21f, 1.1f, 2.3f, 4.5f, 6.6f, 2.2f, 1.3f, 4.5f, 4.5f, 1f, 2.2f, 3.1f,
-				2.3f, 5.5f, 6.6f }));
+		List<Object> objs = new ArrayList<Object>(Arrays.asList(new Float[] { 1.2f, 2.3f, 4.5f, 4.1f, 1.1f, .21f, 1.1f,
+				2.3f, 4.5f, 6.6f, 2.2f, 1.3f, 4.5f, 4.5f, 1f, 2.2f, 3.1f, 2.3f, 5.5f, 6.6f }));
 		machine.add(new Variable("A[]", objs, 3, 3));
 		machine.add(new Variable("C", 1.8f));
 		String term = "A(C,C)";

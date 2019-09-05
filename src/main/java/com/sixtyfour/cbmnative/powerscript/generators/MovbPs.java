@@ -77,15 +77,27 @@ public class MovbPs extends MovPs {
 
 	private void noIndexRealSource(List<String> nCode, Operand source, Operand target) {
 		String from = getOpName(source);
-		String to = getOpName(target);
+		String addr = target.getAddress();
+		if (addr == null || !addr.contains(":")) {
+			fillMemory(nCode, target, from);
+		} else {
+			String[] as = addr.split(":");
+			target.setAddress(as[0].trim());
+			fillMemory(nCode, target, from);
+			target.setAddress(as[1].trim());
+			fillMemory(nCode, target, from + " / 256");
+		}
 
+	}
+
+	private void fillMemory(List<String> nCode, Operand target, String from) {
+		String to = getOpName(target);
 		if (isNumber(from)) {
 			from = "$_memory[" + from + "]";
 		}
 		if (isNumber(to)) {
 			to = "$_memory[" + to + "]";
 		}
-
 		nCode.add(to + "=([math]::floor(" + from + ")) -band 255;");
 	}
 

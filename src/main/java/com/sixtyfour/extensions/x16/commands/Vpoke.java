@@ -111,7 +111,8 @@ public class Vpoke extends AbstractCommand {
 		NativeCompiler compiler = NativeCompiler.getCompiler();
 		List<String> after = new ArrayList<String>();
 		List<String> expr = compiler.compileToPseudoCode(config, machine, val);
-		List<String> before = null;
+		List<String> before = new ArrayList<String>();
+		;
 		List<String> bankSwitch = compiler.compileToPseudoCode(config, machine, bank);
 
 		String expPush = getPushRegister(expr.get(expr.size() - 1));
@@ -124,7 +125,12 @@ public class Vpoke extends AbstractCommand {
 			if (expPush.equals("Y")) {
 				expr.add("MOV X,Y");
 			}
-			after.add("MOVB " + ((Number) addr.eval(machine)).intValue() + ",X");
+			int addi = ((Number) addr.eval(machine)).intValue();
+			int lo = addi & 255;
+			int hi = addi >> 8;
+			after.add("MOVB VERALO,#" + lo + "{INTEGER}");
+			after.add("MOVB VERAMID,#" + hi + "{INTEGER}");
+			after.add("MOVB VERADAT,X");
 		} else {
 			before = compiler.compileToPseudoCode(config, machine, addr);
 
@@ -132,11 +138,11 @@ public class Vpoke extends AbstractCommand {
 				expr.add("MOV X,Y");
 			}
 			after.add("POP Y");
-			after.add("MOVB (Y),X");
+			after.add("MOVB VERALO:VERAMID,Y");
+			after.add("MOVB VERADAT,X");
 		}
 
 		addBankSwitchingCode(machine, before, after, bankSwitch, bankPush);
-
 		CodeContainer cc = new CodeContainer(before, expr, after);
 		List<CodeContainer> ccs = new ArrayList<CodeContainer>();
 		ccs.add(cc);
@@ -155,29 +161,15 @@ public class Vpoke extends AbstractCommand {
 	 */
 	private void addBankSwitchingCode(Machine machine, List<String> before, List<String> after, List<String> bankSwitch,
 			String bankPush) {
-		final int BANKSWITCH_IO = 2;
-
-		if (before == null) {
-			before = new ArrayList<String>();
-		}
-
 		if (bank.isConstant()) {
-			if (bankPush.equals("Y")) {
-				bankSwitch.add("MOV X,Y");
-			}
-			bankSwitch.add(0, "MOVB " + BANKSWITCH_IO + "," + ((Number) bank.eval(machine)).intValue());
-			before.addAll(0, bankSwitch);
-
-			after.add("MOVB " + BANKSWITCH_IO + ",0");
+			before.add("MOVB VERAHI,#" + ((Number) bank.eval(machine)).intValue() + "{INTEGER}");
 		} else {
 			if (bankPush.equals("Y")) {
 				bankSwitch.add("MOV X,Y");
 			}
-			bankSwitch.add("MOVB " + BANKSWITCH_IO + ",X");
+			bankSwitch.add("MOVB VERAHI,X");
 			before.addAll(0, bankSwitch);
-			after.add("MOVB " + BANKSWITCH_IO + ",0");
 		}
-
 	}
 
 }

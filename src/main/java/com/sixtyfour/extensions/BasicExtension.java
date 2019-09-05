@@ -1,6 +1,7 @@
 package com.sixtyfour.extensions;
 
 import java.util.List;
+import java.util.Map;
 
 import com.sixtyfour.elements.commands.Command;
 import com.sixtyfour.elements.functions.Function;
@@ -30,7 +31,7 @@ public interface BasicExtension {
 	List<Function> getFunctions();
 
 	/**
-	 * Returns a list oof optional runtime libaries that are needed for this
+	 * Returns a list of optional runtime libaries that are needed for this
 	 * extension to be natively compiled.
 	 * 
 	 * @return the list or null
@@ -43,5 +44,13 @@ public interface BasicExtension {
 	 * @param machine the machine instance
 	 */
 	void reset(Machine machine);
+	
+	/**
+	 * Returns a map of optional constants that are needed for this
+	 * extension to be natively compiled.
+	 * 
+	 * @return the map or null
+	 */
+	Map<String, Integer> getLabel2Constant();
 
 }

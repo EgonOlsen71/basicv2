@@ -3,6 +3,7 @@ package com.sixtyfour.extensions.graphics;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import com.sixtyfour.elements.commands.Command;
 import com.sixtyfour.elements.functions.Function;
@@ -101,6 +102,11 @@ public class GraphicsBasic implements BasicExtension {
 	
 	@Override
 	public List<String> getAdditionalIncludes() {
+		return null;
+	}
+	
+	@Override
+	public Map<String, Integer> getLabel2Constant() {
 		return null;
 	}
 

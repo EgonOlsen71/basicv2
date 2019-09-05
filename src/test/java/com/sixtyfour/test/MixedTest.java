@@ -27,7 +27,8 @@ public class MixedTest {
 	}
 
 	private static void testBeerTemplate() throws Exception {
-		Template templ = TemplateFactory.getTemplate(config, new FileInputStream("src/test/resources/mixed/beer.cbm"), null);
+		Template templ = TemplateFactory.getTemplate(config, new FileInputStream("src/test/resources/mixed/beer.cbm"),
+				null);
 		String res = templ.process(config);
 		System.out.println(res);
 
@@ -38,7 +39,8 @@ public class MixedTest {
 		vars.put("CN", 10);
 		vars.put("NA$", "Test");
 		vars.put("TT$", "At least better than PHP!");
-		Template templ = TemplateFactory.getTemplate(config, new FileInputStream("src/test/resources/mixed/mixedhtml.cbm"), vars);
+		Template templ = TemplateFactory.getTemplate(config,
+				new FileInputStream("src/test/resources/mixed/mixedhtml.cbm"), vars);
 		String res = templ.process(config);
 		System.out.println(res);
 	}

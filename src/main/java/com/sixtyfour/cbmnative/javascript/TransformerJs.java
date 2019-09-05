@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.sixtyfour.Loader;
 import com.sixtyfour.Logger;
@@ -18,6 +19,7 @@ import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.system.DataStore;
 import com.sixtyfour.system.Machine;
+import com.sixtyfour.util.ConstantExtractor;
 
 /**
  * The transformer for the Javscript target platform. It generates Javascript
@@ -30,7 +32,8 @@ import com.sixtyfour.system.Machine;
 public class TransformerJs implements Transformer {
 
 	@Override
-	public List<String> transform(CompilerConfig config, Machine machine, PlatformProvider platform, List<String> code) {
+	public List<String> transform(CompilerConfig config, Machine machine, PlatformProvider platform,
+			List<String> code) {
 		Logger.log("Compiling into javascript code...");
 
 		addContinues(code);
@@ -75,6 +78,11 @@ public class TransformerJs implements Transformer {
 		res.add("this._timeOffset=0");
 		res.add("this._time=0");
 		res.add("this._inputQueue=new Array();");
+
+		Map<String, Integer> map = ConstantExtractor.getAllConstantMaps();
+		for (Entry<String, Integer> entry : map.entrySet()) {
+			res.add("this." + entry.getKey() + "=" + entry.getValue() + ";");
+		}
 
 		int cnt = 0;
 		List<String> strVars = new ArrayList<String>();

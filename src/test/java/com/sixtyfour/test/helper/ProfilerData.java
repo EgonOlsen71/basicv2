@@ -45,8 +45,8 @@ public class ProfilerData implements Comparable<ProfilerData> {
 
 	@Override
 	public String toString() {
-		return "Call: " + command + " has been called " + calls + " times. It took a total of " + ticks + " clock ticks to execute it, which results in " + (ticks / calls)
-				+ " ticks/call.";
+		return "Call: " + command + " has been called " + calls + " times. It took a total of " + ticks
+				+ " clock ticks to execute it, which results in " + (ticks / calls) + " ticks/call.";
 	}
 
 	@Override

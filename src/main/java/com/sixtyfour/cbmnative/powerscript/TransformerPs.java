@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import com.sixtyfour.Loader;
@@ -20,6 +21,7 @@ import com.sixtyfour.elements.Type;
 import com.sixtyfour.elements.Variable;
 import com.sixtyfour.system.DataStore;
 import com.sixtyfour.system.Machine;
+import com.sixtyfour.util.ConstantExtractor;
 
 /**
  * The transformer for the Powerscript/-shell target platform. It generates
@@ -74,6 +76,11 @@ public class TransformerPs implements Transformer {
 		res.add("$global:_timeOffset=0");
 		res.add("$global:_time=0");
 		res.add("$global:_inputQueue=@()");
+		
+		Map<String, Integer> map = ConstantExtractor.getAllConstantMaps();
+		for (Entry<String, Integer> entry : map.entrySet()) {
+			res.add("$global:" + entry.getKey() + "=" + entry.getValue());
+		}
 
 		int cnt = 0;
 		List<String> strVars = new ArrayList<String>();

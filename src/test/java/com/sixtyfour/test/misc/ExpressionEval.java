@@ -22,10 +22,12 @@ public class ExpressionEval {
 		// float res = a * b + (e*2);
 		// float res = (float) Math.sin(t) * (float) Math.sin(a + Math.sin(b +
 		// r)) / e;
-		res=(float)(a*(b+e/-(r+t)*11.6)+(12/t+3*2.8)*e+(e/(r+Math.sin(t)*Math.sin(a+Math.cos(b+r))/e)*11));
+		res = (float) (a * (b + e / -(r + t) * 11.6) + (12 / t + 3 * 2.8) * e
+				+ (e / (r + Math.sin(t) * Math.sin(a + Math.cos(b + r)) / e) * 11));
 		System.out.println(res);
-		//String exp = "a*(b+-e/-(r+t^2)*-11.2)+(-12/t+3*2.1)*e+(e / (r+sin(t)*sin(a+cos(b+r))/e) * 11.2^1.3)";
-		 String exp="a*(b+e/-(r+t)*11.6)+(12/t+3*2.8)*e+(e/(r+sin(t)*sin(a+cos(b+r))/e)*11)";
+		// String exp = "a*(b+-e/-(r+t^2)*-11.2)+(-12/t+3*2.1)*e+(e /
+		// (r+sin(t)*sin(a+cos(b+r))/e) * 11.2^1.3)";
+		String exp = "a*(b+e/-(r+t)*11.6)+(12/t+3*2.8)*e+(e/(r+sin(t)*sin(a+cos(b+r))/e)*11)";
 		// String exp = "e / (r+2) * 11.2";
 		// String exp = "a+b*12.3+r";
 		// String exp = "-a * -(b+-2)";
@@ -117,8 +119,8 @@ public class ExpressionEval {
 					neg = 1;
 				}
 				if (c == '(') {
-					if (neg==-1) {
-						neg=1;
+					if (neg == -1) {
+						neg = 1;
 						weight = wm + 2;
 						stack.push("*");
 						stack.push(Integer.toString(weight));
@@ -162,7 +164,8 @@ public class ExpressionEval {
 					weight = Integer.parseInt(stack.get(2));
 				}
 				if (w <= weight) {
-					System.out.println("Before: " + Arrays.toString(stack.toArray()) + "/" + weight + "/" + w + "/" + stack.size());
+					System.out.println("Before: " + Arrays.toString(stack.toArray()) + "/" + weight + "/" + w + "/"
+							+ stack.size());
 					float n1 = Float.parseFloat(stack.pop());
 					float n2 = Float.parseFloat(stack.pop());
 					Integer.parseInt(stack.pop());
@@ -192,7 +195,8 @@ public class ExpressionEval {
 						n1 = (float) Math.tan(n1 + n2);
 					}
 					stack.push(String.valueOf(n1));
-					System.out.println("After: " + Arrays.toString(stack.toArray()) + "/" + weight + "/" + w + "/" + stack.size());
+					System.out.println(
+							"After: " + Arrays.toString(stack.toArray()) + "/" + weight + "/" + w + "/" + stack.size());
 					changed = true;
 				}
 			}

@@ -12,8 +12,7 @@ public class InterpreterTest {
 	/**
 	 * The main method.
 	 * 
-	 * @param args
-	 *            the arguments
+	 * @param args the arguments
 	 */
 	private static CompilerConfig config = new CompilerConfig();
 
@@ -208,7 +207,8 @@ public class InterpreterTest {
 	private static void testLet() {
 		System.out.println("testLet");
 
-		String code = "10 let z=25:a=45:b=7\n" + "20 c=67.2:z=a:h$=\"te r*t/u st\"\n" + "45 a=(23.22+12.2+b)/c:h$=h$+\"wu{t0}rst\":popo$=h$+h$\n100 i=88:u%=14+20:i=peek(u%)";
+		String code = "10 let z=25:a=45:b=7\n" + "20 c=67.2:z=a:h$=\"te r*t/u st\"\n"
+				+ "45 a=(23.22+12.2+b)/c:h$=h$+\"wu{t0}rst\":popo$=h$+h$\n100 i=88:u%=14+20:i=peek(u%)";
 
 		Basic inter = new Basic(code);
 		inter.compile(config);

@@ -52,11 +52,10 @@ public class AffineTextureMappingTest {
 		g.dispose();
 
 		/*
-		 * String[] code =
-		 * Loader.loadProgram("src/test/resources/asm/innerloop.asm"); Assembler
-		 * asm = new Assembler(code); asm.compile(); ProgramPart
-		 * pp=asm.getProgram().getParts().get(0); int[] bytes=pp.getBytes(); int
-		 * cnt=0; for (int i=0; i<bytes.length; i++) { if (cnt%10==0) {
+		 * String[] code = Loader.loadProgram("src/test/resources/asm/innerloop.asm");
+		 * Assembler asm = new Assembler(code); asm.compile(); ProgramPart
+		 * pp=asm.getProgram().getParts().get(0); int[] bytes=pp.getBytes(); int cnt=0;
+		 * for (int i=0; i<bytes.length; i++) { if (cnt%10==0) {
 		 * System.out.print("\ndata "); } System.out.print(((byte) (bytes[i])&
 		 * 0xff)+","); cnt++; } System.out.println();
 		 */
@@ -95,10 +94,9 @@ public class AffineTextureMappingTest {
 		/*
 		 * inty.getCpu().setCpuTracer(new CpuTracer() {
 		 * 
-		 * @Override public void commandExecuted(Cpu cpu, int opcode, int
-		 * lastPc, int pc) { System.out.println("@ ." + Integer.toHexString(pc)
-		 * + "\t" + Integer.toHexString(lastPc) + "\t" +
-		 * cpu.getInstruction(opcode) + "/" +
+		 * @Override public void commandExecuted(Cpu cpu, int opcode, int lastPc, int
+		 * pc) { System.out.println("@ ." + Integer.toHexString(pc) + "\t" +
+		 * Integer.toHexString(lastPc) + "\t" + cpu.getInstruction(opcode) + "/" +
 		 * Integer.toBinaryString(cpu.getStatus()));
 		 * 
 		 * } });

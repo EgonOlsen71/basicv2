@@ -13,22 +13,22 @@ import com.sixtyfour.system.FileWriter;
  */
 public class AssemblerSprites {
 
-    private static CompilerConfig config = new CompilerConfig();
+	private static CompilerConfig config = new CompilerConfig();
 
-    public static void main(String[] args) {
-	testHidden();
-    }
-
-    private static void testHidden() {
-	String[] code = Loader.loadProgram("src/test/resources/asm/hidden.asm");
-	Assembler asm = new Assembler(code);
-	asm.compile(config);
-
-	try {
-	    FileWriter.writeAsDatas(asm.getProgram(), "src/test/resources/asm/+hiddendatas.bas", 30000);
-	} catch (IOException e1) {
-	    e1.printStackTrace();
+	public static void main(String[] args) {
+		testHidden();
 	}
-    }
+
+	private static void testHidden() {
+		String[] code = Loader.loadProgram("src/test/resources/asm/hidden.asm");
+		Assembler asm = new Assembler(code);
+		asm.compile(config);
+
+		try {
+			FileWriter.writeAsDatas(asm.getProgram(), "src/test/resources/asm/+hiddendatas.bas", 30000);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+	}
 
 }

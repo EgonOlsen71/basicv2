@@ -16,40 +16,16 @@ public class AssemblerTest {
 	private static CompilerConfig config = new CompilerConfig();
 
 	public static void main(String[] args) {
-		//testMul();
+		// testMul();
 		/*
-		testLda();
-		testLdx();
-		testLdy();
-		testSta();
-		testStx();
-		testSty();
-		testTransfer();
-		testAnd();
-		testOra();
-		testEor();
-		testAdc();
-		testSbc();
-		testCmp();
-		testIncDec();
-		testInxDex();
-		testShift();
-		testCpxCpy();
-		testBit();
-		testJumps();
-		testReturns();
-		testBranches();
-		testTheRest();
-		testLowByteHighByte();
-		testAssembler();
-		testAssembler2();
-		testCpuRun();
-		testMath();
-		testSelfModify();
-		testCpuCallListener();
-		testConstants();
-		testE46();
-		testFastCopy();*/
+		 * testLda(); testLdx(); testLdy(); testSta(); testStx(); testSty();
+		 * testTransfer(); testAnd(); testOra(); testEor(); testAdc(); testSbc();
+		 * testCmp(); testIncDec(); testInxDex(); testShift(); testCpxCpy(); testBit();
+		 * testJumps(); testReturns(); testBranches(); testTheRest();
+		 * testLowByteHighByte(); testAssembler(); testAssembler2(); testCpuRun();
+		 * testMath(); testSelfModify(); testCpuCallListener(); testConstants();
+		 * testE46(); testFastCopy();
+		 */
 		testCalc();
 	}
 
@@ -62,14 +38,14 @@ public class AssemblerTest {
 		machine.addRoms();
 		asm.run(config);
 		System.out.println(asm.toString());
-		
+
 		int[] ram = machine.getRam();
 		for (int i = 1024; i < 1500; i++) {
 			System.out.print((char) ram[i]);
 		}
 		System.out.println();
 	}
-	
+
 	private static void testCalc() {
 		System.out.println("\ntestCalc");
 		String[] code = Loader.loadProgram("src/test/resources/asm/calcconst.asm");
@@ -79,7 +55,7 @@ public class AssemblerTest {
 			System.out.print(Integer.toHexString(asm.getProgram().getParts().get(0).getBytes()[i] & 0xff) + ",");
 		}
 	}
-	
+
 	private static void testFastCopy() {
 		System.out.println("\ntestFastCopy");
 		String[] code = Loader.loadProgram("src/test/resources/asm/fastcopy.asm");
@@ -472,7 +448,8 @@ public class AssemblerTest {
 		cpu.setCpuTracer(new CpuTracer() {
 			@Override
 			public void commandExecuted(Cpu cpu, int opcode, int lastPc, int pc) {
-				System.out.println("@ ." + Integer.toHexString(lastPc) + "\t" + Integer.toHexString(opcode) + "/" + Integer.toBinaryString(cpu.getStatus()));
+				System.out.println("@ ." + Integer.toHexString(lastPc) + "\t" + Integer.toHexString(opcode) + "/"
+						+ Integer.toBinaryString(cpu.getStatus()));
 
 			}
 
@@ -493,7 +470,8 @@ public class AssemblerTest {
 	}
 
 	private static void outputRunResults(Machine machine, Cpu cpu) {
-		System.out.println("Done: " + cpu.getY() + "/" + machine.getRam()[1500] + " in " + cpu.getClockTicks() + " clock ticks!");
+		System.out.println(
+				"Done: " + cpu.getY() + "/" + machine.getRam()[1500] + " in " + cpu.getClockTicks() + " clock ticks!");
 		int[] ram = machine.getRam();
 		for (int i = 1024; i < 1035; i++) {
 			System.out.print((char) ram[i]);

@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.sixtyfour.Basic;
 import com.sixtyfour.Loader;
@@ -18,6 +19,7 @@ import com.sixtyfour.elements.Variable;
 import com.sixtyfour.extensions.BasicExtension;
 import com.sixtyfour.system.DataStore;
 import com.sixtyfour.system.Machine;
+import com.sixtyfour.util.ConstantExtractor;
 
 /**
  * Transformer base class for Commodore based target platforms.
@@ -39,14 +41,21 @@ public abstract class AbstractTransformer implements Transformer {
 			for (BasicExtension ext : exts) {
 				try {
 					for (String inc : ext.getAdditionalIncludes()) {
-						List<String> adds = Arrays.asList(
-								Loader.loadProgram(AbstractTransformer.class.getResourceAsStream("/ext/" + inc + "." + postFix)));
+						List<String> adds = Arrays.asList(Loader.loadProgram(
+								AbstractTransformer.class.getResourceAsStream("/ext/" + inc + "." + postFix)));
 						addTo.addAll(adds);
 					}
 				} catch (Exception e) {
 					// ignore
 				}
 			}
+		}
+	}
+
+	public void addExtensionConstants(List<String> res) {
+		Map<String, Integer> map = ConstantExtractor.getAllConstantMaps();
+		for (Entry<String, Integer> entry : map.entrySet()) {
+			res.add(entry.getKey() + "=" + entry.getValue());
 		}
 	}
 
@@ -445,5 +454,4 @@ public abstract class AbstractTransformer implements Transformer {
 	public List<String> createCaller(String calleeName) {
 		return null;
 	}
-
 }

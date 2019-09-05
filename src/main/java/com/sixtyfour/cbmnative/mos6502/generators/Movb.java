@@ -150,7 +150,7 @@ public class Movb extends GeneratorBase {
 		if (target.isAddress()) {
 			nCode.add("; FAC to integer in Y/A");
 			nCode.add("JSR FACWORD"); // FAC to integer in Y/A
-			nCode.add("STY " + target.getAddress());
+			addStoreCommand(nCode, target);
 		} else {
 			if (target.getType() == Type.INTEGER) {
 				nCode.add("; FAC to integer in Y/A");
@@ -177,7 +177,7 @@ public class Movb extends GeneratorBase {
 		}
 
 		if (target.getType() == Type.INTEGER) {
-			nCode.add("STY " + target.getAddress());
+			addStoreCommand(nCode, target);
 		} else {
 			nCode.add("; integer in Y/A to FAC");
 			nCode.add("JSR INTFAC"); // integer in Y/A to FAC
@@ -185,7 +185,7 @@ public class Movb extends GeneratorBase {
 			if (target.isAddress()) {
 				nCode.add("; FAC to integer in Y/A");
 				nCode.add("JSR FACWORD"); // FAC to integer in Y/A
-				nCode.add("STY " + target.getAddress());
+				addStoreCommand(nCode, target);
 			} else {
 				if (target.getType() == Type.INTEGER) {
 					nCode.add("; FAC to integer in Y/A");
@@ -199,6 +199,17 @@ public class Movb extends GeneratorBase {
 					nCode.add("JSR FACMEM"); // FAC to (X/Y)
 				}
 			}
+		}
+	}
+
+	private void addStoreCommand(List<String> nCode, Operand target) {
+		String addr = target.getAddress();
+		if (!addr.contains(":")) {
+			nCode.add("STY " + addr);
+		} else {
+			String[] as = addr.split(":");
+			nCode.add("STY " + as[0].trim());
+			nCode.add("STA " + as[1].trim());
 		}
 	}
 }

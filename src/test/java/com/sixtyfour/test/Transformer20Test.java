@@ -24,14 +24,14 @@ public class Transformer20Test {
 	private static String path = "compiled/";
 
 	public static void main(String[] args) throws Exception {
-		 testTransformerPrime();
-		 testTransformerBeer();
-		 testTransformerCharFractal();
-		 testTransformerFlightPath();
-		 testTransformer3dMaze();
-		 testTransformerKaleidoscope();
+		testTransformerPrime();
+		testTransformerBeer();
+		testTransformerCharFractal();
+		testTransformerFlightPath();
+		testTransformer3dMaze();
+		testTransformerKaleidoscope();
 	}
-	
+
 	private static void testTransformerKaleidoscope() throws Exception {
 		System.out.println("\n\ntestTransformerKaleidoscope");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/vic20/kaleidoscope.bas");
@@ -39,7 +39,7 @@ public class Transformer20Test {
 		final Assembler assy = initTestEnvironment(vary);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++kaleidoscope.prg", true, 4609, true);
 	}
-	
+
 	private static void testTransformer3dMaze() throws Exception {
 		System.out.println("\n\ntestTransformer3dMaze");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/vic20/3dmaze.bas");
@@ -47,7 +47,7 @@ public class Transformer20Test {
 		final Assembler assy = initTestEnvironment(vary);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++3dmaze.prg", true, 4609, true);
 	}
-	
+
 	private static void testTransformerFlightPath() throws Exception {
 		System.out.println("\n\ntestTransformerFlightPath");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/vic20/flightpath737.bas");

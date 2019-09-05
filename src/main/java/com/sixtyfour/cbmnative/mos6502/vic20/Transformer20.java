@@ -56,6 +56,8 @@ public class Transformer20 extends AbstractTransformer {
 		consts.add("CONSTANTS");
 		vars.add("; *** VARIABLES ***");
 		vars.add("VARIABLES");
+		
+		addExtensionConstants(res);
 
 		res.add("SGNFAC = $DC2B"); // ok
 		res.add("MEMARG = $DA8C"); // ok

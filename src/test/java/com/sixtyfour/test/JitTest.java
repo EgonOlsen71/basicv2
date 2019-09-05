@@ -28,12 +28,12 @@ public class JitTest {
 	}
 
 	private static void testMp2() {
-	    String[] prime = Loader.loadProgram("src/test/resources/basic/mp2.bas");
+		String[] prime = Loader.loadProgram("src/test/resources/basic/mp2.bas");
 		Basic inty = new Basic(prime);
 		inty.enableJit(3);
 		inty.run(config);
 	}
-	
+
 	private static void testJittedTerm() {
 		System.out.println("testStuff");
 		Machine machine = new Machine();

@@ -1,10 +1,12 @@
 package com.sixtyfour.cbmnative.powerscript.generators;
 
 import java.util.List;
+import java.util.Map;
 
 import com.sixtyfour.cbmnative.Generator;
 import com.sixtyfour.cbmnative.Operand;
 import com.sixtyfour.elements.Type;
+import com.sixtyfour.util.ConstantExtractor;
 
 public abstract class GeneratorBasePs implements Generator {
 
@@ -49,10 +51,25 @@ public abstract class GeneratorBasePs implements Generator {
 
 	protected boolean isNumber(String line) {
 		try {
-			Integer.parseInt(line);
+			parseInt(line);
 			return true;
 		} catch (Exception e) {
 			return false;
+		}
+	}
+	
+	protected int parseInt(String txt) {
+		try {
+			return Integer.parseInt(txt);
+		} catch (NumberFormatException e) {
+			Map<String, Integer> constMap = ConstantExtractor.getAllConstantMaps();
+			if (constMap.containsKey(txt)) {
+				return constMap.get(txt);
+			}
+			if (constMap.containsKey(txt.replace("$global:", ""))) {
+				return constMap.get(txt.replace("$global:", ""));
+			}
+			throw e;
 		}
 	}
 

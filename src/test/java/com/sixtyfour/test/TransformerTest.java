@@ -47,7 +47,7 @@ public class TransformerTest {
 		// testTransformerFractal();
 		// testTransformer6();
 		// testTransformer7();
-		//testTransformerPrime();
+		// testTransformerPrime();
 		// testTransformerSqr();
 		// testTransformer8();
 		// testTransformer9();
@@ -56,7 +56,7 @@ public class TransformerTest {
 		// testTransformer12();
 		// testTransformer13();
 		// testTransformer14();
-		 testTransformerBeer();
+		testTransformerBeer();
 		// testTransformer15();
 		// testTransformerSqr();
 		// testTransformer16();
@@ -99,53 +99,52 @@ public class TransformerTest {
 		// testIfNotTest();
 		// testGcTest();
 		// testSprites();
-		//testHidden();
-		//testFolding();
-		//testCbmSnake();
-		//testIfTest2();
-		//testPetsci();
-	    	//testWayout();
-	    	//testCtest();
+		// testHidden();
+		// testFolding();
+		// testCbmSnake();
+		// testIfTest2();
+		// testPetsci();
+		// testWayout();
+		// testCtest();
 		test10test();
 		test10adv();
 	}
-	
+
 	private static void test10adv() throws Exception {
 		System.out.println("\n\ntest10adv");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/10_line_adv.bas");
 		Assembler assy = initTestEnvironment(vary, false, -1, true);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++10_line_adv.bas.prg", true);
 	}
-	
+
 	private static void test10test() throws Exception {
 		System.out.println("\n\ntest10test");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/10test.bas");
 		Assembler assy = initTestEnvironment(vary, true, -1, true);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++10test.prg", true);
 	}
-	
+
 	private static void testCtest() throws Exception {
 		System.out.println("\n\ntestCtest");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/ctest.bas");
 		Assembler assy = initTestEnvironment(vary, false);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++ctest.prg", true);
 	}
-	
-	
+
 	private static void testWayout() throws Exception {
 		System.out.println("\n\ntestWayout");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/wayout.bas");
 		Assembler assy = initTestEnvironment(vary, false);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++wayout.prg", true);
 	}
-	
+
 	private static void testPetsci() throws Exception {
 		System.out.println("\n\ntestPetsci");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/petscitest.bas");
 		Assembler assy = initTestEnvironment(vary, false);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++petscitest.prg", true);
 	}
-	
+
 	private static void testIfTest2() throws Exception {
 		System.out.println("\n\ntestIfTest2");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/iftest2.bas");
@@ -159,7 +158,7 @@ public class TransformerTest {
 		Assembler assy = initTestEnvironment(vary, false);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++cbmsnake.prg", true);
 	}
-	
+
 	private static void testFolding() throws Exception {
 		System.out.println("\n\ntestFolding");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/folding.bas");
@@ -1026,8 +1025,9 @@ public class TransformerTest {
 	private static Assembler initTestEnvironment(String[] vary, boolean executePseudo, int variableStart) {
 		return initTestEnvironment(vary, executePseudo, -1, true);
 	}
-	
-	private static Assembler initTestEnvironment(String[] vary, boolean executePseudo, int variableStart, boolean opti) {
+
+	private static Assembler initTestEnvironment(String[] vary, boolean executePseudo, int variableStart,
+			boolean opti) {
 		CompilerConfig conf = new CompilerConfig();
 		boolean opt = opti;
 		conf.setConstantFolding(opt);

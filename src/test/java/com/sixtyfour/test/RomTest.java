@@ -27,8 +27,9 @@ public class RomTest {
 	}
 
 	private static void testConvertInt() {
-	    	System.out.println("testConvertInt");
-		String[] code = {"*=$c000  \n","LDA #151","LDX #255","STA $62","STX $63","LDX #$90","SEC","JSR $BC49","RTS"};
+		System.out.println("testConvertInt");
+		String[] code = { "*=$c000  \n", "LDA #151", "LDX #255", "STA $62", "STX $63", "LDX #$90", "SEC", "JSR $BC49",
+				"RTS" };
 		Assembler asm = new Assembler(code);
 		asm.compile(config);
 		final Machine machine = asm.getMachine();
@@ -36,7 +37,7 @@ public class RomTest {
 		asm.run(config);
 		System.out.println(Conversions.convertFloat(machine, 0x61));
 	}
-	
+
 	private static void testRomCalc3() {
 		System.out.println("testRomCalc3");
 		String[] code = Loader.loadProgram("src/test/resources/rom/math3.asm");
@@ -76,7 +77,8 @@ public class RomTest {
 		machine.addRoms();
 		asm.run(config);
 		System.out.println(Conversions.convertCompactFloat(machine, 0x2000));
-		System.out.println(Conversions.convertCompactFloat(machine, 0x2010) + " ~ " + Math.sqrt(Conversions.convertCompactFloat(machine, 0x2000)));
+		System.out.println(Conversions.convertCompactFloat(machine, 0x2010) + " ~ "
+				+ Math.sqrt(Conversions.convertCompactFloat(machine, 0x2000)));
 	}
 
 	private static void testRomCalc2() {
@@ -88,7 +90,8 @@ public class RomTest {
 		machine.addRoms();
 		asm.run(config);
 		System.out.println(Conversions.convertCompactFloat(machine, 0x2000));
-		System.out.println(Conversions.convertCompactFloat(machine, 0x2010) + " ~ " + Math.sqrt(Conversions.convertCompactFloat(machine, 0x2000)));
+		System.out.println(Conversions.convertCompactFloat(machine, 0x2010) + " ~ "
+				+ Math.sqrt(Conversions.convertCompactFloat(machine, 0x2000)));
 	}
 
 	private static void testRomAndBasicCalc() {
