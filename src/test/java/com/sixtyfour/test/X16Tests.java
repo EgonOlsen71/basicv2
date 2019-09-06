@@ -26,8 +26,16 @@ public class X16Tests {
 		testVpoke();
 		testVpeek();
 		testVpokePeek();
+		testColors();
 	}
 
+	private static void testColors() throws Exception {
+		System.out.println("\n\ntestColors");
+		String[] vary = Loader.loadProgram("src/test/resources/x16/colors.bas");
+		Assembler assy = initTestEnvironment(vary, true, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++colors.prg", true);
+	}
+	
 	private static void testVpokePeek() throws Exception {
 		System.out.println("\n\ntestVpokePeek");
 		String[] vary = Loader.loadProgram("src/test/resources/x16/vpokepeek.bas");
