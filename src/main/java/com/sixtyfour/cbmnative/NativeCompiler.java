@@ -70,7 +70,6 @@ public class NativeCompiler {
 			this.add("VPEEK");
 			this.add("MID");
 			this.add("PAR");
-			this.add("SINGLEPAR");
 			this.add("LEFT");
 			this.add("RIGHT");
 			this.add("ARRAYACCESS");
