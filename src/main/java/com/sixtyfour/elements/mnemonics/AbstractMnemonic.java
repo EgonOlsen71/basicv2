@@ -40,6 +40,10 @@ public abstract class AbstractMnemonic implements Mnemonic {
 	@Override
 	public int parse(CompilerConfig config, String linePart, int addr, Machine machine, ConstantsContainer ccon,
 			LabelsContainer lcon) {
+		if (addr > 65535) {
+			throw new RuntimeException("Compiled code exceeds 64K memory limit!");
+		}
+
 		linePart = linePart.trim().substring(3);
 		Parameters pars = this.parseParameters(config, linePart, addr, ccon, lcon);
 

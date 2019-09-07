@@ -131,6 +131,10 @@ public class ControlCodes {
 				add(i, "shift-" + c, "sh-" + c);
 			}
 
+			for (int i = 0; i < 255; i++) {
+				add(i, Integer.toString(i));
+			}
+
 		}
 
 		public void add(int code, String... placeholders) {
@@ -152,6 +156,7 @@ public class ControlCodes {
 	public static int getCode(String placeHolder) {
 		placeHolder = placeHolder.replace("{", "").replace("}", "").toLowerCase(Locale.ENGLISH).trim();
 		if (placeHolder2code.containsKey(placeHolder)) {
+			System.out.println(placeHolder+": "+placeHolder2code.get(placeHolder));
 			return placeHolder2code.get(placeHolder);
 		}
 		return -1;
