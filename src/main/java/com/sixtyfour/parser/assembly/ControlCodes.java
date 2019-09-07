@@ -156,7 +156,6 @@ public class ControlCodes {
 	public static int getCode(String placeHolder) {
 		placeHolder = placeHolder.replace("{", "").replace("}", "").toLowerCase(Locale.ENGLISH).trim();
 		if (placeHolder2code.containsKey(placeHolder)) {
-			System.out.println(placeHolder+": "+placeHolder2code.get(placeHolder));
 			return placeHolder2code.get(placeHolder);
 		}
 		return -1;
