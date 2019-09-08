@@ -186,6 +186,7 @@ public class MoSpeedCL {
 			basic.compile(cfg);
 		} catch (Exception e) {
 			System.out.println("\n!!! Error compiling BASIC program: " + e.getMessage());
+			printCause(e);
 			exit(10);
 		}
 		List<String> nCode = null;
@@ -200,6 +201,7 @@ public class MoSpeedCL {
 			nCode = NativeCompiler.getCompiler().compile(cfg, basic, memConfig, platform);
 		} catch (Exception e) {
 			System.out.println("\n!!! Error compiling: " + e.getMessage());
+			printCause(e);
 			exit(15);
 		}
 		if (genSrc) {
@@ -209,7 +211,13 @@ public class MoSpeedCL {
 		Assembler assy = null;
 		if (platform instanceof Platform64 || platform instanceof Platform20) {
 			assy = new Assembler(nCode);
-			assy.compile(cfg);
+			try {
+				assy.compile(cfg);
+			} catch (Exception e) {
+				System.out.println("\n!!! Error running assembler: " + e.getMessage());
+				printCause(e);
+				exit(15);
+			}
 		}
 		writeTargetFiles(memConfig, targetFile, nCode, assy, platform, addrHeader);
 		System.out.println(srcFile + " compiled in " + (System.currentTimeMillis() - s) + "ms!");
@@ -219,6 +227,12 @@ public class MoSpeedCL {
 		}
 
 		exit(0);
+	}
+
+	private static void printCause(Exception e) {
+		if (e.getCause() != null && e.getCause().getMessage() != null) {
+			System.out.println("Caused by: " + e.getCause().getMessage());
+		}
 	}
 
 	private static void writeTargetFiles(MemoryConfig memConfig, String targetFile, List<String> ncode, Assembler assy,
