@@ -1972,12 +1972,17 @@ NUMNUM		CMP #$1
 			BEQ NUMREADREAL
 			CMP #$0
 			BEQ NUMREADINT
+			CMP #$4
+			BCS READNOTYPE
 			LDA (TMP3_ZP),Y
 			TAY
 			JSR BYTEFAC
 			LDX #1
 			JSR READADDPTR
 			JMP NUMREAD			; It's a byte
+READNOTYPE	TAY					; It's a byte >3, which mean it has no typing stored to save memory
+			JSR BYTEFAC
+			JMP NUMREAD			
 NUMREADINT	LDA (TMP3_ZP),Y		; It's an integer
 			STA TMP_REG
 			INY

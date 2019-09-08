@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 
 import com.sixtyfour.Basic;
 import com.sixtyfour.Loader;
+import com.sixtyfour.Logger;
 import com.sixtyfour.cbmnative.Generator;
 import com.sixtyfour.cbmnative.GeneratorContext;
 import com.sixtyfour.cbmnative.PlatformProvider;
@@ -65,6 +66,7 @@ public abstract class AbstractTransformer implements Transformer {
 		ret.add("; ******** DATA ********");
 		ret.add("DATAS");
 
+		int cnt = 0;
 		datas.restore();
 		Object obj = null;
 		while ((obj = datas.read()) != null) {
@@ -96,21 +98,34 @@ public abstract class AbstractTransformer implements Transformer {
 				if (val < 0 || val > 255) {
 					ret.add(".BYTE 0");
 					ret.add(".WORD " + obj.toString());
+					cnt += 3;
 				} else {
-					ret.add(".BYTE 3");
-					ret.add(".BYTE " + obj.toString());
+					if (val > 3 && val < 255) {
+						// If larger than the largest type (3) and smaller than the end flag (255), 
+						/// the we can use the type's location as data and skip storing the typ itself. 
+						ret.add(".BYTE " + obj.toString());
+						cnt += 1;
+					} else {
+						ret.add(".BYTE 3");
+						ret.add(".BYTE " + obj.toString());
+						cnt += 2;
+					}
 				}
 			} else if (type == Type.REAL) {
 				ret.add(".BYTE 1");
 				ret.add(".REAL " + obj.toString());
+				cnt += 6;
 			} else {
 				ret.add(".BYTE 2");
 				ret.add(".BYTE " + obj.toString().length());
 				ret.add(".STRG \"" + obj.toString() + "\"");
+				cnt += 2 + obj.toString().length();
 			}
 		}
 		ret.add(".BYTE $FF");
 		ret.add("; ******** DATA END ********");
+
+		Logger.log("DATA lines converted, " + cnt + " bytes used!");
 		return ret;
 	}
 
