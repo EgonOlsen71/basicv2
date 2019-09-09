@@ -731,9 +731,13 @@ COMPACT
 			LDY #0
 GCBUFNE		LDA (TMP_ZP),Y		; Get the source's length
 COMPACTF	STA TMP4_REG		; ...and store it
-			LDA STRBUFP+1		; First, check if the new string would fit into memory...
-			STA TMP4_REG+1		; For that, we have to calculate the new strbufp after adding the string
-			LDA STRBUFP
+			LDY STRBUFP+1		; First, check if the new string would fit into memory...
+			STY TMP4_REG+1		; For that, we have to calculate the new strbufp after adding the string
+			INY					; add 1 to the high byte to check, if at least 256 bytes are free (fast path)
+			BEQ ENDMEM			; actually, is this happens, all went wrong anyway...whatever...
+			CPY ENDSTRBUF+1		; check, if there are at least 256 bytes free. If there are, no detailed check is needed...
+			BCC RGCEXIT			; there are? We are out then.
+ENDMEM		LDA STRBUFP
 			CLC
 			ADC TMP4_REG
 			STA TMP4_REG
@@ -2043,6 +2047,8 @@ DATA2STR	CMP #$1
 			BEQ DREAL2STR		; It's a floating point number...
 			CMP #$0
 			BEQ DATA2STRINT
+			CMP #$4
+			BCS DSHORTBYTE
 			LDA (TMP3_ZP),Y		; It's a byte
 			TAY
 			JSR BYTEFAC
@@ -2057,6 +2063,9 @@ DATA2STRINT	LDA (TMP3_ZP),Y		; It's an integer
 			JSR INTFAC
 			LDX #2
 			JSR READADDPTR				
+			JMP DFAC2STR
+DSHORTBYTE	TAY
+			JSR BYTEFAC
 			JMP DFAC2STR
 DREAL2STR	LDA TMP3_ZP
 			LDY TMP3_ZP+1

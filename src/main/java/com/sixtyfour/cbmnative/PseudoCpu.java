@@ -803,6 +803,9 @@ public class PseudoCpu {
 		case "COMPACT":
 			collectGarbage();
 			return;
+		case "COMPACTMAX":
+			collectGarbage();
+			return;
 		case "CHECKCMD":
 			// @todo handle additional blank when in CMD mode...
 			return;
