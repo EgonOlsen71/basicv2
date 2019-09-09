@@ -80,7 +80,9 @@ SLOOPNOV2	LDA TMP2_ZP
 			BNE SINITLOOP
 			RTS
 ;###################################
-INITSPARAMS	SEC
+INITSPARAMS	STA TMP3_ZP
+			STY TMP3_ZP+1
+			SEC
 			SBC #2
 			STA TMP_ZP
 			TYA
@@ -92,6 +94,8 @@ INITSPARAMS	SEC
 			INY
 			LDA (TMP_ZP),Y
 			STA TMP2_ZP+1
+			LDA TMP3_ZP
+			LDY TMP3_ZP+1
 			RTS
 ;##################################
 INITSTRVARS	LDA #<STRINGVARS_START		; Reset all string variables...

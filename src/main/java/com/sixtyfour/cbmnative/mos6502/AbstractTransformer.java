@@ -155,11 +155,15 @@ public abstract class AbstractTransformer implements Transformer {
 					} else {
 						// INT or ARRAY
 						if (isArray) {
+						    	if (inits.get(inits.size()-1).equals("LDA #0")) {
+						    	    // The LDA #0 is obsolete in this case.
+						    	    inits.remove(inits.size()-1);
+						    	}
 							inits.add("LDA #<" + parts[0]);
 							inits.add("LDY #>" + parts[0]);
-							inits.add("JSR INITSPARAMS");
-							inits.add("LDA #<" + parts[0]);
-							inits.add("LDY #>" + parts[0]);
+							inits.add("JSR INITSPARAMS");	// This should save A and Y
+							//inits.add("LDA #<" + parts[0]);
+							//inits.add("LDY #>" + parts[0]);
 							inits.add("JSR INITNARRAY");
 							inits.add("LDA #0");
 						} else {
