@@ -143,7 +143,7 @@ public class MoSpeedCL {
 			}
 		}
 
-		String targetFile = "++" + new File(srcFile).getName().replace(".bas", "") + appendix;
+		String targetFile = "++" + new File(srcFile).getName().replace(".BAS", "").replace(".bas", "") + appendix;
 		if (cmds.containsKey("target")) {
 			targetFile = cmds.get("target");
 			if ((appendix.equalsIgnoreCase(".js") && !targetFile.endsWith(".js"))
