@@ -82,7 +82,7 @@ public class ArrayAccess extends AbstractFunction {
 		ret.add("_");
 		Variable vary = machine.getVariableUpperCase(variableName);
 		if (vary == null) {
-			Variable tmpVar = new Variable(variableName, null, new int[] { 10 });
+			Variable tmpVar = new Variable(variableName, null, 10);
 			machine.add(tmpVar);
 			Logger.log("Array not defined: " + variableName + ", defaulting to 10!");
 			vary = machine.getVariableUpperCase(variableName);

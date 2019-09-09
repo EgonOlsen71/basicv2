@@ -54,7 +54,7 @@ public class Variable implements Atom {
 	 *                   dimensions.
 	 */
 	public Variable(String name, List<Object> values, int... dimensions) {
-		this(name, values == null ? new ArrayList<Object>(calcSize(dimensions)) : (Object) values);
+		this(name, values == null ? createEmptyArray(dimensions) : (Object) values);
 		this.dimensions = dimensions;
 		array = true;
 		this.setName(name.endsWith("[]") ? name : (name + "[]"));
@@ -539,4 +539,14 @@ public class Variable implements Atom {
 		}
 		return size;
 	}
+	
+	private static Object createEmptyArray(int[] dimensions) {
+	    int size=calcSize(dimensions);
+	    List<Object> ret=new ArrayList<Object>(size);
+	    for (int i=0; i<size; i++) {
+		ret.add(null);
+	    }
+	    return ret;
+	}
+
 }
