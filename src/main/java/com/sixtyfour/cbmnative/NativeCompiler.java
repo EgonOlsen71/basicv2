@@ -808,7 +808,7 @@ public class NativeCompiler {
 		}
 
 		if (withStrings) {
-			code.add(0, "JSR COMPACT");
+			code.add(0, "JSR COMPACTMAX");
 		}
 		/*
 		 * if (!yStack.isEmpty()) { code.add("POP X"); }

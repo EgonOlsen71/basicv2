@@ -718,10 +718,19 @@ RESTOREPOINTERS
 			STA TMP_ZP
 			RTS
 ;###################################
+; This check is called in places, where the actual source's length is unknown.
+; So we compact assuming the maximum string length of 255. It's not ideal this way
+; but it's better than what we did before: Read some random length out of whatever
+; memory location TMP_ZP/TMP_ZP+1 was point to...
+COMPACTMAX
+			LDA #$FF
+			LDY #$0
+			JMP COMPACTF
+;###################################
 COMPACT
 			LDY #0
 GCBUFNE		LDA (TMP_ZP),Y		; Get the source's length
-			STA TMP4_REG		; ...and store it
+COMPACTF	STA TMP4_REG		; ...and store it
 			LDA STRBUFP+1		; First, check if the new string would fit into memory...
 			STA TMP4_REG+1		; For that, we have to calculate the new strbufp after adding the string
 			LDA STRBUFP
@@ -1886,7 +1895,10 @@ GOSUBNOOV	LDA TMP_ZP
 			STA FORSTACKP+1
 			RTS
 ;###################################
-GETNUMBER	JSR COMPACT
+GETNUMBER	
+			LDA #8
+			LDY #0
+			JSR COMPACTF
 			LDY #0
 			STY CMD_NUM			; Reset CMD target
 			JSR GETIN
@@ -2276,7 +2288,9 @@ NUMOK		LDA TMP_REG
 			LDY #>Y_REG
 			JMP FACMEM		; ...and return
 ;###################################
-GETSTR		JSR COMPACT
+GETSTR		LDA #8
+			LDY #0
+			JSR COMPACTF
 			LDY #0
 			STY CMD_NUM		; Reset CMD target
 			JSR GETIN
