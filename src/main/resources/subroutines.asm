@@ -1288,6 +1288,13 @@ PRINTSTR	JSR PRINTSTRS
 			JSR RESETROUTE
 			RTS
 ;###################################
+SINGLECHROUT
+			STA TMP_ZP
+			JSR REROUTE
+			LDA TMP_ZP
+			JSR CHROUT
+			JMP RESETROUTE
+;###################################
 STROUTBRKWL	STA A_REG
 			STY A_REG+1
 STROUTBRK	JSR REROUTE

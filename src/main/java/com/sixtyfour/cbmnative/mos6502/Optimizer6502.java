@@ -276,6 +276,7 @@ public class Optimizer6502 implements Optimizer {
 			this.add(new Pattern(false, "Direct copy of floats into mem",
 					new String[] { "LDX #4", "dcloop{cnt}:", "LDA {MEM0},X", "STA {MEM1},X", "DEX", "BPL dcloop{cnt}" },
 					"LDA #<{MEM0}", "LDY #>{MEM0}", "JSR REALFAC", "LDX #<{MEM1}", "LDY #>{MEM1}", "JSR FACMEM"));
+			this.add(new Pattern(false, "Single character output", new String[]{"{LINE0}", "JSR SINGLECHROUT"}, "LDA  {*}", "JSR CHRINT","JSR STROUT"));
 		}
 	};
 
