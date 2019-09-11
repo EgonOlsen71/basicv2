@@ -17,7 +17,7 @@ import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
 /**
- * @author Foerster-H
+ * @author EgonOlsen
  *
  */
 public class Vpoke extends AbstractCommand {

@@ -14,7 +14,7 @@ import com.sixtyfour.extensions.x16.functions.Vpeek;
 import com.sixtyfour.system.Machine;
 
 /**
- * @author Foerster-H
+ * @author EgonOlsen
  *
  */
 public class X16Extensions implements BasicExtension {

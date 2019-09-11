@@ -13,7 +13,7 @@ import com.sixtyfour.system.FileWriter;
 /**
  * Comnmand line version of the assembler
  * 
- * @author Foerster-H
+ * @author EgonOlsen
  *
  */
 public class AssemblerCL {

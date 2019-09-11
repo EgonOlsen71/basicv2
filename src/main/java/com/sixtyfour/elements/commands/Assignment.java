@@ -3,7 +3,7 @@ package com.sixtyfour.elements.commands;
 import com.sixtyfour.elements.Variable;
 
 /**
- * @author Foerster-H
+ * @author EgonOlsen
  *
  */
 public interface Assignment {

@@ -11,7 +11,7 @@ import java.util.Map;
  * @author EgonOlsen
  * 
  */
-public class Pattern {
+public class Pattern implements java.lang.Cloneable {
 	private List<String> pattern;
 	private List<Integer> spacePos;
 	private List<Integer> partRightP0;
@@ -410,4 +410,8 @@ public class Pattern {
 		this.skipComments = skipComments;
 	}
 
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+	    return super.clone();
+	}
 }

@@ -25,7 +25,7 @@ import com.sixtyfour.util.ConstantExtractor;
 /**
  * Transformer base class for Commodore based target platforms.
  * 
- * @author Foerster-H
+ * @author EgonOlsen
  *
  */
 public abstract class AbstractTransformer implements Transformer {
