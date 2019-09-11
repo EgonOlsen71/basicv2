@@ -49,7 +49,7 @@ public class Optimizer6502 implements Optimizer {
 
     private List<String> optimizeInternal(PlatformProvider platform, List<String> input, ProgressListener pg) {
 	Map<String, Number> const2Value = Collections.unmodifiableMap(Util.extractNumberConstants(input));
-	int cpus = Runtime.getRuntime().availableProcessors();
+	int cpus = 1;//Runtime.getRuntime().availableProcessors();
 	int[] ps = getStartAndEnd(input);
 	int codeStart = ps[0];
 	int codeEnd = ps[1];
