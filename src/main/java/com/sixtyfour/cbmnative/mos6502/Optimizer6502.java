@@ -48,7 +48,7 @@ public class Optimizer6502 implements Optimizer {
     }
 
     private List<String> optimizeInternal(PlatformProvider platform, List<String> input, ProgressListener pg) {
-	Map<String, Number> const2Value = Collections.unmodifiableMap(Util.extractNumberConstants(input));
+	Map<String, Number> const2Value = extractConstants(input);
 	int cpus = Runtime.getRuntime().availableProcessors();
 	int[] ps = getStartAndEnd(input);
 	int codeStart = ps[0];
@@ -108,10 +108,14 @@ public class Optimizer6502 implements Optimizer {
 	    pg.done();
 	}
 
+	printOutResults(type2count);
+	return optCode;
+    }
+
+    private void printOutResults(Map<String, Integer> type2count) {
 	for (Map.Entry<String, Integer> cnts : type2count.entrySet()) {
 	    Logger.log("Optimization " + cnts.getKey() + " applied " + cnts.getValue() + " times!");
 	}
-	return optCode;
     }
 
     private OptimizationResult optimizeInternalThreaded(List<Pattern> patterns, PlatformProvider platform,
@@ -358,8 +362,8 @@ public class Optimizer6502 implements Optimizer {
 
     private List<String> applyAdditionalPatterns(PlatformProvider platform, List<String> ret) {
 	// Do another run with the normal optimizer method but with some
-	// additional
-	// rules
+	// additional rules. Unlike the "big" run, this one happens in a single
+	// thread, because it's quite cheap to do anyway.
 	List<Pattern> others = new ArrayList<Pattern>();
 	Pattern tmpPat = new Pattern(false, "Simplified not equal comparison",
 		new String[] { "{LINE0}", "{LINE4}", "{LINE6}", "{LINE7}", "{LINE8}", "{LINE9}" }, "JSR CMPFAC",
@@ -383,8 +387,13 @@ public class Optimizer6502 implements Optimizer {
 		"LDA #<{MEM0}", "LDY #>{MEM0}", "JSR REALFAC", "LDA #<{MEM1}", "LDY #>{MEM1}", "JSR CMPFAC", "{LABEL}",
 		"{LABEL}", "{LABEL}", "BEQ {*}");
 	others.add(tmpPat);
-	ret = optimizeInternal(platform, ret, null);
-	return ret;
+	OptimizationResult res=optimizeInternalThreaded(others, platform, ret, null, extractConstants(ret));
+	printOutResults(res.getType2count());
+	return res.getCode();
+    }
+
+    private Map<String, Number> extractConstants(List<String> ret) {
+	return Collections.unmodifiableMap(Util.extractNumberConstants(ret));
     }
 
     private String trimLine(List<String> input, int i) {
