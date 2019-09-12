@@ -12,7 +12,7 @@ public class SpeedTest {
 
 	public static void main(String[] args) throws Exception {
 		String[] asm = Loader.loadProgram("src/test/resources/asm/selfmodify.asm");
-		String[] basic = new String[] { "10fori%=8192to16192:pokei%,0:next" };
+		String[] basic = new String[] { "10fori=8192to16192:pokei,0:next" };
 
 		// Prewarm
 		for (int i = 0; i < 10; i++) {
