@@ -1,3 +1,4 @@
+5 ti$="000000"
 10 input"1. wort";a$:input"2. wort";b$
 20 l0=len(a$)+1:l1=len(b$)+1
 30 dim co(255):dim nc(255)
@@ -17,4 +18,4 @@
 170 ov=co(i):co(i)=nc(i):nc(i)=ov
 180 nexti
 190 nextj
-200 print co(l0-1)
+200 print co(l0-1):printti$,ti
