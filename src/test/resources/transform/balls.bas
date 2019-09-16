@@ -14,12 +14,8 @@
 109 dy(b)=1
 110 next b
 120 rem
-130 for y=0 to 24
-140 for x=0 to 39
-150 q=y*40+x
-160 poke1024+q,81
-170 poke55296+q,0
-180 nextx,y
+130 for i=1024to2023:pokei,81:next
+140 for i=55295to56295:pokei,0:next
 200 for b=1ton
 210 poke55296+by(b)*40+bx(b),0
 240 ifdx(b)=0thengosub1010
