@@ -19,10 +19,12 @@ import com.sixtyfour.cbmnative.Transformer;
 import com.sixtyfour.cbmnative.javascript.PlatformJs;
 import com.sixtyfour.cbmnative.mos6502.c64.Platform64;
 import com.sixtyfour.cbmnative.mos6502.vic20.Platform20;
+import com.sixtyfour.cbmnative.mos6502.x16.PlatformX16;
 import com.sixtyfour.cbmnative.powerscript.PlatformPs;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.config.LoopMode;
 import com.sixtyfour.config.MemoryConfig;
+import com.sixtyfour.extensions.x16.X16Extensions;
 import com.sixtyfour.parser.Preprocessor;
 import com.sixtyfour.system.FileWriter;
 
@@ -122,6 +124,11 @@ public class MoSpeedCL {
 			} else if (pl.equalsIgnoreCase("js")) {
 				platform = new PlatformJs();
 				appendix = ".js";
+			} else if (pl.equalsIgnoreCase("x16")) {
+				platform = new PlatformX16();
+				Basic.registerExtension(new X16Extensions());
+				cfg.setNonDecimalNumbersAware(true);
+				appendix = ".prg";
 			} else if (pl.equalsIgnoreCase("ps")) {
 				platform = new PlatformPs();
 				appendix = ".ps1";
@@ -209,7 +216,7 @@ public class MoSpeedCL {
 		}
 
 		Assembler assy = null;
-		if (platform instanceof Platform64 || platform instanceof Platform20) {
+		if (is6502Platform(platform)) {
 			assy = new Assembler(nCode);
 			try {
 				assy.compile(cfg);
@@ -237,7 +244,7 @@ public class MoSpeedCL {
 
 	private static void writeTargetFiles(MemoryConfig memConfig, String targetFile, List<String> ncode, Assembler assy,
 			PlatformProvider platform, boolean addrHeader) {
-		if (platform instanceof Platform64 || platform instanceof Platform20) {
+		if (is6502Platform(platform)) {
 			try {
 				System.out.println("Writing target file: " + targetFile);
 				FileWriter.writeAsPrg(assy.getProgram(), targetFile,
@@ -278,6 +285,10 @@ public class MoSpeedCL {
 			System.out.println("\n!!! Unsupported platform: " + platform);
 			exit(19);
 		}
+	}
+
+	private static boolean is6502Platform(PlatformProvider platform) {
+	    return platform instanceof Platform64 || platform instanceof Platform20 || platform instanceof PlatformX16;
 	}
 
 	private static void runVice(Map<String, String> cmds, String targetFile) {
@@ -387,7 +398,7 @@ public class MoSpeedCL {
 		System.out.println("Optional parameters (either with / or - as prefix):\n");
 		System.out.println("/target=<target file> -  the target file name");
 		System.out.println(
-				"/platform=xxxx - the target platform. Options are c64 (for c64 compatible machine code), vic20 or vc20, js (for Javascript) and ps (for Powershell/-script), default is c64");
+				"/platform=xxxx - the target platform. Options are c64 (for c64 compatible machine code), vic20 or vc20, x16 (for the Commander (NOT Commodore) X16), js (for Javascript) and ps (for Powershell/-script), default is c64");
 		System.out.println(
 				"/generatesrc=true|false -  writes the generated intermediate and assembly language programs to disk as well");
 		System.out.println("/constprop=true|false - enables/disables constant propagation optimizations");
