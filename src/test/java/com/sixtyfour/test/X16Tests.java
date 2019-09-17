@@ -7,7 +7,7 @@ import com.sixtyfour.Basic;
 import com.sixtyfour.Loader;
 import com.sixtyfour.cbmnative.NativeCompiler;
 import com.sixtyfour.cbmnative.PseudoCpu;
-import com.sixtyfour.cbmnative.mos6502.c64.Platform64;
+import com.sixtyfour.cbmnative.mos6502.x16.PlatformX16;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.config.LoopMode;
 import com.sixtyfour.config.MemoryConfig;
@@ -28,41 +28,65 @@ public class X16Tests {
 		testVpokePeek();
 		testColors();
 		testData();
+		testCharfractal();
+		testFrog();
+		testTi();
+	}
+	
+	private static void testTi() throws Exception {
+		System.out.println("\n\ntestTi");
+		String[] vary = Loader.loadProgram("src/test/resources/x16/ti.bas");
+		Assembler assy = initTestEnvironment(vary, false, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++ti_x16.prg", true);
+	}
+	
+	private static void testFrog() throws Exception {
+		System.out.println("\n\ntestFrog");
+		String[] vary = Loader.loadProgram("src/test/resources/x16/frog.bas");
+		Assembler assy = initTestEnvironment(vary, false, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++frog_x16.prg", true);
+	}
+	
+	private static void testCharfractal() throws Exception {
+		System.out.println("\n\ntestCharfractal");
+		String[] vary = Loader.loadProgram("src/test/resources/x16/charfractal.bas");
+		Assembler assy = initTestEnvironment(vary, false, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++charfractal_x16.prg", true);
 	}
 	
 	private static void testData() throws Exception {
 		System.out.println("\n\ntestData");
 		String[] vary = Loader.loadProgram("src/test/resources/x16/data.bas");
-		Assembler assy = initTestEnvironment(vary, true, -1, true);
-		FileWriter.writeAsPrg(assy.getProgram(), path + "++data.prg", true);
+		Assembler assy = initTestEnvironment(vary, false, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++data_x16.prg", true);
 	}
 
 	private static void testColors() throws Exception {
 		System.out.println("\n\ntestColors");
 		String[] vary = Loader.loadProgram("src/test/resources/x16/colors.bas");
-		Assembler assy = initTestEnvironment(vary, true, -1, true);
-		FileWriter.writeAsPrg(assy.getProgram(), path + "++colors.prg", true);
+		Assembler assy = initTestEnvironment(vary, false, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++colors_x16.prg", true);
 	}
 	
 	private static void testVpokePeek() throws Exception {
 		System.out.println("\n\ntestVpokePeek");
 		String[] vary = Loader.loadProgram("src/test/resources/x16/vpokepeek.bas");
-		Assembler assy = initTestEnvironment(vary, true, -1, true);
-		FileWriter.writeAsPrg(assy.getProgram(), path + "++vpokepeek.prg", true);
+		Assembler assy = initTestEnvironment(vary, false, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++vpokepeek_x16.prg", true);
 	}
 
 	private static void testVpoke() throws Exception {
 		System.out.println("\n\ntestVpoke");
 		String[] vary = Loader.loadProgram("src/test/resources/x16/vpoke.bas");
 		Assembler assy = initTestEnvironment(vary, false, -1, true);
-		FileWriter.writeAsPrg(assy.getProgram(), path + "++vpoke.prg", true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++vpoke_x16.prg", true);
 	}
 
 	private static void testVpeek() throws Exception {
 		System.out.println("\n\ntestVpeek");
 		String[] vary = Loader.loadProgram("src/test/resources/x16/vpeek.bas");
 		Assembler assy = initTestEnvironment(vary, false, -1, true);
-		FileWriter.writeAsPrg(assy.getProgram(), path + "++vpeek.prg", true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++vpeek_x16.prg", true);
 	}
 
 	private static Assembler initTestEnvironment(String[] vary) {
@@ -114,7 +138,7 @@ public class X16Tests {
 		basic = new Basic(vary);
 		MemoryConfig memConfig = new MemoryConfig();
 		memConfig.setVariableStart(variableStart);
-		List<String> nCode = NativeCompiler.getCompiler().compile(conf, basic, memConfig, new Platform64());
+		List<String> nCode = NativeCompiler.getCompiler().compile(conf, basic, memConfig, new PlatformX16());
 		for (String line : nCode) {
 			System.out.println(line);
 		}
