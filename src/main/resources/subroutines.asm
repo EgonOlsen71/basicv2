@@ -3239,35 +3239,32 @@ SUPERFIDEXNOV
 			RTS
 ;###################################
 NEXTWOFOR	LDX #$0A
-			JMP $A437
+			JMP ERRALL
 ;###################################
 OUTOFDATA	LDX #$0D 
-			JMP $A437 
+			JMP ERRALL 
 ;###################################
 STRINGTOOLONG
 			LDX #$17       
-			JMP $A437 
-;###################################
-OUTOFMEMORY	
-			JMP $A435
+			JMP ERRALL 
 ;###################################
 ILLEGALQUANTITY
-			JMP $B248
+			JMP ERRIQ
 ;###################################
 EXTRAIGNORED
-			JMP $ACF4
+			JMP ERREI
 ;###################################
 SYNTAXERROR 
-			JMP $AF08
+			JMP ERRSYN
 ;###################################
 FILENOTFOUND
-			JSR $FFCC
-			JSR $F12F
+			JSR CLRCH
+			JSR ERRFNF
 			LDA #4
 			ORA #$30
 			JMP CHROUT
 ;###################################
 ERROR		
-			JMP $AF08	;General purpose error, here a syntax error
+			JMP ERRSYN	;General purpose error, here a syntax error
 ;###################################
 

@@ -114,6 +114,11 @@ public class Transformer20 extends AbstractTransformer {
 		res.add("LOADXX = $F54F"); // ok
 		res.add("SAVEXX = $F685"); // ok
 		res.add("TWAIT = $F770"); // ok
+		res.add("ERRALL = $C437"); // ok
+		res.add("ERRIQ = $D248"); // ok
+		res.add("ERREI = $CCF4"); // ok
+		res.add("ERRSYN = $CF08"); // ok
+		res.add("ERRFNF = $F1E6"); // ok
 
 		res.add("TMP_ZP = 105");
 		res.add("TMP2_ZP = 107");

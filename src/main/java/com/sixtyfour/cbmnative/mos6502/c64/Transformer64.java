@@ -110,6 +110,11 @@ public class Transformer64 extends AbstractTransformer {
 		res.add("LOADXX = $F4AB");
 		res.add("SAVEXX = $F5ED");
 		res.add("TWAIT = $F6ED");
+		res.add("ERRALL = $A437");
+		res.add("ERRIQ = $B248");
+		res.add("ERREI = $ACF4");
+		res.add("ERRSYN = $AF08");
+		res.add("ERRFNF = $F12F");
 
 		res.add("TMP_ZP = 105");
 		res.add("TMP2_ZP = 107");
