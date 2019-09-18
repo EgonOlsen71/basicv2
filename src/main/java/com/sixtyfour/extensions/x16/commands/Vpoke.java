@@ -109,14 +109,25 @@ public class Vpoke extends AbstractCommand {
 	@Override
 	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
 		NativeCompiler compiler = NativeCompiler.getCompiler();
-		List<String> after = new ArrayList<String>();
-		List<String> expr = compiler.compileToPseudoCode(config, machine, val);
-		List<String> before = new ArrayList<String>();
-		;
+		List<String> after = new ArrayList<>();
+		
+		List<String> expr = new ArrayList<>();
+		String expPush = "";
+		int valConst=-1;
+		boolean cValFlag=false;
+		
+		if (val.isConstant()) {
+		    valConst = ((Number) val.eval(machine)).intValue();
+		    valConst = valConst & 255;
+		    cValFlag = true;
+		} else {
+        		expr = compiler.compileToPseudoCode(config, machine, val);
+        		expPush = getPushRegister(expr.get(expr.size() - 1));
+        		expr = expr.subList(0, expr.size() - 1);
+		}
+		
+		List<String> before = new ArrayList<>();
 		List<String> bankSwitch = compiler.compileToPseudoCode(config, machine, bank);
-
-		String expPush = getPushRegister(expr.get(expr.size() - 1));
-		expr = expr.subList(0, expr.size() - 1);
 
 		String bankPush = getPushRegister(bankSwitch.get(bankSwitch.size() - 1));
 		bankSwitch = bankSwitch.subList(0, bankSwitch.size() - 1);
@@ -130,7 +141,11 @@ public class Vpoke extends AbstractCommand {
 			int hi = addi >> 8;
 			after.add("MOVB VERALO,#" + lo + "{INTEGER}");
 			after.add("MOVB VERAMID,#" + hi + "{INTEGER}");
-			after.add("MOVB VERADAT,X");
+			if (cValFlag) {
+			    after.add("MOVB VERADAT,#" + valConst + "{INTEGER}");
+			} else {
+			    after.add("MOVB VERADAT,X");
+			}
 		} else {
 			before = compiler.compileToPseudoCode(config, machine, addr);
 
@@ -139,7 +154,11 @@ public class Vpoke extends AbstractCommand {
 			}
 			after.add("POP Y");
 			after.add("MOVB VERALO:VERAMID,Y");
-			after.add("MOVB VERADAT,X");
+			if (cValFlag) {
+			    after.add("MOVB VERADAT,#" + valConst + "{INTEGER}");
+			} else {
+			    after.add("MOVB VERADAT,X");
+			}
 		}
 
 		addBankSwitchingCode(machine, before, after, bankSwitch, bankPush);
@@ -150,9 +169,7 @@ public class Vpoke extends AbstractCommand {
 	}
 
 	/**
-	 * This is preliminary stuff until it's know, how bankswitching on the X16
-	 * actually works. For now, we store the bank in address 2 for good measure.
-	 * 
+	 *  
 	 * @param machine
 	 * @param before
 	 * @param after
