@@ -725,7 +725,7 @@ RESTOREPOINTERS
 ; This check is called in places, where the actual source's length is unknown.
 ; So we compact assuming the maximum string length of 255. It's not ideal this way
 ; but it's better than what we did before: Read some random length out of whatever
-; memory location TMP_ZP/TMP_ZP+1 was point to...
+; memory location TMP_ZP/TMP_ZP+1 was pointing to...
 COMPACTMAX
 			LDA #$FF
 			LDY #$0
