@@ -9,6 +9,7 @@ import java.util.Map;
 import com.sixtyfour.elements.commands.Command;
 import com.sixtyfour.elements.functions.Function;
 import com.sixtyfour.extensions.BasicExtension;
+import com.sixtyfour.extensions.x16.commands.Dos;
 import com.sixtyfour.extensions.x16.commands.Vpoke;
 import com.sixtyfour.extensions.x16.functions.Vpeek;
 import com.sixtyfour.system.Machine;
@@ -23,6 +24,7 @@ public class X16Extensions implements BasicExtension {
 		private static final long serialVersionUID = 1L;
 		{
 			this.add(new Vpoke());
+			this.add(new Dos());
 		}
 	});
 

@@ -5,6 +5,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.sixtyfour.Loader;
 import com.sixtyfour.Logger;
 
 /**
@@ -24,6 +25,8 @@ public class CallMapper {
 	Map<String, String> calls = MapLoader.getRomCalls(CallMapper.class.getResourceAsStream("/rommap/runtime.map"));
 
 	Map<String, String> x16r = new HashMap<>();
+
+	String[] addAddrs = Loader.loadProgram(CallMapper.class.getResourceAsStream("/rommap/runtime_ext.lst"));
 
 	x16.forEach((k, v) -> x16r.put(v, k));
 
@@ -80,6 +83,23 @@ public class CallMapper {
 			    + " in target rom!");
 		}
 		mappedCalls.put(label.toUpperCase(Locale.ENGLISH), "$" + newAddr.toUpperCase(Locale.ENGLISH));
+	    }
+	}
+
+	for (String addAddr : addAddrs) {
+	    if (addAddr.length() > 0) {
+		String[] parts = addAddr.split("\\+");
+		int add = 0;
+		if (parts.length == 2) {
+		    add = Integer.valueOf(parts[1].trim());
+		}
+		String addr = x16r.get("."+parts[0].trim().toLowerCase(Locale.ENGLISH));
+		if (addr == null) {
+		    Logger.log("!!! Failed to match additional address " + parts[0]);
+		}
+		add += Integer.parseInt(addr, 16);
+		mappedCalls.put(parts[0].toUpperCase(Locale.ENGLISH),
+			"$" + Integer.toHexString(add).toUpperCase(Locale.ENGLISH));
 	    }
 	}
 

@@ -33,6 +33,14 @@ public class X16Tests {
 		testTi();
 		testBalls();
 		testCards();
+		testDos();
+	}
+	
+	private static void testDos() throws Exception {
+		System.out.println("\n\ntestDos");
+		String[] vary = Loader.loadProgram("src/test/resources/x16/dos.bas");
+		Assembler assy = initTestEnvironment(vary, false, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++dos_x16.prg", true);
 	}
 	
 	private static void testCards() throws Exception {

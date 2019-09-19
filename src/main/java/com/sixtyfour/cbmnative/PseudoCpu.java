@@ -899,6 +899,12 @@ public class PseudoCpu {
 		case "VPEEK":
 			vpeek(parts);
 			return;
+		case "DOSCALL":
+		    	// Do nothing...
+			return;
+		case "DOSSTAT":
+		    	// Do nothing...
+			return;
 		case "CLOSE":
 			close(parts);
 			return;

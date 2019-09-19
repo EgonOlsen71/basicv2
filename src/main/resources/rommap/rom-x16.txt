@@ -97,7 +97,7 @@ al 00E6B4 .dos9
 al 00E6C1 .listen_cmd
 al 00E6F4 .dossw
 al 00E702 .disk_dir
-al 00E6D6 .ptstat
+al 00E6CA .ptstat
 al 00E63E .ppach0
 al 00E578 .chke0
 al 00E56E .initv1
@@ -847,7 +847,7 @@ al 00C1A6 .reslst2
 al 00C0A6 .reslst
 al 00E642 .vpeek
 al 00E672 .vpoke
-al 00E68C .dos
+al 00E688 .dos
 al 00E63F .monitor
 al 00C09E .stmdsp2
 al 00D12F .dorel
