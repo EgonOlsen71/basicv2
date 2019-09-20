@@ -35,6 +35,14 @@ public class X16Tests {
 		testCards();
 		testDos();
 		testMon();
+		testDivide();
+	}
+	
+	private static void testDivide() throws Exception {
+		System.out.println("\n\ntestDivide");
+		String[] vary = Loader.loadProgram("src/test/resources/x16/divide.bas");
+		Assembler assy = initTestEnvironment(vary, false, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++divide_x16.prg", true);
 	}
 	
 	private static void testMon() throws Exception {
