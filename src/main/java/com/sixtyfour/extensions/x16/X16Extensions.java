@@ -68,9 +68,9 @@ public class X16Extensions implements BasicExtension {
 			private static final long serialVersionUID = 1L;
 			{
 				this.put("VERAREG", Integer.parseInt("9F20", 16));
-				this.put("VERAHI", Integer.parseInt("9F20", 16));
+				this.put("VERAHI", Integer.parseInt("9F22", 16));
 				this.put("VERAMID", Integer.parseInt("9F21", 16));
-				this.put("VERALO", Integer.parseInt("9F22", 16));
+				this.put("VERALO", Integer.parseInt("9F20", 16));
 				this.put("VERADAT", Integer.parseInt("9F23", 16));
 			}
 		};
