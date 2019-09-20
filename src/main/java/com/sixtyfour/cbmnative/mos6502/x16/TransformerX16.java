@@ -60,7 +60,7 @@ public class TransformerX16 extends AbstractTransformer {
 	addExtensionConstants(res);
 
 	// Add runtime calls based on rom mapping...might be off...beware!
-	Map<String, String> calls = CallMapper.mapCalls(false);
+	Map<String, String> calls = CallMapper.mapCalls(config, false);
 	calls.forEach((k, v) -> res.add(k + " = " + v));
 
 	res.add("TMP_ZP = 105");

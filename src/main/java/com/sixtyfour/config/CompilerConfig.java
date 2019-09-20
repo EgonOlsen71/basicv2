@@ -25,6 +25,7 @@ public class CompilerConfig {
 	private boolean loopOptimizations = true;
 	private boolean shiftOptimizations = true;
 	private boolean nonDecimalNumbersAware = false;
+	private String symbolTable = null;
 	private LoopMode loopMode = LoopMode.EXECUTE;
 	private ProgressListener progressListener;
 
@@ -185,6 +186,14 @@ public class CompilerConfig {
 
 	public void setNonDecimalNumbersAware(boolean nonDecimalNumbersAware) {
 		this.nonDecimalNumbersAware = nonDecimalNumbersAware;
+	}
+
+	public String getSymbolTable() {
+	    return symbolTable;
+	}
+
+	public void setSymbolTable(String symbolTable) {
+	    this.symbolTable = symbolTable;
 	}
 
 }

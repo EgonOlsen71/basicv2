@@ -1,5 +1,7 @@
 package com.sixtyfour.util.rommap;
 
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -7,6 +9,7 @@ import java.util.Map.Entry;
 
 import com.sixtyfour.Loader;
 import com.sixtyfour.Logger;
+import com.sixtyfour.config.CompilerConfig;
 
 /**
  * @author EgonOlsen71
@@ -14,14 +17,25 @@ import com.sixtyfour.Logger;
  */
 public class CallMapper {
 
-    public static Map<String, String> mapCalls(boolean verbose) {
+    public static Map<String, String> mapCalls(CompilerConfig config, boolean verbose) {
 
 	Map<String, String> mappedCalls = new HashMap<>();
 
 	Map<String, String> c64 = MapLoader
 		.getSymbolMapping(CallMapper.class.getResourceAsStream("/rommap/rom-c64.txt"));
-	Map<String, String> x16 = MapLoader
-		.getSymbolMapping(CallMapper.class.getResourceAsStream("/rommap/rom-x16.txt"));
+	Map<String, String> x16=null;
+	if (config!=null && config.getSymbolTable()!=null && !config.getSymbolTable().isEmpty()) {
+	    Logger.log("Loading symbol table from file: "+config.getSymbolTable());
+	    try(InputStream is=new FileInputStream(config.getSymbolTable())) {
+		x16 = MapLoader.getSymbolMapping(is);
+	    } catch(Exception e) {
+		Logger.log("Failed to load symbol table: "+e.getMessage());
+		System.exit(15);
+	    }
+	} else {
+	    x16 = MapLoader
+			.getSymbolMapping(CallMapper.class.getResourceAsStream("/rommap/rom-x16.txt"));
+	}
 	Map<String, String> calls = MapLoader.getRomCalls(CallMapper.class.getResourceAsStream("/rommap/runtime.map"));
 
 	Map<String, String> x16r = new HashMap<>();

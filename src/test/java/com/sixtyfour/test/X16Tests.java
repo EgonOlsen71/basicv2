@@ -34,6 +34,14 @@ public class X16Tests {
 		testBalls();
 		testCards();
 		testDos();
+		testMon();
+	}
+	
+	private static void testMon() throws Exception {
+		System.out.println("\n\ntestMon");
+		String[] vary = Loader.loadProgram("src/test/resources/x16/mon.bas");
+		Assembler assy = initTestEnvironment(vary, false, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++mon_x16.prg", true);
 	}
 	
 	private static void testDos() throws Exception {

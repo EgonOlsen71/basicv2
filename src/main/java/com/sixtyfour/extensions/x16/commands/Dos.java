@@ -3,6 +3,7 @@ package com.sixtyfour.extensions.x16.commands;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sixtyfour.Logger;
 import com.sixtyfour.cbmnative.NativeCompiler;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.Type;
@@ -69,6 +70,7 @@ public class Dos extends AbstractCommand {
     @Override
     public BasicProgramCounter execute(CompilerConfig config, Machine machine) {
 	// Do nothing in the local runtime for now.
+	Logger.log("Call to DOS ignored by local runtime!");
 	return null;
     }
 
