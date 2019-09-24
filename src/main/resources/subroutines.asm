@@ -3047,7 +3047,9 @@ CHECKCMD	LDA CMD_NUM		; if CMD mode, then print an additional space
 			JSR RESETROUTE
 NOCMD		RTS
 ;###################################
-SAVE		LDA #0
+SAVE		LDA #1
+			STA $B9			; set secondary address to 1
+			LDA #0
 			STA $90			; reset status
 			STA $93			; reset Load/Verify-Flag
 
@@ -3056,8 +3058,6 @@ SAVE		LDA #0
 			JSR REALFAC
 			JSR FACWORD
 			STY $BA			; Store device number
-							; Note: ,0 or ,1 will be ignored here. It's always ,1 in this context
-
 			JSR SETNAMEPRT
 							; Save the normal BASIC program...
 			LDX 45
@@ -3076,9 +3076,24 @@ VERIFY		LDA #0
 			STA $90
 			LDA #1
 			STA $93
+			STA $B9			; set secondary address to 1
 			JMP LOADINT
 ;###################################
-LOAD		LDA #0
+LOAD		LDA #<Y_REG		; read secondary address
+			LDY #>Y_REG
+			JSR REALFAC
+			JSR FACWORD
+			TYA
+			BNE LOADBAS
+			LDA $2B			; secondary address 0, load to basic start
+			STA $C3
+			LDA $2C			
+			STA $CC
+			LDA #0
+			JMP SKPBAS
+LOADBAS		LDA #1			; set secondary address to 1, if not 0
+SKPBAS		STA $B9			
+			LDA #0
 			STA $90			; reset status
 			STA $93			; reset Load/Verify-Flag
 
@@ -3087,8 +3102,6 @@ LOADINT		LDA #<X_REG
 			JSR REALFAC
 			JSR FACWORD
 			STY $BA			; Store device number
-							; Note: ,0 or ,1 will be ignored here. It's always ,1 in this context
-
 			JSR SETNAMEPRT
 			JSR LOADXX
 			JSR TWAIT
