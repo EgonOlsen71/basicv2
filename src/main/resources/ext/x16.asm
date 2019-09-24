@@ -37,7 +37,9 @@ SNPNOOVDC	LDX G_REG
 DOSSTAT		LDA #0
 			JMP PTSTAT
 ;###################################
-VLOAD		JSR SETNAMEPRT
+VLOAD		LDA #0			; set secondary address to 0
+			STA $B9
+			JSR SETNAMEPRT
 			LDA #<X_REG
 			LDY #>X_REG
 			JSR REALFAC
@@ -69,7 +71,9 @@ VLOAD		JSR SETNAMEPRT
 			JMP FILENOTFOUND
 VLOADOK		RTS
 ;###################################
-LOADEXT		JSR SETNAMEPRT
+LOADEXT		LDA #0			; set secondary address to 0
+			STA $B9
+			JSR SETNAMEPRT
 			LDA #<X_REG
 			LDY #>X_REG
 			JSR REALFAC
