@@ -36,6 +36,14 @@ public class X16Tests {
 		testDos();
 		testMon();
 		testDivide();
+		testVload();
+	}
+	
+	private static void testVload() throws Exception {
+		System.out.println("\n\ntestVload");
+		String[] vary = Loader.loadProgram("src/test/resources/x16/vload.bas");
+		Assembler assy = initTestEnvironment(vary, false, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++vload_x16.prg", true);
 	}
 	
 	private static void testDivide() throws Exception {
@@ -155,6 +163,7 @@ public class X16Tests {
 		conf.setIntOptimizations(opt);
 		conf.setLoopMode(LoopMode.REMOVE);
 		conf.setNonDecimalNumbersAware(true);
+		conf.setExtendedLoad(true);
 		// conf.setCompactThreshold(3);
 
 		Basic basic = new Basic(vary);

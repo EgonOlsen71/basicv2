@@ -25,6 +25,7 @@ public class CompilerConfig {
 	private boolean loopOptimizations = true;
 	private boolean shiftOptimizations = true;
 	private boolean nonDecimalNumbersAware = false;
+	private boolean extendedLoad = false;
 	private String symbolTable = null;
 	private LoopMode loopMode = LoopMode.EXECUTE;
 	private ProgressListener progressListener;
@@ -194,6 +195,14 @@ public class CompilerConfig {
 
 	public void setSymbolTable(String symbolTable) {
 	    this.symbolTable = symbolTable;
+	}
+
+	public boolean isExtendedLoad() {
+	    return extendedLoad;
+	}
+
+	public void setExtendedLoad(boolean extendedLoad) {
+	    this.extendedLoad = extendedLoad;
 	}
 
 }

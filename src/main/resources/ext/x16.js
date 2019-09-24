@@ -9,3 +9,11 @@ this.DOSCALL = function() {
 this.DOSSTAT = function() {
 	console.log("[DOS not supported for JS, call ignored]");
 }
+
+this.LOADEXT = function() {
+	console.log("[LOAD not supported for JS in file mode, call ignored]");
+}
+
+this.VLOAD = function() {
+	console.log("[VLOAD not supported for JS in file mode, call ignored]");
+}
