@@ -85,7 +85,7 @@ LOADEXT		LDA #0			; set secondary address to 0
 			JSR FACWORD
 			STY VERABNK		; switch bank
 			LDY #0
-			STY $93			; set secondary address back to 0
+			STY $93			; set Load/Verify-Flag to 0
 			LDA #<C_REG		; read target address
 			LDY #>C_REG
 			JSR REALFAC
