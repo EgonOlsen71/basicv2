@@ -192,7 +192,7 @@ public class Print extends AbstractCommand {
 
 						String lastCmd = expr.get(expr.size() - 1);
 
-						if (!appendix.isEmpty()) {
+						if (isFileWrite(appendix)) {
 							expr = saveC(expr);
 						}
 
@@ -206,7 +206,7 @@ public class Print extends AbstractCommand {
 							}
 						}
 
-						if (!appendix.isEmpty()) {
+						if (isFileWrite(appendix)) {
 							expr.add("PUSH C");
 						}
 
@@ -215,7 +215,13 @@ public class Print extends AbstractCommand {
 
 				if (del == ';' || del == ' ') {
 					if (type.equals(Type.INTEGER) || type.equals(Type.REAL)) {
-						add = " ";
+						if (isFileWrite(appendix)) {
+							// file
+							add=" ";
+						} else {
+							// screen
+							add = "{right}";
+						}
 					}
 					if (del == ' ' && i == parts.size() - 1) {
 						add = "\n";
@@ -224,13 +230,13 @@ public class Print extends AbstractCommand {
 					add = "\t";
 				}
 
-				if (!appendix.isEmpty()) {
+				if (isFileWrite(appendix)) {
 					expr = saveC(expr);
 				}
 
 				if (("\n").equals(add)) {
 					if (type.equals(Type.INTEGER) || type.equals(Type.REAL)) {
-						if (!appendix.isEmpty()) {
+						if (isFileWrite(appendix)) {
 							// After a number and before a break, there's an
 							// additional blank when writing to a file for some
 							// strange reason...
@@ -245,18 +251,28 @@ public class Print extends AbstractCommand {
 					if (add != null) {
 						if (add.equals("\t")) {
 							if (type.equals(Type.INTEGER) || type.equals(Type.REAL)) {
-								expr.add("MOV A,# {STRING}");
-								expr.add("JSR STROUT" + appendix);
+								if (isFileWrite(appendix)) {
+									// file
+									expr.add("MOV A,# {STRING}");
+									expr.add("JSR STROUT" + appendix);
+								} else {
+									// screen
+									expr.add("JSR CRSRRIGHT");
+								}
 							}
 							expr.add("JSR TABOUT" + appendix);
 						} else {
-							expr.add("MOV A,#" + add + "{STRING}");
-							expr.add("JSR STROUT" + appendix);
+							if (add.equals("{right}")) {
+								expr.add("JSR CRSRRIGHT");
+							} else {
+								expr.add("MOV A,#" + add + "{STRING}");
+								expr.add("JSR STROUT" + appendix);
+							}
 						}
 					}
 				}
 
-				if (!appendix.isEmpty() && i != parts.size() - 1) {
+				if (isFileWrite(appendix) && i != parts.size() - 1) {
 					expr.add("PUSH C");
 				}
 			}
@@ -274,6 +290,10 @@ public class Print extends AbstractCommand {
 		List<CodeContainer> ccs = new ArrayList<CodeContainer>();
 		ccs.add(cc);
 		return ccs;
+	}
+
+	private boolean isFileWrite(String appendix) {
+		return !appendix.isEmpty();
 	}
 
 	/**
