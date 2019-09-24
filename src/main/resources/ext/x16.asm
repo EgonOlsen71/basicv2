@@ -37,7 +37,65 @@ SNPNOOVDC	LDX G_REG
 DOSSTAT		LDA #0
 			JMP PTSTAT
 ;###################################
-LOADEXT		RTS
+VLOAD		JSR SETNAMEPRT
+			LDA #<X_REG
+			LDY #>X_REG
+			JSR REALFAC
+			JSR FACWORD
+			STY $BA			; Store device number
+			LDA #<Y_REG		; read secondary address
+			LDY #>Y_REG
+			JSR REALFAC
+			JSR FACWORD
+			TYA
+			AND #$F
+			TAY
+			INY
+			STY $93			; "abuse" Load/Verify-Flag to store bank
+			LDA #<C_REG		; read target address
+			LDY #>C_REG
+			JSR REALFAC
+			JSR FACWORD
+			STY $C3
+			STA $C4
+			LDA $93			; restore these for load call (which sets them again)
+			LDX $C3
+			LDY $C4
+			JSR LOADXX
+			JSR TWAIT
+			LDA $90
+			CMP #64
+			BEQ VLOADOK
+			JMP FILENOTFOUND
+VLOADOK		RTS
 ;###################################
-VLOAD		RTS
+LOADEXT		JSR SETNAMEPRT
+			LDA #<X_REG
+			LDY #>X_REG
+			JSR REALFAC
+			JSR FACWORD
+			STY $BA			; Store device number
+			LDA #<Y_REG		; read secondary address
+			LDY #>Y_REG
+			JSR REALFAC
+			JSR FACWORD
+			STY VERABNK		; switch bank
+			LDY #0
+			STY $93			; set secondary address back to 0
+			LDA #<C_REG		; read target address
+			LDY #>C_REG
+			JSR REALFAC
+			JSR FACWORD
+			STY $C3
+			STA $C4
+			LDA $93			; restore these for load call (which sets them again)
+			LDX $C3
+			LDY $C4
+			JSR LOADXX
+			JSR TWAIT
+			LDA $90
+			CMP #64
+			BEQ LOADEXTOK
+			JMP FILENOTFOUND
+LOADEXTOK	RTS
 ;###################################

@@ -74,6 +74,7 @@ public class X16Extensions implements BasicExtension {
 				this.put("VERAMID", Integer.parseInt("9F21", 16));
 				this.put("VERALO", Integer.parseInt("9F20", 16));
 				this.put("VERADAT", Integer.parseInt("9F23", 16));
+				this.put("VERABNK", Integer.parseInt("9F61", 16));
 			}
 		};
 	}
