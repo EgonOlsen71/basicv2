@@ -86,7 +86,7 @@ public class TransformerTest {
 		// testCmd();
 		// testTab();
 		// testArrays();
-		// testLoad();
+		testLoad();
 		// testFn2();
 		// testTwoFor();
 		// testBrackets();

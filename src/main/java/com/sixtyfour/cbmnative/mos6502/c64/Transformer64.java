@@ -107,7 +107,7 @@ public class Transformer64 extends AbstractTransformer {
 		res.add("CHKIN = $FFC6");
 		res.add("CHKOUT = $FFC9");
 		res.add("CLRCH = $FFCC");
-		res.add("LOADXX = $F4AB");
+		res.add("LOADXX = $F49E");
 		res.add("SAVEXX = $F5ED");
 		res.add("TWAIT = $F6ED");
 		res.add("ERRALL = $A437");

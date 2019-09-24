@@ -3072,14 +3072,20 @@ SAVE		LDA #1
 			JSR SAVEXX
 			JMP TWAIT
 ;###################################
-VERIFY		LDA #0
-			STA $90
+VERIFY		JSR SETNAMEPRT
 			LDA #1
-			STA $93
-			STA $B9			; set secondary address to 1
+			STA $93			; set verify flag
 			JMP LOADINT
 ;###################################
-LOAD		LDA #<Y_REG		; read secondary address
+LOAD		JSR SETNAMEPRT
+			LDA #$0
+			STA $93			; reset Load/Verify-Flag
+LOADINT		LDA #<X_REG
+			LDY #>X_REG
+			JSR REALFAC
+			JSR FACWORD
+			STY $BA			; Store device number
+			LDA #<Y_REG		; read secondary address
 			LDY #>Y_REG
 			JSR REALFAC
 			JSR FACWORD
@@ -3092,17 +3098,10 @@ LOAD		LDA #<Y_REG		; read secondary address
 			LDA #0
 			JMP SKPBAS
 LOADBAS		LDA #1			; set secondary address to 1, if not 0
-SKPBAS		STA $B9			
-			LDA #0
-			STA $90			; reset status
-			STA $93			; reset Load/Verify-Flag
-
-LOADINT		LDA #<X_REG
-			LDY #>X_REG
-			JSR REALFAC
-			JSR FACWORD
-			STY $BA			; Store device number
-			JSR SETNAMEPRT
+SKPBAS		STA $B9	
+			LDA $93			; restore these for load call (which sets them again)
+			LDX $C3
+			LDY $C4
 			JSR LOADXX
 			JSR TWAIT
 			LDA $90

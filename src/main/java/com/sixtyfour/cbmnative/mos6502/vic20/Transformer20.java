@@ -111,7 +111,7 @@ public class Transformer20 extends AbstractTransformer {
 		res.add("CHKIN = $FFC6"); // ok
 		res.add("CHKOUT = $FFC9"); // ok
 		res.add("CLRCH = $FFCC"); // ok
-		res.add("LOADXX = $F54F"); // ok
+		res.add("LOADXX = $F542"); // ok
 		res.add("SAVEXX = $F685"); // ok
 		res.add("TWAIT = $F770"); // ok
 		res.add("ERRALL = $C437"); // ok
