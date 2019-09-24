@@ -252,7 +252,7 @@ public class Print extends AbstractCommand {
 						if (add.equals("\t")) {
 							if (type.equals(Type.INTEGER) || type.equals(Type.REAL)) {
 								if (isFileWrite(appendix)) {
-									// file
+									// file...actually, CRSRRIGHT would handle this case as well, but anyway...
 									expr.add("MOV A,# {STRING}");
 									expr.add("JSR STROUT" + appendix);
 								} else {
