@@ -3094,7 +3094,7 @@ LOADINT		LDA #<X_REG
 			LDA $2B			; secondary address 0, load to basic start
 			STA $C3
 			LDA $2C			
-			STA $CC
+			STA $C4
 			LDA #0
 			JMP SKPBAS
 LOADBAS		LDA #1			; set secondary address to 1, if not 0
