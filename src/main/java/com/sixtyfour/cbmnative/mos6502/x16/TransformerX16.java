@@ -12,6 +12,7 @@ import com.sixtyfour.cbmnative.mos6502.AbstractTransformer;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.rommap.CallMapper;
+import com.sixtyfour.util.rommap.Mapping;
 
 /**
  * The transformer for the Commander X16 target platform. It generates 6502 assembly code
@@ -60,7 +61,9 @@ public class TransformerX16 extends AbstractTransformer {
 	addExtensionConstants(res);
 
 	// Add runtime calls based on rom mapping...might be off...beware!
-	Map<String, String> calls = CallMapper.mapCalls(config, false);
+	Mapping mapping=CallMapper.mapCalls(config, false);
+	
+	Map<String, String> calls = mapping.getMap();
 	calls.forEach((k, v) -> res.add(k + " = " + v));
 
 	res.add("TMP_ZP = 105");
@@ -76,7 +79,7 @@ public class TransformerX16 extends AbstractTransformer {
 	res.add("TSX");
 	res.add("STX SP_SAVE");
 
-	addStructures(machine, platform, code, res, consts, vars, mnems, subs);
+	addStructures(machine, platform, code, res, consts, vars, mnems, subs, mapping.getFarCalls());
 	return res;
     }
 

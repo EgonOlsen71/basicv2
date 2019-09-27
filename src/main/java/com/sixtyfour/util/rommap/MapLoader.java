@@ -1,7 +1,9 @@
 package com.sixtyfour.util.rommap;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -17,8 +19,8 @@ public class MapLoader {
      * @param fileName
      * @return
      */
-    public static Map<String, String> getSymbolMapping(InputStream file) {
-	Map<String, String> symbols = new HashMap<>();
+    public static Map<String, List<String>> getSymbolMapping(InputStream file) {
+	Map<String, List<String>> symbols = new HashMap<>();
 
 	String[] lines = Loader.loadProgram(file);
 	for (String line : lines) {
@@ -28,7 +30,13 @@ public class MapLoader {
 	    if (addr.startsWith("00")) {
 		addr = addr.substring(2);
 	    }
-	    symbols.put(addr.toLowerCase(Locale.ENGLISH), label.toLowerCase(Locale.ENGLISH));
+	    String key=addr.toLowerCase(Locale.ENGLISH);
+	    List<String> labels=symbols.get(key);
+	    if (labels==null) {
+		labels=new ArrayList<>();
+	    }
+	    labels.add(label.toLowerCase(Locale.ENGLISH));
+	    symbols.put(key, labels);
 	}
 	return symbols;
     }

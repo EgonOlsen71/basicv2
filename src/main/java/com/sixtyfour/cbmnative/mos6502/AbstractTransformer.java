@@ -302,9 +302,14 @@ public abstract class AbstractTransformer implements Transformer {
 
 		return cnt;
 	}
+	
+	protected void addStructures(Machine machine, PlatformProvider platform, List<String> code, List<String> res,
+		List<String> consts, List<String> vars, List<String> mnems, List<String> subs) {
+	    addStructures(machine, platform, code, res, consts, vars, mnems, subs, null);
+	}
 
 	protected void addStructures(Machine machine, PlatformProvider platform, List<String> code, List<String> res,
-			List<String> consts, List<String> vars, List<String> mnems, List<String> subs) {
+			List<String> consts, List<String> vars, List<String> mnems, List<String> subs, List<String> addOns) {
 		Map<String, String> name2label = new HashMap<String, String>();
 		int cnt = 0;
 
@@ -353,6 +358,10 @@ public abstract class AbstractTransformer implements Transformer {
 		subs.add(".BYTE 58 69 79 89 98 107 115 123");
 		res.addAll(mnems);
 		res.addAll(subs);
+		if (addOns!=null) {
+		    addOns.add(0, ";###################################");
+		    res.addAll(addOns);
+		}
 		res.addAll(consts);
 		res.addAll(datas);
 		res.add("CONSTANTS_END");
