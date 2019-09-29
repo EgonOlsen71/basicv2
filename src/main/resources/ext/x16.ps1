@@ -17,3 +17,11 @@ function LOAD{
 function VLOAD{
 	"[VLOAD not supported for PS, call ignored: "+$global:A_REG+"]"
 }
+
+function MON{
+	"[MON not supported for PS, call ignored: "+$global:A_REG+"]"
+}
+
+function GEOS{
+	"[GEOS not supported for PS, call ignored: "+$global:A_REG+"]"
+}

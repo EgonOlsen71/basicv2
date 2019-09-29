@@ -17,3 +17,11 @@ this.LOADEXT = function() {
 this.VLOAD = function() {
 	console.log("[VLOAD not supported for JS in file mode, call ignored]");
 }
+
+this.MON = function() {
+	console.log("[MON not supported for JS in file mode, call ignored]");
+}
+
+this.GEOS = function() {
+	console.log("[GEOS not supported for JS in file mode, call ignored]");
+}

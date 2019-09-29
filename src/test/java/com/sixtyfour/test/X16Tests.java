@@ -39,8 +39,16 @@ public class X16Tests {
 		testVload();
 		testSave();
 		testLoad();
+		testGeos();
 	}
 
+	private static void testGeos() throws Exception {
+		System.out.println("\n\ntestGeos");
+		String[] vary = Loader.loadProgram("src/test/resources/x16/geos.bas");
+		Assembler assy = initTestEnvironment(vary, false, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++geos_x16.prg", true);
+	}
+	
 	private static void testLoad() throws Exception {
 		System.out.println("\n\ntestLoad");
 		String[] vary = Loader.loadProgram("src/test/resources/x16/load.bas");
