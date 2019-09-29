@@ -117,7 +117,7 @@ public class TransformerTest {
 		Assembler assy = initTestEnvironment(vary, false, -1, true);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++datatest.prg", true);
 	}
-	
+
 	private static void test10adv() throws Exception {
 		System.out.println("\n\ntest10adv");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/10_line_adv.bas");

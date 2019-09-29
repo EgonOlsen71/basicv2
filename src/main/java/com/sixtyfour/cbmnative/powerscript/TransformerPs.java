@@ -34,7 +34,8 @@ import com.sixtyfour.util.ConstantExtractor;
 public class TransformerPs implements Transformer {
 
 	@Override
-	public List<String> transform(CompilerConfig config, Machine machine, PlatformProvider platform, List<String> code) {
+	public List<String> transform(CompilerConfig config, Machine machine, PlatformProvider platform,
+			List<String> code) {
 		Logger.log("Compiling into powerscript code...");
 
 		addContinues(code);
@@ -76,7 +77,7 @@ public class TransformerPs implements Transformer {
 		res.add("$global:_timeOffset=0");
 		res.add("$global:_time=0");
 		res.add("$global:_inputQueue=@()");
-		
+
 		Map<String, Integer> map = ConstantExtractor.getAllConstantMaps();
 		for (Entry<String, Integer> entry : map.entrySet()) {
 			res.add("$global:" + entry.getKey() + "=" + entry.getValue());

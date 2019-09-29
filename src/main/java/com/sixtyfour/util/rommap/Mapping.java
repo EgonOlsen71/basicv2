@@ -10,25 +10,24 @@ import java.util.Map;
  */
 public class Mapping {
 
-    private Map<String, String> map=null;
-    
-    private List<String> farCalls=new ArrayList<>();
+	private Map<String, String> map = null;
 
-    public Map<String, String> getMap() {
-        return map;
-    }
+	private List<String> farCalls = new ArrayList<>();
 
-    public void setMap(Map<String, String> map) {
-        this.map = map;
-    }
+	public Map<String, String> getMap() {
+		return map;
+	}
 
-    public List<String> getFarCalls() {
-        return farCalls;
-    }
+	public void setMap(Map<String, String> map) {
+		this.map = map;
+	}
 
-    public void setFarCalls(List<String> farCalls) {
-        this.farCalls = farCalls;
-    }
-    
-    
+	public List<String> getFarCalls() {
+		return farCalls;
+	}
+
+	public void setFarCalls(List<String> farCalls) {
+		this.farCalls = farCalls;
+	}
+
 }

@@ -58,6 +58,6 @@
 90 IFA$<>"n"THEN88
 95 END
 100 PRINT"{home}{down*4}":FORI=1TO19
-105 PRINT"{space*38}";
+105 PRINT"{space*40}"
 106 NEXT
 110 RETURN

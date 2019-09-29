@@ -35,7 +35,7 @@ public abstract class FileOperation extends AbstractCommand {
 		List<String> expr = new ArrayList<String>();
 		List<String> before = new ArrayList<String>();
 		boolean extendedLoad = false;
-		
+
 		try {
 			switch (pars.size()) {
 			case 0:
@@ -70,16 +70,16 @@ public abstract class FileOperation extends AbstractCommand {
 				break;
 			case 4:
 				if (isLoad() && config.isExtendedLoad()) {
-        			    	expr.addAll(compiler.compileToPseudoCode(config, machine, pars.get(0)));
-        				expr.addAll(compiler.compileToPseudoCode(config, machine, pars.get(1)));
-        				expr.addAll(compiler.compileToPseudoCode(config, machine, pars.get(2)));
-        				expr.addAll(compiler.compileToPseudoCode(config, machine, pars.get(3)));
-        				expr.add("POP C");
-        				expr.add("POP Y");
-        				expr.add("POP X");
-        				expr.add("POP G");
-        				extendedLoad = true;
-        				break;
+					expr.addAll(compiler.compileToPseudoCode(config, machine, pars.get(0)));
+					expr.addAll(compiler.compileToPseudoCode(config, machine, pars.get(1)));
+					expr.addAll(compiler.compileToPseudoCode(config, machine, pars.get(2)));
+					expr.addAll(compiler.compileToPseudoCode(config, machine, pars.get(3)));
+					expr.add("POP C");
+					expr.add("POP Y");
+					expr.add("POP X");
+					expr.add("POP G");
+					extendedLoad = true;
+					break;
 				}
 			default:
 				syntaxError(this);
@@ -88,7 +88,7 @@ public abstract class FileOperation extends AbstractCommand {
 			syntaxError(this);
 		}
 
-		after.add("JSR " + (extendedLoad?(call+"EXT"):call));
+		after.add("JSR " + (extendedLoad ? (call + "EXT") : call));
 
 		CodeContainer cc = new CodeContainer(before, expr, after);
 		List<CodeContainer> ccs = new ArrayList<CodeContainer>();
@@ -133,7 +133,7 @@ public abstract class FileOperation extends AbstractCommand {
 	 * @return
 	 */
 	protected boolean isLoad() {
-	    return name.contains("LOAD");
+		return name.contains("LOAD");
 	}
 
 }

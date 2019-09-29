@@ -12,10 +12,10 @@ import java.util.Map;
  * 
  */
 public class Pattern implements java.lang.Cloneable {
-    	private volatile static int instanceCnt=0;
-    	
-    	private int instance=instanceCnt++;
-    	private List<String> pattern;
+	private volatile static int instanceCnt = 0;
+
+	private int instance = instanceCnt++;
+	private List<String> pattern;
 	private List<Integer> spacePos;
 	private List<Integer> partRightP0;
 	private List<Integer> partRightP1;
@@ -178,11 +178,11 @@ public class Pattern implements java.lang.Cloneable {
 								} else {
 									pos = replacement[i].indexOf("{cnt}");
 									if (pos != -1) {
-										    if (!cntInc) {
+										if (!cntInc) {
 											cntInc = true;
 											loopCnt++;
-										    }
-										    replacement[i] = replacement[i].replace("{cnt}", instance + "_" + loopCnt);
+										}
+										replacement[i] = replacement[i].replace("{cnt}", instance + "_" + loopCnt);
 									}
 								}
 							}
@@ -415,6 +415,6 @@ public class Pattern implements java.lang.Cloneable {
 
 	@Override
 	public Object clone() throws CloneNotSupportedException {
-	    return super.clone();
+		return super.clone();
 	}
 }

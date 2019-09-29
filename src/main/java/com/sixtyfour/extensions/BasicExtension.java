@@ -44,10 +44,10 @@ public interface BasicExtension {
 	 * @param machine the machine instance
 	 */
 	void reset(Machine machine);
-	
+
 	/**
-	 * Returns a map of optional constants that are needed for this
-	 * extension to be natively compiled.
+	 * Returns a map of optional constants that are needed for this extension to be
+	 * natively compiled.
 	 * 
 	 * @return the map or null
 	 */

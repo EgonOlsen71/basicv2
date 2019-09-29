@@ -53,6 +53,7 @@ VLOAD		LDA #0			; set secondary address to 0
 			AND #$F
 			TAY
 			INY
+			INY
 			STY $93			; "abuse" Load/Verify-Flag to store bank
 			LDA #<C_REG		; read target address
 			LDY #>C_REG

@@ -16,57 +16,56 @@ import com.sixtyfour.system.Machine;
  */
 public class Mon extends AbstractCommand {
 
-    public Mon() {
-	super("MON");
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.sixtyfour.elements.commands.AbstractCommand#parse(com.sixtyfour.
-     * config.CompilerConfig, java.lang.String, int, int, int, boolean,
-     * com.sixtyfour.system.Machine)
-     */
-    @Override
-    public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos,
-	    boolean lastPos, Machine machine) {
-	super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine);
-	if (linePart.trim().length() > 3) {
-	    syntaxError(this);
+	public Mon() {
+		super("MON");
 	}
-	return null;
-    }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * com.sixtyfour.elements.commands.AbstractCommand#execute(com.sixtyfour.
-     * config.CompilerConfig, com.sixtyfour.system.Machine)
-     */
-    @Override
-    public BasicProgramCounter execute(CompilerConfig config, Machine machine) {
-	Logger.log("Call to MON ignored by local runtime!");
-	return null;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.sixtyfour.elements.commands.AbstractCommand#parse(com.sixtyfour.
+	 * config.CompilerConfig, java.lang.String, int, int, int, boolean,
+	 * com.sixtyfour.system.Machine)
+	 */
+	@Override
+	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos,
+			boolean lastPos, Machine machine) {
+		super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine);
+		if (linePart.trim().length() > 3) {
+			syntaxError(this);
+		}
+		return null;
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * com.sixtyfour.elements.commands.AbstractCommand#evalToCode(com.sixtyfour.
-     * config.CompilerConfig, com.sixtyfour.system.Machine)
-     */
-    @Override
-    public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
-	List<String> expr = new ArrayList<String>();
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.sixtyfour.elements.commands.AbstractCommand#execute(com.sixtyfour.
+	 * config.CompilerConfig, com.sixtyfour.system.Machine)
+	 */
+	@Override
+	public BasicProgramCounter execute(CompilerConfig config, Machine machine) {
+		Logger.log("Call to MON ignored by local runtime!");
+		return null;
+	}
 
-	expr.add("JMP $FF00");
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.sixtyfour.elements.commands.AbstractCommand#evalToCode(com.sixtyfour.
+	 * config.CompilerConfig, com.sixtyfour.system.Machine)
+	 */
+	@Override
+	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
+		List<String> expr = new ArrayList<String>();
 
-	CodeContainer cc = new CodeContainer(null, expr, null);
-	List<CodeContainer> ccs = new ArrayList<CodeContainer>();
-	ccs.add(cc);
-	return ccs;
-    }
+		expr.add("JMP $FFF6");
+
+		CodeContainer cc = new CodeContainer(null, expr, null);
+		List<CodeContainer> ccs = new ArrayList<CodeContainer>();
+		ccs.add(cc);
+		return ccs;
+	}
 
 }

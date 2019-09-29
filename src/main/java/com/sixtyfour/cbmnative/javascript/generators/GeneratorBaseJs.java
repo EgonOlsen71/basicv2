@@ -55,7 +55,7 @@ public abstract class GeneratorBaseJs implements Generator {
 			return false;
 		}
 	}
-	
+
 	protected boolean isRealNumber(String line) {
 		try {
 			Integer.parseInt(line);

@@ -60,8 +60,8 @@ public class PlatformX16 implements PlatformProvider {
 
 	@Override
 	public void overrideConfig(CompilerConfig conf) {
-	    conf.setNonDecimalNumbersAware(true);
-	    conf.setExtendedLoad(true);
-	    Basic.registerExtension(new X16Extensions());
+		conf.setNonDecimalNumbersAware(true);
+		conf.setExtendedLoad(true);
+		Basic.registerExtension(new X16Extensions());
 	}
 }

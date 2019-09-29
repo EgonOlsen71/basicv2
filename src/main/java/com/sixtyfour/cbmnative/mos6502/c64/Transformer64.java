@@ -29,7 +29,8 @@ public class Transformer64 extends AbstractTransformer {
 	}
 
 	@Override
-	public List<String> transform(CompilerConfig config, Machine machine, PlatformProvider platform, List<String> code) {
+	public List<String> transform(CompilerConfig config, Machine machine, PlatformProvider platform,
+			List<String> code) {
 		Logger.log("Compiling into native assembly code...");
 		List<String> res = new ArrayList<>();
 		List<String> consts = new ArrayList<String>();
@@ -44,7 +45,7 @@ public class Transformer64 extends AbstractTransformer {
 
 		subs.addAll(Arrays.asList(Loader.loadProgram(this.getClass().getResourceAsStream("/subroutines.asm"))));
 		AbstractTransformer.addExtensionSubroutines(subs, "asm");
-		
+
 		consts.add("; *** CONSTANTS ***");
 		if (variableStart >= 0) {
 			consts.add("*=$" + Integer.toHexString(variableStart));
@@ -52,9 +53,9 @@ public class Transformer64 extends AbstractTransformer {
 		consts.add("CONSTANTS");
 		vars.add("; *** VARIABLES ***");
 		vars.add("VARIABLES");
-		
+
 		addExtensionConstants(res);
-		
+
 		res.add("SGNFAC = $BC2B");
 		res.add("MEMARG = $BA8C");
 		res.add("ARGADD = $B86A");
@@ -102,14 +103,14 @@ public class Transformer64 extends AbstractTransformer {
 		res.add("CRSRRIGHT = $AB3B");
 		res.add("GETIN = $FFE4");
 		res.add("INPUT = $A560");
-		res.add("OPENCH = $F34A");
-		res.add("CLOSECH = $F291");
+		res.add("OPENCH = $FFC0");
+		res.add("CLOSECH = $FFC3");
 		res.add("CHKIN = $FFC6");
 		res.add("CHKOUT = $FFC9");
 		res.add("CLRCH = $FFCC");
-		res.add("LOADXX = $F49E");
-		res.add("SAVEXX = $F5ED");
-		res.add("TWAIT = $F6ED");
+		res.add("LOADXX = $FFD5");
+		res.add("SAVEXX = $FFD8");
+		res.add("TWAIT = $FFE1");
 		res.add("ERRALL = $A437");
 		res.add("ERRIQ = $B248");
 		res.add("ERREI = $ACF4");

@@ -33,7 +33,8 @@ public class Transformer20 extends AbstractTransformer {
 	}
 
 	@Override
-	public List<String> transform(CompilerConfig config, Machine machine, PlatformProvider platform, List<String> code) {
+	public List<String> transform(CompilerConfig config, Machine machine, PlatformProvider platform,
+			List<String> code) {
 		Logger.log("Compiling into native assembly code...");
 		List<String> res = new ArrayList<>();
 		List<String> consts = new ArrayList<String>();
@@ -56,7 +57,7 @@ public class Transformer20 extends AbstractTransformer {
 		consts.add("CONSTANTS");
 		vars.add("; *** VARIABLES ***");
 		vars.add("VARIABLES");
-		
+
 		addExtensionConstants(res);
 
 		res.add("SGNFAC = $DC2B"); // ok
@@ -106,19 +107,19 @@ public class Transformer20 extends AbstractTransformer {
 		res.add("CRSRRIGHT = $CB3B"); // ok
 		res.add("GETIN = $FFE4"); // ok
 		res.add("INPUT = $C560"); // ok
-		res.add("OPENCH = $F40A"); // ok
-		res.add("CLOSECH = $F34A"); // ok
+		res.add("OPENCH = $FFC0"); // ok
+		res.add("CLOSECH = $FFC3"); // ok
 		res.add("CHKIN = $FFC6"); // ok
 		res.add("CHKOUT = $FFC9"); // ok
 		res.add("CLRCH = $FFCC"); // ok
-		res.add("LOADXX = $F542"); // ok
-		res.add("SAVEXX = $F685"); // ok
-		res.add("TWAIT = $F770"); // ok
+		res.add("LOADXX = $FFD5"); // ok
+		res.add("SAVEXX = $FFD8"); // ok
+		res.add("TWAIT = $FFE1"); // ok
 		res.add("ERRALL = $C437"); // ok
 		res.add("ERRIQ = $D248"); // ok
 		res.add("ERREI = $CCF4"); // ok
 		res.add("ERRSYN = $CF08"); // ok
-		res.add("ERRFNF = $F1E6"); // ok
+		res.add("ERRFNF = $F1E2"); // ok
 
 		res.add("TMP_ZP = 105");
 		res.add("TMP2_ZP = 107");

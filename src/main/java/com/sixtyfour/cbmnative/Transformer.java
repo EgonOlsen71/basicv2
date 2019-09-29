@@ -17,7 +17,7 @@ public interface Transformer {
 	/**
 	 * Transforms intermediate code into native/assembly code.
 	 * 
-	 * @param config the compiler's configuration
+	 * @param config   the compiler's configuration
 	 * @param machine  the machine
 	 * @param platform the target platform
 	 * @param code     the intermediate code

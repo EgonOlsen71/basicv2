@@ -29,23 +29,23 @@ public class Vload extends FileOperation {
 
 	@Override
 	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
-	    NativeCompiler compiler = NativeCompiler.getCompiler();
+		NativeCompiler compiler = NativeCompiler.getCompiler();
 		List<String> after = new ArrayList<String>();
 		List<String> expr = new ArrayList<String>();
 		List<String> before = new ArrayList<String>();
-		
+
 		try {
 			switch (pars.size()) {
 			case 4:
-    			    	expr.addAll(compiler.compileToPseudoCode(config, machine, pars.get(0)));
-    				expr.addAll(compiler.compileToPseudoCode(config, machine, pars.get(1)));
-    				expr.addAll(compiler.compileToPseudoCode(config, machine, pars.get(2)));
-    				expr.addAll(compiler.compileToPseudoCode(config, machine, pars.get(3)));
-    				expr.add("POP C");
-    				expr.add("POP Y");
-    				expr.add("POP X");
-    				expr.add("POP G");
-    				break;
+				expr.addAll(compiler.compileToPseudoCode(config, machine, pars.get(0)));
+				expr.addAll(compiler.compileToPseudoCode(config, machine, pars.get(1)));
+				expr.addAll(compiler.compileToPseudoCode(config, machine, pars.get(2)));
+				expr.addAll(compiler.compileToPseudoCode(config, machine, pars.get(3)));
+				expr.add("POP C");
+				expr.add("POP Y");
+				expr.add("POP X");
+				expr.add("POP G");
+				break;
 			default:
 				syntaxError(this);
 			}
@@ -73,12 +73,13 @@ public class Vload extends FileOperation {
 
 		try {
 			switch (pars.size()) {
-			case 4: if (config.isExtendedLoad()) {
-			    	device.load(config, (String) pars.get(0).eval(machine), VarUtils.getInt(pars.get(1).eval(machine)),
-					VarUtils.getInt(pars.get(2).eval(machine)));
-			    	// Ignore the 3rd numeric parameter here...
-			    	break;
-			}
+			case 4:
+				if (config.isExtendedLoad()) {
+					device.load(config, (String) pars.get(0).eval(machine), VarUtils.getInt(pars.get(1).eval(machine)),
+							VarUtils.getInt(pars.get(2).eval(machine)));
+					// Ignore the 3rd numeric parameter here...
+					break;
+				}
 			default:
 				syntaxError(this);
 			}

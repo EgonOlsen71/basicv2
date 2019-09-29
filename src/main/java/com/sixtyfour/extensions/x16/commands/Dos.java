@@ -21,85 +21,85 @@ import com.sixtyfour.system.Machine;
  */
 public class Dos extends AbstractCommand {
 
-    private boolean command = false;
-    private boolean status = false;
-    private List<Atom> pars;
+	private boolean command = false;
+	private boolean status = false;
+	private List<Atom> pars;
 
-    /**
-     * 
-     */
-    public Dos() {
-	super("DOS");
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.sixtyfour.elements.commands.AbstractCommand#parse(com.sixtyfour.
-     * config.CompilerConfig, java.lang.String, int, int, int, boolean,
-     * com.sixtyfour.system.Machine)
-     */
-    @Override
-    public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos,
-	    boolean lastPos, Machine machine) {
-	super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine);
-	linePart = TermEnhancer.removeWhiteSpace(linePart);
-	linePart = linePart.substring(this.name.length());
-	if (linePart.trim().isEmpty()) {
-	    linePart = "\"\"";
-	}
-	term = Parser.getTerm(config, linePart, machine, false, true);
-	pars = Parser.getParameters(term);
-
-	if (pars.size() > 1) {
-	    syntaxError(this);
-	}
-	if (pars.size() > 0 && !pars.get(0).getType().equals(Type.STRING)) {
-	    syntaxError(this);
+	/**
+	 * 
+	 */
+	public Dos() {
+		super("DOS");
 	}
 
-	if (pars.size() == 0 || (pars.get(0).isConstant() && ((String) pars.get(0).eval(machine)).isEmpty())) {
-	    status = true;
-	} else {
-	    command = true;
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.sixtyfour.elements.commands.AbstractCommand#parse(com.sixtyfour.
+	 * config.CompilerConfig, java.lang.String, int, int, int, boolean,
+	 * com.sixtyfour.system.Machine)
+	 */
+	@Override
+	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos,
+			boolean lastPos, Machine machine) {
+		super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine);
+		linePart = TermEnhancer.removeWhiteSpace(linePart);
+		linePart = linePart.substring(this.name.length());
+		if (linePart.trim().isEmpty()) {
+			linePart = "\"\"";
+		}
+		term = Parser.getTerm(config, linePart, machine, false, true);
+		pars = Parser.getParameters(term);
+
+		if (pars.size() > 1) {
+			syntaxError(this);
+		}
+		if (pars.size() > 0 && !pars.get(0).getType().equals(Type.STRING)) {
+			syntaxError(this);
+		}
+
+		if (pars.size() == 0 || (pars.get(0).isConstant() && ((String) pars.get(0).eval(machine)).isEmpty())) {
+			status = true;
+		} else {
+			command = true;
+		}
+
+		return null;
 	}
 
-	return null;
-    }
-
-    @Override
-    public BasicProgramCounter execute(CompilerConfig config, Machine machine) {
-	// Do nothing in the local runtime for now.
-	Logger.log("Call to DOS ignored by local runtime!");
-	return null;
-    }
-
-    @Override
-    public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
-	NativeCompiler compiler = NativeCompiler.getCompiler();
-	List<String> after = new ArrayList<String>();
-	List<String> expr = new ArrayList<String>();
-	List<String> before = new ArrayList<String>();
-
-	try {
-	    if (command) {
-		expr.addAll(compiler.compileToPseudoCode(config, machine, pars.get(0)));
-		expr.add("POP G");
-		after.add("JSR DOSCALL");
-	    } else if (status) {
-		after.add("JSR DOSSTAT");
-	    } else {
-		syntaxError(this);
-	    }
-
-	} catch (ClassCastException e) {
-	    syntaxError(this);
+	@Override
+	public BasicProgramCounter execute(CompilerConfig config, Machine machine) {
+		// Do nothing in the local runtime for now.
+		Logger.log("Call to DOS ignored by local runtime!");
+		return null;
 	}
 
-	CodeContainer cc = new CodeContainer(before, expr, after);
-	List<CodeContainer> ccs = new ArrayList<CodeContainer>();
-	ccs.add(cc);
-	return ccs;
-    }
+	@Override
+	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
+		NativeCompiler compiler = NativeCompiler.getCompiler();
+		List<String> after = new ArrayList<String>();
+		List<String> expr = new ArrayList<String>();
+		List<String> before = new ArrayList<String>();
+
+		try {
+			if (command) {
+				expr.addAll(compiler.compileToPseudoCode(config, machine, pars.get(0)));
+				expr.add("POP G");
+				after.add("JSR DOSCALL");
+			} else if (status) {
+				after.add("JSR DOSSTAT");
+			} else {
+				syntaxError(this);
+			}
+
+		} catch (ClassCastException e) {
+			syntaxError(this);
+		}
+
+		CodeContainer cc = new CodeContainer(before, expr, after);
+		List<CodeContainer> ccs = new ArrayList<CodeContainer>();
+		ccs.add(cc);
+		return ccs;
+	}
 
 }

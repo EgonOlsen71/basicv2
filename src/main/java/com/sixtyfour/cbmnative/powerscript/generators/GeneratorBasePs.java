@@ -57,7 +57,7 @@ public abstract class GeneratorBasePs implements Generator {
 			return false;
 		}
 	}
-	
+
 	protected int parseInt(String txt) {
 		try {
 			return Integer.parseInt(txt);

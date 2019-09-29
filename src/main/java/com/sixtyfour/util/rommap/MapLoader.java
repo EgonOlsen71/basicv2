@@ -15,51 +15,51 @@ import com.sixtyfour.Loader;
  */
 public class MapLoader {
 
-    /**
-     * @param fileName
-     * @return
-     */
-    public static Map<String, List<String>> getSymbolMapping(InputStream file) {
-	Map<String, List<String>> symbols = new HashMap<>();
+	/**
+	 * @param fileName
+	 * @return
+	 */
+	public static Map<String, List<String>> getSymbolMapping(InputStream file) {
+		Map<String, List<String>> symbols = new HashMap<>();
 
-	String[] lines = Loader.loadProgram(file);
-	for (String line : lines) {
-	    String[] parts = line.split(" ");
-	    String addr = parts[1].trim();
-	    String label = parts[2].trim();
-	    if (addr.startsWith("00")) {
-		addr = addr.substring(2);
-	    }
-	    String key=addr.toLowerCase(Locale.ENGLISH);
-	    List<String> labels=symbols.get(key);
-	    if (labels==null) {
-		labels=new ArrayList<>();
-	    }
-	    labels.add(label.toLowerCase(Locale.ENGLISH));
-	    symbols.put(key, labels);
-	}
-	return symbols;
-    }
-
-    /**
-     * @param fileName
-     * @return
-     */
-    public static Map<String, String> getRomCalls(InputStream file) {
-	Map<String, String> calls = new HashMap<>();
-
-	String[] lines = Loader.loadProgram(file);
-	for (String line : lines) {
-	    String[] parts = line.split("=");
-	    String label = parts[0].trim();
-	    String addr = parts[1].trim();
-	    if (addr.startsWith("$")) {
-		addr = addr.substring(1);
-	    }
-	    calls.put(label.toLowerCase(Locale.ENGLISH), addr.toLowerCase(Locale.ENGLISH));
+		String[] lines = Loader.loadProgram(file);
+		for (String line : lines) {
+			String[] parts = line.split(" ");
+			String addr = parts[1].trim();
+			String label = parts[2].trim();
+			if (addr.startsWith("00")) {
+				addr = addr.substring(2);
+			}
+			String key = addr.toLowerCase(Locale.ENGLISH);
+			List<String> labels = symbols.get(key);
+			if (labels == null) {
+				labels = new ArrayList<>();
+			}
+			labels.add(label.toLowerCase(Locale.ENGLISH));
+			symbols.put(key, labels);
+		}
+		return symbols;
 	}
 
-	return calls;
-    }
+	/**
+	 * @param fileName
+	 * @return
+	 */
+	public static Map<String, String> getRomCalls(InputStream file) {
+		Map<String, String> calls = new HashMap<>();
+
+		String[] lines = Loader.loadProgram(file);
+		for (String line : lines) {
+			String[] parts = line.split("=");
+			String label = parts[0].trim();
+			String addr = parts[1].trim();
+			if (addr.startsWith("$")) {
+				addr = addr.substring(1);
+			}
+			calls.put(label.toLowerCase(Locale.ENGLISH), addr.toLowerCase(Locale.ENGLISH));
+		}
+
+		return calls;
+	}
 
 }

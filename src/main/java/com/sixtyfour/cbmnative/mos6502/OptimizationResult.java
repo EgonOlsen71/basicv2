@@ -11,29 +11,29 @@ import java.util.Map;
  */
 public class OptimizationResult {
 
-    private List<String> code;
+	private List<String> code;
 
-    private Map<String, Integer> type2count;
+	private Map<String, Integer> type2count;
 
-    public List<String> getCode() {
-	return code;
-    }
+	public List<String> getCode() {
+		return code;
+	}
 
-    public OptimizationResult(List<String> code, Map<String, Integer> type2count) {
-	this.code = new ArrayList<>(code);
-	this.type2count = new HashMap<>(type2count);
-    }
+	public OptimizationResult(List<String> code, Map<String, Integer> type2count) {
+		this.code = new ArrayList<>(code);
+		this.type2count = new HashMap<>(type2count);
+	}
 
-    public void setCode(List<String> code) {
-	this.code = code;
-    }
+	public void setCode(List<String> code) {
+		this.code = code;
+	}
 
-    public Map<String, Integer> getType2count() {
-	return type2count;
-    }
+	public Map<String, Integer> getType2count() {
+		return type2count;
+	}
 
-    public void setType2count(Map<String, Integer> type2count) {
-	this.type2count = type2count;
-    }
+	public void setType2count(Map<String, Integer> type2count) {
+		this.type2count = type2count;
+	}
 
 }

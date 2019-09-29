@@ -190,19 +190,19 @@ public class CompilerConfig {
 	}
 
 	public String getSymbolTable() {
-	    return symbolTable;
+		return symbolTable;
 	}
 
 	public void setSymbolTable(String symbolTable) {
-	    this.symbolTable = symbolTable;
+		this.symbolTable = symbolTable;
 	}
 
 	public boolean isExtendedLoad() {
-	    return extendedLoad;
+		return extendedLoad;
 	}
 
 	public void setExtendedLoad(boolean extendedLoad) {
-	    this.extendedLoad = extendedLoad;
+		this.extendedLoad = extendedLoad;
 	}
 
 }

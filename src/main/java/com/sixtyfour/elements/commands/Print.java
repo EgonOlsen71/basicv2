@@ -217,7 +217,7 @@ public class Print extends AbstractCommand {
 					if (type.equals(Type.INTEGER) || type.equals(Type.REAL)) {
 						if (isFileWrite(appendix)) {
 							// file
-							add=" ";
+							add = " ";
 						} else {
 							// screen
 							add = "{right}";
@@ -252,9 +252,11 @@ public class Print extends AbstractCommand {
 						if (add.equals("\t")) {
 							if (type.equals(Type.INTEGER) || type.equals(Type.REAL)) {
 								if (isFileWrite(appendix)) {
-									// file...actually, CRSRRIGHT would handle this case as well, but I'm not convinced that
-								    	// the runtime initializes the required value in $13 in all cases (albeit it should...), so
-								    	// we'll keep it this way for now...
+									// file...actually, CRSRRIGHT would handle this case as well, but I'm not
+									// convinced that
+									// the runtime initializes the required value in $13 in all cases (albeit it
+									// should...), so
+									// we'll keep it this way for now...
 									expr.add("JSR STROUT" + appendix);
 								} else {
 									// screen

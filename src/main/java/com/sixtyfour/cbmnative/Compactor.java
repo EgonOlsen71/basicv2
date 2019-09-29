@@ -68,9 +68,9 @@ public class Compactor {
 					nCode.set(i, newLine);
 					// System.out.println("Replaced " + line + " with " + newLine);
 					reps++;
-					if (newLine.startsWith("LDA") && nCode.get(i-1).replace("LDY", "LDA").equals(newLine)) {
-					    // Move instead of Load, if it's an LDY #x LDA #x combination...
-					    nCode.set(i, "TYA");
+					if (newLine.startsWith("LDA") && nCode.get(i - 1).replace("LDY", "LDA").equals(newLine)) {
+						// Move instead of Load, if it's an LDY #x LDA #x combination...
+						nCode.set(i, "TYA");
 					}
 				}
 			}

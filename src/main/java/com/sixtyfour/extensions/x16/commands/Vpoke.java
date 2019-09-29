@@ -110,22 +110,22 @@ public class Vpoke extends AbstractCommand {
 	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
 		NativeCompiler compiler = NativeCompiler.getCompiler();
 		List<String> after = new ArrayList<>();
-		
+
 		List<String> expr = new ArrayList<>();
 		String expPush = "";
-		int valConst=-1;
-		boolean cValFlag=false;
-		
+		int valConst = -1;
+		boolean cValFlag = false;
+
 		if (val.isConstant()) {
-		    valConst = ((Number) val.eval(machine)).intValue();
-		    valConst = valConst & 255;
-		    cValFlag = true;
+			valConst = ((Number) val.eval(machine)).intValue();
+			valConst = valConst & 255;
+			cValFlag = true;
 		} else {
-        		expr = compiler.compileToPseudoCode(config, machine, val);
-        		expPush = getPushRegister(expr.get(expr.size() - 1));
-        		expr = expr.subList(0, expr.size() - 1);
+			expr = compiler.compileToPseudoCode(config, machine, val);
+			expPush = getPushRegister(expr.get(expr.size() - 1));
+			expr = expr.subList(0, expr.size() - 1);
 		}
-		
+
 		List<String> before = new ArrayList<>();
 		List<String> bankSwitch = compiler.compileToPseudoCode(config, machine, bank);
 
@@ -142,9 +142,9 @@ public class Vpoke extends AbstractCommand {
 			after.add("MOVB VERALO,#" + lo + "{INTEGER}");
 			after.add("MOVB VERAMID,#" + hi + "{INTEGER}");
 			if (cValFlag) {
-			    after.add("MOVB VERADAT,#" + valConst + "{INTEGER}");
+				after.add("MOVB VERADAT,#" + valConst + "{INTEGER}");
 			} else {
-			    after.add("MOVB VERADAT,X");
+				after.add("MOVB VERADAT,X");
 			}
 		} else {
 			before = compiler.compileToPseudoCode(config, machine, addr);
@@ -155,9 +155,9 @@ public class Vpoke extends AbstractCommand {
 			after.add("POP Y");
 			after.add("MOVB VERALO:VERAMID,Y");
 			if (cValFlag) {
-			    after.add("MOVB VERADAT,#" + valConst + "{INTEGER}");
+				after.add("MOVB VERADAT,#" + valConst + "{INTEGER}");
 			} else {
-			    after.add("MOVB VERADAT,X");
+				after.add("MOVB VERADAT,X");
 			}
 		}
 
@@ -169,7 +169,7 @@ public class Vpoke extends AbstractCommand {
 	}
 
 	/**
-	 *  
+	 * 
 	 * @param machine
 	 * @param before
 	 * @param after

@@ -101,8 +101,8 @@ public abstract class AbstractTransformer implements Transformer {
 					cnt += 3;
 				} else {
 					if (val > 3 && val < 255) {
-						// If larger than the largest type (3) and smaller than the end flag (255), 
-						/// the we can use the type's location as data and skip storing the typ itself. 
+						// If larger than the largest type (3) and smaller than the end flag (255),
+						/// the we can use the type's location as data and skip storing the typ itself.
 						ret.add(".BYTE " + obj.toString());
 						cnt += 1;
 					} else {
@@ -155,15 +155,15 @@ public abstract class AbstractTransformer implements Transformer {
 					} else {
 						// INT or ARRAY
 						if (isArray) {
-						    	if (inits.get(inits.size()-1).equals("LDA #0")) {
-						    	    // The LDA #0 is obsolete in this case.
-						    	    inits.remove(inits.size()-1);
-						    	}
+							if (inits.get(inits.size() - 1).equals("LDA #0")) {
+								// The LDA #0 is obsolete in this case.
+								inits.remove(inits.size() - 1);
+							}
 							inits.add("LDA #<" + parts[0]);
 							inits.add("LDY #>" + parts[0]);
-							inits.add("JSR INITSPARAMS");	// This should save A and Y
-							//inits.add("LDA #<" + parts[0]);
-							//inits.add("LDY #>" + parts[0]);
+							inits.add("JSR INITSPARAMS"); // This should save A and Y
+							// inits.add("LDA #<" + parts[0]);
+							// inits.add("LDY #>" + parts[0]);
 							inits.add("JSR INITNARRAY");
 							inits.add("LDA #0");
 						} else {
@@ -302,10 +302,10 @@ public abstract class AbstractTransformer implements Transformer {
 
 		return cnt;
 	}
-	
+
 	protected void addStructures(Machine machine, PlatformProvider platform, List<String> code, List<String> res,
-		List<String> consts, List<String> vars, List<String> mnems, List<String> subs) {
-	    addStructures(machine, platform, code, res, consts, vars, mnems, subs, null);
+			List<String> consts, List<String> vars, List<String> mnems, List<String> subs) {
+		addStructures(machine, platform, code, res, consts, vars, mnems, subs, null);
 	}
 
 	protected void addStructures(Machine machine, PlatformProvider platform, List<String> code, List<String> res,
@@ -358,9 +358,9 @@ public abstract class AbstractTransformer implements Transformer {
 		subs.add(".BYTE 58 69 79 89 98 107 115 123");
 		res.addAll(mnems);
 		res.addAll(subs);
-		if (addOns!=null) {
-		    addOns.add(0, ";###################################");
-		    res.addAll(addOns);
+		if (addOns != null) {
+			addOns.add(0, ";###################################");
+			res.addAll(addOns);
 		}
 		res.addAll(consts);
 		res.addAll(datas);
@@ -388,7 +388,7 @@ public abstract class AbstractTransformer implements Transformer {
 		res.add("A_REG\t.WORD 0");
 		res.add("B_REG\t.WORD 0");
 		if (!preferZeropage) {
-		    res.add("G_REG\t.WORD 0");
+			res.add("G_REG\t.WORD 0");
 		}
 		res.add("CMD_NUM\t.BYTE 0");
 		res.add("CHANNEL\t.BYTE 0");

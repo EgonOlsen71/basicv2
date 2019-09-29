@@ -37,71 +37,87 @@ public class X16Tests {
 		testMon();
 		testDivide();
 		testVload();
+		testSave();
+		testLoad();
+	}
+
+	private static void testLoad() throws Exception {
+		System.out.println("\n\ntestLoad");
+		String[] vary = Loader.loadProgram("src/test/resources/x16/load.bas");
+		Assembler assy = initTestEnvironment(vary, false, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++load_x16.prg", true);
 	}
 	
+	private static void testSave() throws Exception {
+		System.out.println("\n\ntestSave");
+		String[] vary = Loader.loadProgram("src/test/resources/x16/save.bas");
+		Assembler assy = initTestEnvironment(vary, false, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++save_x16.prg", true);
+	}
+
 	private static void testVload() throws Exception {
 		System.out.println("\n\ntestVload");
 		String[] vary = Loader.loadProgram("src/test/resources/x16/vload.bas");
 		Assembler assy = initTestEnvironment(vary, false, -1, true);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++vload_x16.prg", true);
 	}
-	
+
 	private static void testDivide() throws Exception {
 		System.out.println("\n\ntestDivide");
 		String[] vary = Loader.loadProgram("src/test/resources/x16/divide.bas");
 		Assembler assy = initTestEnvironment(vary, false, -1, true);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++divide_x16.prg", true);
 	}
-	
+
 	private static void testMon() throws Exception {
 		System.out.println("\n\ntestMon");
 		String[] vary = Loader.loadProgram("src/test/resources/x16/mon.bas");
 		Assembler assy = initTestEnvironment(vary, false, -1, true);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++mon_x16.prg", true);
 	}
-	
+
 	private static void testDos() throws Exception {
 		System.out.println("\n\ntestDos");
 		String[] vary = Loader.loadProgram("src/test/resources/x16/dos.bas");
 		Assembler assy = initTestEnvironment(vary, false, -1, true);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++dos_x16.prg", true);
 	}
-	
+
 	private static void testCards() throws Exception {
 		System.out.println("\n\ntestCards");
 		String[] vary = Loader.loadProgram("src/test/resources/x16/cards.bas");
 		Assembler assy = initTestEnvironment(vary, false, -1, true);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++cards_x16.prg", true);
 	}
-	
+
 	private static void testBalls() throws Exception {
 		System.out.println("\n\ntestBalls");
 		String[] vary = Loader.loadProgram("src/test/resources/x16/balls.bas");
 		Assembler assy = initTestEnvironment(vary, false, -1, true);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++balls_x16.prg", true);
 	}
-	
+
 	private static void testTi() throws Exception {
 		System.out.println("\n\ntestTi");
 		String[] vary = Loader.loadProgram("src/test/resources/x16/ti.bas");
 		Assembler assy = initTestEnvironment(vary, false, -1, true);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++ti_x16.prg", true);
 	}
-	
+
 	private static void testFrog() throws Exception {
 		System.out.println("\n\ntestFrog");
 		String[] vary = Loader.loadProgram("src/test/resources/x16/frog.bas");
 		Assembler assy = initTestEnvironment(vary, false, -1, true);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++frog_x16.prg", true);
 	}
-	
+
 	private static void testCharfractal() throws Exception {
 		System.out.println("\n\ntestCharfractal");
 		String[] vary = Loader.loadProgram("src/test/resources/x16/charfractal.bas");
 		Assembler assy = initTestEnvironment(vary, false, -1, true);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++charfractal_x16.prg", true);
 	}
-	
+
 	private static void testData() throws Exception {
 		System.out.println("\n\ntestData");
 		String[] vary = Loader.loadProgram("src/test/resources/x16/data.bas");
@@ -115,7 +131,7 @@ public class X16Tests {
 		Assembler assy = initTestEnvironment(vary, false, -1, true);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++colors_x16.prg", true);
 	}
-	
+
 	private static void testVpokePeek() throws Exception {
 		System.out.println("\n\ntestVpokePeek");
 		String[] vary = Loader.loadProgram("src/test/resources/x16/vpokepeek.bas");

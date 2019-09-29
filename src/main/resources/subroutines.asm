@@ -3062,12 +3062,7 @@ SAVE		LDA #1
 							; Save the normal BASIC program...
 			LDX 45
 			LDY 46
-			STX $AE
-			STY $AF
-			LDX 43
-			LDY 44
-			STX $C1
-			STY $C2
+			LDA #43
 
 			JSR SAVEXX
 			JMP TWAIT
@@ -3271,6 +3266,8 @@ SYNTAXERROR
 ;###################################
 FILENOTFOUND
 			JSR CLRCH
+			LDY #0
+			LDA #4
 			JSR ERRFNF
 			LDA #4
 			ORA #$30

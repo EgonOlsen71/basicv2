@@ -99,12 +99,12 @@ public class GraphicsBasic implements BasicExtension {
 			window.dispose();
 		}
 	}
-	
+
 	@Override
 	public List<String> getAdditionalIncludes() {
 		return null;
 	}
-	
+
 	@Override
 	public Map<String, Integer> getLabel2Constant() {
 		return null;
