@@ -40,8 +40,16 @@ public class X16Tests {
 		testSave();
 		testLoad();
 		testGeos();
+		testBitmapfill();
 	}
 
+	private static void testBitmapfill() throws Exception {
+		System.out.println("\n\ntestBitmapfill");
+		String[] vary = Loader.loadProgram("src/test/resources/x16/bitmapfill.bas");
+		Assembler assy = initTestEnvironment(vary, false, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++bitmapfill_x16.prg", true);
+	}
+	
 	private static void testGeos() throws Exception {
 		System.out.println("\n\ntestGeos");
 		String[] vary = Loader.loadProgram("src/test/resources/x16/geos.bas");
