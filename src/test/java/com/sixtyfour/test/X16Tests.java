@@ -23,7 +23,7 @@ public class X16Tests {
 	private static String path = "compiled/";
 
 	public static void main(String[] args) throws Exception {
-		testVpoke();
+	    	testVpoke();
 		testVpeek();
 		testVpokePeek();
 		testColors();

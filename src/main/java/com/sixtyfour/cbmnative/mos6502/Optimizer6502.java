@@ -693,6 +693,8 @@ public class Optimizer6502 implements Optimizer {
 						"LDA  {*}", "JSR CHRINT", "JSR STROUT"));
 				this.add(new Pattern(false, "Single character output and break",
 						new String[] { "{LINE0}", "JSR SINGLECHROUTBRK" }, "LDA  {*}", "JSR CHRINT", "JSR STROUTBRK"));
+				this.add(new Pattern(false, "Fast byte conversion and store", new String[]{"{LINE3}", "{LINE4}", "{LINE0}", "{LINE1}", "JSR REALFAC", "{LINE6}"}, 
+					"LDA #<{MEM0}", "LDY #>{MEM0}","JSR REALFACPUSH", "LDY {MEM1}","STY {*}","JSR POPREAL","JSR FACWORD"));
 			}
 		};
 	}
