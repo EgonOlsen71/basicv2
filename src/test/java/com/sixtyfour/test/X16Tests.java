@@ -24,7 +24,7 @@ public class X16Tests {
 
 	public static void main(String[] args) throws Exception {
 	    	testVpoke();
-		testVpeek();
+	    	testVpeek();
 		testVpokePeek();
 		testColors();
 		testData();
