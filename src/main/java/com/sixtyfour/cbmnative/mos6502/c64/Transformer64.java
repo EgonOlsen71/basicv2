@@ -130,7 +130,7 @@ public class Transformer64 extends AbstractTransformer {
 		res.add("TSX");
 		res.add("STX SP_SAVE");
 
-		addStructures(machine, platform, code, res, consts, vars, mnems, subs);
+		addStructures(config, machine, platform, code, res, consts, vars, mnems, subs);
 		return res;
 	}
 

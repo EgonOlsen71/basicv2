@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -15,6 +16,7 @@ import com.sixtyfour.cbmnative.GeneratorContext;
 import com.sixtyfour.cbmnative.PlatformProvider;
 import com.sixtyfour.cbmnative.Transformer;
 import com.sixtyfour.cbmnative.mos6502.generators.GeneratorList;
+import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.elements.Variable;
 import com.sixtyfour.extensions.BasicExtension;
@@ -60,7 +62,7 @@ public abstract class AbstractTransformer implements Transformer {
 		}
 	}
 
-	protected List<String> createDatas(Machine machine) {
+	protected List<String> createDatas(CompilerConfig config, Machine machine) {
 		DataStore datas = machine.getDataStore();
 		List<String> ret = new ArrayList<String>();
 		ret.add("; ******** DATA ********");
@@ -118,7 +120,11 @@ public abstract class AbstractTransformer implements Transformer {
 			} else {
 				ret.add(".BYTE 2");
 				ret.add(".BYTE " + obj.toString().length());
-				ret.add(".STRG \"" + obj.toString() + "\"");
+				String ds = obj.toString();
+				if (config.isConvertStringToLower()) {
+					ds = ds.toLowerCase(Locale.ENGLISH);
+				}
+				ret.add(".STRG \"" + ds + "\"");
 				cnt += 2 + obj.toString().length();
 			}
 		}
@@ -197,8 +203,9 @@ public abstract class AbstractTransformer implements Transformer {
 		return val;
 	}
 
-	protected int extractData(PlatformProvider platform, Machine machine, List<String> consts, List<String> vars,
-			List<String> strVars, List<String> strArrayVars, Map<String, String> name2label, int cnt, String line) {
+	protected int extractData(CompilerConfig config, PlatformProvider platform, Machine machine, List<String> consts,
+			List<String> vars, List<String> strVars, List<String> strArrayVars, Map<String, String> name2label, int cnt,
+			String line) {
 		String[] parts = line.split(",", 2);
 		List<String> tmp = new ArrayList<String>();
 		for (int p = 0; p < parts.length; p++) {
@@ -240,6 +247,9 @@ public abstract class AbstractTransformer implements Transformer {
 							consts.add(label + "\t" + ".REAL " + name);
 						} else if (type == Type.STRING) {
 							consts.add(label + "\t" + ".BYTE " + name.length());
+							if (config.isConvertStringToLower()) {
+								name = name.toLowerCase(Locale.ENGLISH);
+							}
 							consts.add("\t" + ".STRG \"" + name + "\"");
 						}
 					}
@@ -303,13 +313,14 @@ public abstract class AbstractTransformer implements Transformer {
 		return cnt;
 	}
 
-	protected void addStructures(Machine machine, PlatformProvider platform, List<String> code, List<String> res,
-			List<String> consts, List<String> vars, List<String> mnems, List<String> subs) {
-		addStructures(machine, platform, code, res, consts, vars, mnems, subs, null);
+	protected void addStructures(CompilerConfig config, Machine machine, PlatformProvider platform, List<String> code,
+			List<String> res, List<String> consts, List<String> vars, List<String> mnems, List<String> subs) {
+		addStructures(config, machine, platform, code, res, consts, vars, mnems, subs, null);
 	}
 
-	protected void addStructures(Machine machine, PlatformProvider platform, List<String> code, List<String> res,
-			List<String> consts, List<String> vars, List<String> mnems, List<String> subs, List<String> addOns) {
+	protected void addStructures(CompilerConfig config, Machine machine, PlatformProvider platform, List<String> code,
+			List<String> res, List<String> consts, List<String> vars, List<String> mnems, List<String> subs,
+			List<String> addOns) {
 		Map<String, String> name2label = new HashMap<String, String>();
 		int cnt = 0;
 
@@ -330,7 +341,7 @@ public abstract class AbstractTransformer implements Transformer {
 				line = line.substring(sp).trim();
 			}
 
-			cnt = extractData(platform, machine, consts, vars, strVars, strArrayVars, name2label, cnt, line);
+			cnt = extractData(config, platform, machine, consts, vars, strVars, strArrayVars, name2label, cnt, line);
 
 			Generator pm = GeneratorList.getGenerator(orgLine);
 			if (pm != null) {
@@ -349,7 +360,7 @@ public abstract class AbstractTransformer implements Transformer {
 		}
 
 		List<String> inits = createInitScript(vars);
-		List<String> datas = createDatas(machine);
+		List<String> datas = createDatas(config, machine);
 
 		subs.addAll(inits);
 		subs.add("; *** SUBROUTINES END ***");

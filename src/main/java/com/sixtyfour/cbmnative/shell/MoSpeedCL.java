@@ -94,7 +94,9 @@ public class MoSpeedCL {
 		cfg.setIntOptimizations(getOption("intopt", cmds));
 		cfg.setSymbolTable(cmds.get("symboltable"));
 		cfg.setNonDecimalNumbersAware(getOptionIntDefault("nondecimals", cmds, false));
+		cfg.setConvertStringToLower(getOptionIntDefault("tolower", cmds, false));
 		cfg.setLoopMode(getOption("loopopt", cmds) ? LoopMode.REMOVE : LoopMode.EXECUTE);
+		
 
 		cfg.setProgressListener(new DotPrintingProgressListener());
 
@@ -434,6 +436,7 @@ public class MoSpeedCL {
 				"/memconfig=0|3|8 - the memory configuration in case of VIC20 as the target machine. 0 means 'unexpanded', 3 means with a 3k expansion, 8 means with an 8k or larger expansion. Default is 8.");
 		System.out.println(
 				"/symboltable=<file> - this only applies to the X16 target platform. It lets you specify a different symbol table to compile for different ROM releases. The default symbol table should match the latest ROM release.");
+		System.out.println("/tolower=true|false - if true, all strings in the source code will be treated as lower case. This can be useful when compiling BASIC code copied directly from an emulator. Default is false.");
 		System.out.println();
 	}
 

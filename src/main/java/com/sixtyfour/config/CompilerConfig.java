@@ -26,6 +26,7 @@ public class CompilerConfig {
 	private boolean shiftOptimizations = true;
 	private boolean nonDecimalNumbersAware = false;
 	private boolean extendedLoad = false;
+	private boolean convertStringToLower=false;
 	private String symbolTable = null;
 	private LoopMode loopMode = LoopMode.EXECUTE;
 	private ProgressListener progressListener;
@@ -203,6 +204,14 @@ public class CompilerConfig {
 
 	public void setExtendedLoad(boolean extendedLoad) {
 		this.extendedLoad = extendedLoad;
+	}
+
+	public boolean isConvertStringToLower() {
+		return convertStringToLower;
+	}
+
+	public void setConvertStringToLower(boolean convertStringToLower) {
+		this.convertStringToLower = convertStringToLower;
 	}
 
 }

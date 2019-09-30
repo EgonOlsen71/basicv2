@@ -23,8 +23,8 @@ public class X16Tests {
 	private static String path = "compiled/";
 
 	public static void main(String[] args) throws Exception {
-	    	testVpoke();
-	    	testVpeek();
+		testVpoke();
+		testVpeek();
 		testVpokePeek();
 		testColors();
 		testData();
@@ -41,29 +41,45 @@ public class X16Tests {
 		testLoad();
 		testGeos();
 		testBitmapfill();
+		testLine();
+		testRaytracer();
+	}
+	
+	private static void testRaytracer() throws Exception {
+		System.out.println("\n\ntestRaytracer");
+		String[] vary = Loader.loadProgram("src/test/resources/x16/raytracer.bas");
+		Assembler assy = initTestEnvironment(vary, false, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++raytracer_x16.prg", true);
 	}
 
+	private static void testLine() throws Exception {
+		System.out.println("\n\ntestLine");
+		String[] vary = Loader.loadProgram("src/test/resources/x16/line.bas");
+		Assembler assy = initTestEnvironment(vary, false, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++line_x16.prg", true);
+	}
+	
 	private static void testBitmapfill() throws Exception {
 		System.out.println("\n\ntestBitmapfill");
 		String[] vary = Loader.loadProgram("src/test/resources/x16/bitmapfill.bas");
 		Assembler assy = initTestEnvironment(vary, false, -1, true);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++bitmapfill_x16.prg", true);
 	}
-	
+
 	private static void testGeos() throws Exception {
 		System.out.println("\n\ntestGeos");
 		String[] vary = Loader.loadProgram("src/test/resources/x16/geos.bas");
 		Assembler assy = initTestEnvironment(vary, false, -1, true);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++geos_x16.prg", true);
 	}
-	
+
 	private static void testLoad() throws Exception {
 		System.out.println("\n\ntestLoad");
 		String[] vary = Loader.loadProgram("src/test/resources/x16/load.bas");
 		Assembler assy = initTestEnvironment(vary, false, -1, true);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++load_x16.prg", true);
 	}
-	
+
 	private static void testSave() throws Exception {
 		System.out.println("\n\ntestSave");
 		String[] vary = Loader.loadProgram("src/test/resources/x16/save.bas");
@@ -196,6 +212,7 @@ public class X16Tests {
 		conf.setLoopMode(LoopMode.REMOVE);
 		conf.setNonDecimalNumbersAware(true);
 		conf.setExtendedLoad(true);
+		conf.setConvertStringToLower(true);
 		// conf.setCompactThreshold(3);
 
 		Basic basic = new Basic(vary);
