@@ -44,6 +44,14 @@ public class X16Tests {
 		testLine();
 		testRaytracer();
 		testLine640();
+		testFractal256();
+	}
+	
+	private static void testFractal256() throws Exception {
+		System.out.println("\n\ntestFractal256");
+		String[] vary = Loader.loadProgram("src/test/resources/x16/fractal256.bas");
+		Assembler assy = initTestEnvironment(vary, false, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++fractal256_x16.prg", true);
 	}
 	
 	private static void testLine640() throws Exception {
