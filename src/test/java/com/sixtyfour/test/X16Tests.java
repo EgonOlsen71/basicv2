@@ -43,6 +43,14 @@ public class X16Tests {
 		testBitmapfill();
 		testLine();
 		testRaytracer();
+		testLine640();
+	}
+	
+	private static void testLine640() throws Exception {
+		System.out.println("\n\ntestLine640");
+		String[] vary = Loader.loadProgram("src/test/resources/x16/line640.bas");
+		Assembler assy = initTestEnvironment(vary, false, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++line640_x16.prg", true);
 	}
 	
 	private static void testRaytracer() throws Exception {
