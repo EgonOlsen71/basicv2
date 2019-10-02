@@ -109,6 +109,14 @@ public class TransformerTest {
 		test10test();
 		test10adv();
 		testDatas();
+		testInts();
+	}
+	
+	private static void testInts() throws Exception {
+		System.out.println("\n\ntestInts");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/inttest.bas");
+		Assembler assy = initTestEnvironment(vary, true, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++inttest.prg", true);
 	}
 
 	private static void testDatas() throws Exception {

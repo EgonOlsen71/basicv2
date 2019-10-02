@@ -783,6 +783,9 @@ public class PseudoCpu {
 		case "RIGHT":
 			right(parts);
 			return;
+		case "CRSRRIGHT":
+			crsrright(parts, 0);
+			return;
 		case "TAB":
 		case "TABCHANNEL":
 			tab(parts);
@@ -944,6 +947,15 @@ public class PseudoCpu {
 		}
 	}
 
+	private void crsrright(String[] parts, int channel) {
+		if (channel == 0) {
+			machine.getOutputChannel().print(channel, " ");
+		} else {
+			machine.getDeviceProvider().print(channel, " ");
+		}
+	    
+	}
+
 	private void usr(String[] parts) {
 		// do nothing...who uses this anyway...
 	}
@@ -968,6 +980,8 @@ public class PseudoCpu {
 		ForStackEntry fse = new ForStackEntry();
 		forStackPos = fse.push(forStackPos);
 	}
+	
+	
 
 	private void lineBreak(String[] parts, int channel) {
 		if (channel == 0) {
