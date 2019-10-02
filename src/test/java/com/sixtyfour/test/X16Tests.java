@@ -45,6 +45,14 @@ public class X16Tests {
 		testRaytracer();
 		testLine640();
 		testFractal256();
+		testExpresso();
+	}
+	
+	private static void testExpresso() throws Exception {
+		System.out.println("\n\ntestExpresso");
+		String[] vary = Loader.loadProgram("src/test/resources/x16/expresso.bas");
+		Assembler assy = initTestEnvironment(vary, false, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++expresso_x16.prg", true);
 	}
 	
 	private static void testFractal256() throws Exception {
