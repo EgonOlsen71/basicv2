@@ -1078,6 +1078,7 @@ public class TransformerTest {
 		conf.setNativeLanguageOptimizations(opt);
 		conf.setOptimizedLinker(opt);
 		conf.setIntOptimizations(opt);
+		conf.setFloatOptimizations(opt);
 		conf.setLoopMode(LoopMode.REMOVE);
 		// conf.setCompactThreshold(3);
 
