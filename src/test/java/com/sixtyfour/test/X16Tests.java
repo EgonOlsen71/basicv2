@@ -209,18 +209,6 @@ public class X16Tests {
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++vpeek_x16.prg", true);
 	}
 
-	private static Assembler initTestEnvironment(String[] vary) {
-		return initTestEnvironment(vary, false);
-	}
-
-	private static Assembler initTestEnvironment(String[] vary, boolean executePseudo) {
-		return initTestEnvironment(vary, executePseudo, -1);
-	}
-
-	private static Assembler initTestEnvironment(String[] vary, boolean executePseudo, int variableStart) {
-		return initTestEnvironment(vary, executePseudo, -1, true);
-	}
-
 	private static Assembler initTestEnvironment(String[] vary, boolean executePseudo, int variableStart,
 			boolean opti) {
 		CompilerConfig conf = new CompilerConfig();
