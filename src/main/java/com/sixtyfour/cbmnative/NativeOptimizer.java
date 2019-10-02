@@ -218,7 +218,7 @@ public class NativeOptimizer {
 
 				if (config.isIntOptimizations()) {
 					// Not doing these optimizations also disables the
-					// corresponding ones in the native optimizer, because it
+					// corresponding ones in the 6502 optimizer, because it
 					// will then never encounter a JSR FXXX call...
 
 					// MOV Y,#1{INTEGER}
