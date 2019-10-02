@@ -908,6 +908,12 @@ public class PseudoCpu {
 		case "DOSSTAT":
 			// Do nothing...
 			return;
+		case "FINX":
+			finx(parts);
+			return;
+		case "FDEX":
+			fdex(parts);
+			return;
 		case "CLOSE":
 			close(parts);
 			return;
@@ -945,6 +951,14 @@ public class PseudoCpu {
 			jumpStack.push(addr);
 			jmp(parts);
 		}
+	}
+
+	private void fdex(String[] parts) {
+	    regs[X] = regs[X].intValue()-1;
+	}
+
+	private void finx(String[] parts) {
+	    regs[X] = regs[X].intValue()+1;
 	}
 
 	private void crsrright(String[] parts, int channel) {
@@ -2235,14 +2249,15 @@ public class PseudoCpu {
 			ops = split(parts[1], ",");
 		}
 		String target = ops[0];
-		String source = ops[1];
 		int ti = getIndex(target);
-		int si = getIndex(source);
-
-		Number n2 = regs[si];
 		Number n1 = regs[ti];
-
-		regs[ti] = calc.calc(n1, n2);
+		
+        	String source = ops[1];
+        	int si = getIndex(source);
+        	Number n2 = regs[si];
+        
+        	regs[ti] = calc.calc(n1, n2);
+		
 		updateZeroFlag(regs[ti]);
 	}
 
