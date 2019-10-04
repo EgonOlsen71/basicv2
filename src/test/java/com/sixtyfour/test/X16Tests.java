@@ -46,6 +46,14 @@ public class X16Tests {
 		testLine640();
 		testFractal256();
 		testExpresso();
+		testAffine();
+	}
+	
+	private static void testAffine() throws Exception {
+		System.out.println("\n\ntestAffine");
+		String[] vary = Loader.loadProgram("src/test/resources/x16/affine.bas");
+		Assembler assy = initTestEnvironment(vary, false, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++affine_x16.prg", true);
 	}
 	
 	private static void testExpresso() throws Exception {
