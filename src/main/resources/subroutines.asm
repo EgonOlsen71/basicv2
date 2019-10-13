@@ -3064,8 +3064,7 @@ SAVE		LDA #1
 			LDY 46
 			LDA #43
 
-			JSR SAVEXX
-			JMP TWAIT
+			JMP SAVEXX
 ;###################################
 VERIFY		JSR SETNAMEPRT
 			LDA #1
@@ -3075,6 +3074,7 @@ VERIFY		JSR SETNAMEPRT
 LOAD		JSR SETNAMEPRT
 			LDA #$0
 			STA $93			; reset Load/Verify-Flag
+			STA $90			; reset status
 LOADINT		LDA #<X_REG
 			LDY #>X_REG
 			JSR REALFAC
@@ -3098,9 +3098,7 @@ SKPBAS		STA $B9
 			LDX $C3
 			LDY $C4
 			JSR LOADXX
-			JSR TWAIT
 			LDA $90
-			CMP #64
 			BEQ LOADOK
 			JMP FILENOTFOUND
 LOADOK		RTS

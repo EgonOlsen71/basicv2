@@ -47,6 +47,14 @@ public class X16Tests {
 		testFractal256();
 		testExpresso();
 		testAffine();
+		testVloadTest();
+	}
+	
+	private static void testVloadTest() throws Exception {
+		System.out.println("\n\ntestVloadTest");
+		String[] vary = Loader.loadProgram("src/test/resources/x16/vloadtest.bas");
+		Assembler assy = initTestEnvironment(vary, false, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++vloadtest.prg", true);
 	}
 	
 	private static void testAffine() throws Exception {

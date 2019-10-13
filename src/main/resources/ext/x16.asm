@@ -55,6 +55,8 @@ VLOAD		LDA #0			; set secondary address to 0
 			INY
 			INY
 			STY $93			; "abuse" Load/Verify-Flag to store bank
+			LDY #0
+			STY $90			; reset status
 			LDA #<C_REG		; read target address
 			LDY #>C_REG
 			JSR REALFAC
@@ -65,9 +67,7 @@ VLOAD		LDA #0			; set secondary address to 0
 			LDX $C3
 			LDY $C4
 			JSR LOADXX
-			JSR TWAIT
 			LDA $90
-			CMP #64
 			BEQ VLOADOK
 			JMP FILENOTFOUND
 VLOADOK		RTS
@@ -87,6 +87,7 @@ LOADEXT		LDA #0			; set secondary address to 0
 			STY VERABNK		; switch bank
 			LDY #0
 			STY $93			; set Load/Verify-Flag to 0
+			STY $90			; reset status	
 			LDA #<C_REG		; read target address
 			LDY #>C_REG
 			JSR REALFAC
@@ -97,9 +98,7 @@ LOADEXT		LDA #0			; set secondary address to 0
 			LDX $C3
 			LDY $C4
 			JSR LOADXX
-			JSR TWAIT
 			LDA $90
-			CMP #64
 			BEQ LOADEXTOK
 			JMP FILENOTFOUND
 LOADEXTOK	RTS
