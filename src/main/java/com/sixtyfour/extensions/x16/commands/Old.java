@@ -1,9 +1,9 @@
 package com.sixtyfour.extensions.x16.commands;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.sixtyfour.Logger;
+import com.sixtyfour.cbmnative.Util;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.commands.AbstractCommand;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
@@ -58,15 +58,7 @@ public class Old extends AbstractCommand {
 	 */
 	@Override
 	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
-		List<String> expr = new ArrayList<String>();
-
-		// It makes no sense for OLD to do anything in this context
-		expr.add("NOP");
-
-		CodeContainer cc = new CodeContainer(null, expr, null);
-		List<CodeContainer> ccs = new ArrayList<CodeContainer>();
-		ccs.add(cc);
-		return ccs;
+	    return Util.createSingleCommand("NOP");
 	}
 
 }
