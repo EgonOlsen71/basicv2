@@ -14,7 +14,7 @@ import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.extensions.x16.X16Extensions;
 
 /**
- * A PlatformProvider implementation for the C64 target platform.
+ * A PlatformProvider implementation for the X16 target platform.
  * 
  * @author EgonOlsen
  *
