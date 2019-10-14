@@ -103,5 +103,13 @@ public interface Command extends Atom {
 	 * @return is it?
 	 */
 	boolean isConditional();
+	
+	/**
+	 * If true, this command can override another one of the same name. Useful to
+	 * replace functions with others, more advanced ones provided in some extension.
+	 * 
+	 * @return does it?
+	 */
+	boolean isOverride();
 
 }

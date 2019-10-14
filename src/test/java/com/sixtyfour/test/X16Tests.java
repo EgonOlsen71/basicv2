@@ -255,7 +255,6 @@ public class X16Tests {
 		conf.setIntOptimizations(opt);
 		conf.setLoopMode(LoopMode.REMOVE);
 		conf.setNonDecimalNumbersAware(true);
-		conf.setExtendedLoad(true);
 		conf.setConvertStringToLower(true);
 		// conf.setCompactThreshold(3);
 

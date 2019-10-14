@@ -236,6 +236,14 @@ public abstract class AbstractCommand implements Command {
 	public boolean isConditional() {
 		return false;
 	}
+	
+	/* (non-Javadoc)
+	 * @see com.sixtyfour.elements.commands.Command#isOverride()
+	 */
+	@Override
+	public boolean isOverride() {
+		return false;
+	}
 
 	/**
 	 * Throws a type mismatch error.
@@ -325,4 +333,6 @@ public abstract class AbstractCommand implements Command {
 		}
 		return null;
 	}
+	
+	
 }

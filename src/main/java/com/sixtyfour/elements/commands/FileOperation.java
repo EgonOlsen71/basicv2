@@ -29,7 +29,37 @@ public abstract class FileOperation extends AbstractCommand {
 		super(name);
 	}
 
-	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine, String call) {
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String, int,
+	 * int, int, boolean, sixtyfour.system.Machine)
+	 */
+	@Override
+	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos,
+			boolean lastPos, Machine machine) {
+		super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine);
+		linePart = TermEnhancer.removeWhiteSpace(linePart);
+		linePart = linePart.substring(this.name.length());
+		if (linePart.trim().isEmpty()) {
+			linePart = "\"\"";
+		}
+		term = Parser.getTerm(config, linePart, machine, false, true);
+		pars = Parser.getParameters(term);
+
+		if (pars.size() > 0 && !pars.get(0).getType().equals(Type.STRING)) {
+			syntaxError(this);
+		}
+		if (pars.size() > 1 && pars.get(1).getType().equals(Type.STRING)) {
+			syntaxError(this);
+		}
+		if (pars.size() > 2 && pars.get(2).getType().equals(Type.STRING)) {
+			syntaxError(this);
+		}
+		return null;
+	}
+
+	protected List<CodeContainer> evalToCode(CompilerConfig config, Machine machine, String call) {
 		NativeCompiler compiler = NativeCompiler.getCompiler();
 		List<String> after = new ArrayList<String>();
 		List<String> expr = new ArrayList<String>();
@@ -68,19 +98,6 @@ public abstract class FileOperation extends AbstractCommand {
 				expr.add("POP X");
 				expr.add("POP G");
 				break;
-			case 4:
-				if (isLoad() && config.isExtendedLoad()) {
-					expr.addAll(compiler.compileToPseudoCode(config, machine, pars.get(0)));
-					expr.addAll(compiler.compileToPseudoCode(config, machine, pars.get(1)));
-					expr.addAll(compiler.compileToPseudoCode(config, machine, pars.get(2)));
-					expr.addAll(compiler.compileToPseudoCode(config, machine, pars.get(3)));
-					expr.add("POP C");
-					expr.add("POP Y");
-					expr.add("POP X");
-					expr.add("POP G");
-					extendedLoad = true;
-					break;
-				}
 			default:
 				syntaxError(this);
 			}
@@ -95,45 +112,4 @@ public abstract class FileOperation extends AbstractCommand {
 		ccs.add(cc);
 		return ccs;
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String, int,
-	 * int, int, boolean, sixtyfour.system.Machine)
-	 */
-	@Override
-	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos,
-			boolean lastPos, Machine machine) {
-		super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine);
-		linePart = TermEnhancer.removeWhiteSpace(linePart);
-		linePart = linePart.substring(this.name.length());
-		if (linePart.trim().isEmpty()) {
-			linePart = "\"\"";
-		}
-		term = Parser.getTerm(config, linePart, machine, false, true);
-		pars = Parser.getParameters(term);
-
-		if (pars.size() > 0 && !pars.get(0).getType().equals(Type.STRING)) {
-			syntaxError(this);
-		}
-		if (pars.size() > 1 && pars.get(1).getType().equals(Type.STRING)) {
-			syntaxError(this);
-		}
-		if (pars.size() > 2 && pars.get(2).getType().equals(Type.STRING)) {
-			syntaxError(this);
-		}
-		if (config.isExtendedLoad() && isLoad() && pars.size() > 3 && pars.get(3).getType().equals(Type.STRING)) {
-			syntaxError(this);
-		}
-		return null;
-	}
-
-	/**
-	 * @return
-	 */
-	protected boolean isLoad() {
-		return name.contains("LOAD");
-	}
-
 }

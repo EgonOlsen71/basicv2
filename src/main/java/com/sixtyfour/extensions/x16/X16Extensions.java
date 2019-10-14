@@ -15,6 +15,7 @@ import com.sixtyfour.extensions.x16.commands.Mon;
 import com.sixtyfour.extensions.x16.commands.Old;
 import com.sixtyfour.extensions.x16.commands.Vload;
 import com.sixtyfour.extensions.x16.commands.Vpoke;
+import com.sixtyfour.extensions.x16.commands.Xload;
 import com.sixtyfour.extensions.x16.functions.Vpeek;
 import com.sixtyfour.system.Machine;
 
@@ -31,6 +32,7 @@ public class X16Extensions implements BasicExtension {
 			this.add(new Dos());
 			this.add(new Mon());
 			this.add(new Vload());
+			this.add(new Xload());
 			this.add(new Geos());
 			this.add(new Old());
 		}

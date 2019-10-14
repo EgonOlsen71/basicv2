@@ -11,8 +11,8 @@ import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.commands.FileOperation;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.plugins.DeviceProvider;
-import com.sixtyfour.system.Machine;
 import com.sixtyfour.system.BasicProgramCounter;
+import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
 /**
@@ -74,12 +74,10 @@ public class Vload extends FileOperation {
 		try {
 			switch (pars.size()) {
 			case 4:
-				if (config.isExtendedLoad()) {
-					device.load(config, (String) pars.get(0).eval(machine), VarUtils.getInt(pars.get(1).eval(machine)),
-							VarUtils.getInt(pars.get(2).eval(machine)));
-					// Ignore the 3rd numeric parameter here...
-					break;
-				}
+				device.load(config, (String) pars.get(0).eval(machine), VarUtils.getInt(pars.get(1).eval(machine)),
+						VarUtils.getInt(pars.get(2).eval(machine)));
+				// Ignore the 3rd numeric parameter here...
+				break;
 			default:
 				syntaxError(this);
 			}

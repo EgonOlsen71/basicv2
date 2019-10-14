@@ -54,13 +54,6 @@ public class Load extends FileOperation {
 				device.load(config, (String) pars.get(0).eval(machine), VarUtils.getInt(pars.get(1).eval(machine)),
 						VarUtils.getInt(pars.get(2).eval(machine)));
 				break;
-			case 4:
-				if (isLoad() && config.isExtendedLoad()) {
-					device.load(config, (String) pars.get(0).eval(machine), VarUtils.getInt(pars.get(1).eval(machine)),
-							VarUtils.getInt(pars.get(2).eval(machine)));
-					// Ignore the 3rd numeric parameter here...
-					break;
-				}
 			default:
 				syntaxError(this);
 			}

@@ -3,6 +3,8 @@ package com.sixtyfour.elements.commands;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * A list that contains all the commands.
@@ -57,14 +59,21 @@ public class CommandList {
 
 	public static void registerNewCommands(List<Command> commands) {
 		if (commands != null && !commands.isEmpty()) {
-			commands = new ArrayList<Command>(commands);
-			commands.addAll(COMMANDS);
-			COMMANDS = Collections.unmodifiableList(commands);
+			COMMANDS = new ArrayList<Command>(COMMANDS);
+
+			// If there is new command that overrides the old one of the same name,
+			// then remove the old one first.
+			Set<String> newNames = commands.stream().filter(p -> p.isOverride()).map(p -> p.getName())
+					.collect(Collectors.toSet());
+			COMMANDS = COMMANDS.stream().filter(p -> !newNames.contains(p.getName())).collect(Collectors.toList());
+			COMMANDS.addAll(commands);
+
+			COMMANDS = Collections.unmodifiableList(COMMANDS);
 			List<String> names = new ArrayList<String>();
 			for (Command command : COMMANDS) {
 				for (String name : names) {
 					if (command.getName().startsWith(name)) {
-						throw new RuntimeException("Naming conflict: " + command.getName() + " is hidden by " + name);
+						throw new RuntimeException("Naming conflict: " + command.getClass() + " is hidden by " + name);
 					}
 				}
 				names.add(command.getName());

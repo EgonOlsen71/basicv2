@@ -130,7 +130,6 @@ public class MoSpeedCL {
 				platform = new PlatformX16();
 				Basic.registerExtension(new X16Extensions());
 				cfg.setNonDecimalNumbersAware(true);
-				cfg.setExtendedLoad(true);
 				appendix = ".prg";
 			} else if (pl.equalsIgnoreCase("ps")) {
 				platform = new PlatformPs();
