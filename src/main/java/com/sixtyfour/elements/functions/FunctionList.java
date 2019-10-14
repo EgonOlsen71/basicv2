@@ -6,6 +6,8 @@ package com.sixtyfour.elements.functions;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * A list of all known functions.
@@ -49,13 +51,19 @@ public class FunctionList {
 	public static void registerNewFunctions(List<Function> functions) {
 		if (functions != null && !functions.isEmpty()) {
 			FUNCTIONS = new ArrayList<Function>(FUNCTIONS);
+
+			// If there is new function that overrides the old one of the same name,
+			// then remove the old one first.
+			Set<String> newNames = functions.stream().filter(p -> p.isOverride()).map(p -> p.getName())
+					.collect(Collectors.toSet());
+			FUNCTIONS = FUNCTIONS.stream().filter(p -> !newNames.contains(p.getName())).collect(Collectors.toList());
 			FUNCTIONS.addAll(functions);
 			FUNCTIONS = Collections.unmodifiableList(FUNCTIONS);
 			List<String> names = new ArrayList<String>();
 			for (Function command : FUNCTIONS) {
 				for (String name : names) {
 					if (command.getName().startsWith(name)) {
-						throw new RuntimeException("Naming conflict: " + command.getName() + "is hidden by " + name);
+						throw new RuntimeException("Naming conflict: " + command.getName() + " is hidden by " + name);
 					}
 				}
 				names.add(command.getName());

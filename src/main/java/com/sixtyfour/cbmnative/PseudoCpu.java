@@ -954,11 +954,11 @@ public class PseudoCpu {
 	}
 
 	private void fdex(String[] parts) {
-	    regs[X] = regs[X].intValue()-1;
+		regs[X] = regs[X].intValue() - 1;
 	}
 
 	private void finx(String[] parts) {
-	    regs[X] = regs[X].intValue()+1;
+		regs[X] = regs[X].intValue() + 1;
 	}
 
 	private void crsrright(String[] parts, int channel) {
@@ -967,7 +967,7 @@ public class PseudoCpu {
 		} else {
 			machine.getDeviceProvider().print(channel, " ");
 		}
-	    
+
 	}
 
 	private void usr(String[] parts) {
@@ -994,8 +994,6 @@ public class PseudoCpu {
 		ForStackEntry fse = new ForStackEntry();
 		forStackPos = fse.push(forStackPos);
 	}
-	
-	
 
 	private void lineBreak(String[] parts, int channel) {
 		if (channel == 0) {
@@ -2251,13 +2249,13 @@ public class PseudoCpu {
 		String target = ops[0];
 		int ti = getIndex(target);
 		Number n1 = regs[ti];
-		
-        	String source = ops[1];
-        	int si = getIndex(source);
-        	Number n2 = regs[si];
-        
-        	regs[ti] = calc.calc(n1, n2);
-		
+
+		String source = ops[1];
+		int si = getIndex(source);
+		Number n2 = regs[si];
+
+		regs[ti] = calc.calc(n1, n2);
+
 		updateZeroFlag(regs[ti]);
 	}
 

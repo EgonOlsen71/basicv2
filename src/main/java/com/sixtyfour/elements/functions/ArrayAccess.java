@@ -2,7 +2,6 @@ package com.sixtyfour.elements.functions;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import com.sixtyfour.Logger;
 import com.sixtyfour.config.CompilerConfig;
@@ -100,7 +99,7 @@ public class ArrayAccess extends AbstractFunction {
 
 		List<String> n1 = t.evalToCode(config, machine).get(0).getExpression();
 		n1.addAll(vary.evalToCode(config, machine).get(0).getExpression());
-		n1.add(":" + this.getClass().getSimpleName().toUpperCase(Locale.ENGLISH));
+		n1.add(":" + getNativeFunctionName());
 		ret.addAll(0, n1);
 		List<CodeContainer> cc = new ArrayList<CodeContainer>();
 		cc.add(new CodeContainer(ret));

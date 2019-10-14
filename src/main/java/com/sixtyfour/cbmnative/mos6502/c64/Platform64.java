@@ -62,9 +62,9 @@ public class Platform64 implements PlatformProvider {
 		// TODO Auto-generated method stub
 
 	}
-	
+
 	@Override
 	public Generator getGenerator(String orgLine) {
-	    return null;
+		return null;
 	}
 }

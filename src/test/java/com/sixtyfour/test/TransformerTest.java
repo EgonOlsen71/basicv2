@@ -66,7 +66,7 @@ public class TransformerTest {
 		// testTransformer22();
 		// testTransformer23();
 //		 testTransformerFrog();
-		 testTransformerAffine();
+		testTransformerAffine();
 		// testTransformer24();
 		// testTransformer25();
 		// testTransformer26();
@@ -113,7 +113,7 @@ public class TransformerTest {
 		testFloatPerf();
 		testIntPerf();
 	}
-	
+
 	private static void testFloatPerf() throws Exception {
 		System.out.println("\n\ntestFloatPerf");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/floatperf.bas");
@@ -124,7 +124,7 @@ public class TransformerTest {
 		Machine machine = executeTest(assy);
 		printStats(profiler, machine);
 	}
-	
+
 	private static void testIntPerf() throws Exception {
 		System.out.println("\n\ntestIntPerf");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/intperf.bas");
@@ -135,7 +135,7 @@ public class TransformerTest {
 		Machine machine = executeTest(assy);
 		printStats(profiler, machine);
 	}
-	
+
 	private static void testInts() throws Exception {
 		System.out.println("\n\ntestInts");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/inttest.bas");

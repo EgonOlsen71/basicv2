@@ -2,7 +2,6 @@ package com.sixtyfour.elements.functions;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.Type;
@@ -61,7 +60,7 @@ public class Mid extends AbstractFunction {
 		n1.add(":PAR");
 		n1.add("_");
 		n1.addAll(var.evalToCode(config, machine).get(0).getExpression());
-		n1.add(":" + this.getClass().getSimpleName().toUpperCase(Locale.ENGLISH));
+		n1.add(":" + getNativeFunctionName());
 		ret.addAll(0, n1);
 		ret.add("_");
 		List<CodeContainer> cc = new ArrayList<CodeContainer>();

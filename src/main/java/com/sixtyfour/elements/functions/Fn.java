@@ -2,7 +2,6 @@ package com.sixtyfour.elements.functions;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.Type;
@@ -65,7 +64,7 @@ public class Fn extends AbstractFunction {
 
 		ret.add("_");
 		List<String> n1 = term.evalToCode(config, machine).get(0).getExpression();
-		n1.add(":" + this.getClass().getSimpleName().toUpperCase(Locale.ENGLISH) + " DEF" + def.getCount());
+		n1.add(":" + getNativeFunctionName() + " DEF" + def.getCount());
 		ret.addAll(0, n1);
 
 		List<CodeContainer> ccs = new ArrayList<CodeContainer>();

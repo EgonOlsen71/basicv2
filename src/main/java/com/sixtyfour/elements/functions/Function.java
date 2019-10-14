@@ -97,4 +97,19 @@ public interface Function extends Atom {
 	 */
 	int getParameterCount();
 
+	/**
+	 * If true, this function can override another one of the same name. Useful to
+	 * replace functions with others, more advanced ones provided in some extension.
+	 * 
+	 * @return does it?
+	 */
+	boolean isOverride();
+
+	/**
+	 * Returns the name of the native code's function to be called.
+	 * 
+	 * @return the name
+	 */
+	String getNativeFunctionName();
+
 }

@@ -71,9 +71,9 @@ public class Platform20 implements PlatformProvider {
 		baseAddr = addr;
 		maxHeaderAddr = addr + 51;
 	}
-	
+
 	@Override
 	public Generator getGenerator(String orgLine) {
-	    return null;
+		return null;
 	}
 }

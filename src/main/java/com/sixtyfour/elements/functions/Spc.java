@@ -2,7 +2,6 @@ package com.sixtyfour.elements.functions;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.Type;
@@ -89,7 +88,7 @@ public class Spc extends AbstractFunction {
 		List<String> ret = new ArrayList<String>();
 		ret.add("_");
 		List<String> n1 = term.evalToCode(config, machine).get(0).getExpression();
-		String call = ":" + this.getClass().getSimpleName().toUpperCase(Locale.ENGLISH);
+		String call = ":" + getNativeFunctionName();
 		if (machine.getCurrentCommand() instanceof PrintFile) {
 			call += "CHANNEL";
 		}

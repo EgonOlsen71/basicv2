@@ -58,7 +58,7 @@ public class Mon extends AbstractCommand {
 	 */
 	@Override
 	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
-	    return Util.createSingleCommand("JMP $FFF6");
+		return Util.createSingleCommand("JMP $FFF6");
 	}
 
 }

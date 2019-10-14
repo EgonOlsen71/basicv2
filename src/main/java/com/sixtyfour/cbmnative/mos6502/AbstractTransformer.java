@@ -344,9 +344,9 @@ public abstract class AbstractTransformer implements Transformer {
 			cnt = extractData(config, platform, machine, consts, vars, strVars, strArrayVars, name2label, cnt, line);
 
 			Generator pm = GeneratorList.getGenerator(orgLine);
-			Generator altPm=platform.getGenerator(orgLine);
-			if (altPm!=null) {
-			    pm=altPm;
+			Generator altPm = platform.getGenerator(orgLine);
+			if (altPm != null) {
+				pm = altPm;
 			}
 			if (pm != null) {
 				pm.generateCode(context, orgLine, mnems, subs, name2label);

@@ -26,14 +26,6 @@ public abstract class AbstractFunction implements Function {
 	/** The function name. */
 	protected String functionName;
 
-	/**
-	 * Instantiates a new abstract function.
-	 */
-	@SuppressWarnings("unused")
-	private AbstractFunction() {
-		//
-	}
-
 	@Override
 	public Type getType(boolean ignoreMt) {
 		return getType();
@@ -114,7 +106,7 @@ public abstract class AbstractFunction implements Function {
 		List<String> ret = new ArrayList<String>();
 		ret.add("_");
 		List<String> n1 = term.evalToCode(config, machine).get(0).getExpression();
-		n1.add(":" + this.getClass().getSimpleName().toUpperCase(Locale.ENGLISH));
+		n1.add(":" + getNativeFunctionName());
 		ret.addAll(0, n1);
 		List<CodeContainer> cc = new ArrayList<CodeContainer>();
 		cc.add(new CodeContainer(ret));
@@ -256,4 +248,26 @@ public abstract class AbstractFunction implements Function {
 	public boolean isConstant() {
 		return false;
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.sixtyfour.elements.functions.Function#isOverride()
+	 */
+	@Override
+	public boolean isOverride() {
+		return false;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.sixtyfour.elements.functions.Function#getNativeFunctionName()
+	 */
+	@Override
+	public String getNativeFunctionName() {
+		return this.getClass().getSimpleName().toUpperCase(Locale.ENGLISH);
+
+	}
+
 }

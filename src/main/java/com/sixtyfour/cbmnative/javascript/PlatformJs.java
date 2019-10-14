@@ -61,10 +61,10 @@ public class PlatformJs implements PlatformProvider {
 		conf.setIntOptimizations(false);
 		conf.setShiftOptimizations(false);
 	}
-	
+
 	@Override
 	public Generator getGenerator(String orgLine) {
-	    return null;
+		return null;
 	}
 
 }

@@ -694,10 +694,12 @@ public class Optimizer6502 implements Optimizer {
 				this.add(new Pattern(false, "Single character output and break",
 						new String[] { "{LINE0}", "JSR SINGLECHROUTBRK" }, "LDA  {*}", "JSR CHRINT", "JSR STROUTBRK"));
 				// two mainly X16/VPOKE specific optimizations ahead:
-				this.add(new Pattern(false, "Fast byte conversion and store", new String[]{"{LINE3}", "{LINE4}", "{LINE0}", "{LINE1}", "JSR REALFAC", "{LINE6}"}, 
-					"LDA #<{MEM0}", "LDY #>{MEM0}","JSR REALFACPUSH", "LDY {MEM1}","STY {*}","JSR POPREAL","JSR FACWORD"));
-				this.add(new Pattern(false, "Byte store between PUSH/POP", new String[]{"{LINE1}", "{LINE2}"}, 
-					"JSR PUSHREAL", "LDY {MEM1}","STY {*}","JSR POPREAL"));
+				this.add(new Pattern(false, "Fast byte conversion and store",
+						new String[] { "{LINE3}", "{LINE4}", "{LINE0}", "{LINE1}", "JSR REALFAC", "{LINE6}" },
+						"LDA #<{MEM0}", "LDY #>{MEM0}", "JSR REALFACPUSH", "LDY {MEM1}", "STY {*}", "JSR POPREAL",
+						"JSR FACWORD"));
+				this.add(new Pattern(false, "Byte store between PUSH/POP", new String[] { "{LINE1}", "{LINE2}" },
+						"JSR PUSHREAL", "LDY {MEM1}", "STY {*}", "JSR POPREAL"));
 			}
 		};
 	}

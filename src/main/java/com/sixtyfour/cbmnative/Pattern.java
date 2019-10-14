@@ -120,9 +120,9 @@ public class Pattern implements java.lang.Cloneable {
 	 * @return the line
 	 */
 	public String getCurrentLine() {
-	    return pattern.get(pos);
+		return pattern.get(pos);
 	}
-	
+
 	/**
 	 * Returns the name of the pattern.
 	 * 

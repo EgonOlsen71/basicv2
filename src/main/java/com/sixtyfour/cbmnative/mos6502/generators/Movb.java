@@ -61,9 +61,9 @@ public class Movb extends GeneratorBase {
 			}
 		}
 	}
-	
+
 	protected void indexedSource(List<String> nCode, Operand source, Operand target) {
-	    	createIndexedSourceCode(nCode, source);
+		createIndexedSourceCode(nCode, source);
 
 		if (target.getType() == Type.INTEGER) {
 			nCode.add("MOVBSELF" + MOV_CNT + ":");
@@ -114,7 +114,6 @@ public class Movb extends GeneratorBase {
 
 	}
 
-
 	private void indexedTarget(List<String> nCode, Operand source, Operand target) {
 		createIndexedTargetCode(nCode, target);
 
@@ -134,7 +133,7 @@ public class Movb extends GeneratorBase {
 			nCode.add("STY $FFFF");
 		}
 	}
-	
+
 	private void createIndexedTargetCode(List<String> nCode, Operand target) {
 		if (target.getType() == Type.INTEGER) {
 			nCode.add("LDY " + target.getRegisterName());
@@ -154,7 +153,6 @@ public class Movb extends GeneratorBase {
 			nCode.add("STA " + lab + "+2");
 		}
 	}
-
 
 	private void noIndexRealSource(List<String> nCode, Operand source, Operand target) {
 		// Source is REAL

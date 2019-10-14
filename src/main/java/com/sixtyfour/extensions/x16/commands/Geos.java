@@ -58,7 +58,7 @@ public class Geos extends AbstractCommand {
 	 */
 	@Override
 	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
-	    return Util.createSingleCommand("JMP GEOS");
+		return Util.createSingleCommand("JMP GEOS");
 	}
 
 }
