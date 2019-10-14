@@ -48,6 +48,14 @@ public class X16Tests {
 		testExpresso();
 		testAffine();
 		testVloadTest();
+		testPeek();
+	}
+	
+	private static void testPeek() throws Exception {
+		System.out.println("\n\ntestPeek");
+		String[] vary = Loader.loadProgram("src/test/resources/x16/peek.bas");
+		Assembler assy = initTestEnvironment(vary, false, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++peek_x16.prg", true);
 	}
 	
 	private static void testVloadTest() throws Exception {

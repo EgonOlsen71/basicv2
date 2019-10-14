@@ -1,5 +1,6 @@
 package com.sixtyfour.cbmnative.powerscript;
 
+import com.sixtyfour.cbmnative.Generator;
 import com.sixtyfour.cbmnative.Optimizer;
 import com.sixtyfour.cbmnative.PlatformProvider;
 import com.sixtyfour.cbmnative.Transformer;
@@ -59,6 +60,11 @@ public class PlatformPs implements PlatformProvider {
 		conf.setLoopOptimizations(false);
 		conf.setIntOptimizations(false);
 		conf.setShiftOptimizations(false);
+	}
+	
+	@Override
+	public Generator getGenerator(String orgLine) {
+	    return null;
 	}
 
 }

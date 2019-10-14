@@ -74,4 +74,12 @@ public interface PlatformProvider {
 	 */
 	void overrideConfig(CompilerConfig conf);
 
+	/**
+	 * Can be implemented to override a specific generator
+	 * 
+	 * @param orgLine
+	 * @return
+	 */
+	Generator getGenerator(String orgLine);
+
 }

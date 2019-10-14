@@ -1,5 +1,6 @@
 package com.sixtyfour.cbmnative.mos6502.c64;
 
+import com.sixtyfour.cbmnative.Generator;
 import com.sixtyfour.cbmnative.Optimizer;
 import com.sixtyfour.cbmnative.PlatformProvider;
 import com.sixtyfour.cbmnative.Transformer;
@@ -60,5 +61,10 @@ public class Platform64 implements PlatformProvider {
 	public void overrideConfig(CompilerConfig conf) {
 		// TODO Auto-generated method stub
 
+	}
+	
+	@Override
+	public Generator getGenerator(String orgLine) {
+	    return null;
 	}
 }

@@ -11,7 +11,7 @@ import com.sixtyfour.elements.Type;
 
 public class Movb extends GeneratorBase {
 
-	private static int MOV_CNT = 0;
+	protected static int MOV_CNT = 0;
 
 	@Override
 	public String getMnemonic() {
@@ -61,39 +61,9 @@ public class Movb extends GeneratorBase {
 			}
 		}
 	}
-
-	private void indexedTargetWithConstant(List<String> nCode, Operand source, Operand target) {
-		createIndexedTargetCode(nCode, target);
-
-		nCode.add("LDA #$" + Integer.toHexString((int) Float.parseFloat(source.getValue().substring(1)))
-				.toUpperCase(Locale.ENGLISH));
-		nCode.add("MOVBSELF" + MOV_CNT + ":");
-		nCode.add("STA $FFFF");
-
-	}
-
-	private void createIndexedTargetCode(List<String> nCode, Operand target) {
-		if (target.getType() == Type.INTEGER) {
-			nCode.add("LDY " + target.getRegisterName());
-			nCode.add("LDA " + createAddress(target.getRegisterName(), 1));
-			nCode.add("STY TMP_REG");
-			nCode.add("STA TMP_REG+1");
-		} else {
-			nCode.add("LDA #<" + target.getRegisterName());
-			nCode.add("LDY #>" + target.getRegisterName());
-			nCode.add("; Real in (A/Y) to FAC");
-			nCode.add("JSR REALFAC"); // Real in (A/Y) to FAC
-
-			nCode.add("; FAC to integer in Y/A");
-			nCode.add("JSR FACWORD"); // FAC to integer in Y/A
-			String lab = "MOVBSELF" + MOV_CNT;
-			nCode.add("STY " + lab + "+1");
-			nCode.add("STA " + lab + "+2");
-		}
-	}
-
-	private void indexedSource(List<String> nCode, Operand source, Operand target) {
-		createIndexedTargetCode(nCode, source);
+	
+	protected void indexedSource(List<String> nCode, Operand source, Operand target) {
+	    	createIndexedSourceCode(nCode, source);
 
 		if (target.getType() == Type.INTEGER) {
 			nCode.add("MOVBSELF" + MOV_CNT + ":");
@@ -114,6 +84,37 @@ public class Movb extends GeneratorBase {
 		}
 	}
 
+	protected void createIndexedSourceCode(List<String> nCode, Operand source) {
+		if (source.getType() == Type.INTEGER) {
+			nCode.add("LDY " + source.getRegisterName());
+			nCode.add("LDA " + createAddress(source.getRegisterName(), 1));
+			nCode.add("STY TMP_REG");
+			nCode.add("STA TMP_REG+1");
+		} else {
+			nCode.add("LDA #<" + source.getRegisterName());
+			nCode.add("LDY #>" + source.getRegisterName());
+			nCode.add("; Real in (A/Y) to FAC");
+			nCode.add("JSR REALFAC"); // Real in (A/Y) to FAC
+
+			nCode.add("; FAC to integer in Y/A");
+			nCode.add("JSR FACWORD"); // FAC to integer in Y/A
+			String lab = "MOVBSELF" + MOV_CNT;
+			nCode.add("STY " + lab + "+1");
+			nCode.add("STA " + lab + "+2");
+		}
+	}
+
+	private void indexedTargetWithConstant(List<String> nCode, Operand source, Operand target) {
+		createIndexedTargetCode(nCode, target);
+
+		nCode.add("LDA #$" + Integer.toHexString((int) Float.parseFloat(source.getValue().substring(1)))
+				.toUpperCase(Locale.ENGLISH));
+		nCode.add("MOVBSELF" + MOV_CNT + ":");
+		nCode.add("STA $FFFF");
+
+	}
+
+
 	private void indexedTarget(List<String> nCode, Operand source, Operand target) {
 		createIndexedTargetCode(nCode, target);
 
@@ -133,6 +134,27 @@ public class Movb extends GeneratorBase {
 			nCode.add("STY $FFFF");
 		}
 	}
+	
+	private void createIndexedTargetCode(List<String> nCode, Operand target) {
+		if (target.getType() == Type.INTEGER) {
+			nCode.add("LDY " + target.getRegisterName());
+			nCode.add("LDA " + createAddress(target.getRegisterName(), 1));
+			nCode.add("STY TMP_REG");
+			nCode.add("STA TMP_REG+1");
+		} else {
+			nCode.add("LDA #<" + target.getRegisterName());
+			nCode.add("LDY #>" + target.getRegisterName());
+			nCode.add("; Real in (A/Y) to FAC");
+			nCode.add("JSR REALFAC"); // Real in (A/Y) to FAC
+
+			nCode.add("; FAC to integer in Y/A");
+			nCode.add("JSR FACWORD"); // FAC to integer in Y/A
+			String lab = "MOVBSELF" + MOV_CNT;
+			nCode.add("STY " + lab + "+1");
+			nCode.add("STA " + lab + "+2");
+		}
+	}
+
 
 	private void noIndexRealSource(List<String> nCode, Operand source, Operand target) {
 		// Source is REAL

@@ -1,6 +1,9 @@
 package com.sixtyfour.cbmnative.mos6502.x16;
 
+import java.util.Locale;
+
 import com.sixtyfour.Basic;
+import com.sixtyfour.cbmnative.Generator;
 import com.sixtyfour.cbmnative.Optimizer;
 import com.sixtyfour.cbmnative.PlatformProvider;
 import com.sixtyfour.cbmnative.Transformer;
@@ -63,5 +66,15 @@ public class PlatformX16 implements PlatformProvider {
 		conf.setNonDecimalNumbersAware(true);
 		conf.setExtendedLoad(true);
 		Basic.registerExtension(new X16Extensions());
+	}
+
+	@Override
+	public Generator getGenerator(String line) {
+	    line = line.trim().split(" ")[0].toUpperCase(Locale.ENGLISH);
+	    if (line.equals("MOVB")) {
+		return null;
+		//return new MovbX();
+	    }
+	    return null;
 	}
 }
