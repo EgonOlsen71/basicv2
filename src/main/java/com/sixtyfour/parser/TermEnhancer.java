@@ -53,36 +53,44 @@ public class TermEnhancer {
 		}
 
 		int inNumber = 0;
+		boolean inString = false;
 		StringBuilder sb = new StringBuilder();
 		String num = "";
 		for (int i = 0; i < term.length(); i++) {
 			char c = term.charAt(i);
-			if (inNumber > NONE) {
-				char cl = Character.toLowerCase(c);
-				if (inNumber == BIN && (cl == '0' || cl == '1')) {
-					num += c;
-				} else if ((cl >= '0' && cl <= '9') || (cl >= 'a' && cl <= 'f')) {
-					num += c;
-				} else {
-					sb.append(Integer.parseInt(num, inNumber == BIN ? 2 : 16));
-					sb.append(c);
-					inNumber = NONE;
-					num = "";
-				}
-			} else {
-				if (i < term.length() - 1) {
-					char cf = Character.toLowerCase(term.charAt(i + 1));
-					if (c == '%' && (cf == '0' || cf == '1')) {
-						inNumber = BIN;
-						num = "";
-					} else if (c == '$' && ((cf >= '0' && cf <= '9') || (cf >= 'a' && cf <= 'f'))) {
-						inNumber = HEX;
+			if (c == '"') {
+				inString = !inString;
+			}
+			if (!inString) {
+				if (inNumber > NONE) {
+					char cl = Character.toLowerCase(c);
+					if (inNumber == BIN && (cl == '0' || cl == '1')) {
+						num += c;
+					} else if ((cl >= '0' && cl <= '9') || (cl >= 'a' && cl <= 'f')) {
+						num += c;
+					} else {
+						sb.append(Integer.parseInt(num, inNumber == BIN ? 2 : 16));
+						sb.append(c);
+						inNumber = NONE;
 						num = "";
 					}
+				} else {
+					if (i < term.length() - 1) {
+						char cf = Character.toLowerCase(term.charAt(i + 1));
+						if (c == '%' && (cf == '0' || cf == '1')) {
+							inNumber = BIN;
+							num = "";
+						} else if (c == '$' && ((cf >= '0' && cf <= '9') || (cf >= 'a' && cf <= 'f'))) {
+							inNumber = HEX;
+							num = "";
+						}
+					}
+					if (inNumber == NONE) {
+						sb.append(c);
+					}
 				}
-				if (inNumber == NONE) {
-					sb.append(c);
-				}
+			} else {
+				sb.append(c);
 			}
 		}
 		if (!num.isEmpty()) {
