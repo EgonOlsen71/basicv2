@@ -49,6 +49,14 @@ public class X16Tests {
 		testAffine();
 		testVloadTest();
 		testPeek();
+		testRamPeek();
+	}
+	
+	private static void testRamPeek() throws Exception {
+		System.out.println("\n\ntestRamPeek");
+		String[] vary = Loader.loadProgram("src/test/resources/x16/rampeek.bas");
+		Assembler assy = initTestEnvironment(vary, false, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++rampeek.prg", true);
 	}
 	
 	private static void testPeek() throws Exception {
