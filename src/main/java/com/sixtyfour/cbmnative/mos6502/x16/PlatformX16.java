@@ -72,8 +72,7 @@ public class PlatformX16 implements PlatformProvider {
 	public Generator getGenerator(String line) {
 	    line = line.trim().split(" ")[0].toUpperCase(Locale.ENGLISH);
 	    if (line.equals("MOVB")) {
-		return null;
-		//return new MovbX();
+		return new MovbX();
 	    }
 	    return null;
 	}
