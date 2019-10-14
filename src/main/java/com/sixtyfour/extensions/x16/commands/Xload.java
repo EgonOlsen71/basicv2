@@ -19,7 +19,7 @@ import com.sixtyfour.system.BasicProgramCounter;
 import com.sixtyfour.util.VarUtils;
 
 /**
- * The LOAD command.
+ * The LOAD command for the X16, which slightly extends BASICV2's LOAD
  */
 public class Xload extends FileOperation {
 
