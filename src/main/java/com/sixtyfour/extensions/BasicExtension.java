@@ -77,7 +77,7 @@ public interface BasicExtension {
 
     /**
      * Applies an operation (function) by adding new code to the list, if this
-     * is possible. This only applies to function in extended BASIC, not the default ones.
+     * is possible. This only applies to functions in extended BASIC, not the default ones.
      * * 
      * @param function the operator/function call
      * @param code the code
