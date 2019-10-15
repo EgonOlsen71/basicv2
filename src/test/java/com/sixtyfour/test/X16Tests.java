@@ -50,8 +50,17 @@ public class X16Tests {
 		testVloadTest();
 		testPeek();
 		testRamPeek();
+		//testBank();
 	}
 
+	@SuppressWarnings("unused")
+	private static void testBank() throws Exception {
+		System.out.println("\n\ntestBank");
+		String[] vary = Loader.loadProgram("src/test/resources/x16/bank.bas");
+		Assembler assy = initTestEnvironment(vary, false, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++bank.prg", true);
+	}
+	
 	private static void testRamPeek() throws Exception {
 		System.out.println("\n\ntestRamPeek");
 		String[] vary = Loader.loadProgram("src/test/resources/x16/rampeek.bas");

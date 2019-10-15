@@ -101,6 +101,9 @@ public abstract class AbstractFunction implements Function {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see com.sixtyfour.parser.Atom#evalToCode(com.sixtyfour.config.CompilerConfig, com.sixtyfour.system.Machine)
+	 */
 	@Override
 	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
 		List<String> ret = new ArrayList<String>();
