@@ -99,5 +99,16 @@ public class Vpeek extends AbstractFunction {
 	public int getParameterCount() {
 		return 2;
 	}
+	
+	/**
+	 * @param code
+	 * @return
+	 */
+	@Override
+	public boolean addNativeFunctionCall(List<String> code) {
+		code.add("POP C");
+		code.add("JSR VPEEK");
+		return true;
+	}
 
 }

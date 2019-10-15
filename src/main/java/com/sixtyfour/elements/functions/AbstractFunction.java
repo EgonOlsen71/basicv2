@@ -178,6 +178,14 @@ public abstract class AbstractFunction implements Function {
 	public boolean isFunction(String function) {
 		return VarUtils.toUpper(function.trim()).startsWith(name);
 	}
+	
+	/* (non-Javadoc)
+	 * @see com.sixtyfour.elements.functions.Function#isNativeFunction(java.lang.String)
+	 */
+	@Override
+	public boolean isNativeFunction(String function) {
+		return VarUtils.toUpper(function.trim()).startsWith(getNativeFunctionName());
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -268,6 +276,14 @@ public abstract class AbstractFunction implements Function {
 	public String getNativeFunctionName() {
 		return this.getClass().getSimpleName().toUpperCase(Locale.ENGLISH);
 
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.sixtyfour.elements.functions.Function#addNativeFunctionCall(java.util.List)
+	 */
+	@Override
+	public boolean addNativeFunctionCall(List<String> code) {
+	    return false;
 	}
 
 }

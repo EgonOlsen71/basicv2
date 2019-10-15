@@ -3,6 +3,8 @@
  */
 package com.sixtyfour.elements.functions;
 
+import java.util.List;
+
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Term;
@@ -27,6 +29,16 @@ public interface Function extends Atom {
 	 * @return true, if is function
 	 */
 	boolean isFunction(String function);
+	
+	/**
+	 * Checks if some string matches this function's native name(s).
+	 * A function in BASIC source code can have different native names.
+	 * 
+	 * @param function the function
+	 * @return  true, if is native
+	 *  function
+	 */
+	boolean isNativeFunction(String function);
 
 	/**
 	 * Clones the function.
@@ -111,5 +123,16 @@ public interface Function extends Atom {
 	 * @return the name
 	 */
 	String getNativeFunctionName();
+
+	/**
+	 * Adds native (in terms of intermediate language) code to the list for this function.
+	 * This only applies to function that are part of a BASIC extension. Otherwise, the
+	 * NativeCompiler itself handles this and this method has to return false for these
+	 * default functions.
+	 * 
+	 * @param code the current code
+	 * @return if new code has been added
+	 */
+	boolean addNativeFunctionCall(List<String> code);
 
 }
