@@ -10,6 +10,9 @@ import com.sixtyfour.elements.Type;
  * Special implementation of the MOVB generator for the X16, because it has to
  * switch ROM banks for PEEK (for whatever reason...)
  * 
+ * @todo this might has to be extended to cover RAM banks as well once some kind of BANK command
+ * makes it into the X16's BASIC
+ * 
  * 
  * @author EgonOlsen71
  *
