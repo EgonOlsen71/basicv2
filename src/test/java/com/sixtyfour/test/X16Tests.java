@@ -51,8 +51,16 @@ public class X16Tests {
 		testPeek();
 		testRamPeek();
 		//testBank();
+		testKoala();
 	}
 
+	private static void testKoala() throws Exception {
+		System.out.println("\n\ntestKoala");
+		String[] vary = Loader.loadProgram("src/test/resources/x16/koala.bas");
+		Assembler assy = initTestEnvironment(vary, false, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++koala.prg", true);
+	}
+	
 	@SuppressWarnings("unused")
 	private static void testBank() throws Exception {
 		System.out.println("\n\ntestBank");
