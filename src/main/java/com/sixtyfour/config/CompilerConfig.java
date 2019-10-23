@@ -26,6 +26,7 @@ public class CompilerConfig {
 	private boolean shiftOptimizations = true;
 	private boolean nonDecimalNumbersAware = false;
 	private boolean convertStringToLower = false;
+	private boolean aggressiveFloatOptimizations = false; // Disabled for now in release version
 	private String symbolTable = null;
 	private LoopMode loopMode = LoopMode.EXECUTE;
 	private ProgressListener progressListener;
@@ -203,6 +204,14 @@ public class CompilerConfig {
 
 	public void setConvertStringToLower(boolean convertStringToLower) {
 		this.convertStringToLower = convertStringToLower;
+	}
+
+	public boolean isAggressiveFloatOptimizations() {
+		return aggressiveFloatOptimizations;
+	}
+
+	public void setAggressiveFloatOptimizations(boolean aggressiveFloatOptimizations) {
+		this.aggressiveFloatOptimizations = aggressiveFloatOptimizations;
 	}
 
 }

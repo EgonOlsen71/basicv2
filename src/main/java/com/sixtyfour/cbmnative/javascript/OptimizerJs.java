@@ -7,6 +7,7 @@ import com.sixtyfour.Logger;
 import com.sixtyfour.cbmnative.Optimizer;
 import com.sixtyfour.cbmnative.PlatformProvider;
 import com.sixtyfour.cbmnative.ProgressListener;
+import com.sixtyfour.config.CompilerConfig;
 
 /**
  * An optimizer implementation for the Javascript target platform. The
@@ -20,12 +21,7 @@ public class OptimizerJs implements Optimizer {
 	private final static int MAX_AHEAD = 9;
 
 	@Override
-	public List<String> optimize(PlatformProvider platform, List<String> code) {
-		return optimize(platform, code, null);
-	}
-
-	@Override
-	public List<String> optimize(PlatformProvider platform, List<String> code, ProgressListener pg) {
+	public List<String> optimize(CompilerConfig config, PlatformProvider platform, List<String> code, ProgressListener pg) {
 
 		if (code.size() > 1) {
 

@@ -18,6 +18,7 @@ import com.sixtyfour.cbmnative.Pattern;
 import com.sixtyfour.cbmnative.PlatformProvider;
 import com.sixtyfour.cbmnative.ProgressListener;
 import com.sixtyfour.cbmnative.Util;
+import com.sixtyfour.config.CompilerConfig;
 
 /**
  * An optimizer implementation for the 6520 cpu. Because it might run a large
@@ -29,19 +30,15 @@ import com.sixtyfour.cbmnative.Util;
 public class Optimizer6502 implements Optimizer {
 
 	@Override
-	public List<String> optimize(PlatformProvider platform, List<String> input) {
-		return optimize(platform, input, null);
-	}
-
-	@Override
-	public List<String> optimize(PlatformProvider platform, List<String> input, ProgressListener pg) {
+	public List<String> optimize(CompilerConfig config, PlatformProvider platform, List<String> input,
+			ProgressListener pg) {
 		// if (true) return input;
 		Logger.log("Optimizing native assembly code...");
 		long s = System.currentTimeMillis();
 		trimLines(input);
 		input = trackAndModifyRegisterUsage(input);
 		input = optimizeInternal(platform, input, pg);
-		input = applySpecialRules(platform, input);
+		input = applySpecialRules(config, platform, input);
 		input = removeNops(input);
 		Logger.log("Assembly code optimized in " + (System.currentTimeMillis() - s) + "ms");
 		return input;
@@ -120,6 +117,11 @@ public class Optimizer6502 implements Optimizer {
 
 	private OptimizationResult optimizeInternalThreaded(List<Pattern> patterns, PlatformProvider platform,
 			List<String> input, ProgressListener pg, Map<String, Number> const2Val) {
+		return optimizeInternalThreaded(patterns, platform, input, pg, const2Val, false);
+	}
+
+	private OptimizationResult optimizeInternalThreaded(List<Pattern> patterns, PlatformProvider platform,
+			List<String> input, ProgressListener pg, Map<String, Number> const2Val, boolean allLines) {
 		Map<String, Integer> type2count = new HashMap<>();
 		Map<String, Number> const2Value = new HashMap<>(const2Val);
 		Set<Pattern> used = new HashSet<Pattern>();
@@ -131,6 +133,9 @@ public class Optimizer6502 implements Optimizer {
 		int[] ps = getStartAndEnd(input);
 		int codeStart = ps[0];
 		int codeEnd = ps[1];
+		if (allLines) {
+			codeEnd = input.size();
+		}
 
 		if (pg != null) {
 			pg.start();
@@ -226,9 +231,10 @@ public class Optimizer6502 implements Optimizer {
 		return input;
 	}
 
-	private List<String> applySpecialRules(PlatformProvider platform, List<String> input) {
+	private List<String> applySpecialRules(CompilerConfig config, PlatformProvider platform, List<String> input) {
 		input = simplifyBranches(input);
 		input = applyAdditionalPatterns(platform, input);
+		input = applyFloatingPointPatterns(config, platform, input);
 		return aggregateLoads(input);
 	}
 
@@ -390,6 +396,22 @@ public class Optimizer6502 implements Optimizer {
 		OptimizationResult res = optimizeInternalThreaded(others, platform, ret, null, extractConstants(ret));
 		printOutResults(res.getType2count());
 		return res.getCode();
+	}
+
+	private List<String> applyFloatingPointPatterns(CompilerConfig config, PlatformProvider platform,
+			List<String> ret) {
+		if (config.isAggressiveFloatOptimizations()) {
+			// Do another run with fp optimizations
+			List<Pattern> others = new ArrayList<Pattern>();
+			Pattern tmpPat = new Pattern(false, "Fast FADD (ARG)", new String[] { "JSR FASTFADDARG" }, "JSR ARGADD");
+			others.add(tmpPat);
+			tmpPat = new Pattern(false, "Fast FADD (MEM)", new String[] { "JSR FASTFADDMEM" }, "JSR FACADD");
+			others.add(tmpPat);
+			OptimizationResult res = optimizeInternalThreaded(others, platform, ret, null, extractConstants(ret), true);
+			printOutResults(res.getType2count());
+			return res.getCode();
+		}
+		return ret;
 	}
 
 	private Map<String, Number> extractConstants(List<String> ret) {

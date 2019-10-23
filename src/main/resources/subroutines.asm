@@ -1789,7 +1789,7 @@ CALCNEXT	LDA TMP_ZP
 NOPV2IN		STA TMP_REG
 			LDY TMP_ZP+1
 			STY TMP_REG+1
-			JSR FACADD   ;M-ADD
+			JSR FACADD
 
 			LDA TMP2_REG
 			STA TMP_ZP
@@ -3273,5 +3273,293 @@ FILENOTFOUND
 ;###################################
 ERROR		
 			JMP ERRSYN	;General purpose error, here a syntax error
+;###################################
+
+FADDRET1 	RTS
+;###################################
+FADDRET2 	JMP ARGFAC    
+;###################################
+
+FASTFADDMEM
+			JSR MEMARG
+
+FASTFADDARG
+
+ARGSGN=$6E
+ARGLO=$6D
+ARGMO=$6C
+ARGMOH=$6B
+ARGHO=$6A
+ARGEXP=$69
+FACSGN=$66
+FACLO=$65
+FACMO=$64
+FACMOH=$63
+FACHO=$62
+FACEXP=$61
+FACOV=$70
+OLDOV=$56
+ARISGN=$6F
+FAC=$61
+
+
+			BEQ FADDRET2   ; JUMP IF FAC IS ZERO.
+			LDA ARGEXP
+			BEQ FADDRET1   ; JUMP IF ARG IS ZERO.
+			
+			
+			SEC
+			SBC FACEXP
+			BEQ FFADD_EXPEQ     ; JUMP IF NO SHIFTING NEEDED. THE A REGISTER IS ALREADY ZERO.
+			BCC FFADD_SHFARG1   ; JUMP IF ARG NEEDS SHIFTING (HAS SMALLER EXPONENT).
+			
+			                    ; HERE, FAC IS THE SMALLEST OPERAND, AND ARG IS THE LARGEST.
+			                    ; FAC WILL NEED TO BE SHIFTED RIGHT,
+			                    ; COPY EXPONENT AND SIGN FROM ARG.
+			LDY ARGEXP
+			STY FACEXP
+			LDY ARGSGN
+			STY FACSGN
+			
+			LDX #0
+			STX OLDOV      ; ARG HAS NO ROUNDING BITS.
+			
+			LDX #FAC       ; INDICATE FAC IS THE SMALLEST OPERAND.
+			
+			            	; A CONTAINS NUMBER OF BITS TO ROTATE RIGHT.
+			SEC
+			SBC #$08
+			BMI FFADD_SHFFAC2
+
+                        	; A >= 8, THEREFORE SHIFT RIGHT ONE BYTE.
+FFADD_SHFFAC1 
+			LDY FACLO      	; LO -> OV
+         	STY FACOV
+			LDY FACMO      	; MO -> LO
+			STY FACMO+1
+			LDY FACMOH     	; MOH -> MO
+			STY FACMOH+1
+			LDY FACHO      	; HO -> MOH
+			STY FACHO+1
+			LDY #0
+			STY FACHO      		; 0 -> HO
+			SBC #$08       		; CARRY IS ALWAYS SET HERE.
+			BPL FFADD_SHFFAC1   ; JUMP IF MORE BYTES TO SHIFT.
+
+FFADD_SHFFAC2 
+			ADC #$08       		; CARRY IS ALWAYS CLEAR HERE.
+         	BEQ FFADD_SHFFAC4   ; JUMP IF NO MORE SHIFTING.
+
+         	TAY
+         	LDA FACOV
+FFADD_SHFFAC3 
+			LSR FACHO      ; HO
+         	ROR FACMOH     ; MOH
+         	ROR FACMO      ; MO
+         	ROR FACLO      ; LO
+         	ROR            ; OV
+         	DEY
+         	BNE FFADD_SHFFAC3
+         	JMP FFADD_MANADD2   ; NO MORE SHIFTING.
+
+FFADD_SHFFAC4 
+			LDA FACOV       ; THE A-REGISTER CONTAINS THE SHIFTED ROUNDING BITS OF FAC.
+         	JMP FFADD_MANADD2
+
+FFADD_EXPEQ   
+			LDX FACOV
+         	STX OLDOV
+                        	; OLDOV NOW CONTAINS ROUNDING BITS OF FAC.
+                        	; THE A-REGISTER CONTAINS THE ROUNDING BITS OF ARG (I.E. ZERO).
+         	JMP FFADD_MANADD1
+         	
+FFADD_SHFARG2 
+			LDA FACOV      ; THE A-REGISTER CONTAINS THE SHIFTED ROUNDING BITS OF ARG.
+         	JMP FFADD_MANADD1
+
+FFADD_SHFARG1 
+			LDX FACOV
+         	STX OLDOV      	; OLDOV NOW CONTAINS ROUNDING BITS OF FAC.
+	
+         	LDX #$00       	; USE X-REGISTER FOR ROUNDING BITS OF ARG.
+
+                       		; -A CONTAINS NUMBER OF BITS TO ROTATE RIGHT.
+                        	; CARRY IS ALWAYS CLEAR HERE.
+         	ADC #$08
+         	BPL FFADD_SHFARG6   ; JUMP IF LESS THAN 8 SHIFTS.
+
+FFADD_SHFARG3 
+			LDX ARGLO      ; SHIFT RIGHT ONE BYTE
+         	LDY ARGMO      ; MO -> LO
+         	STY ARGMO+1
+         	LDY ARGMOH     ; MOH -> MO
+         	STY ARGMOH+1
+         	LDY ARGHO      ; HO -> MOH
+         	STY ARGHO+1
+		 	LDY #0
+         	STY ARGHO      ; 0 -> HO
+
+FFADD_SHFARG4 
+			ADC #$08
+         	BMI FFADD_SHFARG3
+         	BEQ FFADD_SHFARG3
+
+FFADD_SHFARG6 
+			SBC #$08
+         	BEQ FFADD_SHFARG2   ; JUMP IF NO MORE SHIFTING.
+
+         	TAY
+         	TXA            		; ROUNDING BITS.
+FFADD_SHFARG5 
+			LSR ARGHO
+         	ROR ARGMOH
+         	ROR ARGMO
+         	ROR ARGLO
+         	ROR         		; OV
+         	INY
+         	BNE FFADD_SHFARG5
+
+FFADD_MANADD1 
+			LDX #ARGEXP    		; INDICATE ARG IS THE SMALLEST OPERAND.
+
+FFADD_MANADD2 
+			BIT ARISGN
+         	BMI FFADD_MANSUB1   ; JUMP IF OPERANDS HAVE DIFFERENT SIGN.
+
+         	CLC
+         	ADC OLDOV
+         	STA FACOV
+         	LDA FACLO
+         	ADC ARGLO
+         	STA FACLO
+         	LDA FACMO
+         	ADC ARGMO
+         	STA FACMO
+         	LDA FACMOH
+         	ADC ARGMOH
+         	STA FACMOH
+         	LDA FACHO
+         	ADC ARGHO
+         	STA FACHO
+
+        	BCC FFADD_RNDRTS
+         	INC FACEXP
+         	BEQ FFADD_OVERR
+                        		; CARRY BIT IS SET HERE.
+         	ROR FACHO
+         	ROR FACMOH
+         	ROR FACMO
+         	ROR FACLO
+         	ROR FACOV
+FFADD_RNDRTS 
+			RTS
+FFADD_OVERR  
+			JMP ILLEGALQUANTITY
+FFADD_MANSUB1
+         	LDY #FACEXP
+         	CPX #ARGEXP
+         	BEQ FFADD_MANSUB2
+         	LDY #ARGEXP
+
+FFADD_MANSUB2 
+			SEC            ; NEGATE THE ROUNDING BITS BEFORE ADDING.
+         	EOR #$FF
+         	ADC OLDOV
+         	STA FACOV
+         	LDA 4,Y
+         	SBC 4,X
+         	STA FACLO
+         	LDA 3,Y
+         	SBC 3,X
+         	STA FACMO
+         	LDA 2,Y
+         	SBC 2,X
+         	STA FACMOH
+         	LDA 1,Y
+         	SBC 1,X
+         	STA FACHO
+         	BCS FNORMAL
+
+                        ; NEGATE FAC
+         	LDA FACSGN
+         	EOR #$FF
+         	STA FACSGN
+         	LDA FACHO
+         	EOR #$FF
+         	STA FACHO
+         	LDA FACMOH
+         	EOR #$FF
+         	STA FACMOH
+         	LDA FACMO
+         	EOR #$FF
+         	STA FACMO
+         	LDA FACLO
+         	EOR #$FF
+         	STA FACLO
+
+         	LDA FACOV
+         	EOR #$FF
+         	CLC
+         	ADC #1
+         	STA FACOV
+         	BNE FNORMAL
+         	INC FACLO
+         	BNE FNORMAL
+         	INC FACMO
+         	BNE FNORMAL
+         	INC FACMOH
+         	BNE FNORMAL
+         	INC FACHO
+
+FNORMAL  	BIT FACHO
+         	BMI FFADD_RET       ; JUMP IF NUMBER IS ALREADY NORMALIZED.
+
+         	LDA #0         ; NUMBER OF BITS ROTATED.
+         	CLC
+FFADD_NORM3   
+
+			LDX FACHO
+         	BNE FFADD_NORM1
+         	LDX FACHO+1
+         	STX FACHO
+         	LDX FACMOH+1
+         	STX FACMOH
+         	LDX FACMO+1
+         	STX FACMO
+         	LDX FACOV
+         	STX FACLO
+		 	LDX #0
+         	STX FACOV
+         	ADC #$08
+         	CMP #$20
+         	BNE FFADD_NORM3
+         	JMP FFADD_ZEROFAC
+
+FFADD_NORM2   
+		 	CLC
+		 	ADC #1
+         	ASL FACOV
+         	ROL FACLO
+         	ROL FACMO
+         	ROL FACMOH
+         	ROL FACHO
+FFADD_NORM1   
+		 	BPL FFADD_NORM2     ; WE MUST SHIFT LEFT ONE BIT
+
+         	SEC
+        	SBC FACEXP
+         	BCS FFADD_ZEROFAC
+
+         	EOR #$FF
+         	CLC
+		 	ADC #1
+         	STA FACEXP
+FFADD_RET   RTS
+
+FFADD_ZEROFAC
+			LDX #0
+		 	STX FACEXP
+         	STX FACSGN
+         	RTS
 ;###################################
 
