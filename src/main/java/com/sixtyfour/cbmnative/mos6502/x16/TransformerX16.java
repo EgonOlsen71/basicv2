@@ -66,6 +66,8 @@ public class TransformerX16 extends AbstractTransformer {
 		Map<String, String> calls = mapping.getMap();
 		calls.forEach((k, v) -> res.add(k + " = " + v));
 
+		addFacLocations(res);
+		
 		res.add("TMP_ZP = 105");
 		res.add("TMP2_ZP = 107");
 		res.add("TMP3_ZP = 34");

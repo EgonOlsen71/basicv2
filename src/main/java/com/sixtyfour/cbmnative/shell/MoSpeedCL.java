@@ -93,6 +93,7 @@ public class MoSpeedCL {
 		cfg.setFloatOptimizations(getOption("floatopt", cmds));
 		cfg.setIntOptimizations(getOption("intopt", cmds));
 		cfg.setSymbolTable(cmds.get("symboltable"));
+		cfg.setAggressiveFloatOptimizations(getOption("xfloatopt", cmds));
 		cfg.setNonDecimalNumbersAware(getOptionIntDefault("nondecimals", cmds, false));
 		cfg.setConvertStringToLower(getOptionIntDefault("tolower", cmds, false));
 		cfg.setLoopMode(getOption("loopopt", cmds) ? LoopMode.REMOVE : LoopMode.EXECUTE);
@@ -413,9 +414,11 @@ public class MoSpeedCL {
 		System.out.println("/deadstoreoptstr=true|false - enables/disables dead store elimination for strings");
 		System.out.println("/loopopt=true|false - enables/disables the removal of empty loops");
 		System.out.println(
-				"/addressheader=true|false - enables/disables the writing of the two address header bytes. Default is true.");
+				"/addressheader=true|false - enables/disables the writing of the two address header bytes");
 		System.out.println(
 				"/floatopt=true|false - enables/disables some floating point optimizations, which might impact accuracy");
+		System.out.println(
+				"/xfloatopt=true|false - enables/disables additional floating point optimizations. While they speed up some operations by up to 25%, they need more memory.");
 		System.out.println("/intopt=true|false - enables/disables some integer optimizations");
 		System.out.println(
 				"/compactlevel=[3...] - sets the compactor level. The lower the level, the more compact (but slower) the code. 0 means off!");

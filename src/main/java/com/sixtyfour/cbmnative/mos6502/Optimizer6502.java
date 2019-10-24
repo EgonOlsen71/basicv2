@@ -370,7 +370,7 @@ public class Optimizer6502 implements Optimizer {
 		// Do another run with the normal optimizer method but with some
 		// additional rules. Unlike the "big" run, this one happens in a single
 		// thread, because it's quite cheap to do anyway.
-		List<Pattern> others = new ArrayList<Pattern>();
+		List<Pattern> others = new ArrayList<>();
 		Pattern tmpPat = new Pattern(false, "Simplified not equal comparison",
 				new String[] { "{LINE0}", "{LINE4}", "{LINE6}", "{LINE7}", "{LINE8}", "{LINE9}" }, "JSR CMPFAC",
 				"BNE {*}", "LDA #0", "JMP {*}", "{LABEL}", "LDA #$1", "{LABEL}", "{LABEL}", "BEQ {*}", "{LABEL}");
@@ -402,11 +402,11 @@ public class Optimizer6502 implements Optimizer {
 			List<String> ret) {
 		if (config.isAggressiveFloatOptimizations()) {
 			// Do another run with fp optimizations
-			List<Pattern> others = new ArrayList<Pattern>();
-			Pattern tmpPat = new Pattern(false, "Fast FADD (ARG)", new String[] { "JSR FASTFADDARG" }, "JSR ARGADD");
-			others.add(tmpPat);
-			tmpPat = new Pattern(false, "Fast FADD (MEM)", new String[] { "JSR FASTFADDMEM" }, "JSR FACADD");
-			others.add(tmpPat);
+			List<Pattern> others = new ArrayList<>();
+			others.add(new Pattern(false, "Fast FADD (ARG)", new String[] { "JSR FASTFADDARG" }, "JSR ARGADD"));
+			others.add(new Pattern(false, "Fast FADD (MEM)", new String[] { "JSR FASTFADDMEM" }, "JSR FACADD"));
+			others.add(new Pattern(false, "Fast FMUL (ARG)", new String[] { "JSR FASTFMULARG" }, "JSR FACMUL"));
+			others.add(new Pattern(false, "Fast FMUL (MEM)", new String[] { "JSR FASTFMULMEM" }, "JSR MEMMUL"));
 			OptimizationResult res = optimizeInternalThreaded(others, platform, ret, null, extractConstants(ret), true);
 			printOutResults(res.getType2count());
 			return res.getCode();

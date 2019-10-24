@@ -3274,38 +3274,23 @@ FILENOTFOUND
 ERROR		
 			JMP ERRSYN	;General purpose error, here a syntax error
 ;###################################
-
-FADDRET1 	RTS
+; Improved floating point routines
+; ported from Michael Jørgensen's
+; work for the X16. 
+; See https://github.com/MJoergen
 ;###################################
-FADDRET2 	JMP ARGFAC    
+FADDRET1 	
+			RTS
 ;###################################
-
+FADDRET2 	
+			JMP ARGFAC    
+;###################################
 FASTFADDMEM
 			JSR MEMARG
-
 FASTFADDARG
-
-ARGSGN=$6E
-ARGLO=$6D
-ARGMO=$6C
-ARGMOH=$6B
-ARGHO=$6A
-ARGEXP=$69
-FACSGN=$66
-FACLO=$65
-FACMO=$64
-FACMOH=$63
-FACHO=$62
-FACEXP=$61
-FACOV=$70
-OLDOV=$56
-ARISGN=$6F
-FAC=$61
-
-
-			BEQ FADDRET2   ; JUMP IF FAC IS ZERO.
+			BEQ FADDRET2   		; JUMP IF FAC IS ZERO.
 			LDA ARGEXP
-			BEQ FADDRET1   ; JUMP IF ARG IS ZERO.
+			BEQ FADDRET1   		; JUMP IF ARG IS ZERO.
 			
 			
 			SEC
@@ -3322,24 +3307,24 @@ FAC=$61
 			STY FACSGN
 			
 			LDX #0
-			STX OLDOV      ; ARG HAS NO ROUNDING BITS.
+			STX OLDOV      		; ARG HAS NO ROUNDING BITS.
 			
-			LDX #FAC       ; INDICATE FAC IS THE SMALLEST OPERAND.
+			LDX #FAC       		; INDICATE FAC IS THE SMALLEST OPERAND.
 			
-			            	; A CONTAINS NUMBER OF BITS TO ROTATE RIGHT.
+			            		; A CONTAINS NUMBER OF BITS TO ROTATE RIGHT.
 			SEC
 			SBC #$08
 			BMI FFADD_SHFFAC2
 
-                        	; A >= 8, THEREFORE SHIFT RIGHT ONE BYTE.
+                        		; A >= 8, THEREFORE SHIFT RIGHT ONE BYTE.
 FFADD_SHFFAC1 
-			LDY FACLO      	; LO -> OV
+			LDY FACLO      		; LO -> OV
          	STY FACOV
-			LDY FACMO      	; MO -> LO
+			LDY FACMO      		; MO -> LO
 			STY FACMO+1
-			LDY FACMOH     	; MOH -> MO
+			LDY FACMOH     		; MOH -> MO
 			STY FACMOH+1
-			LDY FACHO      	; HO -> MOH
+			LDY FACHO      		; HO -> MOH
 			STY FACHO+1
 			LDY #0
 			STY FACHO      		; 0 -> HO
@@ -3353,51 +3338,51 @@ FFADD_SHFFAC2
          	TAY
          	LDA FACOV
 FFADD_SHFFAC3 
-			LSR FACHO      ; HO
-         	ROR FACMOH     ; MOH
-         	ROR FACMO      ; MO
-         	ROR FACLO      ; LO
-         	ROR            ; OV
+			LSR FACHO      		; HO
+         	ROR FACMOH     		; MOH
+         	ROR FACMO      		; MO
+         	ROR FACLO      		; LO
+         	ROR            		; OV
          	DEY
          	BNE FFADD_SHFFAC3
          	JMP FFADD_MANADD2   ; NO MORE SHIFTING.
 
 FFADD_SHFFAC4 
-			LDA FACOV       ; THE A-REGISTER CONTAINS THE SHIFTED ROUNDING BITS OF FAC.
+			LDA FACOV       	; THE A-REGISTER CONTAINS THE SHIFTED ROUNDING BITS OF FAC.
          	JMP FFADD_MANADD2
 
 FFADD_EXPEQ   
 			LDX FACOV
          	STX OLDOV
-                        	; OLDOV NOW CONTAINS ROUNDING BITS OF FAC.
-                        	; THE A-REGISTER CONTAINS THE ROUNDING BITS OF ARG (I.E. ZERO).
+                        		; OLDOV NOW CONTAINS ROUNDING BITS OF FAC.
+                        		; THE A-REGISTER CONTAINS THE ROUNDING BITS OF ARG (I.E. ZERO).
          	JMP FFADD_MANADD1
          	
 FFADD_SHFARG2 
-			LDA FACOV      ; THE A-REGISTER CONTAINS THE SHIFTED ROUNDING BITS OF ARG.
+			LDA FACOV      		; THE A-REGISTER CONTAINS THE SHIFTED ROUNDING BITS OF ARG.
          	JMP FFADD_MANADD1
 
 FFADD_SHFARG1 
 			LDX FACOV
-         	STX OLDOV      	; OLDOV NOW CONTAINS ROUNDING BITS OF FAC.
+         	STX OLDOV      		; OLDOV NOW CONTAINS ROUNDING BITS OF FAC.
 	
-         	LDX #$00       	; USE X-REGISTER FOR ROUNDING BITS OF ARG.
+         	LDX #$00       		; USE X-REGISTER FOR ROUNDING BITS OF ARG.
 
-                       		; -A CONTAINS NUMBER OF BITS TO ROTATE RIGHT.
-                        	; CARRY IS ALWAYS CLEAR HERE.
+                       			; -A CONTAINS NUMBER OF BITS TO ROTATE RIGHT.
+                        		; CARRY IS ALWAYS CLEAR HERE.
          	ADC #$08
          	BPL FFADD_SHFARG6   ; JUMP IF LESS THAN 8 SHIFTS.
 
 FFADD_SHFARG3 
-			LDX ARGLO      ; SHIFT RIGHT ONE BYTE
-         	LDY ARGMO      ; MO -> LO
+			LDX ARGLO      		; SHIFT RIGHT ONE BYTE
+         	LDY ARGMO      		; MO -> LO
          	STY ARGMO+1
-         	LDY ARGMOH     ; MOH -> MO
+         	LDY ARGMOH     		; MOH -> MO
          	STY ARGMOH+1
-         	LDY ARGHO      ; HO -> MOH
+         	LDY ARGHO      		; HO -> MOH
          	STY ARGHO+1
 		 	LDY #0
-         	STY ARGHO      ; 0 -> HO
+         	STY ARGHO      		; 0 -> HO
 
 FFADD_SHFARG4 
 			ADC #$08
@@ -3462,7 +3447,7 @@ FFADD_MANSUB1
          	LDY #ARGEXP
 
 FFADD_MANSUB2 
-			SEC            ; NEGATE THE ROUNDING BITS BEFORE ADDING.
+			SEC            		; NEGATE THE ROUNDING BITS BEFORE ADDING.
          	EOR #$FF
          	ADC OLDOV
          	STA FACOV
@@ -3480,7 +3465,6 @@ FFADD_MANSUB2
          	STA FACHO
          	BCS FNORMAL
 
-                        ; NEGATE FAC
          	LDA FACSGN
          	EOR #$FF
          	STA FACSGN
@@ -3514,7 +3498,7 @@ FFADD_MANSUB2
 FNORMAL  	BIT FACHO
          	BMI FFADD_RET       ; JUMP IF NUMBER IS ALREADY NORMALIZED.
 
-         	LDA #0         ; NUMBER OF BITS ROTATED.
+         	LDA #0         		; NUMBER OF BITS ROTATED.
          	CLC
 FFADD_NORM3   
 
@@ -3561,5 +3545,196 @@ FFADD_ZEROFAC
 		 	STX FACEXP
          	STX FACSGN
          	RTS
+;###################################
+FASTFMULMEM    
+			JSR MEMARG
+FASTFMULARG
+         	BEQ FFMUL_MULTRT    ; JUMP IF FAC IS ZERO.
+         	LDA ARGEXP
+         	BEQ FFMUL_ZEREMV    ; JUMP IF ARG IS ZERO.
+
+         	CLC
+         	ADC FACEXP
+         	BCC FFMUL_TRYOFF
+         	CLC
+         	BPL FFMUL_ADJUST
+         	JMP ILLEGALQUANTITY
+
+FFMUL_ZEREMV  
+		 	LDY #0
+		 	STY FACEXP     		; RESULT IS ZERO.
+         	STY FACSGN
+FFMUL_MULTRT  
+			RTS
+
+FFMUL_TRYOFF  
+			BPL FFMUL_ZEREMV    ; JUMP IF UNDERFLOW.
+FFMUL_ADJUST  
+			ADC #$80       		; CARRY IS ALWAYS CLEAR HERE.
+         	BEQ FFMUL_ZEREMV    ; JUMP IF UNDERFLOW.
+         	STA FACEXP
+
+         	LDA ARISGN
+         	STA FACSGN
+
+         	LDY #0
+		 	STY RESHOP
+         	STY RESHO
+         	STY RESMOH
+         	STY RESMO
+         	STY RESLO
+         	STY RESOV
+         	STY FACHOP
+
+FFMUL_B0      
+			LSR ARGLO      ; B0
+         	BCC FFMUL_B1
+         	LDA RESOV
+         	CLC
+         	ADC FACMOH     ; A2
+         	STA RESOV
+         	LDA RESLO
+         	ADC FACHO      ; A3
+         	STA RESLO
+         	LDA RESMO
+         	ADC FACHOP     ; A4
+         	STA RESMO
+         	BCC FFMUL_B1
+         	INC RESMOH
+         	BNE FFMUL_B1
+         	INC RESHO
+         	BNE FFMUL_B1
+         	INC RESHOP
+
+FFMUL_B1      
+			LSR ARGMO      ; B1
+         	BCC FFMUL_B2
+         	LDA RESOV
+         	CLC
+         	ADC FACMO      ; A1
+         	STA RESOV
+         	LDA RESLO
+         	ADC FACMOH     ; A2
+         	STA RESLO
+         	LDA RESMO
+         	ADC FACHO      ; A3
+         	STA RESMO
+         	LDA RESMOH
+         	ADC FACHOP     ; A4
+         	STA RESMOH
+         	BCC FFMUL_B2
+         	INC RESHO
+         	BNE FFMUL_B2
+         	INC RESHOP
+
+FFMUL_B2      
+			LSR ARGMOH     ; B2
+         	BCC FFMUL_B3
+         	LDA RESOV
+         	CLC
+         	ADC FACLO      ; A0
+         	STA RESOV
+         	LDA RESLO
+         	ADC FACMO      ; A1
+         	STA RESLO
+         	LDA RESMO
+         	ADC FACMOH     ; A2
+         	STA RESMO
+         	LDA RESMOH
+         	ADC FACHO      ; A3
+         	STA RESMOH
+         	LDA RESHO
+         	ADC FACHOP     ; A4
+         	STA RESHO
+         	BCC FFMUL_B3
+         	INC RESHOP
+
+FFMUL_B3      
+			LSR ARGHO      ; B3
+         	BCC FFMUL_ROTA
+         	LDA RESOV
+         	CLC
+         	ADC FACOV      ; AV
+         	STA RESOV
+         	LDA RESLO
+         	ADC FACLO      ; A0
+         	STA RESLO
+         	LDA RESMO
+         	ADC FACMO      ; A1
+         	STA RESMO
+         	LDA RESMOH
+         	ADC FACMOH     ; A2
+         	STA RESMOH
+         	LDA RESHO
+         	ADC FACHO      ; A3
+         	STA RESHO
+         	LDA RESHOP
+         	ADC FACHOP     ; A4
+         	STA RESHOP
+
+FFMUL_ROTA    
+			ASL FACOV
+         	ROL FACLO
+         	ROL FACMO
+         	ROL FACMOH
+         	ROL FACHO
+         	ROL FACHOP
+         	BMI FFMUL_FIN
+         	JMP FFMUL_B0
+
+FFMUL_FIN     
+			LDA RESHOP
+         	STA FACHO
+         	LDA RESHO
+         	STA FACMOH
+         	LDA RESMOH
+         	STA FACMO
+         	LDA RESMO
+         	STA FACLO
+         	LDA RESLO
+         	STA FACOV
+
+         	JMP FNORMAL    		; IN BASIC/XADD.S
+MUL10
+
+         	JSR ARGFAC      	; ARG = FAC; LEAVES EXPONENT IN A REGISTER.
+
+         	TAX            		; EXPONENT
+         	BEQ FFMUL_MUL101    ; RETURN IF ZERO.
+         	CLC
+         	ADC #2
+         	BCS FFMUL_MUL102    ; JUMP IF OVERFLOW
+         	STA FACEXP     		; STORE NEW EXPONENT.
+
+		 	LDY #0
+         	STY ARISGN
+         	JSR FASTFADDARG      ; THE Z FLAG IS CLEAR HERE.
+
+         	INC FACEXP
+         	BEQ FFMUL_MUL102     ; JUMP IF OVERFLOW
+FFMUL_MUL101  
+			RTS
+
+FFMUL_MUL102 
+         	JMP ILLEGALQUANTITY
+MUL6
+
+         	JSR ARGFAC      	; ARG = FAC
+
+         	TAX            		; EXPONENT
+         	BEQ FFMUL_MUL61     ; RETURN IF ZERO.
+         	INC FACEXP
+         	BEQ FFMUL_MUL62     ; JUMP IF OVERFLOW
+
+		 	LDY #0
+         	STY ARISGN
+         	JSR FASTFADDARG      ; THE Z FLAG IS CLEAR HERE.
+
+         	INC FACEXP
+         	BEQ FFMUL_MUL62     ; OVERFLOW
+FFMUL_MUL61   
+			RTS
+FFMUL_MUL62   
+         	JMP ILLEGALQUANTITY
 ;###################################
 

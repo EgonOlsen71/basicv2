@@ -44,7 +44,7 @@ public class TransformerTest {
 		// testTransformer2();
 		// testTransformer4();
 		// testTransformer5();
-		// testTransformerFractal();
+	//	testTransformerFractal();
 		// testTransformer6();
 		// testTransformer7();
 		// testTransformerPrime();
@@ -65,7 +65,7 @@ public class TransformerTest {
 		// testTransformer20();
 		// testTransformer22();
 		// testTransformer23();
-//		 testTransformerFrog();
+	//	 testTransformerFrog();
 		testTransformerAffine();
 		// testTransformer24();
 		// testTransformer25();
@@ -434,7 +434,7 @@ public class TransformerTest {
 		for (String line : vary) {
 			System.out.println(line);
 		}
-		final Assembler assy = initTestEnvironment(vary, false, 26000);
+		final Assembler assy = initTestEnvironment(vary, false, 26000, true, 5);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++affine.prg", true);
 		Machine machine = executeTest(assy);
 		System.out.println("Ticks: " + machine.getCpu().getClockTicks());
@@ -1065,9 +1065,14 @@ public class TransformerTest {
 	private static Assembler initTestEnvironment(String[] vary, boolean executePseudo, int variableStart) {
 		return initTestEnvironment(vary, executePseudo, -1, true);
 	}
+	
+	private static Assembler initTestEnvironment(String[] vary, boolean executePseudo, int variableStart,
+		boolean opti) {
+	    	return initTestEnvironment(vary, executePseudo, variableStart, opti, -1);
+	}
 
 	private static Assembler initTestEnvironment(String[] vary, boolean executePseudo, int variableStart,
-			boolean opti) {
+			boolean opti, int compact) {
 		CompilerConfig conf = new CompilerConfig();
 		boolean opt = opti;
 		conf.setConstantFolding(opt);
@@ -1080,7 +1085,9 @@ public class TransformerTest {
 		conf.setIntOptimizations(opt);
 		conf.setFloatOptimizations(opt);
 		conf.setLoopMode(LoopMode.REMOVE);
-		// conf.setCompactThreshold(3);
+		if (compact>2) {
+		    conf.setCompactThreshold(compact);
+		}
 
 		Basic basic = new Basic(vary);
 		basic.compile(conf);
