@@ -407,6 +407,7 @@ public class Optimizer6502 implements Optimizer {
 			others.add(new Pattern(false, "Fast FADD (MEM)", new String[] { "JSR FASTFADDMEM" }, "JSR FACADD"));
 			others.add(new Pattern(false, "Fast FMUL (ARG)", new String[] { "JSR FASTFMULARG" }, "JSR FACMUL"));
 			others.add(new Pattern(false, "Fast FMUL (MEM)", new String[] { "JSR FASTFMULMEM" }, "JSR MEMMUL"));
+			others.add(new Pattern(false, "Fast FSUB (ARG)", new String[] { "JSR FASTFSUBARG" }, "JSR FACSUB"));
 			OptimizationResult res = optimizeInternalThreaded(others, platform, ret, null, extractConstants(ret), true);
 			printOutResults(res.getType2count());
 			return res.getCode();

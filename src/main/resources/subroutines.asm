@@ -3279,6 +3279,18 @@ ERROR
 ; work for the X16. 
 ; See https://github.com/MJoergen
 ;###################################
+FASTFSUBMEM 
+			JSR MEMARG
+
+FASTFSUBARG
+			LDA $66
+			EOR #$FF
+			STA $66
+			EOR $6E
+			STA $6F
+			LDA $61
+			JMP FASTFADDARG
+;###################################
 FADDRET1 	
 			RTS
 ;###################################
