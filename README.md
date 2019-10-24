@@ -21,4 +21,4 @@ In addition to normal BASIC V2, it features a BASIC extension named GRAPHICS BAS
 
 Thanks to nietoperz809's efforts, there's a simple BASIC shell/editor available as well (see basicshell-package) that lets you load/save/edit/run BASIC programs in a C64-like editor. Or you can have a look at this second approach on this topic: https://github.com/nietoperz809/C64Screen
 
-
+The native 6502 runtime code includes floating point optimizations based on Michael Jørgensen's work. See https://github.com/MJoergen
