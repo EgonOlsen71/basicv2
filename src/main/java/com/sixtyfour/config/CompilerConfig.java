@@ -26,7 +26,7 @@ public class CompilerConfig {
 	private boolean shiftOptimizations = true;
 	private boolean nonDecimalNumbersAware = false;
 	private boolean convertStringToLower = false;
-	private boolean aggressiveFloatOptimizations = false; // Disabled for now in release version
+	private boolean aggressiveFloatOptimizations = true;
 	private String symbolTable = null;
 	private LoopMode loopMode = LoopMode.EXECUTE;
 	private ProgressListener progressListener;
