@@ -86,6 +86,7 @@ public abstract class AbstractTransformer implements Transformer {
         	res.add("RESOV=$2A");
         	res.add("RESHOP=$6F");
         	res.add("FACHOP=$56");
+        	res.add("ITERCNT=$67");
         }
 
 	protected List<String> createDatas(CompilerConfig config, Machine machine) {

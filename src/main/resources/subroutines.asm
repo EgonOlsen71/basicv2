@@ -3599,17 +3599,17 @@ FFMUL_ADJUST
          	STY FACHOP
 
 FFMUL_B0      
-			LSR ARGLO      ; B0
+			LSR ARGLO      		; B0
          	BCC FFMUL_B1
          	LDA RESOV
          	CLC
-         	ADC FACMOH     ; A2
+         	ADC FACMOH     		; A2
          	STA RESOV
          	LDA RESLO
-         	ADC FACHO      ; A3
+         	ADC FACHO      		; A3
          	STA RESLO
          	LDA RESMO
-         	ADC FACHOP     ; A4
+         	ADC FACHOP     		; A4
          	STA RESMO
          	BCC FFMUL_B1
          	INC RESMOH
@@ -3619,20 +3619,20 @@ FFMUL_B0
          	INC RESHOP
 
 FFMUL_B1      
-			LSR ARGMO      ; B1
+			LSR ARGMO      		; B1
          	BCC FFMUL_B2
          	LDA RESOV
          	CLC
-         	ADC FACMO      ; A1
+         	ADC FACMO      		; A1
          	STA RESOV
          	LDA RESLO
-         	ADC FACMOH     ; A2
+         	ADC FACMOH     		; A2
          	STA RESLO
          	LDA RESMO
-         	ADC FACHO      ; A3
+         	ADC FACHO      		; A3
          	STA RESMO
          	LDA RESMOH
-         	ADC FACHOP     ; A4
+         	ADC FACHOP     		; A4
          	STA RESMOH
          	BCC FFMUL_B2
          	INC RESHO
@@ -3640,48 +3640,48 @@ FFMUL_B1
          	INC RESHOP
 
 FFMUL_B2      
-			LSR ARGMOH     ; B2
+			LSR ARGMOH     		; B2
          	BCC FFMUL_B3
          	LDA RESOV
          	CLC
-         	ADC FACLO      ; A0
+         	ADC FACLO      		; A0
          	STA RESOV
          	LDA RESLO
-         	ADC FACMO      ; A1
+         	ADC FACMO      		; A1
          	STA RESLO
          	LDA RESMO
-         	ADC FACMOH     ; A2
+         	ADC FACMOH     		; A2
          	STA RESMO
          	LDA RESMOH
-         	ADC FACHO      ; A3
+         	ADC FACHO      		; A3
          	STA RESMOH
          	LDA RESHO
-         	ADC FACHOP     ; A4
+         	ADC FACHOP     		; A4
          	STA RESHO
          	BCC FFMUL_B3
          	INC RESHOP
 
 FFMUL_B3      
-			LSR ARGHO      ; B3
+			LSR ARGHO      		; B3
          	BCC FFMUL_ROTA
          	LDA RESOV
          	CLC
-         	ADC FACOV      ; AV
+         	ADC FACOV      		; AV
          	STA RESOV
          	LDA RESLO
-         	ADC FACLO      ; A0
+         	ADC FACLO      		; A0
          	STA RESLO
          	LDA RESMO
-         	ADC FACMO      ; A1
+         	ADC FACMO      		; A1
          	STA RESMO
          	LDA RESMOH
-         	ADC FACMOH     ; A2
+         	ADC FACMOH     		; A2
          	STA RESMOH
          	LDA RESHO
-         	ADC FACHO      ; A3
+         	ADC FACHO      		; A3
          	STA RESHO
          	LDA RESHOP
-         	ADC FACHOP     ; A4
+         	ADC FACHOP     		; A4
          	STA RESHOP
 
 FFMUL_ROTA    
@@ -3748,5 +3748,114 @@ FFMUL_MUL61
 			RTS
 FFMUL_MUL62   
          	JMP ILLEGALQUANTITY
+;###################################
+SQRTAB   
+		 	.BYTE $80 $81 $81 $82 $82 $83 $83 $84 $84 $85 $85 $86 $86 $87 $87 $88
+         	.BYTE $88 $88 $89 $89 $8A $8A $8B $8B $8C $8C $8D $8D $8E $8E $8E $8F
+         	.BYTE $8F $90 $90 $91 $91 $92 $92 $92 $93 $93 $94 $94 $95 $95 $95 $96
+         	.BYTE $96 $97 $97 $98 $98 $98 $99 $99 $9A $9A $9B $9B $9B $9C $9C $9D
+         	.BYTE $9D $9D $9E $9E $9F $9F $9F $A0 $A0 $A1 $A1 $A1 $A2 $A2 $A3 $A3
+         	.BYTE $A3 $A4 $A4 $A5 $A5 $A5 $A6 $A6 $A6 $A7 $A7 $A8 $A8 $A8 $A9 $A9
+         	.BYTE $AA $AA $AA $AB $AB $AB $AC $AC $AD $AD $AD $AE $AE $AE $AF $AF
+         	.BYTE $AF $B0 $B0 $B1 $B1 $B1 $B2 $B2 $B2 $B3 $B3 $B3 $B4 $B4 $B4 $B5
+
+         	.BYTE $B5 $B6 $B7 $B7 $B8 $B9 $BA $BA $BB $BC $BC $BD $BE $BE $BF $C0
+         	.BYTE $C0 $C1 $C2 $C2 $C3 $C4 $C4 $C5 $C6 $C6 $C7 $C8 $C8 $C9 $C9 $CA
+         	.BYTE $CB $CB $CC $CD $CD $CE $CE $CF $D0 $D0 $D1 $D2 $D2 $D3 $D3 $D4
+         	.BYTE $D5 $D5 $D6 $D6 $D7 $D8 $D8 $D9 $D9 $DA $DB $DB $DC $DC $DD $DD
+         	.BYTE $DE $DF $DF $E0 $E0 $E1 $E1 $E2 $E3 $E3 $E4 $E4 $E5 $E5 $E6 $E6
+         	.BYTE $E7 $E8 $E8 $E9 $E9 $EA $EA $EB $EB $EC $ED $ED $EE $EE $EF $EF
+         	.BYTE $F0 $F0 $F1 $F1 $F2 $F2 $F3 $F3 $F4 $F4 $F5 $F6 $F6 $F7 $F7 $F8
+         	.BYTE $F8 $F9 $F9 $FA $FA $FB $FB $FC $FC $FD $FD $FE $FE $FF $FF $FF
+
+SQRX16
+         	LDA FACEXP
+
+         	BNE FSQRT_S0
+         	RTS         
+FSQRT_S0         
+         	BIT FACSGN
+         	BPL FSQRT_S1
+         	JMP ILLEGALQUANTITY
+FSQRT_S1         
+
+         	STA TMP_FREG
+        	LDX FACHO
+         	STX TMP_FREG+1
+         	LDX FACMOH
+         	STX TMP_FREG+2
+         	LDX FACMO
+         	STX TMP_FREG+3
+         	LDX FACLO
+         	STX TMP_FREG+4
+
+		 	CLC
+		 	ADC #1
+         	LSR
+         	PHP            		; STORE CARRY FLAG
+         	CLC
+         	ADC #$40
+         	STA FACEXP
+
+         	LDA FACHO
+         	ASL            		; REMOVE BIT 7
+         	PLP            		; RETRIEVE CARRY
+         	ROR
+
+         	TAX
+         	LDA SQRTAB,X
+         	STA FACHO
+
+         	LDA #2
+         	STA ITERCNT
+
+FSQRT_S2
+         	LDA FACEXP
+        	STA TMP2_FREG
+         	LDX FACHO
+         	STX TMP2_FREG+1
+         	LDX FACMOH
+         	STX TMP2_FREG+2
+         	LDX FACMO
+         	STX TMP2_FREG+3
+         	LDX FACLO
+         	STX TMP2_FREG+4
+
+         	LDA TMP_FREG
+         	STA ARGEXP
+         	LDX TMP_FREG+1
+         	STX ARGHO
+         	LDX TMP_FREG+2
+         	STX ARGMOH
+         	LDX TMP_FREG+3
+         	STX ARGMO
+         	LDX TMP_FREG+4
+         	STX ARGLO
+
+         	LDA #0
+		 	STA ARISGN
+         	LDA FACEXP
+         	JSR ARGDIV      		; CALCULATE S/X
+
+         	LDA TMP2_FREG
+         	STA ARGEXP
+         	LDX TMP2_FREG+1
+         	STX ARGHO
+         	LDX TMP2_FREG+2
+         	STX ARGMOH
+         	LDX TMP2_FREG+3
+         	STX ARGMO
+         	LDX TMP2_FREG+4
+         	STX ARGLO
+
+         	LDA FACEXP
+         	JSR FASTFADDARG     	; CALCULATE X + S/X
+         	DEC FACEXP     	  		; DIVIDE RESULT BY 2
+
+         	DEC ITERCNT
+         	BNE FSQRT_S2
+
+FSQRT_RET     
+		 	RTS
 ;###################################
 

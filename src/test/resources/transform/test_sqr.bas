@@ -1,1 +1,1 @@
-10 fori=1to1000:printsqr(i):next
+10 TI$="000000":FORI=1TO1000:A=SQR(I):NEXT:PRINTTI,A
