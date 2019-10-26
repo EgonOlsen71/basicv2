@@ -403,12 +403,12 @@ public class Optimizer6502 implements Optimizer {
 		if (config.isAggressiveFloatOptimizations()) {
 			// Do another run with fp optimizations
 			List<Pattern> others = new ArrayList<>();
-			others.add(new Pattern(false, "Fast FADD (ARG)", new String[] { "JSR FASTFADDARG" }, "JSR ARGADD"));
-			others.add(new Pattern(false, "Fast FADD (MEM)", new String[] { "JSR FASTFADDMEM" }, "JSR FACADD"));
-			others.add(new Pattern(false, "Fast FMUL (ARG)", new String[] { "JSR FASTFMULARG" }, "JSR FACMUL"));
-			others.add(new Pattern(false, "Fast FMUL (MEM)", new String[] { "JSR FASTFMULMEM" }, "JSR MEMMUL"));
-			others.add(new Pattern(false, "Fast FSUB (ARG)", new String[] { "JSR FASTFSUBARG" }, "JSR FACSUB"));
-			others.add(new Pattern(false, "Fast FSQRT (NEW)", new String[] { "JSR SQRX16" }, "JSR SQRT"));
+			others.add(new Pattern(true, "Fast FADD (ARG)", new String[] { "JSR FASTFADDARG" }, "JSR ARGADD"));
+			others.add(new Pattern(true, "Fast FADD (MEM)", new String[] { "JSR FASTFADDMEM" }, "JSR FACADD"));
+			others.add(new Pattern(true, "Fast FMUL (ARG)", new String[] { "JSR FASTFMULARG" }, "JSR FACMUL"));
+			others.add(new Pattern(true, "Fast FMUL (MEM)", new String[] { "JSR FASTFMULMEM" }, "JSR MEMMUL"));
+			others.add(new Pattern(true, "Fast FSUB (ARG)", new String[] { "JSR FASTFSUBARG" }, "JSR FACSUB"));
+			others.add(new Pattern(true, "Fast FSQRT (NEW)", new String[] { "JSR FASTFSQRT" }, "JSR FACSQR"));
 			OptimizationResult res = optimizeInternalThreaded(others, platform, ret, null, extractConstants(ret), true);
 			printOutResults(res.getType2count());
 			return res.getCode();
@@ -601,7 +601,6 @@ public class Optimizer6502 implements Optimizer {
 						new String[] { "{LINE0}", "{LINE1}", "STA TMP3_ZP", "STY TMP3_ZP+1", "{LINE3}", "{LINE4}",
 								"JSR COPY2_XY" },
 						"LDA #<{REG0}", "LDY #>{REG0}", "JSR REALFAC", "LDX #<{REG1}", "LDY #>{REG1}", "JSR FACMEM"));
-				this.add(new Pattern(false, "Fast SQRT", new String[] { "JSR SQRT" }, "JSR FACSQR"));
 				this.add(new Pattern(false, "Fast address push", new String[] { "{LINE4}", "{LINE5}", "{LINE6}" },
 						"STA {REG0}", "STY {REG0}", "LDA {REG0}", "LDY {REG0}", "STA TMP_ZP", "STY TMP_ZP+1",
 						"JSR PUSHINT"));

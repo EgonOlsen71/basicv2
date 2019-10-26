@@ -395,9 +395,6 @@ public abstract class AbstractTransformer implements Transformer {
 
 		subs.addAll(inits);
 		subs.add("; *** SUBROUTINES END ***");
-		subs.add("SQRTTABLE");
-		subs.add(".BYTE 03 11 18 25 32 38 44 50");
-		subs.add(".BYTE 58 69 79 89 98 107 115 123");
 		res.addAll(mnems);
 		res.addAll(subs);
 		if (addOns != null) {
