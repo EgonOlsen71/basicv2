@@ -62,33 +62,60 @@ public class TermEnhancer {
 				inString = !inString;
 			}
 			if (!inString) {
-				if (inNumber > NONE) {
-					char cl = Character.toLowerCase(c);
-					if (inNumber == BIN && (cl == '0' || cl == '1')) {
-						num += c;
-					} else if ((cl >= '0' && cl <= '9') || (cl >= 'a' && cl <= 'f')) {
-						num += c;
-					} else {
-						sb.append(Integer.parseInt(num, inNumber == BIN ? 2 : 16));
-						sb.append(c);
-						inNumber = NONE;
-						num = "";
-					}
-				} else {
-					if (i < term.length() - 1) {
-						char cf = Character.toLowerCase(term.charAt(i + 1));
-						if (c == '%' && (cf == '0' || cf == '1')) {
-							inNumber = BIN;
-							num = "";
-						} else if (c == '$' && ((cf >= '0' && cf <= '9') || (cf >= 'a' && cf <= 'f'))) {
-							inNumber = HEX;
-							num = "";
-						}
-					}
-					if (inNumber == NONE) {
-						sb.append(c);
-					}
-				}
+			    	boolean xs=false;
+			    	if (c=='\\' && inNumber==NONE) {
+			    	    // Support for X16 Emulator's strange handling of \X when inserting code
+			    	    if (i<term.length()-3) {
+			    		char c2=Character.toLowerCase(term.charAt(i+1));
+			    		if (c2=='x') {
+			    		    String hex=term.substring(i+2, i+4);
+			    		    float val=Integer.parseInt(hex, 16);
+			    		    if (val==255) {
+			    			// What kind of stupid hack is that? \XFF is PI? WTF?!
+			    			sb.append(Math.PI);
+			    		    } else {
+			    			sb.append(val);
+			    			
+			    		    }
+			    		    i+=3;
+			    		    xs=true;	
+			    		}
+			    	    }
+			    	}
+			    	if (!xs) {
+        				if (inNumber > NONE) {
+        					char cl = Character.toLowerCase(c);
+        					if (inNumber == BIN && (cl == '0' || cl == '1')) {
+        						num += c;
+        					} else if ((cl >= '0' && cl <= '9') || (cl >= 'a' && cl <= 'f')) {
+        						num += c;
+        					} else {
+        						sb.append(Integer.parseInt(num, inNumber == BIN ? 2 : 16));
+        						if (c!='\\') {
+        						    sb.append(c);
+        						} else {
+        						    // handle \ in the next iteration... 
+        						    i--;
+        						}
+        						inNumber = NONE;
+        						num = "";
+        					}
+        				} else {
+        					if (i < term.length() - 1) {
+        						char cf = Character.toLowerCase(term.charAt(i + 1));
+        						if (c == '%' && (cf == '0' || cf == '1')) {
+        							inNumber = BIN;
+        							num = "";
+        						} else if (c == '$' && ((cf >= '0' && cf <= '9') || (cf >= 'a' && cf <= 'f'))) {
+        							inNumber = HEX;
+        							num = "";
+        						}
+        					}
+        					if (inNumber == NONE) {
+        						sb.append(c);
+        					}
+        				}
+			    	}
 			} else {
 				sb.append(c);
 			}
