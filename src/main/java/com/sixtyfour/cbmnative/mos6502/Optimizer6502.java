@@ -408,6 +408,7 @@ public class Optimizer6502 implements Optimizer {
 			others.add(new Pattern(true, "Fast FMUL (ARG)", new String[] { "JSR FASTFMULARG" }, "JSR FACMUL"));
 			others.add(new Pattern(true, "Fast FMUL (MEM)", new String[] { "JSR FASTFMULMEM" }, "JSR MEMMUL"));
 			others.add(new Pattern(true, "Fast FSUB (ARG)", new String[] { "JSR FASTFSUBARG" }, "JSR FACSUB"));
+			others.add(new Pattern(true, "Fast FSUB (MEM)", new String[] { "JSR FASTFSUBMEM" }, "JSR MEMSUB"));
 			others.add(new Pattern(true, "Fast FSQRT (NEW)", new String[] { "JSR FASTFSQRT" }, "JSR FACSQR"));
 			OptimizationResult res = optimizeInternalThreaded(others, platform, ret, null, extractConstants(ret), true);
 			printOutResults(res.getType2count());
@@ -719,6 +720,10 @@ public class Optimizer6502 implements Optimizer {
 						"JSR FACWORD"));
 				this.add(new Pattern(false, "Byte store between PUSH/POP", new String[] { "{LINE1}", "{LINE2}" },
 						"JSR PUSHREAL", "LDY {MEM1}", "STY {*}", "JSR POPREAL"));
+				this.add(new Pattern(false, "Combine load and add", new String[] {"JSR FACADD"}, "JSR MEMARG", "JSR ARGADD"));
+				this.add(new Pattern(false, "Combine load and div", new String[] {"JSR FACDIV"}, "JSR MEMARG", "JSR ARGDIV"));
+				this.add(new Pattern(false, "Combine load and mul", new String[] {"JSR MEMMUL"}, "JSR MEMARG", "JSR FACMUL"));
+				this.add(new Pattern(false, "Combine load and sub", new String[] {"JSR MEMSUB"}, "JSR MEMARG", "JSR FACSUB"));
 			}
 		};
 	}

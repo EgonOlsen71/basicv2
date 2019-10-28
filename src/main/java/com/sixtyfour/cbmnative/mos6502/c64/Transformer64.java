@@ -80,6 +80,7 @@ public class Transformer64 extends AbstractTransformer {
 		res.add("BASINT = $BCCC");
 		res.add("FACPOW = $BF7B");
 		res.add("FACSUB = $B853");
+		res.add("MEMSUB = $B850");
 		res.add("FACOR = $AFE6");
 		res.add("FACMEM = $BBD7");
 		res.add("ARGFAC = $BBFC");
