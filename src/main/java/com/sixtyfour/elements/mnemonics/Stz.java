@@ -1,5 +1,11 @@
 package com.sixtyfour.elements.mnemonics;
 
+/**
+ * STZ is 65C02 specific and used only in X16 optimizations
+ * 
+ * @author EgonOlsen71
+ *
+ */
 public class Stz extends AbstractMnemonic {
 
    	/**
