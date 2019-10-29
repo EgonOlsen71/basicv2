@@ -235,6 +235,7 @@ public class Optimizer6502 implements Optimizer {
 		input = simplifyBranches(input);
 		input = applyAdditionalPatterns(platform, input);
 		input = applyFloatingPointPatterns(config, platform, input);
+		input = applyEnhancedOptimizations(config, platform, input);
 		return aggregateLoads(input);
 	}
 
@@ -398,6 +399,21 @@ public class Optimizer6502 implements Optimizer {
 		return res.getCode();
 	}
 
+	
+	private List<String> applyEnhancedOptimizations(CompilerConfig config, PlatformProvider platform,
+		List<String> ret) {
+            	if (config.isEnhancedInstructionSet()) {
+            		// Do another run with 65C02 specific optimizations
+            		List<Pattern> others = new ArrayList<>();
+            		others.add(new Pattern(true, "STZ (1)", new String[] { "{LINE1}|STA>STZ", "{LINE2}|STA>STZ" }, "LDA #0", "STA {*}", "STA {*}"));
+            		others.add(new Pattern(true, "STZ (2)", new String[] { "{LINE1}|STA>STZ" }, "LDA #0", "STA {*}"));
+            		OptimizationResult res = optimizeInternalThreaded(others, platform, ret, null, extractConstants(ret), false);
+            		printOutResults(res.getType2count());
+            		return res.getCode();
+            	}
+            	return ret;
+	}
+	
 	private List<String> applyFloatingPointPatterns(CompilerConfig config, PlatformProvider platform,
 			List<String> ret) {
 		if (config.isAggressiveFloatOptimizations()) {

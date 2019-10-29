@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.sixtyfour.config.CompilerConfig;
+
 /**
  * A list of all known mnemonics.
  */
@@ -87,14 +89,28 @@ public class MnemonicList {
 			this.add(new Brk());
 		}
 	});
+	
+	// Enhanced list with support for some 65C02 commands...only STZ used for now.
+	private static final List<Mnemonic> XMNEMONICS = Collections.unmodifiableList(new ArrayList<Mnemonic>() {
+		private static final long serialVersionUID = 1L;
+
+		{
+		    this.add(new Stz());
+		    this.addAll(MNEMONICS);
+		}
+	});
 
 	/**
 	 * Return the list of mnemonics
 	 * 
 	 * @return the list
 	 */
-	public static List<Mnemonic> getMnemonics() {
+	public static List<Mnemonic> getMnemonics(CompilerConfig config) {
+	    if (!config.isEnhancedInstructionSet()) {
 		return MNEMONICS;
+	    } else {
+		return XMNEMONICS;
+	    }
 	}
 
 	/**

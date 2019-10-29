@@ -164,7 +164,7 @@ public class Assembler implements ProgramExecutor {
 
 			boolean isData = line.startsWith(".");
 			if (!isData) {
-				Mnemonic mne = AssemblyParser.getMnemonic(line);
+				Mnemonic mne = AssemblyParser.getMnemonic(config, line);
 				if (mne == null) {
 					LabelAndCode lac = AssemblyParser.getLabel(line);
 
@@ -172,7 +172,7 @@ public class Assembler implements ProgramExecutor {
 						if (lac.getCode().startsWith(".")) {
 							isData = true;
 						} else {
-							mne = AssemblyParser.getMnemonic(lac.getCode());
+							mne = AssemblyParser.getMnemonic(config, lac.getCode());
 						}
 						// Store it as a label...
 						lcon.put(lac.getLabel(), addr);

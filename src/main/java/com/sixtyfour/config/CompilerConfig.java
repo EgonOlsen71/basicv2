@@ -27,6 +27,7 @@ public class CompilerConfig {
 	private boolean nonDecimalNumbersAware = false;
 	private boolean convertStringToLower = false;
 	private boolean aggressiveFloatOptimizations = true;
+	private boolean enhancedInstructionSet=false;
 	private String symbolTable = null;
 	private LoopMode loopMode = LoopMode.EXECUTE;
 	private ProgressListener progressListener;
@@ -213,5 +214,14 @@ public class CompilerConfig {
 	public void setAggressiveFloatOptimizations(boolean aggressiveFloatOptimizations) {
 		this.aggressiveFloatOptimizations = aggressiveFloatOptimizations;
 	}
+
+	public boolean isEnhancedInstructionSet() {
+	    return enhancedInstructionSet;
+	}
+
+	public void setEnhancedInstructionSet(boolean enhancedInstructionSet) {
+	    this.enhancedInstructionSet = enhancedInstructionSet;
+	}
+
 
 }

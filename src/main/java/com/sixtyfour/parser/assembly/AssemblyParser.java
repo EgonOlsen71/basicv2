@@ -28,12 +28,12 @@ public class AssemblyParser {
 	 * @param linePart the line
 	 * @return the mnemonic or null
 	 */
-	public static Mnemonic getMnemonic(String linePart) {
+	public static Mnemonic getMnemonic(CompilerConfig config, String linePart) {
 		if (linePart.startsWith(".")) {
 			return null;
 		}
 
-		List<Mnemonic> mnemonics = MnemonicList.getMnemonics();
+		List<Mnemonic> mnemonics = MnemonicList.getMnemonics(config);
 		Mnemonic mne = null;
 
 		for (Mnemonic mnee : mnemonics) {

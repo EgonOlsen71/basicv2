@@ -2,6 +2,7 @@ package com.sixtyfour.system;
 
 import java.util.List;
 
+import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.mnemonics.Mnemonic;
 import com.sixtyfour.elements.mnemonics.MnemonicList;
 import com.sixtyfour.plugins.CpuCallListener;
@@ -68,11 +69,12 @@ public class Cpu {
 	/**
 	 * Returns the abstract instruction in human readable form.
 	 * 
+	 * @param config the compiler config
 	 * @param opcode the opcode to check
 	 * @return the instruction
 	 */
-	public String getInstruction(int opcode) {
-		List<Mnemonic> mnes = MnemonicList.getMnemonics();
+	public String getInstruction(CompilerConfig config, int opcode) {
+		List<Mnemonic> mnes = MnemonicList.getMnemonics(config);
 		for (Mnemonic mne : mnes) {
 			String ins = mne.getInstruction(opcode);
 			if (ins != null) {
