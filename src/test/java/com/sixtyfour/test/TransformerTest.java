@@ -112,6 +112,8 @@ public class TransformerTest {
 		testInts();
 		testFloatPerf();
 		testIntPerf();
+		testRs232Test();
+		testRs232InputTest();
 		testFileTest();
 	}
 	
@@ -120,6 +122,20 @@ public class TransformerTest {
 		String[] vary = Loader.loadProgram("src/test/resources/transform/filetest.bas");
 		Assembler assy = initTestEnvironment(vary, false, -1, true);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++filetest.prg", true);
+	}
+	
+	private static void testRs232InputTest() throws Exception {
+		System.out.println("\n\ntestRs232InputTest");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/rs232inputtest.bas");
+		Assembler assy = initTestEnvironment(vary, false, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++rs232inputtest.prg", true);
+	}
+	
+	private static void testRs232Test() throws Exception {
+		System.out.println("\n\ntestRs232Test");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/rs232test.bas");
+		Assembler assy = initTestEnvironment(vary, false, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++rs232test.prg", true);
 	}
 
 

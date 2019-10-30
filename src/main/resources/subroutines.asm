@@ -2323,6 +2323,7 @@ GETSTR		LDA #8
 			LDY #0
 			STY CMD_NUM		; Reset CMD target
 			JSR GETIN
+			CMP #0			; Without this compare, it works for disk and keyboard GETs...but not for those from the RS232 port...DOH!
 			BNE SOMEKEY
 NOKEY		LDA #<EMPTYSTR
 			STA A_REG
