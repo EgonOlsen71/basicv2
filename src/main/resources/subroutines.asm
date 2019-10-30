@@ -1926,7 +1926,7 @@ GETNUMBER
 			LDY #0
 			STY CMD_NUM			; Reset CMD target
 			JSR GETIN
-			CMP #0
+			CMP #0				; has to happen or otherwise, it won't work for RS232 access
 			BEQ IGNOREKEY
 			CMP #$2B
 			BEQ IGNOREKEY
