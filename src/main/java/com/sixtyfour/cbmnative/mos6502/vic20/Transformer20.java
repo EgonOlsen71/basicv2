@@ -131,6 +131,7 @@ public class Transformer20 extends AbstractTransformer {
 		res.add("JUMP_TARGET = 69");
 		if (preferZeropage) {
 			res.add("TMP_REG=71");
+			res.add("G_REG=73");
 		}
 		res.add("*=" + startAddress);
 		res.add("TSX");

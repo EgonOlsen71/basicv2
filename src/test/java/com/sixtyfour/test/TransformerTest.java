@@ -44,7 +44,7 @@ public class TransformerTest {
 		// testTransformer2();
 		// testTransformer4();
 		// testTransformer5();
-		testTransformerFractal();
+		//testTransformerFractal();
 		// testTransformer6();
 		// testTransformer7();
 		// testTransformerPrime();
@@ -112,7 +112,16 @@ public class TransformerTest {
 		testInts();
 		testFloatPerf();
 		testIntPerf();
+		testFileTest();
 	}
+	
+	private static void testFileTest() throws Exception {
+		System.out.println("\n\ntestFileTest");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/filetest.bas");
+		Assembler assy = initTestEnvironment(vary, false, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++filetest.prg", true);
+	}
+
 
 	private static void testFloatPerf() throws Exception {
 		System.out.println("\n\ntestFloatPerf");
