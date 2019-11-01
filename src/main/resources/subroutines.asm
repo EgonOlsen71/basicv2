@@ -2094,8 +2094,34 @@ DREAL2STR	LDA TMP3_ZP
 			LDX #5
 			JSR READADDPTR
 DFAC2STR	JSR NEXTDATA
-			JSR STRINT
-			RTS
+			JMP STRINTREAD
+;###################################
+STRINTREAD	LDY #0			; Special INT to STR routine that handles the fact that in case of conversions from data entries, there's no leading blank for positive numbers
+			JSR FACSTR
+			LDY #0
+			STY TMP_ZP+1
+			LDA #$FE
+			STA TMP_ZP
+			DEY
+STRLOOPREAD	INY
+			LDA $00FF,Y
+			BNE STRLOOPREAD
+			STY $FE
+			TYA
+			TAX			; Length in X
+			LDA $FF
+			CMP #$20
+			BNE STRREADNP
+			INC TMP_ZP	; Starts with blank? Remove it...
+			DEC $FE
+			LDA $FE
+			STA $FF		; needed? Not sure...but anyway...
+			DEX			; length -1
+STRREADNP	LDA #<A_REG
+			LDY #>A_REG
+			STA TMP2_ZP
+			STY TMP2_ZP+1
+			JMP COPYONLY
 ;###################################
 CLEANINPUT	LDY #0				; Processes an input string similar to BASIC's with the only difference that a " at the "wrong" location will be ignored instead of triggering an error
 			LDX #0
