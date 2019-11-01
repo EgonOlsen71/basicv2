@@ -2115,7 +2115,7 @@ STRLOOPREAD	INY
 			INC TMP_ZP	; Starts with blank? Remove it...
 			DEC $FE
 			LDA $FE
-			STA $FF		; needed? Not sure...but anyway...
+			STA $FF		; Copy the new length over
 			DEX			; length -1
 STRREADNP	LDA #<A_REG
 			LDY #>A_REG
