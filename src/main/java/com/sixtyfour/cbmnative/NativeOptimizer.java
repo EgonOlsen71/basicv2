@@ -204,7 +204,6 @@ public class NativeOptimizer {
 												pos3 = rs.indexOf(",");
 												rs = rs.substring(0, pos3 + 1) + "#{"
 														+ rs.substring(pos3 + 2, rs.indexOf("{", pos3)) + "}{STRING}";
-												System.out.println("Tröt: " + rs);
 											} else {
 												throw new RuntimeException("Unknown optimizer function: " + fun);
 											}
