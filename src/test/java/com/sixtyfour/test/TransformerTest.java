@@ -115,6 +115,32 @@ public class TransformerTest {
 		testRs232Test();
 		testRs232InputTest();
 		testFileTest();
+		testRecom64();
+		testInputTest();
+		testDivide();
+		
+	}
+	
+	private static void testDivide() throws Exception {
+		System.out.println("\n\ntestDivide");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/divide.bas");
+		Assembler assy = initTestEnvironment(vary, false, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++divide.prg", true);
+	}
+	
+	
+	private static void testInputTest() throws Exception {
+		System.out.println("\n\ntestInputTest");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/inputtest.bas");
+		Assembler assy = initTestEnvironment(vary, false, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++inputtest.prg", true);
+	}
+	
+	private static void testRecom64() throws Exception {
+		System.out.println("\n\ntestRecom64");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/recom64.bas");
+		Assembler assy = initTestEnvironment(vary, false, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++recom64.prg", true);
 	}
 	
 	private static void testFileTest() throws Exception {

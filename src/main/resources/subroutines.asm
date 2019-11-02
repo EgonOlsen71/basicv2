@@ -2178,7 +2178,28 @@ CINEXT		JMP CILOOP
 CIEND		LDA #0
 			STA $0200,X			; Write terminator...
 			RTS					; ...and exit
-					
+;###################################
+QMARKOUT1	LDA #1
+			STA TMP_ZP
+			JMP QMARKOUT	
+;###################################
+QMARKOUT2	LDA #2
+			STA TMP_ZP
+			JMP QMARKOUT	
+;###################################
+QMARKOUT	LDA $13				; only print the ? if it's keyboard/direct input. $13 holds the active io device
+			BNE NOQMARK
+			JSR REROUTE
+			LDA #63
+			LDY TMP_ZP
+			CPY #2				; print either one or two question marks
+			BNE ONEQMARK
+			JSR CHROUT
+ONEQMARK	JSR CHROUT
+			LDA #32
+			JSR CHROUT
+			JMP RESETROUTE
+NOQMARK		RTS						
 ;###################################
 INPUTSTR	LDA #$0
 INPUTSTR2	STA TMP_REG+1

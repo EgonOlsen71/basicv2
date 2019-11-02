@@ -379,6 +379,14 @@ function STROUT {
 	out $global:A_REG
 }
 
+function QMARKOUT1 {
+	out "?"
+}
+
+function QMARKOUT2 {
+	out "??"
+}
+
 function REALOUT {
 	out $global:X_REG
 }

@@ -839,6 +839,12 @@ public class PseudoCpu {
 		case "STROUT":
 			strOut(parts, 0);
 			return;
+		case "QMARKOUT1":
+			qMarkOut1(parts, 0);
+			return;
+		case "QMARKOUT2":
+			qMarkOut2(parts, 0);
+			return;
 		case "LINEBREAK":
 			lineBreak(parts, 0);
 			return;
@@ -953,6 +959,8 @@ public class PseudoCpu {
 		}
 	}
 
+	
+
 	private void fdex(String[] parts) {
 		regs[X] = regs[X].intValue() - 1;
 	}
@@ -1009,6 +1017,23 @@ public class PseudoCpu {
 		} else {
 			machine.getDeviceProvider().print(channel, readString(regs[A].intValue()));
 		}
+	}
+	
+	private void qMarkOut(String[] parts, int channel, int cnt) {
+		String qs="?????";
+		if (channel == 0) {
+			machine.getOutputChannel().print(channel, qs.substring(0, cnt));
+		} else {
+			machine.getDeviceProvider().print(channel, qs.substring(0, cnt));
+		}
+	}
+	
+	private void qMarkOut1(String[] parts, int channel) {
+		qMarkOut(parts, channel, 1);
+	}
+	
+	private void qMarkOut2(String[] parts, int channel) {
+		qMarkOut(parts, channel, 2);
 	}
 
 	private void strOutAbs(String strg, int channel) {

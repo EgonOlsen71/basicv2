@@ -365,6 +365,14 @@ this.STROUT = function() {
 	this.out(this.A_REG);
 }
 
+this.QMARKOUT1 = function() {
+	this.out("?");
+}
+
+this.QMARKOUT2 = function() {
+	this.out("??");
+}
+
 this.REALOUT = function() {
 	this.out(this.X_REG);
 }
