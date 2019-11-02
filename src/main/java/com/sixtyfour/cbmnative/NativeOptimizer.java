@@ -73,6 +73,9 @@ public class NativeOptimizer {
 				new String[] { "MOV Y,X", "NEG X,Y" }));
 		patterns.add(new NativePattern(new String[] { "MOV C,X", "PUSH C" }, new String[] { "PUSH X" }));
 		patterns.add(new NativePattern(new String[] { "PUSH C", "MOV Y,#*", "POP C" }, new String[] { "{1}" }));
+		// This could replace CHR$(<const>) calls with the actual String, but it doesn't
+		// seem to be worth it...
+		// patterns.add(new NativePattern(new String[] { "MOV Y,#*", "CHGCTX #1","JSR CHR"}, new String[] {"{0:MOV Y,>MOV A,§CHR§}"}));
 
 	}
 
@@ -188,8 +191,24 @@ public class NativeOptimizer {
 									rs = lines[Integer.parseInt(num)];
 									if (pos != -1) {
 										int pos2 = rw.indexOf(">", pos);
-										rs = rs.replace(rw.substring(pos + 1, pos2),
-												rw.substring(pos2 + 1, rw.length() - 1));
+										if (rw.indexOf("§", pos2) == -1) {
+											rs = rs.replace(rw.substring(pos + 1, pos2),
+													rw.substring(pos2 + 1, rw.length() - 1));
+										} else {
+											int pos3 = rw.indexOf("§", pos2);
+											int pos4 = rw.indexOf("§", pos3 + 1);
+											String fun = rw.substring(pos3 + 1, pos4);
+											if (fun.equalsIgnoreCase("chr")) {
+												rs = rs.replace(rw.substring(pos + 1, pos2),
+														rw.substring(pos2 + 1, pos3));
+												pos3 = rs.indexOf(",");
+												rs = rs.substring(0, pos3 + 1) + "#{"
+														+ rs.substring(pos3 + 2, rs.indexOf("{", pos3)) + "}{STRING}";
+												System.out.println("Tröt: " + rs);
+											} else {
+												throw new RuntimeException("Unknown optimizer function: " + fun);
+											}
+										}
 									}
 								}
 								if (rs == null) {

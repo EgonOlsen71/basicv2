@@ -249,7 +249,7 @@ STRFUNCINT 	LDA B_REG			;the source string
 			LDY #0
 			RTS
 ;###################################
-; Generic function for string function like for left$, right$ and mid$. It reuses the actual code to
+; Generic function for string functions like for left$, right$ and mid$. It reuses the actual code to
 ; copy strings for an assignment but it jumps into it at a "copy only" stage. However, it still assumes
 ; that the source pointer points towards the length of the source string.
 ; We have to adapt to that behaviours, so we are adjusting and/or saving/restoring some values here.
