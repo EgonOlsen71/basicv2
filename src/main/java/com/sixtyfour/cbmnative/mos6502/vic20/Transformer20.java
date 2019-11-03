@@ -122,7 +122,7 @@ public class Transformer20 extends AbstractTransformer {
 		res.add("ERRSYN = $CF08"); // ok
 		res.add("ERRFNF = $F1E2"); // ok
 
-		addFacLocations(res);
+		addMemoryLocations(res);
 		
 		res.add("TMP_ZP = 105");
 		res.add("TMP2_ZP = 107");

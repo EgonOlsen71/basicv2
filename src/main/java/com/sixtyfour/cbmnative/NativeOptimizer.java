@@ -18,13 +18,13 @@ public class NativeOptimizer {
 	private static List<NativePattern> patterns = new ArrayList<NativePattern>();
 
 	static {
-		patterns.add(new NativePattern(new String[] { "PUSH*", "POP*" }, new String[] { "MOV p1,p0" }));
+		patterns.add(new NativePattern(new String[] { "PUSH*", "POP*" }, new String[] { "MOV p1,p0" }));			// Remove this and works...but sucks...
 		patterns.add(new NativePattern(new String[] { "PUSH X", "MOV C*|*[]*", "POP Y" }, new String[] { "{1}" }));
 		patterns.add(
 				new NativePattern(new String[] { "PUSH Y", "MOV Y,*", "POP X" }, new String[] { "MOV X,Y", "{1}" }));
 		patterns.add(new NativePattern(new String[] { "MOV Y,#*", "MOV X,#-1{INTEGER}", "MUL X,Y" },
 				new String[] { "{0:MOV Y,#>MOV X,#-}" }));
-		patterns.add(new NativePattern(new String[] { "MOV Y,*", "MOV X,Y" }, new String[] { "{0:MOV Y,>MOV X,}" }));
+		patterns.add(new NativePattern(new String[] { "MOV Y,*", "MOV X,Y" }, new String[] { "{0:MOV Y,>MOV X,}" })); //..or remove this and works...but also sucks...
 		patterns.add(new NativePattern(new String[] { "MOV B,*", "MOV A,B" }, new String[] { "{0:MOV B,>MOV A,}" }));
 		patterns.add(new NativePattern(new String[] { "MOV Y*", "PUSH Y", "JSR COMPACT", "MOV A*", "POP X" },
 				new String[] { "{2}", "{3}", "{0:MOV Y,>MOV X,}" }));

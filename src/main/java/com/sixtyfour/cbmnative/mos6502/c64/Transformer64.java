@@ -118,7 +118,7 @@ public class Transformer64 extends AbstractTransformer {
 		res.add("ERRSYN = $AF08");
 		res.add("ERRFNF = $F12F");
 
-		addFacLocations(res);
+		addMemoryLocations(res);
 		
 		res.add("TMP_ZP = 105");
 		res.add("TMP2_ZP = 107");

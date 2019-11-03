@@ -37,14 +37,22 @@ SNPNOOVDC	LDX G_REG
 DOSSTAT		LDA #0
 			JMP PTSTAT
 ;###################################
+SCREEN		LDA #<X_REG
+			LDY #>X_REG
+			JSR REALFAC
+			JSR FACWORD
+			TYA
+			TAX
+			JMP CSCREEN
+;###################################
 VLOAD		LDA #0			; set secondary address to 0
-			STA $B9
+			STA SECADDR
 			JSR SETNAMEPRT
 			LDA #<X_REG
 			LDY #>X_REG
 			JSR REALFAC
 			JSR FACWORD
-			STY $BA			; Store device number
+			STY DEVICENUM	; Store device number
 			LDA #<Y_REG		; read secondary address
 			LDY #>Y_REG
 			JSR REALFAC
@@ -54,40 +62,40 @@ VLOAD		LDA #0			; set secondary address to 0
 			TAY
 			INY
 			INY
-			STY $93			; "abuse" Load/Verify-Flag to store bank
+			STY VERCHK		; "abuse" Load/Verify-Flag to store bank
 			LDY #0
-			STY $90			; reset status
+			STY STATUS		; reset status
 			JMP LOADX16
 ;###################################
 LOADEXT		LDA #0			; set secondary address to 0
-			STA $B9
+			STA SECADDR
 			JSR SETNAMEPRT
 			LDA #<X_REG
 			LDY #>X_REG
 			JSR REALFAC
 			JSR FACWORD
-			STY $BA			; Store device number
+			STY DEVICENUM	; Store device number
 			LDA #<Y_REG		; read secondary address
 			LDY #>Y_REG
 			JSR REALFAC
 			JSR FACWORD
 			STY VERABNK		; switch bank
 			LDY #0
-			STY $93			; set Load/Verify-Flag to 0
-			STY $90			; reset status	
+			STY VERCHK		; set Load/Verify-Flag to 0
+			STY STATUS		; reset status	
 			JMP LOADX16
 ;###################################
 LOADX16		LDA #<C_REG		; read target address
 			LDY #>C_REG
 			JSR REALFAC
 			JSR FACWORD
-			STY $C3
-			STA $C4
-			LDA $93			; restore these for load call (which sets them again)
-			LDX $C3
-			LDY $C4
+			STY LOADEND
+			STA LOADEND+1
+			LDA VERCHK		; restore these for load call (which sets them again)
+			LDX LOADEND
+			LDY LOADEND+1
 			JSR LOADXX
-			LDA $90
+			LDA STATUS
 			BEQ LOADX16OK
 			JMP FILENOTFOUND
 LOADX16OK	RTS

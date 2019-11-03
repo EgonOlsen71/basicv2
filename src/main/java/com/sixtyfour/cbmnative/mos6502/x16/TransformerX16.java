@@ -66,16 +66,16 @@ public class TransformerX16 extends AbstractTransformer {
 		Map<String, String> calls = mapping.getMap();
 		calls.forEach((k, v) -> res.add(k + " = " + v));
 
-		addFacLocations(res);
+		addMemoryLocations(res);
 		
-		res.add("TMP_ZP = 105");
-		res.add("TMP2_ZP = 107");
-		res.add("TMP3_ZP = 34");
+		res.add("TMP_ZP = 96");
+		res.add("TMP2_ZP = 101");
+		res.add("TMP3_ZP = 106");
 		res.add(";make sure that JUMP_TARGET's low can't be $ff");
-		res.add("JUMP_TARGET = 69");
+		res.add("JUMP_TARGET = 111");
 		if (preferZeropage) {
-			res.add("TMP_REG=71");
-			res.add("G_REG=73");
+			res.add("TMP_REG=116");
+			res.add("G_REG=121");
 		}
 		res.add("*=" + startAddress);
 		res.add("TSX");
@@ -84,5 +84,50 @@ public class TransformerX16 extends AbstractTransformer {
 		addStructures(config, machine, platform, code, res, consts, vars, mnems, subs, mapping.getFarCalls());
 		return res;
 	}
+	
+	@Override
+	protected void addMemoryLocations(List<String> res) {
+		res.add("ARGSGN=$E2");
+		res.add("ARGLO=$E1");
+		res.add("ARGMO=$E0");
+		res.add("ARGMOH=$DF");
+		res.add("ARGHO=$DE");
+		res.add("ARGEXP=$DD");
+		res.add("FACSGN=$DB");
+		res.add("FACLO=$DA");
+		res.add("FACMO=$D9");
+		res.add("FACMOH=$D8");
+		res.add("FACHO=$D7");
+		res.add("FACEXP=$D6");
+		res.add("FACOV=$E4");
+		res.add("OLDOV=$5F"); // Should be free!?
+		res.add("ARISGN=$E3");
+		res.add("FAC=$D6");
+		res.add("RESLO=$BB");
+		res.add("RESMO=$BA");
+		res.add("RESMOH=$B9");
+		res.add("RESHO=$B8");
+		res.add("RESOV=$BC");
+		res.add("RESHOP=$E3");
+		res.add("FACHOP=$5F");	// Should be free!?
+		res.add("ITERCNT=$DC");
+		res.add("IOCHANNEL=$2D9");
+		res.add("BASICSTART=$BD");
+		res.add("BASICEND=$2E5");
+		res.add("STATUS=$287");
+		res.add("VERCHK=$2D0");
+		res.add("SECADDR=$29A");
+		res.add("DEVICENUM=$29B");
+		res.add("FILELEN=$298");
+		res.add("LOGICADDR=$299");
+		res.add("FILEADDR=$84");
+		res.add("LOADEND=$86");	/// Is this correct? Should be memuss, but that gone in the symbool table albeit it's still in the soucre code!?
+		res.add("KEYNDX=$29E");
+		res.add("INDEX1=$B4");
+		res.add("VALTYPE=$2D3");
+		res.add("LOWDS=$D2");
+		res.add("TIMEADDR=$292");
+	}
+
 
 }

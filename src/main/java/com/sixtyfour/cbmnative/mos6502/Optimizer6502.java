@@ -32,7 +32,7 @@ public class Optimizer6502 implements Optimizer {
 	@Override
 	public List<String> optimize(CompilerConfig config, PlatformProvider platform, List<String> input,
 			ProgressListener pg) {
-		// if (true) return input;
+		//if (true) return input;
 		Logger.log("Optimizing native assembly code...");
 		long s = System.currentTimeMillis();
 		trimLines(input);
@@ -464,7 +464,6 @@ public class Optimizer6502 implements Optimizer {
 		return new ArrayList<Pattern>() {
 			private static final long serialVersionUID = 1L;
 			{
-
 				this.add(new Pattern("Simplified setting to 0", new String[] { "LDA #0", "STA {MEM0}", "STA {MEM0}+1" },
 						"LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC", "LDX #<{MEM0}", "LDY #>{MEM0}", "JSR FACMEM"));
 				this.add(new Pattern(false, "Faster logic OR", new String[] { "JSR FASTOR" }, "JSR FACOR"));
@@ -506,7 +505,7 @@ public class Optimizer6502 implements Optimizer {
 						new String[] { "{LINE0}", "{LINE1}", "STA TMP3_ZP", "STY TMP3_ZP+1", "{LINE3}", "{LINE4}",
 								"JSR COPY2_XY" },
 						"LDA #<{MEM0}", "LDY #>{MEM0}", "JSR REALFAC", "LDX #<{REG0}", "LDY #>{REG0}", "JSR FACMEM"));
-				this.add(new Pattern(false, "Simplified CMP with 0", new String[] { "{LINE0}", "LDA $61" },
+				this.add(new Pattern(false, "Simplified CMP with 0", new String[] { "{LINE0}", "LDA FAC" },
 						"JSR REALFAC", "LDX #<{REG0}", "LDY #>{REG0}", "JSR FACMEM", "LDA #<{#0.0}", "LDY #>{#0.0}",
 						"JSR REALFAC", "LDA #<{REG0}", "LDY #>{REG0}", "JSR CMPFAC"));
 				this.add(new Pattern("REG0->REG1, REG1->REG0", new String[] { "{LINE0}", "{LINE1}", "{LINE2}" },
@@ -586,12 +585,12 @@ public class Optimizer6502 implements Optimizer {
 						"LDY #>{MEM1}", "STA {REG1}", "STY {REG1}", "JSR {*}", "JSR POPREAL", "LDA #<{REG0}",
 						"LDY #>{REG0}", "JSR MEMMUL"));
 				this.add(new Pattern("Constant directly into FAC",
-						new String[] { "LDA #0", "STA $61", "{LINE2}", "{LINE3}", "LDA #0", "STA $63", "STA $64",
-								"STA $65", "LDY #128", "STY $62", "INY", "STY $61", "LDY #$FF", "STY $66", "{LINE6}",
+						new String[] { "LDA #0", "STA FAC", "{LINE2}", "{LINE3}", "LDA #0", "STA FACMOH", "STA FACMO",
+								"STA FACLO", "LDY #128", "STY FACHO", "INY", "STY FAC", "LDY #$FF", "STY FACSGN", "{LINE6}",
 								"{LINE8}" },
 						"LDA #<REAL_CONST_ZERO", "LDY #>REAL_CONST_ZERO", "JMP {*}", "{LABEL}",
 						"LDA #<REAL_CONST_MINUS_ONE", "LDY #>REAL_CONST_MINUS_ONE", "{LABEL}", "JSR REALFAC",
-						"LDA $61"));
+						"LDA FAC"));
 				this.add(new Pattern(false, "Highly simplified loading for CMP",
 						new String[] { "{LINE0}", "{LINE1}", "JSR REALFAC", "{LINE7}", "{LINE8}", "{LINE19}" },
 						"LDA #<{MEM0}", "LDY #>{MEM0}", "STA TMP3_ZP", "STY TMP3_ZP+1", "LDX #<{REG0}", "LDY #>{REG0}",
@@ -657,8 +656,8 @@ public class Optimizer6502 implements Optimizer {
 				this.add(new Pattern(false, "Simplified CMP redux",
 						new String[] { "{LINE0}", "{LINE2}", "{LINE3}", "LDA #$1", "{LINE14}", "{LINE16}",
 								"{LINE17}", },
-						"LDA #0", "STA $61", "JMP {*}", "{LABEL}", "LDA #0", "STA $63", "STA $64", "STA $65",
-						"LDY #128", "STY $62", "INY", "STY $61", "LDY #$FF", "STY $66", "{LABEL}", "LDA $61", "{LABEL}",
+						"LDA #0", "STA FAC", "JMP {*}", "{LABEL}", "LDA #0", "STA FACMOH", "STA FACMO", "STA FACLO",
+						"LDY #128", "STY FACHO", "INY", "STY FAC", "LDY #$FF", "STY FACSGN", "{LABEL}", "LDA FAC", "{LABEL}",
 						"BNE {*}"));
 				this.add(new Pattern(false, "CMP (REG) = 0", new String[] { "LDA {REG0}", "{LINE6}", "{LINE7}" },
 						"LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC", "LDA #<{REG0}", "LDY #>{REG0}", "JSR CMPFAC",
@@ -686,7 +685,7 @@ public class Optimizer6502 implements Optimizer {
 						"LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC", "LDA #<{MEM0}", "LDY #>{MEM0}", "JSR CMPFAC",
 						"{LABEL}", "BNE {*}"));
 				this.add(new Pattern(false, "Direct loading of 0",
-						new String[] { "LDA #$0", "STA $61", "STA $62", "STA $63", "STA $64", "STA $65", "STA $66" },
+						new String[] { "LDA #$0", "STA FAC", "STA FACHO", "STA FACMOH", "STA FACMO", "STA FACLO", "STA FACSGN" },
 						"LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC"));
 
 				this.add(new Pattern(false, "FAC into REG?, REG? into FAC (2)",
@@ -729,7 +728,7 @@ public class Optimizer6502 implements Optimizer {
 						"LDA  {*}", "JSR CHRINT", "JSR STROUT"));
 				this.add(new Pattern(false, "Single character output and break",
 						new String[] { "{LINE0}", "JSR SINGLECHROUTBRK" }, "LDA  {*}", "JSR CHRINT", "JSR STROUTBRK"));
-				// two mainly X16/VPOKE specific optimizations ahead:
+				// two mainly X16/VPOKE specific optimizations ahead:			
 				this.add(new Pattern(false, "Fast byte conversion and store",
 						new String[] { "{LINE3}", "{LINE4}", "{LINE0}", "{LINE1}", "JSR REALFAC", "{LINE6}" },
 						"LDA #<{MEM0}", "LDY #>{MEM0}", "JSR REALFACPUSH", "LDY {MEM1}", "STY {*}", "JSR POPREAL",

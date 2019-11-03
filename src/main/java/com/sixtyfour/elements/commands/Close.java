@@ -62,12 +62,7 @@ public class Close extends AbstractCommand {
 		List<String> before = new ArrayList<String>();
 
 		expr = compiler.compileToPseudoCode(config, machine, pars.get(0));
-
-		String expPush = getPushRegister(expr.get(expr.size() - 1));
-		expr = expr.subList(0, expr.size() - 1);
-		if (expPush.equals("Y")) {
-			expr.add("MOV X,Y");
-		}
+		after.add("POP X");
 		after.add("JSR CLOSE");
 
 		CodeContainer cc = new CodeContainer(before, expr, after);

@@ -60,7 +60,7 @@ public class End extends AbstractCommand {
 
 	@Override
 	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
-		return Util.createSingleCommand("JSR END", "RTS");
+		return Util.createSingleCommand("NOP", "JSR END", "RTS");
 	}
 
 }

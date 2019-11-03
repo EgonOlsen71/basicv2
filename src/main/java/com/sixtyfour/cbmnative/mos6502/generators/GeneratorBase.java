@@ -31,7 +31,7 @@ public abstract class GeneratorBase implements Generator {
 
 	protected void checkSpecialReadVars(List<String> nCode, Operand source) {
 		if (source.getAddress().equals("VAR_ST")) {
-			nCode.add("LDY $90");
+			nCode.add("LDY STATUS");
 			nCode.add("; Byte in Y to FAC");
 			nCode.add("JSR BYTEFAC");
 			nCode.add("LDX #<" + source.getAddress());
@@ -39,9 +39,9 @@ public abstract class GeneratorBase implements Generator {
 			nCode.add("JSR FACMEM");
 		} else if (source.getAddress().equals("VAR_TI")) {
 			nCode.add("SEI");
-			nCode.add("LDY $A0");
-			nCode.add("LDX $A1");
-			nCode.add("LDA $A2");
+			nCode.add("LDY TIMEADDR");
+			nCode.add("LDX TIMEADDR+1");
+			nCode.add("LDA TIMEADDR+2");
 			nCode.add("CLI");
 			nCode.add("SEC");
 			nCode.add("JSR COPYTIME");

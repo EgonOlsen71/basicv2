@@ -53,8 +53,32 @@ public class X16Tests {
 		//testBank();
 		testKoala();
 		testTeapots();
+		testInput();
+		testFastFor();
+		testScreen();
 	}
 
+	private static void testScreen() throws Exception {
+		System.out.println("\n\ntestScreen");
+		String[] vary = Loader.loadProgram("src/test/resources/x16/screen.bas");
+		Assembler assy = initTestEnvironment(vary, false, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++screen.prg", true);
+	}
+	
+	private static void testFastFor() throws Exception {
+		System.out.println("\n\ntestFastFor");
+		String[] vary = Loader.loadProgram("src/test/resources/x16/fastfor.bas");
+		Assembler assy = initTestEnvironment(vary, false, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++fastfor.prg", true);
+	}
+	
+	private static void testInput() throws Exception {
+		System.out.println("\n\ntestInput");
+		String[] vary = Loader.loadProgram("src/test/resources/x16/input.bas");
+		Assembler assy = initTestEnvironment(vary, false, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++inputx16.prg", true);
+	}
+	
 	private static void testTeapots() throws Exception {
 		System.out.println("\n\ntestTeapots");
 		String[] vary = Loader.loadProgram("src/test/resources/x16/teapots.bas");
@@ -88,7 +112,7 @@ public class X16Tests {
 		System.out.println("\n\ntestPeek");
 		String[] vary = Loader.loadProgram("src/test/resources/x16/peek.bas");
 		Assembler assy = initTestEnvironment(vary, false, -1, true);
-		FileWriter.writeAsPrg(assy.getProgram(), path + "++peek_x16.prg", true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++peekx16.prg", true);
 	}
 
 	private static void testVloadTest() throws Exception {
@@ -102,168 +126,168 @@ public class X16Tests {
 		System.out.println("\n\ntestAffine");
 		String[] vary = Loader.loadProgram("src/test/resources/x16/affine.bas");
 		Assembler assy = initTestEnvironment(vary, false, -1, true);
-		FileWriter.writeAsPrg(assy.getProgram(), path + "++affine_x16.prg", true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++affinex16.prg", true);
 	}
 
 	private static void testExpresso() throws Exception {
 		System.out.println("\n\ntestExpresso");
 		String[] vary = Loader.loadProgram("src/test/resources/x16/expresso.bas");
 		Assembler assy = initTestEnvironment(vary, false, -1, true);
-		FileWriter.writeAsPrg(assy.getProgram(), path + "++expresso_x16.prg", true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++expressox16.prg", true);
 	}
 
 	private static void testFractal256() throws Exception {
 		System.out.println("\n\ntestFractal256");
 		String[] vary = Loader.loadProgram("src/test/resources/x16/fractal256.bas");
 		Assembler assy = initTestEnvironment(vary, false, -1, true);
-		FileWriter.writeAsPrg(assy.getProgram(), path + "++fractal256_x16.prg", true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++fractal256x16.prg", true);
 	}
 
 	private static void testLine640() throws Exception {
 		System.out.println("\n\ntestLine640");
 		String[] vary = Loader.loadProgram("src/test/resources/x16/line640.bas");
 		Assembler assy = initTestEnvironment(vary, false, -1, true);
-		FileWriter.writeAsPrg(assy.getProgram(), path + "++line640_x16.prg", true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++line640x16.prg", true);
 	}
 
 	private static void testRaytracer() throws Exception {
 		System.out.println("\n\ntestRaytracer");
 		String[] vary = Loader.loadProgram("src/test/resources/x16/raytracer.bas");
 		Assembler assy = initTestEnvironment(vary, false, -1, true);
-		FileWriter.writeAsPrg(assy.getProgram(), path + "++raytracer_x16.prg", true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++raytracerx16.prg", true);
 	}
 
 	private static void testLine() throws Exception {
 		System.out.println("\n\ntestLine");
 		String[] vary = Loader.loadProgram("src/test/resources/x16/line.bas");
 		Assembler assy = initTestEnvironment(vary, false, -1, true);
-		FileWriter.writeAsPrg(assy.getProgram(), path + "++line_x16.prg", true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++linex16.prg", true);
 	}
 
 	private static void testBitmapfill() throws Exception {
 		System.out.println("\n\ntestBitmapfill");
 		String[] vary = Loader.loadProgram("src/test/resources/x16/bitmapfill.bas");
 		Assembler assy = initTestEnvironment(vary, false, -1, true);
-		FileWriter.writeAsPrg(assy.getProgram(), path + "++bitmapfill_x16.prg", true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++bitmapfillx16.prg", true);
 	}
 
 	private static void testGeos() throws Exception {
 		System.out.println("\n\ntestGeos");
 		String[] vary = Loader.loadProgram("src/test/resources/x16/geos.bas");
 		Assembler assy = initTestEnvironment(vary, false, -1, true);
-		FileWriter.writeAsPrg(assy.getProgram(), path + "++geos_x16.prg", true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++geosx16.prg", true);
 	}
 
 	private static void testLoad() throws Exception {
 		System.out.println("\n\ntestLoad");
 		String[] vary = Loader.loadProgram("src/test/resources/x16/load.bas");
 		Assembler assy = initTestEnvironment(vary, false, -1, true);
-		FileWriter.writeAsPrg(assy.getProgram(), path + "++load_x16.prg", true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++loadx16.prg", true);
 	}
 
 	private static void testSave() throws Exception {
 		System.out.println("\n\ntestSave");
 		String[] vary = Loader.loadProgram("src/test/resources/x16/save.bas");
 		Assembler assy = initTestEnvironment(vary, false, -1, true);
-		FileWriter.writeAsPrg(assy.getProgram(), path + "++save_x16.prg", true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++savex16.prg", true);
 	}
 
 	private static void testVload() throws Exception {
 		System.out.println("\n\ntestVload");
 		String[] vary = Loader.loadProgram("src/test/resources/x16/vload.bas");
 		Assembler assy = initTestEnvironment(vary, false, -1, true);
-		FileWriter.writeAsPrg(assy.getProgram(), path + "++vload_x16.prg", true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++vloadx16.prg", true);
 	}
 
 	private static void testDivide() throws Exception {
 		System.out.println("\n\ntestDivide");
 		String[] vary = Loader.loadProgram("src/test/resources/x16/divide.bas");
 		Assembler assy = initTestEnvironment(vary, false, -1, true);
-		FileWriter.writeAsPrg(assy.getProgram(), path + "++divide_x16.prg", true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++dividex16.prg", true);
 	}
 
 	private static void testMon() throws Exception {
 		System.out.println("\n\ntestMon");
 		String[] vary = Loader.loadProgram("src/test/resources/x16/mon.bas");
 		Assembler assy = initTestEnvironment(vary, false, -1, true);
-		FileWriter.writeAsPrg(assy.getProgram(), path + "++mon_x16.prg", true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++monx16.prg", true);
 	}
 
 	private static void testDos() throws Exception {
 		System.out.println("\n\ntestDos");
 		String[] vary = Loader.loadProgram("src/test/resources/x16/dos.bas");
 		Assembler assy = initTestEnvironment(vary, false, -1, true);
-		FileWriter.writeAsPrg(assy.getProgram(), path + "++dos_x16.prg", true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++dosx16.prg", true);
 	}
 
 	private static void testCards() throws Exception {
 		System.out.println("\n\ntestCards");
 		String[] vary = Loader.loadProgram("src/test/resources/x16/cards.bas");
 		Assembler assy = initTestEnvironment(vary, false, -1, true);
-		FileWriter.writeAsPrg(assy.getProgram(), path + "++cards_x16.prg", true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++cardsx16.prg", true);
 	}
 
 	private static void testBalls() throws Exception {
 		System.out.println("\n\ntestBalls");
 		String[] vary = Loader.loadProgram("src/test/resources/x16/balls.bas");
 		Assembler assy = initTestEnvironment(vary, false, -1, true);
-		FileWriter.writeAsPrg(assy.getProgram(), path + "++balls_x16.prg", true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++ballsx16.prg", true);
 	}
 
 	private static void testTi() throws Exception {
 		System.out.println("\n\ntestTi");
 		String[] vary = Loader.loadProgram("src/test/resources/x16/ti.bas");
 		Assembler assy = initTestEnvironment(vary, false, -1, true);
-		FileWriter.writeAsPrg(assy.getProgram(), path + "++ti_x16.prg", true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++tix16.prg", true);
 	}
 
 	private static void testFrog() throws Exception {
 		System.out.println("\n\ntestFrog");
 		String[] vary = Loader.loadProgram("src/test/resources/x16/frog.bas");
 		Assembler assy = initTestEnvironment(vary, false, -1, true);
-		FileWriter.writeAsPrg(assy.getProgram(), path + "++frog_x16.prg", true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++frogx16.prg", true);
 	}
 
 	private static void testCharfractal() throws Exception {
 		System.out.println("\n\ntestCharfractal");
 		String[] vary = Loader.loadProgram("src/test/resources/x16/charfractal.bas");
 		Assembler assy = initTestEnvironment(vary, false, -1, true);
-		FileWriter.writeAsPrg(assy.getProgram(), path + "++charfractal_x16.prg", true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++charfractalx16.prg", true);
 	}
 
 	private static void testData() throws Exception {
 		System.out.println("\n\ntestData");
 		String[] vary = Loader.loadProgram("src/test/resources/x16/data.bas");
 		Assembler assy = initTestEnvironment(vary, false, -1, true);
-		FileWriter.writeAsPrg(assy.getProgram(), path + "++data_x16.prg", true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++datax16.prg", true);
 	}
 
 	private static void testColors() throws Exception {
 		System.out.println("\n\ntestColors");
 		String[] vary = Loader.loadProgram("src/test/resources/x16/colors.bas");
 		Assembler assy = initTestEnvironment(vary, false, -1, true);
-		FileWriter.writeAsPrg(assy.getProgram(), path + "++colors_x16.prg", true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++colorsx16.prg", true);
 	}
 
 	private static void testVpokePeek() throws Exception {
 		System.out.println("\n\ntestVpokePeek");
 		String[] vary = Loader.loadProgram("src/test/resources/x16/vpokepeek.bas");
 		Assembler assy = initTestEnvironment(vary, false, -1, true);
-		FileWriter.writeAsPrg(assy.getProgram(), path + "++vpokepeek_x16.prg", true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++vpokepeekx16.prg", true);
 	}
 
 	private static void testVpoke() throws Exception {
 		System.out.println("\n\ntestVpoke");
 		String[] vary = Loader.loadProgram("src/test/resources/x16/vpoke.bas");
 		Assembler assy = initTestEnvironment(vary, false, -1, true);
-		FileWriter.writeAsPrg(assy.getProgram(), path + "++vpoke_x16.prg", true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++vpokex16.prg", true);
 	}
 
 	private static void testVpeek() throws Exception {
 		System.out.println("\n\ntestVpeek");
 		String[] vary = Loader.loadProgram("src/test/resources/x16/vpeek.bas");
 		Assembler assy = initTestEnvironment(vary, false, -1, true);
-		FileWriter.writeAsPrg(assy.getProgram(), path + "++vpeek_x16.prg", true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++vpeekx16.prg", true);
 	}
 
 	private static Assembler initTestEnvironment(String[] vary, boolean executePseudo, int variableStart,
@@ -281,6 +305,7 @@ public class X16Tests {
 		conf.setLoopMode(LoopMode.REMOVE);
 		conf.setNonDecimalNumbersAware(true);
 		conf.setConvertStringToLower(true);
+		conf.setAggressiveFloatOptimizations(true);
 		// conf.setCompactThreshold(3);
 
 		Basic basic = new Basic(vary);

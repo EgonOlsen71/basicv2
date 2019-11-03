@@ -1,9 +1,9 @@
 ;###################################
 START		LDA ENDSTRBUF+1
 			BNE ENDGIVEN
-			LDA 55
+			LDA BASICEND
 			STA ENDSTRBUF
-			LDA 56
+			LDA BASICEND+1
 			STA ENDSTRBUF+1
 ENDGIVEN	LDA #<FPSTACK
 			LDY #>FPSTACK
@@ -28,7 +28,7 @@ ENDGIVEN	LDA #<FPSTACK
 			STA CHANNEL
 			TAY
 			TAX
-			STA $C6
+			STA KEYNDX
 			JSR RESTORE
 			CLC
 			RTS
@@ -492,25 +492,24 @@ OFFPOSCHECK2
 STR			LDA #<Y_REG
 			LDY #>Y_REG
 			JSR REALFAC
-STRINT		LDY #0
+STRINT		LDY #1
 			JSR FACSTR
 			LDY #0
 			STY TMP_ZP+1
-			LDA #$FE
+			LDA #$FF
 			STA TMP_ZP
 			DEY
 STRLOOP		INY
-			LDA $00FF,Y
+			LDA $0100,Y
 			BNE STRLOOP
-			STY $FE
+			STY $FF
 			TYA
 			TAX			; Length in X
 			LDA #<A_REG
 			LDY #>A_REG
 			STA TMP2_ZP
 			STY TMP2_ZP+1
-			JSR COPYONLY
-			RTS
+			JMP COPYONLY
 ;###################################
 USR			LDA #<Y_REG
 			LDY #>Y_REG
@@ -521,16 +520,16 @@ USR			LDA #<Y_REG
 			JMP FACMEM	;RTS is implicit
 ;###################################
 VAL			LDA B_REG
-			STA $22
+			STA INDEX1
 			LDA B_REG+1
-			STA $23
+			STA INDEX1+1
 			LDY #0
-			STY $0D
-			LDA ($22),Y
+			STY VALTYPE
+			LDA (INDEX1),Y
 			TAY
-			INC $22
+			INC INDEX1
 			BNE VALSTR
-			INC $23
+			INC INDEX1+1
 VALSTR		JSR VALS
 			LDX #<X_REG
 			LDY #>X_REG
@@ -665,32 +664,39 @@ FORMATOK	INC TMP_ZP
 			BNE WRITE2
 			INC TMP_ZP+1
 WRITE2		LDA TMP_ZP
-			STA $22
+			STA INDEX1
 			LDA TMP_ZP+1
-			STA $23
+			STA INDEX1+1
 			JSR WRITETIS
 			RTS
 ;###################################
 READTID		LDA #0
-			STA $70
+			STA FACOV
 			JSR TI2FAC 
 			LDY #0
-			STY $5E
+			STY LOWDS+1
 			DEY
-			STY $71
+			STY FACOV+1
 			LDY #$06
-			STY $5D
+			STY LOWDS
 			LDY #$24
 			JSR GETTI
+			LDA $FE
+			PHA	
 			LDA #$FE
 			STA TMP_ZP
 			LDA #0
 			STA TMP_ZP+1
 			LDA #$6
+			SEI				; prevent $FE from being overwritten. because the x16 doesn't like this
 			STA $FE
 			LDA #<VAR_TI$
 			LDY #>VAR_TI$
-			JMP COPYSTRING	;RTS is implicit
+			JSR COPYSTRING
+			PLA
+			STA $FE
+			CLI
+			RTS
 ;###################################
 SAVEPOINTERS
 			LDA TMP_ZP			; ...save the pointers
@@ -1271,15 +1277,15 @@ STROUTWL	STA A_REG
 			STY A_REG+1
 STROUT		JSR REROUTE
 			LDA A_REG
-			STA $22
+			STA INDEX1
 			LDA A_REG+1
-			STA $23
+			STA INDEX1+1
 			LDY #0
-			LDA ($22),Y
+			LDA (INDEX1),Y
 			TAX
-			INC $22
+			INC INDEX1
 			BNE PRINTSTR
-			INC $23
+			INC INDEX1+1
 PRINTSTR	JSR PRINTSTRS
 			LDA HIGHP			; Update the memory pointer to the last actually assigned one
 			STA STRBUFP
@@ -1308,15 +1314,15 @@ STROUTBRKWL	STA A_REG
 			STY A_REG+1
 STROUTBRK	JSR REROUTE
 			LDA A_REG
-			STA $22
+			STA INDEX1
 			LDA A_REG+1
-			STA $23
+			STA INDEX1+1
 			LDY #0
-			LDA ($22),Y
+			LDA (INDEX1),Y
 			TAX
-			INC $22
+			INC INDEX1
 			BNE PRINTSTR2
-			INC $23
+			INC INDEX1+1
 PRINTSTR2	JSR PRINTSTRS
 			LDA HIGHP			; Update the memory pointer to the last actually assigned one
 			STA STRBUFP
@@ -2096,26 +2102,27 @@ DREAL2STR	LDA TMP3_ZP
 DFAC2STR	JSR NEXTDATA
 			JMP STRINTREAD
 ;###################################
-STRINTREAD	LDY #0			; Special INT to STR routine that handles the fact that in case of conversions from data entries, there's no leading blank for positive numbers
+STRINTREAD	LDY #1			; Special INT to STR routine that handles the fact that in case of conversions from data entries, there's no leading blank for positive numbers
 			JSR FACSTR
 			LDY #0
 			STY TMP_ZP+1
-			LDA #$FE
+			LDA #$FF
 			STA TMP_ZP
 			DEY
 STRLOOPREAD	INY
-			LDA $00FF,Y
+			LDA $0100,Y
 			BNE STRLOOPREAD
-			STY $FE
+			STY $FF
 			TYA
 			TAX			; Length in X
-			LDA $FF
+			LDA $100
 			CMP #$20
 			BNE STRREADNP
 			INC TMP_ZP	; Starts with blank? Remove it...
-			DEC $FE
-			LDA $FE
-			STA $FF		; Copy the new length over
+			INC TMP_ZP+1
+			DEC $FF
+			LDA $FF
+			STA $100	; Copy the new length over
 			DEX			; length -1
 STRREADNP	LDA #<A_REG
 			LDY #>A_REG
@@ -2187,7 +2194,7 @@ QMARKOUT2	LDA #2
 			STA TMP_ZP
 			JMP QMARKOUT	
 ;###################################
-QMARKOUT	LDA $13				; only print the ? if it's keyboard/direct input. $13 holds the active io device
+QMARKOUT	LDA IOCHANNEL				; only print the ? if it's keyboard/direct input. IOCHANNEL holds the active io device
 			BNE NOQMARK
 			JSR REROUTE
 			LDA #63
@@ -2280,17 +2287,17 @@ INISSTR		LDA #<A_REG
 INPUTNUMBER	LDA #$1
 			JSR INPUTSTR2
 			LDA TMP_ZP
-			STA $22
+			STA INDEX1
 			LDA TMP_ZP+1
-			STA $23
+			STA INDEX1+1
 			LDY #0
-			STY $0D
-			LDA ($22),Y
+			STY VALTYPE
+			LDA (INDEX1),Y
 			STA TMP_REG		; Store the string's length
 			TAY
-			INC $22
+			INC INDEX1
 			BNE VALSTR2
-			INC $23
+			INC INDEX1+1
 
 VALSTR2		LDY #$0			; check, if it's a valid number input. This check might not be 100% like the one done by BASIC V2...well, who cares...?!?
 			DEY
@@ -2298,7 +2305,7 @@ VALSTR2		LDY #$0			; check, if it's a valid number input. This check might not b
 NUMCHKLOOP	INY
 			CPY TMP_REG
 			BEQ NUMOK
-			LDA ($22),Y
+			LDA (INDEX1),Y
 			CMP #$20
 			BEQ NUMCHKLOOP	; ignore spaces
 			CMP #43			; check +
@@ -2751,38 +2758,38 @@ NOPVPR		LDA FPSTACKP
 			LDY FPSTACKP+1
 			JMP REALFAC
 ;###################################
-SHR			LDA $61
+SHR			LDA FACEXP
 			BEQ SHLOK
 			SEC
 			SBC A_REG
 			BCS SHROK
 			LDA #0
-			STA $66
-			STA $65
-			STA $64
-			STA $63
-			STA $62
-SHROK		STA $61
+			STA FACSGN
+			STA FACLO
+			STA FACMO
+			STA FACMOH
+			STA FACHO
+SHROK		STA FACEXP
 			RTS
 ;###################################
-SHL			LDA $61
+SHL			LDA FACEXP
 			BEQ SHLOK
 			CLC
 			ADC A_REG
 			BCC SHLOK
 			LDA #0
-			STA $66
-			STA $65
-			STA $64
-			STA $63
-			STA $62
+			STA FACSGN
+			STA FACLO
+			STA FACMO
+			STA FACMOH
+			STA FACHO
 			LDA #$FF
-SHLOK		STA $61
+SHLOK		STA FACEXP
 			RTS
 ;###################################
-NEG			LDA $66
+NEG			LDA FACSGN
 			EOR #$FF
-			STA $66
+			STA FACSGN
 			RTS
 ;### HELPER ########################
 ;###################################
@@ -2814,88 +2821,88 @@ COPY3_XY	LDY #0
 			STA (TMP_ZP),Y
 			RTS
 ;###################################
-FASTAND		LDA $69			; Check ARG for 0
+FASTAND		LDA ARGEXP			; Check ARG for 0
 			BNE CHECKFAC	
-			STA $66			; if so, set FAC to 0 and exit
-			STA $65
-			STA $64
-			STA $63
-			STA $62
-			STA $61
+			STA FACSGN			; if so, set FAC to 0 and exit
+			STA FACLO
+			STA FACMO
+			STA FACMOH
+			STA FACHO
+			STA FACEXP
 			RTS
-CHECKFAC	LDA $61			; Check if there's a -1 in FAC1
+CHECKFAC	LDA FACEXP			; Check if there's a -1 in FAC1
 			BNE FACNOTNULL
-			STA $66			; make sure that it's not -0
+			STA FACSGN			; make sure that it's not -0
 			RTS				; FAC is 0, then exit
 FACNOTNULL	CMP #$81
 			BNE NORMALAND
-			LDA $62
+			LDA FACHO
 			CMP #$80
 			BNE NORMALAND
-			LDA $63
+			LDA FACMOH
 			BNE NORMALAND
-			LDA $64
+			LDA FACMO
 			BNE NORMALAND
-			LDA $65
+			LDA FACLO
 			BNE NORMALAND
-			LDA $66
+			LDA FACSGN
 			ROL
 			BCC NORMALAND
-			LDA $69			; Check if there's a -1 in ARG
+			LDA ARGEXP			; Check if there's a -1 in ARG
 			CMP #$81
 			BNE NORMALAND
-			LDA $6A
+			LDA ARGHO
 			CMP #$80
 			BNE NORMALAND
-			LDA $6B
+			LDA ARGMOH
 			BNE NORMALAND
-			LDA $6C
+			LDA ARGMO
 			BNE NORMALAND
-			LDA $6D
+			LDA ARGLO
 			BNE NORMALAND
-			LDA $6E
+			LDA ARGSGN
 			ROL
 			BCC NORMALAND
 			RTS				; both, FAC1 and ARG contain -1...then we leave FAC1 untouched and return
 NORMALAND	JMP ARGAND
 ;###################################
-FASTOR		LDA $61			; Check FAC for 0
+FASTOR		LDA FACEXP			; Check FAC for 0
 			BNE CHECKFACOR
-			LDA $69			; if so, is ARG = 0 as well?
+			LDA ARGEXP			; if so, is ARG = 0 as well?
 			BNE CHECKARGOR	; no, continue with ARG (FAC is still 0 here)
 			LDA #0
-			STA $66			; make sure that the negative flag is deleted in this case...
+			STA FACSGN			; make sure that the negative flag is deleted in this case...
 			RTS				; yes? Then we leave FAC untouched
-CHECKFACOR	LDA $61			; Check if there's a -1 in FAC1
+CHECKFACOR	LDA FACEXP			; Check if there's a -1 in FAC1
 			CMP #$81
 			BNE NORMALOR
-			LDA $62
+			LDA FACHO
 			CMP #$80
 			BNE NORMALOR
-			LDA $63
+			LDA FACMOH
 			BNE NORMALOR
-			LDA $64
+			LDA FACMO
 			BNE NORMALOR
-			LDA $65
+			LDA FACLO
 			BNE NORMALOR
-			LDA $66
+			LDA FACSGN
 			ROL
 			BCC NORMALOR
-CHECKARGOR	LDA $69			; Check if there's a -1 in ARG
+CHECKARGOR	LDA ARGEXP			; Check if there's a -1 in ARG
 			BNE CHECKARGOR2
 			RTS 			; ARG is actually 0? Then the value of FAC doesn't change. We can exit here
 CHECKARGOR2	CMP #$81
 			BNE NORMALOR
-			LDA $6A
+			LDA ARGHO
 			CMP #$80
 			BNE NORMALOR
-			LDA $6B
+			LDA ARGMOH
 			BNE NORMALOR
-			LDA $6C
+			LDA ARGMO
 			BNE NORMALOR
-			LDA $6D
+			LDA ARGLO
 			BNE NORMALOR
-			LDA $6E
+			LDA ARGSGN
 			AND #$80
 			CMP #$80
 			BNE NORMALOR
@@ -2920,10 +2927,10 @@ CMDNEQUAL	STA CHANNEL
 			JMP CHKOUT
 ;###################################
 INITINCHANNEL
-			LDA $13
+			LDA IOCHANNEL
 			STA STORE1+1
 			LDA #1
-			STA $13		; Something that's not the screen...that's enough for the check the CRSRRIGHT does...
+			STA IOCHANNEL		; Something that's not the screen...that's enough for the check the CRSRRIGHT does...
 			LDA #<C_REG
 			LDY #>C_REG
 			JSR REALFAC
@@ -2988,10 +2995,10 @@ TABCHANNELINT
 			LDA CHANNEL
 			CMP #3		; To the screen?
 			BEQ TABSCREEN
-TABCHANNEL2	LDA $13
+TABCHANNEL2	LDA IOCHANNEL
 			STA STORE1
 			LDA #1
-			STA $13		; Something that's not the screen...that's enough for the check the CRSRRIGHT does...
+			STA IOCHANNEL		; Something that's not the screen...that's enough for the check the CRSRRIGHT does...
 			LDA #<Y_REG
 			LDY #>Y_REG
 			JSR REALFAC
@@ -3009,10 +3016,10 @@ TABOUTCHANNEL
 			CMP #3		; To the screen?
 			BEQ TABOUTSCREEN
 TABOUTCHANNEL2
-			LDA $13
+			LDA IOCHANNEL
 			STA STORE1
 			LDA #1
-			STA $13		; Something that's not the screen...that's enough for the check the CRSRRIGHT does...
+			STA IOCHANNEL		; Something that's not the screen...that's enough for the check the CRSRRIGHT does...
 			LDX #10
 			JMP EXITCHANNEL
 TABOUTSCREEN
@@ -3023,12 +3030,12 @@ EXITCHANNEL	CLC
 			JSR TABSPC
 			JSR CLRCH
 			LDA STORE1
-			STA $13
+			STA IOCHANNEL
 			RTS
 ;###################################
 CLRINCH		JSR CLRCH
 			LDA STORE1+1
-			STA $13
+			STA IOCHANNEL
 			RTS
 ;###################################
 CMD			LDA #<X_REG
@@ -3047,57 +3054,57 @@ CHECKCMD	LDA CMD_NUM		; if CMD mode, then print an additional space
 NOCMD		RTS
 ;###################################
 SAVE		LDA #1
-			STA $B9			; set secondary address to 1
+			STA SECADDR		; set secondary address to 1
 			LDA #0
-			STA $90			; reset status
-			STA $93			; reset Load/Verify-Flag
+			STA STATUS		; reset status
+			STA VERCHK		; reset Load/Verify-Flag
 
 			LDA #<X_REG
 			LDY #>X_REG
 			JSR REALFAC
 			JSR FACWORD
-			STY $BA			; Store device number
+			STY DEVICENUM	; Store device number
 			JSR SETNAMEPRT
 							; Save the normal BASIC program...
 			LDX 45
 			LDY 46
-			LDA #43
+			LDA #BASICSTART
 
 			JMP SAVEXX
 ;###################################
 VERIFY		JSR SETNAMEPRT
 			LDA #1
-			STA $93			; set verify flag
+			STA VERCHK		; set verify flag
 			JMP LOADINT
 ;###################################
 LOAD		JSR SETNAMEPRT
 			LDA #$0
-			STA $93			; reset Load/Verify-Flag
-			STA $90			; reset status
+			STA VERCHK		; reset Load/Verify-Flag
+			STA STATUS		; reset status
 LOADINT		LDA #<X_REG
 			LDY #>X_REG
 			JSR REALFAC
 			JSR FACWORD
-			STY $BA			; Store device number
+			STY DEVICENUM	; Store device number
 			LDA #<Y_REG		; read secondary address
 			LDY #>Y_REG
 			JSR REALFAC
 			JSR FACWORD
 			TYA
 			BNE LOADBAS
-			LDA $2B			; secondary address 0, load to basic start
-			STA $C3
-			LDA $2C			
-			STA $C4
+			LDA BASICSTART	; secondary address 0, load to basic start
+			STA LOADEND
+			LDA BASICSTART+1			
+			STA LOADEND+1
 			LDA #0
 			JMP SKPBAS
 LOADBAS		LDA #1			; set secondary address to 1, if not 0
-SKPBAS		STA $B9	
-			LDA $93			; restore these for load call (which sets them again)
-			LDX $C3
-			LDY $C4
+SKPBAS		STA SECADDR	
+			LDA VERCHK		; restore these for load call (which sets them again)
+			LDX LOADEND
+			LDY LOADEND+1
 			JSR LOADXX
-			LDA $90
+			LDA STATUS
 			BEQ LOADOK
 			JMP FILENOTFOUND
 LOADOK		RTS
@@ -3113,7 +3120,7 @@ OPEN		JSR SETEMPTYSTR	; Prepare with an empty string
 			LDY #>X_REG
 			JSR REALFAC
 			JSR FACWORD
-			STY $B8			; store logical address
+			STY LOGICADDR	; store logical address
 			DEC TMP_REG
 			BEQ ALLPARAMS
 
@@ -3121,7 +3128,7 @@ OPEN		JSR SETEMPTYSTR	; Prepare with an empty string
 			LDY #>C_REG
 			JSR REALFAC
 			JSR FACWORD
-			STY $BA			; store device number
+			STY DEVICENUM	; store device number
 			DEC TMP_REG
 			BEQ ALLPARAMS
 
@@ -3129,7 +3136,7 @@ OPEN		JSR SETEMPTYSTR	; Prepare with an empty string
 			LDY #>D_REG
 			JSR REALFAC
 			JSR FACWORD
-			STY $B9			; store secondary address
+			STY SECADDR		; store secondary address
 			DEC TMP_REG
 			BEQ ALLPARAMS
 
@@ -3139,14 +3146,14 @@ ALLPARAMS	JMP OPENCH
 ;###################################
 SETEMPTYSTR
 			LDA #<EMPTYSTR
-			STA $BB
+			STA FILEADDR
 			LDA #>EMPTYSTR
-			STA $BC
+			STA FILEADDR+1
 			LDA #0
-			STA $B7
-			STA $B8
-			STA $BA
-			STA $B9
+			STA FILELEN
+			STA LOGICADDR
+			STA DEVICENUM
+			STA SECADDR
 			RTS
 ;###################################
 SETNAMEPRT	LDA G_REG
@@ -3155,7 +3162,7 @@ SETNAMEPRT	LDA G_REG
 			STY TMP_ZP+1
 			LDY #0
 			LDA (TMP_ZP),Y	; get string parameter length
-			STA $B7
+			STA FILELEN
 
 			INC G_REG
 			BNE SNPNOOV
@@ -3163,8 +3170,8 @@ SETNAMEPRT	LDA G_REG
 
 SNPNOOV		LDA G_REG
 			LDY G_REG+1
-			STA $BB			; low byte of string parameter
-			STY $BC			; high byte of string parameter
+			STA FILEADDR		; low byte of string parameter
+			STY FILEADDR+1	; high byte of string parameter
 			RTS
 ;###################################
 CLOSE		LDA #<X_REG
@@ -3282,12 +3289,12 @@ FASTFSUBMEM
 			JSR MEMARG
 
 FASTFSUBARG
-			LDA $66
+			LDA FACSGN
 			EOR #$FF
-			STA $66
-			EOR $6E
-			STA $6F
-			LDA $61
+			STA FACSGN
+			EOR ARGSGN
+			STA ARISGN
+			LDA FACEXP
 			JMP FASTFADDARG
 ;###################################
 FADDRET1 	

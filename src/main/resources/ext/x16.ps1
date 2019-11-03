@@ -25,3 +25,7 @@ function MON{
 function GEOS{
 	"[GEOS not supported for PS, call ignored: "+$global:A_REG+"]"
 }
+
+function SCREEN{
+	"[SCREEN not supported for PS, call ignored: "+$global:A_REG+"]"
+}
