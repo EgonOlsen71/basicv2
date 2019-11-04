@@ -1,22 +1,22 @@
 /*
  * 
  */
-package com.sixtyfour.elements.systemvars;
+package com.sixtyfour.extensions.x16.systemvars;
 
 import com.sixtyfour.elements.Variable;
+import com.sixtyfour.elements.systemvars.SystemVariable;
 import com.sixtyfour.system.Machine;
 
 /**
- * A system variable that represents the current status. The current
- * implementation always returns 128 for this.
+ * A system variable that represents the mouse's button state.
  */
-public class Status extends Variable implements SystemVariable {
+public class Mb extends Variable implements SystemVariable {
 
 	/**
 	 * Instantiates a new status.
 	 */
-	public Status() {
-		super("ST", 0);
+	public Mb() {
+		super("MB", 0);
 	}
 
 	/*
@@ -26,7 +26,7 @@ public class Status extends Variable implements SystemVariable {
 	 */
 	@Override
 	public Object getValue() {
-		return 128;
+		return 0;
 	}
 
 	/*

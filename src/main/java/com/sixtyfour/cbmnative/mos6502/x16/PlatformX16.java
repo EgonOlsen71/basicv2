@@ -74,6 +74,9 @@ public class PlatformX16 implements PlatformProvider {
 		if (line.equals("MOVB")) {
 			return new MovbX();
 		}
+		if (line.equals("MOV")) {
+			return new MovX();
+		}
 		return null;
 	}
 }

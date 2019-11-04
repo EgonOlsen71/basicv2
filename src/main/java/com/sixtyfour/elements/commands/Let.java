@@ -101,6 +101,11 @@ public class Let extends AbstractCommand implements Assignment {
 				&& (var.getType().equals(Type.STRING) || term.getType().equals(Type.STRING))) {
 			typeMismatch(linePart);
 		}
+		
+		if (var.isReadOnly()) {
+			this.syntaxError(linePart);
+		}
+		
 		if (indexTerm != null) {
 			pars = Parser.getParameters(indexTerm);
 			pis = new int[pars.size()];

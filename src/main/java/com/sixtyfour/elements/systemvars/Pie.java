@@ -17,4 +17,10 @@ public class Pie extends Variable implements SystemVariable {
 		super("Π", (float) Math.PI);
 	}
 
+	@Override
+	public boolean isReadOnly() {
+		return true;
+	}
+
+	
 }

@@ -3,6 +3,7 @@ package com.sixtyfour.extensions;
 import java.util.List;
 import java.util.Map;
 
+import com.sixtyfour.elements.Variable;
 import com.sixtyfour.elements.commands.Command;
 import com.sixtyfour.elements.functions.Function;
 import com.sixtyfour.system.Machine;
@@ -38,6 +39,13 @@ public interface BasicExtension {
      */
     List<String> getAdditionalIncludes();
 
+    /**
+     * Returns additional system variables like ST or TI for this extension
+     * 
+     * @return the list or null
+     */
+    List<Variable> getSystemVariables();
+    
     /**
      * Called when a machine instance gets reset.
      * 

@@ -346,6 +346,13 @@ public class Basic implements ProgramExecutor {
 			machine.resetMemory();
 		}
 		machine.clearCommandList();
+		
+		// add more system variables from extensions...
+		List<BasicExtension> exts=getExtensions();
+		for (BasicExtension ext:exts) {
+			machine.addSystemVariables(ext.getSystemVariables());
+		}
+		
 		Line cl = null;
 		int lastLineNumber = -1;
 		lines.clear();

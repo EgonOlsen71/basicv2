@@ -61,8 +61,15 @@ public class X16Tests {
 		testFrame();
 		testRect();
 		testChar();
+		testMouse();
 	}
 
+	private static void testMouse() throws Exception {
+		System.out.println("\n\ntestMouse");
+		String[] vary = Loader.loadProgram("src/test/resources/x16/mouse.bas");
+		Assembler assy = initTestEnvironment(vary, false, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++mouse.prg", true);
+	}
 	
 	private static void testChar() throws Exception {
 		System.out.println("\n\ntestChar");

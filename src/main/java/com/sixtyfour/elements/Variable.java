@@ -318,8 +318,15 @@ public class Variable implements Atom {
 		return value;
 	}
 
+	/**
+	 * @return
+	 */
 	public Object evalFromCode() {
 		return value;
+	}
+	
+	public boolean isReadOnly() {
+		return false;
 	}
 
 	/**

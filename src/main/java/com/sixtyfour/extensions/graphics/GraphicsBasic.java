@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import com.sixtyfour.elements.Variable;
 import com.sixtyfour.elements.commands.Command;
 import com.sixtyfour.elements.functions.Function;
 import com.sixtyfour.extensions.BasicExtension;
@@ -107,6 +108,12 @@ public class GraphicsBasic implements BasicExtension {
 
 	@Override
 	public Map<String, Integer> getLabel2Constant() {
+		return null;
+	}
+
+	@Override
+	public List<Variable> getSystemVariables() {
+		// TODO Auto-generated method stub
 		return null;
 	}
 

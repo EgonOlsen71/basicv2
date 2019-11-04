@@ -47,5 +47,10 @@ public class Time extends Variable implements SystemVariable {
 		int ss = cally.get(Calendar.MILLISECOND);
 		return (int) ((ss + 1000 * s + 1000 * 60 * m + 1000 * 60 * 60 * h) / (1000f / 60f));
 	}
+	
+	@Override
+	public boolean isReadOnly() {
+		return true;
+	}
 
 }

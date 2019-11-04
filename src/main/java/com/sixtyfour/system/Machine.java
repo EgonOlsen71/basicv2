@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.sixtyfour.Basic;
 import com.sixtyfour.elements.Variable;
@@ -42,16 +43,16 @@ import com.sixtyfour.util.VarUtils;
 public class Machine {
 
 	/** The variables */
-	private Map<String, Variable> vars = new HashMap<String, Variable>();
+	private Map<String, Variable> vars = new HashMap<>();
 
 	/** The RAM */
 	private int[] ram = new int[65536];
 
 	/** The Stack */
-	private List<StackEntry> stack = new LinkedList<StackEntry>();
+	private List<StackEntry> stack = new LinkedList<>();
 
 	/** The command list */
-	private List<Command> commandList = new ArrayList<Command>();
+	private List<Command> commandList = new ArrayList<>();
 
 	/** The current command */
 	private Command currentCommand = null;
@@ -60,7 +61,7 @@ public class Machine {
 	private Operator currentOperator = null;
 
 	/** The functions */
-	private Map<String, Command> functions = new HashMap<String, Command>();
+	private Map<String, Command> functions = new HashMap<>();
 
 	/** The data storage */
 	private DataStore data = new DataStore();
@@ -84,11 +85,13 @@ public class Machine {
 
 	private Jit jit = null;
 
-	private List<StackEntry> toRemove = new ArrayList<StackEntry>();
+	private List<StackEntry> toRemove = new ArrayList<>();
 
 	private List<RomInfo> roms;
 
-	private Map<String, Integer> usageIndicator = new HashMap<String, Integer>();
+	private Map<String, Integer> usageIndicator = new HashMap<>();
+
+	private List<Variable> extendedSystemVars = new ArrayList<>();
 
 	/**
 	 * Instantiates a new machine.
@@ -118,6 +121,24 @@ public class Machine {
 		roms.add(loadRom("basic.$A000.bin", 0xa000));
 		roms.add(loadRom("kernal.$E000.bin", 0xe000));
 		copyRoms();
+	}
+
+	/**
+	 * Adds additional system variables used in BASIC extensions to this machine.
+	 * 
+	 * @param vars the list or variables
+	 */
+	public void addSystemVariables(List<Variable> vars) {
+		if (vars == null) {
+			return;
+		}
+		Set<String> names = extendedSystemVars.stream().map(p -> p.getName()).collect(Collectors.toSet());
+		for (Variable var : vars) {
+			add(var);
+			if (!names.contains(var.getName())) {
+				extendedSystemVars.add(var);
+			}
+		}
 	}
 
 	/**
@@ -317,6 +338,10 @@ public class Machine {
 			var.setConstant(false);
 		}
 		addDefaults();
+		for (Variable var : extendedSystemVars) {
+			add(var);
+		}
+
 		stack.clear();
 		usageIndicator.clear();
 	}

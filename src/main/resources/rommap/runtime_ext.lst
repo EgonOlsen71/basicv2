@@ -13,3 +13,6 @@
 *frefac
 *UseSystemFont
 *PutChar
+*mousex
+*mousey
+*mousebt

@@ -17,7 +17,7 @@ import com.sixtyfour.elements.Type;
  * @author EgonOlsen71
  *
  */
-public class MovbX extends Movb {
+public class MovbX extends Movb implements X16Defaults {
 
 	protected void indexedSource(List<String> nCode, Operand source, Operand target) {
 		createIndexedSourceCode(nCode, source);
@@ -51,6 +51,12 @@ public class MovbX extends Movb {
 		nCode.add("PHA");
 		nCode.add("LDA #0");
 		nCode.add("STA ROMSELECT");
+	}
+	
+	@Override
+	protected void checkSpecialReadVars(List<String> nCode, Operand source) {
+		super.checkSpecialReadVars(nCode, source);
+		checkSpecialReadVarsX16(nCode, source);
 	}
 
 }

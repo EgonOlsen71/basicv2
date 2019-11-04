@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.sixtyfour.elements.Variable;
 import com.sixtyfour.elements.commands.Command;
 import com.sixtyfour.elements.functions.Function;
 import com.sixtyfour.extensions.BasicExtension;
@@ -24,6 +25,9 @@ import com.sixtyfour.extensions.x16.commands.Vload;
 import com.sixtyfour.extensions.x16.commands.Vpoke;
 import com.sixtyfour.extensions.x16.commands.Xload;
 import com.sixtyfour.extensions.x16.functions.Vpeek;
+import com.sixtyfour.extensions.x16.systemvars.Mb;
+import com.sixtyfour.extensions.x16.systemvars.Mx;
+import com.sixtyfour.extensions.x16.systemvars.My;
 import com.sixtyfour.system.Machine;
 
 /**
@@ -56,6 +60,15 @@ public class X16Extensions implements BasicExtension {
 		private static final long serialVersionUID = 1L;
 		{
 			this.add(new Vpeek());
+		}
+	});
+
+	private final static List<Variable> VARS = Collections.unmodifiableList(new ArrayList<Variable>() {
+		private static final long serialVersionUID = 1L;
+		{
+			this.add(new Mx());
+			this.add(new My());
+			this.add(new Mb());
 		}
 	});
 
@@ -98,6 +111,11 @@ public class X16Extensions implements BasicExtension {
 				this.put("ROMSELECT", Integer.parseInt("9F60", 16));
 			}
 		};
+	}
+
+	@Override
+	public List<Variable> getSystemVariables() {
+		return VARS;
 	}
 
 }
