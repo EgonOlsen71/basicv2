@@ -1,0 +1,10 @@
+100 poke 782,10
+110 poke 781,20
+120 poke 783,0
+130 sys 65520
+140 print "yeah!!"
+200 poke 782,20
+210 poke 781,10
+220 poke 783,0
+230 for a=65510to65520:ad=a:next
+240 sys ad:print"yoh!"

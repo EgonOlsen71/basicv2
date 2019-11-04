@@ -3280,6 +3280,35 @@ FILENOTFOUND
 ERROR		
 			JMP ERRSYN	;General purpose error, here a syntax error
 ;###################################
+SYSTEMCALLDYN
+			LDA #<X_REG
+			LDY #>X_REG
+			JSR REALFAC
+			JSR FACWORD
+			STY TMP_ZP
+			STA TMP_ZP+1
+			JMP SYSTEMCALL
+;###################################
+SYSTEMCALL
+			LDA TMP_ZP
+			STA SCDO+1
+			LDA TMP_ZP+1
+			STA SCDO+2
+			LDA $030F
+			PHA
+			LDA $030C
+			LDX $030D
+			LDY $030E
+			PLP
+SCDO		JSR $FFFF
+			PHP
+			STA $030C
+			STX $030D
+			STY $030E
+			PLA
+			STA $030F
+			RTS
+;###################################
 ; Improved floating point routines
 ; ported from Michael Jørgensen's
 ; work for the X16. 

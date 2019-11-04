@@ -56,18 +56,7 @@ public class Close extends AbstractCommand {
 
 	@Override
 	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
-		NativeCompiler compiler = NativeCompiler.getCompiler();
-		List<String> after = new ArrayList<String>();
-		List<String> expr = null;
-		List<String> before = new ArrayList<String>();
-
-		expr = addSingleParameter(config, machine, compiler, pars);
-		after.add("JSR CLOSE");
-
-		CodeContainer cc = new CodeContainer(before, expr, after);
-		List<CodeContainer> ccs = new ArrayList<CodeContainer>();
-		ccs.add(cc);
-		return ccs;
+		return this.createSingleParameterCall(config, machine, pars, "CLOSE");
 	}
 
 	/*

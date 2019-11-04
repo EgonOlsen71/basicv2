@@ -1,10 +1,8 @@
 package com.sixtyfour.extensions.x16.commands;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.sixtyfour.Logger;
-import com.sixtyfour.cbmnative.NativeCompiler;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.elements.commands.AbstractCommand;
@@ -52,18 +50,7 @@ public class Mouse extends AbstractCommand {
 
 	@Override
 	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
-		NativeCompiler compiler = NativeCompiler.getCompiler();
-		List<String> after = new ArrayList<String>();
-		List<String> expr = null;
-		List<String> before = new ArrayList<String>();
-
-		expr = addSingleParameter(config, machine, compiler, pars);
-		after.add("JSR MOUSEMODE");
-
-		CodeContainer cc = new CodeContainer(before, expr, after);
-		List<CodeContainer> ccs = new ArrayList<CodeContainer>();
-		ccs.add(cc);
-		return ccs;
+	    return this.createSingleParameterCall(config, machine, pars, "MOUSEMODE");
 	}
 
 	/*

@@ -280,6 +280,28 @@ public abstract class AbstractCommand implements Command {
 	    }
 	    return expr;
 	}
+	
+	/**
+	 * @param config
+	 * @param machine
+	 * @param callLabel
+	 * @return
+	 */
+	protected List<CodeContainer> createSingleParameterCall(CompilerConfig config, Machine machine, List<Atom> pars, String callLabel) {
+	    NativeCompiler compiler = NativeCompiler.getCompiler();
+	    List<String> after = new ArrayList<String>();
+	    List<String> expr = null;
+	    List<String> before = new ArrayList<String>();
+
+	    expr = addSingleParameter(config, machine, compiler, pars);
+	    after.add("JSR "+callLabel);
+
+	    CodeContainer cc = new CodeContainer(before, expr, after);
+	    List<CodeContainer> ccs = new ArrayList<CodeContainer>();
+	    ccs.add(cc);
+	    return ccs;
+	}
+
 
 	/**
 	 * Throws a type mismatch error.

@@ -118,8 +118,17 @@ public class TransformerTest {
 		testRecom64();
 		testInputTest();
 		testDivide();
+		testSystemcall();
 		
 	}
+	
+	private static void testSystemcall() throws Exception {
+		System.out.println("\n\ntestSystemcall");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/systemcall.bas");
+		Assembler assy = initTestEnvironment(vary, false, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++systemcall.prg", true);
+	}
+	
 	
 	private static void testDivide() throws Exception {
 		System.out.println("\n\ntestDivide");

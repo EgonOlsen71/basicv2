@@ -54,11 +54,17 @@ public class Sys extends AbstractCommand {
 
 	@Override
 	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
-		int memAddr = VarUtils.getInt(addr.eval(machine));
-		if (memAddr < 0 || memAddr > 65535) {
-			throw new RuntimeException("Illegal quantity error: " + this);
+		if (addr.isConstant()) {
+		    // Shortcut for SYS XXXX, which should be the majority of calls
+		    int memAddr = VarUtils.getInt(addr.eval(machine));
+		    if (memAddr < 0 || memAddr > 65535) {
+        		throw new RuntimeException("Illegal quantity error: " + this);
+		    }
+		    return Util.createSingleCommand("JSR $" + Integer.toHexString(memAddr));
+		} else {
+		    // SYS dynamic...
+		    return createSingleParameterCall(config, machine, pars, "SYSTEMCALLDYN");
 		}
-		return Util.createSingleCommand("JSR $" + Integer.toHexString(memAddr));
 	}
 
 	/*
