@@ -29,3 +29,7 @@ this.GEOS = function() {
 this.SCREEN = function() {
 	console.log("[SCREEN not supported for JS, call ignored]");
 }
+
+this.MOUSE = function() {
+	console.log("[MOUSE not supported for JS, call ignored]");
+}

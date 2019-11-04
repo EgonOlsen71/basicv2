@@ -12,6 +12,7 @@ import com.sixtyfour.extensions.BasicExtension;
 import com.sixtyfour.extensions.x16.commands.Dos;
 import com.sixtyfour.extensions.x16.commands.Geos;
 import com.sixtyfour.extensions.x16.commands.Mon;
+import com.sixtyfour.extensions.x16.commands.Mouse;
 import com.sixtyfour.extensions.x16.commands.Old;
 import com.sixtyfour.extensions.x16.commands.Screen;
 import com.sixtyfour.extensions.x16.commands.Vload;
@@ -37,6 +38,7 @@ public class X16Extensions implements BasicExtension {
 			this.add(new Geos());
 			this.add(new Old());
 			this.add(new Screen());
+			this.add(new Mouse());
 		}
 	});
 

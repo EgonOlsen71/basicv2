@@ -1,4 +1,4 @@
-10 ifpeek($2AE)<>40thensys65375
+10 SCREEN 0
 20 print"number of balls (1-255)?"
 30 input n
 40 if n<1 or n>255 then 20

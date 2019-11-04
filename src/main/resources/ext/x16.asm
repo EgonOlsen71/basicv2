@@ -37,13 +37,22 @@ SNPNOOVDC	LDX G_REG
 DOSSTAT		LDA #0
 			JMP PTSTAT
 ;###################################
-SCREEN		LDA #<X_REG
+INITSINGLEPAR
+			LDA #<X_REG
 			LDY #>X_REG
 			JSR REALFAC
 			JSR FACWORD
 			TYA
 			TAX
+			RTS
+;###################################
+SCREEN		JSR INITSINGLEPAR
 			JMP CSCREEN
+;###################################
+MOUSEMODE	JSR INITSINGLEPAR
+			TXA
+			LDX #0
+			JMP $FF09		; because "mouse" appears twice in the symbol table, we can't rely on it and have to call this directly
 ;###################################
 VLOAD		LDA #0			; set secondary address to 0
 			STA SECADDR

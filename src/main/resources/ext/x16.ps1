@@ -29,3 +29,7 @@ function GEOS{
 function SCREEN{
 	"[SCREEN not supported for PS, call ignored: "+$global:A_REG+"]"
 }
+
+function MOUSE{
+	"[MOUSE not supported for PS, call ignored: "+$global:A_REG+"]"
+}

@@ -917,6 +917,9 @@ public class PseudoCpu {
 		case "SCREEN":
 			// Do nothing...
 			return;
+		case "MOUSE":
+			// Do nothing...
+			return;
 		case "DOSSTAT":
 			// Do nothing...
 			return;
