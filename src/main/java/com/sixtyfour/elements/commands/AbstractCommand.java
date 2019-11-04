@@ -3,6 +3,7 @@ package com.sixtyfour.elements.commands;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sixtyfour.cbmnative.NativeCompiler;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.elements.Variable;
@@ -261,6 +262,23 @@ public abstract class AbstractCommand implements Command {
 	 */
 	protected void syntaxError(String line) {
 		throw new RuntimeException("Syntax error: " + line);
+	}
+	
+	/**
+	 * @param config
+	 * @param machine
+	 * @param compiler
+	 * @param pars 
+	 * @return
+	 */
+	protected List<String> addSingleParameter(CompilerConfig config, Machine machine, NativeCompiler compiler, List<Atom> pars) {
+	    List<String> expr = compiler.compileToPseudoCode(config, machine, pars.get(0));
+	    String expPush = getPushRegister(expr.get(expr.size() - 1));
+	    expr = expr.subList(0, expr.size() - 1);
+	    if (expPush.equals("Y")) {
+	        expr.add("MOV X,Y");
+	    }
+	    return expr;
 	}
 
 	/**

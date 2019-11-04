@@ -231,6 +231,7 @@ public class NativeCompiler {
 			mCode.add(lineNumber + ":");
 			boolean condi = false;
 			for (Command cmd : line.getCommands()) {
+				int codeStart=mCode.size();
 				if (!condi) {
 					mCode.addAll(compileToPseudoCode(config, machine, cmd));
 				} else {
@@ -247,6 +248,11 @@ public class NativeCompiler {
 				}
 				if (cmd.isConditional()) {
 					condi = true;
+				}
+				if (mCode.size()>codeStart && !mCode.get(codeStart).equalsIgnoreCase("NOP")) {
+				    // Flag the end of a command if needed, so that the optimizer doesn't cross command borders.
+				    // ...but avoid double NOPs...just in case...
+				    mCode.add(codeStart, "NOP");
 				}
 			}
 		}

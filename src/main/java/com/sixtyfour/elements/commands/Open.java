@@ -58,12 +58,7 @@ public class Open extends AbstractCommand {
 		try {
 			switch (pars.size()) {
 			case 1:
-				expr.addAll(compiler.compileToPseudoCode(config, machine, pars.get(0)));
-				String expPush = getPushRegister(expr.get(expr.size() - 1));
-				expr = expr.subList(0, expr.size() - 1);
-				if (expPush.equals("Y")) {
-					expr.add("MOV X,Y");
-				}
+				expr.addAll(addSingleParameter(config, machine, compiler, pars));
 				after.add("MOV Y,#1{INTEGER}");
 				break;
 			case 2:

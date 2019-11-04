@@ -1,22 +1,23 @@
-package com.sixtyfour.elements.commands;
+package com.sixtyfour.extensions.x16.commands;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sixtyfour.Logger;
 import com.sixtyfour.cbmnative.NativeCompiler;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.Type;
+import com.sixtyfour.elements.commands.AbstractCommand;
 import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.system.BasicProgramCounter;
 import com.sixtyfour.system.Machine;
-import com.sixtyfour.util.VarUtils;
 
 /**
  * The CLOSE command.
  */
-public class Close extends AbstractCommand {
+public class Screen extends AbstractCommand {
 
 	/** The pars. */
 	private List<Atom> pars;
@@ -24,8 +25,8 @@ public class Close extends AbstractCommand {
 	/**
 	 * Instantiates a new close.
 	 */
-	public Close() {
-		super("CLOSE");
+	public Screen() {
+		super("SCREEN");
 	}
 
 	/*
@@ -41,15 +42,10 @@ public class Close extends AbstractCommand {
 		term = Parser.getTerm(config, this, linePart, machine, true);
 		pars = Parser.getParameters(term);
 
-		if (pars.size() == 0) {
+		if (pars.size() != 1) {
 			syntaxError(this);
 		}
 
-		if (pars.size() > 1) {
-			// If more parameters are given, use only the first one. This is
-			// stupid, but the BASIC interpreter behaves in the same way.
-			pars = pars.subList(0, 1);
-		}
 		checkTypes(pars, linePart, Type.STRING);
 		return null;
 	}
@@ -62,7 +58,7 @@ public class Close extends AbstractCommand {
 		List<String> before = new ArrayList<String>();
 
 		expr = addSingleParameter(config, machine, compiler, pars);
-		after.add("JSR CLOSE");
+		after.add("JSR SCREEN");
 
 		CodeContainer cc = new CodeContainer(before, expr, after);
 		List<CodeContainer> ccs = new ArrayList<CodeContainer>();
@@ -78,16 +74,7 @@ public class Close extends AbstractCommand {
 	 */
 	@Override
 	public BasicProgramCounter execute(CompilerConfig config, Machine machine) {
-		Atom fileNumber = pars.get(0);
-		int fn = VarUtils.getInt(fileNumber.eval(machine));
-
-		if (machine.getOutputChannel().getPrintConsumer() != null) {
-			if (machine.getOutputChannel().getChannel() == fn) {
-				machine.getOutputChannel().setPrintConsumer(null, 0);
-			}
-		}
-
-		machine.getDeviceProvider().close(fn);
+	    Logger.log("Call to SCREEN ignored by local runtime!");
 		return null;
 	}
 
