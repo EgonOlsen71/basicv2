@@ -33,3 +33,19 @@ function SCREEN{
 function MOUSE{
 	"[MOUSE not supported for PS, call ignored: "+$global:A_REG+"]"
 }
+
+function PSET{
+	"[PSET not supported for PS, call ignored: "+$global:A_REG+"]"
+}
+
+function LINE{
+	"[LINE not supported for PS, call ignored: "+$global:A_REG+"]"
+}
+
+function FRAME{
+	"[FRAME not supported for PS, call ignored: "+$global:A_REG+"]"
+}
+
+function RECT{
+	"[RECT not supported for PS, call ignored: "+$global:A_REG+"]"
+}

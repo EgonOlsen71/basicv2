@@ -16,7 +16,6 @@ VPEEK		LDA #<C_REG
 			LDY #>X_REG
 			JMP FACMEM
 			RTS
-; see: https://github.com/commanderx16/x16-rom/blob/master/basic/x16additions.s#L64
 ;###################################
 DOSCALL		LDA G_REG
 			LDY G_REG+1
@@ -44,6 +43,209 @@ INITSINGLEPAR
 			JSR FACWORD
 			TYA
 			TAX
+			RTS
+;###################################
+PLOT		JSR EXTRACTPOINT
+			STA R11L
+			JSR EXTRACTCOLOR
+			SEC
+			SEI
+			JSR JSRFAR
+			.WORD DRAWPOINT
+			.BYTE BANKGEOS
+			CLI
+			RTS
+;###################################
+LINE		JSR EXTRACTPOINTS
+			JSR EXTRACTCOLOR
+			LDA #0
+			SEC
+			SEI
+			JSR JSRFAR
+			.WORD DRAWLINE
+			.BYTE BANKGEOS
+			CLI
+			RTS
+;###################################
+RECT		JSR EXTRACTPOINTS
+			LDA R11L
+			STA R2L
+			LDA R11H
+			STA R2H
+			JSR NORMALIZERECT
+			JSR EXTRACTCOLOR
+			SEI
+			JSR JSRFAR
+			.WORD RECTANGLE
+			.BYTE BANKGEOS
+			CLI
+			RTS
+;###################################
+FRAME		JSR EXTRACTPOINTS
+			LDA R11L
+			STA R2L
+			LDA R11H
+			STA R2H
+			JSR NORMALIZERECT
+			JSR EXTRACTCOLOR
+			LDA TMP_ZP			;Move color to A...because..of course, this is different from line
+			SEI
+			JSR JSRFAR
+			.WORD FRAMERECTANGLE
+			.BYTE BANKGEOS
+			CLI
+			RTS
+;###################################
+PRINTCHAR	JSR EXTRACTPOINT
+			STA R1H
+			LDA R3L
+			STA R11L
+			LDA R3H
+			STA R11H
+			LDA #<C_REG
+			LDY #>C_REG
+			JSR REALFAC
+			JSR FACWORD
+			TYA
+			LDX #15
+			JSR SETCOLOR
+			LDA B_REG
+			STA TMP_ZP
+			LDA B_REG+1
+			STA TMP_ZP+1
+			LDY #0
+			LDA (TMP_ZP),Y
+			STA R14L 			;Length
+			INC B_REG
+			BNE CHARSKIP
+			INC B_REG+1
+CHARSKIP				
+			LDA B_REG
+			STA R15L 			;Pointer lo
+			LDA B_REG+1
+			STA R15H 			;Pointer hi
+			
+			SEI
+			JSR JSRFAR
+			.WORD USESYSTEMFONT
+			.BYTE BANKGEOS
+			LDA #27 			;Plaintext
+			JSR JSRFAR
+			.WORD PUTCHAR
+			.BYTE BANKGEOS
+			CLI
+			LDY #0
+COPYCHAR
+			LDA (R15),Y
+			STY TMP_ZP
+			SEI
+			JSR JSRFAR
+			.WORD PUTCHAR
+			.BYTE BANKGEOS
+			CLI
+			LDY TMP_ZP
+			INY
+			CPY R14L
+			BNE COPYCHAR
+			JMP FREFAC
+;###################################
+NORMALIZERECT
+			LDA R2H
+			CMP R2L
+			BCS NORMALIZERECT1
+			LDX R2L
+			STX R2H
+			STA R2L
+NORMALIZERECT1
+			LDA R4L
+			SEC
+			SBC R3L
+			LDA R4H
+			SBC R3H
+			BCS NORMALIZERECT2
+			LDA R3L
+			LDX R4L
+			STX R3L
+			STA R4L
+			LDA R3H
+			LDX R4H
+			STX R3H
+			STA R4H
+NORMALIZERECT2
+			RTS
+;###################################
+RANGEERROR	JMP ILLEGALQUANTITY
+;###################################
+EXTRACTPOINT
+			LDA #<X_REG
+			LDY #>X_REG
+			JSR REALFAC
+			JSR FACWORD
+			TAX
+			TYA
+			STY R3L
+			SEC
+			SBC #<320
+			TXA
+			STA R3H
+			SBC #>320
+			BCS RANGEERROR
+			LDA #<Y_REG
+			LDY #>Y_REG
+			JSR REALFAC
+			JSR FACWORD
+			TAX
+			TYA
+			RTS
+;###################################
+EXTRACTPOINTS
+			JSR EXTRACTPOINT
+			STA R11L
+			SEC
+			SBC #200
+			TXA
+			SBC #0
+			BCS RANGEERROR
+			LDA #<D_REG
+			LDY #>D_REG
+			JSR REALFAC
+			JSR FACWORD
+			TAX
+			TYA
+			STA R4L
+			SEC
+			SBC #<320
+			TXA
+			STA R4H
+			SBC #>320
+			BCS RANGEERROR
+			LDA #<E_REG
+			LDY #>E_REG
+			JSR REALFAC
+			JSR FACWORD
+			TAX
+			TYA
+			STA R11H
+			SEC
+			SBC #200
+			TXA
+			SBC #0
+			BCS RANGEERROR
+			RTS
+;###################################
+EXTRACTCOLOR
+			LDA #<C_REG
+			LDY #>C_REG
+			JSR REALFAC
+			JSR FACWORD
+			TYA
+			STA TMP_ZP
+			TAX				; color in X as well...needed?
+SETCOLOR	SEI		
+			JSR JSRFAR
+			.WORD _SETCOLOR
+			.BYTE BANKGEOS
+			CLI
 			RTS
 ;###################################
 SCREEN		JSR INITSINGLEPAR

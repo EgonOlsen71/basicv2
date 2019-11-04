@@ -30,7 +30,7 @@ public class Wait extends AbstractCommand {
 	 * Instantiates a new wait.
 	 */
 	public Wait() {
-		super("Wait");
+		super("WAIT");
 	}
 
 	/*

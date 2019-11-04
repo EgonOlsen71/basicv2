@@ -33,3 +33,18 @@ this.SCREEN = function() {
 this.MOUSE = function() {
 	console.log("[MOUSE not supported for JS, call ignored]");
 }
+
+this.PSET = function() {
+	console.log("[PSET not supported for JS, call ignored]");
+}
+
+this.LINE = function() {
+	console.log("[LINE not supported for JS, call ignored]");
+}
+
+this.FRAME = function() {
+	console.log("[FRAME not supported for JS, call ignored]");
+}
+this.RECT = function() {
+	console.log("[RECT not supported for JS, call ignored]");
+}

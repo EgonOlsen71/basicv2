@@ -127,6 +127,34 @@ public class TransformerX16 extends AbstractTransformer {
 		res.add("VALTYPE=$2D3");
 		res.add("LOWDS=$D2");
 		res.add("TIMEADDR=$292");
+		res.add("BANKGEOS=$3");
+		res.add("R0=$02");
+		res.add("R0L=$02");
+		res.add("R0H=$03");
+		res.add("R1=$04");
+		res.add("R1L=$04");
+		res.add("R1H=$05");
+		res.add("R2=$06");
+		res.add("R2L=$06");
+		res.add("R2H=$07");
+		res.add("R3=$08");
+		res.add("R3L=$08");
+		res.add("R3H=$09");
+		res.add("R4=$0A");
+		res.add("R4L=$0A");
+		res.add("R4H=$0B");
+		res.add("R5=$0C");
+		res.add("R5L=$0C");
+		res.add("R5H=$0D");
+		res.add("R11=$18");
+		res.add("R11L=$18");
+		res.add("R11H=$19");
+		res.add("R14=$1E");
+		res.add("R14L=$1E");
+		res.add("R14H=$1F");
+		res.add("R15=$20");
+		res.add("R15L=$20");
+		res.add("R15H=$21");
 	}
 
 

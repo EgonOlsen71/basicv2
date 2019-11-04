@@ -9,11 +9,16 @@ import java.util.Map;
 import com.sixtyfour.elements.commands.Command;
 import com.sixtyfour.elements.functions.Function;
 import com.sixtyfour.extensions.BasicExtension;
+import com.sixtyfour.extensions.x16.commands.Char;
 import com.sixtyfour.extensions.x16.commands.Dos;
+import com.sixtyfour.extensions.x16.commands.Frame;
 import com.sixtyfour.extensions.x16.commands.Geos;
+import com.sixtyfour.extensions.x16.commands.Line;
 import com.sixtyfour.extensions.x16.commands.Mon;
 import com.sixtyfour.extensions.x16.commands.Mouse;
 import com.sixtyfour.extensions.x16.commands.Old;
+import com.sixtyfour.extensions.x16.commands.Pset;
+import com.sixtyfour.extensions.x16.commands.Rect;
 import com.sixtyfour.extensions.x16.commands.Screen;
 import com.sixtyfour.extensions.x16.commands.Vload;
 import com.sixtyfour.extensions.x16.commands.Vpoke;
@@ -39,6 +44,11 @@ public class X16Extensions implements BasicExtension {
 			this.add(new Old());
 			this.add(new Screen());
 			this.add(new Mouse());
+			this.add(new Pset());
+			this.add(new Line());
+			this.add(new Frame());
+			this.add(new Rect());
+			this.add(new Char());
 		}
 	});
 

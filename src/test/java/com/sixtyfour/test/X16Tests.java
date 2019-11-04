@@ -56,8 +56,49 @@ public class X16Tests {
 		testInput();
 		testFastFor();
 		testScreen();
+		testPset();
+		testXLine();
+		testFrame();
+		testRect();
+		testChar();
 	}
 
+	
+	private static void testChar() throws Exception {
+		System.out.println("\n\ntestChar");
+		String[] vary = Loader.loadProgram("src/test/resources/x16/char.bas");
+		Assembler assy = initTestEnvironment(vary, false, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++char.prg", true);
+	}
+	
+	private static void testRect() throws Exception {
+		System.out.println("\n\ntestRect");
+		String[] vary = Loader.loadProgram("src/test/resources/x16/rect.bas");
+		Assembler assy = initTestEnvironment(vary, false, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++rect.prg", true);
+	}
+	
+	private static void testFrame() throws Exception {
+		System.out.println("\n\ntestFrame");
+		String[] vary = Loader.loadProgram("src/test/resources/x16/frame.bas");
+		Assembler assy = initTestEnvironment(vary, false, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++frame.prg", true);
+	}
+	
+	private static void testXLine() throws Exception {
+		System.out.println("\n\ntestXLine");
+		String[] vary = Loader.loadProgram("src/test/resources/x16/xline.bas");
+		Assembler assy = initTestEnvironment(vary, false, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++xline.prg", true);
+	}
+	
+	private static void testPset() throws Exception {
+		System.out.println("\n\ntestPset");
+		String[] vary = Loader.loadProgram("src/test/resources/x16/pset.bas");
+		Assembler assy = initTestEnvironment(vary, false, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++pset.prg", true);
+	}
+	
 	private static void testScreen() throws Exception {
 		System.out.println("\n\ntestScreen");
 		String[] vary = Loader.loadProgram("src/test/resources/x16/screen.bas");
