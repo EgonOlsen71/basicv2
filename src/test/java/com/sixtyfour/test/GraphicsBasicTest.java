@@ -13,6 +13,7 @@ public class GraphicsBasicTest {
 	private static CompilerConfig config = new CompilerConfig();
 
 	public static void main(String[] args) throws Exception {
+		/*
 		testGronGroff();
 		testLines();
 		testPlot();
@@ -32,9 +33,18 @@ public class GraphicsBasicTest {
 		// testGget();
 		testCopy();
 		testGetShape();
-		testSprites();
+		testSprites();*/
+		testFractalLand();
 	}
 
+	private static void testFractalLand() {
+		String[] vary = Loader.loadProgram("src/test/resources/ext/fractalland.bas");
+		Basic.registerExtension(new GraphicsBasic());
+		Basic inty = new Basic(vary);
+		inty.run(config);
+	}
+
+	
 	private static void testSprites() {
 		String[] vary = Loader.loadProgram("src/test/resources/ext/sprites.bas");
 		Basic.registerExtension(new GraphicsBasic());
