@@ -92,7 +92,7 @@ public class Data extends AbstractCommand {
 				if (!inString) {
 					if (c == ',') {
 						inString = false;
-						String txt = getText(sb);
+						String txt = getText(sb, hasQuotes);
 						res.add(txt);
 						hasQuotes = false;
 					} else {
@@ -107,7 +107,7 @@ public class Data extends AbstractCommand {
 			}
 			if (i == line.length() - 1) {
 				inString = false;
-				String txt = getText(sb);
+				String txt = getText(sb, hasQuotes);
 				if (lastPos && !hasQuotes) {
 					txt = txt.replaceAll("\\s*$", "");
 				}
@@ -124,10 +124,10 @@ public class Data extends AbstractCommand {
 	 * @param sb the sb
 	 * @return the text
 	 */
-	private String getText(StringBuilder sb) {
+	private String getText(StringBuilder sb, boolean hasQuotes) {
 		String txt = sb.toString();
 		sb.setLength(0);
-		if (txt.isEmpty() || txt.equals(".")) {
+		if (txt.isEmpty()) {
 			txt = "\\0";
 		}
 		return txt;

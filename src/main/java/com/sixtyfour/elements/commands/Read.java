@@ -82,6 +82,18 @@ public class Read extends MultiVariableCommand {
 					obj = 0;
 				}
 			}
+			
+			if (obj.toString().equals(".")) {
+				if (varType.equals(Type.STRING)) {
+					obj = ".";
+				} else if (varType.equals(Type.REAL)) {
+					obj = 0.0f;
+				} else {
+					obj = 0;
+				}
+			}
+			
+			
 			if (indexTerm != null) {
 				// array
 				List<Atom> pars = Parser.getParameters(indexTerm);

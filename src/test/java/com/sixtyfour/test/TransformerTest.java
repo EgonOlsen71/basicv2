@@ -119,7 +119,15 @@ public class TransformerTest {
 		testInputTest();
 		testDivide();
 		testSystemcall();
+		testDatastuff();
 		
+	}
+	
+	private static void testDatastuff() throws Exception {
+		System.out.println("\n\ntestDatastuff");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/datastuff.bas");
+		Assembler assy = initTestEnvironment(vary, true, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++datastuff.prg", true);
 	}
 	
 	private static void testSystemcall() throws Exception {
