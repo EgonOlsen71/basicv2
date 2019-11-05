@@ -62,8 +62,24 @@ public class X16Tests {
 		testRect();
 		testChar();
 		testMouse();
+		testSignum();
+		testFractalLand();
+	}
+	
+	private static void testSignum() throws Exception {
+		System.out.println("\n\ntestSignum");
+		String[] vary = Loader.loadProgram("src/test/resources/x16/signum.bas");
+		Assembler assy = initTestEnvironment(vary, false, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++signum.prg", true);
 	}
 
+	private static void testFractalLand() throws Exception {
+		System.out.println("\n\ntestFractalLand");
+		String[] vary = Loader.loadProgram("src/test/resources/x16/fractalland.bas");
+		Assembler assy = initTestEnvironment(vary, false, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++fractalland.prg", true);
+	}
+	
 	private static void testMouse() throws Exception {
 		System.out.println("\n\ntestMouse");
 		String[] vary = Loader.loadProgram("src/test/resources/x16/mouse.bas");
