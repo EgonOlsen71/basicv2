@@ -14,7 +14,7 @@ import com.sixtyfour.config.CompilerConfig;
  */
 public class NativeOptimizer {
 
-	private final static int MAX_AHEAD = 16;
+	private final static int MAX_AHEAD = 19;
 	private static List<NativePattern> patterns = new ArrayList<NativePattern>();
 
 	static {
@@ -390,7 +390,7 @@ public class NativeOptimizer {
 				}
 
 				// Detect and replace simple for-poke-loops
-				if (config.isLoopOptimizations() && lines[15] != null) {
+				if (config.isLoopOptimizations() && lines[18] != null) {
 					if (lines[0].startsWith("MOV Y,")
 							&& (lines[0].endsWith("{INTEGER}") || lines[0].endsWith(".0{REAL}"))
 							&& lines[1].equals("PUSH Y") && lines[2].equals("NOP") && lines[3].startsWith("MOV Y,")
@@ -400,8 +400,9 @@ public class NativeOptimizer {
 								&& lines[7].startsWith("MOV") && lines[7].endsWith(",Y")) {
 							if (lines[8].startsWith("MOV A,(") && lines[9].equals("JSR INITFOR")
 									&& lines[10].equals("NOP") && lines[11].startsWith("MOV Y,")) {
-								if (lines[12].startsWith("MOVB (Y),#") && lines[13].equals("NOP") && lines[14].startsWith("MOV A,")
-										&& lines[15].equals("JSR NEXT")) {
+								if (lines[12].equals("PUSH Y") && lines[13].startsWith("MOV X,") && lines[14].equals("POP Y") 
+									&& lines[15].equals("MOVB (Y),X") && lines[16].equals("NOP") && lines[17].startsWith("MOV A,")
+										&& lines[18].equals("JSR NEXT")) {
 									// Make sure that the loop variable is
 									// actually the poke's target...
 									// BY checking if MOV A,(I{REAL}) == MOV
@@ -410,7 +411,7 @@ public class NativeOptimizer {
 											.equals(lines[11])) {
 										String[] parts = lines[7].split(" |\\{");
 										String var = parts[1];
-										if (lines[14].contains(var + "{}") || lines[14].contains("#0{")) {
+										if (lines[17].contains(var + "{}") || lines[17].contains("#0{")) {
 											ret.add(lines[0]);
 											ret.add(lines[1]);
 											ret.add(lines[3]);
@@ -418,9 +419,9 @@ public class NativeOptimizer {
 											ret.add(lines[6]);
 											ret.add(lines[7]);
 											ret.add(lines[8]);
-											ret.add(lines[12].replace("MOVB (Y)", "MOV X"));
+											ret.add(lines[13]);
 											ret.add("JSR FASTFOR");
-											i += 15;
+											i += 18;
 											continue;
 										}
 									}
