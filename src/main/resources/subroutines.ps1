@@ -456,7 +456,12 @@ function READSTR {
 }
 
 function READNUMBER {
-	$global:Y_REG=$global:_datas[$global:_dataPtr++]
+	$num=$global:_datas[$global:_dataPtr++]
+	
+	if ($num -eq "." -or $num.length -eq 0) {
+		$num=0
+	}
+	$global:Y_REG=$num
 }
 
 function FINX {

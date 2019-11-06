@@ -444,7 +444,11 @@ this.READSTR = function() {
 }
 
 this.READNUMBER = function() {
-	this.Y_REG=this._datas[this._dataPtr++];
+	var n=this._datas[this._dataPtr++];
+	if (n=="" || n==".") {
+		n=0;
+	}
+	this.Y_REG=n;
 }
 
 this.FINX = function() {

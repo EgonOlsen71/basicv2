@@ -538,13 +538,7 @@ public class PseudoCpu {
 			}
 
 			if (obj.toString().equals("\\0")) {
-				if (type == Type.STRING) {
-					obj = "";
-				} else if (type == Type.REAL) {
-					obj = 0.0f;
-				} else {
-					obj = 0;
-				}
+				obj = "";
 			}
 
 			// System.out.println("Type: " + type + "/" + memPointer);
@@ -1531,13 +1525,18 @@ public class PseudoCpu {
 	private void readNumber(String[] parts) {
 		checkDataPointer();
 		int type = memory[datasPointer++];
+		int obj=memory[datasPointer++];
 		if (type == 2) {
-			throw new RuntimeException("Type mismatch: " + type);
+		      	if (obj==0 || (obj==1 && (char)memory[datasPointer++]=='.')) {
+		    	    obj=0;
+		    	} else {
+		    	    throw new RuntimeException("Type mismatch: " + type);
+		    	}
 		}
 		if (type == 0) {
-			regs[Y] = memory[datasPointer++];
+			regs[Y] = obj;
 		} else {
-			regs[Y] = Float.intBitsToFloat(memory[datasPointer++]);
+			regs[Y] = Float.intBitsToFloat(obj);
 		}
 	}
 

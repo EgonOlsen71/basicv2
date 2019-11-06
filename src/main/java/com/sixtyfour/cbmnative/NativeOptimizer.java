@@ -14,7 +14,7 @@ import com.sixtyfour.config.CompilerConfig;
  */
 public class NativeOptimizer {
 
-	private final static int MAX_AHEAD = 15;
+	private final static int MAX_AHEAD = 16;
 	private static List<NativePattern> patterns = new ArrayList<NativePattern>();
 
 	static {
@@ -57,10 +57,6 @@ public class NativeOptimizer {
 		patterns.add(new NativePattern(
 				new String[] { "PUSH C", "MOV C*", "PUSH C", "CHGCTX #1", "MOV B*", "POP D", "POP C" },
 				new String[] { "{1:MOV C,>MOV D,}", "{3}", "{4}" }));
-		// The fact that NOPs are inserted between expressions now kills the
-		// fastfor-optimizer. This little hack revives it...
-		patterns.add(new NativePattern(new String[] { "MOV Y,#*", "PUSH Y", "NOP", "MOV Y,#*", "PUSH Y", "NOP" },
-				new String[] { "{0}", "{1}", "{3}", "{4}" }));
 		patterns.add(new NativePattern(new String[] { "MOV Y,?}", "POP X" }, new String[] { "{1}", "{0}" }));
 		patterns.add(new NativePattern(new String[] { "PUSH X", "NOP", "POP X" }, new String[] { "NOP" }));
 		patterns.add(new NativePattern(new String[] { "PUSH Y", "NOP", "POP Y" }, new String[] { "NOP" }));
@@ -394,39 +390,37 @@ public class NativeOptimizer {
 				}
 
 				// Detect and replace simple for-poke-loops
-				if (config.isLoopOptimizations() && lines[14] != null) {
+				if (config.isLoopOptimizations() && lines[15] != null) {
 					if (lines[0].startsWith("MOV Y,")
 							&& (lines[0].endsWith("{INTEGER}") || lines[0].endsWith(".0{REAL}"))
-							&& lines[1].equals("PUSH Y") && lines[2].startsWith("MOV Y,")
-							&& (lines[2].endsWith("{INTEGER}") || lines[2].endsWith(".0{REAL}"))) {
-						if (lines[3].equals("PUSH Y") && lines[4].startsWith("MOV Y,")
-								&& (lines[4].endsWith("{INTEGER}") || lines[4].endsWith(".0{REAL}"))
-								&& lines[5].startsWith("MOV") && lines[5].endsWith(",Y")) {
-							if (lines[6].startsWith("MOV A,(") && lines[7].equals("JSR INITFOR")
-									&& lines[8].startsWith("MOV Y,") && lines[9].equals("PUSH Y")
-									&& lines[10].startsWith("MOV X,")) {
-								if (lines[10].endsWith("}") && lines[11].equals("POP Y")
-										&& lines[12].equals("MOVB (Y),X") && lines[13].startsWith("MOV A,")
-										&& lines[14].equals("JSR NEXT")) {
+							&& lines[1].equals("PUSH Y") && lines[2].equals("NOP") && lines[3].startsWith("MOV Y,")
+							&& (lines[3].endsWith("{INTEGER}") || lines[3].endsWith(".0{REAL}"))) {
+						if (lines[4].equals("PUSH Y") && lines[5].equals("NOP") && lines[6].startsWith("MOV Y,")
+								&& (lines[6].endsWith("{INTEGER}") || lines[6].endsWith(".0{REAL}"))
+								&& lines[7].startsWith("MOV") && lines[7].endsWith(",Y")) {
+							if (lines[8].startsWith("MOV A,(") && lines[9].equals("JSR INITFOR")
+									&& lines[10].equals("NOP") && lines[11].startsWith("MOV Y,")) {
+								if (lines[12].startsWith("MOVB (Y),#") && lines[13].equals("NOP") && lines[14].startsWith("MOV A,")
+										&& lines[15].equals("JSR NEXT")) {
 									// Make sure that the loop variable is
 									// actually the poke's target...
 									// BY checking if MOV A,(I{REAL}) == MOV
 									// Y,I{REAL} after some replacements.
-									if (lines[6].replace("(", "").replace(")", "").replace("A,", "Y,")
-											.equals(lines[8])) {
-										String[] parts = lines[5].split(" |\\{");
+									if (lines[8].replace("(", "").replace(")", "").replace("A,", "Y,")
+											.equals(lines[11])) {
+										String[] parts = lines[7].split(" |\\{");
 										String var = parts[1];
-										if (lines[13].contains(var + "{}") || lines[13].contains("#0{")) {
+										if (lines[14].contains(var + "{}") || lines[14].contains("#0{")) {
 											ret.add(lines[0]);
 											ret.add(lines[1]);
-											ret.add(lines[2]);
 											ret.add(lines[3]);
 											ret.add(lines[4]);
-											ret.add(lines[5]);
 											ret.add(lines[6]);
-											ret.add(lines[10]);
+											ret.add(lines[7]);
+											ret.add(lines[8]);
+											ret.add(lines[12].replace("MOVB (Y)", "MOV X"));
 											ret.add("JSR FASTFOR");
-											i += 14;
+											i += 15;
 											continue;
 										}
 									}

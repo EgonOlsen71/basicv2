@@ -148,13 +148,7 @@ public class TransformerJs implements Transformer {
 				}
 
 				if (obj.toString().equals("\\0")) {
-					if (type == Type.STRING) {
-						obj = "";
-					} else if (type == Type.REAL) {
-						obj = 0.0f;
-					} else {
-						obj = 0;
-					}
+					obj = "";
 				}
 				
 				if (type == Type.INTEGER) {
