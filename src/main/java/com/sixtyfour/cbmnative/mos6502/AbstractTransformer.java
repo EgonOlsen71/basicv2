@@ -16,6 +16,7 @@ import com.sixtyfour.cbmnative.GeneratorContext;
 import com.sixtyfour.cbmnative.PlatformProvider;
 import com.sixtyfour.cbmnative.Transformer;
 import com.sixtyfour.cbmnative.mos6502.generators.GeneratorList;
+import com.sixtyfour.cbmnative.mos6502.util.Converter;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.elements.Variable;
@@ -159,7 +160,7 @@ public abstract class AbstractTransformer implements Transformer {
 				ret.add(".BYTE " + obj.toString().length());
 				String ds = obj.toString();
 				if (config.isConvertStringToLower()) {
-					ds = ds.toLowerCase(Locale.ENGLISH);
+					ds = Converter.convertCase(ds);
 				}
 				ret.add(".STRG \"" + ds + "\"");
 				cnt += 2 + obj.toString().length();
@@ -285,7 +286,7 @@ public abstract class AbstractTransformer implements Transformer {
 						} else if (type == Type.STRING) {
 							consts.add(label + "\t" + ".BYTE " + name.length());
 							if (config.isConvertStringToLower()) {
-								name = name.toLowerCase(Locale.ENGLISH);
+								name = Converter.convertCase(name);
 							}
 							consts.add("\t" + ".STRG \"" + name + "\"");
 						}
