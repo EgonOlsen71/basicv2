@@ -486,7 +486,7 @@ public class MoSpeedCL {
 	System.out.println(
 		"/nondecimals=true|false - if true, hexadecimal and binary numbers can be indicated by & and %. Default is false, except for the X16 platform, where it's enabled by default.");
 	System.out.println(
-		"/multipart=true|false - if false (default) the target file contains all binary data regardless of the address in memory. If false, several files will be written if the addresses of the program's parts aren't adjacent.");
+		"/multipart=true|false - if false (default) the target file contains all binary data regardless of the address in memory. If true, several files will be written if the addresses of the program's parts aren't adjacent.");
 	System.out.println();
     }
 
