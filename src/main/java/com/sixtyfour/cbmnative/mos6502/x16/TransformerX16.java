@@ -26,8 +26,7 @@ public class TransformerX16 extends AbstractTransformer {
 	public TransformerX16() {
 		variableStart = -1;
 		runtimeStart = -1;
-		stringMemoryEnd = 0xa000; // will be adjusted in the runtime according
-		// to 55/56
+		stringMemoryEnd = 0; // will be adjusted in the runtime according to 55/56
 		startAddress = 2072;
 		preferZeropage = true;
 	}

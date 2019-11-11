@@ -3,6 +3,7 @@ package com.sixtyfour.extensions;
 import java.util.List;
 import java.util.Map;
 
+import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.Variable;
 import com.sixtyfour.elements.commands.Command;
 import com.sixtyfour.elements.functions.Function;

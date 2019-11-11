@@ -117,5 +117,4 @@ public class X16Extensions implements BasicExtension {
 	public List<Variable> getSystemVariables() {
 		return VARS;
 	}
-
 }
