@@ -329,7 +329,6 @@ public class MoSpeedCL {
     	    	}
 	    }
 	} catch (Exception e) {
-	    e.printStackTrace();
 	    System.out.println("Failed to write target file '" + targetFile + "': " + e.getMessage());
 	    exit(9);
 	}
