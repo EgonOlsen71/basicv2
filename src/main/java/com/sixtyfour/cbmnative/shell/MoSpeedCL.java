@@ -27,6 +27,8 @@ import com.sixtyfour.config.MemoryConfig;
 import com.sixtyfour.extensions.x16.X16Extensions;
 import com.sixtyfour.parser.Preprocessor;
 import com.sixtyfour.system.FileWriter;
+import com.sixtyfour.system.Program;
+import com.sixtyfour.system.ProgramPart;
 
 /**
  * Command line version of the native compiler
@@ -89,6 +91,7 @@ public class MoSpeedCL {
 	cfg.setIntermediateLanguageOptimizations(getOption("ilangopt", cmds));
 	cfg.setNativeLanguageOptimizations(getOption("nlangopt", cmds));
 	cfg.setOptimizeConstants(getOption("constopt", cmds));
+	cfg.setOptimizedLinker(getOption("smartlinker", cmds));
 	cfg.setOptimizedLinker(getOption("smartlinker", cmds));
 	cfg.setFloatOptimizations(getOption("floatopt", cmds));
 	cfg.setIntOptimizations(getOption("intopt", cmds));
@@ -229,7 +232,7 @@ public class MoSpeedCL {
 		exit(15);
 	    }
 	}
-	writeTargetFiles(memConfig, targetFile, nCode, assy, platform, addrHeader);
+	writeTargetFiles(memConfig, targetFile, nCode, assy, platform, addrHeader, getOptionIntDefault("multipart", cmds, false));
 	System.out.println(srcFile + " compiled in " + (System.currentTimeMillis() - s) + "ms!");
 
 	if (cmds.containsKey("vice")) {
@@ -246,48 +249,89 @@ public class MoSpeedCL {
     }
 
     private static void writeTargetFiles(MemoryConfig memConfig, String targetFile, List<String> ncode, Assembler assy,
-	    PlatformProvider platform, boolean addrHeader) {
+	    PlatformProvider platform, boolean addrHeader, boolean multiPart) {
 	if (is6502Platform(platform)) {
-	    try {
-		System.out.println("Writing target file: " + targetFile);
-		FileWriter.writeAsPrg(assy.getProgram(), targetFile,
-			memConfig.getProgramStart() == -1
-				|| (memConfig.getProgramStart() < platform.getMaxHeaderAddress()
-					&& memConfig.getProgramStart() >= platform.getBaseAddress() + 23),
-			platform.getBaseAddress(), addrHeader);
-	    } catch (Exception e) {
-		System.out.println("Failed to write target file '" + targetFile + "': " + e.getMessage());
-		exit(9);
-	    }
+	    write6502(memConfig, targetFile, assy, platform, addrHeader, multiPart);
 	} else if (platform instanceof PlatformJs) {
-	    Transformer trsn = new PlatformJs().getTransformer();
-	    try (PrintWriter pw = new PrintWriter(targetFile);
-		    PrintWriter cpw = new PrintWriter(targetFile.replace(".js", ".html"))) {
-		System.out.println("Writing target files: " + targetFile);
-		for (String line : ncode) {
-		    pw.println(line);
-		}
-		String[] parts = targetFile.replace("\\", "/").split("/");
-		for (String line : trsn.createCaller(parts[parts.length - 1])) {
-		    cpw.println(line);
-		}
-	    } catch (Exception e) {
-		System.out.println("Failed to write target file '" + targetFile + "': " + e.getMessage());
-		exit(9);
-	    }
+	    writeJavascript(targetFile, ncode);
 	} else if (platform instanceof PlatformPs) {
-	    try (PrintWriter pw = new PrintWriter(targetFile)) {
-		System.out.println("Writing target file: " + targetFile);
-		for (String line : ncode) {
-		    pw.println(line);
-		}
-	    } catch (Exception e) {
-		System.out.println("Failed to write target file '" + targetFile + "': " + e.getMessage());
-		exit(9);
-	    }
+	    writePowershell(targetFile, ncode);
 	} else {
 	    System.out.println("\n!!! Unsupported platform: " + platform);
 	    exit(19);
+	}
+    }
+
+    private static void writePowershell(String targetFile, List<String> ncode) {
+	try (PrintWriter pw = new PrintWriter(targetFile)) {
+	    System.out.println("Writing target file: " + targetFile);
+	    for (String line : ncode) {
+		pw.println(line);
+	    }
+	} catch (Exception e) {
+	    System.out.println("Failed to write target file '" + targetFile + "': " + e.getMessage());
+	    exit(9);
+	}
+    }
+
+    private static void writeJavascript(String targetFile, List<String> ncode) {
+	Transformer trsn = new PlatformJs().getTransformer();
+	try (PrintWriter pw = new PrintWriter(targetFile);
+	    PrintWriter cpw = new PrintWriter(targetFile.replace(".js", ".html"))) {
+	    System.out.println("Writing target files: " + targetFile);
+	    for (String line : ncode) {
+		pw.println(line);
+	    }
+    		String[] parts = targetFile.replace("\\", "/").split("/");
+    		for (String line : trsn.createCaller(parts[parts.length - 1])) {
+    		    cpw.println(line);
+    		}
+	} catch (Exception e) {
+	System.out.println("Failed to write target file '" + targetFile + "': " + e.getMessage());
+	exit(9);
+	}
+    }
+
+    private static void write6502(MemoryConfig memConfig, String targetFile, Assembler assy, PlatformProvider platform,
+	    boolean addrHeader, boolean multiPart) {
+	try {
+	    if (!multiPart) {
+        	    System.out.println("Writing target file: " + targetFile);
+        	    FileWriter.writeAsPrg(assy.getProgram(), targetFile,
+        		memConfig.getProgramStart() == -1
+        			|| (memConfig.getProgramStart() < platform.getMaxHeaderAddress()
+        				&& memConfig.getProgramStart() >= platform.getBaseAddress() + 23),
+        		platform.getBaseAddress(), addrHeader);
+	    } else {
+		System.out.println("Writing multiple target files!");
+		Program tmp=new Program();
+		Program sp=assy.getProgram();
+		tmp.setLabelsContainer(sp.getLabelsContainer());
+		tmp.addPart(sp.getParts().get(0));
+		tmp.setCodeStart(sp.getCodeStart());
+		System.out.println("Writing target file: " + targetFile);
+    	    	FileWriter.writeAsPrg(tmp, targetFile,
+    		memConfig.getProgramStart() == -1
+    			|| (memConfig.getProgramStart() < platform.getMaxHeaderAddress()
+    				&& memConfig.getProgramStart() >= platform.getBaseAddress() + 23),
+    		platform.getBaseAddress(), addrHeader);
+    	    	String master=targetFile.replace(".prg", ".p0");
+    	    	for (int i=1; i<sp.getParts().size();i++) {
+    	    	    tmp=new Program();
+    	    	    ProgramPart pp=sp.getParts().get(i);
+    	    	    tmp.addPart(pp);
+    	    	    tmp.setCodeStart(pp.getAddress());
+    	    	    tmp.setLabelsContainer(sp.getLabelsContainer());
+    	    	    String newName=master+i;
+    	    	    delete(newName);
+    	    	    System.out.println("Writing target file: " + newName);
+    	    	    FileWriter.writeAsPrg(tmp, newName, false, platform.getBaseAddress(), true);
+    	    	}
+	    }
+	} catch (Exception e) {
+	    e.printStackTrace();
+	    System.out.println("Failed to write target file '" + targetFile + "': " + e.getMessage());
+	    exit(9);
 	}
     }
 
@@ -441,6 +485,8 @@ public class MoSpeedCL {
 		"/tolower=true|false - if true, all strings in the source code will be treated as lower case. This can be useful when compiling BASIC code copied directly from an emulator. Default is false.");
 	System.out.println(
 		"/nondecimals=true|false - if true, hexadecimal and binary numbers can be indicated by & and %. Default is false, except for the X16 platform, where it's enabled by default.");
+	System.out.println(
+		"/multipart=true|false - if false (default) the target file contains all binary data regardless of the address in memory. If false, several files will be written if the addresses of the program's parts aren't adjacent.");
 	System.out.println();
     }
 
