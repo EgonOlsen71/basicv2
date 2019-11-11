@@ -30,7 +30,7 @@ public class Compactor {
 	/**
 	 * Creates a new compactor.
 	 * 
-	 * @param threshold the mininum length of the pattern to identify.
+	 * @param threshold the minimum length of the pattern to identify.
 	 */
 	public Compactor(int threshold) {
 		this.threshold = threshold;
@@ -191,9 +191,17 @@ public class Compactor {
 
 		List<List<Line>> finds = new ArrayList<>();
 		Set<Integer> replaced = new HashSet<>();
+		
+		Comparator<String> lineComp= new Comparator<String>() {
+			@Override
+			public int compare(String o1, String o2) {
+				return o2.length() - o1.length();
+			}
+		};
 
 		for (int i = 0; i < input.size(); i++) {
 			if (pl != null && i % 300 == 0) {
+			    	// Advance the progress listener...
 				pl.nextStep();
 			}
 			String line = input.get(i).trim();
@@ -247,12 +255,7 @@ public class Compactor {
 			}
 
 			List<String> keys = new ArrayList<String>(removers.keySet());
-			Collections.sort(keys, new Comparator<String>() {
-				@Override
-				public int compare(String o1, String o2) {
-					return o2.length() - o1.length();
-				}
-			});
+			Collections.sort(keys, lineComp);
 
 			for (String remover : keys) {
 				List<List<Line>> rems = removers.get(remover);
