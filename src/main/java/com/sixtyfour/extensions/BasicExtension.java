@@ -3,7 +3,7 @@ package com.sixtyfour.extensions;
 import java.util.List;
 import java.util.Map;
 
-import com.sixtyfour.config.CompilerConfig;
+import com.sixtyfour.config.MemoryConfig;
 import com.sixtyfour.elements.Variable;
 import com.sixtyfour.elements.commands.Command;
 import com.sixtyfour.elements.functions.Function;
@@ -104,4 +104,17 @@ public interface BasicExtension {
 	return false;
     }
 
+    /**
+     * Adjusts the memory config for the native compiler in case this extension needs this.
+     * @param machine 
+     * 
+     * @param machine the machine
+     * @param config the config
+     * @return has it been adjusted?
+     */
+    default boolean adjustMemoryConfig(Machine machine, MemoryConfig config) {
+	return false;
+    }
+
+    
 }

@@ -141,7 +141,10 @@ public class NativeCompiler {
 		Logger.log("Parsing BASIC program into AST...");
 		basic.compile(conf);
 		List<String> mCode = NativeCompiler.getCompiler().compileToPseudoCode(conf, basic);
-
+		boolean adjusted=basic.adjustMemoryConfig(memConfig);
+		if (adjusted) {
+		    Logger.log("Program memory adjusted to end at $"+Integer.toHexString(memConfig.getStringEnd()));
+		}
 		Transformer tf = platform.getTransformer();
 		tf.setVariableStart(memConfig.getVariableStart());
 		tf.setOptimizedTempStorage(memConfig.isOptimizedTempStorage());

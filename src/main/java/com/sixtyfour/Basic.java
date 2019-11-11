@@ -11,6 +11,7 @@ import java.util.Set;
 import com.sixtyfour.cbmnative.PCode;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.config.LoopMode;
+import com.sixtyfour.config.MemoryConfig;
 import com.sixtyfour.elements.commands.Assignment;
 import com.sixtyfour.elements.commands.Command;
 import com.sixtyfour.elements.commands.CommandList;
@@ -905,5 +906,19 @@ public class Basic implements ProgramExecutor {
 			lineCnt++;
 		} while (lineCnt < lines.size() && !stop);
 
+	}
+	
+	/**
+	 * Adjusts the memory config for the native compiler based on the extensions loaded.
+	 * 
+	 * @param config the memory config
+	 * @return 
+	 */
+	public boolean adjustMemoryConfig(MemoryConfig config) {
+	    boolean adjusted=false;
+	    for (BasicExtension ext:Basic.getExtensions()) {
+		adjusted|=ext.adjustMemoryConfig(machine, config);
+	    }
+	    return adjusted;
 	}
 }
