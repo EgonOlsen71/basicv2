@@ -54,7 +54,7 @@ public class Poke extends AbstractCommand {
 
 		addr = pars.get(0);
 		val = pars.get(1);
-		
+
 		return null;
 	}
 

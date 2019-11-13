@@ -17,7 +17,8 @@ import com.sixtyfour.config.CompilerConfig;
 public class OptimizerPs implements Optimizer {
 
 	@Override
-	public List<String> optimize(CompilerConfig config, PlatformProvider platform, List<String> code, ProgressListener pg) {
+	public List<String> optimize(CompilerConfig config, PlatformProvider platform, List<String> code,
+			ProgressListener pg) {
 		return code;
 	}
 

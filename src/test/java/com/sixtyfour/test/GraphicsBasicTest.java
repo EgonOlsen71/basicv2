@@ -14,26 +14,13 @@ public class GraphicsBasicTest {
 
 	public static void main(String[] args) throws Exception {
 		/*
-		testGronGroff();
-		testLines();
-		testPlot();
-		testCircles();
-		testFilledCircles();
-		testRects();
-		testClears();
-		testFloodFill();
-		testFractal();
-		testFractal();
-		testShapes();
-		testDoubleBuffer();
-		testGPrint();
-		test3D();
-		testRotatedShapes();
-
-		// testGget();
-		testCopy();
-		testGetShape();
-		testSprites();*/
+		 * testGronGroff(); testLines(); testPlot(); testCircles(); testFilledCircles();
+		 * testRects(); testClears(); testFloodFill(); testFractal(); testFractal();
+		 * testShapes(); testDoubleBuffer(); testGPrint(); test3D();
+		 * testRotatedShapes();
+		 * 
+		 * // testGget(); testCopy(); testGetShape(); testSprites();
+		 */
 		testFractalLand();
 	}
 
@@ -44,7 +31,6 @@ public class GraphicsBasicTest {
 		inty.run(config);
 	}
 
-	
 	private static void testSprites() {
 		String[] vary = Loader.loadProgram("src/test/resources/ext/sprites.bas");
 		Basic.registerExtension(new GraphicsBasic());

@@ -15,7 +15,7 @@ public interface Optimizer {
 	/**
 	 * Optimizes native/assembly code.
 	 * 
-	 * @param the compiler config
+	 * @param the      compiler config
 	 * @param platform the target platform
 	 * @param input    the input code
 	 * @param pg       an optional progress listener

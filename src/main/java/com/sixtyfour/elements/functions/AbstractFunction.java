@@ -101,8 +101,12 @@ public abstract class AbstractFunction implements Function {
 
 	}
 
-	/* (non-Javadoc)
-	 * @see com.sixtyfour.parser.Atom#evalToCode(com.sixtyfour.config.CompilerConfig, com.sixtyfour.system.Machine)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.sixtyfour.parser.Atom#evalToCode(com.sixtyfour.config.CompilerConfig,
+	 * com.sixtyfour.system.Machine)
 	 */
 	@Override
 	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
@@ -181,9 +185,12 @@ public abstract class AbstractFunction implements Function {
 	public boolean isFunction(String function) {
 		return VarUtils.toUpper(function.trim()).startsWith(name);
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.sixtyfour.elements.functions.Function#isNativeFunction(java.lang.String)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.sixtyfour.elements.functions.Function#isNativeFunction(java.lang.String)
 	 */
 	@Override
 	public boolean isNativeFunction(String function) {
@@ -280,13 +287,17 @@ public abstract class AbstractFunction implements Function {
 		return this.getClass().getSimpleName().toUpperCase(Locale.ENGLISH);
 
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.sixtyfour.elements.functions.Function#addNativeFunctionCall(java.util.List)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.sixtyfour.elements.functions.Function#addNativeFunctionCall(java.util.
+	 * List)
 	 */
 	@Override
 	public boolean addNativeFunctionCall(List<String> code) {
-	    return false;
+		return false;
 	}
 
 }

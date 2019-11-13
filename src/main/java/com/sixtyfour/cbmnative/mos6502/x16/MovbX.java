@@ -10,8 +10,8 @@ import com.sixtyfour.elements.Type;
  * Special implementation of the MOVB generator for the X16, because it has to
  * switch ROM banks for PEEK (for whatever reason...)
  * 
- * @todo this might has to be extended to cover RAM banks as well once some kind of BANK command
- * makes it into the X16's BASIC
+ * @todo this might has to be extended to cover RAM banks as well once some kind
+ *       of BANK command makes it into the X16's BASIC
  * 
  * 
  * @author EgonOlsen71
@@ -52,7 +52,7 @@ public class MovbX extends Movb implements X16Defaults {
 		nCode.add("LDA #0");
 		nCode.add("STA ROMSELECT");
 	}
-	
+
 	@Override
 	protected void checkSpecialReadVars(List<String> nCode, Operand source) {
 		super.checkSpecialReadVars(nCode, source);

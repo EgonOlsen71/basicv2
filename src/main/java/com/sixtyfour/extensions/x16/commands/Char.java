@@ -42,14 +42,13 @@ public class Char extends AbstractCommand {
 		term = Parser.getTerm(config, this, linePart, machine, true);
 		pars = Parser.getParameters(term);
 
-		if (pars.size() !=4) {
+		if (pars.size() != 4) {
 			syntaxError(linePart);
 		}
 
 		checkTypes(pars, linePart, Type.STRING, Type.STRING, Type.STRING, Type.REAL);
 		return null;
 	}
-
 
 	@Override
 	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
@@ -86,7 +85,7 @@ public class Char extends AbstractCommand {
 	 */
 	@Override
 	public BasicProgramCounter execute(CompilerConfig config, Machine machine) {
-	    Logger.log("Call to CHAR ignored by local runtime!");
+		Logger.log("Call to CHAR ignored by local runtime!");
 		return null;
 	}
 }

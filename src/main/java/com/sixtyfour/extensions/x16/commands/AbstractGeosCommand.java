@@ -18,14 +18,14 @@ import com.sixtyfour.system.Machine;
  */
 public class AbstractGeosCommand extends AbstractCommand {
 
-    /** The pars. */
-   protected List<Atom> pars;
-    
-    public AbstractGeosCommand(String name) {
-	super(name);
-    }
-    
-    @Override
+	/** The pars. */
+	protected List<Atom> pars;
+
+	public AbstractGeosCommand(String name) {
+		super(name);
+	}
+
+	@Override
 	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos,
 			boolean lastPos, Machine machine) {
 		super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine);
@@ -39,8 +39,8 @@ public class AbstractGeosCommand extends AbstractCommand {
 		checkTypes(pars, linePart, Type.STRING, Type.STRING, Type.STRING, Type.STRING, Type.STRING);
 		return null;
 	}
-    
-    protected List<CodeContainer> evalToCode(CompilerConfig config, Machine machine, String callLabel) {
+
+	protected List<CodeContainer> evalToCode(CompilerConfig config, Machine machine, String callLabel) {
 		Atom xs = pars.get(0);
 		Atom ys = pars.get(1);
 		Atom xe = pars.get(2);
@@ -55,20 +55,20 @@ public class AbstractGeosCommand extends AbstractCommand {
 		expr.addAll(compiler.compileToPseudoCode(config, machine, xe));
 		expr.addAll(compiler.compileToPseudoCode(config, machine, ye));
 
-		if (pars.size()==5) {
-		    // Color given
-		    expr.addAll(compiler.compileToPseudoCode(config, machine, pars.get(4)));
-		    after.add("POP C");
+		if (pars.size() == 5) {
+			// Color given
+			expr.addAll(compiler.compileToPseudoCode(config, machine, pars.get(4)));
+			after.add("POP C");
 		} else {
-		    // No color given
-		    after.add("MOV C,#0{REAL}");
+			// No color given
+			after.add("MOV C,#0{REAL}");
 		}
-		
+
 		after.add("POP E");
 		after.add("POP D");
 		after.add("POP Y");
 		after.add("POP X");
-		after.add("JSR "+callLabel);
+		after.add("JSR " + callLabel);
 
 		CodeContainer cc = new CodeContainer(before, expr, after);
 		List<CodeContainer> ccs = new ArrayList<CodeContainer>();

@@ -324,7 +324,7 @@ public class Variable implements Atom {
 	public Object evalFromCode() {
 		return value;
 	}
-	
+
 	public boolean isReadOnly() {
 		return false;
 	}

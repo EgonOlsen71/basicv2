@@ -50,7 +50,6 @@ public class Pset extends AbstractCommand {
 		return null;
 	}
 
-
 	@Override
 	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
 		Atom xc = pars.get(0);
@@ -62,14 +61,14 @@ public class Pset extends AbstractCommand {
 
 		expr.addAll(compiler.compileToPseudoCode(config, machine, xc));
 		expr.addAll(compiler.compileToPseudoCode(config, machine, yc));
-		
-		if (pars.size()==3) {
-		    // Color given
-		    expr.addAll(compiler.compileToPseudoCode(config, machine, pars.get(2)));
-		    after.add("POP C");
+
+		if (pars.size() == 3) {
+			// Color given
+			expr.addAll(compiler.compileToPseudoCode(config, machine, pars.get(2)));
+			after.add("POP C");
 		} else {
-		    // No color given
-		    after.add("MOV C,#0{REAL}");
+			// No color given
+			after.add("MOV C,#0{REAL}");
 		}
 
 		after.add("POP Y");
@@ -90,7 +89,7 @@ public class Pset extends AbstractCommand {
 	 */
 	@Override
 	public BasicProgramCounter execute(CompilerConfig config, Machine machine) {
-	    Logger.log("Call to PSET ignored by local runtime!");
+		Logger.log("Call to PSET ignored by local runtime!");
 		return null;
 	}
 }

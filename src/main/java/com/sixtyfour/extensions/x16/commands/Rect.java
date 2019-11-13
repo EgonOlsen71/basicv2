@@ -20,11 +20,9 @@ public class Rect extends AbstractGeosCommand {
 		super("RECT");
 	}
 
-
-
 	@Override
 	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
-	    return super.evalToCode(config, machine, "RECT");
+		return super.evalToCode(config, machine, "RECT");
 	}
 
 	/*
@@ -35,7 +33,7 @@ public class Rect extends AbstractGeosCommand {
 	 */
 	@Override
 	public BasicProgramCounter execute(CompilerConfig config, Machine machine) {
-	    Logger.log("Call to RECT ignored by local runtime!");
+		Logger.log("Call to RECT ignored by local runtime!");
 		return null;
 	}
 }

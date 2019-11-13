@@ -20,11 +20,9 @@ public class Frame extends AbstractGeosCommand {
 		super("FRAME");
 	}
 
-
-
 	@Override
 	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
-	    return super.evalToCode(config, machine, "FRAME");
+		return super.evalToCode(config, machine, "FRAME");
 	}
 
 	/*
@@ -35,7 +33,7 @@ public class Frame extends AbstractGeosCommand {
 	 */
 	@Override
 	public BasicProgramCounter execute(CompilerConfig config, Machine machine) {
-	    Logger.log("Call to FRAME ignored by local runtime!");
+		Logger.log("Call to FRAME ignored by local runtime!");
 		return null;
 	}
 }

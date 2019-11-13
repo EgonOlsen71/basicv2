@@ -173,9 +173,9 @@ public class TransformerPs implements Transformer {
 				}
 
 				if (obj.toString().equals("\\0")) {
-				    	obj = "";
+					obj = "";
 				}
-				
+
 				if (type == Type.INTEGER) {
 					strDat += obj.toString() + ",";
 				} else if (type == Type.REAL) {

@@ -50,7 +50,7 @@ public class Mouse extends AbstractCommand {
 
 	@Override
 	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
-	    return this.createSingleParameterCall(config, machine, pars, "MOUSEMODE");
+		return this.createSingleParameterCall(config, machine, pars, "MOUSEMODE");
 	}
 
 	/*
@@ -61,7 +61,7 @@ public class Mouse extends AbstractCommand {
 	 */
 	@Override
 	public BasicProgramCounter execute(CompilerConfig config, Machine machine) {
-	    Logger.log("Call to MOUSE ignored by local runtime!");
+		Logger.log("Call to MOUSE ignored by local runtime!");
 		return null;
 	}
 

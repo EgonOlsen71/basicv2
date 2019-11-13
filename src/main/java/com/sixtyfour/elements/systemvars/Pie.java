@@ -22,5 +22,4 @@ public class Pie extends Variable implements SystemVariable {
 		return true;
 	}
 
-	
 }

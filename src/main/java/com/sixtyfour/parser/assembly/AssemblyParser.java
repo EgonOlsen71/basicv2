@@ -305,25 +305,25 @@ public class AssemblyParser {
 								addToRam(ram, String.valueOf(c));
 							}
 						} else {
-						    // Support for X16 Emulator's strange handling of \X when inserting code
-						    if (c=='\\' && config.isNonDecimalNumbersAware()) {
-							int pos2 = data.toLowerCase(Locale.ENGLISH).indexOf("\\x", pos);
-							if (pos2 == pos && data.length()+2>=pos2) {
-							    String hex=data.substring(pos2+2, pos2+4);
-							    Integer val=Integer.parseInt(hex, 16);
-							    if (val!=255) {
-								ram.add(val);
-							    } else {
-								// Because...\XFF is PI...that's sick...but what can we do!?
-								ram.add(126);
-							    }
-							    pos+=3;
+							// Support for X16 Emulator's strange handling of \X when inserting code
+							if (c == '\\' && config.isNonDecimalNumbersAware()) {
+								int pos2 = data.toLowerCase(Locale.ENGLISH).indexOf("\\x", pos);
+								if (pos2 == pos && data.length() + 2 >= pos2) {
+									String hex = data.substring(pos2 + 2, pos2 + 4);
+									Integer val = Integer.parseInt(hex, 16);
+									if (val != 255) {
+										ram.add(val);
+									} else {
+										// Because...\XFF is PI...that's sick...but what can we do!?
+										ram.add(126);
+									}
+									pos += 3;
+								} else {
+									addToRam(ram, String.valueOf(c));
+								}
 							} else {
-							    addToRam(ram, String.valueOf(c));
+								addToRam(ram, String.valueOf(c));
 							}
-						    } else {
-							addToRam(ram, String.valueOf(c));
-						    }
 						}
 						pos++;
 					} while (pos < data.length());

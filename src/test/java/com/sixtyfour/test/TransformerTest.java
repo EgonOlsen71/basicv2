@@ -44,7 +44,7 @@ public class TransformerTest {
 		// testTransformer2();
 		// testTransformer4();
 		// testTransformer5();
-		//testTransformerFractal();
+		// testTransformerFractal();
 		// testTransformer6();
 		// testTransformer7();
 		// testTransformerPrime();
@@ -65,7 +65,7 @@ public class TransformerTest {
 		// testTransformer20();
 		// testTransformer22();
 		// testTransformer23();
-		 testTransformerFrog();
+		testTransformerFrog();
 		testTransformerAffine();
 		// testTransformer24();
 		// testTransformer25();
@@ -120,67 +120,64 @@ public class TransformerTest {
 		testDivide();
 		testSystemcall();
 		testDatastuff();
-		
+
 	}
-	
+
 	private static void testDatastuff() throws Exception {
 		System.out.println("\n\ntestDatastuff");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/datastuff.bas");
 		Assembler assy = initTestEnvironment(vary, true, -1, true);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++datastuff.prg", true);
 	}
-	
+
 	private static void testSystemcall() throws Exception {
 		System.out.println("\n\ntestSystemcall");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/systemcall.bas");
 		Assembler assy = initTestEnvironment(vary, false, -1, true);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++systemcall.prg", true);
 	}
-	
-	
+
 	private static void testDivide() throws Exception {
 		System.out.println("\n\ntestDivide");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/divide.bas");
 		Assembler assy = initTestEnvironment(vary, false, -1, true);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++divide.prg", true);
 	}
-	
-	
+
 	private static void testInputTest() throws Exception {
 		System.out.println("\n\ntestInputTest");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/inputtest.bas");
 		Assembler assy = initTestEnvironment(vary, false, -1, true);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++inputtest.prg", true);
 	}
-	
+
 	private static void testRecom64() throws Exception {
 		System.out.println("\n\ntestRecom64");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/recom64.bas");
 		Assembler assy = initTestEnvironment(vary, false, -1, true);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++recom64.prg", true);
 	}
-	
+
 	private static void testFileTest() throws Exception {
 		System.out.println("\n\ntestFileTest");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/filetest.bas");
 		Assembler assy = initTestEnvironment(vary, false, -1, true);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++filetest.prg", true);
 	}
-	
+
 	private static void testRs232InputTest() throws Exception {
 		System.out.println("\n\ntestRs232InputTest");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/rs232inputtest.bas");
 		Assembler assy = initTestEnvironment(vary, false, -1, true);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++rs232inputtest.prg", true);
 	}
-	
+
 	private static void testRs232Test() throws Exception {
 		System.out.println("\n\ntestRs232Test");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/rs232test.bas");
 		Assembler assy = initTestEnvironment(vary, false, -1, true);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++rs232test.prg", true);
 	}
-
 
 	private static void testFloatPerf() throws Exception {
 		System.out.println("\n\ntestFloatPerf");
@@ -1133,14 +1130,14 @@ public class TransformerTest {
 	private static Assembler initTestEnvironment(String[] vary, boolean executePseudo, int variableStart) {
 		return initTestEnvironment(vary, executePseudo, -1, true);
 	}
-	
-	private static Assembler initTestEnvironment(String[] vary, boolean executePseudo, int variableStart,
-		boolean opti) {
-	    	return initTestEnvironment(vary, executePseudo, variableStart, opti, -1);
-	}
 
 	private static Assembler initTestEnvironment(String[] vary, boolean executePseudo, int variableStart,
-			boolean opti, int compact) {
+			boolean opti) {
+		return initTestEnvironment(vary, executePseudo, variableStart, opti, -1);
+	}
+
+	private static Assembler initTestEnvironment(String[] vary, boolean executePseudo, int variableStart, boolean opti,
+			int compact) {
 		CompilerConfig conf = new CompilerConfig();
 		boolean opt = opti;
 		conf.setConstantFolding(opt);
@@ -1153,8 +1150,8 @@ public class TransformerTest {
 		conf.setIntOptimizations(opt);
 		conf.setFloatOptimizations(opt);
 		conf.setLoopMode(LoopMode.REMOVE);
-		if (compact>2) {
-		    conf.setCompactThreshold(compact);
+		if (compact > 2) {
+			conf.setCompactThreshold(compact);
 		}
 
 		Basic basic = new Basic(vary);

@@ -119,7 +119,7 @@ public class Transformer64 extends AbstractTransformer {
 		res.add("ERRFNF = $F12F");
 
 		addMemoryLocations(res);
-		
+
 		res.add("TMP_ZP = 105");
 		res.add("TMP2_ZP = 107");
 		res.add("TMP3_ZP = 34");

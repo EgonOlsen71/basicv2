@@ -27,7 +27,7 @@ public abstract class AbstractGraphicsCommand extends AbstractCommand {
 		pars = Parser.getParameters(term);
 
 		if (pars.size() < parCount || pars.size() > parCount + addPars) {
-			syntaxError(linePart+"/"+pars.size()+"/"+parCount);
+			syntaxError(linePart + "/" + pars.size() + "/" + parCount);
 		}
 
 		return null;

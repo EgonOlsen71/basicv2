@@ -118,21 +118,23 @@ public class X16Extensions implements BasicExtension {
 	public List<Variable> getSystemVariables() {
 		return VARS;
 	}
-	
+
 	@Override
 	public boolean adjustMemoryConfig(Machine machine, MemoryConfig config) {
-	    if (config.getStringEnd()!=-1) {
-		// if it has been set from the outside, then don't modify it
-		return false;
-	    }
-	    List<Command> coms=machine.getCommandList();
-	    for(Command com:coms) {
-		// GEOS graphics commands write into BASIC memory (at least in r34). So we have to limit it here.
-		if (com.isCommand("LINE") || com.isCommand("PSET") || com.isCommand("CHAR") || com.isCommand("RECT") || com.isCommand("FRAME")) {
-		    config.setStringEnd(0x8000);
-		    return true;
+		if (config.getStringEnd() != -1) {
+			// if it has been set from the outside, then don't modify it
+			return false;
 		}
-	    }
-	    return false;
+		List<Command> coms = machine.getCommandList();
+		for (Command com : coms) {
+			// GEOS graphics commands write into BASIC memory (at least in r34). So we have
+			// to limit it here.
+			if (com.isCommand("LINE") || com.isCommand("PSET") || com.isCommand("CHAR") || com.isCommand("RECT")
+					|| com.isCommand("FRAME")) {
+				config.setStringEnd(0x8000);
+				return true;
+			}
+		}
+		return false;
 	}
 }

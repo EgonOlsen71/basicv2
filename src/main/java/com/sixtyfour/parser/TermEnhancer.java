@@ -62,60 +62,60 @@ public class TermEnhancer {
 				inString = !inString;
 			}
 			if (!inString) {
-			    	boolean xs=false;
-			    	if (c=='\\' && inNumber==NONE) {
-			    	    // Support for X16 Emulator's strange handling of \X when inserting code
-			    	    if (i<term.length()-3) {
-			    		char c2=Character.toLowerCase(term.charAt(i+1));
-			    		if (c2=='x') {
-			    		    String hex=term.substring(i+2, i+4);
-			    		    float val=Integer.parseInt(hex, 16);
-			    		    if (val==255) {
-			    			// What kind of stupid hack is that? \XFF is PI? WTF?!
-			    			sb.append(Math.PI);
-			    		    } else {
-			    			sb.append(val);
-			    			
-			    		    }
-			    		    i+=3;
-			    		    xs=true;	
-			    		}
-			    	    }
-			    	}
-			    	if (!xs) {
-        				if (inNumber > NONE) {
-        					char cl = Character.toLowerCase(c);
-        					if (inNumber == BIN && (cl == '0' || cl == '1')) {
-        						num += c;
-        					} else if ((cl >= '0' && cl <= '9') || (cl >= 'a' && cl <= 'f')) {
-        						num += c;
-        					} else {
-        						sb.append(Integer.parseInt(num, inNumber == BIN ? 2 : 16));
-        						if (c!='\\') {
-        						    sb.append(c);
-        						} else {
-        						    // handle \ in the next iteration... 
-        						    i--;
-        						}
-        						inNumber = NONE;
-        						num = "";
-        					}
-        				} else {
-        					if (i < term.length() - 1) {
-        						char cf = Character.toLowerCase(term.charAt(i + 1));
-        						if (c == '%' && (cf == '0' || cf == '1')) {
-        							inNumber = BIN;
-        							num = "";
-        						} else if (c == '$' && ((cf >= '0' && cf <= '9') || (cf >= 'a' && cf <= 'f'))) {
-        							inNumber = HEX;
-        							num = "";
-        						}
-        					}
-        					if (inNumber == NONE) {
-        						sb.append(c);
-        					}
-        				}
-			    	}
+				boolean xs = false;
+				if (c == '\\' && inNumber == NONE) {
+					// Support for X16 Emulator's strange handling of \X when inserting code
+					if (i < term.length() - 3) {
+						char c2 = Character.toLowerCase(term.charAt(i + 1));
+						if (c2 == 'x') {
+							String hex = term.substring(i + 2, i + 4);
+							float val = Integer.parseInt(hex, 16);
+							if (val == 255) {
+								// What kind of stupid hack is that? \XFF is PI? WTF?!
+								sb.append(Math.PI);
+							} else {
+								sb.append(val);
+
+							}
+							i += 3;
+							xs = true;
+						}
+					}
+				}
+				if (!xs) {
+					if (inNumber > NONE) {
+						char cl = Character.toLowerCase(c);
+						if (inNumber == BIN && (cl == '0' || cl == '1')) {
+							num += c;
+						} else if ((cl >= '0' && cl <= '9') || (cl >= 'a' && cl <= 'f')) {
+							num += c;
+						} else {
+							sb.append(Integer.parseInt(num, inNumber == BIN ? 2 : 16));
+							if (c != '\\') {
+								sb.append(c);
+							} else {
+								// handle \ in the next iteration...
+								i--;
+							}
+							inNumber = NONE;
+							num = "";
+						}
+					} else {
+						if (i < term.length() - 1) {
+							char cf = Character.toLowerCase(term.charAt(i + 1));
+							if (c == '%' && (cf == '0' || cf == '1')) {
+								inNumber = BIN;
+								num = "";
+							} else if (c == '$' && ((cf >= '0' && cf <= '9') || (cf >= 'a' && cf <= 'f'))) {
+								inNumber = HEX;
+								num = "";
+							}
+						}
+						if (inNumber == NONE) {
+							sb.append(c);
+						}
+					}
+				}
 			} else {
 				sb.append(c);
 			}
@@ -124,9 +124,9 @@ public class TermEnhancer {
 			sb.append(Integer.parseInt(num, inNumber == BIN ? 2 : 16));
 		}
 		/*
-		    System.out.println("NEW: "+sb.toString()+" / "+term);
-		    new Exception().printStackTrace();
-		*/
+		 * System.out.println("NEW: "+sb.toString()+" / "+term); new
+		 * Exception().printStackTrace();
+		 */
 		return sb.toString();
 	}
 
@@ -163,14 +163,14 @@ public class TermEnhancer {
 	 * be returned.
 	 * 
 	 * @param term the term
-	 * @param pos the position of the starting bracket
+	 * @param pos  the position of the starting bracket
 	 * @return the end bracket's position or -1
 	 */
 	public static int findEndBracket(String term, int pos) {
 		int open = 0;
 		boolean inString = false;
-		if (term.charAt(pos)!='(') {
-		    return -1;
+		if (term.charAt(pos) != '(') {
+			return -1;
 		}
 		for (int i = pos; i < term.length(); i++) {
 			char c = term.charAt(i);
@@ -184,13 +184,13 @@ public class TermEnhancer {
 					open--;
 				}
 			}
-			if (open==0) {
-			    return i;
+			if (open == 0) {
+				return i;
 			}
 		}
 		return -1;
 	}
-	
+
 	/**
 	 * Removes the white spaces from a text.
 	 * 
@@ -354,11 +354,10 @@ public class TermEnhancer {
 				sb.append(c);
 			}
 		}
-		//System.out.println("SFN: "+line+"/"+sb.toString());
+		// System.out.println("SFN: "+line+"/"+sb.toString());
 		return sb.toString();
 	}
 
-	
 	/**
 	 * Adds brackets to a term based on the operator order. The resulting term makes
 	 * it clear which operations belong together without any knowledge about the
@@ -386,13 +385,13 @@ public class TermEnhancer {
 
 			// Wrap parameters into brackets to ease term creation later on
 			if (c == ',') {
-			    	//System.out.println("1: " +term);
+				// System.out.println("1: " +term);
 				int end = findNextDelimiter(term, i);
 				String curPar = term.substring(i + 1, end);
-				boolean matching=true;
+				boolean matching = true;
 				if (curPar.startsWith("(")) {
-				    int endBra=findEndBracket(term, i+1);
-				    matching=(endBra==end-1);
+					int endBra = findEndBracket(term, i + 1);
+					matching = (endBra == end - 1);
 				}
 				if (!curPar.startsWith("(") || !curPar.endsWith(")") || !matching) {
 					sb.append(term.substring(0, i + 1)).append('(').append(curPar).append(')');
@@ -403,9 +402,8 @@ public class TermEnhancer {
 					term = sb.toString();
 					sb.setLength(0);
 				}
-				//System.out.println("2: " +term);
+				// System.out.println("2: " +term);
 			}
-			
 
 			if ((level == 2 && (c == '=' || c == '<' || c == '>')) || (level == 1 && (c == '*' || c == '/'))
 					|| (level == 0 && c == '^') || (level == 3 && (c == '&' || c == '°'))) {

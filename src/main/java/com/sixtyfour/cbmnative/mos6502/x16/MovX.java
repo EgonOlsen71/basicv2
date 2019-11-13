@@ -10,7 +10,7 @@ import com.sixtyfour.cbmnative.mos6502.generators.Mov;
  *
  */
 public class MovX extends Mov implements X16Defaults {
-	
+
 	@Override
 	protected void checkSpecialReadVars(List<String> nCode, Operand source) {
 		super.checkSpecialReadVars(nCode, source);

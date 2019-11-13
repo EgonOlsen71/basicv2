@@ -89,18 +89,18 @@ public class MnemonicList {
 			this.add(new Brk());
 		}
 	});
-	
+
 	// Enhanced list with support for some 65C02 commands...
 	private static final List<Mnemonic> XMNEMONICS = Collections.unmodifiableList(new ArrayList<Mnemonic>() {
 		private static final long serialVersionUID = 1L;
 
 		{
-		    this.add(new Stz());
-		    this.add(new Ply());
-		    this.add(new Plx());
-		    this.add(new Phy());
-		    this.add(new Phx());
-		    this.addAll(MNEMONICS);
+			this.add(new Stz());
+			this.add(new Ply());
+			this.add(new Plx());
+			this.add(new Phy());
+			this.add(new Phx());
+			this.addAll(MNEMONICS);
 		}
 	});
 
@@ -110,11 +110,11 @@ public class MnemonicList {
 	 * @return the list
 	 */
 	public static List<Mnemonic> getMnemonics(CompilerConfig config) {
-	    if (!config.isEnhancedInstructionSet()) {
-		return MNEMONICS;
-	    } else {
-		return XMNEMONICS;
-	    }
+		if (!config.isEnhancedInstructionSet()) {
+			return MNEMONICS;
+		} else {
+			return XMNEMONICS;
+		}
 	}
 
 	/**

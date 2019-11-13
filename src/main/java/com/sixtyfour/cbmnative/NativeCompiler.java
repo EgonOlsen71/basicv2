@@ -141,9 +141,9 @@ public class NativeCompiler {
 		Logger.log("Parsing BASIC program into AST...");
 		basic.compile(conf);
 		List<String> mCode = NativeCompiler.getCompiler().compileToPseudoCode(conf, basic);
-		boolean adjusted=basic.adjustMemoryConfig(memConfig);
+		boolean adjusted = basic.adjustMemoryConfig(memConfig);
 		if (adjusted) {
-		    Logger.log("Program memory adjusted to end at $"+Integer.toHexString(memConfig.getStringEnd()));
+			Logger.log("Program memory adjusted to end at $" + Integer.toHexString(memConfig.getStringEnd()));
 		}
 		Transformer tf = platform.getTransformer();
 		tf.setVariableStart(memConfig.getVariableStart());
@@ -234,7 +234,7 @@ public class NativeCompiler {
 			mCode.add(lineNumber + ":");
 			boolean condi = false;
 			for (Command cmd : line.getCommands()) {
-				int codeStart=mCode.size();
+				int codeStart = mCode.size();
 				if (!condi) {
 					mCode.addAll(compileToPseudoCode(config, machine, cmd));
 				} else {
@@ -252,10 +252,11 @@ public class NativeCompiler {
 				if (cmd.isConditional()) {
 					condi = true;
 				}
-				if (mCode.size()>codeStart && !mCode.get(codeStart).equalsIgnoreCase("NOP")) {
-				    // Flag the end of a command if needed, so that the optimizer doesn't cross command borders.
-				    // ...but avoid double NOPs...just in case...
-				    mCode.add(codeStart, "NOP");
+				if (mCode.size() > codeStart && !mCode.get(codeStart).equalsIgnoreCase("NOP")) {
+					// Flag the end of a command if needed, so that the optimizer doesn't cross
+					// command borders.
+					// ...but avoid double NOPs...just in case...
+					mCode.add(codeStart, "NOP");
 				}
 			}
 		}
@@ -587,197 +588,197 @@ public class NativeCompiler {
 
 				boolean dontPush = false;
 
-				boolean added=applyOperation(op, code);
-				
+				boolean added = applyOperation(op, code);
+
 				if (!added) {
-        				switch (op) {
-        				case "+":
-        					code.add("ADD " + regs);
-        					break;
-        				case "-":
-        					code.add("SUB " + regs);
-        					break;
-        				case "*":
-        					code.add("MUL " + regs);
-        					break;
-        				case "/":
-        					code.add("DIV " + regs);
-        					break;
-        				case "^":
-        					code.add("POW " + regs);
-        					break;
-        				case "|":
-        					code.add("OR " + regs);
-        					break;
-        				case "&":
-        					code.add("AND " + regs);
-        					break;
-        				case "!":
-        					code.add("NOT " + regs);
-        					break;
-        				case "SIN":
-        					code.add("SIN " + regs);
-        					break;
-        				case "COS":
-        					code.add("COS " + regs);
-        					break;
-        				case "LOG":
-        					code.add("LOG " + regs);
-        					break;
-        				case "SQR":
-        					code.add("SQR " + regs);
-        					break;
-        				case "INT":
-        					code.add("INT " + regs);
-        					break;
-        				case "ABS":
-        					code.add("ABS " + regs);
-        					break;
-        				case "SGN":
-        					code.add("SGN " + regs);
-        					break;
-        				case "TAN":
-        					code.add("TAN " + regs);
-        					break;
-        				case "ATN":
-        					code.add("ATN " + regs);
-        					break;
-        				case "EXP":
-        					code.add("EXP " + regs);
-        					break;
-        				case "RND":
-        					code.add("RND " + regs);
-        					break;
-        				case "PEEK":
-        					code.add("MOVB " + regs.replace(",", ",(") + ")");
-        					break;
-        				case ".":
-        					withStrings = true;
-        					code.add("JSR CONCAT");
-        					break;
-        				case "USR":
-        					code.add("JSR USR");
-        					break;
-        				case "CHR":
-        					withStrings = true;
-        					code.add("JSR CHR");
-        					break;
-        				case "STR":
-        					withStrings = true;
-        					code.add("JSR STR");
-        					break;
-        				case "VAL":
-        					code.add("JSR VAL");
-        					break;
-        				case "ASC":
-        					code.add("JSR ASC");
-        					break;
-        				case "LEN":
-        					code.add("JSR LEN");
-        					break;
-        				case "TAB":
-        					code.add("JSR TAB");
-        					break;
-        				case "SPC":
-        					code.add("JSR SPC");
-        					break;
-        				case "TABCHANNEL":
-        					code.add("JSR TABCHANNEL");
-        					break;
-        				case "SPCCHANNEL":
-        					code.add("JSR SPCCHANNEL");
-        					break;
-        				case "POS":
-        					code.add("JSR POS");
-        					break;
-        				case "FRE":
-        					code.add("JSR FRE");
-        					break;
-        				case "ARRAYACCESS":
-        					code.add("JSR ARRAYACCESS");
-        					stringStack.pop();
-        					break;
-        				case "MID":
-        					withStrings = true;
-        					code.add("POP D");
-        					code.add("POP C");
-        					code.add("JSR MID");
-        					break;
-        				case "LEFT":
-        					withStrings = true;
-        					code.add("POP C");
-        					code.add("JSR LEFT");
-        					break;
-        				case "RIGHT":
-        					withStrings = true;
-        					code.add("POP C");
-        					code.add("JSR RIGHT");
-        					break;
-        				case "CMP =":
-        					code.add("EQ " + regs);
-        					break;
-        				case "CMP >":
-        					code.add("GT " + regs);
-        					break;
-        				case "CMP <":
-        					code.add("LT " + regs);
-        					break;
-        				case "CMP >=":
-        					code.add("GTEQ " + regs);
-        					break;
-        				case "CMP <=":
-        					code.add("LTEQ " + regs);
-        					break;
-        				case "CMP <>":
-        					code.add("NEQ " + regs);
-        					break;
-        				case "SCMP =":
-        					code.add("JSR SEQ");
-        					// For comparisons, buffer reset is already done in the runtime
-        					break;
-        				case "SCMP >":
-        					code.add("JSR SGT");
-        					break;
-        				case "SCMP <":
-        					code.add("JSR SLT");
-        					break;
-        				case "SCMP >=":
-        					code.add("JSR SGTEQ");
-        					break;
-        				case "SCMP <=":
-        					code.add("JSR SLTEQ");
-        					break;
-        				case "SCMP <>":
-        					code.add("JSR SNEQ");
-        					break;
-        				case "PAR":
-        					if (getLastEntry(code).startsWith("MOV " + sr)) {
-        						code.add("MOV C," + sr);
-        					} else {
-        						code.add("MOV C," + tr);
-        					}
-        					code.add("PUSH C");
-        					// yStack.push(null);
-        					dontPush = true;
-        					break;
-        				default:
-        					if (op.startsWith("FN ")) {
-        						String label = op.substring(2).trim();
-        						code.add("PUSH " + sr);
-        						yStack.push(null);
-        						code.add("JSR " + label);
-        						if (expCnt >= expr.size()) {
-        							// POP the last result from the fn call, if that's
-        							// needed...Am I sure, that this is 100% water
-        							// proof...? Well...no, actually not...
-        							code.add("POP " + tr);
-        						}
-        						dontPush = true;
-        						break;
-        					} else {
-        						throw new RuntimeException("Unknown operator: " + op);
-        					}
-        				}
+					switch (op) {
+					case "+":
+						code.add("ADD " + regs);
+						break;
+					case "-":
+						code.add("SUB " + regs);
+						break;
+					case "*":
+						code.add("MUL " + regs);
+						break;
+					case "/":
+						code.add("DIV " + regs);
+						break;
+					case "^":
+						code.add("POW " + regs);
+						break;
+					case "|":
+						code.add("OR " + regs);
+						break;
+					case "&":
+						code.add("AND " + regs);
+						break;
+					case "!":
+						code.add("NOT " + regs);
+						break;
+					case "SIN":
+						code.add("SIN " + regs);
+						break;
+					case "COS":
+						code.add("COS " + regs);
+						break;
+					case "LOG":
+						code.add("LOG " + regs);
+						break;
+					case "SQR":
+						code.add("SQR " + regs);
+						break;
+					case "INT":
+						code.add("INT " + regs);
+						break;
+					case "ABS":
+						code.add("ABS " + regs);
+						break;
+					case "SGN":
+						code.add("SGN " + regs);
+						break;
+					case "TAN":
+						code.add("TAN " + regs);
+						break;
+					case "ATN":
+						code.add("ATN " + regs);
+						break;
+					case "EXP":
+						code.add("EXP " + regs);
+						break;
+					case "RND":
+						code.add("RND " + regs);
+						break;
+					case "PEEK":
+						code.add("MOVB " + regs.replace(",", ",(") + ")");
+						break;
+					case ".":
+						withStrings = true;
+						code.add("JSR CONCAT");
+						break;
+					case "USR":
+						code.add("JSR USR");
+						break;
+					case "CHR":
+						withStrings = true;
+						code.add("JSR CHR");
+						break;
+					case "STR":
+						withStrings = true;
+						code.add("JSR STR");
+						break;
+					case "VAL":
+						code.add("JSR VAL");
+						break;
+					case "ASC":
+						code.add("JSR ASC");
+						break;
+					case "LEN":
+						code.add("JSR LEN");
+						break;
+					case "TAB":
+						code.add("JSR TAB");
+						break;
+					case "SPC":
+						code.add("JSR SPC");
+						break;
+					case "TABCHANNEL":
+						code.add("JSR TABCHANNEL");
+						break;
+					case "SPCCHANNEL":
+						code.add("JSR SPCCHANNEL");
+						break;
+					case "POS":
+						code.add("JSR POS");
+						break;
+					case "FRE":
+						code.add("JSR FRE");
+						break;
+					case "ARRAYACCESS":
+						code.add("JSR ARRAYACCESS");
+						stringStack.pop();
+						break;
+					case "MID":
+						withStrings = true;
+						code.add("POP D");
+						code.add("POP C");
+						code.add("JSR MID");
+						break;
+					case "LEFT":
+						withStrings = true;
+						code.add("POP C");
+						code.add("JSR LEFT");
+						break;
+					case "RIGHT":
+						withStrings = true;
+						code.add("POP C");
+						code.add("JSR RIGHT");
+						break;
+					case "CMP =":
+						code.add("EQ " + regs);
+						break;
+					case "CMP >":
+						code.add("GT " + regs);
+						break;
+					case "CMP <":
+						code.add("LT " + regs);
+						break;
+					case "CMP >=":
+						code.add("GTEQ " + regs);
+						break;
+					case "CMP <=":
+						code.add("LTEQ " + regs);
+						break;
+					case "CMP <>":
+						code.add("NEQ " + regs);
+						break;
+					case "SCMP =":
+						code.add("JSR SEQ");
+						// For comparisons, buffer reset is already done in the runtime
+						break;
+					case "SCMP >":
+						code.add("JSR SGT");
+						break;
+					case "SCMP <":
+						code.add("JSR SLT");
+						break;
+					case "SCMP >=":
+						code.add("JSR SGTEQ");
+						break;
+					case "SCMP <=":
+						code.add("JSR SLTEQ");
+						break;
+					case "SCMP <>":
+						code.add("JSR SNEQ");
+						break;
+					case "PAR":
+						if (getLastEntry(code).startsWith("MOV " + sr)) {
+							code.add("MOV C," + sr);
+						} else {
+							code.add("MOV C," + tr);
+						}
+						code.add("PUSH C");
+						// yStack.push(null);
+						dontPush = true;
+						break;
+					default:
+						if (op.startsWith("FN ")) {
+							String label = op.substring(2).trim();
+							code.add("PUSH " + sr);
+							yStack.push(null);
+							code.add("JSR " + label);
+							if (expCnt >= expr.size()) {
+								// POP the last result from the fn call, if that's
+								// needed...Am I sure, that this is 100% water
+								// proof...? Well...no, actually not...
+								code.add("POP " + tr);
+							}
+							dontPush = true;
+							break;
+						} else {
+							throw new RuntimeException("Unknown operator: " + op);
+						}
+					}
 				}
 				if (!dontPush) {
 					if (!isParameterRegister(tr)) {
@@ -887,23 +888,23 @@ public class NativeCompiler {
 	}
 
 	private boolean isSingle(String op) {
-	    	// first, ask all registered extension about it...
-	    	for (BasicExtension ext:Basic.getExtensions()) {
-	    	    if (ext.isSingleSided(op)) {
-	    		return true;
-	    	    }
-	    	}
+		// first, ask all registered extension about it...
+		for (BasicExtension ext : Basic.getExtensions()) {
+			if (ext.isSingleSided(op)) {
+				return true;
+			}
+		}
 		return SINGLES.contains(op.toUpperCase(Locale.ENGLISH)) || op.startsWith("FN ");
 	}
-	
+
 	private boolean applyOperation(String op, List<String> code) {
-	    	// Ask all registered extension about it...
-	    	for (BasicExtension ext:Basic.getExtensions()) {
-	    	    if (ext.applyOperation(op, code)) {
-	    		//System.out.println("Added: "+op);
-	    		return true;
-	    	    }
-	    	}
+		// Ask all registered extension about it...
+		for (BasicExtension ext : Basic.getExtensions()) {
+			if (ext.applyOperation(op, code)) {
+				// System.out.println("Added: "+op);
+				return true;
+			}
+		}
 		return false;
 	}
 

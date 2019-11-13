@@ -237,8 +237,10 @@ public abstract class AbstractCommand implements Command {
 	public boolean isConditional() {
 		return false;
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.sixtyfour.elements.commands.Command#isOverride()
 	 */
 	@Override
@@ -263,45 +265,46 @@ public abstract class AbstractCommand implements Command {
 	protected void syntaxError(String line) {
 		throw new RuntimeException("Syntax error: " + line);
 	}
-	
+
 	/**
 	 * @param config
 	 * @param machine
 	 * @param compiler
-	 * @param pars 
+	 * @param pars
 	 * @return
 	 */
-	protected List<String> addSingleParameter(CompilerConfig config, Machine machine, NativeCompiler compiler, List<Atom> pars) {
-	    List<String> expr = compiler.compileToPseudoCode(config, machine, pars.get(0));
-	    String expPush = getPushRegister(expr.get(expr.size() - 1));
-	    expr = expr.subList(0, expr.size() - 1);
-	    if (expPush.equals("Y")) {
-	        expr.add("MOV X,Y");
-	    }
-	    return expr;
+	protected List<String> addSingleParameter(CompilerConfig config, Machine machine, NativeCompiler compiler,
+			List<Atom> pars) {
+		List<String> expr = compiler.compileToPseudoCode(config, machine, pars.get(0));
+		String expPush = getPushRegister(expr.get(expr.size() - 1));
+		expr = expr.subList(0, expr.size() - 1);
+		if (expPush.equals("Y")) {
+			expr.add("MOV X,Y");
+		}
+		return expr;
 	}
-	
+
 	/**
 	 * @param config
 	 * @param machine
 	 * @param callLabel
 	 * @return
 	 */
-	protected List<CodeContainer> createSingleParameterCall(CompilerConfig config, Machine machine, List<Atom> pars, String callLabel) {
-	    NativeCompiler compiler = NativeCompiler.getCompiler();
-	    List<String> after = new ArrayList<String>();
-	    List<String> expr = null;
-	    List<String> before = new ArrayList<String>();
+	protected List<CodeContainer> createSingleParameterCall(CompilerConfig config, Machine machine, List<Atom> pars,
+			String callLabel) {
+		NativeCompiler compiler = NativeCompiler.getCompiler();
+		List<String> after = new ArrayList<String>();
+		List<String> expr = null;
+		List<String> before = new ArrayList<String>();
 
-	    expr = addSingleParameter(config, machine, compiler, pars);
-	    after.add("JSR "+callLabel);
+		expr = addSingleParameter(config, machine, compiler, pars);
+		after.add("JSR " + callLabel);
 
-	    CodeContainer cc = new CodeContainer(before, expr, after);
-	    List<CodeContainer> ccs = new ArrayList<CodeContainer>();
-	    ccs.add(cc);
-	    return ccs;
+		CodeContainer cc = new CodeContainer(before, expr, after);
+		List<CodeContainer> ccs = new ArrayList<CodeContainer>();
+		ccs.add(cc);
+		return ccs;
 	}
-
 
 	/**
 	 * Throws a type mismatch error.
@@ -373,6 +376,5 @@ public abstract class AbstractCommand implements Command {
 		}
 		return null;
 	}
-	
-	
+
 }

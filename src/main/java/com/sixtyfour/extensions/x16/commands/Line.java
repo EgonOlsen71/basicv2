@@ -20,7 +20,6 @@ public class Line extends AbstractGeosCommand {
 		super("LINE");
 	}
 
-
 	@Override
 	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
 		return super.evalToCode(config, machine, "LINE");
@@ -34,7 +33,7 @@ public class Line extends AbstractGeosCommand {
 	 */
 	@Override
 	public BasicProgramCounter execute(CompilerConfig config, Machine machine) {
-	    Logger.log("Call to LINE ignored by local runtime!");
+		Logger.log("Call to LINE ignored by local runtime!");
 		return null;
 	}
 }

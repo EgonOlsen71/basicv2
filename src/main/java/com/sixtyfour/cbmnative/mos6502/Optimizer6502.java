@@ -32,7 +32,7 @@ public class Optimizer6502 implements Optimizer {
 	@Override
 	public List<String> optimize(CompilerConfig config, PlatformProvider platform, List<String> input,
 			ProgressListener pg) {
-		//if (true) return input;
+		// if (true) return input;
 		Logger.log("Optimizing native assembly code...");
 		long s = System.currentTimeMillis();
 		trimLines(input);
@@ -399,21 +399,22 @@ public class Optimizer6502 implements Optimizer {
 		return res.getCode();
 	}
 
-	
 	private List<String> applyEnhancedOptimizations(CompilerConfig config, PlatformProvider platform,
-		List<String> ret) {
-            	if (config.isEnhancedInstructionSet()) {
-            		// Do another run with 65C02 specific optimizations
-            		List<Pattern> others = new ArrayList<>();
-            		others.add(new Pattern(true, "STZ (1)", new String[] { "{LINE1}|STA>STZ", "{LINE2}|STA>STZ" }, "LDA #0", "STA {*}", "STA {*}"));
-            		others.add(new Pattern(true, "STZ (2)", new String[] { "{LINE1}|STA>STZ" }, "LDA #0", "STA {*}"));
-            		OptimizationResult res = optimizeInternalThreaded(others, platform, ret, null, extractConstants(ret), false);
-            		printOutResults(res.getType2count());
-            		return res.getCode();
-            	}
-            	return ret;
+			List<String> ret) {
+		if (config.isEnhancedInstructionSet()) {
+			// Do another run with 65C02 specific optimizations
+			List<Pattern> others = new ArrayList<>();
+			others.add(new Pattern(true, "STZ (1)", new String[] { "{LINE1}|STA>STZ", "{LINE2}|STA>STZ" }, "LDA #0",
+					"STA {*}", "STA {*}"));
+			others.add(new Pattern(true, "STZ (2)", new String[] { "{LINE1}|STA>STZ" }, "LDA #0", "STA {*}"));
+			OptimizationResult res = optimizeInternalThreaded(others, platform, ret, null, extractConstants(ret),
+					false);
+			printOutResults(res.getType2count());
+			return res.getCode();
+		}
+		return ret;
 	}
-	
+
 	private List<String> applyFloatingPointPatterns(CompilerConfig config, PlatformProvider platform,
 			List<String> ret) {
 		if (config.isAggressiveFloatOptimizations()) {
@@ -586,8 +587,8 @@ public class Optimizer6502 implements Optimizer {
 						"LDY #>{REG0}", "JSR MEMMUL"));
 				this.add(new Pattern("Constant directly into FAC",
 						new String[] { "LDA #0", "STA FAC", "{LINE2}", "{LINE3}", "LDA #0", "STA FACMOH", "STA FACMO",
-								"STA FACLO", "LDY #128", "STY FACHO", "INY", "STY FAC", "LDY #$FF", "STY FACSGN", "{LINE6}",
-								"{LINE8}" },
+								"STA FACLO", "LDY #128", "STY FACHO", "INY", "STY FAC", "LDY #$FF", "STY FACSGN",
+								"{LINE6}", "{LINE8}" },
 						"LDA #<REAL_CONST_ZERO", "LDY #>REAL_CONST_ZERO", "JMP {*}", "{LABEL}",
 						"LDA #<REAL_CONST_MINUS_ONE", "LDY #>REAL_CONST_MINUS_ONE", "{LABEL}", "JSR REALFAC",
 						"LDA FAC"));
@@ -657,8 +658,8 @@ public class Optimizer6502 implements Optimizer {
 						new String[] { "{LINE0}", "{LINE2}", "{LINE3}", "LDA #$1", "{LINE14}", "{LINE16}",
 								"{LINE17}", },
 						"LDA #0", "STA FAC", "JMP {*}", "{LABEL}", "LDA #0", "STA FACMOH", "STA FACMO", "STA FACLO",
-						"LDY #128", "STY FACHO", "INY", "STY FAC", "LDY #$FF", "STY FACSGN", "{LABEL}", "LDA FAC", "{LABEL}",
-						"BNE {*}"));
+						"LDY #128", "STY FACHO", "INY", "STY FAC", "LDY #$FF", "STY FACSGN", "{LABEL}", "LDA FAC",
+						"{LABEL}", "BNE {*}"));
 				this.add(new Pattern(false, "CMP (REG) = 0", new String[] { "LDA {REG0}", "{LINE6}", "{LINE7}" },
 						"LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC", "LDA #<{REG0}", "LDY #>{REG0}", "JSR CMPFAC",
 						"BEQ {*}", "LDA #0"));
@@ -684,8 +685,9 @@ public class Optimizer6502 implements Optimizer {
 				this.add(new Pattern(false, "CMP (MEM) != 0(2)", new String[] { "LDA {MEM0}", "{LINE6}", "{LINE7}" },
 						"LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC", "LDA #<{MEM0}", "LDY #>{MEM0}", "JSR CMPFAC",
 						"{LABEL}", "BNE {*}"));
-				this.add(new Pattern(false, "Direct loading of 0",
-						new String[] { "LDA #$0", "STA FAC", "STA FACHO", "STA FACMOH", "STA FACMO", "STA FACLO", "STA FACSGN" },
+				this.add(new Pattern(
+						false, "Direct loading of 0", new String[] { "LDA #$0", "STA FAC", "STA FACHO", "STA FACMOH",
+								"STA FACMO", "STA FACLO", "STA FACSGN" },
 						"LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC"));
 
 				this.add(new Pattern(false, "FAC into REG?, REG? into FAC (2)",
@@ -728,17 +730,21 @@ public class Optimizer6502 implements Optimizer {
 						"LDA  {*}", "JSR CHRINT", "JSR STROUT"));
 				this.add(new Pattern(false, "Single character output and break",
 						new String[] { "{LINE0}", "JSR SINGLECHROUTBRK" }, "LDA  {*}", "JSR CHRINT", "JSR STROUTBRK"));
-				// two mainly X16/VPOKE specific optimizations ahead:			
+				// two mainly X16/VPOKE specific optimizations ahead:
 				this.add(new Pattern(false, "Fast byte conversion and store",
 						new String[] { "{LINE3}", "{LINE4}", "{LINE0}", "{LINE1}", "JSR REALFAC", "{LINE6}" },
 						"LDA #<{MEM0}", "LDY #>{MEM0}", "JSR REALFACPUSH", "LDY {MEM1}", "STY {*}", "JSR POPREAL",
 						"JSR FACWORD"));
 				this.add(new Pattern(false, "Byte store between PUSH/POP", new String[] { "{LINE1}", "{LINE2}" },
 						"JSR PUSHREAL", "LDY {MEM1}", "STY {*}", "JSR POPREAL"));
-				this.add(new Pattern(false, "Combine load and add", new String[] {"JSR FACADD"}, "JSR MEMARG", "JSR ARGADD"));
-				this.add(new Pattern(false, "Combine load and div", new String[] {"JSR FACDIV"}, "JSR MEMARG", "JSR ARGDIV"));
-				this.add(new Pattern(false, "Combine load and mul", new String[] {"JSR MEMMUL"}, "JSR MEMARG", "JSR FACMUL"));
-				this.add(new Pattern(false, "Combine load and sub", new String[] {"JSR MEMSUB"}, "JSR MEMARG", "JSR FACSUB"));
+				this.add(new Pattern(false, "Combine load and add", new String[] { "JSR FACADD" }, "JSR MEMARG",
+						"JSR ARGADD"));
+				this.add(new Pattern(false, "Combine load and div", new String[] { "JSR FACDIV" }, "JSR MEMARG",
+						"JSR ARGDIV"));
+				this.add(new Pattern(false, "Combine load and mul", new String[] { "JSR MEMMUL" }, "JSR MEMARG",
+						"JSR FACMUL"));
+				this.add(new Pattern(false, "Combine load and sub", new String[] { "JSR MEMSUB" }, "JSR MEMARG",
+						"JSR FACSUB"));
 			}
 		};
 	}

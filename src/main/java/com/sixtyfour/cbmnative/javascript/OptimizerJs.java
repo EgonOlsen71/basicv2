@@ -21,7 +21,8 @@ public class OptimizerJs implements Optimizer {
 	private final static int MAX_AHEAD = 9;
 
 	@Override
-	public List<String> optimize(CompilerConfig config, PlatformProvider platform, List<String> code, ProgressListener pg) {
+	public List<String> optimize(CompilerConfig config, PlatformProvider platform, List<String> code,
+			ProgressListener pg) {
 
 		if (code.size() > 1) {
 

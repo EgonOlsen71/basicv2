@@ -347,13 +347,13 @@ public class Basic implements ProgramExecutor {
 			machine.resetMemory();
 		}
 		machine.clearCommandList();
-		
+
 		// add more system variables from extensions...
-		List<BasicExtension> exts=getExtensions();
-		for (BasicExtension ext:exts) {
+		List<BasicExtension> exts = getExtensions();
+		for (BasicExtension ext : exts) {
 			machine.addSystemVariables(ext.getSystemVariables());
 		}
-		
+
 		Line cl = null;
 		int lastLineNumber = -1;
 		lines.clear();
@@ -907,18 +907,19 @@ public class Basic implements ProgramExecutor {
 		} while (lineCnt < lines.size() && !stop);
 
 	}
-	
+
 	/**
-	 * Adjusts the memory config for the native compiler based on the extensions loaded.
+	 * Adjusts the memory config for the native compiler based on the extensions
+	 * loaded.
 	 * 
 	 * @param config the memory config
-	 * @return 
+	 * @return
 	 */
 	public boolean adjustMemoryConfig(MemoryConfig config) {
-	    boolean adjusted=false;
-	    for (BasicExtension ext:Basic.getExtensions()) {
-		adjusted|=ext.adjustMemoryConfig(machine, config);
-	    }
-	    return adjusted;
+		boolean adjusted = false;
+		for (BasicExtension ext : Basic.getExtensions()) {
+			adjusted |= ext.adjustMemoryConfig(machine, config);
+		}
+		return adjusted;
 	}
 }

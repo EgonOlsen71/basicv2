@@ -38,7 +38,7 @@ public class Status extends Variable implements SystemVariable {
 	public Object eval(Machine machine) {
 		return getValue();
 	}
-	
+
 	@Override
 	public boolean isReadOnly() {
 		return true;

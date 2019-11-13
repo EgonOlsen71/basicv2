@@ -71,7 +71,8 @@ public class NativeOptimizer {
 		patterns.add(new NativePattern(new String[] { "PUSH C", "MOV Y,#*", "POP C" }, new String[] { "{1}" }));
 		// This could replace CHR$(<const>) calls with the actual String, but it doesn't
 		// seem to be worth it...
-		// patterns.add(new NativePattern(new String[] { "MOV Y,#*", "CHGCTX #1","JSR CHR"}, new String[] {"{0:MOV Y,>MOV A,§CHR§}"}));
+		// patterns.add(new NativePattern(new String[] { "MOV Y,#*", "CHGCTX #1","JSR
+		// CHR"}, new String[] {"{0:MOV Y,>MOV A,§CHR§}"}));
 
 	}
 
@@ -400,8 +401,9 @@ public class NativeOptimizer {
 								&& lines[7].startsWith("MOV") && lines[7].endsWith(",Y")) {
 							if (lines[8].startsWith("MOV A,(") && lines[9].equals("JSR INITFOR")
 									&& lines[10].equals("NOP") && lines[11].startsWith("MOV Y,")) {
-								if (lines[12].equals("PUSH Y") && lines[13].startsWith("MOV X,") && lines[14].equals("POP Y") 
-									&& lines[15].equals("MOVB (Y),X") && lines[16].equals("NOP") && lines[17].startsWith("MOV A,")
+								if (lines[12].equals("PUSH Y") && lines[13].startsWith("MOV X,")
+										&& lines[14].equals("POP Y") && lines[15].equals("MOVB (Y),X")
+										&& lines[16].equals("NOP") && lines[17].startsWith("MOV A,")
 										&& lines[18].equals("JSR NEXT")) {
 									// Make sure that the loop variable is
 									// actually the poke's target...

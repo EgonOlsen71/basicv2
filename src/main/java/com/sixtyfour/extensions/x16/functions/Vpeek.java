@@ -92,14 +92,16 @@ public class Vpeek extends AbstractFunction {
 	public boolean isDeterministic() {
 		return false;
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.sixtyfour.elements.functions.AbstractFunction#getParameterCount()
 	 */
 	public int getParameterCount() {
 		return 2;
 	}
-	
+
 	/**
 	 * @param code
 	 * @return

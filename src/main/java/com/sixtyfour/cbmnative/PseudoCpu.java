@@ -974,8 +974,6 @@ public class PseudoCpu {
 		}
 	}
 
-	
-
 	private void fdex(String[] parts) {
 		regs[X] = regs[X].intValue() - 1;
 	}
@@ -1033,20 +1031,20 @@ public class PseudoCpu {
 			machine.getDeviceProvider().print(channel, readString(regs[A].intValue()));
 		}
 	}
-	
+
 	private void qMarkOut(String[] parts, int channel, int cnt) {
-		String qs="?????";
+		String qs = "?????";
 		if (channel == 0) {
 			machine.getOutputChannel().print(channel, qs.substring(0, cnt));
 		} else {
 			machine.getDeviceProvider().print(channel, qs.substring(0, cnt));
 		}
 	}
-	
+
 	private void qMarkOut1(String[] parts, int channel) {
 		qMarkOut(parts, channel, 1);
 	}
-	
+
 	private void qMarkOut2(String[] parts, int channel) {
 		qMarkOut(parts, channel, 2);
 	}
@@ -1525,13 +1523,13 @@ public class PseudoCpu {
 	private void readNumber(String[] parts) {
 		checkDataPointer();
 		int type = memory[datasPointer++];
-		int obj=memory[datasPointer++];
+		int obj = memory[datasPointer++];
 		if (type == 2) {
-		      	if (obj==0 || (obj==1 && (char)memory[datasPointer++]=='.')) {
-		    	    obj=0;
-		    	} else {
-		    	    throw new RuntimeException("Type mismatch: " + type);
-		    	}
+			if (obj == 0 || (obj == 1 && (char) memory[datasPointer++] == '.')) {
+				obj = 0;
+			} else {
+				throw new RuntimeException("Type mismatch: " + type);
+			}
 		}
 		if (type == 0) {
 			regs[Y] = obj;

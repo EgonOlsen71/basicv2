@@ -29,14 +29,13 @@ public interface Function extends Atom {
 	 * @return true, if is function
 	 */
 	boolean isFunction(String function);
-	
+
 	/**
-	 * Checks if some string matches this function's native name(s).
-	 * A function in BASIC source code can have different native names.
+	 * Checks if some string matches this function's native name(s). A function in
+	 * BASIC source code can have different native names.
 	 * 
 	 * @param function the function
-	 * @return  true, if is native
-	 *  function
+	 * @return true, if is native function
 	 */
 	boolean isNativeFunction(String function);
 
@@ -125,10 +124,10 @@ public interface Function extends Atom {
 	String getNativeFunctionName();
 
 	/**
-	 * Adds native (in terms of intermediate language) code to the list for this function.
-	 * This only applies to function that are part of a BASIC extension. Otherwise, the
-	 * NativeCompiler itself handles this and this method has to return false for these
-	 * default functions.
+	 * Adds native (in terms of intermediate language) code to the list for this
+	 * function. This only applies to function that are part of a BASIC extension.
+	 * Otherwise, the NativeCompiler itself handles this and this method has to
+	 * return false for these default functions.
 	 * 
 	 * @param code the current code
 	 * @return if new code has been added

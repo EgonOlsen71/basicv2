@@ -27,7 +27,7 @@ public class CompilerConfig {
 	private boolean nonDecimalNumbersAware = false;
 	private boolean convertStringToLower = false;
 	private boolean aggressiveFloatOptimizations = true;
-	private boolean enhancedInstructionSet=false;
+	private boolean enhancedInstructionSet = false;
 	private String symbolTable = null;
 	private LoopMode loopMode = LoopMode.EXECUTE;
 	private ProgressListener progressListener;
@@ -216,12 +216,11 @@ public class CompilerConfig {
 	}
 
 	public boolean isEnhancedInstructionSet() {
-	    return enhancedInstructionSet;
+		return enhancedInstructionSet;
 	}
 
 	public void setEnhancedInstructionSet(boolean enhancedInstructionSet) {
-	    this.enhancedInstructionSet = enhancedInstructionSet;
+		this.enhancedInstructionSet = enhancedInstructionSet;
 	}
-
 
 }

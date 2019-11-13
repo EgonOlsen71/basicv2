@@ -50,7 +50,7 @@ public class Screen extends AbstractCommand {
 
 	@Override
 	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
-	    return this.createSingleParameterCall(config, machine, pars, "SCREEN");
+		return this.createSingleParameterCall(config, machine, pars, "SCREEN");
 	}
 
 	/*
@@ -61,7 +61,7 @@ public class Screen extends AbstractCommand {
 	 */
 	@Override
 	public BasicProgramCounter execute(CompilerConfig config, Machine machine) {
-	    Logger.log("Call to SCREEN ignored by local runtime!");
+		Logger.log("Call to SCREEN ignored by local runtime!");
 		return null;
 	}
 

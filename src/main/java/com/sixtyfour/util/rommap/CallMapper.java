@@ -150,7 +150,7 @@ public class CallMapper {
 					addJarFar(val, redirs, parts[0].toUpperCase(Locale.ENGLISH));
 				}
 				if (verbose) {
-					Logger.log("Call to " + parts[0] + " matches to " + val+  " in target rom!");
+					Logger.log("Call to " + parts[0] + " matches to " + val + " in target rom!");
 				}
 			}
 		}

@@ -66,7 +66,7 @@ public class TransformerX16 extends AbstractTransformer {
 		calls.forEach((k, v) -> res.add(k + " = " + v));
 
 		addMemoryLocations(res);
-		
+
 		res.add("TMP_ZP = 96");
 		res.add("TMP2_ZP = 101");
 		res.add("TMP3_ZP = 106");
@@ -83,7 +83,7 @@ public class TransformerX16 extends AbstractTransformer {
 		addStructures(config, machine, platform, code, res, consts, vars, mnems, subs, mapping.getFarCalls());
 		return res;
 	}
-	
+
 	@Override
 	protected void addMemoryLocations(List<String> res) {
 		res.add("ARGSGN=$E2");
@@ -108,7 +108,7 @@ public class TransformerX16 extends AbstractTransformer {
 		res.add("RESHO=$B8");
 		res.add("RESOV=$BC");
 		res.add("RESHOP=$E3");
-		res.add("FACHOP=$5F");	// Should be free!?
+		res.add("FACHOP=$5F"); // Should be free!?
 		res.add("ITERCNT=$DC");
 		res.add("IOCHANNEL=$2D9");
 		res.add("BASICSTART=$BD");
@@ -120,7 +120,8 @@ public class TransformerX16 extends AbstractTransformer {
 		res.add("FILELEN=$298");
 		res.add("LOGICADDR=$299");
 		res.add("FILEADDR=$84");
-		res.add("LOADEND=$86");	/// Is this correct? Should be memuss, but that gone in the symbool table albeit it's still in the soucre code!?
+		res.add("LOADEND=$86"); /// Is this correct? Should be memuss, but that gone in the symbool table albeit
+								/// it's still in the soucre code!?
 		res.add("KEYNDX=$29E");
 		res.add("INDEX1=$B4");
 		res.add("VALTYPE=$2D3");
@@ -155,6 +156,5 @@ public class TransformerX16 extends AbstractTransformer {
 		res.add("R15L=$20");
 		res.add("R15H=$21");
 	}
-
 
 }

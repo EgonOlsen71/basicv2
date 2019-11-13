@@ -39,17 +39,17 @@ public abstract class JumpBase extends GeneratorBase {
 			if (Character.isDigit(label.charAt(0)) || label.startsWith("SKIP") || label.startsWith("NSKIP")) {
 				nCode.add(cmd + " LINE_" + parts[1].trim());
 			} else {
-				
-			    if (mightBeSystemCallFromBasic() && parts[1].startsWith("$")) {
-				int val=Integer.parseInt(parts[1].trim().substring(1), 16);
-				nCode.add("LDA #<"+val);
-				nCode.add("STA TMP_ZP");
-				nCode.add("LDA #>"+val);
-				nCode.add("STA TMP_ZP+1");
-				nCode.add("JSR SYSTEMCALL");
-			    } else {
-				nCode.add(cmd + " " + parts[1].trim());
-			    }
+
+				if (mightBeSystemCallFromBasic() && parts[1].startsWith("$")) {
+					int val = Integer.parseInt(parts[1].trim().substring(1), 16);
+					nCode.add("LDA #<" + val);
+					nCode.add("STA TMP_ZP");
+					nCode.add("LDA #>" + val);
+					nCode.add("STA TMP_ZP+1");
+					nCode.add("JSR SYSTEMCALL");
+				} else {
+					nCode.add(cmd + " " + parts[1].trim());
+				}
 			}
 		}
 	}

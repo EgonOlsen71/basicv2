@@ -150,7 +150,7 @@ public class TransformerJs implements Transformer {
 				if (obj.toString().equals("\\0")) {
 					obj = "";
 				}
-				
+
 				if (type == Type.INTEGER) {
 					strDat += obj.toString() + ",";
 				} else if (type == Type.REAL) {

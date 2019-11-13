@@ -106,10 +106,10 @@ public class Input extends MultiVariableCommand {
 			if (i == 0) {
 				expr.add("JSR QMARKOUT1");
 			} else {
-				String labelName="Q" + label + "_" + i;
+				String labelName = "Q" + label + "_" + i;
 				expr.add("JSR QUEUESIZE");
 				expr.add("CMP X,#0{REAL}");
-				expr.add("JNE "+labelName);
+				expr.add("JNE " + labelName);
 				expr.add("JSR QMARKOUT2");
 				expr.add(labelName + ":");
 			}

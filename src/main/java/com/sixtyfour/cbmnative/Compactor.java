@@ -191,8 +191,8 @@ public class Compactor {
 
 		List<List<Line>> finds = new ArrayList<>();
 		Set<Integer> replaced = new HashSet<>();
-		
-		Comparator<String> lineComp= new Comparator<String>() {
+
+		Comparator<String> lineComp = new Comparator<String>() {
 			@Override
 			public int compare(String o1, String o2) {
 				return o2.length() - o1.length();
@@ -201,7 +201,7 @@ public class Compactor {
 
 		for (int i = 0; i < input.size(); i++) {
 			if (pl != null && i % 300 == 0) {
-			    	// Advance the progress listener...
+				// Advance the progress listener...
 				pl.nextStep();
 			}
 			String line = input.get(i).trim();
