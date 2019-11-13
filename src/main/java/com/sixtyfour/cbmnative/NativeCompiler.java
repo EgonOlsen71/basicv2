@@ -266,13 +266,12 @@ public class NativeCompiler {
 
 		Logger.log("Code optimized: " + os + " => " + mCode.size() + " lines!");
 		if (mCode.isEmpty()) {
-			// If it's empty, create an empty program that simply returns
-			mCode.add("RTS");
+			// If it's empty, create an empty program that simply returns without doing much.
+			addEndCode(mCode);
 		}
 		
 		if (!getLastEntry(mCode).equals("RTS")) {
-			mCode.add("JSR END");
-			mCode.add("RTS");
+			addEndCode(mCode);
 		}
 		if (!mCode.get(0).equals("0:")) {
 			// Add an artifical LINE_0 if not present to deal with native jumps
@@ -926,5 +925,11 @@ public class NativeCompiler {
 		}
 		return mCode;
 	}
+	
+	private void addEndCode(List<String> mCode) {
+		mCode.add("JSR END");
+		mCode.add("RTS");
+	}
+
 
 }
