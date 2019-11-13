@@ -455,6 +455,7 @@ public class Parser {
 		term = TermEnhancer.replaceScientificNotation(term);
 		term = TermEnhancer.handleNonDecimalNumbers(config, term);
 		term = TermEnhancer.addBrackets(term);
+		System.out.println(term);
 		Term ret = createTerms(config, term, new HashMap<String, Term>(), machine, checkForLogicTerm);
 		ret.setInitial(term);
 		return ret;
@@ -614,12 +615,14 @@ public class Parser {
 	 * @return the parameters
 	 */
 	private static void getParameters(Atom atom, List<Atom> results) {
+	    	//System.out.println("HHH: "+atom);
 		if (atom.isTerm()) {
 			Term term = (Term) atom;
 			boolean addLeft = toAdd(term.getLeft());
 			boolean addRight = toAdd(term.getRight());
 
 			if (term.getOperator().isDelimiter()) {
+			    	//System.out.println(addLeft+"/"+addRight+" --- "+term.getRight()+" ------- "+term.getLeft());
 				if (addRight) {
 					results.add(term.getRight());
 				}
@@ -627,6 +630,7 @@ public class Parser {
 					results.add(term.getLeft());
 				}
 			}
+			
 			getParameters(term.getLeft(), results);
 			getParameters(term.getRight(), results);
 		}

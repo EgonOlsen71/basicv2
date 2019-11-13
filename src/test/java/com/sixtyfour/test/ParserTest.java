@@ -37,6 +37,15 @@ public class ParserTest {
 		testMinusPower();
 		testSin();
 		testNumberExt1();
+		testBrackets();
+	}
+
+	private static void testBrackets() {
+	    System.out.println("testBrackets");
+	    String term="646,(bg&15)*16+(fg&15)";
+	    System.out.println("Before: " + term);
+	    String s = TermEnhancer.addBrackets(term);
+	    System.out.println("After:" +s);
 	}
 
 	private static void testNumberExt1() {

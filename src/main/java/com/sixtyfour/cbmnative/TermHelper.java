@@ -27,7 +27,7 @@ public class TermHelper {
 		if (term == null) {
 			throw new RuntimeException("Term is null!");
 		}
-		return Parser.getTerm(config, linearize(term.getInitial()), machine, false, true);
+		return Parser.getTerm(config, linearize(term.getInitial(), config.isNonDecimalNumbersAware()), machine, false, true);
 	}
 
 	/**
@@ -36,9 +36,10 @@ public class TermHelper {
 	 * but better suited for the native compiler to process.
 	 * 
 	 * @param term the term
+	 * @param nonDecimals are % and $ supported?
 	 * @return the processed term
 	 */
-	public static String linearize(String term) {
+	public static String linearize(String term, boolean nonDecimals) {
 		String t = term;
 		boolean inString = false;
 		int start = -1;
@@ -47,6 +48,12 @@ public class TermHelper {
 
 		for (int i = 0; i < term.length(); i++) {
 			char c = t.charAt(i);
+			boolean nd=false;
+			if (nonDecimals && i<term.length()-1) {
+			    // Peek ahead to separate Strings from Hexcadecimals
+			    char cn=Character.toLowerCase(t.charAt(i+1));
+			    nd=(cn>='0' && cn<='9') || (cn>='a' && cn<='f');
+			}
 			if (c == '"') {
 				if (!inString && i > 0) {
 					start = findStart(t, i);
@@ -56,7 +63,7 @@ public class TermHelper {
 			}
 
 			boolean isLogic = false;
-			if (!inString && c == '$') {
+			if (!inString && c == '$' && !nd) {
 				start = findStart(t, i);
 				end = findEnd(t, i);
 			}

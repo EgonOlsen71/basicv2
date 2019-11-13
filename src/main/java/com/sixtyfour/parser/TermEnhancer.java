@@ -123,6 +123,10 @@ public class TermEnhancer {
 		if (!num.isEmpty()) {
 			sb.append(Integer.parseInt(num, inNumber == BIN ? 2 : 16));
 		}
+		/*
+		    System.out.println("NEW: "+sb.toString()+" / "+term);
+		    new Exception().printStackTrace();
+		*/
 		return sb.toString();
 	}
 
@@ -153,6 +157,40 @@ public class TermEnhancer {
 		}
 	}
 
+	/**
+	 * Returns the position of the closing bracket for the bracket that opens at the
+	 * given position. If non could be found or there is no opening bracket, -1 will
+	 * be returned.
+	 * 
+	 * @param term the term
+	 * @param pos the position of the starting bracket
+	 * @return the end bracket's position or -1
+	 */
+	public static int findEndBracket(String term, int pos) {
+		int open = 0;
+		boolean inString = false;
+		if (term.charAt(pos)!='(') {
+		    return -1;
+		}
+		for (int i = pos; i < term.length(); i++) {
+			char c = term.charAt(i);
+			if (c == '"') {
+				inString = !inString;
+			}
+			if (!inString) {
+				if (c == '(') {
+					open++;
+				} else if (c == ')') {
+					open--;
+				}
+			}
+			if (open==0) {
+			    return i;
+			}
+		}
+		return -1;
+	}
+	
 	/**
 	 * Removes the white spaces from a text.
 	 * 
@@ -316,10 +354,11 @@ public class TermEnhancer {
 				sb.append(c);
 			}
 		}
-		// System.out.println("SFN: "+line+"/"+sb.toString());
+		//System.out.println("SFN: "+line+"/"+sb.toString());
 		return sb.toString();
 	}
 
+	
 	/**
 	 * Adds brackets to a term based on the operator order. The resulting term makes
 	 * it clear which operations belong together without any knowledge about the
@@ -347,9 +386,15 @@ public class TermEnhancer {
 
 			// Wrap parameters into brackets to ease term creation later on
 			if (c == ',') {
+			    	//System.out.println("1: " +term);
 				int end = findNextDelimiter(term, i);
 				String curPar = term.substring(i + 1, end);
-				if (!curPar.startsWith("(") || !curPar.endsWith(")")) {
+				boolean matching=true;
+				if (curPar.startsWith("(")) {
+				    int endBra=findEndBracket(term, i+1);
+				    matching=(endBra==end-1);
+				}
+				if (!curPar.startsWith("(") || !curPar.endsWith(")") || !matching) {
 					sb.append(term.substring(0, i + 1)).append('(').append(curPar).append(')');
 					if (end != term.length()) {
 						sb.append(term.substring(end));
@@ -358,7 +403,9 @@ public class TermEnhancer {
 					term = sb.toString();
 					sb.setLength(0);
 				}
+				//System.out.println("2: " +term);
 			}
+			
 
 			if ((level == 2 && (c == '=' || c == '<' || c == '>')) || (level == 1 && (c == '*' || c == '/'))
 					|| (level == 0 && c == '^') || (level == 3 && (c == '&' || c == '°'))) {

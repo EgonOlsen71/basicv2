@@ -662,7 +662,7 @@ public class NativeCompilerTest {
 	public static void testLinearize() {
 		System.out.println("\n\ntestLinearize");
 		String txt = "(A$+\" \")+ASC(I*144+SIN(PI+ASC(CHR$(ASC((A$+\"hello\")+B$)))))+(((\"world\"+\", \"+(((A$))))))+\" universe!\"";
-		System.out.println(TermHelper.linearize(txt));
+		System.out.println(TermHelper.linearize(txt, false));
 	}
 
 	private static void testStringExpression2() {
