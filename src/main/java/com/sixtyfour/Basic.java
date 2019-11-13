@@ -884,6 +884,10 @@ public class Basic implements ProgramExecutor {
 	public void removeCommands(List<Command> toRemove) {
 		this.machine.removeCommands(toRemove);
 
+		if (lines.isEmpty()) {
+			return;
+		}
+		
 		Set<Command> remSet = new HashSet<Command>(toRemove);
 
 		Integer num = null;

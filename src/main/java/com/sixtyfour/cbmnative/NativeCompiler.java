@@ -265,7 +265,11 @@ public class NativeCompiler {
 		mCode = optimize(config, mCode);
 
 		Logger.log("Code optimized: " + os + " => " + mCode.size() + " lines!");
-
+		if (mCode.isEmpty()) {
+			// If it's empty, create an empty program that simply returns
+			mCode.add("RTS");
+		}
+		
 		if (!getLastEntry(mCode).equals("RTS")) {
 			mCode.add("JSR END");
 			mCode.add("RTS");
