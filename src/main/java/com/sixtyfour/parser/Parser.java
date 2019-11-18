@@ -455,7 +455,6 @@ public class Parser {
 		term = TermEnhancer.replaceScientificNotation(term);
 		term = TermEnhancer.handleNonDecimalNumbers(config, term);
 		term = TermEnhancer.addBrackets(term);
-		System.out.println(term);
 		Term ret = createTerms(config, term, new HashMap<String, Term>(), machine, checkForLogicTerm);
 		ret.setInitial(term);
 		return ret;
