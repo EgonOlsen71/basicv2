@@ -91,6 +91,14 @@ public interface Function extends Atom {
 	 * @return
 	 */
 	boolean isDeterministic();
+	
+	/**
+	 * Returns true if a function should be excluded from term optimizations.
+	 * Default is false.
+	 * 
+	 * @return
+	 */
+	boolean isExcluded();
 
 	/**
 	 * Returns the actual string that defines this function (i.e. how it has been

@@ -56,7 +56,7 @@ public class TransformerTest {
 		// testTransformer12();
 		// testTransformer13();
 		// testTransformer14();
-		testTransformerBeer();
+		//testTransformerBeer();
 		// testTransformer15();
 		// testTransformerSqr();
 		// testTransformer16();
@@ -65,8 +65,8 @@ public class TransformerTest {
 		// testTransformer20();
 		// testTransformer22();
 		// testTransformer23();
-		testTransformerFrog();
-		testTransformerAffine();
+		//testTransformerFrog();
+		//testTransformerAffine();
 		// testTransformer24();
 		// testTransformer25();
 		// testTransformer26();
@@ -86,7 +86,7 @@ public class TransformerTest {
 		// testCmd();
 		// testTab();
 		// testArrays();
-		testLoad();
+		//testLoad();
 		// testFn2();
 		// testTwoFor();
 		// testBrackets();
@@ -106,23 +106,31 @@ public class TransformerTest {
 		// testPetsci();
 		// testWayout();
 		// testCtest();
-		test10test();
-		test10adv();
-		testDatas();
-		testInts();
-		testFloatPerf();
-		testIntPerf();
-		testRs232Test();
-		testRs232InputTest();
-		testFileTest();
-		testRecom64();
-		testInputTest();
-		testDivide();
-		testSystemcall();
-		testDatastuff();
+//		test10test();
+//		test10adv();
+//		testDatas();
+//		testInts();
+//		testFloatPerf();
+//		testIntPerf();
+//		testRs232Test();
+//		testRs232InputTest();
+//		testFileTest();
+//		testRecom64();
+//		testInputTest();
+//		testDivide();
+//		testSystemcall();
+//		testDatastuff();
+		testChrOptimizer();
 
 	}
 
+	private static void testChrOptimizer() throws Exception {
+		System.out.println("\n\ntestChrOptimizer");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/chropttest.bas");
+		Assembler assy = initTestEnvironment(vary, true, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++chropttest.prg", true);
+	}
+	
 	private static void testDatastuff() throws Exception {
 		System.out.println("\n\ntestDatastuff");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/datastuff.bas");

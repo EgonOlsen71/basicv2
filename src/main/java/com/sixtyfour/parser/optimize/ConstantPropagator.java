@@ -213,7 +213,7 @@ public class ConstantPropagator {
 			if (!(left.isConstant())) {
 				if (left instanceof Function) {
 					Function func = (Function) left;
-					if (func.isDeterministic()) {
+					if (func.isDeterministic() && !func.isExcluded()) {
 						isConstant[0] &= checkForConstant(config, machine, func.getTerm(), isConstant);
 					} else {
 						isConstant[0] = false;
@@ -233,7 +233,7 @@ public class ConstantPropagator {
 				if (!(right.isConstant())) {
 					if (right instanceof Function) {
 						Function func = (Function) right;
-						if (func.isDeterministic()) {
+						if (func.isDeterministic() && !func.isExcluded()) {
 							isConstant[0] &= checkForConstant(config, machine, func.getTerm(), isConstant);
 						} else {
 							isConstant[0] = false;
