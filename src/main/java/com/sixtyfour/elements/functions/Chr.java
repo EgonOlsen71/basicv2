@@ -25,6 +25,20 @@ public class Chr extends AbstractFunction {
 	public Type getType() {
 		return Type.STRING;
 	}
+	
+	/** 
+	 * Actually, CHR$ is deterministic, of course. But because it creates a STRING as output but
+	 * takes a number as input, the constant folder somehow would wrongly optimizes this
+	 * (see TermOptimizer.optimizeTerm()). I'm not sure how to handle this case, so for now
+	 * CHR$ is flagged as non-deterministic, which will work around this issue.
+	 * 
+	 * 
+	 * @see com.sixtyfour.elements.functions.AbstractFunction#isDeterministic()
+	 */
+	@Override
+	public boolean isDeterministic() {
+		return false;
+	}
 
 	/*
 	 * (non-Javadoc)
