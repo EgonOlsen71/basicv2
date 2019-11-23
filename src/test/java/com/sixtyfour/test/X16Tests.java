@@ -64,8 +64,16 @@ public class X16Tests {
 		testMouse();
 		testSignum();
 		testFractalLand();
+		testXtris();
 	}
 
+	private static void testXtris() throws Exception {
+		System.out.println("\n\ntestXtris");
+		String[] vary = Loader.loadProgram("src/test/resources/x16/xtris16.bas");
+		Assembler assy = initTestEnvironment(vary, false, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++xtris16.prg", true);
+	}
+	
 	private static void testSignum() throws Exception {
 		System.out.println("\n\ntestSignum");
 		String[] vary = Loader.loadProgram("src/test/resources/x16/signum.bas");
