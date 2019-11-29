@@ -513,6 +513,9 @@ public class Parser {
 			} else {
 				sb.append(")*(").append(m).append(")");
 			}
+			if (i>=dimensions.length) {
+			    throw new RuntimeException("Syntax error: Array index count out of range!");
+			}
 			m *= dimensions[i] + 1;
 		}
 

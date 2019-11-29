@@ -204,6 +204,7 @@ public class MoSpeedCL {
 		}
 		List<String> nCode = null;
 
+		NativeCompiler nComp=NativeCompiler.getCompiler();
 		try {
 			if (genSrc) {
 				List<String> mCode = NativeCompiler.getCompiler().compileToPseudoCode(cfg, basic);
@@ -211,9 +212,10 @@ public class MoSpeedCL {
 			}
 
 			// basic = new Basic(src);
-			nCode = NativeCompiler.getCompiler().compile(cfg, basic, memConfig, platform);
+			nCode = nComp.compile(cfg, basic, memConfig, platform);
 		} catch (Exception e) {
 			System.out.println("\n!!! Error compiling: " + e.getMessage());
+			System.out.println("Error in line: "+nComp.getLastProcessedLine());
 			printCause(e);
 			exit(15);
 		}

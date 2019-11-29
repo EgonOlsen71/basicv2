@@ -102,6 +102,7 @@ public class NativeCompiler {
 	};
 
 	private static NativeCompiler instance = new NativeCompiler();
+	private String lastProcessedLine=null;
 
 	/**
 	 * Returns an instance of the native compiler.
@@ -231,6 +232,7 @@ public class NativeCompiler {
 		List<String> mCode = new ArrayList<String>();
 		for (Integer lineNumber : pCode.getLineNumbers()) {
 			Line line = pCode.getLines().get(lineNumber);
+			lastProcessedLine=line.getNumber()+" "+line.getLine();
 			mCode.add(lineNumber + ":");
 			boolean condi = false;
 			for (Command cmd : line.getCommands()) {
@@ -296,7 +298,7 @@ public class NativeCompiler {
 	public List<String> compileToPseudoCode(CompilerConfig config, Machine machine, Command command) {
 		return compileToPseudoCodeInternal(config, machine, command);
 	}
-
+	
 	/**
 	 * Compiles a single Term into intermediate code.
 	 * 
@@ -829,6 +831,16 @@ public class NativeCompiler {
 		return optimizeInternal(config, code);
 	}
 
+	/**
+	 * Returns the last processed line. If something went wrong, this is most likely the line
+	 * that caused it.
+	 * 
+	 * @return the line of null, if there is none
+	 */
+	public String getLastProcessedLine() {
+	    return lastProcessedLine;
+	}
+	
 	private List<String> optimize(CompilerConfig config, List<String> code) {
 		return NativeOptimizer.optimizeNative(config, code, config.getProgressListener());
 	}
