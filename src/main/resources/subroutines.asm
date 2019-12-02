@@ -762,13 +762,16 @@ RGCNOOV1	CLC
 RGCNOOV2	LDA TMP4_REG+1		; Now do the actual check
 			CMP ENDSTRBUF+1
 			BEQ RGCLOW1
-			BCS GCEXE			; Doesn't fit, run GC!
+			BCS GCEXECOMP		; Doesn't fit, run GC!
 			JMP RGCEXIT
 RGCLOW1		LDA TMP4_REG
 			CMP ENDSTRBUF
-			BCS	GCEXE			; This also triggers if it would fit exactly...but anyway...
+			BCS	GCEXECOMP		; This also triggers if it would fit exactly...but anyway...
 RGCEXIT		RTS					; It fits? Then exit without GC
-
+;###################################
+GCEXECOMP	JSR GCEXE
+			JSR CHECKMEMORY		; todo: Make this check so that it actually detects OOM
+			RTS
 ;###################################
 GCEXE		JSR SAVEPOINTERS
 
@@ -896,7 +899,22 @@ GCDONE		LDA GCSTART
 
 GCSKIP		JSR RESTOREPOINTERS
 			RTS					; Remember: GC has to adjust highp as well!
-
+;###################################
+CHECKMEMORY	
+			;LDA STRBUFP+1
+			;LDX STRBUFP
+			;JSR $BDCD
+			LDA STRBUFP+1		; Check if we are out of memory regardless of garbage collection
+			CMP ENDSTRBUF+1
+			BCC STILLFITSCM
+			BEQ CHECKMEMLOWCM
+			JMP OUTOFMEMORY		; STRBUFP>ENDBUF? OOM!
+CHECKMEMLOWCM
+			LDA STRBUFP			; High bytes are equal? Check low bytes
+			CMP ENDSTRBUF
+			BCC	STILLFITSCM		; Still fits...albeit hardly...
+			JMP OUTOFMEMORY		; No? OOM
+STILLFITSCM RTS			
 ;###################################
 QUICKCOPY	LDA TMP_REG		; a self modifying copy routine
 			STA TMEM+1
@@ -3266,6 +3284,9 @@ NEXTWOFOR	LDX #$0A
 			JMP ERRALL
 ;###################################
 OUTOFDATA	LDX #$0D 
+			JMP ERRALL 
+;###################################
+OUTOFMEMORY	LDX #$10
 			JMP ERRALL 
 ;###################################
 STRINGTOOLONG
