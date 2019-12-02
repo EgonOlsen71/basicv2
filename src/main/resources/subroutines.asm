@@ -904,7 +904,7 @@ GCSKIP		JSR RESTOREPOINTERS
 			RTS					; Remember: GC has to adjust highp as well!
 ;###################################
 CHECKMEMORY	
-			LDA STRBUFP+1		; Check if we are out of memory even after of garbage collection.
+			LDA STRBUFP+1		; Check if we are out of memory even after a garbage collection.
 			CMP STORE4+1		; This is indicated by the string pointer being still equal or higher
 			BCC STILLFITSCM		; than before the GC. We are not checking against the actual memory limit,
 								; because the GC stops before reaching it, leaving all unhandled variables
