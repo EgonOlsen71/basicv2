@@ -912,11 +912,11 @@ CHECKMEMORY
 								; untouched. That's because we can't free anything more if we've already reached
 								; the limit. But there's no direct indicator of this, so we use this indirect one.
 			BEQ CHECKMEMLOWCM
-			JMP OUTOFMEMORY		; STRBUFP>ENDBUF? OOM!
+			JMP OUTOFMEMORY		; STRBUFP>last value? OOM!
 CHECKMEMLOWCM
 			LDA STRBUFP			; High bytes are equal? Check low bytes
 			CMP STORE4
-			BCC	STILLFITSCM		; Still fits...albeit hardly...
+			BCC	STILLFITSCM
 			JMP OUTOFMEMORY		; No? OOM
 STILLFITSCM RTS							
 ;###################################
