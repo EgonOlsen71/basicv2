@@ -452,6 +452,7 @@ public abstract class AbstractTransformer implements Transformer {
 		res.add("STORE1\t.WORD 0");
 		res.add("STORE2\t.WORD 0");
 		res.add("STORE3\t.WORD 0");
+		res.add("STORE4\t.WORD 0");
 		res.add("GCSTART\t.WORD 0");
 		res.add("GCLEN\t.WORD 0");
 		res.add("GCWORK\t.WORD 0");

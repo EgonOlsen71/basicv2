@@ -769,8 +769,12 @@ RGCLOW1		LDA TMP4_REG
 			BCS	GCEXECOMP		; This also triggers if it would fit exactly...but anyway...
 RGCEXIT		RTS					; It fits? Then exit without GC
 ;###################################
-GCEXECOMP	JSR GCEXE
-			JSR CHECKMEMORY		; todo: Make this check so that it actually detects OOM
+GCEXECOMP	LDA STRBUFP
+			STA STORE4
+			LDA STRBUFP+1
+			STA STORE4+1
+			JSR GCEXE
+			JSR CHECKMEMORY
 			RTS
 ;###################################
 GCEXE		JSR SAVEPOINTERS
@@ -901,20 +905,20 @@ GCSKIP		JSR RESTOREPOINTERS
 			RTS					; Remember: GC has to adjust highp as well!
 ;###################################
 CHECKMEMORY	
-			;LDA STRBUFP+1
-			;LDX STRBUFP
-			;JSR $BDCD
-			LDA STRBUFP+1		; Check if we are out of memory regardless of garbage collection
-			CMP ENDSTRBUF+1
-			BCC STILLFITSCM
+			LDA STRBUFP+1		; Check if we are out of memory even after of garbage collection.
+			CMP STORE4+1		; This is indicated by the string pointer being still equal or higher
+			BCC STILLFITSCM		; than before the GC. We are not checking against the actual memory limit,
+								; because the GC stops before reaching it, leaving all unhandled variables
+								; untouched. That's because we can't free anything more if we've already reached
+								; the limit. But there's no direct indicator of this, so we use this indirect one.
 			BEQ CHECKMEMLOWCM
 			JMP OUTOFMEMORY		; STRBUFP>ENDBUF? OOM!
 CHECKMEMLOWCM
 			LDA STRBUFP			; High bytes are equal? Check low bytes
-			CMP ENDSTRBUF
+			CMP STORE4
 			BCC	STILLFITSCM		; Still fits...albeit hardly...
 			JMP OUTOFMEMORY		; No? OOM
-STILLFITSCM RTS			
+STILLFITSCM RTS							
 ;###################################
 QUICKCOPY	LDA TMP_REG		; a self modifying copy routine
 			STA TMEM+1
