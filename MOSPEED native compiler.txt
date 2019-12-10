@@ -25,7 +25,7 @@ one for Windows (mospeed.cmd) and one for Linux (mospeed.sh), which can be used 
 
 The compiler needs at least the name/path of the source file to run or /? to display the integrated help text.
 Started with just the source file name, the compiler will create (assuming that the compile process went fine) a prg-file 
-named like the source file but with two plus signs as prefix. For example: example.bas becomes ++example.prg
+for the C64 named like the source file but with two plus signs as prefix. For example: example.bas becomes ++example.prg
 
 The source code can use line numbers (as usual) but also labels, which the interpreter doesn't support.
 MOSpeed translates these label to line numbers at compile time.
@@ -45,7 +45,7 @@ In the following, true|false means that the feature can be enabled (true) or dis
 - /target=<target file>: Sets the name of the target file. If nothing is given, the name will be generated from the source 
 file's name (as described above). It's possible to use a complete path name.
 
-- /platform=xxxx: the target platform. Options are c64 (for c64 compatible machine code), vic20 or vc20, js (for Javascript) and ps (for Powershell/-script), default is c64
+- /platform=xxxx: the target platform. Options are c64 (for c64 compatible machine code), vic20 or vc20, x16 for x16-compatible machine language, js (for Javascript) and ps (for Powershell/-script), default is c64
 
 - /generatesrc=true|false: If true, the generated source codes for the assembly like intermediate language as well as for the 
 6502-Assembler|Assembly will be written to disk as well. Default is false.
@@ -84,6 +84,8 @@ prevent the BASIC header from being written as well. Default is true.
 caused by inaccuracies in the calculations, this can lead to small differences but in most cases, this shouldn't be a 
 problem if it's even noticable. Default is true.
 
+- /xfloatopt=true|false: enables/disables additional floating point optimizations. While they speed up some operations by up to 25%, they need more memory. Default is true.
+
 - /intopt=true|false: If true, certain integer operations will be optimized. In general MOSpeed treats integer variables 
 like the interpreter does for compatibility reasons. By using this parameter, this restriction can me loosened somewhat. 
 Default is true.
@@ -113,6 +115,14 @@ After a successful compilation, the compiled program will be started in that emu
 
 - /memconfig=0|3|8 - the memory configuration in case of VIC20 as the target machine. 0 means 'unexpanded', 3 means with a 3k expansion, 
 8 means with an 8k or larger expansion. Default is 8.
+
+- /symboltable=<file>: This only applies to the X16 target platform. It lets you specify a different symbol table to compile for different ROM releases. The default symbol table should match the latest ROM release.
+
+- /nondecimals=true|false: if true, hexadecimal and binary numbers can be indicated by & and %. Default is false, except for the X16 platform, where it's enabled by default.
+
+- /tolower==true|false: if true, all strings in the source code will be treated as lower case. This can be useful when compiling BASIC code copied directly from an emulator where all strings are given in upper case. Default is false.
+
+- /multipart=true|false: if false (default) the target file contains all binary data regardless of the address in memory. If true, several files will be written if the addresses of the program's parts aren't adjacent.
 
 
 
