@@ -3,6 +3,8 @@
  */
 package com.sixtyfour;
 
+import java.io.PrintStream;
+
 /**
  * A very basic Logger that outputs logging messages onto the console. If you
  * actually want have some reasonable logging, modify this implementation. The
@@ -10,13 +12,15 @@ package com.sixtyfour;
  */
 public class Logger {
 
-	/**
+	private static PrintStream out=System.out;
+    
+    	/**
 	 * Logs a message.
 	 * 
 	 * @param msg the message
 	 */
 	public static void log(String msg) {
-		System.out.println(msg);
+	    	out.println(msg);
 	}
 
 	/**
@@ -26,8 +30,8 @@ public class Logger {
 	 * @param t   the throwable
 	 */
 	public static void log(String msg, Throwable t) {
-		System.out.println(msg);
-		t.printStackTrace();
+	    	out.println(msg);
+		t.printStackTrace(out);
 	}
 
 	/**
@@ -36,7 +40,17 @@ public class Logger {
 	 * @param t the Throwable
 	 */
 	public static void log(Throwable t) {
-		t.printStackTrace();
+		t.printStackTrace(out);
+	}
+	
+	/**
+	 * Sets a new PrintStream for outputting the log messages.
+	 * The default is System.out
+	 * 
+	 * @param ps the new PrintStream
+	 */
+	public void setPrintStream(PrintStream ps) {
+	    out=ps;
 	}
 
 }
