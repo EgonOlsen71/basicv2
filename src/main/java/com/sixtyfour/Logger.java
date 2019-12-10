@@ -49,7 +49,7 @@ public class Logger {
 	 * 
 	 * @param ps the new PrintStream
 	 */
-	public void setPrintStream(PrintStream ps) {
+	public static void setPrintStream(PrintStream ps) {
 	    out=ps;
 	}
 
