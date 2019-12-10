@@ -116,13 +116,17 @@ After a successful compilation, the compiled program will be started in that emu
 - /memconfig=0|3|8 - the memory configuration in case of VIC20 as the target machine. 0 means 'unexpanded', 3 means with a 3k expansion, 
 8 means with an 8k or larger expansion. Default is 8.
 
-- /symboltable=<file>: This only applies to the X16 target platform. It lets you specify a different symbol table to compile for different ROM releases. The default symbol table should match the latest ROM release.
+- /symboltable=<file>: This only applies to the X16 target platform. It lets you specify a different symbol table to compile for
+different ROM releases. The default symbol table should match the latest ROM release.
 
-- /nondecimals=true|false: if true, hexadecimal and binary numbers can be indicated by & and %. Default is false, except for the X16 platform, where it's enabled by default.
+- /nondecimals=true|false: if true, hexadecimal and binary numbers can be indicated by & and %. Default is false, except for the X16
+platform, where it's enabled by default.
 
-- /tolower==true|false: if true, all strings in the source code will be treated as lower case. This can be useful when compiling BASIC code copied directly from an emulator where all strings are given in upper case. Default is false.
+- /tolower==true|false: if true, all strings in the source code will be treated as lower case. This can be useful when compiling BASIC
+code copied directly from an emulator where all strings are given in upper case. Default is false.
 
-- /multipart=true|false: if false (default) the target file contains all binary data regardless of the address in memory. If true, several files will be written if the addresses of the program's parts aren't adjacent.
+- /multipart=true|false: if false (default) the target file contains all binary data regardless of the address in memory. If true,
+several files will be written if the addresses of the program's parts aren't adjacent.
 
 
 
