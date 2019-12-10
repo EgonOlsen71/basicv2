@@ -84,7 +84,8 @@ prevent the BASIC header from being written as well. Default is true.
 caused by inaccuracies in the calculations, this can lead to small differences but in most cases, this shouldn't be a 
 problem if it's even noticable. Default is true.
 
-- /xfloatopt=true|false: enables/disables additional floating point optimizations. While they speed up some operations by up to 25%, they need more memory. Default is true.
+- /xfloatopt=true|false: enables/disables additional floating point optimizations. While they speed up some operations by up to 25%,
+they need more memory. Default is true.
 
 - /intopt=true|false: If true, certain integer operations will be optimized. In general MOSpeed treats integer variables 
 like the interpreter does for compatibility reasons. By using this parameter, this restriction can me loosened somewhat. 
