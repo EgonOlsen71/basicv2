@@ -46,7 +46,7 @@ import com.sixtyfour.parser.Preprocessor;
 import com.sixtyfour.system.FileWriter;
 
 /**
- * A simple UI class that allows for starting BASIC programs from the desktop.
+ * A simple UI that allows for compiling BASIC programs from the desktop.
  * 
  * @author EgonOlsen
  *
@@ -78,7 +78,7 @@ public class VisualMospeed {
     }
 
     /**
-     * Creates a new visual runtime.
+     * Creates a new visual compiler.
      */
     public VisualMospeed() {
 	setup();
