@@ -145,8 +145,10 @@ public class MoSpeedCL {
 				if (vicConf != null) {
 					if (vicConf.equals("0")) {
 						((Platform20) platform).setNewBaseAddress(4097);
+						((Platform20) platform).setBasicMemoryEndAddress(7679);
 					} else if (vicConf.equals("3")) {
 						((Platform20) platform).setNewBaseAddress(1025);
+						((Platform20) platform).setBasicMemoryEndAddress(7679);
 					}
 				}
 				appendix = ".prg";
@@ -255,6 +257,17 @@ public class MoSpeedCL {
 			PlatformProvider platform, boolean addrHeader, boolean multiPart) {
 		if (is6502Platform(platform)) {
 			write6502(memConfig, targetFile, assy, platform, addrHeader, multiPart);
+			// Check out of memory on write time
+			int se=memConfig.getStringEnd();
+			if (se<=0) {
+			    se=platform.getBasicMemoryEndAddress();
+			}
+			if (se>=0) {
+			    ProgramPart part0=assy.getProgram().getParts().get(0);
+			    if (part0.getAddress()<=se && part0.getEndAddress()>se) {
+				System.out.println("\nWARNING: Compiled program's length exceeds memory limit: "+(part0.getEndAddress()+">"+se));
+			    }
+			}
 		} else if (platform instanceof PlatformJs) {
 			writeJavascript(targetFile, ncode);
 		} else if (platform instanceof PlatformPs) {

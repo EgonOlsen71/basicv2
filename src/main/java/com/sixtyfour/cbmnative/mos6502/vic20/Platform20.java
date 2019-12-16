@@ -19,6 +19,7 @@ public class Platform20 implements PlatformProvider {
 
 	private int maxHeaderAddr = 4660;
 	private int baseAddr = 4609;
+	private int basicEnd = 32767;
 
 	@Override
 	public int getStackSize() {
@@ -61,12 +62,21 @@ public class Platform20 implements PlatformProvider {
 	public int getBaseAddress() {
 		return baseAddr;
 	}
+	
+	@Override
+	public int getBasicMemoryEndAddress() {
+	    return basicEnd;
+	}
 
 	@Override
 	public void overrideConfig(CompilerConfig conf) {
 		// TODO Auto-generated method stub
 	}
 
+	public void setBasicMemoryEndAddress(int addr) {
+	    	basicEnd = addr;
+	}
+	
 	public void setNewBaseAddress(int addr) {
 		baseAddr = addr;
 		maxHeaderAddr = addr + 51;

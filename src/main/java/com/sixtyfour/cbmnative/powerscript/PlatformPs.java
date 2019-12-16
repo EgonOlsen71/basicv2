@@ -67,4 +67,9 @@ public class PlatformPs implements PlatformProvider {
 		return null;
 	}
 
+	@Override
+	public int getBasicMemoryEndAddress() {
+	    return 0;
+	}
+
 }

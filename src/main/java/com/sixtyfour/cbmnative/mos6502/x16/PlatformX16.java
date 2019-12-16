@@ -60,6 +60,11 @@ public class PlatformX16 implements PlatformProvider {
 	public int getBaseAddress() {
 		return 2049;
 	}
+	
+	@Override
+	public int getBasicMemoryEndAddress() {
+	    return 40703;
+	}
 
 	@Override
 	public void overrideConfig(CompilerConfig conf) {

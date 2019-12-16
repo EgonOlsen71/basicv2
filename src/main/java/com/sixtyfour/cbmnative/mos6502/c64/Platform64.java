@@ -56,6 +56,11 @@ public class Platform64 implements PlatformProvider {
 	public int getBaseAddress() {
 		return 2049;
 	}
+	
+	@Override
+	public int getBasicMemoryEndAddress() {
+	    return 40959;
+	}
 
 	@Override
 	public void overrideConfig(CompilerConfig conf) {

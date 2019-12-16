@@ -44,6 +44,7 @@ import com.sixtyfour.config.MemoryConfig;
 import com.sixtyfour.extensions.x16.X16Extensions;
 import com.sixtyfour.parser.Preprocessor;
 import com.sixtyfour.system.FileWriter;
+import com.sixtyfour.system.ProgramPart;
 
 /**
  * A simple UI that allows for compiling BASIC programs from the desktop.
@@ -274,6 +275,18 @@ public class VisualMospeed {
 	    PlatformProvider platform) {
 	if (is6502Platform(platform)) {
 	    write6502(memConfig, targetFile, assy, platform);
+	    // Check out of memory on write time
+	    int se = memConfig.getStringEnd();
+	    if (se <= 0) {
+		se = platform.getBasicMemoryEndAddress();
+	    }
+	    if (se >= 0) {
+		ProgramPart part0 = assy.getProgram().getParts().get(0);
+		if (part0.getAddress() <= se && part0.getEndAddress() > se) {
+		    Logger.log("\nWARNING: Compiled program's length exceeds memory limit: "
+			    + (part0.getEndAddress() + ">" + se));
+		}
+	    }
 	} else if (platform instanceof PlatformJs) {
 	    writeJavascript(targetFile, ncode);
 	} else if (platform instanceof PlatformPs) {
