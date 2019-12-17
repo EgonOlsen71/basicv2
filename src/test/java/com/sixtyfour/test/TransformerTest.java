@@ -56,7 +56,7 @@ public class TransformerTest {
 		// testTransformer12();
 		// testTransformer13();
 		// testTransformer14();
-		//testTransformerBeer();
+		// testTransformerBeer();
 		// testTransformer15();
 		// testTransformerSqr();
 		// testTransformer16();
@@ -65,8 +65,8 @@ public class TransformerTest {
 		// testTransformer20();
 		// testTransformer22();
 		// testTransformer23();
-		//testTransformerFrog();
-		//testTransformerAffine();
+		// testTransformerFrog();
+		// testTransformerAffine();
 		// testTransformer24();
 		// testTransformer25();
 		// testTransformer26();
@@ -86,7 +86,7 @@ public class TransformerTest {
 		// testCmd();
 		// testTab();
 		// testArrays();
-		//testLoad();
+		// testLoad();
 		// testFn2();
 		// testTwoFor();
 		// testBrackets();
@@ -130,7 +130,7 @@ public class TransformerTest {
 		Assembler assy = initTestEnvironment(vary, true, -1, true);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++chropttest.prg", true);
 	}
-	
+
 	private static void testDatastuff() throws Exception {
 		System.out.println("\n\ntestDatastuff");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/datastuff.bas");

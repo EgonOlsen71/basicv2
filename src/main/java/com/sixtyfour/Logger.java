@@ -12,15 +12,15 @@ import java.io.PrintStream;
  */
 public class Logger {
 
-	private static PrintStream out=System.out;
-    
-    	/**
+	private static PrintStream out = System.out;
+
+	/**
 	 * Logs a message.
 	 * 
 	 * @param msg the message
 	 */
 	public static void log(String msg) {
-	    	out.println(msg);
+		out.println(msg);
 	}
 
 	/**
@@ -30,7 +30,7 @@ public class Logger {
 	 * @param t   the throwable
 	 */
 	public static void log(String msg, Throwable t) {
-	    	out.println(msg);
+		out.println(msg);
 		t.printStackTrace(out);
 	}
 
@@ -42,15 +42,15 @@ public class Logger {
 	public static void log(Throwable t) {
 		t.printStackTrace(out);
 	}
-	
+
 	/**
-	 * Sets a new PrintStream for outputting the log messages.
-	 * The default is System.out
+	 * Sets a new PrintStream for outputting the log messages. The default is
+	 * System.out
 	 * 
 	 * @param ps the new PrintStream
 	 */
 	public static void setPrintStream(PrintStream ps) {
-	    out=ps;
+		out = ps;
 	}
 
 }

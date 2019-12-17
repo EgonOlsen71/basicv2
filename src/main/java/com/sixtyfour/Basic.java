@@ -887,7 +887,7 @@ public class Basic implements ProgramExecutor {
 		if (lines.isEmpty()) {
 			return;
 		}
-		
+
 		Set<Command> remSet = new HashSet<Command>(toRemove);
 
 		Integer num = null;

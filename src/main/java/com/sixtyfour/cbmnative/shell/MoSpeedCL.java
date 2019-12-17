@@ -26,6 +26,7 @@ import com.sixtyfour.config.LoopMode;
 import com.sixtyfour.config.MemoryConfig;
 import com.sixtyfour.extensions.x16.X16Extensions;
 import com.sixtyfour.parser.Preprocessor;
+import com.sixtyfour.parser.cbmnative.UnTokenizer;
 import com.sixtyfour.system.FileWriter;
 import com.sixtyfour.system.Program;
 import com.sixtyfour.system.ProgramPart;
@@ -158,7 +159,8 @@ public class MoSpeedCL {
 			}
 		}
 
-		String targetFile = "++" + new File(srcFile).getName().replace(".BAS", "").replace(".bas", "") + appendix;
+		String targetFile = "++" + new File(srcFile).getName().replace(".BAS", "").replace(".bas", "")
+				.replace(".prg", "").replace(".PRG", "") + appendix;
 		if (cmds.containsKey("target")) {
 			targetFile = cmds.get("target");
 			if ((appendix.equalsIgnoreCase(".js") && !targetFile.endsWith(".js"))
@@ -183,7 +185,25 @@ public class MoSpeedCL {
 		}
 
 		System.out.println("Compiling " + srcFile + "...");
-		String[] src = loadSource(srcFile);
+		String[] src = null;
+
+		if (srcFile.toLowerCase(Locale.ENGLISH).endsWith(".prg")) {
+			try {
+				System.out.println("Looks like a PRG file, trying to convert it...");
+				byte[] data = Loader.loadBlob(srcFile);
+				UnTokenizer unto = new UnTokenizer();
+				src = unto.getText(data).toArray(new String[0]);
+				System.out.println("PRG file converted into ASCII, proceeding!");
+				srcFile = srcFile.replace(".prg", ".bas");
+			} catch (Exception e) {
+				System.out.println("Failed to convert PRG file: " + e.getMessage());
+				System.out.println("Proceeding as if it was ASCII instead!");
+			}
+		}
+
+		if (src == null) {
+			src = loadSource(srcFile);
+		}
 		for (String line : src) {
 			if (!line.trim().isEmpty()) {
 				char c = line.charAt(0);
@@ -206,7 +226,7 @@ public class MoSpeedCL {
 		}
 		List<String> nCode = null;
 
-		NativeCompiler nComp=NativeCompiler.getCompiler();
+		NativeCompiler nComp = NativeCompiler.getCompiler();
 		try {
 			if (genSrc) {
 				List<String> mCode = NativeCompiler.getCompiler().compileToPseudoCode(cfg, basic);
@@ -217,7 +237,7 @@ public class MoSpeedCL {
 			nCode = nComp.compile(cfg, basic, memConfig, platform);
 		} catch (Exception e) {
 			System.out.println("\n!!! Error compiling: " + e.getMessage());
-			System.out.println("Error in line: "+nComp.getLastProcessedLine());
+			System.out.println("Error in line: " + nComp.getLastProcessedLine());
 			printCause(e);
 			exit(15);
 		}
@@ -258,15 +278,16 @@ public class MoSpeedCL {
 		if (is6502Platform(platform)) {
 			write6502(memConfig, targetFile, assy, platform, addrHeader, multiPart);
 			// Check out of memory on write time
-			int se=memConfig.getStringEnd();
-			if (se<=0) {
-			    se=platform.getBasicMemoryEndAddress();
+			int se = memConfig.getStringEnd();
+			if (se <= 0) {
+				se = platform.getBasicMemoryEndAddress();
 			}
-			if (se>=0) {
-			    ProgramPart part0=assy.getProgram().getParts().get(0);
-			    if (part0.getAddress()<=se && part0.getEndAddress()>se) {
-				System.out.println("\nWARNING: Compiled program's length exceeds memory limit: "+(part0.getEndAddress()+">"+se));
-			    }
+			if (se >= 0) {
+				ProgramPart part0 = assy.getProgram().getParts().get(0);
+				if (part0.getAddress() <= se && part0.getEndAddress() > se) {
+					System.out.println("\nWARNING: Compiled program's length exceeds memory limit: "
+							+ (part0.getEndAddress() + ">" + se));
+				}
 			}
 		} else if (platform instanceof PlatformJs) {
 			writeJavascript(targetFile, ncode);

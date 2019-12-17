@@ -47,7 +47,7 @@ public class ProgramTest {
 		testIfNot();
 		testGo_To();
 	}
-	
+
 	private static void testGo_To() {
 		String[] vary = Loader.loadProgram("src/test/resources/basic/go_to.bas");
 		Basic inty = new Basic(vary);

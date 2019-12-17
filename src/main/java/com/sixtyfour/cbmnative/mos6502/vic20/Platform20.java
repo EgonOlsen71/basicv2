@@ -62,10 +62,10 @@ public class Platform20 implements PlatformProvider {
 	public int getBaseAddress() {
 		return baseAddr;
 	}
-	
+
 	@Override
 	public int getBasicMemoryEndAddress() {
-	    return basicEnd;
+		return basicEnd;
 	}
 
 	@Override
@@ -74,9 +74,9 @@ public class Platform20 implements PlatformProvider {
 	}
 
 	public void setBasicMemoryEndAddress(int addr) {
-	    	basicEnd = addr;
+		basicEnd = addr;
 	}
-	
+
 	public void setNewBaseAddress(int addr) {
 		baseAddr = addr;
 		maxHeaderAddr = addr + 51;

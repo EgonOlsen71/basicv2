@@ -40,8 +40,8 @@ public class ConstantFolder {
 					 * ConstantPropagator.checkForConstant(machine, cmdTerm)); }
 					 */
 					if (cmdTerm != null) {
-					    foldConstants(config, cmdTerm, machine);
-					    //System.out.println("> " + cmdTerm);
+						foldConstants(config, cmdTerm, machine);
+						// System.out.println("> " + cmdTerm);
 					}
 				}
 			}
@@ -66,7 +66,7 @@ public class ConstantFolder {
 				}
 				return finalTerm;
 			}
-			
+
 			if (left.isConstant() && right.isConstant() && Type.isAssignable(left.getType(), right.getType())) {
 				setConstant(finalTerm, machine, left);
 			} else {

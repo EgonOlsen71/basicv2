@@ -66,7 +66,7 @@ public interface PlatformProvider {
 	 * @return the address
 	 */
 	int getBaseAddress();
-	
+
 	/**
 	 * Returns the end address of BASIC memory for this platform.
 	 * 

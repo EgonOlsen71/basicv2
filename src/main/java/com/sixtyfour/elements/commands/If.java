@@ -96,7 +96,7 @@ public class If extends AbstractCommand {
 		if (Parser.isInteger(restTerm)) {
 			return "GOTO" + restTerm;
 		}
-		
+
 		return restTerm;
 	}
 

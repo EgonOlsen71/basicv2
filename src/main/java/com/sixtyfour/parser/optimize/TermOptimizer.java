@@ -123,7 +123,7 @@ public class TermOptimizer {
 		if (isConst) {
 			// System.out.println("To replace: " + ret);
 			String ts = ret.eval(machine).toString();
-			//System.out.println(ret+"/"+ts+"/"+ret.getOperator()+"/"+ret.getOperator().isNop());
+			// System.out.println(ret+"/"+ts+"/"+ret.getOperator()+"/"+ret.getOperator().isNop());
 			if (ts.toLowerCase().contains("e")) {
 				return ret;
 			}

@@ -216,10 +216,13 @@ public abstract class AbstractFunction implements Function {
 	public boolean isDeterministic() {
 		return true;
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
 	 */
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.sixtyfour.elements.functions.Function#isExcluded()
 	 */
 	@Override

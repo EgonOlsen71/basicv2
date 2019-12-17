@@ -205,7 +205,7 @@ public class ConstantPropagator {
 		if (!isConstant[0]) {
 			return false;
 		}
-		
+
 		if (left.isTerm()) {
 			Term lt = (Term) left;
 			isConstant[0] &= checkForConstant(config, machine, lt, isConstant);

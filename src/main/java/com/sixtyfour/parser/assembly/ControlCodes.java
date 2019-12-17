@@ -150,7 +150,6 @@ public class ControlCodes {
 		}
 	};
 
-
 	/**
 	 * Returns the PETSCII code for a place holder
 	 * 
@@ -164,7 +163,7 @@ public class ControlCodes {
 		}
 		return -1;
 	}
-	
+
 	/**
 	 * Returns the place holder for a code
 	 * 
@@ -172,12 +171,12 @@ public class ControlCodes {
 	 * @return the place holder or null, if none can be found
 	 */
 	public static String getPlaceHolder(int code) {
-	    for (Entry<String, Integer> en:placeHolder2code.entrySet()) {
-		if (en.getValue()==code) {
-		    return "{"+en.getKey()+"}";
+		for (Entry<String, Integer> en : placeHolder2code.entrySet()) {
+			if (en.getValue() == code) {
+				return "{" + en.getKey() + "}";
+			}
 		}
-	    }
-	    return null;
+		return null;
 	}
 
 }

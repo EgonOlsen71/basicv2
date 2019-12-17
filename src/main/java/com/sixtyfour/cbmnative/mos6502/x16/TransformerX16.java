@@ -120,7 +120,8 @@ public class TransformerX16 extends AbstractTransformer {
 		res.add("FILELEN=$298");
 		res.add("LOGICADDR=$299");
 		res.add("FILEADDR=$84");
-		res.add("LOADEND=$86"); // Is this correct? Should be memuss, but that is gone in the symbol table albeit it's still in the source code!?
+		res.add("LOADEND=$86"); // Is this correct? Should be memuss, but that is gone in the symbol table
+								// albeit it's still in the source code!?
 		res.add("KEYNDX=$29E");
 		res.add("INDEX1=$B4");
 		res.add("VALTYPE=$2D3");

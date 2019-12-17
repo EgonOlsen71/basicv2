@@ -66,10 +66,10 @@ public class PlatformJs implements PlatformProvider {
 	public Generator getGenerator(String orgLine) {
 		return null;
 	}
-	
+
 	@Override
 	public int getBasicMemoryEndAddress() {
-	    return 0;
+		return 0;
 	}
 
 }

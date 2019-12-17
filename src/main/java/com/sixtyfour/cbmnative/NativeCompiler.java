@@ -102,7 +102,7 @@ public class NativeCompiler {
 	};
 
 	private static NativeCompiler instance = new NativeCompiler();
-	private String lastProcessedLine=null;
+	private String lastProcessedLine = null;
 
 	/**
 	 * Returns an instance of the native compiler.
@@ -163,7 +163,7 @@ public class NativeCompiler {
 			throw new RuntimeException("String memory (" + memConfig.getStringEnd()
 					+ ") must not be lower than variable memory (" + memConfig.getVariableStart() + ")!");
 		}
-		
+
 		List<String> nCode = tf.transform(conf, basic.getMachine(), platform, mCode);
 		if (platform.getOptimizer() != null && conf.isNativeLanguageOptimizations()) {
 			nCode = platform.getOptimizer().optimize(conf, platform, nCode, conf.getProgressListener());
@@ -232,7 +232,7 @@ public class NativeCompiler {
 		List<String> mCode = new ArrayList<String>();
 		for (Integer lineNumber : pCode.getLineNumbers()) {
 			Line line = pCode.getLines().get(lineNumber);
-			lastProcessedLine=line.getNumber()+" "+line.getLine();
+			lastProcessedLine = line.getNumber() + " " + line.getLine();
 			mCode.add(lineNumber + ":");
 			boolean condi = false;
 			for (Command cmd : line.getCommands()) {
@@ -268,10 +268,11 @@ public class NativeCompiler {
 
 		Logger.log("Code optimized: " + os + " => " + mCode.size() + " lines!");
 		if (mCode.isEmpty()) {
-			// If it's empty, create an empty program that simply returns without doing much.
+			// If it's empty, create an empty program that simply returns without doing
+			// much.
 			addEndCode(mCode);
 		}
-		
+
 		if (!getLastEntry(mCode).equals("RTS")) {
 			addEndCode(mCode);
 		}
@@ -298,7 +299,7 @@ public class NativeCompiler {
 	public List<String> compileToPseudoCode(CompilerConfig config, Machine machine, Command command) {
 		return compileToPseudoCodeInternal(config, machine, command);
 	}
-	
+
 	/**
 	 * Compiles a single Term into intermediate code.
 	 * 
@@ -832,15 +833,15 @@ public class NativeCompiler {
 	}
 
 	/**
-	 * Returns the last processed line. If something went wrong, this is most likely the line
-	 * that caused it.
+	 * Returns the last processed line. If something went wrong, this is most likely
+	 * the line that caused it.
 	 * 
 	 * @return the line of null, if there is none
 	 */
 	public String getLastProcessedLine() {
-	    return lastProcessedLine;
+		return lastProcessedLine;
 	}
-	
+
 	private List<String> optimize(CompilerConfig config, List<String> code) {
 		return NativeOptimizer.optimizeNative(config, code, config.getProgressListener());
 	}
@@ -937,11 +938,10 @@ public class NativeCompiler {
 		}
 		return mCode;
 	}
-	
+
 	private void addEndCode(List<String> mCode) {
 		mCode.add("JSR END");
 		mCode.add("RTS");
 	}
-
 
 }

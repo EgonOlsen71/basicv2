@@ -73,7 +73,7 @@ public class X16Tests {
 		Assembler assy = initTestEnvironment(vary, false, -1, true);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++xtris16.prg", true);
 	}
-	
+
 	private static void testSignum() throws Exception {
 		System.out.println("\n\ntestSignum");
 		String[] vary = Loader.loadProgram("src/test/resources/x16/signum.bas");

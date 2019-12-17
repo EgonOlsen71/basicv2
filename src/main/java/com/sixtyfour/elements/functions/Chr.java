@@ -25,12 +25,10 @@ public class Chr extends AbstractFunction {
 	public Type getType() {
 		return Type.STRING;
 	}
-	
-	
 
 	/**
-	 * The term optimizer can't handle CHR$ properly, because its result is platform dependant
-	 * so that an eval on the cross compiling machine isn't the best idea.
+	 * The term optimizer can't handle CHR$ properly, because its result is platform
+	 * dependant so that an eval on the cross compiling machine isn't the best idea.
 	 * So we simply ignore it. That shouldn't really matter anyway.
 	 * 
 	 * @see com.sixtyfour.elements.functions.AbstractFunction#isExcluded()
@@ -39,7 +37,7 @@ public class Chr extends AbstractFunction {
 	public boolean isExcluded() {
 		return true;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 

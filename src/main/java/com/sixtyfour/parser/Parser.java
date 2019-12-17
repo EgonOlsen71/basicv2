@@ -110,13 +110,13 @@ public class Parser {
 		Command com = null;
 
 		String linePartWoS = TermEnhancer.removeWhiteSpace(linePart);
-		
+
 		for (Command command : commands) {
-		    	String tmp=linePart;
-		    	if (!command.keepSpaces()) {
-		    	    // If it's save to remove spaces, we'll do that. This handles GO TO 10
-		    	    tmp=linePartWoS;
-		    	}
+			String tmp = linePart;
+			if (!command.keepSpaces()) {
+				// If it's save to remove spaces, we'll do that. This handles GO TO 10
+				tmp = linePartWoS;
+			}
 			if (command.isCommand(tmp)) {
 				com = command.cloneCommand();
 				break;
@@ -520,8 +520,8 @@ public class Parser {
 			} else {
 				sb.append(")*(").append(m).append(")");
 			}
-			if (i>=dimensions.length) {
-			    throw new RuntimeException("Syntax error: Array index count out of range!");
+			if (i >= dimensions.length) {
+				throw new RuntimeException("Syntax error: Array index count out of range!");
 			}
 			m *= dimensions[i] + 1;
 		}
