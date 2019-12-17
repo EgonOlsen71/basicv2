@@ -37,12 +37,11 @@ public interface Command extends Atom {
 	boolean isCommand(String command);
 
 	/**
-	 * Clones a command with a given parameter string.
+	 * Clones a command.
 	 * 
-	 * @param linePart the parameter string
 	 * @return the command
 	 */
-	Command clone(String linePart);
+	Command cloneCommand();
 
 	/**
 	 * Gets the term that represents this command's parameters.

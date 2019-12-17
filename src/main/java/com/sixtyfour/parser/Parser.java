@@ -109,15 +109,22 @@ public class Parser {
 		List<Command> commands = CommandList.getCommands();
 		Command com = null;
 
+		String linePartWoS = TermEnhancer.removeWhiteSpace(linePart);
+		
 		for (Command command : commands) {
-			if (command.isCommand(linePart)) {
-				com = command.clone(linePart);
+		    	String tmp=linePart;
+		    	if (!command.keepSpaces()) {
+		    	    // If it's save to remove spaces, we'll do that. This handles GO TO 10
+		    	    tmp=linePartWoS;
+		    	}
+			if (command.isCommand(tmp)) {
+				com = command.cloneCommand();
 				break;
 			}
 		}
 		if (com == null) {
 			if (linePart.contains("=")) {
-				com = CommandList.getLetCommand().clone("LET" + linePart);
+				com = CommandList.getLetCommand().cloneCommand();
 			}
 		}
 		return com;

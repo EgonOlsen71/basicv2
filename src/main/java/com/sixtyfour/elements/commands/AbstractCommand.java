@@ -54,9 +54,9 @@ public abstract class AbstractCommand implements Command {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see sixtyfour.elements.commands.Command#clone(java.lang.String)
+	 * @see sixtyfour.elements.commands.Command#cloneCommand()
 	 */
-	public Command clone(String linePart) {
+	public Command cloneCommand() {
 		try {
 			AbstractCommand clone = this.getClass().newInstance();
 			clone.name = name;
