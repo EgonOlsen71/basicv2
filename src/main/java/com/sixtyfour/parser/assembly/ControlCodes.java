@@ -3,6 +3,7 @@ package com.sixtyfour.parser.assembly;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * A mapper for converting control codes in the modern cross platform IDE style
@@ -149,16 +150,34 @@ public class ControlCodes {
 		}
 	};
 
-	public static void main(String[] args) {
-		//
-	}
 
+	/**
+	 * Returns the PETSCII code for a place holder
+	 * 
+	 * @param placeHolder the place holder
+	 * @return the code
+	 */
 	public static int getCode(String placeHolder) {
 		placeHolder = placeHolder.replace("{", "").replace("}", "").toLowerCase(Locale.ENGLISH).trim();
 		if (placeHolder2code.containsKey(placeHolder)) {
 			return placeHolder2code.get(placeHolder);
 		}
 		return -1;
+	}
+	
+	/**
+	 * Returns the place holder for a code
+	 * 
+	 * @param code the code
+	 * @return the place holder or null, if none can be found
+	 */
+	public static String getPlaceHolder(int code) {
+	    for (Entry<String, Integer> en:placeHolder2code.entrySet()) {
+		if (en.getValue()==code) {
+		    return "{"+en.getKey()+"}";
+		}
+	    }
+	    return null;
 	}
 
 }
