@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import com.sixtyfour.extensions.x16.X16Extensions;
 import com.sixtyfour.parser.assembly.ControlCodes;
 
 /**
@@ -96,25 +97,8 @@ public class UnTokenizer {
 			this.put(202, "MID$");
 			this.put(203, "GO");
 			
-			// X16-Extensions go here...this isn't really a good solution, it
-			// would be better to make the extension itself fill this, but
-			// I can't be bothered right now...
-			this.put(0xCE86, "SCREEN");
-			this.put(0xCE87, "PSET");
-			this.put(0xCE8A, "RECT");
-			this.put(0xCE88, "LINE");
-			this.put(0xCE89, "FRAME");
-			this.put(0xCE8B, "CHAR");
-			this.put(0xCE8C, "MOUSE");
-			this.put(0xCE8E, "MX");
-			this.put(0xCE8F, "MY");
-			this.put(0xCE90, "MB");
-			this.put(0xCE84, "VPOKE");
-			this.put(0xCE8D, "VPEEK");
-			this.put(0xCE81, "DOS");
-			this.put(0xCE80, "MON");
-			this.put(0xCE82, "OLD");
-			this.put(0xCE83, "GEOS");
+			// Add X16-Tokens to the mix...
+			this.putAll(X16Extensions.getTokens());
 		}
 	};
 
