@@ -123,6 +123,7 @@ public class MoSpeedCL {
 
 		PlatformProvider platform = new Platform64();
 		String appendix = ".prg";
+		boolean multiByteTokens=false;
 		if (cmds.containsKey("platform")) {
 			String pl = cmds.get("platform");
 			if (pl.equalsIgnoreCase("c64")) {
@@ -135,6 +136,7 @@ public class MoSpeedCL {
 				platform = new PlatformX16();
 				Basic.registerExtension(new X16Extensions());
 				cfg.setNonDecimalNumbersAware(true);
+				multiByteTokens=true;
 				appendix = ".prg";
 			} else if (pl.equalsIgnoreCase("ps")) {
 				platform = new PlatformPs();
@@ -192,7 +194,7 @@ public class MoSpeedCL {
 				System.out.println("Looks like a PRG file, trying to convert it...");
 				byte[] data = Loader.loadBlob(srcFile);
 				UnTokenizer unto = new UnTokenizer();
-				src = unto.getText(data).toArray(new String[0]);
+				src = unto.getText(data, multiByteTokens).toArray(new String[0]);
 				System.out.println("PRG file converted into ASCII, proceeding!");
 				srcFile = srcFile.replace(".prg", ".bas");
 			} catch (Exception e) {

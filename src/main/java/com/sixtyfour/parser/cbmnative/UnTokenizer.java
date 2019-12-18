@@ -10,7 +10,7 @@ import com.sixtyfour.parser.assembly.ControlCodes;
 
 /**
  * Converts files in .PRG format back into ASCII by replacing the BASIC tokens
- * and such. Supports C64 and VIC 20 for now, not the X16's new commands.
+ * and such. Supports C64 and VIC 20 BASIC V2 and the X16's extensions.
  * 
  * @author EgonOlsen71
  */
@@ -95,6 +95,26 @@ public class UnTokenizer {
 			this.put(201, "RIGHT$");
 			this.put(202, "MID$");
 			this.put(203, "GO");
+			
+			// X16-Extensions go here...this isn't really a good solution, it
+			// would be better to make the extension itself fill this, but
+			// I can't be bothered right now...
+			this.put(0xCE86, "SCREEN");
+			this.put(0xCE87, "PSET");
+			this.put(0xCE8A, "RECT");
+			this.put(0xCE88, "LINE");
+			this.put(0xCE89, "FRAME");
+			this.put(0xCE8B, "CHAR");
+			this.put(0xCE8C, "MOUSE");
+			this.put(0xCE8E, "MX");
+			this.put(0xCE8F, "MY");
+			this.put(0xCE90, "MB");
+			this.put(0xCE84, "VPOKE");
+			this.put(0xCE8D, "VPEEK");
+			this.put(0xCE81, "DOS");
+			this.put(0xCE80, "MON");
+			this.put(0xCE82, "OLD");
+			this.put(0xCE83, "GEOS");
 		}
 	};
 
@@ -108,7 +128,7 @@ public class UnTokenizer {
 	 * @param program the file in binary
 	 * @return the ascii version of it
 	 */
-	public List<String> getText(byte[] program) {
+	public List<String> getText(byte[] program, boolean multiByte) {
 		List<String> lines = new ArrayList<>();
 		StringBuilder line = new StringBuilder();
 
@@ -134,14 +154,18 @@ public class UnTokenizer {
 						if (c == '"') {
 							inString = !inString;
 						}
-						if (b < 128 || inString || b > 203) {
+						if (b < 128 || inString || (b > 203 && (!multiByte || b!=206))) {
 							if (inString && isSpecialChar(c)) {
 								line.append(ControlCodes.getPlaceHolder(b));
 							} else {
 								line.append(convertChar(c));
 							}
 						} else {
-							String token = TOKENS.get(b);
+						    	String token = TOKENS.get(b);
+						    	if (multiByte && b==206) {
+						    	    int mb = b*256+(program[(addr++) - start] & 0xff);
+						    	    token=TOKENS.get(mb);
+						    	}
 							if (token == null) {
 								throw new RuntimeException("Unknown token: " + b);
 							}

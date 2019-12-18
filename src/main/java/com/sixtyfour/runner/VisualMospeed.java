@@ -394,7 +394,7 @@ public class VisualMospeed {
 				Logger.log("Looks like a PRG file, trying to convert it...");
 				byte[] data = Loader.loadBlob(srcFile);
 				UnTokenizer unto = new UnTokenizer();
-				code = unto.getText(data).toArray(new String[0]);
+				code = unto.getText(data, true).toArray(new String[0]);
 				Logger.log("PRG file converted into ASCII, proceeding!");
 				srcFile = srcFile.replace(".prg", ".bas");
 			} catch (Exception e) {
