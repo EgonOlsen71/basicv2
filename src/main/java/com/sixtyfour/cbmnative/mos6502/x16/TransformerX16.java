@@ -86,75 +86,16 @@ public class TransformerX16 extends AbstractTransformer {
 
 	@Override
 	protected void addMemoryLocations(List<String> res) {
-		res.add("ARGSGN=$E2");
-		res.add("ARGLO=$E1");
-		res.add("ARGMO=$E0");
-		res.add("ARGMOH=$DF");
-		res.add("ARGHO=$DE");
-		res.add("ARGEXP=$DD");
-		res.add("FACSGN=$DB");
-		res.add("FACLO=$DA");
-		res.add("FACMO=$D9");
-		res.add("FACMOH=$D8");
-		res.add("FACHO=$D7");
-		res.add("FACEXP=$D6");
-		res.add("FACOV=$E4");
-		res.add("OLDOV=$5F"); // Should be free!?
-		res.add("ARISGN=$E3");
-		res.add("FAC=$D6");
-		res.add("RESLO=$BB");
-		res.add("RESMO=$BA");
-		res.add("RESMOH=$B9");
-		res.add("RESHO=$B8");
-		res.add("RESOV=$BC");
-		res.add("RESHOP=$E3");
-		res.add("FACHOP=$5F"); // Should be free!?
-		res.add("ITERCNT=$DC");
-		res.add("IOCHANNEL=$2D9");
-		res.add("BASICSTART=$BD");
-		res.add("BASICEND=$2E5");
-		res.add("STATUS=$287");
-		res.add("VERCHK=$2D0");
-		res.add("SECADDR=$29A");
-		res.add("DEVICENUM=$29B");
-		res.add("FILELEN=$298");
-		res.add("LOGICADDR=$299");
-		res.add("FILEADDR=$84");
-		res.add("LOADEND=$86"); // Is this correct? Should be memuss, but that is gone in the symbol table
-								// albeit it's still in the source code!?
-		res.add("KEYNDX=$29E");
-		res.add("INDEX1=$B4");
-		res.add("VALTYPE=$2D3");
-		res.add("LOWDS=$D2");
-		res.add("TIMEADDR=$292");
-		res.add("BANKGEOS=$3");
-		res.add("R0=$02");
-		res.add("R0L=$02");
-		res.add("R0H=$03");
-		res.add("R1=$04");
-		res.add("R1L=$04");
-		res.add("R1H=$05");
-		res.add("R2=$06");
-		res.add("R2L=$06");
-		res.add("R2H=$07");
-		res.add("R3=$08");
-		res.add("R3L=$08");
-		res.add("R3H=$09");
-		res.add("R4=$0A");
-		res.add("R4L=$0A");
-		res.add("R4H=$0B");
-		res.add("R5=$0C");
-		res.add("R5L=$0C");
-		res.add("R5H=$0D");
-		res.add("R11=$18");
-		res.add("R11L=$18");
-		res.add("R11H=$19");
-		res.add("R14=$1E");
-		res.add("R14L=$1E");
-		res.add("R14H=$1F");
-		res.add("R15=$20");
-		res.add("R15L=$20");
-		res.add("R15H=$21");
+		Logger.log("Adding additional runtime labels...");
+		String[] labels = Loader.loadProgram(TransformerX16.class.getResourceAsStream("/rommap/memloc-x16.map"));
+		for (String label : labels) {
+			int pos = label.indexOf(";");
+			if (pos != -1) {
+				label = label.substring(0, pos);
+			}
+			label = label.trim();
+			res.add(label);
+		}
 	}
 
 }

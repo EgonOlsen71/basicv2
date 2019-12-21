@@ -91,8 +91,9 @@ public class CallMapper {
 					match = closest;
 					add = dif;
 				} else {
-					Logger.log("!!! Failed to match call to " + addr + " / " + label);
-					continue;
+					String msg="!!! Failed to match call to " + addr + " / " + label;
+					Logger.log(msg);
+					throw new RuntimeException(msg);
 				}
 			}
 			String newAddr = x16r.get(match);
@@ -140,7 +141,9 @@ public class CallMapper {
 				}
 				String addr = x16r.get("." + parts[0].trim().toLowerCase(Locale.ENGLISH));
 				if (addr == null) {
-					Logger.log("!!! Failed to match additional address " + parts[0]);
+					String msg="!!! Failed to match additional address " + parts[0];
+					Logger.log(msg);
+					throw new RuntimeException(msg);
 				}
 				add += Integer.parseInt(addr, 16);
 				String val = "$" + Integer.toHexString(add).toUpperCase(Locale.ENGLISH);
