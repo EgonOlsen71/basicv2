@@ -16,6 +16,7 @@ import com.sixtyfour.cbmnative.PlatformProvider;
 import com.sixtyfour.cbmnative.Transformer;
 import com.sixtyfour.cbmnative.mos6502.generators.GeneratorList;
 import com.sixtyfour.cbmnative.mos6502.util.Converter;
+import com.sixtyfour.cbmnative.mos6502.x16.TransformerX16;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.elements.Variable;
@@ -62,47 +63,20 @@ public abstract class AbstractTransformer implements Transformer {
 		}
 	}
 
+	protected void addLabels(List<String> res, String[] labels) {
+		for (String label : labels) {
+			int pos = label.indexOf(";");
+			if (pos != -1) {
+				label = label.substring(0, pos);
+			}
+			label = label.trim();
+			res.add(label);
+		}
+	}
+	
 	protected void addMemoryLocations(List<String> res) {
-		res.add("ARGSGN=$6E");
-		res.add("ARGLO=$6D");
-		res.add("ARGMO=$6C");
-		res.add("ARGMOH=$6B");
-		res.add("ARGHO=$6A");
-		res.add("ARGEXP=$69");
-		res.add("FACSGN=$66");
-		res.add("FACLO=$65");
-		res.add("FACMO=$64");
-		res.add("FACMOH=$63");
-		res.add("FACHO=$62");
-		res.add("FACEXP=$61");
-		res.add("FACOV=$70");
-		res.add("OLDOV=$56");
-		res.add("ARISGN=$6F");
-		res.add("FAC=$61");
-		res.add("RESLO=$29");
-		res.add("RESMO=$28");
-		res.add("RESMOH=$27");
-		res.add("RESHO=$26");
-		res.add("RESOV=$2A");
-		res.add("RESHOP=$6F");
-		res.add("FACHOP=$56");
-		res.add("ITERCNT=$67");
-		res.add("IOCHANNEL=$13");
-		res.add("BASICSTART=$2B");
-		res.add("BASICEND=$37");
-		res.add("STATUS=$90");
-		res.add("VERCHK=$93");
-		res.add("SECADDR=$B9");
-		res.add("DEVICENUM=$BA");
-		res.add("FILELEN=$B7");
-		res.add("LOGICADDR=$B8");
-		res.add("FILEADDR=$BB");
-		res.add("LOADEND=$C3");
-		res.add("KEYNDX=$C6");
-		res.add("INDEX1=$22");
-		res.add("VALTYPE=$0D");
-		res.add("LOWDS=$5D");
-		res.add("TIMEADDR=$A0");
+		String[] labels = Loader.loadProgram(TransformerX16.class.getResourceAsStream("/rommap/memloc-c64.map"));
+		addLabels(res, labels);
 	}
 
 	protected List<String> createDatas(CompilerConfig config, Machine machine) {

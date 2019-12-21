@@ -88,14 +88,6 @@ public class TransformerX16 extends AbstractTransformer {
 	protected void addMemoryLocations(List<String> res) {
 		Logger.log("Adding additional runtime labels...");
 		String[] labels = Loader.loadProgram(TransformerX16.class.getResourceAsStream("/rommap/memloc-x16.map"));
-		for (String label : labels) {
-			int pos = label.indexOf(";");
-			if (pos != -1) {
-				label = label.substring(0, pos);
-			}
-			label = label.trim();
-			res.add(label);
-		}
+		addLabels(res, labels);
 	}
-
 }
