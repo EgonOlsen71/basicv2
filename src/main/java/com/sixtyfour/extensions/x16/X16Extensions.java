@@ -37,129 +37,109 @@ import com.sixtyfour.system.Machine;
  */
 public class X16Extensions implements BasicExtension {
 
-    private final static List<Command> COMMANDS = Collections.unmodifiableList(new ArrayList<Command>() {
-	private static final long serialVersionUID = 1L;
-	{
-	    this.add(new Vpoke());
-	    this.add(new Dos());
-	    this.add(new Mon());
-	    this.add(new Vload());
-	    this.add(new Xload());
-	    this.add(new Geos());
-	    this.add(new Old());
-	    this.add(new Screen());
-	    this.add(new Mouse());
-	    this.add(new Pset());
-	    this.add(new Line());
-	    this.add(new Frame());
-	    this.add(new Rect());
-	    this.add(new Char());
+	private final static List<Command> COMMANDS = Collections.unmodifiableList(new ArrayList<Command>() {
+		private static final long serialVersionUID = 1L;
+		{
+			this.add(new Vpoke());
+			this.add(new Dos());
+			this.add(new Mon());
+			this.add(new Vload());
+			this.add(new Xload());
+			this.add(new Geos());
+			this.add(new Old());
+			this.add(new Screen());
+			this.add(new Mouse());
+			this.add(new Pset());
+			this.add(new Line());
+			this.add(new Frame());
+			this.add(new Rect());
+			this.add(new Char());
+		}
+	});
+
+	private final static List<Function> FUNCTIONS = Collections.unmodifiableList(new ArrayList<Function>() {
+		private static final long serialVersionUID = 1L;
+		{
+			this.add(new Vpeek());
+		}
+	});
+
+	private final static List<Variable> VARS = Collections.unmodifiableList(new ArrayList<Variable>() {
+		private static final long serialVersionUID = 1L;
+		{
+			this.add(new Mx());
+			this.add(new My());
+			this.add(new Mb());
+		}
+	});
+
+	@Override
+	public List<Command> getCommands() {
+		return COMMANDS;
 	}
-    });
 
-    private final static List<Function> FUNCTIONS = Collections.unmodifiableList(new ArrayList<Function>() {
-	private static final long serialVersionUID = 1L;
-	{
-	    this.add(new Vpeek());
+	@Override
+	public List<Function> getFunctions() {
+		return FUNCTIONS;
 	}
-    });
 
-    private final static List<Variable> VARS = Collections.unmodifiableList(new ArrayList<Variable>() {
-	private static final long serialVersionUID = 1L;
-	{
-	    this.add(new Mx());
-	    this.add(new My());
-	    this.add(new Mb());
+	@Override
+	public void reset(Machine machine) {
+		//
 	}
-    });
 
-    @Override
-    public List<Command> getCommands() {
-	return COMMANDS;
-    }
-
-    @Override
-    public List<Function> getFunctions() {
-	return FUNCTIONS;
-    }
-
-    @Override
-    public void reset(Machine machine) {
-	//
-    }
-
-    @Override
-    public List<String> getAdditionalIncludes() {
-	return new ArrayList<String>() {
-	    private static final long serialVersionUID = 1L;
-	    {
-		this.add("x16");
-	    }
-	};
-    }
-
-    @Override
-    public Map<String, Integer> getLabel2Constant() {
-	return new HashMap<String, Integer>() {
-	    private static final long serialVersionUID = 1L;
-	    {
-		this.put("VERAREG", Integer.parseInt("9F20", 16));
-		this.put("VERAHI", Integer.parseInt("9F22", 16));
-		this.put("VERAMID", Integer.parseInt("9F21", 16));
-		this.put("VERALO", Integer.parseInt("9F20", 16));
-		this.put("VERADAT", Integer.parseInt("9F23", 16));
-		this.put("VERABNK", Integer.parseInt("9F61", 16));
-		this.put("ROMSELECT", Integer.parseInt("9F60", 16));
-	    }
-	};
-    }
-
-    @Override
-    public List<Variable> getSystemVariables() {
-	return VARS;
-    }
-
-    @Override
-    public boolean adjustMemoryConfig(Machine machine, MemoryConfig config) {
-	if (config.getStringEnd() != -1) {
-	    // if it has been set from the outside, then don't modify it
-	    return false;
+	@Override
+	public List<String> getAdditionalIncludes() {
+		return new ArrayList<String>() {
+			private static final long serialVersionUID = 1L;
+			{
+				this.add("x16");
+			}
+		};
 	}
-	List<Command> coms = machine.getCommandList();
-	for (Command com : coms) {
-	    // GEOS graphics commands write into BASIC memory (at least in r34).
-	    // So we have
-	    // to limit it here.
-	    if (com.isCommand("LINE") || com.isCommand("PSET") || com.isCommand("CHAR") || com.isCommand("RECT")
-		    || com.isCommand("FRAME")) {
-		config.setStringEnd(0x8000);
-		return true;
-	    }
-	}
-	return false;
-    }
 
-    public static Map<Integer, String> getTokens() {
-	return new HashMap<Integer, String>() {
-	    private static final long serialVersionUID = 1L;
-	    {
-		this.put(0xCE86, "SCREEN");
-		this.put(0xCE87, "PSET");
-		this.put(0xCE8A, "RECT");
-		this.put(0xCE88, "LINE");
-		this.put(0xCE89, "FRAME");
-		this.put(0xCE8B, "CHAR");
-		this.put(0xCE8C, "MOUSE");
-		this.put(0xCE8E, "MX");
-		this.put(0xCE8F, "MY");
-		this.put(0xCE90, "MB");
-		this.put(0xCE84, "VPOKE");
-		this.put(0xCE8D, "VPEEK");
-		this.put(0xCE81, "DOS");
-		this.put(0xCE80, "MON");
-		this.put(0xCE82, "OLD");
-		this.put(0xCE83, "GEOS");
-	    }
-	};
-    }
+	@Override
+	public Map<String, Integer> getLabel2Constant() {
+		return new HashMap<String, Integer>() {
+			private static final long serialVersionUID = 1L;
+			{
+				this.put("VERAREG", Integer.parseInt("9F20", 16));
+				this.put("VERAHI", Integer.parseInt("9F22", 16));
+				this.put("VERAMID", Integer.parseInt("9F21", 16));
+				this.put("VERALO", Integer.parseInt("9F20", 16));
+				this.put("VERADAT", Integer.parseInt("9F23", 16));
+				this.put("VERABNK", Integer.parseInt("9F61", 16));
+				this.put("ROMSELECT", Integer.parseInt("9F60", 16));
+			}
+		};
+	}
+
+	@Override
+	public List<Variable> getSystemVariables() {
+		return VARS;
+	}
+
+	public static Map<Integer, String> getTokens() {
+		return new HashMap<Integer, String>() {
+			private static final long serialVersionUID = 1L;
+			{
+				this.put(0xCE86, "SCREEN");
+				this.put(0xCE87, "PSET");
+				this.put(0xCE8A, "RECT");
+				this.put(0xCE88, "LINE");
+				this.put(0xCE89, "FRAME");
+				this.put(0xCE8B, "CHAR");
+				this.put(0xCE8C, "MOUSE");
+				this.put(0xCE8E, "MX");
+				this.put(0xCE8F, "MY");
+				this.put(0xCE90, "MB");
+				this.put(0xCE84, "VPOKE");
+				this.put(0xCE8D, "VPEEK");
+				this.put(0xCE81, "DOS");
+				this.put(0xCE80, "MON");
+				this.put(0xCE82, "OLD");
+				this.put(0xCE83, "GEOS");
+			}
+		};
+	}
 }
