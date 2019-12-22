@@ -51,8 +51,15 @@ public class MapLoader {
 		String[] lines = Loader.loadProgram(file);
 		for (String line : lines) {
 			String[] parts = line.split("=");
+			if (parts.length<2) {
+				continue;
+			}
 			String label = parts[0].trim();
 			String addr = parts[1].trim();
+			int pos=addr.indexOf(";");
+			if (pos!=-1) {
+				addr=addr.substring(0, pos).trim();
+			}
 			if (addr.startsWith("$")) {
 				addr = addr.substring(1);
 			}

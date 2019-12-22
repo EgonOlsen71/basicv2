@@ -29,8 +29,8 @@ DOSCALL		LDA G_REG
 
 SNPNOOVDC	LDX G_REG
 			LDY G_REG+1
-			STX 34
-			STY 35
+			STX INDEX1
+			STY INDEX1+1
 			JMP DOS		
 ;###################################
 DOSSTAT		LDA #0
@@ -51,7 +51,7 @@ PLOT		JSR EXTRACTPOINT
 			SEC
 			SEI
 			JSR JSRFAR
-			.WORD DRAWPOINT
+			.WORD _DRAWPOINT
 			.BYTE BANKGEOS
 			CLI
 			RTS
@@ -243,7 +243,7 @@ EXTRACTCOLOR
 			TAX				; color in X as well...needed?
 SETCOLOR	SEI		
 			JSR JSRFAR
-			.WORD _SETCOLOR
+			.WORD SET_COLOR
 			.BYTE BANKGEOS
 			CLI
 			RTS

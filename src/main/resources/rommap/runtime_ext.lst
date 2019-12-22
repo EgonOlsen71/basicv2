@@ -5,8 +5,8 @@
 *fetch
 *fetvec
 *cscreen+3
-*DrawPoint
-*_SetColor
+*_DrawPoint
+*set_color
 *DrawLine
 *FrameRectangle
 *Rectangle

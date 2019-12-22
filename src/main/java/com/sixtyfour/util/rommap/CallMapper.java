@@ -38,6 +38,10 @@ public class CallMapper {
 			x16 = MapLoader.getSymbolMapping(CallMapper.class.getResourceAsStream("/rommap/rom-x16.txt"));
 		}
 		Map<String, String> calls = MapLoader.getRomCalls(CallMapper.class.getResourceAsStream("/rommap/runtime.map"));
+		Map<String, String> fpLibCalls = MapLoader
+				.getRomCalls(CallMapper.class.getResourceAsStream("/rommap/fplib-x16.txt"));
+
+		// fpLibCalls.keySet().forEach(p -> System.out.println(p));
 
 		Map<String, String> x16r = new HashMap<>();
 		List<String> redirs = new ArrayList<>();
@@ -91,7 +95,7 @@ public class CallMapper {
 					match = closest;
 					add = dif;
 				} else {
-					String msg="!!! Failed to match call to " + addr + " / " + label;
+					String msg = "!!! Failed to match call to " + addr + " / " + label;
 					Logger.log(msg);
 					throw new RuntimeException(msg);
 				}
@@ -109,6 +113,18 @@ public class CallMapper {
 					Logger.log("Call to " + addr + " / " + label + " matches to " + match + " / " + newAddr + " + "
 							+ Integer.toHexString(dif) + " in target rom!");
 				}
+
+				String poMatch = match.replace(".", "");
+				if (fpLibCalls.containsKey(poMatch)) {
+					newAddr = fpLibCalls.get(poMatch);
+					dif = 0;
+					if (verbose) {
+						Logger.log(
+								"However, it's also part of the fpLib, so we use that instead and ignore the delta anyway: "
+										+ newAddr);
+					}
+				}
+
 				mappedCalls.put(uLabel,
 						("$" + Integer.toHexString(Integer.parseInt(newAddr, 16) + dif)).toUpperCase(Locale.ENGLISH));
 			} else {
@@ -116,7 +132,21 @@ public class CallMapper {
 					Logger.log("Call to " + addr + " / " + label + " matches to " + match + " / " + newAddr
 							+ " in target rom!");
 				}
+
+				String poMatch = match.replace(".", "");
+				if (fpLibCalls.containsKey(poMatch)) {
+					newAddr = fpLibCalls.get(poMatch);
+					if (verbose) {
+						Logger.log("However, it's also part of the fpLib, so we use that instead: " + newAddr);
+					}
+				}
 				mappedCalls.put(uLabel, "$" + newAddr.toUpperCase(Locale.ENGLISH));
+			}
+
+			if (isKernalCall(newAddr)) {
+				Logger.log("WARNING: Call to " + match + " / " + newAddr
+						+ " most likely requires a JSRFAR, but doesn't use one!");
+				throw new RuntimeException("JSRFAR call missing!");
 			}
 
 			if (isKernalCall) {
@@ -141,7 +171,7 @@ public class CallMapper {
 				}
 				String addr = x16r.get("." + parts[0].trim().toLowerCase(Locale.ENGLISH));
 				if (addr == null) {
-					String msg="!!! Failed to match additional address " + parts[0];
+					String msg = "!!! Failed to match additional address " + parts[0];
 					Logger.log(msg);
 					throw new RuntimeException(msg);
 				}
@@ -176,11 +206,11 @@ public class CallMapper {
 
 	private static boolean isKernalCall(String addr) {
 		int addri = Integer.parseInt(addr, 16);
-		return addri >= 0xE500 && addri < 0xFF81;
+		return addri >= 0xE500 && addri < 0xFC00;
 	}
 
 	private static boolean isKernalCall(int addri) {
-		return addri >= 0xE500 && addri < 0xFF81;
+		return addri >= 0xE500 && addri < 0xFC00;
 	}
 
 }
