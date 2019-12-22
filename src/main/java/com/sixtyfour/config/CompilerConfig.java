@@ -26,6 +26,7 @@ public class CompilerConfig {
 	private boolean shiftOptimizations = true;
 	private boolean nonDecimalNumbersAware = false;
 	private boolean convertStringToLower = false;
+	private boolean flipCasing = false;
 	private boolean aggressiveFloatOptimizations = true;
 	private boolean enhancedInstructionSet = false;
 	private String symbolTable = null;
@@ -221,6 +222,14 @@ public class CompilerConfig {
 
 	public void setEnhancedInstructionSet(boolean enhancedInstructionSet) {
 		this.enhancedInstructionSet = enhancedInstructionSet;
+	}
+
+	public boolean isFlipCasing() {
+		return flipCasing;
+	}
+
+	public void setFlipCasing(boolean flipCasing) {
+		this.flipCasing = flipCasing;
 	}
 
 }

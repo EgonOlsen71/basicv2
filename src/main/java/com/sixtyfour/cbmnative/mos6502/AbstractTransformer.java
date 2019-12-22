@@ -132,8 +132,8 @@ public abstract class AbstractTransformer implements Transformer {
 				ret.add(".BYTE 2");
 				ret.add(".BYTE " + obj.toString().length());
 				String ds = obj.toString();
-				if (config.isConvertStringToLower()) {
-					ds = Converter.convertCase(ds);
+				if (config.isConvertStringToLower() || config.isFlipCasing()) {
+					ds = Converter.convertCase(ds, !config.isFlipCasing());
 				}
 				ret.add(".STRG \"" + ds + "\"");
 				cnt += 2 + obj.toString().length();
@@ -258,8 +258,8 @@ public abstract class AbstractTransformer implements Transformer {
 							consts.add(label + "\t" + ".REAL " + name);
 						} else if (type == Type.STRING) {
 							consts.add(label + "\t" + ".BYTE " + name.length());
-							if (config.isConvertStringToLower()) {
-								name = Converter.convertCase(name);
+							if (config.isConvertStringToLower() || config.isFlipCasing()) {
+								name = Converter.convertCase(name, !config.isFlipCasing());
 							}
 							consts.add("\t" + ".STRG \"" + name + "\"");
 						}
