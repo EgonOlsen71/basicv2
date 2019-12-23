@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -127,6 +128,7 @@ public class Assembler implements ProgramExecutor {
 		prg.setLabelsContainer(lcon);
 		boolean initial = true;
 		Set<Integer> usedAddrs = new HashSet<>();
+		boolean skipMode = false;
 
 		for (String line : code) {
 			String oLine = line;
@@ -138,6 +140,31 @@ public class Assembler implements ProgramExecutor {
 			}
 
 			line = AssemblyParser.truncateComments(line);
+			String lline = line.toLowerCase(Locale.ENGLISH);
+
+			if (lline.contains("<if ")) {
+				String cond = line.substring(4);
+				int pos = cond.indexOf(">");
+				if (pos == -1) {
+					continue;
+				}
+				cond = cond.substring(0, pos);
+				cond = cond.trim();
+				if (cond.startsWith("!")) {
+					skipMode = ccon.get(cond.substring(1)) != null;
+					continue;
+				} else {
+					skipMode = ccon.get(cond) == null;
+					continue;
+				}
+			}
+
+			if (skipMode) {
+				if (lline.contains("</if>")) {
+					skipMode = false;
+				}
+				continue;
+			}
 
 			if (line.length() == 0) {
 				continue;

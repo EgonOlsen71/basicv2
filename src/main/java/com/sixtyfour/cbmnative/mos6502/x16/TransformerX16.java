@@ -76,6 +76,7 @@ public class TransformerX16 extends AbstractTransformer {
 			res.add("TMP_REG=116");
 			res.add("G_REG=121");
 		}
+		res.add("TMP_BANK=95");
 		res.add("*=" + startAddress);
 		res.add("TSX");
 		res.add("STX SP_SAVE");

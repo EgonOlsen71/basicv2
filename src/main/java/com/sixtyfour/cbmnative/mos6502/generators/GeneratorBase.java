@@ -39,9 +39,15 @@ public abstract class GeneratorBase implements Generator {
 			nCode.add("JSR FACMEM");
 		} else if (source.getAddress().equals("VAR_TI")) {
 			nCode.add("SEI");
+			nCode.add("<IF X16>");
+			nCode.add("JSR VARBANKON");
+			nCode.add("</IF>");
 			nCode.add("LDY TIMEADDR");
 			nCode.add("LDX TIMEADDR+1");
 			nCode.add("LDA TIMEADDR+2");
+			nCode.add("<IF X16>");
+			nCode.add("JSR VARBANKOFF");
+			nCode.add("</IF>");
 			nCode.add("CLI");
 			nCode.add("SEC");
 			nCode.add("JSR COPYTIME");

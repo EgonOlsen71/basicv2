@@ -311,3 +311,17 @@ LOADX16		LDA #<C_REG		; read target address
 			JMP FILENOTFOUND
 LOADX16OK	RTS
 ;###################################
+VARBANKON	PHA
+			LDA RAMSELECT
+			STA TMP_BANK
+			LDA #0
+			STA RAMSELECT
+			PLA
+			RTS
+;###################################
+VARBANKOFF	PHA
+			LDA TMP_BANK
+			STA RAMSELECT
+			PLA
+			RTS
+;###################################

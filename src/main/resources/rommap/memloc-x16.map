@@ -66,3 +66,4 @@ R14H=$1F
 R15=$20
 R15L=$20
 R15H=$21
+X16=1	; Flag for X16 "mode"
