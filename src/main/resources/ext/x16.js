@@ -48,3 +48,11 @@ this.FRAME = function() {
 this.RECT = function() {
 	console.log("[RECT not supported for JS, call ignored]");
 }
+
+this.JOY = function() {
+	console.log("[JOY not supported for JS, call ignored]");
+}
+
+this.COLOR = function() {
+	console.log("[COLOR not supported for JS, call ignored]");
+}

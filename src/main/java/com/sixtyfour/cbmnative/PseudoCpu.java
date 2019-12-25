@@ -902,6 +902,12 @@ public class PseudoCpu {
 		case "VPEEK":
 			vpeek(parts);
 			return;
+		case "JOY":
+			// Do nothing...
+			return;
+		case "COLOR":
+			// Do nothing...
+			return;
 		case "DOSCALL":
 			// Do nothing...
 			return;

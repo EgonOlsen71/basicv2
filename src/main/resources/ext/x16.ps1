@@ -49,3 +49,11 @@ function FRAME{
 function RECT{
 	"[RECT not supported for PS, call ignored: "+$global:A_REG+"]"
 }
+
+function JOY{
+	"[JOY not supported for PS, call ignored: "+$global:X_REG+"]"
+}
+
+function COLOR{
+	"[COLOR not supported for PS, call ignored: "+$global:A_REG+"]"
+}
