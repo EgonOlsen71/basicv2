@@ -70,12 +70,10 @@ FRAME		JSR EXTRACTPOINTS
 			JSR GRAPH_draw_rect
 			RTS
 ;###################################
-PRINTCHAR	JSR EXTRACTPOINT
-			STA R1H
-			LDA R3L
-			STA R11L
-			LDA R3H
-			STA R11H
+PRINTCHAR	STZ R0L
+			STZ R0H
+			JSR GRAPH_set_font
+			JSR EXTRACTPOINT
 			LDA #<C_REG
 			LDY #>C_REG
 			JSR REALFAC
@@ -89,37 +87,23 @@ PRINTCHAR	JSR EXTRACTPOINT
 			STA TMP_ZP+1
 			LDY #0
 			LDA (TMP_ZP),Y
-			STA R14L 			;Length
+			STA TMP_REG 			;Length
 			INC B_REG
 			BNE CHARSKIP
 			INC B_REG+1
 CHARSKIP				
 			LDA B_REG
-			STA R15L 			;Pointer lo
+			STA TMP_ZP
 			LDA B_REG+1
-			STA R15H 			;Pointer hi
-			
-			SEI
-			JSR JSRFAR
-			.WORD USESYSTEMFONT
-			.BYTE BANKGEOS
-			LDA #27 			;Plaintext
-			JSR JSRFAR
-			.WORD PUTCHAR
-			.BYTE BANKGEOS
-			CLI
+			STA TMP_ZP+1			;Pointer hi
 			LDY #0
 COPYCHAR
-			LDA (R15),Y
 			PHY
-			SEI
-			JSR JSRFAR
-			.WORD PUTCHAR
-			.BYTE BANKGEOS
-			CLI
+			LDA (TMP_ZP),Y
+			JSR GRAPH_put_char
 			PLY
 			INY
-			CPY R14L
+			CPY TMP_REG
 			BNE COPYCHAR
 			JMP FREFAC
 ;###################################
@@ -303,7 +287,7 @@ SCREEN		JSR INITSINGLEPAR
 MOUSEMODE	JSR INITSINGLEPAR
 			TXA
 			LDX #0
-			JMP $FF09		; because "mouse" appears twice in the symbol table, we can't rely on it and have to call this directly
+			JMP mouse_config		; because "mouse" appears twice in the symbol table, we can't rely on it and have to call this directly
 ;###################################
 VLOAD		LDA #0			; set secondary address to 0
 			STA SECADDR
@@ -373,4 +357,24 @@ VARBANKOFF	PHA
 			STA RAMSELECT
 			PLA
 			RTS
+;###################################
+JOY 		LDA #<Y_REG
+			LDY #>Y_REG
+			JSR REALFAC
+			JSR FACWORD
+			TYA
+			TAX
+			AND #$FC
+			BNE VALERRJOY
+			JSR joystick_scan
+			DEX
+			JSR joystick_get
+			EOR #$FF
+			TAY
+			LDA #0
+			JSR INTFAC
+			LDX #<X_REG
+			LDY #>X_REG
+			JMP FACMEM
+VALERRJOY   JMP ILLEGALQUANTITY
 ;###################################

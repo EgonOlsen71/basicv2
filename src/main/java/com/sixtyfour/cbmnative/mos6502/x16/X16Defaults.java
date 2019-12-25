@@ -14,15 +14,18 @@ public interface X16Defaults {
 		String addr = source.getAddress();
 		boolean add = false;
 		if (addr.equals("VAR_MX")) {
-			nCode.add("LDY MOUSEX");
-			nCode.add("LDA MOUSEX+1");
+			addMouseGet(nCode);
+			nCode.add("LDY MOUSE_STORE");
+			nCode.add("LDA MOUSE_STORE+1");
 			add = true;
 		} else if (addr.equals("VAR_MY")) {
-			nCode.add("LDY MOUSEY");
-			nCode.add("LDA MOUSEY+1");
+			addMouseGet(nCode);
+			nCode.add("LDY MOUSE_STORE+2");
+			nCode.add("LDA MOUSE_STORE+3");
 			add = true;
 		} else if (addr.equals("VAR_MB")) {
-			nCode.add("LDY MOUSEBT");
+			addMouseGet(nCode);
+			nCode.add("TAY");
 			nCode.add("LDA #0");
 			add = true;
 		}
@@ -32,6 +35,11 @@ public interface X16Defaults {
 			nCode.add("LDY #>" + addr);
 			nCode.add("JSR FACMEM");
 		}
+	}
+
+	static void addMouseGet(List<String> nCode) {
+		nCode.add("LDX #MOUSE_STORE");
+		nCode.add("JSR mouse_get");
 	}
 
 }

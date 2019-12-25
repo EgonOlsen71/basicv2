@@ -74,3 +74,11 @@ GRAPH_set_colors=$FF29
 GRAPH_LL_cursor_position=$FEFF
 GRAPH_LL_set_pixel=$FF0B
 GRAPH_draw_rect=$FF2F
+GRAPH_set_font=$FF3B
+GRAPH_put_char=$FF41
+mouse_config=$FF68
+mouse_get=$FF6B
+MOUSE_STORE=90
+joystick_scan=$FF53
+joystick_get=$FF56
+

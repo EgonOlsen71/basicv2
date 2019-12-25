@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.sixtyfour.config.MemoryConfig;
 import com.sixtyfour.elements.Variable;
 import com.sixtyfour.elements.commands.Command;
 import com.sixtyfour.elements.functions.Function;
@@ -25,6 +24,7 @@ import com.sixtyfour.extensions.x16.commands.Screen;
 import com.sixtyfour.extensions.x16.commands.Vload;
 import com.sixtyfour.extensions.x16.commands.Vpoke;
 import com.sixtyfour.extensions.x16.commands.Xload;
+import com.sixtyfour.extensions.x16.functions.Joy;
 import com.sixtyfour.extensions.x16.functions.Vpeek;
 import com.sixtyfour.extensions.x16.systemvars.Mb;
 import com.sixtyfour.extensions.x16.systemvars.Mx;
@@ -61,6 +61,7 @@ public class X16Extensions implements BasicExtension {
 		private static final long serialVersionUID = 1L;
 		{
 			this.add(new Vpeek());
+			this.add(new Joy());
 		}
 	});
 
@@ -140,6 +141,7 @@ public class X16Extensions implements BasicExtension {
 				this.put(0xCE80, "MON");
 				this.put(0xCE82, "OLD");
 				this.put(0xCE83, "GEOS");
+				this.put(0xCE93, "JOY");
 			}
 		};
 	}
