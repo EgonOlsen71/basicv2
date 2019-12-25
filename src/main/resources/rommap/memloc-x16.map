@@ -67,3 +67,10 @@ R15=$20
 R15L=$20
 R15H=$21
 X16=1	; Flag for X16 "mode"
+
+; API routines
+GRAPH_draw_line=$FF2C
+GRAPH_set_colors=$FF29
+GRAPH_LL_cursor_position=$FEFF
+GRAPH_LL_set_pixel=$FF0B
+GRAPH_draw_rect=$FF2F

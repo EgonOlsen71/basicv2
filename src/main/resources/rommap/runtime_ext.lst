@@ -5,11 +5,6 @@
 *fetch
 *fetvec
 *cscreen+3
-*_DrawPoint
-*set_color
-*DrawLine
-*FrameRectangle
-*Rectangle
 *frefac
 *UseSystemFont
 *PutChar

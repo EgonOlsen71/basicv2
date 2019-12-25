@@ -46,54 +46,28 @@ INITSINGLEPAR
 			RTS
 ;###################################
 PLOT		JSR EXTRACTPOINT
-			STA R11L
-			JSR EXTRACTCOLOR
-			SEC
-			SEI
-			JSR JSRFAR
-			.WORD _DRAWPOINT
-			.BYTE BANKGEOS
-			CLI
+			JSR GRAPH_LL_cursor_position
+			JSR XTRACTCOLOR
+			JSR GRAPH_LL_set_pixel
 			RTS
 ;###################################
 LINE		JSR EXTRACTPOINTS
-			JSR EXTRACTCOLOR
-			LDA #0
-			SEC
-			SEI
-			JSR JSRFAR
-			.WORD DRAWLINE
-			.BYTE BANKGEOS
-			CLI
+			JSR SETCOLORS
+			JSR GRAPH_draw_line
 			RTS
 ;###################################
 RECT		JSR EXTRACTPOINTS
-			LDA R11L
-			STA R2L
-			LDA R11H
-			STA R2H
 			JSR NORMALIZERECT
-			JSR EXTRACTCOLOR
-			SEI
-			JSR JSRFAR
-			.WORD RECTANGLE
-			.BYTE BANKGEOS
-			CLI
+			JSR SETCOLORS
+			SEC
+			JSR GRAPH_draw_rect
 			RTS
 ;###################################
 FRAME		JSR EXTRACTPOINTS
-			LDA R11L
-			STA R2L
-			LDA R11H
-			STA R2H
 			JSR NORMALIZERECT
-			JSR EXTRACTCOLOR
-			LDA TMP_ZP			;Move color to A...because..of course, this is different from line
-			SEI
-			JSR JSRFAR
-			.WORD FRAMERECTANGLE
-			.BYTE BANKGEOS
-			CLI
+			JSR SETCOLORS
+			CLC
+			JSR GRAPH_draw_rect
 			RTS
 ;###################################
 PRINTCHAR	JSR EXTRACTPOINT
@@ -150,28 +124,103 @@ COPYCHAR
 			JMP FREFAC
 ;###################################
 NORMALIZERECT
+			LDA R0L
+			STA TMP_ZP
+			LDA R0H
+			STA TMP_ZP+1
+			LDA R2L
+			STA TMP2_ZP
 			LDA R2H
-			CMP R2L
-			BCS NORMALIZERECT1
-			LDX R2L
-			STX R2H
+			STA TMP2_ZP+1
+			JSR CALCDELTA
+			LDA TMP_REG
+			BNE NR1
+			LDA R0L
+			PHA
+			LDA R0H
+			PHA
+			LDA R2L
+			STA R0L
+			LDA R2H
+			STA R0H
+			PLA 
+			STA R2H
+			PLA 
 			STA R2L
-NORMALIZERECT1
-			LDA R4L
-			SEC
-			SBC R3L
-			LDA R4H
-			SBC R3H
-			BCS NORMALIZERECT2
+NR1			LDA TMP3_ZP
+			STA R2L
+			LDA TMP3_ZP+1
+			STA R2H
+			INC R2L
+			BNE NR3
+			INC R2H
+			
+NR3			LDA R1L
+			STA TMP_ZP
+			LDA R1H
+			STA TMP_ZP+1
 			LDA R3L
-			LDX R4L
-			STX R3L
-			STA R4L
+			STA TMP2_ZP
 			LDA R3H
-			LDX R4H
-			STX R3H
-			STA R4H
-NORMALIZERECT2
+			STA TMP2_ZP+1
+			JSR CALCDELTA
+			LDA TMP_REG
+			BNE NR2
+			LDA R1L
+			PHA
+			LDA R1H
+			PHA
+			LDA R3L
+			STA R1L
+			LDA R3H
+			STA R1H
+			PLA 
+			STA R3H
+			PLA 
+			STA R3L
+NR2			LDA TMP3_ZP
+			STA R3L
+			LDA TMP3_ZP+1
+			STA R3H
+			INC R3L
+			BNE NR4
+			INC R3H
+NR4			STZ R4L
+			STZ R4H
+			RTS
+;###################################
+CALCDELTA	STZ TMP_REG
+			LDA TMP_ZP+1
+			CMP TMP2_ZP+1
+			BCS NOSWAP1
+			JSR SWAP
+			JMP NOSWAP2
+NOSWAP1		BNE NOSWAP2
+			LDA TMP_ZP
+			CMP TMP2_ZP
+			BCS NOSWAP2
+			JSR SWAP
+NOSWAP2		SEC	
+			LDA TMP_ZP
+			SBC TMP2_ZP
+			STA TMP3_ZP
+			LDA TMP_ZP+1
+			SBC TMP2_ZP+1
+			STA TMP3_ZP+1
+			RTS
+;###################################
+SWAP 		LDA TMP_ZP
+			TAX
+			LDA TMP_ZP+1
+			TAY
+			LDA TMP2_ZP
+			STA TMP_ZP
+			LDA TMP2_ZP+1
+			STA TMP_ZP+1
+			STX TMP2_ZP
+			STY TMP2_ZP+1
+			LDA #1
+			STA TMP_REG
 			RTS
 ;###################################
 RANGEERROR	JMP ILLEGALQUANTITY
@@ -183,11 +232,11 @@ EXTRACTPOINT
 			JSR FACWORD
 			TAX
 			TYA
-			STY R3L
+			STY R0L
 			SEC
 			SBC #<320
 			TXA
-			STA R3H
+			STA R0H
 			SBC #>320
 			BCS RANGEERROR
 			LDA #<Y_REG
@@ -196,11 +245,12 @@ EXTRACTPOINT
 			JSR FACWORD
 			TAX
 			TYA
+			STA R1L
+			STZ R1H
 			RTS
 ;###################################
 EXTRACTPOINTS
 			JSR EXTRACTPOINT
-			STA R11L
 			SEC
 			SBC #200
 			TXA
@@ -212,11 +262,11 @@ EXTRACTPOINTS
 			JSR FACWORD
 			TAX
 			TYA
-			STA R4L
+			STA R2L
 			SEC
 			SBC #<320
 			TXA
-			STA R4H
+			STA R2H
 			SBC #>320
 			BCS RANGEERROR
 			LDA #<E_REG
@@ -225,7 +275,8 @@ EXTRACTPOINTS
 			JSR FACWORD
 			TAX
 			TYA
-			STA R11H
+			STA R3L
+			STZ R3H
 			SEC
 			SBC #200
 			TXA
@@ -233,19 +284,17 @@ EXTRACTPOINTS
 			BCS RANGEERROR
 			RTS
 ;###################################
-EXTRACTCOLOR
+SETCOLORS	JSR XTRACTCOLOR
+			TAX		; color in X as well...needed?
+SETCOLOR	JSR GRAPH_set_colors
+			RTS
+;###################################
+XTRACTCOLOR
 			LDA #<C_REG
 			LDY #>C_REG
 			JSR REALFAC
 			JSR FACWORD
 			TYA
-			STA TMP_ZP
-			TAX				; color in X as well...needed?
-SETCOLOR	SEI		
-			JSR JSRFAR
-			.WORD SET_COLOR
-			.BYTE BANKGEOS
-			CLI
 			RTS
 ;###################################
 SCREEN		JSR INITSINGLEPAR
