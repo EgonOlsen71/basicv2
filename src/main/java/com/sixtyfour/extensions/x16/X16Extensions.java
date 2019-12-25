@@ -144,6 +144,7 @@ public class X16Extensions implements BasicExtension {
 				this.put(0xCE82, "OLD");
 				this.put(0xCE83, "GEOS");
 				this.put(0xCE93, "JOY");
+				this.put(0xCE8D, "COLOR");
 			}
 		};
 	}

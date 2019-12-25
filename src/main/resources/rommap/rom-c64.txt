@@ -1266,6 +1266,8 @@ al 00F155 .gn20
 al 00F14A .gn10
 al 00F13E .ngetin
 al 00FFD2 .bsout
+al 00FFD5 .load
+al 00FFD8 .save
 al 00F12F .msg
 al 00F13C .msg10
 al 00F12B .spmsg

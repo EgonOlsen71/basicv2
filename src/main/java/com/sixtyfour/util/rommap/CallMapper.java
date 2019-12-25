@@ -142,6 +142,10 @@ public class CallMapper {
 				}
 				mappedCalls.put(uLabel, "$" + newAddr.toUpperCase(Locale.ENGLISH));
 			}
+			
+			if (verbose) {
+				Logger.log("---------------------------------------------------------");
+			}
 
 			if (isKernalCall(newAddr)) {
 				Logger.log("WARNING: Call to " + match + " / " + newAddr
