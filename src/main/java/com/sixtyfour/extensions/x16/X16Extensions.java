@@ -11,6 +11,7 @@ import com.sixtyfour.elements.commands.Command;
 import com.sixtyfour.elements.functions.Function;
 import com.sixtyfour.extensions.BasicExtension;
 import com.sixtyfour.extensions.x16.commands.Char;
+import com.sixtyfour.extensions.x16.commands.Color;
 import com.sixtyfour.extensions.x16.commands.Dos;
 import com.sixtyfour.extensions.x16.commands.Frame;
 import com.sixtyfour.extensions.x16.commands.Geos;
@@ -54,6 +55,7 @@ public class X16Extensions implements BasicExtension {
 			this.add(new Frame());
 			this.add(new Rect());
 			this.add(new Char());
+			this.add(new Color());
 		}
 	});
 

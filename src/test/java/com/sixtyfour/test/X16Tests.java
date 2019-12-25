@@ -65,7 +65,25 @@ public class X16Tests {
 		testSignum();
 		testFractalLand();
 		testXtris();
+		testJoy();
+		testColor();
 	}
+	
+	private static void testJoy() throws Exception {
+		System.out.println("\n\ntestJoy");
+		String[] vary = Loader.loadProgram("src/test/resources/x16/joy.bas");
+		Assembler assy = initTestEnvironment(vary, false, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++joy.prg", true);
+	}
+
+	
+	private static void testColor() throws Exception {
+		System.out.println("\n\ntestColor");
+		String[] vary = Loader.loadProgram("src/test/resources/x16/color.bas");
+		Assembler assy = initTestEnvironment(vary, false, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++color.prg", true);
+	}
+
 
 	private static void testXtris() throws Exception {
 		System.out.println("\n\ntestXtris");
