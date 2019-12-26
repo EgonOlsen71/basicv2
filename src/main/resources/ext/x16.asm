@@ -358,16 +358,16 @@ VARBANKOFF	PHA
 			PLA
 			RTS
 ;###################################
-JOY 		LDA #<Y_REG
+JOY 		JSR joystick_scan
+			LDA #<Y_REG
 			LDY #>Y_REG
 			JSR REALFAC
 			JSR FACWORD
 			TYA
 			TAX
+			BEQ VALERRJOY
 			AND #$FC
 			BNE VALERRJOY
-			JSR joystick_scan
-			DEX
 			JSR joystick_get
 			EOR #$FF
 			TAY
@@ -407,7 +407,7 @@ TEXTBGCOLOROK
 			BCC TEXTBGCOLOROK2
 			JMP ILLEGALQUANTITY
 TEXTBGCOLOROK2
-			LDA #1 			; swap fg/bg
+			LDA #1 			; SWAP FG/BG
 			JSR CHROUT
 			LDA TEXTCOLTAB,X
 			JSR CHROUT

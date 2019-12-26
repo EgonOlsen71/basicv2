@@ -38,6 +38,11 @@ public class DataStore {
 	 * @param data the data
 	 */
 	public void add(String data) {
+		if (data.startsWith("{STRING}")) {
+			// Type indicated directly
+			datas.add(data.substring(8));
+			return;
+		}
 		try {
 			Integer dat = Integer.valueOf(data.trim());
 			datas.add(dat);

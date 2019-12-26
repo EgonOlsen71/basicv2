@@ -81,6 +81,7 @@ public class Data extends AbstractCommand {
 				if (sb.length() == 0) {
 					inString = true;
 					hasQuotes = true;
+					sb.append("{STRING}");
 				} else {
 					if (inString) {
 						inString = false;
