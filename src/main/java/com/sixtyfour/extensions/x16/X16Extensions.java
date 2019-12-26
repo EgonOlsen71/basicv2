@@ -134,11 +134,11 @@ public class X16Extensions implements BasicExtension {
 				this.put(0xCE89, "FRAME");
 				this.put(0xCE8B, "CHAR");
 				this.put(0xCE8C, "MOUSE");
-				this.put(0xCE8E, "MX");
-				this.put(0xCE8F, "MY");
-				this.put(0xCE90, "MB");
+				this.put(0xCE90, "MX");
+				this.put(0xCE91, "MY");
+				this.put(0xCE92, "MB");
 				this.put(0xCE84, "VPOKE");
-				this.put(0xCE8D, "VPEEK");
+				this.put(0xCE8F, "VPEEK");
 				this.put(0xCE81, "DOS");
 				this.put(0xCE80, "MON");
 				this.put(0xCE82, "OLD");
