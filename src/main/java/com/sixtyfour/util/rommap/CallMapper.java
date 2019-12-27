@@ -142,7 +142,7 @@ public class CallMapper {
 				}
 				mappedCalls.put(uLabel, "$" + newAddr.toUpperCase(Locale.ENGLISH));
 			}
-			
+
 			if (verbose) {
 				Logger.log("---------------------------------------------------------");
 			}

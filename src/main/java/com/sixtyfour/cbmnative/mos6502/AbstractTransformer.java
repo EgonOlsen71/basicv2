@@ -73,7 +73,7 @@ public abstract class AbstractTransformer implements Transformer {
 			res.add(label);
 		}
 	}
-	
+
 	protected void addMemoryLocations(List<String> res) {
 		String[] labels = Loader.loadProgram(TransformerX16.class.getResourceAsStream("/rommap/memloc-c64.map"));
 		addLabels(res, labels);

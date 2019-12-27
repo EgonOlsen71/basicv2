@@ -68,9 +68,13 @@ public class Joy extends AbstractFunction {
 	public int getParameterCount() {
 		return 1;
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.sixtyfour.elements.functions.AbstractFunction#addNativeFunctionCall(java.util.List)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.sixtyfour.elements.functions.AbstractFunction#addNativeFunctionCall(java.
+	 * util.List)
 	 */
 	@Override
 	public boolean addNativeFunctionCall(List<String> code) {

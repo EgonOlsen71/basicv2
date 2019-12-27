@@ -94,14 +94,9 @@ public class Variable implements Atom {
 		findType(c);
 
 		if (type == null) {
-			int pos = woa.indexOf("{");
-			if (pos != -1) {
-				// This is trying to detect the type of something like L${T4}, which actually shouldn't occur
-				// in the first place, but for some reason still does.
-				c = woa.substring(pos - 1, pos).charAt(0);
-				findType(c);
-			}
-			if (type == null) {
+			if (!Character.isAlphabetic(c) && !Character.isDigit(c)) {
+				throw new RuntimeException("Syntax error: " + name + "/" + woa);
+			} else {
 				throw new RuntimeException("Unknown variable type for: " + name + "/" + woa);
 			}
 		}

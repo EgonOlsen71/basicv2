@@ -124,7 +124,7 @@ public class MoSpeedCL {
 
 		PlatformProvider platform = new Platform64();
 		String appendix = ".prg";
-		boolean multiByteTokens=false;
+		boolean multiByteTokens = false;
 		if (cmds.containsKey("platform")) {
 			String pl = cmds.get("platform");
 			if (pl.equalsIgnoreCase("c64")) {
@@ -137,7 +137,7 @@ public class MoSpeedCL {
 				platform = new PlatformX16();
 				Basic.registerExtension(new X16Extensions());
 				cfg.setNonDecimalNumbersAware(true);
-				multiByteTokens=true;
+				multiByteTokens = true;
 				appendix = ".prg";
 			} else if (pl.equalsIgnoreCase("ps")) {
 				platform = new PlatformPs();

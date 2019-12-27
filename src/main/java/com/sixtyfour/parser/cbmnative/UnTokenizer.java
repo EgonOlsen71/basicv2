@@ -96,7 +96,7 @@ public class UnTokenizer {
 			this.put(201, "RIGHT$");
 			this.put(202, "MID$");
 			this.put(203, "GO");
-			
+
 			// Add X16-Tokens to the mix...
 			this.putAll(X16Extensions.getTokens());
 		}
@@ -138,18 +138,18 @@ public class UnTokenizer {
 						if (c == '"') {
 							inString = !inString;
 						}
-						if (b < 128 || inString || (b > 203 && (!multiByte || b!=206))) {
+						if (b < 128 || inString || (b > 203 && (!multiByte || b != 206))) {
 							if (inString && isSpecialChar(c)) {
 								line.append(ControlCodes.getPlaceHolder(b));
 							} else {
 								line.append(convertChar(c));
 							}
 						} else {
-						    	String token = TOKENS.get(b);
-						    	if (multiByte && b==206) {
-						    	    int mb = b*256+(program[(addr++) - start] & 0xff);
-						    	    token=TOKENS.get(mb);
-						    	}
+							String token = TOKENS.get(b);
+							if (multiByte && b == 206) {
+								int mb = b * 256 + (program[(addr++) - start] & 0xff);
+								token = TOKENS.get(mb);
+							}
 							if (token == null) {
 								throw new RuntimeException("Unknown token: " + b);
 							}
