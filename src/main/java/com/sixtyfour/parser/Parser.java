@@ -892,7 +892,7 @@ public class Parser {
 				Atom str = new Constant<String>(ct);
 				return str;
 			} else {
-				throw new RuntimeException("String not terminated: " + part);
+				throw new RuntimeException("String not properly terminated: " + part);
 			}
 		}
 		if (part.endsWith("\"")) {

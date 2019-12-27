@@ -54,6 +54,9 @@ public class Sys extends AbstractCommand {
 
 	@Override
 	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
+		if (pars.size() > 1) {
+			throw new RuntimeException("Too many parameters in SYS call: " + term.getInitial());
+		}
 		if (addr.isConstant()) {
 			// Shortcut for SYS XXXX, which should be the majority of calls
 			int memAddr = VarUtils.getInt(addr.eval(machine));

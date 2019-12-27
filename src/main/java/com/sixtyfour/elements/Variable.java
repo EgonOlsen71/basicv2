@@ -91,16 +91,19 @@ public class Variable implements Atom {
 		String woa = name.replace("[]", "");
 		char c = woa.charAt(woa.length() - 1);
 		type = null;
-		if (c == '$') {
-			type = Type.STRING;
-		} else if (c == '%') {
-			type = Type.INTEGER;
-		} else if (Character.isLetter(c) || Character.isDigit(c)) {
-			type = Type.REAL;
-		}
+		findType(c);
 
 		if (type == null) {
-			throw new RuntimeException("Unknown variable type for: " + name);
+			int pos = woa.indexOf("{");
+			if (pos != -1) {
+				// This is trying to detect the type of something like L${T4}, which actually shouldn't occur
+				// in the first place, but for some reason still does.
+				c = woa.substring(pos - 1, pos).charAt(0);
+				findType(c);
+			}
+			if (type == null) {
+				throw new RuntimeException("Unknown variable type for: " + name + "/" + woa);
+			}
 		}
 
 		if (value == null) {
@@ -135,6 +138,16 @@ public class Variable implements Atom {
 
 		this.setName(name);
 		this.setValue(value);
+	}
+
+	private void findType(char c) {
+		if (c == '$') {
+			type = Type.STRING;
+		} else if (c == '%') {
+			type = Type.INTEGER;
+		} else if (Character.isLetter(c) || Character.isDigit(c)) {
+			type = Type.REAL;
+		}
 	}
 
 	@Override
