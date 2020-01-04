@@ -35,6 +35,11 @@ public class Xload extends FileOperation {
 		return evalToCode(config, machine, "LOAD");
 	}
 
+	@Override
+	protected boolean isLoad() {
+		return true;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -133,6 +138,9 @@ public class Xload extends FileOperation {
 		}
 
 		after.add("JSR " + (extendedLoad ? (call + "EXT") : call));
+		if (!extendedLoad) {
+			after.add("JMP RESTARTPRG");
+		}
 
 		CodeContainer cc = new CodeContainer(before, expr, after);
 		List<CodeContainer> ccs = new ArrayList<CodeContainer>();

@@ -875,6 +875,9 @@ public class PseudoCpu {
 		case "RESTORE":
 			restore(parts);
 			return;
+		case "RESTARTPRG":
+			restart(parts);
+			return;
 		case "READSTR":
 			readString(parts);
 			return;
@@ -984,6 +987,11 @@ public class PseudoCpu {
 			jumpStack.push(addr);
 			jmp(parts);
 		}
+	}
+
+	private void restart(String[] parts) {
+		forStackPos = 0;
+		addr = 0;
 	}
 
 	private void fdex(String[] parts) {
@@ -1360,6 +1368,7 @@ public class PseudoCpu {
 
 	private void run(String[] parts) {
 		clearVars(parts);
+		forStackPos = 0;
 		addr = 0;
 	}
 

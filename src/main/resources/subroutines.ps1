@@ -65,6 +65,11 @@ function RUN {
 	$global:restart=$true
 }
 
+function RESTARTPRG {
+	$global:running=$false
+	$global:restart=$true
+}
+
 function ENDPRG {
 	#
 }

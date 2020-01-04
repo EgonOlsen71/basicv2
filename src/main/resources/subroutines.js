@@ -105,6 +105,12 @@ this.RUN = function() {
 	this.restart=true;
 }
 
+this.RESTARTPRG = function() {
+	// This is not correct behaviour as BASIC does it, because it doesn't preserve the variables, but...who cares?
+	this.running=false;
+	this.restart=true;
+}
+
 this.END = function() {
 	//
 }

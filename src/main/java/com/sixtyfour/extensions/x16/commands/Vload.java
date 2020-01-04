@@ -28,6 +28,11 @@ public class Vload extends FileOperation {
 	}
 
 	@Override
+	protected boolean isLoad() {
+		return true;
+	}
+	
+	@Override
 	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
 		NativeCompiler compiler = NativeCompiler.getCompiler();
 		List<String> after = new ArrayList<String>();

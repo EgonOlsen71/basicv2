@@ -59,12 +59,15 @@ public abstract class FileOperation extends AbstractCommand {
 		return null;
 	}
 
+	protected boolean isLoad() {
+		return false;
+	}
+
 	protected List<CodeContainer> evalToCode(CompilerConfig config, Machine machine, String call) {
 		NativeCompiler compiler = NativeCompiler.getCompiler();
 		List<String> after = new ArrayList<String>();
 		List<String> expr = new ArrayList<String>();
 		List<String> before = new ArrayList<String>();
-		boolean extendedLoad = false;
 
 		try {
 			switch (pars.size()) {
@@ -105,7 +108,11 @@ public abstract class FileOperation extends AbstractCommand {
 			syntaxError(this);
 		}
 
-		after.add("JSR " + (extendedLoad ? (call + "EXT") : call));
+		after.add("JSR " + call);
+
+		if (isLoad()) {
+			after.add("JMP RESTARTPRG");
+		}
 
 		CodeContainer cc = new CodeContainer(before, expr, after);
 		List<CodeContainer> ccs = new ArrayList<CodeContainer>();

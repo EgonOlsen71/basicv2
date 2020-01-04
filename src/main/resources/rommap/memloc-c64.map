@@ -38,3 +38,4 @@ INDEX1=$22
 VALTYPE=$0D
 LOWDS=$5D
 TIMEADDR=$A0
+LOADOK_STATUS=64	; Status for "loading went fine"

@@ -41,6 +41,16 @@ ENDGIVEN	LDA #<FPSTACK
 			CLC
 			RTS
 ;###################################
+RESTARTPRG	LDA #<FPSTACK
+			LDY #>FPSTACK
+			STA FPSTACKP
+			STY FPSTACKP+1
+			LDA #<FORSTACK
+			LDY #>FORSTACK
+			STA FORSTACKP
+			STY FORSTACKP+1
+			JMP LINE_0			
+;###################################
 CLR			JMP START
 ;###################################
 INITNARRAY 
@@ -3147,6 +3157,8 @@ SKPBAS		STA SECADDR
 			LDY LOADEND+1
 			JSR LOADXX
 			LDA STATUS
+			BEQ LOADOK		; Actually, this is for the X16. The C64 ROM doesn't set it to 0, but to 64...shouldn't be an issue though...
+			CMP #LOADOK_STATUS
 			BEQ LOADOK
 			JMP FILENOTFOUND
 LOADOK		RTS
