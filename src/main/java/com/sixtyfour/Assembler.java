@@ -170,8 +170,6 @@ public class Assembler implements ProgramExecutor {
 				}
 			}
 
-			System.out.println(line);
-
 			if (line.length() == 0) {
 				continue;
 			}
