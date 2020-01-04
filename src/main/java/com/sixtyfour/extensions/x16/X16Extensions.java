@@ -11,6 +11,7 @@ import com.sixtyfour.elements.commands.Command;
 import com.sixtyfour.elements.functions.Function;
 import com.sixtyfour.extensions.BasicExtension;
 import com.sixtyfour.extensions.x16.commands.Char;
+import com.sixtyfour.extensions.x16.commands.Cls;
 import com.sixtyfour.extensions.x16.commands.Color;
 import com.sixtyfour.extensions.x16.commands.Dos;
 import com.sixtyfour.extensions.x16.commands.Frame;
@@ -21,6 +22,7 @@ import com.sixtyfour.extensions.x16.commands.Mouse;
 import com.sixtyfour.extensions.x16.commands.Old;
 import com.sixtyfour.extensions.x16.commands.Pset;
 import com.sixtyfour.extensions.x16.commands.Rect;
+import com.sixtyfour.extensions.x16.commands.Reset;
 import com.sixtyfour.extensions.x16.commands.Screen;
 import com.sixtyfour.extensions.x16.commands.Vload;
 import com.sixtyfour.extensions.x16.commands.Vpoke;
@@ -56,6 +58,8 @@ public class X16Extensions implements BasicExtension {
 			this.add(new Rect());
 			this.add(new Char());
 			this.add(new Color());
+			this.add(new Reset());
+			this.add(new Cls());
 		}
 	});
 
@@ -134,17 +138,19 @@ public class X16Extensions implements BasicExtension {
 				this.put(0xCE89, "FRAME");
 				this.put(0xCE8B, "CHAR");
 				this.put(0xCE8C, "MOUSE");
-				this.put(0xCE90, "MX");
-				this.put(0xCE91, "MY");
-				this.put(0xCE92, "MB");
+				this.put(0xCE92, "MX");
+				this.put(0xCE93, "MY");
+				this.put(0xCE94, "MB");
 				this.put(0xCE84, "VPOKE");
-				this.put(0xCE8F, "VPEEK");
+				this.put(0xCE91, "VPEEK");
 				this.put(0xCE81, "DOS");
 				this.put(0xCE80, "MON");
 				this.put(0xCE82, "OLD");
 				this.put(0xCE83, "GEOS");
-				this.put(0xCE93, "JOY");
+				this.put(0xCE95, "JOY");
 				this.put(0xCE8D, "COLOR");
+				this.put(0xCE8F, "RESET");
+				this.put(0xCE90, "CLS");
 			}
 		};
 	}

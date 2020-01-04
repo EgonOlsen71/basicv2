@@ -57,3 +57,11 @@ function JOY{
 function COLOR{
 	"[COLOR not supported for PS, call ignored: "+$global:A_REG+"]"
 }
+
+function CLS{
+	"[CLS not supported for PS, call ignored: "+$global:A_REG+"]"
+}
+
+function RESET{
+	"[RESET not supported for PS, call ignored: "+$global:A_REG+"]"
+}

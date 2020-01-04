@@ -1,7 +1,6 @@
 package com.sixtyfour.extensions.x16.commands;
 
 import java.util.List;
-import java.util.Locale;
 
 import com.sixtyfour.Logger;
 import com.sixtyfour.cbmnative.Util;
@@ -15,10 +14,10 @@ import com.sixtyfour.system.Machine;
  * @author Foerster-H
  *
  */
-public class Mon extends AbstractCommand {
+public class Reset extends AbstractCommand {
 
-	public Mon() {
-		super("MON");
+	public Reset() {
+		super("RESET");
 	}
 
 	/*
@@ -32,12 +31,7 @@ public class Mon extends AbstractCommand {
 	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos,
 			boolean lastPos, Machine machine) {
 		super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine);
-
-		// Because someone decided that it's a good idea to have a "monitor" alias for
-		// "mon", which it isn't...but well...
-		boolean isMonitor = linePart.toLowerCase(Locale.ENGLISH).startsWith("monitor");
-
-		if ((linePart.trim().length() > 3 && !isMonitor) || linePart.trim().length() > 7) {
+		if (linePart.trim().length() > 5) {
 			syntaxError(this);
 		}
 		return null;
@@ -51,7 +45,7 @@ public class Mon extends AbstractCommand {
 	 */
 	@Override
 	public BasicProgramCounter execute(CompilerConfig config, Machine machine) {
-		Logger.log("Call to MON ignored by local runtime!");
+		Logger.log("Call to RESET ignored by local runtime!");
 		return null;
 	}
 
@@ -64,7 +58,7 @@ public class Mon extends AbstractCommand {
 	 */
 	@Override
 	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
-		return Util.createSingleCommand("JMP START_MON");
+		return Util.createSingleCommand("JMP RESET");
 	}
 
 }

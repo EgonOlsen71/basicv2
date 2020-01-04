@@ -56,3 +56,11 @@ this.JOY = function() {
 this.COLOR = function() {
 	console.log("[COLOR not supported for JS, call ignored]");
 }
+
+this.RESET = function() {
+	console.log("[RESET not supported for JS, call ignored]");
+}
+
+this.CLS = function() {
+	console.log("[CLS not supported for JS, call ignored]");
+}

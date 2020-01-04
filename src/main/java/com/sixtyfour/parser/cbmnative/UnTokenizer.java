@@ -146,12 +146,13 @@ public class UnTokenizer {
 							}
 						} else {
 							String token = TOKENS.get(b);
+							int mb = 0;
 							if (multiByte && b == 206) {
-								int mb = b * 256 + (program[(addr++) - start] & 0xff);
+								mb = b * 256 + (program[(addr++) - start] & 0xff);
 								token = TOKENS.get(mb);
 							}
 							if (token == null) {
-								throw new RuntimeException("Unknown token: " + b);
+								throw new RuntimeException("Unknown token: $" + Integer.toHexString(mb));
 							}
 							if (line.length() > 0 && line.charAt(line.length() - 1) != ' ' && b < 180
 									&& token.length() > 1) {

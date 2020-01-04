@@ -67,7 +67,25 @@ public class X16Tests {
 		testXtris();
 		testJoy();
 		testColor();
+		testCls();
+		testReset();
 	}
+	
+	private static void testCls() throws Exception {
+		System.out.println("\n\ntestCls");
+		String[] vary = Loader.loadProgram("src/test/resources/x16/cls.bas");
+		Assembler assy = initTestEnvironment(vary, false, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++cls.prg", true);
+	}
+
+	
+	private static void testReset() throws Exception {
+		System.out.println("\n\ntestJoy");
+		String[] vary = Loader.loadProgram("src/test/resources/x16/reset.bas");
+		Assembler assy = initTestEnvironment(vary, false, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++reset.prg", true);
+	}
+
 	
 	private static void testJoy() throws Exception {
 		System.out.println("\n\ntestJoy");
