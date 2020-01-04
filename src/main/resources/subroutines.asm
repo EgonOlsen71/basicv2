@@ -3315,11 +3315,20 @@ SYNTAXERROR
 ;###################################
 FILENOTFOUND
 			JSR CLRCH
-			LDY #0
-			LDA #4
-			JSR ERRFNF
-			LDA #4
-			ORA #$30
+			JMP FNFOUT
+FNFTXT		.TEXT "i/o error #"
+   			.BYTE $0
+FNFOUT		LDY #0
+FNFOUT2		LDA FNFTXT,Y
+			BEQ FNFST
+			INY
+			JSR CHROUT
+			JMP FNFOUT2
+FNFST		LDA STATUS
+			CMP #11
+			BCC FNFNUM
+			LDA #0		; load 0 as a generic number
+FNFNUM		ORA #$30
 			JMP CHROUT
 ;###################################
 ERROR		
