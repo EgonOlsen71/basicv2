@@ -164,7 +164,13 @@ public class Assembler implements ProgramExecutor {
 					skipMode = false;
 				}
 				continue;
+			} else {
+				if (lline.contains("</if>")) {
+					continue;
+				}
 			}
+
+			System.out.println(line);
 
 			if (line.length() == 0) {
 				continue;
