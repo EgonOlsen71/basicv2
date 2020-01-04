@@ -66,7 +66,7 @@ public class Print extends AbstractCommand {
 			boolean lastPos, Machine machine) {
 		super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine);
 		orgLine = linePart;
-		List<PrintPart> parts = getParts(linePart.substring(linePart.startsWith("?") ? 1 : 5));
+		List<PrintPart> parts = getParts(linePart.substring(linePart.startsWith("?") ? 1 : 5), config);
 		if (parts.size() == 0) {
 			PrintPart newLine = new PrintPart("\"\"", ' ');
 			parts.add(newLine);
@@ -302,16 +302,22 @@ public class Print extends AbstractCommand {
 	/**
 	 * Gets the parts.
 	 * 
-	 * @param line the line
+	 * @param line   the line
+	 * @param config the compiler config
 	 * @return the parts
 	 */
-	protected List<PrintPart> getParts(String line) {
+	protected List<PrintPart> getParts(String line, CompilerConfig config) {
 		line = TermEnhancer.removeWhiteSpace(line);
 		List<PrintPart> res = new ArrayList<PrintPart>();
 		boolean inString = false;
 		int brackets = 0;
 		StringBuilder sb = new StringBuilder();
 
+		if (config.isNonDecimalNumbersAware()) {
+			// handle hex and bin numbers in print statements, so that fixKludges() doesn't
+			// destroy them...YIKES!
+			line = TermEnhancer.handleNonDecimalNumbers(config, line);
+		}
 		line = fixKludges(line);
 
 		inString = false;

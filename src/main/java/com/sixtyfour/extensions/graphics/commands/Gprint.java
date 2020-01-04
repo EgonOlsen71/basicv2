@@ -49,7 +49,7 @@ public class Gprint extends Print {
 		checkTypes(pars, linePart, Type.STRING, Type.STRING);
 
 		linePart = linePart.substring(dif + 1);
-		List<PrintPart> parts = getParts(linePart);
+		List<PrintPart> parts = getParts(linePart, config);
 		if (parts.size() == 0) {
 			PrintPart newLine = new PrintPart("\"\"", ' ');
 			parts.add(newLine);

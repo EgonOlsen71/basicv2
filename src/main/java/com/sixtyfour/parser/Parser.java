@@ -392,6 +392,7 @@ public class Parser {
 	 */
 	public static Term getTerm(CompilerConfig config, String term, Machine machine, boolean stripAssignment,
 			boolean checkForLogicTerm) {
+		
 		checkForInvalidChars(term);
 		Term ret = getTerm(config, term, machine, stripAssignment, checkForLogicTerm, null);
 		ret.setInitial(TermEnhancer.stripAssignment(term, stripAssignment));
