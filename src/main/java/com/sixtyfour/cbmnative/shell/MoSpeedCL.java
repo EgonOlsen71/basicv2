@@ -121,6 +121,7 @@ public class MoSpeedCL {
 		boolean genSrc = cmds.containsKey("generatesrc") && Boolean.valueOf(cmds.get("generatesrc"));
 		String ilTarget = null;
 		String nlTarget = null;
+		String ascTarget = null;
 
 		PlatformProvider platform = new Platform64();
 		String appendix = ".prg";
@@ -180,9 +181,11 @@ public class MoSpeedCL {
 		if (genSrc) {
 			ilTarget = targetFile + ".il";
 			nlTarget = targetFile + ".nl";
-			ok = delete(ilTarget) && delete(nlTarget);
+			ascTarget = targetFile + ".asc";
+			ok = delete(ilTarget) && delete(nlTarget) && delete(ascTarget);
 			if (!ok) {
-				System.out.println("Can't delete generated source file: " + ilTarget + " / " + nlTarget);
+				System.out.println(
+						"Can't delete generated source file: " + ilTarget + " / " + nlTarget + "/" + ascTarget);
 				exit(5);
 			}
 		}
@@ -195,8 +198,12 @@ public class MoSpeedCL {
 				System.out.println("Looks like a PRG file, trying to convert it...");
 				byte[] data = Loader.loadBlob(srcFile);
 				UnTokenizer unto = new UnTokenizer();
-				src = unto.getText(data, multiByteTokens).toArray(new String[0]);
+				List<String> srcList = unto.getText(data, multiByteTokens);
+				src = srcList.toArray(new String[0]);
 				System.out.println("PRG file converted into ASCII, proceeding!");
+				if (genSrc) {
+					write(srcList, ascTarget);
+				}
 				srcFile = srcFile.replace(".prg", ".bas");
 			} catch (Exception e) {
 				System.out.println("Failed to convert PRG file: " + e.getMessage());

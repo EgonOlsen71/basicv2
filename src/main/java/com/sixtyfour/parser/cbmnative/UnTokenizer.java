@@ -131,6 +131,7 @@ public class UnTokenizer {
 				addr += 2;
 				int b = 0;
 				boolean inString = false;
+				boolean wasSpace = false;
 				do {
 					b = program[(addr++) - start] & 0xff;
 					if (b != 0) {
@@ -138,6 +139,11 @@ public class UnTokenizer {
 						if (c == '"') {
 							inString = !inString;
 						}
+						if (!inString && c == ' ' && wasSpace) {
+							// Ignore multiple spaces outside of strings
+							continue;
+						}
+						wasSpace = c == ' ';
 						if (b < 128 || inString || (b > 203 && (!multiByte || b != 206))) {
 							if (inString && isSpecialChar(c)) {
 								line.append(ControlCodes.getPlaceHolder(b));
@@ -166,7 +172,7 @@ public class UnTokenizer {
 					}
 				} while (b != 0);
 				addr = nextLine + 2;
-				String ls = line.toString().replaceAll("\\s{2,}", " ");
+				String ls = line.toString();
 				lines.add(ls);
 				line.setLength(0);
 			}
