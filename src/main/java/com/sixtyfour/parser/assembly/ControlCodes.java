@@ -86,8 +86,8 @@ public class ControlCodes {
 			add(64, "@", "at");
 			add(91, "shift-colon", "shift-:", "sh-colon", "sh-:");
 			add(93, "shift-semicolon", "shift-;", "sh-semicolon", "sh-;");
-			add(94, "↑", "^", "up arrow");
-			add(95, "←", "left arrow");
+			add(94, "↑", "^", "up arrow", "up arrow");
+			add(95, "←", "left arrow", "arrow left");
 			add(141, "shift-return", "sh-return", "shift-ret", "sh-ret");
 			add(161, "cm-k");
 			add(162, "cm-i");
