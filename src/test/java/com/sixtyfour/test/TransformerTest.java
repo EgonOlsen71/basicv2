@@ -121,9 +121,17 @@ public class TransformerTest {
 //		testSystemcall();
 //		testDatastuff();
 		testChrOptimizer();
+		testCcTestOptimizer();
 
 	}
 
+	private static void testCcTestOptimizer() throws Exception {
+		System.out.println("\n\ntestCcTestOptimizer");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/cctest.bas");
+		Assembler assy = initTestEnvironment(vary, true, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++cctest.prg", true);
+	}
+	
 	private static void testChrOptimizer() throws Exception {
 		System.out.println("\n\ntestChrOptimizer");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/chropttest.bas");

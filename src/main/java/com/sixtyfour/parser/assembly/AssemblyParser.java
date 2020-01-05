@@ -292,6 +292,21 @@ public class AssemblyParser {
 									} else {
 										part = opart;
 									}
+								} else {
+									// Check for something like {17down}
+									if (Character.isDigit(part.charAt(1)) && !Character.isDigit(part.length() - 2)) {
+										StringBuilder nums = new StringBuilder();
+										for (int i = 1; i < part.length() - 1; i++) {
+											char cc = part.charAt(i);
+											if (Character.isDigit(cc)) {
+												nums.append(cc);
+											} else {
+												part = "{" + part.substring(i);
+												mul = Integer.parseInt(nums.toString());
+												break;
+											}
+										}
+									}
 								}
 								for (int i = 0; i < mul; i++) {
 									int code = ControlCodes.getCode(part);
