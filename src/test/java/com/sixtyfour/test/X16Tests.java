@@ -23,6 +23,7 @@ public class X16Tests {
 	private static String path = "compiled/";
 
 	public static void main(String[] args) throws Exception {
+	    	long s=System.currentTimeMillis();
 		testVpoke();
 		testVpeek();
 		testVpokePeek();
@@ -69,6 +70,7 @@ public class X16Tests {
 		testColor();
 		testCls();
 		testReset();
+		System.out.println("Total time: "+(System.currentTimeMillis()-s)+"ms");
 	}
 	
 	private static void testCls() throws Exception {
