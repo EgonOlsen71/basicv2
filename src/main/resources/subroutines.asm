@@ -1260,7 +1260,7 @@ REALOUT		JSR REROUTE
 RNOTNULL	LDA #<X_REG
 			LDY #>X_REG
 			JSR REALFAC
-			LDY #0
+REALOUTINT	LDY #0
 			JSR FACSTR
 			LDY #0
 			LDA $00FF,Y
@@ -3328,7 +3328,7 @@ SYNTAXERROR
 FILENOTFOUND
 			JSR CLRCH
 			JMP FNFOUT
-FNFTXT		.TEXT "i/o error #"
+FNFTXT		.TEXT "i/o error"
    			.BYTE $0
 FNFOUT		LDY #0
 FNFOUT2		LDA FNFTXT,Y
@@ -3336,12 +3336,10 @@ FNFOUT2		LDA FNFTXT,Y
 			INY
 			JSR CHROUT
 			JMP FNFOUT2
-FNFST		LDA STATUS
-			CMP #11
-			BCC FNFNUM
-			LDA #0		; load 0 as a generic number
-FNFNUM		ORA #$30
-			JMP CHROUT
+FNFST		LDY STATUS
+			LDA #0
+			JSR INTFAC
+			JMP REALOUTINT
 ;###################################
 ERROR		
 			JMP ERRSYN	;General purpose error, here a syntax error
