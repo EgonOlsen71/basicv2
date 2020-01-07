@@ -530,7 +530,7 @@ public class MoSpeedCL {
 		System.out.println(
 				"/tolower=true|false - if true, all strings in the source code will be treated as lower case. This can be useful when compiling BASIC code copied directly from an emulator. Default is false.");
 		System.out.println(
-				"/flipcase=true|false - if true, the casing of string in the source code will be reversed. This can be useful when compiling BASIC code copied directly from an emulator. Default is false.");
+				"/flipcase=true|false - if true, the casing of strings in the source code will be reversed. This can be useful when compiling BASIC code copied directly from an emulator. Default is false.");
 		System.out.println(
 				"/nondecimals=true|false - if true, hexadecimal and binary numbers can be indicated by & and %. Default is false, except for the X16 platform, where it's enabled by default.");
 		System.out.println(

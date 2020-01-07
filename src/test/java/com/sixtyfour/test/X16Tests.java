@@ -70,7 +70,15 @@ public class X16Tests {
 		testColor();
 		testCls();
 		testReset();
+		testHashMap();
 		System.out.println("Total time: "+(System.currentTimeMillis()-s)+"ms");
+	}
+	
+	private static void testHashMap() throws Exception {
+		System.out.println("\n\ntestHashMap");
+		String[] vary = Loader.loadProgram("src/test/resources/x16/hashmap.bas");
+		Assembler assy = initTestEnvironment(vary, false, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++hashmap.prg", true);
 	}
 	
 	private static void testCls() throws Exception {
