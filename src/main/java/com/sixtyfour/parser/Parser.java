@@ -527,9 +527,15 @@ public class Parser {
 			m *= dimensions[i] + 1;
 		}
 
-		// System.out.println("Index term: "+sb.toString());
+		String newTerm=TermOptimizer.optimizeLinearIndexTerm(sb.toString());
+		/*
+		if (newTerm.length()!=sb.length()) {
+		    System.out.println("Index term(1): "+sb.toString());
+		    System.out.println("Index term(2): "+newTerm);
+		}*/
 
-		Term t = Parser.getTermWithoutChecks(config, sb.toString(), machine, false, true);
+		Term t = Parser.getTermWithoutChecks(config, newTerm, machine, false, true);
+		
 		return t;
 	}
 
