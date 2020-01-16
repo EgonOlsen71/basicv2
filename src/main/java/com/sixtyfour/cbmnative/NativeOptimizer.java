@@ -69,10 +69,12 @@ public class NativeOptimizer {
 				new String[] { "MOV Y,X", "NEG X,Y" }));
 		patterns.add(new NativePattern(new String[] { "MOV C,X", "PUSH C" }, new String[] { "PUSH X" }));
 		patterns.add(new NativePattern(new String[] { "PUSH C", "MOV Y,#*", "POP C" }, new String[] { "{1}" }));
+		patterns.add(new NativePattern(new String[]{"MOV Y,#*",	"MOV X*","PUSH Y","MOV G*","CHGCTX #0","JSR ARRAYACCESS","POP Y"},
+				new String[]{"{1}", "{3}", "{4}", "{5}", "{0}"}));
 		// This could replace CHR$(<const>) calls with the actual String, but it doesn't
-		// seem to be worth it...
-		// patterns.add(new NativePattern(new String[] { "MOV Y,#*", "CHGCTX #1","JSR
-		// CHR"}, new String[] {"{0:MOV Y,>MOV A,§CHR§}"}));
+				// seem to be worth it...
+				// patterns.add(new NativePattern(new String[] { "MOV Y,#*", "CHGCTX #1","JSR
+				// CHR"}, new String[] {"{0:MOV Y,>MOV A,§CHR§}"}));
 
 	}
 
