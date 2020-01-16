@@ -16,14 +16,14 @@
 120 rem
 130 for i=1024to2023:pokei,81:next
 140 for i=55295to56295:pokei,0:next
-200 for b=1ton
+200 ti$="000000":for b=1ton
 210 poke55296+by(b)*40+bx(b),0
 240 ifdx(b)=0thengosub1010
 250 ifdx(b)=1thengosub1040
 260 ifdy(b)=0thengosub1070
 270 ifdy(b)=1thengosub1100
 280 poke55296+by(b)*40+bx(b),bc(b)
-290 nextb
+290 nextb:printchr$(19);ti
 300 goto 200
 1000rem
 1010ifbx(b)=0thendx(b)=1:return
