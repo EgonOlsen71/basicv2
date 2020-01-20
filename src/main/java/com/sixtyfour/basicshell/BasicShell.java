@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -25,7 +26,15 @@ import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.text.BadLocationException;
 
+import com.sixtyfour.Assembler;
 import com.sixtyfour.Basic;
+import com.sixtyfour.Logger;
+import com.sixtyfour.cbmnative.NativeCompiler;
+import com.sixtyfour.cbmnative.PlatformProvider;
+import com.sixtyfour.cbmnative.mos6502.c64.Platform64;
+import com.sixtyfour.config.CompilerConfig;
+import com.sixtyfour.config.MemoryConfig;
+import com.sixtyfour.system.FileWriter;
 import com.sixtyfour.util.Colors;
 
 /**
@@ -106,13 +115,6 @@ public class BasicShell {
 		mainTextArea.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
-				if (e.getKeyChar() == '\n') {
-					try {
-						fromTextArea.put(getLineAt(rowNum - 1));
-					} catch (InterruptedException e1) {
-						e1.printStackTrace();
-					}
-				}
 				if (runner != null) {
 					runner.registerKey(null);
 				}
@@ -125,6 +127,17 @@ public class BasicShell {
 					runner.registerKey(e.getKeyChar());
 				}
 				super.keyPressed(e);
+			}
+			
+			@Override
+			public void keyTyped(KeyEvent e) {
+        			if (e.getKeyChar() == '\n') {
+        				try {
+        					fromTextArea.put(getLineAt(rowNum - 1));
+        				} catch (InterruptedException e1) {
+        					e1.printStackTrace();
+        				}
+        			}
 			}
 		});
 
@@ -145,9 +158,9 @@ public class BasicShell {
 						}
 						Thread.yield();
 
-						if (mainTextArea.getText().length() > 100000) {
+						if (mainTextArea.getText().length() > 50000) {
 							mainTextArea
-									.setText(mainTextArea.getText().substring(mainTextArea.getText().length() - 70000));
+									.setText(mainTextArea.getText().substring(mainTextArea.getText().length() - 40000));
 						}
 
 					} catch (InterruptedException e) {
@@ -260,7 +273,7 @@ public class BasicShell {
 	}
 
 	/**
-	 * Send text to text area. Blocks thd caller if buffer is full
+	 * Send text to text area. Blocks the caller if buffer is full
 	 * 
 	 * @param outText
 	 */
@@ -288,8 +301,12 @@ public class BasicShell {
 		while (true) {
 			String s = getString();
 			String sl = s.toLowerCase();
-			if (sl.startsWith("load") || sl.startsWith("save")) {
-				s = s.replace("\"", " ").trim();
+			if (sl.startsWith("load") || sl.startsWith("save") || sl.startsWith("compile")) {
+			    	int pos=s.indexOf("\"");
+			    	if (pos!=-1) {
+			    	    s=s.substring(0, pos)+s.substring(pos).replace(" ", "_");
+			    	}
+				s = s.replace("\"", " ").replaceAll("\\s{2,}", " ").trim();
 			}
 			String[] split = s.split(" ");
 			if (sl.equals("list")) {
@@ -300,6 +317,12 @@ public class BasicShell {
 				cls();
 			} else if (sl.equals("dir")) {
 				dir();
+			} else if (split[0].toLowerCase().equals("compile")) {
+			    if (split.length!=2) {
+			    	    putString("?MISSING FILE NAME\n");
+			    	} else {
+			    	    compile(split[1]);
+			    	}
 			} else if (sl.equals("run")) {
 				if (runner != null) {
 					runner.dispose();
@@ -307,11 +330,19 @@ public class BasicShell {
 				runner = new Runner(store.toArray(), this);
 				runner.synchronousStart();
 			} else if (split[0].toLowerCase().equals("save")) {
-				String msg = store.save(split[1]);
-				putString(msg);
+			    	if (split.length!=2) {
+			    	    putString("?MISSING FILE NAME\n");
+			    	} else {
+			    	    String msg = store.save(split[1]);
+			    	    putString(msg);
+			    	}
 			} else if (split[0].toLowerCase().equals("load")) {
-				String msg = store.load(split[1]);
-				putString(msg);
+			    if (split.length!=2) {
+			    	    putString("?MISSING FILE NAME\n");
+			    	} else {
+			    	    String msg = store.load(split[1]);
+			    	    putString(msg);
+			    	}
 			} else {
 				if (!store.insert(s)) {
 					if (runner == null) {
@@ -325,6 +356,46 @@ public class BasicShell {
 				}
 			}
 		}
+	}
+
+	private void compile(String path) {
+	    CompilerConfig conf = new CompilerConfig();
+	    MemoryConfig memConfig = new MemoryConfig();
+	    String[] code=store.toArray();
+	    Basic basic = new Basic(code);
+	    NativeCompiler nComp = NativeCompiler.getCompiler();
+	    List<String> nCode=null;
+	    PlatformProvider platform=new Platform64();
+	    putString("COMPILING...\n");
+	    
+	    try {
+		nCode = nComp.compile(conf, basic, memConfig, platform);
+        	} catch (Exception e) {
+        	    	putString("?COMPILE ERROR: "+e.getMessage()+"\n");
+        	    	Logger.log(e);
+        		return;
+        	}
+	 
+	    Assembler assy = new Assembler(nCode);
+	    try {
+		assy.compile(conf);
+        	} catch (Exception e) {
+        	    putString("?COMPILE ERROR: "+e.getMessage()+"\n");
+        	    Logger.log(e);
+        	    return;
+        	}
+	    
+	    putString("SAVING...\n");
+	    try {
+	    FileWriter.writeAsPrg(assy.getProgram(), path,
+			memConfig.getProgramStart() == -1 || (memConfig.getProgramStart() < platform.getMaxHeaderAddress()
+					&& memConfig.getProgramStart() >= platform.getBaseAddress() + 23),
+			platform.getBaseAddress(), true);
+	    } catch(Exception e) {
+		putString("?IO ERROR: "+e.getMessage()+"\n");
+		Logger.log(e);
+	    }
+	    putString("READY.\n");
 	}
 
 	public ProgramStore getStore() {
@@ -348,4 +419,5 @@ public class BasicShell {
 	public boolean peek() {
 		return fromTextArea.peek() != null;
 	}
+	
 }
