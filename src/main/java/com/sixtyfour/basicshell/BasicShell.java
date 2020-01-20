@@ -128,16 +128,16 @@ public class BasicShell {
 				}
 				super.keyPressed(e);
 			}
-			
+
 			@Override
 			public void keyTyped(KeyEvent e) {
-        			if (e.getKeyChar() == '\n') {
-        				try {
-        					fromTextArea.put(getLineAt(rowNum - 1));
-        				} catch (InterruptedException e1) {
-        					e1.printStackTrace();
-        				}
-        			}
+				if (e.getKeyChar() == '\n') {
+					try {
+						fromTextArea.put(getLineAt(rowNum - 1));
+					} catch (InterruptedException e1) {
+						e1.printStackTrace();
+					}
+				}
 			}
 		});
 
@@ -302,47 +302,45 @@ public class BasicShell {
 			String s = getString();
 			String sl = s.toLowerCase();
 			if (sl.startsWith("load") || sl.startsWith("save") || sl.startsWith("compile")) {
-			    	int pos=s.indexOf("\"");
-			    	if (pos!=-1) {
-			    	    s=s.substring(0, pos)+s.substring(pos).replace(" ", "_");
-			    	}
+				int pos = s.indexOf("\"");
+				if (pos != -1) {
+					s = s.substring(0, pos) + s.substring(pos).replace(" ", "_");
+				}
 				s = s.replace("\"", " ").replaceAll("\\s{2,}", " ").trim();
 			}
 			String[] split = s.split(" ");
 			if (sl.startsWith("list")) {
-			    	sl=sl.trim();
-			    	if (sl.length()==4) {
-			    	    putString(store.toString());
-			    	} else {
-			    	    String[] lines=store.toArray();
-			    	    String p2=sl.substring(4).trim();
-			    	    String[] ps=p2.split("-");
-			    	    int start=0;
-			    	    int end=lines.length;
-			    	    if (ps.length==1) {
-			    		if (p2.startsWith("-")) {
-			    		    end=findLine(lines, ps[0], true);
-			    		} else {
-			    		    start=findLine(lines, ps[0], false);
-			    		    if (!p2.endsWith("-")) {
-			    			end=start;
-			    		    }
-			    		}
-			    	    } else {
-			    		 start=findLine(lines, ps[0], false);
-			    		 end=findLine(lines, ps[1], true);
-			    	    }
-			    	    
-			    	    if (start<=end && start>=0) {
-			    		end=Math.min(end, lines.length-1);
-			    		for (int i=start; i<=end; i++) {
-			    		    putString(lines[i]+"\n");
-			    		}
-			    	    }
-			    	}
-			    	
-			    	
-				
+				sl = sl.trim();
+				if (sl.length() == 4) {
+					putString(store.toString());
+				} else {
+					String[] lines = store.toArray();
+					String p2 = sl.substring(4).trim();
+					String[] ps = p2.split("-");
+					int start = 0;
+					int end = lines.length;
+					if (ps.length == 1) {
+						if (p2.startsWith("-")) {
+							end = findLine(lines, ps[0], true);
+						} else {
+							start = findLine(lines, ps[0], false);
+							if (!p2.endsWith("-")) {
+								end = start;
+							}
+						}
+					} else {
+						start = findLine(lines, ps[0], false);
+						end = findLine(lines, ps[1], true);
+					}
+
+					if (start <= end && start >= 0) {
+						end = Math.min(end, lines.length - 1);
+						for (int i = start; i <= end; i++) {
+							putString(lines[i] + "\n");
+						}
+					}
+				}
+
 			} else if (sl.equals("new")) {
 				store.clear();
 			} else if (sl.equals("cls")) {
@@ -350,11 +348,11 @@ public class BasicShell {
 			} else if (sl.equals("dir")) {
 				dir();
 			} else if (split[0].toLowerCase().equals("compile")) {
-			    if (split.length!=2) {
-			    	    putString("?MISSING FILE NAME\n");
-			    	} else {
-			    	    compile(split[1]);
-			    	}
+				if (split.length != 2) {
+					putString("?MISSING FILE NAME\n");
+				} else {
+					compile(split[1]);
+				}
 			} else if (sl.equals("run")) {
 				if (runner != null) {
 					runner.dispose();
@@ -362,19 +360,19 @@ public class BasicShell {
 				runner = new Runner(store.toArray(), this);
 				runner.synchronousStart();
 			} else if (split[0].toLowerCase().equals("save")) {
-			    	if (split.length!=2) {
-			    	    putString("?MISSING FILE NAME\n");
-			    	} else {
-			    	    String msg = store.save(split[1]);
-			    	    putString(msg);
-			    	}
+				if (split.length != 2) {
+					putString("?MISSING FILE NAME\n");
+				} else {
+					String msg = store.save(split[1]);
+					putString(msg);
+				}
 			} else if (split[0].toLowerCase().equals("load")) {
-			    if (split.length!=2) {
-			    	    putString("?MISSING FILE NAME\n");
-			    	} else {
-			    	    String msg = store.load(split[1]);
-			    	    putString(msg);
-			    	}
+				if (split.length != 2) {
+					putString("?MISSING FILE NAME\n");
+				} else {
+					String msg = store.load(split[1]);
+					putString(msg);
+				}
 			} else {
 				if (!store.insert(s)) {
 					if (runner == null) {
@@ -391,83 +389,83 @@ public class BasicShell {
 	}
 
 	private int findLine(String[] lines, String line, boolean forEnd) {
-	    try {
-		if (line.isEmpty()) {
-		    return 0;
+		try {
+			if (line.isEmpty()) {
+				return 0;
+			}
+			line = line.trim();
+			int ls = Integer.parseInt(line);
+			StringBuilder sb = new StringBuilder();
+			int cnt = 0;
+			int last = -1;
+			for (String l : lines) {
+				sb.setLength(0);
+				for (int i = 0; i < l.length(); i++) {
+					char c = l.charAt(i);
+					if (Character.isDigit(c)) {
+						sb.append(c);
+					} else {
+						break;
+					}
+				}
+				Integer cs = Integer.parseInt(sb.toString());
+				if (cs == ls) {
+					return cnt;
+				}
+				if (last < ls && cs > ls) {
+					if (forEnd) {
+						return --cnt;
+					}
+					return cnt;
+				}
+				last = cs;
+				cnt++;
+			}
+		} catch (Exception e) {
+			Logger.log(e);
+			putString("? SYNTAX ERROR\n");
 		}
-		int ls=Integer.parseInt(line);
-		StringBuilder sb=new StringBuilder();
-		int cnt=0;
-		int last=-1;
-		for (String l:lines) {
-		    sb.setLength(0);
-		    for (int i=0; i<l.length(); i++) {
-			char c=l.charAt(i);
-			if (Character.isDigit(c)) {
-			    sb.append(c);
-			}
-			else {
-			    break;
-			}
-		    }
-		    Integer cs=Integer.parseInt(sb.toString());
-		    if (cs==ls) {
-			return cnt; 
-		    }
-		    if (last<ls && cs>ls) {
-			if (forEnd) {
-			    return --cnt;
-			}
-			return cnt;
-		    }
-		    last=cs;
-		    cnt++;
-		}
-	    } catch(Exception e) {
-		Logger.log(e);
-		putString("? SYNTAX ERROR\n");
-	    }
-	    return 0;
+		return 0;
 	}
 
 	private void compile(String path) {
-	    CompilerConfig conf = new CompilerConfig();
-	    MemoryConfig memConfig = new MemoryConfig();
-	    String[] code=store.toArray();
-	    Basic basic = new Basic(code);
-	    NativeCompiler nComp = NativeCompiler.getCompiler();
-	    List<String> nCode=null;
-	    PlatformProvider platform=new Platform64();
-	    putString("COMPILING...\n");
-	    
-	    try {
-		nCode = nComp.compile(conf, basic, memConfig, platform);
-        	} catch (Exception e) {
-        	    	putString("?COMPILE ERROR: "+e.getMessage()+"\n");
-        	    	Logger.log(e);
-        		return;
-        	}
-	 
-	    Assembler assy = new Assembler(nCode);
-	    try {
-		assy.compile(conf);
-        	} catch (Exception e) {
-        	    putString("?COMPILE ERROR: "+e.getMessage()+"\n");
-        	    Logger.log(e);
-        	    return;
-        	}
-	    
-	    putString("SAVING...\n");
-	    try {
-	    FileWriter.writeAsPrg(assy.getProgram(), path,
-			memConfig.getProgramStart() == -1 || (memConfig.getProgramStart() < platform.getMaxHeaderAddress()
-					&& memConfig.getProgramStart() >= platform.getBaseAddress() + 23),
-			platform.getBaseAddress(), true);
-	    } catch(Exception e) {
-		putString("?IO ERROR: "+e.getMessage()+"\n");
-		Logger.log(e);
-	    }
-	    putString("READY.\n");
+		CompilerConfig conf = new CompilerConfig();
+		MemoryConfig memConfig = new MemoryConfig();
+		String[] code = store.toArray();
+		Basic basic = new Basic(code);
+		NativeCompiler nComp = NativeCompiler.getCompiler();
+		List<String> nCode = null;
+		PlatformProvider platform = new Platform64();
+		putString("COMPILING...\n");
+
+		try {
+			nCode = nComp.compile(conf, basic, memConfig, platform);
+		} catch (Exception e) {
+			putString("?COMPILE ERROR: " + e.getMessage() + "\n");
+			Logger.log(e);
+			return;
+		}
+
+		Assembler assy = new Assembler(nCode);
+		try {
+			assy.compile(conf);
+		} catch (Exception e) {
+			putString("?COMPILE ERROR: " + e.getMessage() + "\n");
+			Logger.log(e);
+			return;
+		}
+
+		putString("SAVING...\n");
+		try {
+			FileWriter.writeAsPrg(assy.getProgram(), path,
+					memConfig.getProgramStart() == -1 || (memConfig.getProgramStart() < platform.getMaxHeaderAddress()
+							&& memConfig.getProgramStart() >= platform.getBaseAddress() + 23),
+					platform.getBaseAddress(), true);
+		} catch (Exception e) {
+			putString("?IO ERROR: " + e.getMessage() + "\n");
+			Logger.log(e);
+		}
+		putString("READY.\n");
 	}
 
 	public ProgramStore getStore() {
@@ -491,5 +489,5 @@ public class BasicShell {
 	public boolean peek() {
 		return fromTextArea.peek() != null;
 	}
-	
+
 }

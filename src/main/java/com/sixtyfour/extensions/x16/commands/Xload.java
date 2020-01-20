@@ -39,7 +39,7 @@ public class Xload extends FileOperation {
 	protected boolean isLoad() {
 		return true;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 

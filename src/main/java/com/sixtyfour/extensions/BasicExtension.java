@@ -73,9 +73,9 @@ public interface BasicExtension {
 	 * @return if it's single sided or not
 	 */
 	default boolean isSingleSided(String function) {
-	    	if (getFunctions()==null) {
-	    	    return false;
-	    	}
+		if (getFunctions() == null) {
+			return false;
+		}
 		for (Function fun : getFunctions()) {
 			if (fun.isNativeFunction(function)) {
 				return true;
@@ -94,9 +94,9 @@ public interface BasicExtension {
 	 * @return has something been added to the code?
 	 */
 	default boolean applyOperation(String function, List<String> code) {
-	    	if (getFunctions()==null) {
-	    	    return false;
-	    	}
+		if (getFunctions() == null) {
+			return false;
+		}
 		for (Function fun : getFunctions()) {
 			if (fun.isNativeFunction(function)) {
 				boolean added = fun.addNativeFunctionCall(code);

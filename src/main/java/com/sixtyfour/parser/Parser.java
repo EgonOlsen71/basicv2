@@ -392,7 +392,7 @@ public class Parser {
 	 */
 	public static Term getTerm(CompilerConfig config, String term, Machine machine, boolean stripAssignment,
 			boolean checkForLogicTerm) {
-		
+
 		checkForInvalidChars(term);
 		Term ret = getTerm(config, term, machine, stripAssignment, checkForLogicTerm, null);
 		ret.setInitial(TermEnhancer.stripAssignment(term, stripAssignment));
@@ -527,15 +527,15 @@ public class Parser {
 			m *= dimensions[i] + 1;
 		}
 
-		String newTerm=TermOptimizer.optimizeLinearIndexTerm(sb.toString());
+		String newTerm = TermOptimizer.optimizeLinearIndexTerm(sb.toString());
 		/*
-		if (newTerm.length()!=sb.length()) {
-		    System.out.println("Index term(1): "+sb.toString());
-		    System.out.println("Index term(2): "+newTerm);
-		}*/
+		 * if (newTerm.length()!=sb.length()) {
+		 * System.out.println("Index term(1): "+sb.toString());
+		 * System.out.println("Index term(2): "+newTerm); }
+		 */
 
 		Term t = Parser.getTermWithoutChecks(config, newTerm, machine, false, true);
-		
+
 		return t;
 	}
 

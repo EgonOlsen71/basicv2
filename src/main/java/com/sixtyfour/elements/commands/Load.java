@@ -28,7 +28,7 @@ public class Load extends FileOperation {
 	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
 		return super.evalToCode(config, machine, "LOAD");
 	}
-	
+
 	@Override
 	protected boolean isLoad() {
 		return true;

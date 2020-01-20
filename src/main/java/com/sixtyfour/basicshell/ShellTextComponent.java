@@ -33,7 +33,8 @@ class ShellTextComponent extends JTextArea {
 		setForeground(new Color(Colors.COLORS[14]));
 		setCaretColor(new Color(Colors.COLORS[14]));
 		setToolTipText("<html>Type one of:<br>" + "- cls<br>- list<br>- run<br>- new<br>"
-				+ "- save[file]<br>- load[file]<br>- compile[file]<br>- dir<br>" + "or edit your BASIC code here</html>");
+				+ "- save[file]<br>- load[file]<br>- compile[file]<br>- dir<br>"
+				+ "or edit your BASIC code here</html>");
 		BlockCaret mc = new BlockCaret();
 		mc.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 		setCaret(mc);
