@@ -309,8 +309,40 @@ public class BasicShell {
 				s = s.replace("\"", " ").replaceAll("\\s{2,}", " ").trim();
 			}
 			String[] split = s.split(" ");
-			if (sl.equals("list")) {
-				putString(store.toString());
+			if (sl.startsWith("list")) {
+			    	sl=sl.trim();
+			    	if (sl.length()==4) {
+			    	    putString(store.toString());
+			    	} else {
+			    	    String[] lines=store.toArray();
+			    	    String p2=sl.substring(4).trim();
+			    	    String[] ps=p2.split("-");
+			    	    int start=0;
+			    	    int end=lines.length;
+			    	    if (ps.length==1) {
+			    		if (p2.startsWith("-")) {
+			    		    end=findLine(lines, ps[0], true);
+			    		} else {
+			    		    start=findLine(lines, ps[0], false);
+			    		    if (!p2.endsWith("-")) {
+			    			end=start;
+			    		    }
+			    		}
+			    	    } else {
+			    		 start=findLine(lines, ps[0], false);
+			    		 end=findLine(lines, ps[1], true);
+			    	    }
+			    	    
+			    	    if (start<=end && start>=0) {
+			    		end=Math.min(end, lines.length-1);
+			    		for (int i=start; i<=end; i++) {
+			    		    putString(lines[i]+"\n");
+			    		}
+			    	    }
+			    	}
+			    	
+			    	
+				
 			} else if (sl.equals("new")) {
 				store.clear();
 			} else if (sl.equals("cls")) {
@@ -356,6 +388,46 @@ public class BasicShell {
 				}
 			}
 		}
+	}
+
+	private int findLine(String[] lines, String line, boolean forEnd) {
+	    try {
+		if (line.isEmpty()) {
+		    return 0;
+		}
+		int ls=Integer.parseInt(line);
+		StringBuilder sb=new StringBuilder();
+		int cnt=0;
+		int last=-1;
+		for (String l:lines) {
+		    sb.setLength(0);
+		    for (int i=0; i<l.length(); i++) {
+			char c=l.charAt(i);
+			if (Character.isDigit(c)) {
+			    sb.append(c);
+			}
+			else {
+			    break;
+			}
+		    }
+		    Integer cs=Integer.parseInt(sb.toString());
+		    if (cs==ls) {
+			return cnt; 
+		    }
+		    if (last<ls && cs>ls) {
+			if (forEnd) {
+			    return --cnt;
+			}
+			return cnt;
+		    }
+		    last=cs;
+		    cnt++;
+		}
+	    } catch(Exception e) {
+		Logger.log(e);
+		putString("? SYNTAX ERROR\n");
+	    }
+	    return 0;
 	}
 
 	private void compile(String path) {
