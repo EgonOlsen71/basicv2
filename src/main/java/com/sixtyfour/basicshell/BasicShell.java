@@ -280,11 +280,13 @@ public class BasicShell {
 	 */
 	private void cls() {
 		mainTextArea.setText("");
+		mainTextArea.requestFocus();
 	}
 
 	private void run(boolean sync) {
 		runner = new Runner(store.toArray(), this);
 		runner.start(sync);
+		mainTextArea.requestFocus();
 	}
 
 	/**
