@@ -207,6 +207,7 @@ public class BasicShell {
 						i.runStop();
 					}
 				}
+				mainTextArea.requestFocus();
 			}
 		});
 		clsButton.addActionListener(new ActionListener() {
