@@ -113,6 +113,9 @@ public class BasicShell {
 			}
 		});
 		mainTextArea.addKeyListener(new KeyAdapter() {
+		    	
+		    	private String lineContent="";
+		    
 		    @Override
 			public void keyReleased(KeyEvent e) {
 				if (runner != null) {
@@ -129,6 +132,7 @@ public class BasicShell {
 				
 				if (e.getKeyChar() == '\n') {
 				    String line = getLineAt(rowNum);
+				    lineContent=line;
 				    int end=mainTextArea.getText().length();
 				    try {
 					end=mainTextArea.getLineEndOffset(rowNum);
@@ -161,7 +165,8 @@ public class BasicShell {
 			public void keyTyped(KeyEvent e) {
 				if (e.getKeyChar() == '\n') {
 					try {
-						fromTextArea.put(getLineAt(rowNum - 1));
+						fromTextArea.put(lineContent);
+						lineContent="";
 					} catch (InterruptedException e1) {
 						//
 					}
