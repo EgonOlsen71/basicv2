@@ -135,7 +135,6 @@ public class BasicShell {
 				    } catch (BadLocationException e1) {
 					//
 				    }
-				    System.out.println(mainTextArea.getRows());
 				    if (colNum < line.length()) {
 					mainTextArea.setCaretPosition(mainTextArea.getCaretPosition() + line.length() - colNum - 1);
 					if (end>=mainTextArea.getText().length()) {
