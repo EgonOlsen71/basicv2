@@ -74,7 +74,9 @@ public class On extends AbstractCommand {
 			}
 		}
 		if (numPos == -1) {
-			syntaxError(this);
+		    // Handle the strange case that there is no list at all after the GOTO/GOSUB, which means "jump to 0"
+		    lines="0";
+		    numPos=0;
 		}
 		String[] parts = lines.substring(numPos).split(",");
 		for (String part : parts) {
@@ -123,7 +125,7 @@ public class On extends AbstractCommand {
 
 		int oc = onCount++;
 
-		String label = "SKIPON" + oc;
+		String label = "GSKIPON" + oc;
 
 		after.add("INT " + expPush + "," + expPush);
 		for (int i = 0; i < lineNumbers.size(); i++) {

@@ -64,23 +64,6 @@ public class If extends AbstractCommand {
 			isGoto = true;
 		}
 		String firstTerm = linePart.substring(2, termEnd);
-
-		/*
-		 * // Not a good idea as it actually triggers even for conditions like Z AND
-		 * 8...which it shouldn't... if (firstTerm.contains("AND") &&
-		 * !firstTerm.contains("RND") && !firstTerm.contains("FN") &&
-		 * !firstTerm.contains("PEEK")) { int pos = firstTerm.indexOf("AND"); boolean
-		 * inString = false; int brackets = 0; for (int i = 0; i < pos; i++) { char c =
-		 * firstTerm.charAt(i); if (c == '\"') { inString = !inString; } if (!inString)
-		 * { if (c == '(') { brackets++; } else if (c == ')') { brackets--; } } } if
-		 * (brackets == 0) { // We can split this in two IFs to optimize the condition
-		 * String last = linePart.substring(termEnd); String nextTerm =
-		 * firstTerm.substring(pos + 3).trim(); firstTerm = firstTerm.substring(0, pos);
-		 * 
-		 * linePart = "IF" + firstTerm + "THENIF " + nextTerm + last; termEnd =
-		 * firstTerm.length() + 2; System.out.println("Converted into: "+linePart); } }
-		 */
-
 		conditionalTerm = firstTerm;
 
 		logicTerm = LogicParser.getTerm(config, firstTerm, machine);
