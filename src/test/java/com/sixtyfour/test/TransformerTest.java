@@ -44,7 +44,7 @@ public class TransformerTest {
 		// testTransformer2();
 		// testTransformer4();
 		// testTransformer5();
-		// testTransformerFractal();
+		testTransformerFractal();
 		// testTransformer6();
 		// testTransformer7();
 		// testTransformerPrime();
@@ -65,8 +65,8 @@ public class TransformerTest {
 		// testTransformer20();
 		// testTransformer22();
 		// testTransformer23();
-		// testTransformerFrog();
-		// testTransformerAffine();
+		 testTransformerFrog();
+		 testTransformerAffine();
 		// testTransformer24();
 		// testTransformer25();
 		// testTransformer26();
@@ -93,7 +93,7 @@ public class TransformerTest {
 		// testQuicksort();
 		// testInx();
 		// testLabyrinth();
-		// testFrosch();
+		 testFrosch();
 //		testIfTest();
 		// testRunner();
 		// testIfNotTest();
@@ -120,8 +120,8 @@ public class TransformerTest {
 //		testDivide();
 //		testSystemcall();
 //		testDatastuff();
-		testChrOptimizer();
-		testCcTestOptimizer();
+//		testChrOptimizer();
+//		testCcTestOptimizer();
 
 	}
 
@@ -325,7 +325,7 @@ public class TransformerTest {
 		Assembler assy = initTestEnvironment(vary, false);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++frosch.prg", true);
 		assy.getCpu().setCpuTracer(new MyTracer(assy));
-		executeTest(assy);
+		//executeTest(assy);
 	}
 
 	private static void testQuicksort() throws Exception {

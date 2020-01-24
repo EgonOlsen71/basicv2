@@ -172,9 +172,7 @@ public class For extends AbstractCommand {
 		var = machine.add(var);
 		NativeCompiler compiler = NativeCompiler.getCompiler();
 		List<String> after = new ArrayList<String>();
-		List<String> expr = compiler.compileToPseudoCode(config, machine, endTerm);
-		expr.addAll(compiler.compileToPseudoCode(config, machine, stepTerm));
-		expr.addAll(compiler.compileToPseudoCode(config, machine, term));
+		List<String> expr = compiler.compileToPseudoCode(config, machine, term);
 		List<String> before = null;
 
 		String varLabel = var.getName() + "{" + var.getType() + "}";
@@ -182,6 +180,8 @@ public class For extends AbstractCommand {
 		expr = expr.subList(0, expr.size() - 1);
 
 		after.add("MOV " + varLabel + "," + expPush);
+		after.addAll(compiler.compileToPseudoCode(config, machine, endTerm));
+		after.addAll(compiler.compileToPseudoCode(config, machine, stepTerm));
 		after.add("MOV A,(" + varLabel + ")");
 		after.add("JSR INITFOR");
 

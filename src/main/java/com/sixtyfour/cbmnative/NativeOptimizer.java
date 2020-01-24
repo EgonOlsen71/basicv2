@@ -401,11 +401,11 @@ public class NativeOptimizer {
 				if (config.isLoopOptimizations() && lines[18] != null) {
 					if (lines[0].startsWith("MOV Y,")
 							&& (lines[0].endsWith("{INTEGER}") || lines[0].endsWith(".0{REAL}"))
-							&& lines[1].equals("PUSH Y") && lines[2].equals("NOP") && lines[3].startsWith("MOV Y,")
+							&& lines[1].startsWith("MOV") && lines[1].endsWith(",Y") && lines[2].equals("NOP") && lines[3].startsWith("MOV Y,")
 							&& (lines[3].endsWith("{INTEGER}") || lines[3].endsWith(".0{REAL}"))) {
 						if (lines[4].equals("PUSH Y") && lines[5].equals("NOP") && lines[6].startsWith("MOV Y,")
 								&& (lines[6].endsWith("{INTEGER}") || lines[6].endsWith(".0{REAL}"))
-								&& lines[7].startsWith("MOV") && lines[7].endsWith(",Y")) {
+								&& lines[7].equals("PUSH Y")) {
 							if (lines[8].startsWith("MOV A,(") && lines[9].equals("JSR INITFOR")
 									&& lines[10].equals("NOP") && lines[11].startsWith("MOV Y,")) {
 								if (lines[12].equals("PUSH Y") && lines[13].startsWith("MOV X,")
