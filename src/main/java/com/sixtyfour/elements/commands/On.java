@@ -125,6 +125,7 @@ public class On extends AbstractCommand {
 
 		int oc = onCount++;
 
+		// Shouldn't be calle SKIPON only (as before), because the native compiler will mangle it thinking that it is part of an IF
 		String label = "GSKIPON" + oc;
 
 		after.add("INT " + expPush + "," + expPush);
