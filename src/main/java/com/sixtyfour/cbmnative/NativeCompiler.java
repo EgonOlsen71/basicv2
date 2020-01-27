@@ -473,9 +473,17 @@ public class NativeCompiler {
 				}
 				boolean isSingle = isSingle(op);
 				if (op.startsWith("ARRAYACCESS")) {
-					if ("Y".equals(getLastFilledRegister(code, 1, floatRegs))) {
+					// Somehow, array access is different from other functions and this
+					// mess takes care of handling the data that's needed in X correctly...
+					// There has to be a better way than this though...
+					String lastFilled=getLastFilledRegister(code, 1, floatRegs);
+					int pos=code.size() - (code.get(code.size() - 2).startsWith("CHGCTX") ? 2 : 1);
+					if ("Y".equals(lastFilled)) {
 						// Move an array index from Y to x if needed
-						code.add(code.size() - (code.get(code.size() - 2).startsWith("CHGCTX") ? 2 : 1), "MOV X,Y");
+						code.add(pos, "MOV X,Y");
+					} else if (lastFilled.startsWith("POP")) {
+						// POP an array index into X if needed
+						code.add(pos, lastFilled);
 					}
 				}
 
@@ -870,6 +878,16 @@ public class NativeCompiler {
 					String reg = code.get(i).substring(4, pos).trim();
 					if (reg.length() == 1 && allowed.contains(reg)) {
 						return reg;
+					}
+				} else {
+					// It might a jump to a function that not covered by the normal MathFunction (like ASC or LEN)
+					if (code.get(i).startsWith("JSR ")) {
+						String addr=code.get(i).substring(4).toUpperCase(Locale.ENGLISH);
+						if (isSingle(addr)) {
+							return "X";
+						} else if (addr.startsWith("DEF")) {
+							return "POP X";
+						}
 					}
 				}
 			}
