@@ -206,7 +206,7 @@ public class MoSpeedCL {
 				}
 				srcFile = srcFile.replace(".prg", ".bas");
 			} catch (Exception e) {
-				System.out.println("Failed to convert PRG file: " + e.getMessage());
+				System.out.println("Failed to convert PRG file: " + e.getClass()+"/"+e.getMessage());
 				System.out.println("Proceeding as if it was ASCII instead!");
 			}
 		}
