@@ -44,7 +44,7 @@ public class TransformerTest {
 		// testTransformer2();
 		// testTransformer4();
 		// testTransformer5();
-		testTransformerFractal();
+		//testTransformerFractal();
 		// testTransformer6();
 		// testTransformer7();
 		// testTransformerPrime();
@@ -120,9 +120,17 @@ public class TransformerTest {
 //		testDivide();
 //		testSystemcall();
 //		testDatastuff();
-//		testChrOptimizer();
-//		testCcTestOptimizer();
+		testChrOptimizer();
+		testCcTestOptimizer();
+		testDefFnArray();
 
+	}
+
+	private static void testDefFnArray() throws Exception {
+		System.out.println("\n\ntestDefFnArray");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/deffnarray.bas");
+		Assembler assy = initTestEnvironment(vary, true, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++deffnarray.prg", true);
 	}
 
 	private static void testCcTestOptimizer() throws Exception {
