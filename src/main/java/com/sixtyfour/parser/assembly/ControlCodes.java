@@ -21,7 +21,7 @@ public class ControlCodes {
 			add(32, "space");
 			add(144, "black", "blk", "ctrl-1");
 			add(5, "white", "wht", "ctrl-2", "ctrl-e");
-			add(28, "red", "ctrl-3", "ctrl-pound", "ctrl-£");
+			add(28, "red", "ctrl-3", "ctrl-£", "ctrl-pound");
 			add(159, "cyan", "cyn", "ctrl-4");
 			add(156, "purple", "pur", "pink", "cm-3");
 			add(30, "green", "grn", "ctrl-6", "ctrl-up arrow", "ctrl-↑");
@@ -60,7 +60,7 @@ public class ControlCodes {
 			add(138, "f4", "shift-f3", "sh-f3");
 			add(139, "f6", "shift-f5", "sh-f5");
 			add(140, "f8", "shift-f7", "sh-f7");
-			add(92, "pound", "£");
+			add(92,  "£", "pound");
 			add(160, "shift-space", "sh-space");
 			add(33, "shift-1", "sh-1");
 			add(34, "shift-2", "sh-2");
