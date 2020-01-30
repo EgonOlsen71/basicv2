@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -220,6 +221,9 @@ public class MoSpeedCL {
 				if (!Character.isDigit(c)) {
 					System.out.println("Code seems to use labels, not lines...converting it!");
 					src = Preprocessor.convertToLineNumbers(src);
+					if (genSrc) {
+						write(Arrays.asList(src), ascTarget);
+					}
 				}
 				break;
 			}
