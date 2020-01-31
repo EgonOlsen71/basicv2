@@ -118,6 +118,15 @@ public class MoSpeedCL {
 
 			}
 		}
+		
+		if (cmds.containsKey("threads")) {
+			try {
+				cfg.setThreads(Integer.parseInt(cmds.get("threads")));
+			} catch (Exception e) {
+				System.out.println("Invalid thread count: " + cmds.get("threads"));
+
+			}
+		}
 
 		boolean genSrc = cmds.containsKey("generatesrc") && Boolean.valueOf(cmds.get("generatesrc"));
 		String ilTarget = null;

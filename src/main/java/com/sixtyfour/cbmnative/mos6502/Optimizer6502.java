@@ -37,16 +37,19 @@ public class Optimizer6502 implements Optimizer {
 		long s = System.currentTimeMillis();
 		trimLines(input);
 		input = trackAndModifyRegisterUsage(input);
-		input = optimizeInternal(platform, input, pg);
+		input = optimizeInternal(platform, input, pg, config.getThreads());
 		input = applySpecialRules(config, platform, input);
 		input = removeNops(input);
 		Logger.log("Assembly code optimized in " + (System.currentTimeMillis() - s) + "ms");
 		return input;
 	}
 
-	private List<String> optimizeInternal(PlatformProvider platform, List<String> input, ProgressListener pg) {
+	private List<String> optimizeInternal(PlatformProvider platform, List<String> input, ProgressListener pg, int threads) {
 		Map<String, Number> const2Value = extractConstants(input);
-		int cpus = Runtime.getRuntime().availableProcessors();
+		int cpus = threads;
+		if (cpus<=0) {
+		    cpus=Runtime.getRuntime().availableProcessors();
+		}
 		int[] ps = getStartAndEnd(input);
 		int codeStart = ps[0];
 		int codeEnd = ps[1];
