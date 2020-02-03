@@ -452,7 +452,7 @@ public class TermEnhancer {
 		}
 	
 		if (level==3) {
-		    // Kludge to handle the priotities between logic AND and OR. Mainly because I initially thought that
+		    // Kludge to handle the priorities between logic AND and OR. Mainly because I initially thought that
 		    // there isn't one and once I discovered that there is, I couldn't understand the addBrackets()-method
 		    // enough anymore to handle it there...:-)
 		    term = addLogicBrackets(term);
