@@ -38,8 +38,18 @@ public class ParserTest {
 		testSin();
 		testNumberExt1();
 		testBrackets();
+		testLogicBrackets();
 	}
 
+	private static void testLogicBrackets() {
+		System.out.println("testLogicBrackets");
+		String term = "u or 4 +56-23 or z=160 or l>1 and l<10 and z=32";
+		System.out.println("Before: " + term);
+		String s = TermEnhancer.addBrackets(term);
+		System.out.println("After:" + s);
+	}
+
+	
 	private static void testBrackets() {
 		System.out.println("testBrackets");
 		String term = "646,(bg&15)*16+(fg&15)";
