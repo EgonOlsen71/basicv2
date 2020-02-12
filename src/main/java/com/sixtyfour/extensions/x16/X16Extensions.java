@@ -143,6 +143,7 @@ public class X16Extensions implements BasicExtension {
 				this.put(0xCE94, "MB");
 				this.put(0xCE84, "VPOKE");
 				this.put(0xCE91, "VPEEK");
+				this.put(0xCE85, "VLOAD");
 				this.put(0xCE81, "DOS");
 				this.put(0xCE80, "MON");
 				this.put(0xCE82, "OLD");

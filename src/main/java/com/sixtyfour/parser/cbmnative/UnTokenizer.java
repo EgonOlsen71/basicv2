@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import com.sixtyfour.Logger;
 import com.sixtyfour.extensions.x16.X16Extensions;
 import com.sixtyfour.parser.assembly.ControlCodes;
 
@@ -158,6 +159,8 @@ public class UnTokenizer {
 								token = TOKENS.get(mb);
 							}
 							if (token == null) {
+							  String part=line.substring(Math.max(line.length()-40, 0), line.length());
+							  Logger.log("Unknown token near: "+part +" @ line "+ln);
 								throw new RuntimeException("Unknown token: $" + Integer.toHexString(mb));
 							}
 							if (line.length() > 0 && line.charAt(line.length() - 1) != ' ' && b < 180
