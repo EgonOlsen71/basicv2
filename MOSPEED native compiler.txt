@@ -142,6 +142,8 @@ MOSpeed tries to stay compatible with the BASIC V2 interpreter when possible. Ho
 
 - LIST: Will be ignored.
 
+- RUN: Any line number after RUN will be ignored.
+
 - NEW, STOP: Will be treated like END.
 
 - DIM with variables: While this actually isn't supported, to might work to a degree if MOSpeed can detect 
