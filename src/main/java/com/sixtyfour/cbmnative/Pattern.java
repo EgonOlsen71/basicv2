@@ -355,6 +355,9 @@ public class Pattern implements java.lang.Cloneable {
 		if (!fp.endsWith("#<") && !fp.endsWith("#>")) {
 			fp = fp + " ";
 		}
+		if (fp.endsWith("  ")) {
+		    fp=fp.substring(0, fp.length()-1);
+		}
 		replacement[i] = fp + values[posi]
 				+ ((endi < replacement[i].length() - 1) ? replacement[i].substring(endi + 1) : "");
 	}
