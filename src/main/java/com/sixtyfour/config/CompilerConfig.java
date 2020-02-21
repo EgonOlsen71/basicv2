@@ -30,7 +30,7 @@ public class CompilerConfig {
 	private boolean aggressiveFloatOptimizations = true;
 	private boolean enhancedInstructionSet = false;
 	private String symbolTable = null;
-	private int threads=-1;
+	private int threads = -1;
 	private LoopMode loopMode = LoopMode.EXECUTE;
 	private ProgressListener progressListener;
 
@@ -234,11 +234,11 @@ public class CompilerConfig {
 	}
 
 	public int getThreads() {
-	    return threads;
+		return threads;
 	}
 
 	public void setThreads(int threads) {
-	    this.threads = threads;
+		this.threads = threads;
 	}
 
 }

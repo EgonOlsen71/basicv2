@@ -30,7 +30,7 @@ public class UnTokenizerTest {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	public static void testUnTokenizerX16() {
 		byte[] data = Loader.loadBlob("src/test/resources/prg/cmds.prg");
 		UnTokenizer unto = new UnTokenizer();

@@ -359,15 +359,14 @@ public class TermEnhancer {
 	}
 
 	/**
-	 * Adds logic brackets to handle AND/OR precedence. This should actually be done earlier
-	 * but I can't be bothered so it's an extra step now.
+	 * Adds logic brackets to handle AND/OR precedence. This should actually be done
+	 * earlier but I can't be bothered so it's an extra step now.
 	 *
-	 * @param term
-	 *            the input term
+	 * @param term the input term
 	 * @return the resulting term
 	 */
 	private static String addLogicBrackets(String term) {
-	    	term = removeWhiteSpace(term);
+		term = removeWhiteSpace(term);
 		StringBuilder sb = new StringBuilder();
 		boolean inString = false;
 		for (int i = 0; i < term.length(); i++) {
@@ -379,11 +378,11 @@ public class TermEnhancer {
 			if (inString) {
 				continue;
 			}
-			
+
 			if (c == '&') {
 				int start = findLogicStart(term, i);
 				int end = findLogicEnd(term, i);
-				
+
 				i = addBracketsInternal(term, sb, i, start, end);
 				term = sb.toString();
 				sb.setLength(0);
@@ -391,8 +390,7 @@ public class TermEnhancer {
 		}
 		return term;
 	}
-	
-	
+
 	/**
 	 * Adds brackets to a term based on the operator order. The resulting term makes
 	 * it clear which operations belong together without any knowledge about the
@@ -444,34 +442,36 @@ public class TermEnhancer {
 					|| (level == 0 && c == '^') || (level == 3 && (c == '&' || c == '°'))) {
 				int start = level != 3 ? findStart(term, i, level >= 2) : i + 1;
 				int end = findEnd(term, i, level >= 2);
-			    
+
 				i = addBracketsInternal(term, sb, i, start, end);
 				term = sb.toString();
 				sb.setLength(0);
 			}
 		}
-	
-		if (level==3) {
-		    // Kludge to handle the priorities between logic AND and OR. Mainly because I initially thought that
-		    // there isn't one and once I discovered that there is, I couldn't understand the addBrackets()-method
-		    // enough anymore to handle it there...:-)
-		    term = addLogicBrackets(term);
+
+		if (level == 3) {
+			// Kludge to handle the priorities between logic AND and OR. Mainly because I
+			// initially thought that
+			// there isn't one and once I discovered that there is, I couldn't understand
+			// the addBrackets()-method
+			// enough anymore to handle it there...:-)
+			term = addLogicBrackets(term);
 		}
-		
+
 		return term;
 	}
 
 	private static int addBracketsInternal(String term, StringBuilder sb, int i, int start, int end) {
-	    if (start > 0 && term.charAt(start - 1) == '(' && end < term.length() && term.charAt(end) == ')') {
-	    	sb.append(term.substring(0, start)).append(term.substring(start, end));
-	    } else {
-	    	sb.append(term.substring(0, start)).append('(').append(term.substring(start, end)).append(')');
-	    	i++;
-	    }
-	    if (end != term.length()) {
-	    	sb.append(term.substring(end));
-	    }
-	    return i;
+		if (start > 0 && term.charAt(start - 1) == '(' && end < term.length() && term.charAt(end) == ')') {
+			sb.append(term.substring(0, start)).append(term.substring(start, end));
+		} else {
+			sb.append(term.substring(0, start)).append('(').append(term.substring(start, end)).append(')');
+			i++;
+		}
+		if (end != term.length()) {
+			sb.append(term.substring(end));
+		}
+		return i;
 	}
 
 	/**
@@ -687,7 +687,7 @@ public class TermEnhancer {
 		}
 		return 0;
 	}
-	
+
 	/**
 	 * Finds the start of an AND-Block
 	 * 
@@ -696,7 +696,7 @@ public class TermEnhancer {
 	 * @return
 	 */
 	private static int findLogicEnd(String term, int pos) {
-	    int brackets = 0;
+		int brackets = 0;
 		boolean inString = false;
 		int st = calcPositionAfter(term, pos);
 		for (int i = st; i < term.length(); i++) {
@@ -709,8 +709,8 @@ public class TermEnhancer {
 					return i;
 				}
 
-				if (brackets == 0 && c=='°') {
-						return i;
+				if (brackets == 0 && c == '°') {
+					return i;
 				}
 				if (c == '(') {
 					brackets++;
@@ -742,7 +742,7 @@ public class TermEnhancer {
 				if (c == ',' && brackets == 0) {
 					return i + 1;
 				}
-				if (brackets == 0 && c=='°') {
+				if (brackets == 0 && c == '°') {
 					return i + 1;
 				}
 				if (c == ')') {
@@ -756,22 +756,21 @@ public class TermEnhancer {
 	}
 
 	private static int calcPositionBefore(String term, int pos) {
-	    int st = pos - 1;
-	    if (Operator.isComparisonOperator(term.charAt(pos)) && (pos > 1)
-	    		&& Operator.isComparisonOperator(term.charAt(pos - 1))) {
-	    	st--;
-	    }
-	    return st;
-	}
-	
-	private static int calcPositionAfter(String term, int pos) {
-	    int st = pos + 1;
-	    if (Operator.isComparisonOperator(term.charAt(pos)) && (pos < term.length() - 1)
-	    		&& Operator.isComparisonOperator(term.charAt(pos + 1))) {
-	    	st++;
-	    }
-	    return st;
+		int st = pos - 1;
+		if (Operator.isComparisonOperator(term.charAt(pos)) && (pos > 1)
+				&& Operator.isComparisonOperator(term.charAt(pos - 1))) {
+			st--;
+		}
+		return st;
 	}
 
+	private static int calcPositionAfter(String term, int pos) {
+		int st = pos + 1;
+		if (Operator.isComparisonOperator(term.charAt(pos)) && (pos < term.length() - 1)
+				&& Operator.isComparisonOperator(term.charAt(pos + 1))) {
+			st++;
+		}
+		return st;
+	}
 
 }

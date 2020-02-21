@@ -49,7 +49,6 @@ public class ParserTest {
 		System.out.println("After:" + s);
 	}
 
-	
 	private static void testBrackets() {
 		System.out.println("testBrackets");
 		String term = "646,(bg&15)*16+(fg&15)";

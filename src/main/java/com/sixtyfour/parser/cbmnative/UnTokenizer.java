@@ -159,8 +159,8 @@ public class UnTokenizer {
 								token = TOKENS.get(mb);
 							}
 							if (token == null) {
-							  String part=line.substring(Math.max(line.length()-40, 0), line.length());
-							  Logger.log("Unknown token near: "+part +" @ line "+ln);
+								String part = line.substring(Math.max(line.length() - 40, 0), line.length());
+								Logger.log("Unknown token near: " + part + " @ line " + ln);
 								throw new RuntimeException("Unknown token: $" + Integer.toHexString(mb));
 							}
 							if (line.length() > 0 && line.charAt(line.length() - 1) != ' ' && b < 180

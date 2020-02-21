@@ -23,7 +23,7 @@ public class X16Tests {
 	private static String path = "compiled/";
 
 	public static void main(String[] args) throws Exception {
-	    	long s=System.currentTimeMillis();
+		long s = System.currentTimeMillis();
 		testVpoke();
 		testVpeek();
 		testVpokePeek();
@@ -71,16 +71,16 @@ public class X16Tests {
 		testCls();
 		testReset();
 		testHashMap();
-		System.out.println("Total time: "+(System.currentTimeMillis()-s)+"ms");
+		System.out.println("Total time: " + (System.currentTimeMillis() - s) + "ms");
 	}
-	
+
 	private static void testHashMap() throws Exception {
 		System.out.println("\n\ntestHashMap");
 		String[] vary = Loader.loadProgram("src/test/resources/x16/hashmap.bas");
 		Assembler assy = initTestEnvironment(vary, false, -1, true);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++hashmap.prg", true);
 	}
-	
+
 	private static void testCls() throws Exception {
 		System.out.println("\n\ntestCls");
 		String[] vary = Loader.loadProgram("src/test/resources/x16/cls.bas");
@@ -88,7 +88,6 @@ public class X16Tests {
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++cls.prg", true);
 	}
 
-	
 	private static void testReset() throws Exception {
 		System.out.println("\n\ntestJoy");
 		String[] vary = Loader.loadProgram("src/test/resources/x16/reset.bas");
@@ -96,7 +95,6 @@ public class X16Tests {
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++reset.prg", true);
 	}
 
-	
 	private static void testJoy() throws Exception {
 		System.out.println("\n\ntestJoy");
 		String[] vary = Loader.loadProgram("src/test/resources/x16/joy.bas");
@@ -104,14 +102,12 @@ public class X16Tests {
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++joy.prg", true);
 	}
 
-	
 	private static void testColor() throws Exception {
 		System.out.println("\n\ntestColor");
 		String[] vary = Loader.loadProgram("src/test/resources/x16/color.bas");
 		Assembler assy = initTestEnvironment(vary, false, -1, true);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++color.prg", true);
 	}
-
 
 	private static void testXtris() throws Exception {
 		System.out.println("\n\ntestXtris");

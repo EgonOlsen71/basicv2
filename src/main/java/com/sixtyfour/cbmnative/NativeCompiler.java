@@ -476,8 +476,8 @@ public class NativeCompiler {
 					// Somehow, array access is different from other functions and this
 					// mess takes care of handling the data that's needed in X correctly...
 					// There has to be a better way than this though...
-					String lastFilled=getLastFilledRegister(code, 1, floatRegs);
-					int pos=code.size() - (code.get(code.size() - 2).startsWith("CHGCTX") ? 2 : 1);
+					String lastFilled = getLastFilledRegister(code, 1, floatRegs);
+					int pos = code.size() - (code.get(code.size() - 2).startsWith("CHGCTX") ? 2 : 1);
 					if ("Y".equals(lastFilled)) {
 						// Move an array index from Y to x if needed
 						code.add(pos, "MOV X,Y");
@@ -880,9 +880,10 @@ public class NativeCompiler {
 						return reg;
 					}
 				} else {
-					// It might a jump to a function that not covered by the normal MathFunction (like ASC or LEN)
+					// It might a jump to a function that not covered by the normal MathFunction
+					// (like ASC or LEN)
 					if (code.get(i).startsWith("JSR ")) {
-						String addr=code.get(i).substring(4).toUpperCase(Locale.ENGLISH);
+						String addr = code.get(i).substring(4).toUpperCase(Locale.ENGLISH);
 						if (isSingle(addr)) {
 							return "X";
 						} else if (addr.startsWith("DEF")) {

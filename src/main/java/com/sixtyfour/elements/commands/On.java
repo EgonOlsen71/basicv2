@@ -74,9 +74,10 @@ public class On extends AbstractCommand {
 			}
 		}
 		if (numPos == -1) {
-		    // Handle the strange case that there is no list at all after the GOTO/GOSUB, which means "jump to 0"
-		    lines="0";
-		    numPos=0;
+			// Handle the strange case that there is no list at all after the GOTO/GOSUB,
+			// which means "jump to 0"
+			lines = "0";
+			numPos = 0;
 		}
 		String[] parts = lines.substring(numPos).split(",");
 		for (String part : parts) {
@@ -125,7 +126,8 @@ public class On extends AbstractCommand {
 
 		int oc = onCount++;
 
-		// Shouldn't be calle SKIPON only (as before), because the native compiler will mangle it thinking that it is part of an IF
+		// Shouldn't be calle SKIPON only (as before), because the native compiler will
+		// mangle it thinking that it is part of an IF
 		String label = "GSKIPON" + oc;
 
 		after.add("INT " + expPush + "," + expPush);

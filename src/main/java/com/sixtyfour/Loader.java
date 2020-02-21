@@ -57,13 +57,13 @@ public class Loader {
 		byte[] buf = new byte[8192];
 		try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
 				BufferedInputStream bis = new BufferedInputStream(is)) {
-		    	int s=0;
-		    	do {
-		    	    s = bis.read(buf);
-		    	    if (s != -1) {
-				bos.write(buf, 0, s);
-		    	    }
-		    	} while(s!=-1);
+			int s = 0;
+			do {
+				s = bis.read(buf);
+				if (s != -1) {
+					bos.write(buf, 0, s);
+				}
+			} while (s != -1);
 			return bos.toByteArray();
 		} catch (Exception e) {
 			throw new RuntimeException("Failed to load binary file!", e);

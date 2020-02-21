@@ -44,11 +44,12 @@ public class Optimizer6502 implements Optimizer {
 		return input;
 	}
 
-	private List<String> optimizeInternal(PlatformProvider platform, List<String> input, ProgressListener pg, int threads) {
+	private List<String> optimizeInternal(PlatformProvider platform, List<String> input, ProgressListener pg,
+			int threads) {
 		Map<String, Number> const2Value = extractConstants(input);
 		int cpus = threads;
-		if (cpus<=0) {
-		    cpus=Runtime.getRuntime().availableProcessors();
+		if (cpus <= 0) {
+			cpus = Runtime.getRuntime().availableProcessors();
 		}
 		int[] ps = getStartAndEnd(input);
 		int codeStart = ps[0];

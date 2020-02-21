@@ -118,7 +118,7 @@ public class MoSpeedCL {
 
 			}
 		}
-		
+
 		if (cmds.containsKey("threads")) {
 			try {
 				cfg.setThreads(Integer.parseInt(cmds.get("threads")));
@@ -216,7 +216,7 @@ public class MoSpeedCL {
 				}
 				srcFile = srcFile.replace(".prg", ".bas");
 			} catch (Exception e) {
-				System.out.println("Failed to convert PRG file: " + e.getClass()+"/"+e.getMessage());
+				System.out.println("Failed to convert PRG file: " + e.getClass() + "/" + e.getMessage());
 				System.out.println("Proceeding as if it was ASCII instead!");
 			}
 		}

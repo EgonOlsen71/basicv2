@@ -113,10 +113,10 @@ public class BasicShell {
 			}
 		});
 		mainTextArea.addKeyListener(new KeyAdapter() {
-		    	
-		    	private String lineContent="";
-		    
-		    @Override
+
+			private String lineContent = "";
+
+			@Override
 			public void keyReleased(KeyEvent e) {
 				if (runner != null) {
 					runner.registerKey(null);
@@ -126,38 +126,38 @@ public class BasicShell {
 
 			@Override
 			public void keyPressed(KeyEvent e) {
-			    if (runner != null) {
+				if (runner != null) {
 					runner.registerKey(e.getKeyChar());
 				}
-				
+
 				if (e.getKeyChar() == '\n') {
-				    String line = getLineAt(rowNum);
-				    lineContent=line;
-				    int end=mainTextArea.getText().length();
-				    try {
-					end=mainTextArea.getLineEndOffset(rowNum);
-				    } catch (BadLocationException e1) {
-					//
-				    }
-				    if (colNum < line.length()) {
-					mainTextArea.setCaretPosition(mainTextArea.getCaretPosition() + line.length() - colNum - 1);
-					if (end>=mainTextArea.getText().length()) {
-					    mainTextArea.setCaretPosition(mainTextArea.getCaretPosition() + 1);
+					String line = getLineAt(rowNum);
+					lineContent = line;
+					int end = mainTextArea.getText().length();
+					try {
+						end = mainTextArea.getLineEndOffset(rowNum);
+					} catch (BadLocationException e1) {
+						//
 					}
-				    }
-				    String nline = getLineAt(rowNum+1);
-				    if (!nline.isEmpty()) {
-					String n1=extractTrailingNumber(null, line);
-					String n2=extractTrailingNumber(null, nline);
-					if (!n1.isEmpty() && !n2.isEmpty()) {
-					    // In a listing...maybe...
-					    mainTextArea.setCaretPosition(mainTextArea.getCaretPosition() + 1);
-					    e.consume();
-					    return;
+					if (colNum < line.length()) {
+						mainTextArea.setCaretPosition(mainTextArea.getCaretPosition() + line.length() - colNum - 1);
+						if (end >= mainTextArea.getText().length()) {
+							mainTextArea.setCaretPosition(mainTextArea.getCaretPosition() + 1);
+						}
 					}
-				    }
+					String nline = getLineAt(rowNum + 1);
+					if (!nline.isEmpty()) {
+						String n1 = extractTrailingNumber(null, line);
+						String n2 = extractTrailingNumber(null, nline);
+						if (!n1.isEmpty() && !n2.isEmpty()) {
+							// In a listing...maybe...
+							mainTextArea.setCaretPosition(mainTextArea.getCaretPosition() + 1);
+							e.consume();
+							return;
+						}
+					}
 				}
-				
+
 				super.keyPressed(e);
 			}
 
@@ -166,7 +166,7 @@ public class BasicShell {
 				if (e.getKeyChar() == '\n') {
 					try {
 						fromTextArea.put(lineContent);
-						lineContent="";
+						lineContent = "";
 					} catch (InterruptedException e1) {
 						//
 					}
@@ -435,7 +435,7 @@ public class BasicShell {
 			int cnt = 0;
 			int last = -1;
 			for (String l : lines) {
-				String num=extractTrailingNumber(sb, l);
+				String num = extractTrailingNumber(sb, l);
 				Integer cs = Integer.parseInt(num);
 				if (cs == ls) {
 					return cnt;
@@ -457,20 +457,20 @@ public class BasicShell {
 	}
 
 	private String extractTrailingNumber(StringBuilder sb, String l) {
-	    if (sb==null) {
-		sb=new StringBuilder();
-	    } else {
-		sb.setLength(0);
-	    }
-	    for (int i = 0; i < l.length(); i++) {
-	    	char c = l.charAt(i);
-	    	if (Character.isDigit(c)) {
-	    		sb.append(c);
-	    	} else {
-	    		break;
-	    	}
-	    }
-	    return sb.toString();
+		if (sb == null) {
+			sb = new StringBuilder();
+		} else {
+			sb.setLength(0);
+		}
+		for (int i = 0; i < l.length(); i++) {
+			char c = l.charAt(i);
+			if (Character.isDigit(c)) {
+				sb.append(c);
+			} else {
+				break;
+			}
+		}
+		return sb.toString();
 	}
 
 	private void compile(String path) {
