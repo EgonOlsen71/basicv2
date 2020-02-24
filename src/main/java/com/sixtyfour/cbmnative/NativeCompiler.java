@@ -880,7 +880,7 @@ public class NativeCompiler {
 						return reg;
 					}
 				} else {
-					// It might a jump to a function that not covered by the normal MathFunction
+					// It might be a jump to a function that's not covered by the normal MathFunction
 					// (like ASC or LEN)
 					if (code.get(i).startsWith("JSR ")) {
 						String addr = code.get(i).substring(4).toUpperCase(Locale.ENGLISH);
