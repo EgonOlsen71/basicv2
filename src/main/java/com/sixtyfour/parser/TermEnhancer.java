@@ -223,7 +223,7 @@ public class TermEnhancer {
 		// Replace logic operators by placeholder chars. NOT actually hasn't
 		// two operands, but we abuse the current logic by faking it.
 		String[] replacers = { "OR", Operator.getOrOperator(), "AND", Operator.getAndOperator(), "NOT",
-				"(0" + Operator.getNotOperator() };
+				"(0" + Operator.getNotOperator()+"(" };
 		term = removeWhiteSpace(term);
 		String uTerm = VarUtils.toUpper(term);
 		for (int i = 0; i < replacers.length; i += 2) {
@@ -243,9 +243,9 @@ public class TermEnhancer {
 						term = term.substring(0, pos) + replacers[i + 1] + term.substring(pos + torep.length());
 						uTerm = uTerm.substring(0, pos) + replacers[i + 1] + uTerm.substring(pos + torep.length());
 						if (torep.equals("NOT")) {
-							int end = findEnd(uTerm, pos + 2);
-							term = term.substring(0, end) + ")" + term.substring(end);
-							uTerm = uTerm.substring(0, end) + ")" + uTerm.substring(end);
+							int end = findLogicEnd(uTerm, pos + 3, true);
+							term = term.substring(0, end) + "))" + term.substring(end);
+							uTerm = uTerm.substring(0, end) + "))" + uTerm.substring(end);
 						}
 					} else {
 						pos++;
@@ -254,6 +254,7 @@ public class TermEnhancer {
 				}
 			} while (pos != -1);
 		}
+		//System.out.println("Term: "+term);
 		return term;
 	}
 
@@ -597,10 +598,6 @@ public class TermEnhancer {
 		return term.length();
 	}
 
-	private static int findEnd(String term, int pos) {
-		return findEnd(term, pos, false);
-	}
-
 	/**
 	 * Finds the end of a term starting at the current position.
 	 * 
@@ -689,13 +686,23 @@ public class TermEnhancer {
 	}
 
 	/**
-	 * Finds the start of an AND-Block
-	 * 
 	 * @param term
 	 * @param pos
 	 * @return
 	 */
 	private static int findLogicEnd(String term, int pos) {
+	    return findLogicEnd(term, pos, false);
+	}
+	
+	/**
+	 * Finds the start of an AND-Block
+	 * 
+	 * @param term
+	 * @param pos
+	 * @param strict
+	 * @return
+	 */
+	private static int findLogicEnd(String term, int pos, boolean strict) {
 		int brackets = 0;
 		boolean inString = false;
 		int st = calcPositionAfter(term, pos);
@@ -709,7 +716,8 @@ public class TermEnhancer {
 					return i;
 				}
 
-				if (brackets == 0 && c == '°') {
+				//System.out.println(c+"/"+brackets+"/"+strict+"/"+term);
+				if (brackets == 0 && (c == '°' || (c == '&' && strict))) {
 					return i;
 				}
 				if (c == '(') {

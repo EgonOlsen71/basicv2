@@ -346,8 +346,13 @@ public class Print extends AbstractCommand {
 
 			if (!inString) {
 				char nc = ' ';
+				boolean booleanFollows=false;
 				if (i < line.length() - 1) {
 					nc = line.charAt(i + 1);
+				}
+				if (i < line.length() - 3) {
+				    String ns = line.substring(i+1, i+4).toLowerCase(Locale.ENGLISH);
+				    booleanFollows=ns.equals("and") || ns.startsWith("or");
 				}
 				if (c == '(') {
 					brackets++;
@@ -358,7 +363,7 @@ public class Print extends AbstractCommand {
 
 				boolean end = i == line.length() - 1;
 
-				if (end || (brackets == 0 && (c == '"' || (c == ')' && nc != '=' && nc != '<' && nc != '>') || c == ','
+				if (end || (brackets == 0 && (c == '"' || (c == ')' && nc != '=' && nc != '<' && nc != '>' && !booleanFollows) || c == ','
 						|| c == ';' || (c == '$' && nc != '(') || (c == '%' && nc != '(')))) {
 					if (end || !Operator.isRealOperator(nc) || c == ';' || c == ',') {
 						if (end || c == '"' || c == ')' || c == '%' || c == '$') {

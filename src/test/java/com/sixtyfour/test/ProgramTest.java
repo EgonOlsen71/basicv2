@@ -46,8 +46,15 @@ public class ProgramTest {
 		// testEvalComp();
 		testIfNot();
 		testGo_To();
+		testPrintNot();
 	}
 
+	private static void testPrintNot() {
+		String[] vary = Loader.loadProgram("src/test/resources/basic/printnot.bas");
+		Basic inty = new Basic(vary);
+		inty.run(config);
+	}
+		
 	private static void testGo_To() {
 		String[] vary = Loader.loadProgram("src/test/resources/basic/go_to.bas");
 		Basic inty = new Basic(vary);
