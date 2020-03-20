@@ -123,9 +123,17 @@ public class TransformerTest {
 		testChrOptimizer();
 		testCcTestOptimizer();
 		testDefFnArray();
+		testCorona();
 
 	}
 
+	private static void testCorona() throws Exception {
+		System.out.println("\n\ntestCorona");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/corona.bas");
+		Assembler assy = initTestEnvironment(vary, false, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++corona.prg", true);
+	}
+	
 	private static void testDefFnArray() throws Exception {
 		System.out.println("\n\ntestDefFnArray");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/deffnarray.bas");
