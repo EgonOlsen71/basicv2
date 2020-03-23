@@ -59,5 +59,14 @@ public class MovbX extends Movb implements X16Defaults {
 		super.checkSpecialReadVars(nCode, source);
 		checkSpecialReadVarsX16(nCode, source);
 	}
+	
+	@Override
+	protected boolean checkSpecialWriteVarsString(List<String> nCode, Operand target) {
+		boolean ret=super.checkSpecialWriteVarsString(nCode, target);
+		if (!ret) {
+			ret=checkSpecialWriteVarsStringX16(nCode, target);
+		}
+		return ret;
+	}
 
 }

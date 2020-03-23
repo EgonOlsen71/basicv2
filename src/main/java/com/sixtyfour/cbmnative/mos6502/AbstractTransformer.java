@@ -326,12 +326,12 @@ public abstract class AbstractTransformer implements Transformer {
 
 	protected void addStructures(CompilerConfig config, Machine machine, PlatformProvider platform, List<String> code,
 			List<String> res, List<String> consts, List<String> vars, List<String> mnems, List<String> subs) {
-		addStructures(config, machine, platform, code, res, consts, vars, mnems, subs, null);
+		addStructures(config, machine, platform, code, res, consts, vars, mnems, subs, null, null);
 	}
 
 	protected void addStructures(CompilerConfig config, Machine machine, PlatformProvider platform, List<String> code,
 			List<String> res, List<String> consts, List<String> vars, List<String> mnems, List<String> subs,
-			List<String> addOns) {
+			List<String> addOns, StringAdder adder) {
 		Map<String, String> name2label = new HashMap<String, String>();
 		int cnt = 0;
 
@@ -392,6 +392,11 @@ public abstract class AbstractTransformer implements Transformer {
 			strVars.add("; VAR: TI$");
 			strVars.add("VAR_TI$ .WORD EMPTYSTR");
 		}
+
+		if (adder != null) {
+			adder.addStringVars(strVars);
+		}
+
 		vars.add("STRINGVARS_START");
 		vars.addAll(strVars);
 		vars.add("STRINGVARS_END");

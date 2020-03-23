@@ -28,13 +28,23 @@ public interface X16Defaults {
 			nCode.add("TAY");
 			nCode.add("LDA #0");
 			add = true;
-		} 
+		} else if (addr.equals("VAR_DA$")) {
+			nCode.add("JSR READDAD");
+		}
 		if (add) {
 			nCode.add("JSR INTFAC");
 			nCode.add("LDX #<" + addr);
 			nCode.add("LDY #>" + addr);
 			nCode.add("JSR FACMEM");
 		}
+	}
+
+	default boolean checkSpecialWriteVarsStringX16(List<String> nCode, Operand target) {
+		if (target.getAddress().equals("VAR_DA$")) {
+			nCode.add("JSR WRITEDAD");
+			return true;
+		}
+		return false;
 	}
 
 	static void addMouseGet(List<String> nCode) {

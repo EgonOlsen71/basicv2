@@ -9,6 +9,7 @@ import com.sixtyfour.Loader;
 import com.sixtyfour.Logger;
 import com.sixtyfour.cbmnative.PlatformProvider;
 import com.sixtyfour.cbmnative.mos6502.AbstractTransformer;
+import com.sixtyfour.cbmnative.mos6502.StringAdder;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.rommap.CallMapper;
@@ -81,7 +82,17 @@ public class TransformerX16 extends AbstractTransformer {
 		res.add("TSX");
 		res.add("STX SP_SAVE");
 
-		addStructures(config, machine, platform, code, res, consts, vars, mnems, subs, mapping.getFarCalls());
+		addStructures(config, machine, platform, code, res, consts, vars, mnems, subs, mapping.getFarCalls(),
+				new StringAdder() {
+					@Override
+					public void addStringVars(List<String> strVars) {
+						// Add DA$ if needed.
+						if (!strVars.contains("; VAR: DA$")) {
+							strVars.add("; VAR: DA$");
+							strVars.add("VAR_DA$ .WORD EMPTYSTR");
+						}
+					}
+				});
 		return res;
 	}
 

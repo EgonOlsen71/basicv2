@@ -33,6 +33,7 @@ import com.sixtyfour.extensions.x16.systemvars.Mb;
 import com.sixtyfour.extensions.x16.systemvars.Mx;
 import com.sixtyfour.extensions.x16.systemvars.My;
 import com.sixtyfour.extensions.x16.systemvars.Time;
+import com.sixtyfour.extensions.x16.systemvars.DateX;
 import com.sixtyfour.system.Machine;
 
 /**
@@ -79,6 +80,7 @@ public class X16Extensions implements BasicExtension {
 			this.add(new My());
 			this.add(new Mb());
 			this.add(new Time());
+			this.add(new DateX());
 		}
 	});
 

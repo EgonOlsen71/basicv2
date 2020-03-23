@@ -30,7 +30,7 @@ public abstract class GeneratorBase implements Generator {
 	}
 
 	protected boolean checkSpecialWriteVarsReal(List<String> nCode, Operand target) {
-		if (target.getAddress()!=null && target.getAddress().equals("VAR_TI")) {
+		if (target.getAddress() != null && target.getAddress().equals("VAR_TI")) {
 			nCode.add("JSR WRITETI");
 			return true;
 		}
@@ -38,14 +38,15 @@ public abstract class GeneratorBase implements Generator {
 	}
 
 	protected void checkSpecialReadVars(List<String> nCode, Operand source) {
-		if (source.getAddress().equals("VAR_ST")) {
+		String addr=source.getAddress();
+		if (addr.equals("VAR_ST")) {
 			nCode.add("LDY STATUS");
 			nCode.add("; Byte in Y to FAC");
 			nCode.add("JSR BYTEFAC");
-			nCode.add("LDX #<" + source.getAddress());
-			nCode.add("LDY #>" + source.getAddress());
+			nCode.add("LDX #<" + addr);
+			nCode.add("LDY #>" + addr);
 			nCode.add("JSR FACMEM");
-		} else if (source.getAddress().equals("VAR_TI")) {
+		} else if (addr.equals("VAR_TI")) {
 			nCode.add("<IF !X16>");
 			nCode.add("SEI");
 			nCode.add("LDY TIMEADDR");
@@ -56,10 +57,10 @@ public abstract class GeneratorBase implements Generator {
 			nCode.add("SEC");
 			nCode.add("JSR COPYTIME");
 			nCode.add("JSR GETTIME");
-			nCode.add("LDX #<" + source.getAddress());
-			nCode.add("LDY #>" + source.getAddress());
+			nCode.add("LDX #<" + addr);
+			nCode.add("LDY #>" + addr);
 			nCode.add("JSR FACMEM");
-		} else if (source.getAddress().equals("VAR_TI$")) {
+		} else if (addr.equals("VAR_TI$")) {
 			nCode.add("JSR READTID");
 		}
 	}

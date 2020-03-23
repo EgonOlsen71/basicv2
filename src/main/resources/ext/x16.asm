@@ -402,24 +402,168 @@ CLEARFAC	STZ FACEXP
 			STZ FACSGN
 			RTS
 ;###################################
-MUL10	JSR FACARG
-		TAX
-		BEQ MUL10R
-		CLC
-		ADC #2
-		BCS GOOVER
-		LDX #0
-		STX ARISGN
-		JSR FADDC
-		INC FACEXP
-		BEQ GOOVER
-MUL10R	RTS
-GOOVER	JMP ILLEGALQUANTITY
+MUL10		JSR FACARG
+			TAX
+			BEQ MUL10R
+			CLC
+			ADC #2
+			BCS GOOVER
+			LDX #0
+			STX ARISGN
+			JSR FADDC
+			INC FACEXP
+			BEQ GOOVER
+MUL10R		RTS
+GOOVER		JMP ILLEGALQUANTITY
+;##################################
+WRITEDAD	LDY #0
+			LDA (TMP_ZP),Y
+			CMP #8
+			BNE WRITEDADERR
+			
+			INC TMP_ZP
+			BNE WRITEDAD2
+			INC TMP_ZP+1
+WRITEDAD2	LDA TMP_ZP
+			STA INDEX1
+			LDA TMP_ZP+1
+			STA INDEX1+1
+			
+			JSR CLOCK_GET_DATE_TIME
+		
+			; set the year
+			JSR CLEARFAC
+			LDY #0
+			JSR TIMNUM
+			JSR MUL10
+			LDY #1
+			JSR TIMNUM
+			JSR MUL10
+			LDY #2
+			JSR TIMNUM
+			JSR MUL10
+			LDY #3
+			JSR TIMNUM
+			JSR GETADR2
+			TAX
+			TYA
+			SEC
+			SBC #<1900
+			TAY
+			TXA
+			SBC #>1900
+			BNE WRITEDADERR
+			STY R0L
+		
+			; set the month
+			JSR CLEARFAC
+			LDY #4
+			JSR TIMNUM
+			JSR MUL10
+			LDY #5
+			JSR TIMNUM
+			JSR GETADR2
+			TYA
+			BEQ WRITEDADERR
+			CMP #13
+			BCS WRITEDADERR
+			STA R0H
+		
+			; set the day
+			JSR CLEARFAC
+			LDY #6
+			JSR TIMNUM
+			JSR MUL10
+			LDY #7
+			JSR TIMNUM
+			JSR GETADR2
+			TYA
+			BEQ WRITEDADERR
+			CMP #32
+			BCS WRITEDADERR
+			STA R1L
+		
+			JMP CLOCK_SET_DATE_TIME
+WRITEDADERR JMP ILLEGALQUANTITY
+;##################################
+READDAD		LDA $FE
+			PHA
+			
+			JSR CLOCK_GET_DATE_TIME
+			LDA R1L
+			ORA R0H
+			ORA R0L
+			BNE READDAD2
+			LDA #<EMPTYSTR
+			STA VAR_DA$
+			LDA #>EMPTYSTR
+			STA VAR_DA$+1
+			PLA
+			STA $FE
+			RTS
+
+READDAD2
+			; read the day
+			LDA R1L
+			JSR COMPONENT2ASCII
+			LDA LOFBUF+3
+			PHA
+			LDA LOFBUF+2
+			PHA
+		
+			; read the month
+			LDA R0H
+			JSR COMPONENT2ASCII
+			LDA LOFBUF+3
+			PHA
+			LDA LOFBUF+2
+			PHA
+		
+			; read the year
+			LDA R0L
+			CLC
+			ADC #<1900
+			TAY
+			LDA #>1900
+			JSR COMPONENT2ASCII2
+			LDA LOFBUF+1
+			STA LOFBUF
+			LDA LOFBUF+2
+			STA LOFBUF+1
+			LDA LOFBUF+3
+			STA LOFBUF+2 
+			LDA LOFBUF+4
+			STA LOFBUF+3 
+		
+			PLA
+			STA LOFBUF+4 		; mm1
+			PLA
+			STA LOFBUF+5 		; mm2
+			PLA
+			STA LOFBUF+6 		; dd1
+			PLA
+			STA LOFBUF+7 		; dd2
+			STZ LOFBUF+8 		; terminator (needed?=
+		
+READDADCOPY	LDA #$FE
+			STA TMP_ZP
+			LDA #0
+			STA TMP_ZP+1
+			LDA #$8
+			SEI					; prevent $FE from being overwritten. because the x16 doesn't like this
+			STA $FE
+			LDA #<VAR_DA$
+			LDY #>VAR_DA$
+			JSR COPYSTRING
+			PLA
+			STA $FE
+			CLI
+			RTS
 ;###################################
 WRITETID_X16	
 			JSR CLOCK_GET_DATE_TIME
 			
-			; HOURS
+			; set hours
 			JSR CLEARFAC
 			LDY #0
 			JSR TIMNUM
@@ -431,7 +575,7 @@ WRITETID_X16
 			BCS WRITETIDERR
 			STY R1H
 		
-			; MINUTES
+			; set minutes
 			JSR CLEARFAC
 			LDY #2
 			JSR TIMNUM
@@ -443,7 +587,7 @@ WRITETID_X16
 			BCS WRITETIDERR
 			STY R2L
 		
-			; SECONDS
+			; set seconds
 			JSR CLEARFAC
 			LDY #4
 			JSR TIMNUM
@@ -462,21 +606,21 @@ WRITETIDERR	JMP ILLEGALQUANTITY
 READTID_X16	
 			JSR CLOCK_GET_DATE_TIME
 			
-			LDA R2H				; SECONDS
+			LDA R2H				; seconds
 			JSR COMPONENT2ASCII
 			LDA LOFBUF+3
 			PHA
 			LDA LOFBUF+2
 			PHA
 	
-			LDA R2L				; MINUTES
+			LDA R2L				; minutes
 			JSR COMPONENT2ASCII
 			LDA LOFBUF+3
 			PHA
 			LDA LOFBUF+2
 			PHA
 
-			LDA R1H				; HOURS
+			LDA R1H				; hours
 			JSR COMPONENT2ASCII
 			LDA LOFBUF+3
 			STA LOFBUF+1 
@@ -484,15 +628,14 @@ READTID_X16
 			STA LOFBUF
 
 			PLA
-			STA LOFBUF+2 		; MM
+			STA LOFBUF+2 		; mm1
 			PLA
-			STA LOFBUF+3 		; MM
+			STA LOFBUF+3 		; mm2
 			PLA
-			STA LOFBUF+4 		; SS
+			STA LOFBUF+4 		; ss1
 			PLA
-			STA LOFBUF+5 		; SS
-			LDA #0
-			STA LOFBUF+6 		; Z
+			STA LOFBUF+5 		; ss2
+			STZ LOFBUF+6 		; terminator (needed?)
 			RTS
 ;###################################
 TEXTCOLTAB
