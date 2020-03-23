@@ -38,7 +38,7 @@ public abstract class GeneratorBase implements Generator {
 	}
 
 	protected void checkSpecialReadVars(List<String> nCode, Operand source) {
-		String addr=source.getAddress();
+		String addr = source.getAddress();
 		if (addr.equals("VAR_ST")) {
 			nCode.add("LDY STATUS");
 			nCode.add("; Byte in Y to FAC");

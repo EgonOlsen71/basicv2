@@ -158,7 +158,7 @@ public class Parser {
 
 		if (!ret.endsWith("[]")) {
 			Variable var = new Variable(ret, null);
-			//System.out.println(var.getUpperCaseName()+"/"+machine.isSystemVariable(var.getUpperCaseName()));
+			// System.out.println(var.getUpperCaseName()+"/"+machine.isSystemVariable(var.getUpperCaseName()));
 			if (machine.isSystemVariable(var.getUpperCaseName())) {
 				var.setSystem(true);
 			}

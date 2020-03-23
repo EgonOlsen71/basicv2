@@ -67,8 +67,8 @@ public class Print extends AbstractCommand {
 			boolean lastPos, Machine machine) {
 		super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine);
 		orgLine = linePart;
-		String aLine=linePart.substring(linePart.startsWith("?") ? 1 : 5);
-		aLine=TermOptimizer.optimizePrintTerm(aLine);
+		String aLine = linePart.substring(linePart.startsWith("?") ? 1 : 5);
+		aLine = TermOptimizer.optimizePrintTerm(aLine);
 		List<PrintPart> parts = getParts(aLine, config);
 		if (parts.size() == 0) {
 			PrintPart newLine = new PrintPart("\"\"", ' ');
@@ -349,13 +349,13 @@ public class Print extends AbstractCommand {
 
 			if (!inString) {
 				char nc = ' ';
-				boolean booleanFollows=false;
+				boolean booleanFollows = false;
 				if (i < line.length() - 1) {
 					nc = line.charAt(i + 1);
 				}
 				if (i < line.length() - 3) {
-				    String ns = line.substring(i+1, i+4).toLowerCase(Locale.ENGLISH);
-				    booleanFollows=ns.equals("and") || ns.startsWith("or");
+					String ns = line.substring(i + 1, i + 4).toLowerCase(Locale.ENGLISH);
+					booleanFollows = ns.equals("and") || ns.startsWith("or");
 				}
 				if (c == '(') {
 					brackets++;
@@ -366,8 +366,9 @@ public class Print extends AbstractCommand {
 
 				boolean end = i == line.length() - 1;
 
-				if (end || (brackets == 0 && (c == '"' || (c == ')' && nc != '=' && nc != '<' && nc != '>' && !booleanFollows) || c == ','
-						|| c == ';' || (c == '$' && nc != '(') || (c == '%' && nc != '(')))) {
+				if (end || (brackets == 0
+						&& (c == '"' || (c == ')' && nc != '=' && nc != '<' && nc != '>' && !booleanFollows) || c == ','
+								|| c == ';' || (c == '$' && nc != '(') || (c == '%' && nc != '(')))) {
 					if (end || !Operator.isRealOperator(nc) || c == ';' || c == ',') {
 						if (end || c == '"' || c == ')' || c == '%' || c == '$') {
 							if (end) {

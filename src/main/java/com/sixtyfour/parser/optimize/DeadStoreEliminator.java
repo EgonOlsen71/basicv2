@@ -60,7 +60,8 @@ public class DeadStoreEliminator {
 							continue;
 						}
 					}
-					//System.out.println(let.getVar()+"/"+let.getVar().isSupposedToBeArray()+"/"+(let.getVar() instanceof SystemVariable));
+					// System.out.println(let.getVar()+"/"+let.getVar().isSupposedToBeArray()+"/"+(let.getVar()
+					// instanceof SystemVariable));
 					if (let.getVar().isSystem() || let.getVar().isSupposedToBeArray()) {
 						continue;
 					}

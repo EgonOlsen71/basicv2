@@ -175,7 +175,7 @@ public class CallMapper {
 					add = Integer.valueOf(parts[1].trim());
 				}
 				String label = parts[0].trim().toLowerCase(Locale.ENGLISH);
-				String uLabel=label.toUpperCase(Locale.ENGLISH);
+				String uLabel = label.toUpperCase(Locale.ENGLISH);
 				String addr = x16r.get("." + label);
 				if (addr == null) {
 					String msg = "!!! Failed to match additional address " + parts[0];

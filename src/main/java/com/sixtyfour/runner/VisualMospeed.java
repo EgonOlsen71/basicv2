@@ -214,7 +214,7 @@ public class VisualMospeed {
 				private void scrollDown(JTextArea textArea) {
 					try {
 						textArea.setCaretPosition(textArea.getDocument().getLength());
-					} catch(Exception e) {
+					} catch (Exception e) {
 						// Pffft...
 					}
 				}

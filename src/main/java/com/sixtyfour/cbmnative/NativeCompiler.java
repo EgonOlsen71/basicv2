@@ -872,7 +872,7 @@ public class NativeCompiler {
 
 	private String getLastFilledRegister(List<String> code, int offset, Set<String> allowed) {
 		for (int i = code.size() - offset; i >= 0; i--) {
-			String codeS=code.get(i).replace("MOVB", "MOV");
+			String codeS = code.get(i).replace("MOVB", "MOV");
 			if (codeS.indexOf(" ") == 3) {
 				int pos = codeS.indexOf(",");
 				if (pos > 4) {
@@ -881,7 +881,8 @@ public class NativeCompiler {
 						return reg;
 					}
 				} else {
-					// It might be a jump to a function that's not covered by the normal MathFunction
+					// It might be a jump to a function that's not covered by the normal
+					// MathFunction
 					// (like ASC or LEN)
 					if (codeS.startsWith("JSR ")) {
 						String addr = codeS.substring(4).toUpperCase(Locale.ENGLISH);

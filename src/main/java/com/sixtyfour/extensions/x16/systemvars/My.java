@@ -9,7 +9,7 @@ import com.sixtyfour.system.Machine;
 /**
  * A system variable that represents the mouse's y-coordinate.
  */
-public class My extends Variable  {
+public class My extends Variable {
 
 	/**
 	 * Instantiates a new status.

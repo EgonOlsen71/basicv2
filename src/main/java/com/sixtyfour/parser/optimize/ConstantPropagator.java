@@ -72,7 +72,7 @@ public class ConstantPropagator {
 							}
 							Term term = let.getTerm();
 							boolean termIsConstant = ConstantPropagator.checkForConstant(config, machine, term);
-							//System.out.println(termIsConstant+"/"+var+"/"+(var.isSystem()));
+							// System.out.println(termIsConstant+"/"+var+"/"+(var.isSystem()));
 							if (termIsConstant && !var.isSystem()) {
 								var.setValue(term.eval(machine));
 								var.setConstant(true);

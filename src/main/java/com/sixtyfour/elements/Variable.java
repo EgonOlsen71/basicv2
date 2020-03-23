@@ -43,7 +43,7 @@ public class Variable implements Atom {
 	private boolean persistent = false;
 
 	private boolean constant = false;
-	
+
 	private boolean system = false;
 
 	/**

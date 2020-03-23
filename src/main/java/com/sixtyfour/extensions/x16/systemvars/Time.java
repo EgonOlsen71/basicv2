@@ -8,7 +8,7 @@ import com.sixtyfour.elements.systemvars.TimeDate;
 import com.sixtyfour.system.Machine;
 
 /**
- * A system variable that represents the current time.
+ * A system variable that represents the current time in ticks.
  * 
  * @author EgonOlsen
  */

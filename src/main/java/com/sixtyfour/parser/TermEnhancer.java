@@ -223,7 +223,7 @@ public class TermEnhancer {
 		// Replace logic operators by placeholder chars. NOT actually hasn't
 		// two operands, but we abuse the current logic by faking it.
 		String[] replacers = { "OR", Operator.getOrOperator(), "AND", Operator.getAndOperator(), "NOT",
-				"(0" + Operator.getNotOperator()+"(" };
+				"(0" + Operator.getNotOperator() + "(" };
 		term = removeWhiteSpace(term);
 		String uTerm = VarUtils.toUpper(term);
 		for (int i = 0; i < replacers.length; i += 2) {
@@ -254,7 +254,7 @@ public class TermEnhancer {
 				}
 			} while (pos != -1);
 		}
-		//System.out.println("Term: "+term);
+		// System.out.println("Term: "+term);
 		return term;
 	}
 
@@ -691,9 +691,9 @@ public class TermEnhancer {
 	 * @return
 	 */
 	private static int findLogicEnd(String term, int pos) {
-	    return findLogicEnd(term, pos, false);
+		return findLogicEnd(term, pos, false);
 	}
-	
+
 	/**
 	 * Finds the start of an AND-Block
 	 * 
@@ -716,7 +716,7 @@ public class TermEnhancer {
 					return i;
 				}
 
-				//System.out.println(c+"/"+brackets+"/"+strict+"/"+term);
+				// System.out.println(c+"/"+brackets+"/"+strict+"/"+term);
 				if (brackets == 0 && (c == '°' || (c == '&' && strict))) {
 					return i;
 				}

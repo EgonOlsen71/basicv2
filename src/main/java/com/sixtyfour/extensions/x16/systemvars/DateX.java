@@ -7,7 +7,7 @@ import com.sixtyfour.elements.Variable;
 import com.sixtyfour.system.Machine;
 
 /**
- * A system variable that represents the current time and date.
+ * A system variable that represents the current date.
  * 
  * @author EgonOlsen
  */
