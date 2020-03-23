@@ -4,19 +4,19 @@
 package com.sixtyfour.extensions.x16.systemvars;
 
 import com.sixtyfour.elements.Variable;
-import com.sixtyfour.elements.systemvars.SystemVariable;
 import com.sixtyfour.system.Machine;
 
 /**
  * A system variable that represents the mouse's button state.
  */
-public class Mb extends Variable implements SystemVariable {
+public class Mb extends Variable {
 
 	/**
 	 * Instantiates a new status.
 	 */
 	public Mb() {
-		super("MB", 0);
+		super("MB", 0); 
+		setSystem(true);
 	}
 
 	/*

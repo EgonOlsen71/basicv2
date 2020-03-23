@@ -872,18 +872,19 @@ public class NativeCompiler {
 
 	private String getLastFilledRegister(List<String> code, int offset, Set<String> allowed) {
 		for (int i = code.size() - offset; i >= 0; i--) {
-			if (code.get(i).indexOf(" ") == 3) {
-				int pos = code.get(i).indexOf(",");
+			String codeS=code.get(i).replace("MOVB", "MOV");
+			if (codeS.indexOf(" ") == 3) {
+				int pos = codeS.indexOf(",");
 				if (pos > 4) {
-					String reg = code.get(i).substring(4, pos).trim();
+					String reg = codeS.substring(4, pos).trim();
 					if (reg.length() == 1 && allowed.contains(reg)) {
 						return reg;
 					}
 				} else {
 					// It might be a jump to a function that's not covered by the normal MathFunction
 					// (like ASC or LEN)
-					if (code.get(i).startsWith("JSR ")) {
-						String addr = code.get(i).substring(4).toUpperCase(Locale.ENGLISH);
+					if (codeS.startsWith("JSR ")) {
+						String addr = codeS.substring(4).toUpperCase(Locale.ENGLISH);
 						if (isSingle(addr)) {
 							return "X";
 						} else if (addr.startsWith("DEF")) {

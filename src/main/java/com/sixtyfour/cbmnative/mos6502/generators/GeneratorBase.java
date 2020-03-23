@@ -21,9 +21,17 @@ public abstract class GeneratorBase implements Generator {
 		}
 	}
 
-	protected boolean checkSpecialWriteVars(List<String> nCode, Operand target) {
+	protected boolean checkSpecialWriteVarsString(List<String> nCode, Operand target) {
 		if (target.getAddress().equals("VAR_TI$")) {
 			nCode.add("JSR WRITETID");
+			return true;
+		}
+		return false;
+	}
+
+	protected boolean checkSpecialWriteVarsReal(List<String> nCode, Operand target) {
+		if (target.getAddress()!=null && target.getAddress().equals("VAR_TI")) {
+			nCode.add("JSR WRITETI");
 			return true;
 		}
 		return false;
@@ -38,17 +46,13 @@ public abstract class GeneratorBase implements Generator {
 			nCode.add("LDY #>" + source.getAddress());
 			nCode.add("JSR FACMEM");
 		} else if (source.getAddress().equals("VAR_TI")) {
+			nCode.add("<IF !X16>");
 			nCode.add("SEI");
-			nCode.add("<IF X16>");
-			nCode.add("JSR VARBANKON");
-			nCode.add("</IF>");
 			nCode.add("LDY TIMEADDR");
 			nCode.add("LDX TIMEADDR+1");
 			nCode.add("LDA TIMEADDR+2");
-			nCode.add("<IF X16>");
-			nCode.add("JSR VARBANKOFF");
-			nCode.add("</IF>");
 			nCode.add("CLI");
+			nCode.add("</IF>");
 			nCode.add("SEC");
 			nCode.add("JSR COPYTIME");
 			nCode.add("JSR GETTIME");

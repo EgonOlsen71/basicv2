@@ -10,6 +10,9 @@ import com.sixtyfour.cbmnative.Transformer;
 import com.sixtyfour.cbmnative.Unlinker;
 import com.sixtyfour.cbmnative.mos6502.Optimizer6502;
 import com.sixtyfour.cbmnative.mos6502.Unlinker6502;
+import com.sixtyfour.cbmnative.mos6502.x16.generators.MovX;
+import com.sixtyfour.cbmnative.mos6502.x16.generators.MovbX;
+import com.sixtyfour.cbmnative.mos6502.x16.generators.Rnd;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.extensions.x16.X16Extensions;
 
@@ -81,6 +84,9 @@ public class PlatformX16 implements PlatformProvider {
 		}
 		if (line.equals("MOV")) {
 			return new MovX();
+		}
+		if (line.equals("RND")) {
+			return new Rnd();
 		}
 		return null;
 	}

@@ -1,9 +1,10 @@
-package com.sixtyfour.cbmnative.mos6502.x16;
+package com.sixtyfour.cbmnative.mos6502.x16.generators;
 
 import java.util.List;
 
 import com.sixtyfour.cbmnative.Operand;
 import com.sixtyfour.cbmnative.mos6502.generators.Movb;
+import com.sixtyfour.cbmnative.mos6502.x16.X16Defaults;
 import com.sixtyfour.elements.Type;
 
 /**

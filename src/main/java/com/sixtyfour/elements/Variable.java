@@ -43,6 +43,8 @@ public class Variable implements Atom {
 	private boolean persistent = false;
 
 	private boolean constant = false;
+	
+	private boolean system = false;
 
 	/**
 	 * Instantiates a new array variable.
@@ -562,6 +564,14 @@ public class Variable implements Atom {
 			ret.add(null);
 		}
 		return ret;
+	}
+
+	public boolean isSystem() {
+		return system;
+	}
+
+	public void setSystem(boolean system) {
+		this.system = system;
 	}
 
 }

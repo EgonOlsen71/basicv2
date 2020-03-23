@@ -8,13 +8,14 @@ import com.sixtyfour.elements.Variable;
 /**
  * A system variable that represents PI.
  */
-public class Pie extends Variable implements SystemVariable {
+public class Pie extends Variable {
 
 	/**
 	 * Instantiates a new pie.
 	 */
 	public Pie() {
 		super("Π", (float) Math.PI);
+		setSystem(true);
 	}
 
 	@Override

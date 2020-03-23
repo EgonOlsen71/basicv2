@@ -103,7 +103,8 @@ public class CallMapper {
 			String newAddr = x16r.get(match);
 			if (newAddr == null) {
 				if (verbose) {
-					Logger.log("Failed to find symbol " + match + " in target rom");
+					String err = "\n\n\nFailed to find symbol for " + label + ":  " + match + " in target rom\n\n\n\n";
+					Logger.log(err);
 				}
 				continue;
 			}
@@ -173,7 +174,9 @@ public class CallMapper {
 				if (parts.length == 2) {
 					add = Integer.valueOf(parts[1].trim());
 				}
-				String addr = x16r.get("." + parts[0].trim().toLowerCase(Locale.ENGLISH));
+				String label = parts[0].trim().toLowerCase(Locale.ENGLISH);
+				String uLabel=label.toUpperCase(Locale.ENGLISH);
+				String addr = x16r.get("." + label);
 				if (addr == null) {
 					String msg = "!!! Failed to match additional address " + parts[0];
 					Logger.log(msg);
@@ -181,10 +184,20 @@ public class CallMapper {
 				}
 				add += Integer.parseInt(addr, 16);
 				String val = "$" + Integer.toHexString(add).toUpperCase(Locale.ENGLISH);
-				if (!isKernalCall(add) || forceBank0) {
-					mappedCalls.put(parts[0].toUpperCase(Locale.ENGLISH), val);
+
+				if (fpLibCalls.containsKey(label)) {
+					val = fpLibCalls.get(label);
+					if (verbose) {
+						Logger.log(label + " is part of the fpLib, so we use that and ignore the delta: " + val);
+					}
+					val = "$" + val.toUpperCase(Locale.ENGLISH);
+					mappedCalls.put(uLabel, val);
 				} else {
-					addJarFar(val, redirs, parts[0].toUpperCase(Locale.ENGLISH));
+					if (!isKernalCall(add) || forceBank0) {
+						mappedCalls.put(uLabel, val);
+					} else {
+						addJarFar(val, redirs, uLabel);
+					}
 				}
 				if (verbose) {
 					Logger.log("Call to " + parts[0] + " matches to " + val + " in target rom!");

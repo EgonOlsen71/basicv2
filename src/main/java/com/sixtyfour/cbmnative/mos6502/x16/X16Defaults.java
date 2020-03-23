@@ -28,7 +28,7 @@ public interface X16Defaults {
 			nCode.add("TAY");
 			nCode.add("LDA #0");
 			add = true;
-		}
+		} 
 		if (add) {
 			nCode.add("JSR INTFAC");
 			nCode.add("LDX #<" + addr);

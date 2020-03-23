@@ -72,7 +72,8 @@ public class ConstantPropagator {
 							}
 							Term term = let.getTerm();
 							boolean termIsConstant = ConstantPropagator.checkForConstant(config, machine, term);
-							if (termIsConstant && !var.getUpperCaseName().equals("TI$")) {
+							//System.out.println(termIsConstant+"/"+var+"/"+(var.isSystem()));
+							if (termIsConstant && !var.isSystem()) {
 								var.setValue(term.eval(machine));
 								var.setConstant(true);
 								Logger.log(var + " can be considered constant!");

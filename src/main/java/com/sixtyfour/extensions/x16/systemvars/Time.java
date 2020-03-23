@@ -1,9 +1,10 @@
-package com.sixtyfour.elements.systemvars;
+package com.sixtyfour.extensions.x16.systemvars;
 
 import java.util.Calendar;
 import java.util.Date;
 
 import com.sixtyfour.elements.Variable;
+import com.sixtyfour.elements.systemvars.TimeDate;
 import com.sixtyfour.system.Machine;
 
 /**
@@ -51,7 +52,7 @@ public class Time extends Variable {
 
 	@Override
 	public boolean isReadOnly() {
-		return true;
+		return false;
 	}
 
 }

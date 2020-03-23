@@ -157,7 +157,12 @@ public class Parser {
 		String ret = extractName(linePart, includingAssignment);
 
 		if (!ret.endsWith("[]")) {
-			return machine.add(new Variable(ret, null));
+			Variable var = new Variable(ret, null);
+			//System.out.println(var.getUpperCaseName()+"/"+machine.isSystemVariable(var.getUpperCaseName()));
+			if (machine.isSystemVariable(var.getUpperCaseName())) {
+				var.setSystem(true);
+			}
+			return machine.add(var);
 		} else {
 			return new Variable(ret, null);
 		}

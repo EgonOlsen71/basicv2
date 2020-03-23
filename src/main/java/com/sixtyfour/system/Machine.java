@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -134,11 +135,24 @@ public class Machine {
 		}
 		Set<String> names = extendedSystemVars.stream().map(p -> p.getName()).collect(Collectors.toSet());
 		for (Variable var : vars) {
-			add(var);
+			var.setPersistent(false);
+			addXSystemVar(var);
 			if (!names.contains(var.getName())) {
 				extendedSystemVars.add(var);
 			}
 		}
+		//this.vars.keySet().forEach(p -> System.out.println("var:" +p));
+	}
+
+	/**
+	 * Returns true, if a variable is a system variable. False otherwise.
+	 * 
+	 * @param name the variable's name
+	 * @return system or not?
+	 */
+	public boolean isSystemVariable(String name) {
+		Variable var = vars.get(name.toUpperCase(Locale.ENGLISH));
+		return var != null && var.isSystem();
 	}
 
 	/**
@@ -339,11 +353,19 @@ public class Machine {
 		}
 		addDefaults();
 		for (Variable var : extendedSystemVars) {
-			add(var);
+			var.setPersistent(false);
+			addXSystemVar(var);
 		}
 
 		stack.clear();
 		usageIndicator.clear();
+	}
+
+	private void addXSystemVar(Variable var) {
+		if (vars.containsKey(var.getUpperCaseName())) {
+			vars.remove(var.getUpperCaseName());
+		}
+		add(var);
 	}
 
 	/**

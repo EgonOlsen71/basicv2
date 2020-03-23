@@ -8,3 +8,11 @@
 *frefac
 *reset
 *cls
+*entropy_get
+*rdtim
+*qint
+*settim
+*component2ascii
+*timnum
+*getadr2
+*faddc

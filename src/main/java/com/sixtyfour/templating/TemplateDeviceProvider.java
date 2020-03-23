@@ -6,7 +6,6 @@ import com.sixtyfour.Basic;
 import com.sixtyfour.Logger;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.Variable;
-import com.sixtyfour.elements.systemvars.SystemVariable;
 import com.sixtyfour.plugins.OutputChannel;
 import com.sixtyfour.plugins.impl.MemoryDeviceProvider;
 import com.sixtyfour.system.Machine;
@@ -50,7 +49,7 @@ public class TemplateDeviceProvider extends MemoryDeviceProvider {
 			try {
 				Machine base = baseTemplate.getMachine();
 				for (Entry<String, Variable> entry : base.getVariables().entrySet()) {
-					if (entry.getValue() instanceof SystemVariable) {
+					if (entry.getValue().isSystem()) {
 						continue;
 					}
 					tmpl.getMachine().addOrSet(entry.getValue());

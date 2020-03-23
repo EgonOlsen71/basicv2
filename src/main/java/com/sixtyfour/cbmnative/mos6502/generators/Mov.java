@@ -73,7 +73,7 @@ public class Mov extends GeneratorBase {
 		nCode.add("STA TMP_ZP");
 		nCode.add("STY TMP_ZP+1");
 
-		if (!checkSpecialWriteVars(nCode, target)) {
+		if (!checkSpecialWriteVarsString(nCode, target)) {
 			if (target.isRegister()) {
 				nCode.add("LDA #<" + target.getRegisterName());
 				nCode.add("LDY #>" + target.getRegisterName());
@@ -206,28 +206,31 @@ public class Mov extends GeneratorBase {
 		nCode.add("; Real in (A/Y) to FAC");
 		nCode.add("JSR REALFAC"); // Real in (A/Y) to FAC
 
-		if (target.getType() == Type.INTEGER) {
-			nCode.add("; FAC to integer in Y/A");
-			nCode.add("JSR FACINT"); // FAC to integer in A/Y
+		if (!checkSpecialWriteVarsReal(nCode, target)) {
 
-			if (target.isRegister()) {
-				nCode.add("STY " + target.getRegisterName());
-				nCode.add("STA " + createAddress(target.getRegisterName(), 1));
-			} else {
-				nCode.add("STY " + target.getAddress());
-				nCode.add("STA " + createAddress(target.getAddress(), 1));
-			}
-		} else {
-			if (target.isRegister()) {
-				nCode.add("LDX #<" + target.getRegisterName());
-				nCode.add("LDY #>" + target.getRegisterName());
-			} else {
-				nCode.add("LDX #<" + target.getAddress());
-				nCode.add("LDY #>" + target.getAddress());
-			}
+			if (target.getType() == Type.INTEGER) {
+				nCode.add("; FAC to integer in Y/A");
+				nCode.add("JSR FACINT"); // FAC to integer in A/Y
 
-			nCode.add("; FAC to (X/Y)");
-			nCode.add("JSR FACMEM"); // FAC to (X/Y)
+				if (target.isRegister()) {
+					nCode.add("STY " + target.getRegisterName());
+					nCode.add("STA " + createAddress(target.getRegisterName(), 1));
+				} else {
+					nCode.add("STY " + target.getAddress());
+					nCode.add("STA " + createAddress(target.getAddress(), 1));
+				}
+			} else {
+				if (target.isRegister()) {
+					nCode.add("LDX #<" + target.getRegisterName());
+					nCode.add("LDY #>" + target.getRegisterName());
+				} else {
+					nCode.add("LDX #<" + target.getAddress());
+					nCode.add("LDY #>" + target.getAddress());
+				}
+
+				nCode.add("; FAC to (X/Y)");
+				nCode.add("JSR FACMEM"); // FAC to (X/Y)
+			}
 		}
 	}
 
@@ -254,15 +257,17 @@ public class Mov extends GeneratorBase {
 			nCode.add("; integer in Y/A to FAC");
 			nCode.add("JSR INTFAC"); // integer in A/Y to FAC
 
-			if (target.isRegister()) {
-				nCode.add("LDX #<" + target.getRegisterName());
-				nCode.add("LDY #>" + target.getRegisterName());
-			} else {
-				nCode.add("LDX #<" + target.getAddress());
-				nCode.add("LDY #>" + target.getAddress());
+			if (!checkSpecialWriteVarsReal(nCode, target)) {
+				if (target.isRegister()) {
+					nCode.add("LDX #<" + target.getRegisterName());
+					nCode.add("LDY #>" + target.getRegisterName());
+				} else {
+					nCode.add("LDX #<" + target.getAddress());
+					nCode.add("LDY #>" + target.getAddress());
+				}
+				nCode.add("; FAC to (X/Y)");
+				nCode.add("JSR FACMEM"); // FAC to (X/Y)
 			}
-			nCode.add("; FAC to (X/Y)");
-			nCode.add("JSR FACMEM"); // FAC to (X/Y)
 		}
 	}
 

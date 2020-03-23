@@ -358,6 +358,9 @@ VARBANKOFF	PHA
 			PLA
 			RTS
 ;###################################
+FACRND_X16	JSR ENTROPY_GET
+			JMP FACRND
+;###################################
 JOY 		JSR joystick_scan
 			LDA #<Y_REG
 			LDY #>Y_REG
@@ -377,6 +380,120 @@ JOY 		JSR joystick_scan
 			LDY #>X_REG
 			JMP FACMEM
 VALERRJOY   JMP ILLEGALQUANTITY
+;###################################
+COPYTIME	JMP RDTIM
+;###################################
+GETTIME		STX FACMO
+			STY FACMOH
+			STA FACLO
+			STZ FACHO
+			RTS
+;###################################
+WRITETI		JSR QINT
+			LDA FACHO
+			BEQ WRITETIOK
+			JMP ILLEGALQUANTITY
+WRITETIOK	LDA FACHO+3
+			LDX FACHO+2
+			LDY FACHO+1
+			JMP SETTIM
+;###################################
+CLEARFAC	STZ FACEXP
+			STZ FACSGN
+			RTS
+;###################################
+MUL10	JSR FACARG
+		TAX
+		BEQ MUL10R
+		CLC
+		ADC #2
+		BCS GOOVER
+		LDX #0
+		STX ARISGN
+		JSR FADDC
+		INC FACEXP
+		BEQ GOOVER
+MUL10R	RTS
+GOOVER	JMP ILLEGALQUANTITY
+;###################################
+WRITETID_X16	
+			JSR CLOCK_GET_DATE_TIME
+			
+			; HOURS
+			JSR CLEARFAC
+			LDY #0
+			JSR TIMNUM
+			JSR MUL10
+			LDY #1
+			JSR TIMNUM
+			JSR GETADR2
+			CPY #24
+			BCS WRITETIDERR
+			STY R1H
+		
+			; MINUTES
+			JSR CLEARFAC
+			LDY #2
+			JSR TIMNUM
+			JSR MUL10
+			LDY #3
+			JSR TIMNUM
+			JSR GETADR2
+			CPY #60
+			BCS WRITETIDERR
+			STY R2L
+		
+			; SECONDS
+			JSR CLEARFAC
+			LDY #4
+			JSR TIMNUM
+			JSR MUL10
+			LDY #5
+			JSR TIMNUM
+			JSR GETADR2
+			CPY #60
+			BCS WRITETIDERR
+			STY R2H
+			
+			JMP CLOCK_SET_DATE_TIME
+			
+WRITETIDERR	JMP ILLEGALQUANTITY
+;###################################
+READTID_X16	
+			JSR CLOCK_GET_DATE_TIME
+			
+			LDA R2H				; SECONDS
+			JSR COMPONENT2ASCII
+			LDA LOFBUF+3
+			PHA
+			LDA LOFBUF+2
+			PHA
+	
+			LDA R2L				; MINUTES
+			JSR COMPONENT2ASCII
+			LDA LOFBUF+3
+			PHA
+			LDA LOFBUF+2
+			PHA
+
+			LDA R1H				; HOURS
+			JSR COMPONENT2ASCII
+			LDA LOFBUF+3
+			STA LOFBUF+1 
+			LDA LOFBUF+2
+			STA LOFBUF
+
+			PLA
+			STA LOFBUF+2 		; MM
+			PLA
+			STA LOFBUF+3 		; MM
+			PLA
+			STA LOFBUF+4 		; SS
+			PLA
+			STA LOFBUF+5 		; SS
+			LDA #0
+			STA LOFBUF+6 		; Z
+			RTS
 ;###################################
 TEXTCOLTAB
 	.BYTE $90 $05 $1c $9f $9c $1e $1f $9e

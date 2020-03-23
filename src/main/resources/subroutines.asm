@@ -685,22 +685,30 @@ WRITE2		LDA TMP_ZP
 			STA INDEX1
 			LDA TMP_ZP+1
 			STA INDEX1+1
-			JSR WRITETIS
-			RTS
+			<IF !X16>
+				JMP WRITETIS
+			</IF>
+			<IF X16>
+				JMP WRITETID_X16
+			</IF>
 ;###################################
-READTID		LDA #0
-			STA FACOV
-			JSR TI2FAC 
-			LDY #0
-			STY LOWDS+1
-			DEY
-			STY FACOV+1
-			LDY #$06
-			STY LOWDS
-			LDY #$24
-			JSR GETTI
-			LDA $FE
-			PHA	
+READTID		LDA $FE
+			PHA
+			<IF !X16>
+				STA FACOV
+				JSR TI2FAC 
+				LDY #0
+				STY LOWDS+1
+				DEY
+				STY FACOV+1
+				LDY #$06
+				STY LOWDS
+				LDY #$24
+				JSR GETTI
+			</IF>
+			<IF X16>
+				JSR READTID_X16
+			</IF>
 			LDA #$FE
 			STA TMP_ZP
 			LDA #0

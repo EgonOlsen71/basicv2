@@ -4,19 +4,19 @@
 package com.sixtyfour.extensions.x16.systemvars;
 
 import com.sixtyfour.elements.Variable;
-import com.sixtyfour.elements.systemvars.SystemVariable;
 import com.sixtyfour.system.Machine;
 
 /**
  * A system variable that represents the mouse's y-coordinate.
  */
-public class My extends Variable implements SystemVariable {
+public class My extends Variable  {
 
 	/**
 	 * Instantiates a new status.
 	 */
 	public My() {
 		super("MY", 0);
+		setSystem(true);
 	}
 
 	/*
