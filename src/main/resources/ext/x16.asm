@@ -543,7 +543,7 @@ READDAD2
 			STA LOFBUF+6 		; dd1
 			PLA
 			STA LOFBUF+7 		; dd2
-			STZ LOFBUF+8 		; terminator (needed?=
+			STZ LOFBUF+8 		; terminator (needed?)
 		
 READDADCOPY	LDA #$FE
 			STA TMP_ZP
