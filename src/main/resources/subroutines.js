@@ -367,6 +367,10 @@ this.COMPACT = function() {
 	// Nothing to do in this context
 }
 
+this.COMPACTMAX = function() {
+	// Nothing to do in this context
+}
+
 this.STROUT = function() {
 	this.out(this.A_REG);
 }

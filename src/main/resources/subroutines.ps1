@@ -380,6 +380,9 @@ function SLTEQ {
 function COMPACT {
 }
 
+function COMPACTMAX {
+}
+
 function STROUT {
 	out $global:A_REG
 }

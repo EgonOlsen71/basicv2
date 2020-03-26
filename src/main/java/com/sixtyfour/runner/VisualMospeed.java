@@ -70,6 +70,7 @@ public class VisualMospeed {
 
 	private String[] code;
 	private File lastDir;
+	private long fileDate;
 
 	/**
 	 * The main method. Just run this without any parameters.
@@ -151,6 +152,14 @@ public class VisualMospeed {
 	}
 
 	private void compile() {
+
+		if (file != null && fileDate != 0) {
+			if (file.lastModified()>fileDate) {
+				Logger.log("File has changed, reloading...");
+				load(file);
+			}
+		}
+
 		compile.setEnabled(false);
 		load.setEnabled(false);
 		target.setEnabled(false);
@@ -253,7 +262,7 @@ public class VisualMospeed {
 				try {
 					assy.compile(conf);
 				} catch (Exception e) {
-					System.out.println("\n!!! Error running assembler: " + e.getMessage());
+					Logger.log("\n!!! Error running assembler: " + e.getMessage());
 					return;
 				}
 			}
@@ -389,7 +398,13 @@ public class VisualMospeed {
 			compile.setEnabled(code != null && code.length > 0);
 			return;
 		}
-		file = fc.getSelectedFile();
+		load(fc.getSelectedFile());
+	}
+
+	private void load(File file) {
+		this.file = file;
+		fileDate = file.lastModified();
+
 		String srcFile = file.toString();
 		code = null;
 
