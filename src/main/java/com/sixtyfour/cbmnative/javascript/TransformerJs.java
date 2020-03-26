@@ -172,7 +172,13 @@ public class TransformerJs implements Transformer {
 			String line = code.get(i);
 			if (line.equals("JSR GOSUB")) {
 				String cont = "GOSUBCONT" + cnt++;
-				code.add(i + 2, cont + ":");
+				int add = 2;
+				// Catch the NOP introduced by a gosub in a list of conditionals.
+				// It would be better to search for the first non-NOP instead, but I can't be bothered
+				if (code.get(i + 1).equals("NOP")) {
+					add = 3;
+				}
+				code.add(i + add, cont + ":");
 				code.set(i, "JSR GOSUB(\"" + cont + "\")");
 			} else if (line.equals("JSR INITFOR")) {
 				String cont = "FORLOOP" + forCnt++;

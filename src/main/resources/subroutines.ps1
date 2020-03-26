@@ -391,6 +391,10 @@ function QMARKOUT1 {
 	out "?"
 }
 
+function CRSRRIGHT {
+	out " "
+}
+
 function QMARKOUT2 {
 	out "??"
 }

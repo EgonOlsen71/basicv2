@@ -379,6 +379,10 @@ this.QMARKOUT1 = function() {
 	this.out("?");
 }
 
+this.CRSRRIGHT = function() {
+	this.out(" ");
+}
+
 this.QMARKOUT2 = function() {
 	this.out("??");
 }
