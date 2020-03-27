@@ -749,6 +749,8 @@ public class Optimizer6502 implements Optimizer {
 						"JSR FACMUL"));
 				this.add(new Pattern(false, "Combine load and sub", new String[] { "JSR MEMSUB" }, "JSR MEMARG",
 						"JSR FACSUB"));
+				this.add(new Pattern(false, "Omit FAC load", new String[] { "{LINE0}", "{LINE1}","{LINE2}"}, "LDX #<{MEM1}",
+						"LDY #>{MEM1}", "JSR FACMEM", "NOP", "LDA #<{MEM1}", "LDY #>{MEM1}", "JSR REALFAC"));
 			}
 		};
 	}

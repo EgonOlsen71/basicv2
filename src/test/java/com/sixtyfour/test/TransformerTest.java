@@ -522,7 +522,7 @@ public class TransformerTest {
 
 		printStats(profiler, machine);
 	}
-
+	
 	private static void testTransformerAffine() throws Exception {
 		System.out.println("\n\ntestTransformerAffine");
 		String[] vary = Preprocessor
