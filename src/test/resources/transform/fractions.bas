@@ -55,7 +55,7 @@
 1800 mx%=z%:if n%<mx% then mx%=n%
 1805 if mx%<=1 then return
 1810 for m=mx% to 2 step -1:poke53280,m and 15
-1820 if z%/m = int(z%/m) and n%/m = int(n%/m) then gosub 1840
+1820 if z%/m = int(z%/m) then if n%/m = int(n%/m) then gosub 1840
 1825 if m=mx% then m=int(mx%/2)
 1830 next:return
 1840 z%=z%/m:n%=n%/m:dc=1:return
