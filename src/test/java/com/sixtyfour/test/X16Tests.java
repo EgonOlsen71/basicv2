@@ -70,8 +70,16 @@ public class X16Tests {
 		testColor();
 		testCls();
 		testReset();
+		testCircles();
 		testHashMap();
 		System.out.println("Total time: " + (System.currentTimeMillis() - s) + "ms");
+	}
+	
+	private static void testCircles() throws Exception {
+		System.out.println("\n\ntestCircles");
+		String[] vary = Loader.loadProgram("src/test/resources/x16/circles.bas");
+		Assembler assy = initTestEnvironment(vary, false, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++circles.prg", true);
 	}
 
 	private static void testHashMap() throws Exception {
