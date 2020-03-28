@@ -1,10 +1,11 @@
-120 screen 128:fori=0to10
-130 y(i)=200*rnd(1):x(i)=320*rnd(1)
-140 next
-150 forx=0to319:fory=0to199:r=1e6:fori=0to10
-180 r1=sqr((x-x(i))*(x-x(i))+(y-y(i))*(y-y(i)))
-190 ifr1<rthenr=r1
-200 next:psetx,y,r/3and1:next:next
-210 geta$:ifa$=""then 210
+120 SCREEN 128:FOR I=0 TO 10
+130 Y(I)=200*RND(1):X(I)=320*RND(1)
+140 NEXT
+150 FOR X=0 TO 319:FOR Y=0 TO 199:R=1E6:FOR I=0 TO 10
+160 XI=X-X(I):YI=Y-Y(I)
+180 R1=XI*XI+YI*YI
+190 IF R1<R THEN R=R1
+200 NEXT:PSETX,Y,SQR(R)/3 AND 1:NEXT:NEXT
+210 GETA$:IFA$=""THEN 210
 
 
