@@ -71,8 +71,16 @@ public class X16Tests {
 		testCls();
 		testReset();
 		testCircles();
+		testEllipse();
 		testHashMap();
 		System.out.println("Total time: " + (System.currentTimeMillis() - s) + "ms");
+	}
+	
+	private static void testEllipse() throws Exception {
+		System.out.println("\n\ntestEllipse");
+		String[] vary = Loader.loadProgram("src/test/resources/x16/ellipse.bas");
+		Assembler assy = initTestEnvironment(vary, false, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++ellipse.prg", true);
 	}
 	
 	private static void testCircles() throws Exception {
