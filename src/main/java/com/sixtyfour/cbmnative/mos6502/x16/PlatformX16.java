@@ -12,7 +12,7 @@ import com.sixtyfour.cbmnative.mos6502.Optimizer6502;
 import com.sixtyfour.cbmnative.mos6502.Unlinker6502;
 import com.sixtyfour.cbmnative.mos6502.x16.generators.MovX;
 import com.sixtyfour.cbmnative.mos6502.x16.generators.MovbX;
-import com.sixtyfour.cbmnative.mos6502.x16.generators.Rnd;
+import com.sixtyfour.cbmnative.mos6502.x16.generators.RndX;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.extensions.x16.X16Extensions;
 
@@ -79,15 +79,15 @@ public class PlatformX16 implements PlatformProvider {
 	@Override
 	public Generator getGenerator(String line) {
 		line = line.trim().split(" ")[0].toUpperCase(Locale.ENGLISH);
-		if (line.equals("MOVB")) {
+		switch (line) {
+		case "MOVB":
 			return new MovbX();
-		}
-		if (line.equals("MOV")) {
+		case "MOV":
 			return new MovX();
+		case "RND":
+			return new RndX();
+		default:
+			return null;
 		}
-		if (line.equals("RND")) {
-			return new Rnd();
-		}
-		return null;
 	}
 }

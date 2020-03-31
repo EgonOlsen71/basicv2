@@ -6,9 +6,9 @@ import com.sixtyfour.cbmnative.mos6502.generators.MathFunction;
  * @author EgonOlsen
  * 
  */
-public class Rnd extends MathFunction {
+public class RndX extends MathFunction {
 
-	public Rnd() {
+	public RndX() {
 		super("RND", "; FAC = RND(FAC)", "JSR FACRND_X16");
 	}
 }
