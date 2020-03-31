@@ -23,8 +23,7 @@ public class CallMapper {
 
 		Map<String, String> mappedCalls = new HashMap<>();
 
-		Map<String, List<String>> c64 = MapLoader
-				.getSymbolMapping(CallMapper.class.getResourceAsStream("/rommap/rom-c64.txt"));
+		Map<String, List<String>> c64 = MapLoader.getSymbolMapping(getStream("/rommap/rom-c64.txt"));
 		Map<String, List<String>> x16 = null;
 		if (config != null && config.getSymbolTable() != null && !config.getSymbolTable().isEmpty()) {
 			Logger.log("Loading symbol table from file: " + config.getSymbolTable());
@@ -35,7 +34,7 @@ public class CallMapper {
 				System.exit(15);
 			}
 		} else {
-			x16 = MapLoader.getSymbolMapping(CallMapper.class.getResourceAsStream("/rommap/rom-x16.txt"));
+			x16 = MapLoader.getSymbolMapping(getStream("/rommap/basic-x16.txt"), getStream("/rommap/kernal-x16.txt"));
 		}
 		Map<String, String> calls = MapLoader.getRomCalls(CallMapper.class.getResourceAsStream("/rommap/runtime.map"));
 		Map<String, String> fpLibCalls = MapLoader
@@ -209,6 +208,10 @@ public class CallMapper {
 		mapping.setMap(mappedCalls);
 		mapping.setFarCalls(redirs);
 		return mapping;
+	}
+
+	private static InputStream getStream(String name) {
+		return CallMapper.class.getResourceAsStream(name);
 	}
 
 	private static void addJarFar(String addr, List<String> redirs, String uLabel) {

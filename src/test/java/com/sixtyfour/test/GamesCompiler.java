@@ -36,6 +36,9 @@ public class GamesCompiler {
 		File dst = new File("compiled");
 		dst.mkdir();
 		File[] games = src.listFiles((dir, name) -> name.endsWith(".bas"));
+		if (games == null) {
+			throw new Exception("No files today...");
+		}
 
 //		File poetry = new File("src/test/resources/games/04 - Quack.bas");
 //		compileGame(poetry, dst);

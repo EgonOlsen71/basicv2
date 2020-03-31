@@ -19,24 +19,25 @@ public class MapLoader {
 	 * @param fileName
 	 * @return
 	 */
-	public static Map<String, List<String>> getSymbolMapping(InputStream file) {
+	public static Map<String, List<String>> getSymbolMapping(InputStream... files) {
 		Map<String, List<String>> symbols = new HashMap<>();
-
-		String[] lines = Loader.loadProgram(file);
-		for (String line : lines) {
-			String[] parts = line.split(" ");
-			String addr = parts[1].trim();
-			String label = parts[2].trim();
-			if (addr.startsWith("00")) {
-				addr = addr.substring(2);
+		for (InputStream file : files) {
+			String[] lines = Loader.loadProgram(file);
+			for (String line : lines) {
+				String[] parts = line.split(" ");
+				String addr = parts[1].trim();
+				String label = parts[2].trim();
+				if (addr.startsWith("00")) {
+					addr = addr.substring(2);
+				}
+				String key = addr.toLowerCase(Locale.ENGLISH);
+				List<String> labels = symbols.get(key);
+				if (labels == null) {
+					labels = new ArrayList<>();
+				}
+				labels.add(label.toLowerCase(Locale.ENGLISH));
+				symbols.put(key, labels);
 			}
-			String key = addr.toLowerCase(Locale.ENGLISH);
-			List<String> labels = symbols.get(key);
-			if (labels == null) {
-				labels = new ArrayList<>();
-			}
-			labels.add(label.toLowerCase(Locale.ENGLISH));
-			symbols.put(key, labels);
 		}
 		return symbols;
 	}
