@@ -14,11 +14,21 @@ import com.sixtyfour.Logger;
 import com.sixtyfour.config.CompilerConfig;
 
 /**
+ * Helper class to map ROM calls from the C64's ROM to the X16's implementation
+ * (or any other target that provides a matching symbol table).
+ * 
  * @author EgonOlsen71
  *
  */
 public class CallMapper {
 
+	/**
+	 * Creates a mapping between the C64's ROM calls and the X16's ones.
+	 * 
+	 * @param config  the current compiler's config
+	 * @param verbose if true, the new mapping will be printed on screen
+	 * @return the mapping
+	 */
 	public static Mapping mapCalls(CompilerConfig config, boolean verbose) {
 
 		Map<String, String> mappedCalls = new HashMap<>();

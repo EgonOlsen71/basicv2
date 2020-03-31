@@ -10,14 +10,20 @@ import java.util.Map;
 import com.sixtyfour.Loader;
 
 /**
+ * Helper class to load various ROM call and symbol mapping files.
+ * 
  * @author EgonOlsen71
  *
  */
 public class MapLoader {
 
 	/**
-	 * @param fileName
-	 * @return
+	 * Loads the given symbol mapping files and creates a map containing addresses
+	 * as keys and corresponding labels as values.
+	 * 
+	 * @param files the input streams to the symbol files. Will be closed
+	 *              automatically.
+	 * @return the mapping
 	 */
 	public static Map<String, List<String>> getSymbolMapping(InputStream... files) {
 		Map<String, List<String>> symbols = new HashMap<>();
@@ -43,8 +49,10 @@ public class MapLoader {
 	}
 
 	/**
-	 * @param fileName
-	 * @return
+	 * Returns a mapping between a label and an address read from a given file.
+	 * 
+	 * @param file the input stream to the file. Will be closed automatically.
+	 * @return the mapping
 	 */
 	public static Map<String, String> getRomCalls(InputStream file) {
 		Map<String, String> calls = new HashMap<>();
