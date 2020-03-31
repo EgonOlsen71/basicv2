@@ -40,8 +40,7 @@ public class ParserTest {
 		testBrackets();
 		testLogicBrackets();
 	}
-	
-	
+
 	private static void testLogicBrackets() {
 		System.out.println("testLogicBrackets");
 		String term = "u or 4 +56-23 or z=160 or l>1 and l<10 and z=32";

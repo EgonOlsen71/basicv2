@@ -154,7 +154,7 @@ public class VisualMospeed {
 	private void compile() {
 
 		if (file != null && fileDate != 0) {
-			if (file.lastModified()>fileDate) {
+			if (file.lastModified() > fileDate) {
 				Logger.log("File has changed, reloading...");
 				load(file);
 			}

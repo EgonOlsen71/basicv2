@@ -749,9 +749,11 @@ public class Optimizer6502 implements Optimizer {
 						"JSR FACMUL"));
 				this.add(new Pattern(false, "Combine load and sub", new String[] { "JSR MEMSUB" }, "JSR MEMARG",
 						"JSR FACSUB"));
-				// This optimizes stuff like: a=i*1:if a>1...by not loading a again for the if if it's already in the FAC
-				this.add(new Pattern(false, "Omit FAC load", new String[] { "{LINE0}", "{LINE1}","{LINE2}", "{LINE3}"}, "LDX #<{MEM1}",
-						"LDY #>{MEM1}", "JSR FACMEM", "NOP", "LDA #<{MEM1}", "LDY #>{MEM1}", "JSR REALFAC"));
+				// This optimizes stuff like: a=i*1:if a>1...by not loading a again for the if
+				// if it's already in the FAC
+				this.add(new Pattern(false, "Omit FAC load",
+						new String[] { "{LINE0}", "{LINE1}", "{LINE2}", "{LINE3}" }, "LDX #<{MEM1}", "LDY #>{MEM1}",
+						"JSR FACMEM", "NOP", "LDA #<{MEM1}", "LDY #>{MEM1}", "JSR REALFAC"));
 			}
 		};
 	}

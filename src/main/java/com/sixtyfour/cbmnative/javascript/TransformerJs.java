@@ -174,7 +174,8 @@ public class TransformerJs implements Transformer {
 				String cont = "GOSUBCONT" + cnt++;
 				int add = 2;
 				// Catch the NOP introduced by a gosub in a list of conditionals.
-				// It would be better to search for the first non-NOP instead, but I can't be bothered
+				// It would be better to search for the first non-NOP instead, but I can't be
+				// bothered
 				if (code.get(i + 1).equals("NOP")) {
 					add = 3;
 				}

@@ -23,7 +23,7 @@ public class OptimizerJs implements Optimizer {
 	@Override
 	public List<String> optimize(CompilerConfig config, PlatformProvider platform, List<String> code,
 			ProgressListener pg) {
-		
+
 		if (code.size() > 1) {
 
 			Logger.log("Optimizing javascript code...");

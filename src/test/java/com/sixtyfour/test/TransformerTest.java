@@ -133,7 +133,7 @@ public class TransformerTest {
 		Assembler assy = initTestEnvironment(vary, false, -1, true);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++corona.prg", true);
 	}
-	
+
 	private static void testDefFnArray() throws Exception {
 		System.out.println("\n\ntestDefFnArray");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/deffnarray.bas");
@@ -522,7 +522,7 @@ public class TransformerTest {
 
 		printStats(profiler, machine);
 	}
-	
+
 	private static void testTransformerAffine() throws Exception {
 		System.out.println("\n\ntestTransformerAffine");
 		String[] vary = Preprocessor

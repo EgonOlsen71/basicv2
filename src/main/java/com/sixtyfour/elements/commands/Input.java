@@ -204,7 +204,7 @@ public class Input extends MultiVariableCommand {
 			if (input != null && !input.isEmpty() && Character.isWhitespace(input.charAt(0))) {
 				input = input.trim();
 			}
-			
+
 			if (indexTerm != null) {
 				// array
 				List<Atom> pars = Parser.getParameters(indexTerm);
