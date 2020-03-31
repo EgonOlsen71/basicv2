@@ -117,7 +117,7 @@ public class Unlinker6502 implements Unlinker {
 	}
 
 	private Set<String> findJumps(List<String> ret) {
-		String[] jumps = new String[] { "JMP", "JSR", "BNE", "BEQ", "BMI", "BCC", "BCS" };
+		String[] jumps = new String[] { "JMP", "JSR", "BNE", "BEQ", "BMI", "BCC", "BCS", "BRA" };
 
 		Set<String> labels = new HashSet<String>();
 		for (String line : ret) {
