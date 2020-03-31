@@ -8,7 +8,8 @@ import com.sixtyfour.elements.systemvars.TimeDate;
 import com.sixtyfour.system.Machine;
 
 /**
- * A system variable that represents the current time in ticks.
+ * A system variable that represents the current time in ticks. This is the X16
+ * version, where TI can be assigned.
  * 
  * @author EgonOlsen
  */
