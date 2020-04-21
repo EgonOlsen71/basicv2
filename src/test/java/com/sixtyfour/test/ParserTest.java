@@ -1,5 +1,6 @@
 package com.sixtyfour.test;
 
+import com.sixtyfour.cbmnative.TermHelper;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.Variable;
 import com.sixtyfour.elements.commands.Command;
@@ -39,6 +40,26 @@ public class ParserTest {
 		testNumberExt1();
 		testBrackets();
 		testLogicBrackets();
+		testSimilarity();
+	}
+
+	private static void testSimilarity() {
+	    	System.out.println("testSimilarity");
+	    	Machine machine = new Machine();
+	    	String term = "A/B";
+		String wbres = TermEnhancer.addBrackets(term);
+		System.out.println(wbres);
+		Term res = Parser.getTerm(config, term, machine, false, true);
+		System.out.println(res);
+		
+		System.out.println("lin: "+TermHelper.linearize(res.getInitial(), true));
+		
+		term = "INT(A/B)";
+		wbres = TermEnhancer.addBrackets(term);
+		System.out.println(wbres);
+		res = Parser.getTerm(config, term, machine, false, true);
+		System.out.println(res);
+		System.out.println("lin: "+TermHelper.linearize(res.getInitial(), true));
 	}
 
 	private static void testLogicBrackets() {
