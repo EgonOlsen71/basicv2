@@ -19,13 +19,28 @@ public class LogicTest {
 	 */
 	public static void main(String[] args) {
 		testLogicParser();
+		testLogicOptimizer();
 	}
 
+	public static void testLogicOptimizer() {
+		System.out.println("testLogicOptimizer");
+		Machine machine = new Machine();
+		machine.add(new Variable("A", 1));
+		machine.add(new Variable("B", 2));
+		machine.add(new Variable("C", 3));
+		machine.add(new Variable("D", 4));
+		machine.add(new Variable("E", 5));
+
+		LogicTerm res = LogicParser.getTerm(config, "A/B=A/B", machine);
+		System.out.println("Result: " + res.evalToBoolean(machine));
+		System.out.println("Parsed: " + res);
+	}
+	
 	/**
 	 * Test logic parser.
 	 */
 	public static void testLogicParser() {
-		System.out.println("testTermCreation");
+		System.out.println("testLogicParser");
 		Machine machine = new Machine();
 		machine.add(new Variable("A", 1));
 		machine.add(new Variable("B", 2));
