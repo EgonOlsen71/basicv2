@@ -248,7 +248,7 @@ public class Operator {
 	public String toString() {
 		return OPS[type];
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -263,7 +263,7 @@ public class Operator {
 			if (o == this) {
 				return true;
 			}
-			return this.getType()==((Operator) o).getType();
+			return this.getType() == ((Operator) o).getType();
 		}
 		return false;
 	}

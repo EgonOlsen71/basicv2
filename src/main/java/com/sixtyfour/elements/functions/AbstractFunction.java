@@ -39,7 +39,7 @@ public abstract class AbstractFunction implements Function {
 	public AbstractFunction(String name) {
 		this.name = VarUtils.toUpper(name);
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -50,7 +50,7 @@ public abstract class AbstractFunction implements Function {
 		if (o == null) {
 			return false;
 		}
-		
+
 		if (o instanceof Function && this.isDeterministic()) {
 			if (o == this) {
 				return true;

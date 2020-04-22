@@ -40,7 +40,7 @@ public class LogicOr implements LogicOp {
 	public boolean isAnd() {
 		return false;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 

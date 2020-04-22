@@ -635,7 +635,7 @@ public class Term implements Atom {
 		// TODO stuff?
 		return code;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -647,24 +647,24 @@ public class Term implements Atom {
 			return false;
 		}
 		if (o instanceof Term) {
-			if (o == this && (!(this.left instanceof Function) || ((Function)this.left).isDeterministic())) {
+			if (o == this && (!(this.left instanceof Function) || ((Function) this.left).isDeterministic())) {
 				return true;
 			}
-			
-			boolean eq=true;
-			
-			if (this.left!=null) {
-			    eq=this.left.equals(((Term)o).left);
+
+			boolean eq = true;
+
+			if (this.left != null) {
+				eq = this.left.equals(((Term) o).left);
 			}
-			
-			if (this.right!=null && eq) {
-			    eq=this.right.equals(((Term)o).right);
+
+			if (this.right != null && eq) {
+				eq = this.right.equals(((Term) o).right);
 			}
-			
-			if (this.operator!=null && eq) {
-			    eq=this.operator.equals(((Term)o).operator);
+
+			if (this.operator != null && eq) {
+				eq = this.operator.equals(((Term) o).operator);
 			}
-			
+
 			return eq;
 		}
 		return false;
@@ -677,7 +677,7 @@ public class Term implements Atom {
 	 */
 	@Override
 	public int hashCode() {
-		return (this.left!=null?this.left.hashCode():0)+(this.right!=null?this.right.hashCode():0);
+		return (this.left != null ? this.left.hashCode() : 0) + (this.right != null ? this.right.hashCode() : 0);
 	}
-	
+
 }

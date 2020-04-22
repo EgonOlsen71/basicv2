@@ -39,11 +39,11 @@ public class LogicTest {
 		System.out.println("Parsed: " + res);
 		System.out.println("Parsed1: " + res1);
 		System.out.println("Parsed2: " + res2);
-		System.out.println("res=res1: "+res.equals(res1));
-		System.out.println("res=res2: "+res.equals(res2));
-		System.out.println("res2=res2: "+res2.equals(res2));
+		System.out.println("res=res1: " + res.equals(res1));
+		System.out.println("res=res2: " + res.equals(res2));
+		System.out.println("res2=res2: " + res2.equals(res2));
 	}
-	
+
 	/**
 	 * Test logic parser.
 	 */

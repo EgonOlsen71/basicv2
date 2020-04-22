@@ -78,7 +78,6 @@ public class Constant<T> implements Atom {
 		return value.hashCode();
 	}
 
-	
 	/*
 	 * (non-Javadoc)
 	 * 

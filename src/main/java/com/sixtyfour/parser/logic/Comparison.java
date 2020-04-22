@@ -228,7 +228,7 @@ public class Comparison implements LogicBlock {
 		terms.add(left);
 		return terms;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -240,24 +240,24 @@ public class Comparison implements LogicBlock {
 			return false;
 		}
 		if (o instanceof Comparison) {
-			if (o == this && (!(this.left instanceof Function) || ((Function)this.left).isDeterministic())) {
+			if (o == this && (!(this.left instanceof Function) || ((Function) this.left).isDeterministic())) {
 				return true;
 			}
-			
-			boolean eq=true;
-			
-			if (this.left!=null) {
-			    eq=this.left.equals(((Comparison)o).getLeft());
+
+			boolean eq = true;
+
+			if (this.left != null) {
+				eq = this.left.equals(((Comparison) o).getLeft());
 			}
-			
-			if (this.right!=null && eq) {
-			    eq=this.right.equals(((Comparison)o).getRight());
+
+			if (this.right != null && eq) {
+				eq = this.right.equals(((Comparison) o).getRight());
 			}
-			
-			if (this.comparator!=null && eq) {
-			    eq=this.comparator.equals(((Comparison)o).getComparator());
+
+			if (this.comparator != null && eq) {
+				eq = this.comparator.equals(((Comparison) o).getComparator());
 			}
-			
+
 			return eq;
 		}
 		return false;
@@ -270,7 +270,7 @@ public class Comparison implements LogicBlock {
 	 */
 	@Override
 	public int hashCode() {
-		return (this.left!=null?this.left.hashCode():0)+(this.right!=null?this.right.hashCode():0);
+		return (this.left != null ? this.left.hashCode() : 0) + (this.right != null ? this.right.hashCode() : 0);
 	}
 
 }

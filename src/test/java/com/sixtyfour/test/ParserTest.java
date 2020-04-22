@@ -45,16 +45,16 @@ public class ParserTest {
 	}
 
 	private static void testSimilarity() {
-	    	System.out.println("testSimilarity");
-	    	Machine machine = new Machine();
-	    	String term = "A/B";
+		System.out.println("testSimilarity");
+		Machine machine = new Machine();
+		String term = "A/B";
 		String wbres = TermEnhancer.addBrackets(term);
 		System.out.println(wbres);
 		Term res = Parser.getTerm(config, term, machine, false, true);
 		System.out.println(res);
-		
-		System.out.println("lin: "+TermHelper.linearize(res.getInitial(), true));
-		
+
+		System.out.println("lin: " + TermHelper.linearize(res.getInitial(), true));
+
 		term = "INT(A/B)";
 		wbres = TermEnhancer.addBrackets(term);
 		System.out.println(wbres);
@@ -62,14 +62,14 @@ public class ParserTest {
 		Term res2 = Parser.getTerm(config, term, machine, false, true);
 		System.out.println(res1);
 		System.out.println(res2);
-		System.out.println("lin1: "+TermHelper.linearize(res1.getInitial(), true));
-		System.out.println("lin2: "+TermHelper.linearize(res2.getInitial(), true));
-		
-		System.out.println("res1==res1: "+res1.equals(res1));
-		System.out.println("res1==res2: "+res1.equals(res2));
-		System.out.println("res==res1: "+res.equals(res1));
-		System.out.println("res2==res: "+res2.equals(res));
-		
+		System.out.println("lin1: " + TermHelper.linearize(res1.getInitial(), true));
+		System.out.println("lin2: " + TermHelper.linearize(res2.getInitial(), true));
+
+		System.out.println("res1==res1: " + res1.equals(res1));
+		System.out.println("res1==res2: " + res1.equals(res2));
+		System.out.println("res==res1: " + res.equals(res1));
+		System.out.println("res2==res: " + res2.equals(res));
+
 		term = "RND(0)";
 		wbres = TermEnhancer.addBrackets(term);
 		System.out.println(wbres);
@@ -77,14 +77,14 @@ public class ParserTest {
 		res2 = Parser.getTerm(config, term, machine, false, true);
 		System.out.println(res1);
 		System.out.println(res2);
-		System.out.println("lin1: "+TermHelper.linearize(res1.getInitial(), true));
-		System.out.println("lin2: "+TermHelper.linearize(res2.getInitial(), true));
-		
-		System.out.println("res1==res1: "+res1.equals(res1));
-		System.out.println("res1==res2: "+res1.equals(res2));
-		System.out.println("res==res1: "+res.equals(res1));
-		System.out.println("res2==res: "+res2.equals(res));
-		
+		System.out.println("lin1: " + TermHelper.linearize(res1.getInitial(), true));
+		System.out.println("lin2: " + TermHelper.linearize(res2.getInitial(), true));
+
+		System.out.println("res1==res1: " + res1.equals(res1));
+		System.out.println("res1==res2: " + res1.equals(res2));
+		System.out.println("res==res1: " + res.equals(res1));
+		System.out.println("res2==res: " + res2.equals(res));
+
 		term = "INT(A/B+5+SIN(8))";
 		wbres = TermEnhancer.addBrackets(term);
 		System.out.println(wbres);
@@ -92,14 +92,14 @@ public class ParserTest {
 		res2 = Parser.getTerm(config, term, machine, false, true);
 		System.out.println(res1);
 		System.out.println(res2);
-		System.out.println("lin1: "+TermHelper.linearize(res1.getInitial(), true));
-		System.out.println("lin2: "+TermHelper.linearize(res2.getInitial(), true));
-		
-		System.out.println("res1==res1: "+res1.equals(res1));
-		System.out.println("res1==res2: "+res1.equals(res2));
-		System.out.println("res==res1: "+res.equals(res1));
-		System.out.println("res2==res: "+res2.equals(res));
-		
+		System.out.println("lin1: " + TermHelper.linearize(res1.getInitial(), true));
+		System.out.println("lin2: " + TermHelper.linearize(res2.getInitial(), true));
+
+		System.out.println("res1==res1: " + res1.equals(res1));
+		System.out.println("res1==res2: " + res1.equals(res2));
+		System.out.println("res==res1: " + res.equals(res1));
+		System.out.println("res2==res: " + res2.equals(res));
+
 		term = "A/B+5+SIN(8)";
 		wbres = TermEnhancer.addBrackets(term);
 		System.out.println(wbres);
@@ -108,15 +108,14 @@ public class ParserTest {
 		res2 = ((Function) res2.getLeft()).getTerm();
 		System.out.println(res1);
 		System.out.println(res2);
-		System.out.println("lin1: "+TermHelper.linearize(res1.getInitial(), true));
-		System.out.println("lin2: "+TermHelper.linearize(res2.getInitial(), true));
-		
-		System.out.println("res1==res1: "+res1.equals(res1));
-		System.out.println("res1==res2: "+res1.equals(res2));
-		System.out.println("res==res1: "+res.equals(res1));
-		System.out.println("res2==res: "+res2.equals(res));
-		
-		
+		System.out.println("lin1: " + TermHelper.linearize(res1.getInitial(), true));
+		System.out.println("lin2: " + TermHelper.linearize(res2.getInitial(), true));
+
+		System.out.println("res1==res1: " + res1.equals(res1));
+		System.out.println("res1==res2: " + res1.equals(res2));
+		System.out.println("res==res1: " + res.equals(res1));
+		System.out.println("res2==res: " + res2.equals(res));
+
 	}
 
 	private static void testLogicBrackets() {
