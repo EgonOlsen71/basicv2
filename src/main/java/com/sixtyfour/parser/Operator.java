@@ -248,4 +248,33 @@ public class Operator {
 	public String toString() {
 		return OPS[type];
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object o) {
+		if (o == null) {
+			return false;
+		}
+		if (o instanceof Operator) {
+			if (o == this) {
+				return true;
+			}
+			return this.getType()==((Operator) o).getType();
+		}
+		return false;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		return Integer.valueOf(getType()).hashCode();
+	}
 }

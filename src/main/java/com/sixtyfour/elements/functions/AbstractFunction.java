@@ -39,6 +39,36 @@ public abstract class AbstractFunction implements Function {
 	public AbstractFunction(String name) {
 		this.name = VarUtils.toUpper(name);
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object o) {
+		if (o == null) {
+			return false;
+		}
+		
+		if (o instanceof Function && this.isDeterministic()) {
+			if (o == this) {
+				return true;
+			}
+			return this.name.equals(((Function) o).getName()) && term.equals(((Function) o).getTerm());
+		}
+		return false;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		return name.hashCode();
+	}
 
 	/**
 	 * Throws a type mismatch error.

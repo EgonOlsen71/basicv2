@@ -52,6 +52,36 @@ public class Constant<T> implements Atom {
 	/*
 	 * (non-Javadoc)
 	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object o) {
+		if (o == null) {
+			return false;
+		}
+		if (o instanceof Constant) {
+			if (o == this) {
+				return true;
+			}
+			return this.value.equals(((Constant<?>) o).value);
+		}
+		return false;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		return value.hashCode();
+	}
+
+	
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sixtyfour.parser.Atom#getType()
 	 */
 	@Override

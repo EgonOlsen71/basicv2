@@ -8,6 +8,7 @@ import java.util.Map;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.Constant;
 import com.sixtyfour.elements.Type;
+import com.sixtyfour.elements.functions.Function;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.Jitted;
@@ -634,4 +635,49 @@ public class Term implements Atom {
 		// TODO stuff?
 		return code;
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object o) {
+		if (o == null) {
+			return false;
+		}
+		if (o instanceof Term) {
+			if (o == this && (!(this.left instanceof Function) || ((Function)this.left).isDeterministic())) {
+				return true;
+			}
+			
+			boolean eq=true;
+			
+			if (this.left!=null) {
+			    eq=this.left.equals(((Term)o).left);
+			}
+			
+			if (this.right!=null && eq) {
+			    eq=this.right.equals(((Term)o).right);
+			}
+			
+			if (this.operator!=null && eq) {
+			    eq=this.operator.equals(((Term)o).operator);
+			}
+			
+			return eq;
+		}
+		return false;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		return (this.left!=null?this.left.hashCode():0)+(this.right!=null?this.right.hashCode():0);
+	}
+	
 }
