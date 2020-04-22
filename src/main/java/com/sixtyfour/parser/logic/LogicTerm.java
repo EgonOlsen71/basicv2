@@ -217,5 +217,66 @@ public class LogicTerm implements LogicBlock {
 		}
 		return terms;
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object o) {
+		if (o == null) {
+			return false;
+		}
+		if (o instanceof LogicTerm) {
+		    
+		    boolean eq=true;
+		    
+		    int size0=blocks.size();
+		    int size1=((LogicTerm)o).blocks.size();
+		    
+		    if (size0!=size1) {
+			return false;
+		    }
+			
+		    for (int i=0; i<size0; i++) {
+			LogicBlock lb0=blocks.get(i);
+			LogicBlock lb1=((LogicTerm)o).blocks.get(i);
+			eq&=lb0.equals(lb1);
+			if (!eq) {
+			    break;
+			}
+		    }
+		    
+		    size0=ops.size();
+		    size1=((LogicTerm)o).ops.size();
+		    
+		    if (size0!=size1) {
+			return false;
+		    }
+			
+		    for (int i=0; i<size0; i++) {
+			LogicOp lo0=ops.get(i);
+			LogicOp lo1=((LogicTerm)o).ops.get(i);
+			eq&=lo0.equals(lo1);
+			if (!eq) {
+			    break;
+			}
+		    }
+		    return eq;
+		}
+		return false;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+	    	// Not very elegant, but should do it for now...
+		return name.hashCode();
+	}
 
 }

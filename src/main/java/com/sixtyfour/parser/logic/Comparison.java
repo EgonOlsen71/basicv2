@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.Type;
+import com.sixtyfour.elements.functions.Function;
 import com.sixtyfour.parser.Term;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.system.Machine;
@@ -226,6 +227,50 @@ public class Comparison implements LogicBlock {
 		terms.add(right);
 		terms.add(left);
 		return terms;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object o) {
+		if (o == null) {
+			return false;
+		}
+		if (o instanceof Comparison) {
+			if (o == this && (!(this.left instanceof Function) || ((Function)this.left).isDeterministic())) {
+				return true;
+			}
+			
+			boolean eq=true;
+			
+			if (this.left!=null) {
+			    eq=this.left.equals(((Comparison)o).getLeft());
+			}
+			
+			if (this.right!=null && eq) {
+			    eq=this.right.equals(((Comparison)o).getRight());
+			}
+			
+			if (this.comparator!=null && eq) {
+			    eq=this.comparator.equals(((Comparison)o).getComparator());
+			}
+			
+			return eq;
+		}
+		return false;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		return (this.left!=null?this.left.hashCode():0)+(this.right!=null?this.right.hashCode():0);
 	}
 
 }

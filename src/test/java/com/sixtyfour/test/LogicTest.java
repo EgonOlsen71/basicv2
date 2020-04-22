@@ -2,6 +2,8 @@ package com.sixtyfour.test;
 
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.Variable;
+import com.sixtyfour.parser.Parser;
+import com.sixtyfour.parser.Term;
 import com.sixtyfour.parser.logic.LogicParser;
 import com.sixtyfour.parser.logic.LogicTerm;
 import com.sixtyfour.system.Machine;
@@ -19,11 +21,11 @@ public class LogicTest {
 	 */
 	public static void main(String[] args) {
 		testLogicParser();
-		testLogicOptimizer();
+		testLogicSimilarity();
 	}
 
-	public static void testLogicOptimizer() {
-		System.out.println("testLogicOptimizer");
+	public static void testLogicSimilarity() {
+		System.out.println("testLogicSimilarity");
 		Machine machine = new Machine();
 		machine.add(new Variable("A", 1));
 		machine.add(new Variable("B", 2));
@@ -31,9 +33,15 @@ public class LogicTest {
 		machine.add(new Variable("D", 4));
 		machine.add(new Variable("E", 5));
 
-		LogicTerm res = LogicParser.getTerm(config, "A/B=A/B", machine);
-		System.out.println("Result: " + res.evalToBoolean(machine));
+		Term res = Parser.getTerm(config, "A/B>=C*E+4 AND D=12", machine, false, true);
+		Term res1 = Parser.getTerm(config, "A/B>=C*E+4 AND D=12", machine, false, true);
+		Term res2 = Parser.getTerm(config, "A/B=C*E+4 AND D=12", machine, false, true);
 		System.out.println("Parsed: " + res);
+		System.out.println("Parsed1: " + res1);
+		System.out.println("Parsed2: " + res2);
+		System.out.println("res=res1: "+res.equals(res1));
+		System.out.println("res=res2: "+res.equals(res2));
+		System.out.println("res2=res2: "+res2.equals(res2));
 	}
 	
 	/**
