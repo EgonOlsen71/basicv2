@@ -124,9 +124,20 @@ public class TransformerTest {
 		testCcTestOptimizer();
 		testDefFnArray();
 		testCorona();
+		testColors();
 
 	}
 
+	private static void testColors() throws Exception {
+		System.out.println("\n\ntestColors");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/colors.bas");
+		final Assembler assy = initTestEnvironment(vary, false, 20000, true, 5);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++colors.prg", true);
+		Machine machine = executeTest(assy);
+		System.out.println("Ticks: " + machine.getCpu().getClockTicks());
+	}
+
+	
 	private static void testCorona() throws Exception {
 		System.out.println("\n\ntestCorona");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/corona.bas");
