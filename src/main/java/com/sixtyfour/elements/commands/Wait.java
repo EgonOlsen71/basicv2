@@ -6,8 +6,10 @@ import java.util.List;
 import com.sixtyfour.cbmnative.NativeCompiler;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.Type;
+import com.sixtyfour.elements.Variable;
 import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Parser;
+import com.sixtyfour.parser.Term;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.system.BasicProgramCounter;
 import com.sixtyfour.system.Machine;
@@ -112,6 +114,22 @@ public class Wait extends AbstractCommand {
 		return ccs;
 	}
 
+	/*
+	@Override
+	public List<Term> getAllTerms() {
+		List<Term> ret = new ArrayList<Term>();
+		for (Atom par : pars) {
+			if (par.isTerm()) {
+				ret.add((Term) par);
+			} else if (par instanceof Variable) {
+				ret.add(new Term(par));
+			}
+		}
+		ret.add(term);
+		return ret;
+	}
+*/
+	
 	/*
 	 * (non-Javadoc)
 	 * 
