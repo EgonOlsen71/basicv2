@@ -870,7 +870,23 @@ public class Parser {
 
 			lastC = c;
 		}
+		
+		checkTypeMismatch(t);
+		
 		return t;
+	}
+
+	/**
+	 * Checks for type mismatch
+	 * 
+	 * @param t
+	 */
+	private static void checkTypeMismatch(Term t) {
+	    if (t.getLeft()!=null && t.getRight()!=null && (t.getOperator().isAnd() || t.getOperator().isOr())) {
+	        if (t.getRight().getType(true)==Type.STRING || t.getLeft().getType(true)==Type.STRING) {
+	    	throw new RuntimeException("Type mismatch error: " + t + " | " + t.getLeft() + " | " + t.getRight());
+	        }
+	    }
 	}
 
 	/**
