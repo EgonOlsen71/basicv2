@@ -26,6 +26,11 @@ public class Int extends AbstractFunction {
 		return Type.INTEGER;
 	}
 
+	@Override
+	public Type getParameterType() {
+		return Type.REAL;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

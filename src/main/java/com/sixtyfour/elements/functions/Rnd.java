@@ -25,6 +25,11 @@ public class Rnd extends AbstractFunction {
 		return Type.REAL;
 	}
 
+	@Override
+	public Type getParameterType() {
+		return Type.REAL;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

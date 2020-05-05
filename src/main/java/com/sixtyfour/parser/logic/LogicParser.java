@@ -207,7 +207,7 @@ public class LogicParser {
 		int open = 0;
 		LogicTerm block = new LogicTerm("{l" + blocks.size() + "}");
 		do {
-		    int minPos = 999999999;
+			int minPos = 999999999;
 			minOp = null;
 			for (String delim : delims) {
 				int pos = utp.indexOf(delim, curPos);
@@ -297,7 +297,7 @@ public class LogicParser {
 					comp = Comparator.EQUAL;
 				}
 			}
-			
+
 			if (left != null) {
 				Comparison compy = new Comparison();
 				compy.setComparator(comp);
@@ -335,11 +335,11 @@ public class LogicParser {
 	}
 
 	private static void checkTypeMismatch(Comparison compy) {
-	    Type lt=compy.getLeft().getType(true);
-	    Type rt=compy.getRight().getType(true);
-	    if ((lt==Type.STRING && rt!=Type.STRING) || (lt!=Type.STRING && rt==Type.STRING)) {
-	    	throw new RuntimeException("Type mismatch error: " + lt + " | " + rt);
-	    }
+		Type lt = compy.getLeft().getType(true);
+		Type rt = compy.getRight().getType(true);
+		if ((lt == Type.STRING && rt != Type.STRING) || (lt != Type.STRING && rt == Type.STRING)) {
+			throw new RuntimeException("Type mismatch error: " + lt + " | " + rt);
+		}
 	}
 
 	/**

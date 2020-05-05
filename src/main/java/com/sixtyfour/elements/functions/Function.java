@@ -6,6 +6,7 @@ package com.sixtyfour.elements.functions;
 import java.util.List;
 
 import com.sixtyfour.config.CompilerConfig;
+import com.sixtyfour.elements.Type;
 import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Term;
 import com.sixtyfour.system.Machine;
@@ -141,5 +142,20 @@ public interface Function extends Atom {
 	 * @return if new code has been added
 	 */
 	boolean addNativeFunctionCall(List<String> code);
+
+	/**
+	 * Returns the type of the parameter that a function wants. Functions with mixed
+	 * parameter are allowed to return null and check individually.
+	 * 
+	 * @return the type or null
+	 */
+	Type getParameterType();
+
+	/**
+	 * Allows an implementation of this interface to check for proper typing.
+	 * 
+	 * @return true, if the types match. False otherwise
+	 */
+	boolean typesMatch();
 
 }

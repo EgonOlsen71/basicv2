@@ -33,6 +33,19 @@ public class Mid extends AbstractFunction {
 		return Type.STRING;
 	}
 
+	@Override
+	public boolean typesMatch() {
+		List<Atom> pars = Parser.getParameters(term);
+		int cnt = 0;
+		for (Atom par : pars) {
+			if ((par.getType(true) == Type.STRING && cnt > 0) || (par.getType(true) != Type.STRING && cnt == 0)) {
+				return false;
+			}
+			cnt++;
+		}
+		return true;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

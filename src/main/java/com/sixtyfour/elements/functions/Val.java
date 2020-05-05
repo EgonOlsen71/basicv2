@@ -25,6 +25,11 @@ public class Val extends AbstractFunction {
 		return Type.REAL;
 	}
 
+	@Override
+	public Type getParameterType() {
+		return Type.STRING;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

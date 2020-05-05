@@ -6,6 +6,7 @@ import java.util.Locale;
 
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.Type;
+import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.Term;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
@@ -206,6 +207,20 @@ public abstract class AbstractFunction implements Function {
 		}
 	}
 
+	@Override
+	public boolean typesMatch() {
+		Type type = getParameterType();
+		if (type != null && getParameterCount() == 1) {
+			Atom par = Parser.getParameters(term).get(0);
+
+			if ((par.getType(true) == Type.STRING && type != Type.STRING)
+					|| (par.getType(true) != Type.STRING && type == Type.STRING)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -341,6 +356,16 @@ public abstract class AbstractFunction implements Function {
 	@Override
 	public boolean addNativeFunctionCall(List<String> code) {
 		return false;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.sixtyfour.elements.functions.Function#getParameterType()
+	 */
+	@Override
+	public Type getParameterType() {
+		return null;
 	}
 
 }

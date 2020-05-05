@@ -43,12 +43,12 @@ public class GamesCompiler {
 //		File poetry = new File("src/test/resources/games/04 - Quack.bas");
 //		compileGame(poetry, dst);
 //
-		long s=System.currentTimeMillis();
+		long s = System.currentTimeMillis();
 		for (File game : games) {
 			// if (game.getName().contains("Invaders"))
 			compileGame(game, dst);
 		}
-		System.out.println("Compile time: "+(System.currentTimeMillis()-s)+"ms");
+		System.out.println("Compile time: " + (System.currentTimeMillis() - s) + "ms");
 
 	}
 

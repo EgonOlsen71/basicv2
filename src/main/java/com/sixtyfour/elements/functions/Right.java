@@ -33,6 +33,18 @@ public class Right extends AbstractFunction {
 		return Type.STRING;
 	}
 
+	@Override
+	public boolean typesMatch() {
+		List<Atom> pars = Parser.getParameters(term);
+		if (pars.size() != 2) {
+			throw new RuntimeException("Wrong number of parameters: " + term);
+		}
+		if (pars.get(0).getType(true) != Type.STRING || pars.get(1).getType(true) == Type.STRING) {
+			return false;
+		}
+		return true;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

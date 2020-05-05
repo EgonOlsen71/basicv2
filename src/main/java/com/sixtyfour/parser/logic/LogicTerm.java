@@ -166,10 +166,12 @@ public class LogicTerm implements LogicBlock {
 	 */
 	@Override
 	public Type getType() {
-	    return Type.INTEGER;
+		return Type.INTEGER;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.sixtyfour.parser.Atom#getType(boolean)
 	 */
 	@Override

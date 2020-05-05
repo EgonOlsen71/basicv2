@@ -55,4 +55,9 @@ public class Tab extends Spc {
 		return 1;
 	}
 
+	@Override
+	public Type getParameterType() {
+		return Type.REAL;
+	}
+
 }

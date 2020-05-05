@@ -26,6 +26,11 @@ public class Chr extends AbstractFunction {
 		return Type.STRING;
 	}
 
+	@Override
+	public Type getParameterType() {
+		return Type.REAL;
+	}
+
 	/**
 	 * The term optimizer can't handle CHR$ properly, because its result is platform
 	 * dependant so that an eval on the cross compiling machine isn't the best idea.

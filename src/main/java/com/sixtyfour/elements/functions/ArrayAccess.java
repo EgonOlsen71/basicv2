@@ -75,6 +75,17 @@ public class ArrayAccess extends AbstractFunction {
 	}
 
 	@Override
+	public boolean typesMatch() {
+		List<Atom> pars = Parser.getParameters(term);
+		for (Atom par : pars) {
+			if (par.getType(true) == Type.STRING) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	@Override
 	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
 		// fillParameterIndices(machine);
 		List<String> ret = new ArrayList<String>();

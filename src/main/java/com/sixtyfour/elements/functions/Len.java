@@ -25,6 +25,11 @@ public class Len extends AbstractFunction {
 		return Type.INTEGER;
 	}
 
+	@Override
+	public Type getParameterType() {
+		return Type.STRING;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

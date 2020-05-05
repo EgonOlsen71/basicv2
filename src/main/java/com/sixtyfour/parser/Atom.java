@@ -23,9 +23,11 @@ public interface Atom {
 
 	/**
 	 * Returns the Type that this Atom is supposed to return when calling the eval()
-	 * method. This method optionally ignores mismatching types and returns REAL instead.
+	 * method. This method optionally ignores mismatching types and returns REAL
+	 * instead.
 	 * 
-	 * @param ignoreMT if true, mismatches between number types will be ignored but STRING/NUMBER will still cause an error
+	 * @param ignoreMT if true, mismatches between number types will be ignored but
+	 *                 STRING/NUMBER will still cause an error
 	 * 
 	 * @return the type
 	 */

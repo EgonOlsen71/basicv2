@@ -870,9 +870,9 @@ public class Parser {
 
 			lastC = c;
 		}
-		
+
 		checkTypeMismatch(t);
-		
+
 		return t;
 	}
 
@@ -882,11 +882,11 @@ public class Parser {
 	 * @param t
 	 */
 	private static void checkTypeMismatch(Term t) {
-	    if (t.getLeft()!=null && t.getRight()!=null && (t.getOperator().isAnd() || t.getOperator().isOr())) {
-	        if (t.getRight().getType(true)==Type.STRING || t.getLeft().getType(true)==Type.STRING) {
-	    	throw new RuntimeException("Type mismatch error: " + t + " | " + t.getLeft() + " | " + t.getRight());
-	        }
-	    }
+		if (t.getLeft() != null && t.getRight() != null && (t.getOperator().isAnd() || t.getOperator().isOr())) {
+			if (t.getRight().getType(true) == Type.STRING || t.getLeft().getType(true) == Type.STRING) {
+				throw new RuntimeException("Type mismatch error: " + t + " | " + t.getLeft() + " | " + t.getRight());
+			}
+		}
 	}
 
 	/**
@@ -958,7 +958,7 @@ public class Parser {
 				Atom in = null;
 				try {
 					in = new Constant<Integer>(Integer.valueOf(part));
-				} catch(NumberFormatException nfe) {
+				} catch (NumberFormatException nfe) {
 					// The number might too large to fit an int...then usue a float instead
 					in = new Constant<Float>(Float.valueOf(part));
 				}
@@ -1082,6 +1082,11 @@ public class Parser {
 					setPostfix(linePart, fun, pos);
 					fun.parse(config, linePart.substring(pos + 1, pos2), machine);
 				}
+
+				if (!fun.typesMatch()) {
+					throw new RuntimeException("Type mismatch error: " + linePart);
+				}
+
 				if (pos2 != -1 && pos2 < linePart.length() - 1) {
 					throw new RuntimeException("Syntax error: " + linePart);
 				}

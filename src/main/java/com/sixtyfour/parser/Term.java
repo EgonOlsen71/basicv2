@@ -210,8 +210,8 @@ public class Term implements Atom {
 	 */
 	@Override
 	public Type getType(boolean ignoreMT) {
-		
-	    if (type != null) {
+
+		if (type != null) {
 			return type;
 		}
 		if (left == null) {
@@ -222,7 +222,7 @@ public class Term implements Atom {
 		if (operator != Operator.NOP) {
 			t2 = right.getType();
 		}
-		
+
 		if (operator.isDelimiter()) {
 			return t1;
 		}

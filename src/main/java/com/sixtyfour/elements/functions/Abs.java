@@ -26,6 +26,11 @@ public class Abs extends AbstractFunction {
 		return term.getType();
 	}
 
+	@Override
+	public Type getParameterType() {
+		return Type.REAL;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

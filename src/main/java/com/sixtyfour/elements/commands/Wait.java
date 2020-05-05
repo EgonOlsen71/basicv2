@@ -115,21 +115,12 @@ public class Wait extends AbstractCommand {
 	}
 
 	/*
-	@Override
-	public List<Term> getAllTerms() {
-		List<Term> ret = new ArrayList<Term>();
-		for (Atom par : pars) {
-			if (par.isTerm()) {
-				ret.add((Term) par);
-			} else if (par instanceof Variable) {
-				ret.add(new Term(par));
-			}
-		}
-		ret.add(term);
-		return ret;
-	}
-*/
-	
+	 * @Override public List<Term> getAllTerms() { List<Term> ret = new
+	 * ArrayList<Term>(); for (Atom par : pars) { if (par.isTerm()) { ret.add((Term)
+	 * par); } else if (par instanceof Variable) { ret.add(new Term(par)); } }
+	 * ret.add(term); return ret; }
+	 */
+
 	/*
 	 * (non-Javadoc)
 	 * 

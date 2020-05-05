@@ -137,7 +137,6 @@ public class TransformerTest {
 		System.out.println("Ticks: " + machine.getCpu().getClockTicks());
 	}
 
-	
 	private static void testCorona() throws Exception {
 		System.out.println("\n\ntestCorona");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/corona.bas");

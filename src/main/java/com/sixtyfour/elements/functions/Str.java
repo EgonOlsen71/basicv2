@@ -26,6 +26,11 @@ public class Str extends AbstractFunction {
 		return Type.STRING;
 	}
 
+	@Override
+	public Type getParameterType() {
+		return Type.REAL;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

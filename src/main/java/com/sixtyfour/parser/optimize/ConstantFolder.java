@@ -40,9 +40,9 @@ public class ConstantFolder {
 					 * ConstantPropagator.checkForConstant(machine, cmdTerm)); }
 					 */
 					if (cmdTerm != null) {
-						//System.out.println(cmd + " : " + cmdTerm);
+						// System.out.println(cmd + " : " + cmdTerm);
 						foldConstants(config, cmdTerm, machine);
-						//System.out.println(cmd + " 1: " + cmdTerm);
+						// System.out.println(cmd + " 1: " + cmdTerm);
 						// System.out.println("> " + cmdTerm);
 					}
 				}
@@ -61,7 +61,7 @@ public class ConstantFolder {
 		if (config.isConstantFolding()) {
 			Atom left = finalTerm.getLeft();
 			Atom right = finalTerm.getRight();
-			Operator op=finalTerm.getOperator();
+			Operator op = finalTerm.getOperator();
 
 			if (op.isNop()) {
 				if (left.isConstant()) {
@@ -81,20 +81,21 @@ public class ConstantFolder {
 				if (right.isTerm()) {
 					finalTerm.setRight(foldConstants(config, (Term) right, machine));
 				}
-				
-				// This should actually handle code like T=198:WAIT T,0...but somehow, T (in this case)
-				// is still used in the compiled code albeit it's removed from this term. I can't be bothered
-				// to track this down for now. It's not really an issue anyway. WAIT T+1,1 will be optimized
+
+				// This should actually handle code like T=198:WAIT T,0...but somehow, T (in
+				// this case)
+				// is still used in the compiled code albeit it's removed from this term. I
+				// can't be bothered
+				// to track this down for now. It's not really an issue anyway. WAIT T+1,1 will
+				// be optimized
 				// just fine, which is the actual purpose of all this.
-				
+
 				/*
-				if (left instanceof Variable && left.isConstant()) {
-					finalTerm.setLeft(convert((Variable) left, machine));
-				}
-				if (right instanceof Variable && right.isConstant()) {
-					finalTerm.setRight(convert((Variable) right, machine));
-				}
-				*/
+				 * if (left instanceof Variable && left.isConstant()) {
+				 * finalTerm.setLeft(convert((Variable) left, machine)); } if (right instanceof
+				 * Variable && right.isConstant()) { finalTerm.setRight(convert((Variable)
+				 * right, machine)); }
+				 */
 
 				if (left instanceof Function) {
 					Function fun = (Function) left;
@@ -127,19 +128,13 @@ public class ConstantFolder {
 			finalTerm.setConstant(true);
 		}
 	}
-	
+
 	/*
-	private static Constant<?> convert(Variable var, Machine machine) {
-		Constant<?> conty = null;
-		Object val = var.eval(machine);
-		if (var.getType().equals(Type.STRING)) {
-			conty = new Constant<String>(val.toString());
-		} else if (VarUtils.isFloat(val)) {
-			conty = new Constant<Float>((Float) val);
-		} else if (VarUtils.isInteger(val)) {
-			conty = new Constant<Integer>((Integer) val);
-		}
-		return conty;
-	}
-	*/
+	 * private static Constant<?> convert(Variable var, Machine machine) {
+	 * Constant<?> conty = null; Object val = var.eval(machine); if
+	 * (var.getType().equals(Type.STRING)) { conty = new
+	 * Constant<String>(val.toString()); } else if (VarUtils.isFloat(val)) { conty =
+	 * new Constant<Float>((Float) val); } else if (VarUtils.isInteger(val)) { conty
+	 * = new Constant<Integer>((Integer) val); } return conty; }
+	 */
 }

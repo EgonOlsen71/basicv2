@@ -28,6 +28,11 @@ public class Joy extends AbstractFunction {
 		return Type.REAL;
 	}
 
+	@Override
+	public Type getParameterType() {
+		return Type.REAL;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

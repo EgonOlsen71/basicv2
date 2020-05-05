@@ -65,6 +65,11 @@ public class Spc extends AbstractFunction {
 		return Type.STRING;
 	}
 
+	@Override
+	public Type getParameterType() {
+		return Type.REAL;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
