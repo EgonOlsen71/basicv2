@@ -131,7 +131,7 @@ public class TransformerTest {
 	private static void testColors() throws Exception {
 		System.out.println("\n\ntestColors");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/colors.bas");
-		final Assembler assy = initTestEnvironment(vary, false, 20000, true, 5);
+		final Assembler assy = initTestEnvironment(vary, false, 20000, true, -1);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++colors.prg", true);
 		Machine machine = executeTest(assy);
 		System.out.println("Ticks: " + machine.getCpu().getClockTicks());

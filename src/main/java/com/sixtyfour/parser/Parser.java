@@ -939,7 +939,13 @@ public class Parser {
 					// anyway with better error reporting, so...
 					part = "0";
 				}
-				Atom in = new Constant<Integer>(Integer.valueOf(part));
+				Atom in = null;
+				try {
+					in = new Constant<Integer>(Integer.valueOf(part));
+				} catch(NumberFormatException nfe) {
+					// The number might too large to fit an int...then usue a float instead
+					in = new Constant<Float>(Float.valueOf(part));
+				}
 				return in;
 			}
 		}
