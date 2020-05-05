@@ -7,6 +7,6 @@ package com.sixtyfour.cbmnative.mos6502.generators;
 public class Exp extends MathFunction {
 
 	public Exp() {
-		super("EXP", "; FAC = EXP(FAC)", "JSR FACEXP");
+		super("EXP", "; FAC = EXP(FAC)", "JSR FACEXPCALL");
 	}
 }

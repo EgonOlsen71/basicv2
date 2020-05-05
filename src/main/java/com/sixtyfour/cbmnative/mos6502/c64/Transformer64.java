@@ -66,7 +66,7 @@ public class Transformer64 extends AbstractTransformer {
 		res.add("FACADD = $B867");
 		res.add("FACLOG = $B9EA");
 		res.add("FACSQR = $BF71");
-		res.add("FACEXP = $BFED");
+		res.add("FACEXPCALL = $BFED");
 		res.add("FACABS = $BC58");
 		res.add("FACSIN = $E26B");
 		res.add("FACCOS = $E264");
