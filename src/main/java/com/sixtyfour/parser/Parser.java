@@ -1084,7 +1084,7 @@ public class Parser {
 				}
 
 				if (!fun.typesMatch()) {
-					throw new RuntimeException("Type mismatch error: " + linePart);
+					throw new RuntimeException("Type mismatch error: " + linePart+" / "+fun.getTerm());
 				}
 
 				if (pos2 != -1 && pos2 < linePart.length() - 1) {
