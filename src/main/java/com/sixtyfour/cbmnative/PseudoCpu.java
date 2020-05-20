@@ -1203,7 +1203,26 @@ public class PseudoCpu {
 		xToStack();
 	}
 
+	private void adjustStack() {
+		int varAddr = regs[A].intValue();
+
+		int fsp = forStackPos;
+		while (fsp > 0) {
+			ForStackEntry fse = new ForStackEntry(fsp);
+			fsp -= fse.size;
+			if (fse.type == 0) {
+				return;
+			} else if (fse.type == 1) {
+				if (varAddr == fse.varPointer) {
+					return;
+				}
+			}
+		}
+	}
+	
+	
 	private void initFor(String[] parts) {
+		adjustStack();
 		Number stepVal = getStack().pop();
 		Number endVal = getStack().pop();
 
@@ -1232,7 +1251,7 @@ public class PseudoCpu {
 		int varAddr = regs[A].intValue();
 
 		int fsp = forStackPos;
-		while (fsp >= 0) {
+		while (fsp > 0) {
 			ForStackEntry fse = new ForStackEntry(fsp);
 			if (fse.type == 0) {
 				// Still an open GOSUB => error!

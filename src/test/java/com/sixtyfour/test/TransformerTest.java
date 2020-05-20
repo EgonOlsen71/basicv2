@@ -132,7 +132,7 @@ public class TransformerTest {
 	private static void testJumpOutOfFor() throws Exception {
 		System.out.println("\n\ntestJumpOutOfFor");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/jumpoutoffor.bas");
-		Assembler assy = initTestEnvironment(vary, false, -1, true);
+		Assembler assy = initTestEnvironment(vary, true, -1, true);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++jumpoutoffor.prg", true);
 	}
 	

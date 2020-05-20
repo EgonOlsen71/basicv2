@@ -183,7 +183,26 @@ this.RETURN = function() {
 	return this._forstack.pop();
 }
 
+this.adjustStack = function(variable) {
+	for (var i=this._forstack.length; i>0;) {
+		var type = this._forstack[i-1];
+		if (type==0) {
+			return;
+		}
+		var stvar = this._forstack[i-2];
+		var addr = this._forstack[i-3];
+		var end = this._forstack[i-4];
+		var step = this._forstack[i-5];
+		i-=5;
+		if (stvar==variable) {
+			this._forstack=this._forstack.slice(0,i);
+			return;
+		}
+	}
+}
+
 this.INITFOR = function(addr, variable) {
+	this.adjustStack(variable);
 	this._forstack.push(this._stack.pop()); // step
 	this._forstack.push(this._stack.pop()); // end
 	this._forstack.push(addr); // address

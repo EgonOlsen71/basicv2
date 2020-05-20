@@ -183,8 +183,31 @@ function RETURN {
 	return $val
 }
 
+
+function adjustStack {
+	param($variable)
+	$len=$global:_forstack.length
+	
+	for ($i=$len; $i -gt 0;) {
+		$type=$global:_forstack[$i-1]
+		if ($type -eq 0) {
+			return
+		}
+		$vary = $global:_forstack[$i-2]
+		$addr = $global:_forstack[$i-3]
+		$end = $global:_forstack[$i-4]
+		$step = $global:_forstack[$i-5]
+		$i=$i-5
+		if ($vary -eq $variable) {
+			$global:_forstack=$global:_forstack[0..($i-1)]
+			return
+		}
+	}
+}
+
 function INITFOR {
 	param($addr, $variable)
+	adjustStack $variable
 	$val=first $global:_stack
 	$global:_stack=pop $global:_stack
 	$global:_forstack+=$val
