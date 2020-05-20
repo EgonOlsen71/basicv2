@@ -1722,9 +1722,56 @@ ARRAYSTORE_REAL_INT
 			LDY #>Y_REG
 			STY TMP3_ZP+1
 			JMP COPY3_XY	;RTS is implicit
-
 ;###################################
-INITFOR		LDA FORSTACKP
+ADJUSTSTACK LDA FORSTACKP	; Adjust the FORSTACK in case a new loop uses an unclosed old one (i.e. the code jumped out of that loop with goto)
+			STA TMP_ZP
+			LDA FORSTACKP+1
+			STA TMP_ZP+1
+ADSEARCHFOR	LDA TMP_ZP
+			CMP #<FORSTACK
+			BNE ADJUST2
+			LDA TMP_ZP+1
+			CMP #>FORSTACK
+			BNE ADJUST2	
+			RTS				; Start of Stack reached? Return
+ADJUST2		LDA TMP_ZP
+			SEC
+			SBC #2
+			STA TMP_ZP
+			BCS ADNOPV1N1
+			DEC TMP_ZP+1
+ADNOPV1N1	LDY #0
+			LDA (TMP_ZP),Y
+			BNE ADNOGOSUB
+			RTS				; Encountered a GOSUB on the way? Then return (is this correct?)
+ADNOGOSUB
+			INY
+			LDA TMP_ZP
+			SEC
+			SBC (TMP_ZP),Y
+			STA TMP_ZP
+			BCS ADNOPV1N2
+			DEC TMP_ZP+1
+ADNOPV1N2	DEY
+			LDA A_REG
+ADCMPFOR	CMP (TMP_ZP),Y
+			BNE ADSEARCHFOR
+			LDA A_REG+1
+			INY
+			CMP (TMP_ZP),Y
+			BEQ ADFOUNDFOR
+			JMP ADSEARCHFOR
+ADLOW0		LDX A_REG+1
+			BEQ ADFOUNDFOR
+			BNE ADCMPFOR
+ADFOUNDFOR	LDA TMP_ZP
+			STA FORSTACKP
+			LDA TMP_ZP+1
+			STA FORSTACKP+1
+			RTS
+;###################################
+INITFOR		JSR ADJUSTSTACK
+			LDA FORSTACKP
 			STA TMP_ZP
 			LDA FORSTACKP+1
 			STA TMP_ZP+1

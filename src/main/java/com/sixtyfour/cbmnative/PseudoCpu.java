@@ -2355,6 +2355,9 @@ public class PseudoCpu {
 	}
 
 	private int parseInt(String txt) {
+		if (txt.equals("0.0")) {
+			txt="0";
+		}
 		try {
 			return Integer.parseInt(txt);
 		} catch (NumberFormatException e) {

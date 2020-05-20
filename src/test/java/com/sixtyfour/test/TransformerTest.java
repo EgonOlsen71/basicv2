@@ -125,9 +125,17 @@ public class TransformerTest {
 		testDefFnArray();
 		testCorona();
 		testColors();
+		testJumpOutOfFor();
 
 	}
 
+	private static void testJumpOutOfFor() throws Exception {
+		System.out.println("\n\ntestJumpOutOfFor");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/jumpoutoffor.bas");
+		Assembler assy = initTestEnvironment(vary, false, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++jumpoutoffor.prg", true);
+	}
+	
 	private static void testColors() throws Exception {
 		System.out.println("\n\ntestColors");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/colors.bas");
