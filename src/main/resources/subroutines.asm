@@ -1764,7 +1764,7 @@ ADCMPFOR	CMP (TMP_ZP),Y
 ADLOW0		LDX A_REG+1
 			BEQ ADFOUNDFOR
 			BNE ADCMPFOR
-ADFOUNDFOR	LDA TMP_ZP
+ADFOUNDFOR	LDA TMP_ZP		; Adjust the stack so that it points onto the last entry for the "new" loop variable
 			STA FORSTACKP
 			LDA TMP_ZP+1
 			STA FORSTACKP+1
