@@ -58,24 +58,24 @@ public class LogicTest {
 		// LogicTerm res = LogicParser.getTerm("A<B AND (NOT(C+D <> (D+E)/A))",
 		// machine);
 
-		LogicTerm res = LogicParser.getTerm(config, "A<B AND C+D <> (D+E)/A", machine);
-		System.out.println("Result: " + res.evalToBoolean(machine));
+		Term res =Parser.getTerm(config, "A<B AND C+D <> (D+E)/A", machine, false, true);
+		System.out.println("Result: " + res.eval(machine));
 		System.out.println("Parsed: " + res);
 
-		res = LogicParser.getTerm(config, "(A<B) AND NOT C+D <> (D+E)/A", machine);
-		System.out.println("Result: " + res.evalToBoolean(machine));
+		res = Parser.getTerm(config, "(A<B) AND NOT C+D <> (D+E)/A", machine, false, true);
+		System.out.println("Result: " + res.eval(machine));
 		System.out.println("Parsed: " + res);
 
-		res = LogicParser.getTerm(config, "(A<B) AND ((NOT(((C+D <> (D+E)/A OR A>(E+D))))))", machine);
-		System.out.println("Result: " + res.evalToBoolean(machine));
+		res = Parser.getTerm(config, "(A<B) AND ((NOT(((C+D <> (D+E)/A OR A>(E+D))))))", machine, false, true);
+		System.out.println("Result: " + res.eval(machine));
 		System.out.println("Parsed: " + res);
 
-		res = LogicParser.getTerm(config, "(A<B) AND (C+D > (D+E)/A OR A<(E+D))", machine);
-		System.out.println("Result: " + res.evalToBoolean(machine));
+		res = Parser.getTerm(config, "(A<B) AND (C+D > (D+E)/A OR A<(E+D))", machine, false, true);
+		System.out.println("Result: " + res.eval(machine));
 		System.out.println("Parsed: " + res);
 
-		res = LogicParser.getTerm(config, "NOTNOTNOT (A<B) AND (C+D > (D+E)/A OR A<(E+D))", machine);
-		System.out.println("Result: " + res.evalToBoolean(machine));
+		res = Parser.getTerm(config, "NOTNOTNOT (A<B) AND (C+D > (D+E)/A OR A<(E+D))", machine, false, true);
+		System.out.println("Result: " + res.eval(machine));
 		System.out.println("Parsed: " + res);
 	}
 

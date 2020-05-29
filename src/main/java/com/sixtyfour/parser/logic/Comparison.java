@@ -11,7 +11,7 @@ import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.system.Machine;
 
 /**
- * A comparison between two logic blocks.
+ * A comparison between two terms.
  */
 public class Comparison implements LogicBlock {
 
@@ -23,9 +23,6 @@ public class Comparison implements LogicBlock {
 
 	/** The comparator. */
 	private Comparator comparator;
-
-	/** The not. */
-	private boolean not = false;
 
 	/*
 	 * (non-Javadoc)
@@ -68,9 +65,6 @@ public class Comparison implements LogicBlock {
 						|| (comparator.equals(Comparator.SMALLER_OR_EQUAL) && res <= 0)
 						|| (comparator.equals(Comparator.NOT_EQUAL) && res != 0);
 			}
-		}
-		if (not) {
-			ret = !ret;
 		}
 		return ret;
 	}
@@ -149,21 +143,11 @@ public class Comparison implements LogicBlock {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see sixtyfour.parser.logic.LogicBlock#not()
-	 */
-	@Override
-	public void not() {
-		not = !not;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
-		return (not ? " NOT " : "") + left + " " + comparator + " " + right;
+		return left + " " + comparator + " " + right;
 	}
 
 	/*

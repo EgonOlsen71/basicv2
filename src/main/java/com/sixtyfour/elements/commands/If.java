@@ -9,10 +9,9 @@ import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.Term;
 import com.sixtyfour.parser.TermEnhancer;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
-import com.sixtyfour.parser.logic.LogicParser;
-import com.sixtyfour.parser.logic.LogicTerm;
 import com.sixtyfour.system.BasicProgramCounter;
 import com.sixtyfour.system.Machine;
+import com.sixtyfour.util.VarUtils;
 
 /**
  * The IF command.
@@ -22,7 +21,7 @@ public class If extends AbstractCommand {
 	private static boolean compatibleConditionalBranches = true;
 	private static int ifCount = 0;
 	/** The logic term. */
-	private LogicTerm logicTerm = null;
+	private Term logicTerm = null;
 
 	/** The pc. */
 	private BasicProgramCounter pc = new BasicProgramCounter(0, 0);
@@ -64,14 +63,9 @@ public class If extends AbstractCommand {
 			isGoto = true;
 		}
 		
-		String firstTerm = linePart.substring(2, termEnd);
-		conditionalTerm = firstTerm;
-
-		logicTerm = LogicParser.getTerm(config, TermEnhancer.addBrackets(TermEnhancer.replaceLogicOperators(firstTerm), 3), machine);
-
-		// System.out.println("Logic term:
-		// "+logicTerm+"/"+logicTerm.getFirstOperation()+"/"+Parser.replaceLogicOperators(firstTerm));
-
+		conditionalTerm = linePart.substring(2, termEnd);
+		logicTerm = Parser.getTerm(config, conditionalTerm, machine, false, true);
+		
 		if (isGoto) {
 			return linePart.substring(termEnd);
 		}
@@ -92,7 +86,7 @@ public class If extends AbstractCommand {
 	@Override
 	public List<Term> getAllTerms() {
 		List<Term> ret = new ArrayList<Term>();
-		ret.addAll(logicTerm.getTerms());
+		ret.add(logicTerm);
 		return ret;
 	}
 
@@ -105,7 +99,7 @@ public class If extends AbstractCommand {
 	@Override
 	public BasicProgramCounter execute(CompilerConfig config, Machine machine) {
 		pc.setSkip(false);
-		boolean ok = logicTerm.evalToBoolean(machine);
+		boolean ok = evalToBoolean(machine, logicTerm);
 		if (ok) {
 			return null;
 		}
@@ -113,6 +107,15 @@ public class If extends AbstractCommand {
 		return pc;
 	}
 
+	private boolean evalToBoolean(Machine machine, Term term) {
+		Object res=logicTerm.eval(machine);
+		if (VarUtils.isNumber(res)) {
+			int ret=VarUtils.getInt(res);
+			return ret==-1;
+		}
+		return false;
+	}
+	
 	@Override
 	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
 
@@ -149,7 +152,7 @@ public class If extends AbstractCommand {
 		return ccs;
 	}
 
-	public LogicTerm getLogicTerm() {
+	public Term getLogicTerm() {
 		return logicTerm;
 	}
 

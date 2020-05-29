@@ -20,11 +20,6 @@ public interface LogicBlock extends Atom {
 	boolean evalToBoolean(Machine machine);
 
 	/**
-	 * Not. Negates the block's state.
-	 */
-	void not();
-
-	/**
 	 * Returns the terms used to form this logic block in no particular order.
 	 * 
 	 * @return the terms

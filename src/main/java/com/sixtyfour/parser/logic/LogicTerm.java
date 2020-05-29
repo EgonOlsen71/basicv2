@@ -14,17 +14,10 @@ import com.sixtyfour.system.Machine;
  */
 public class LogicTerm implements LogicBlock {
 
-	/** The not. */
-	private boolean not = false;
-
-	/** The blocks. */
-	private List<LogicBlock> blocks = new ArrayList<LogicBlock>();
-
-	/** The ops. */
-	private List<LogicOp> ops = new ArrayList<LogicOp>();
-
 	/** The name. */
 	private String name;
+
+	private Comparison comp;
 
 	/**
 	 * Instantiates a new logic term.
@@ -33,7 +26,6 @@ public class LogicTerm implements LogicBlock {
 	 *             parse time.
 	 */
 	public LogicTerm(String name) {
-		ops.add(new LogicAnd());
 		this.name = name;
 	}
 
@@ -41,35 +33,21 @@ public class LogicTerm implements LogicBlock {
 	 * Adds a new logic block to the term.
 	 * 
 	 * @param block the new block
-	 * @param op    the operation used between the two
 	 */
-	public void add(LogicBlock block, LogicOp op) {
-		blocks.add(block);
-		ops.add(op);
+	public void setComparison(Comparison comp) {
+		this.comp = comp;
+	}
+	
+	public Comparison getComparison() {
+		return comp;
 	}
 
-	/**
-	 * Returns the first logic operation if there is one.
-	 * 
-	 * @return the operation or null
-	 */
-	public LogicOp getFirstOperation() {
-		if (ops.isEmpty() || blocks.size() < 2) {
-			return null;
-		}
-		return ops.get(0);
-	}
-
-	@Override
 	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
 		List<CodeContainer> ret = new ArrayList<CodeContainer>();
-		if (blocks.size() == 0) {
+		if (comp == null) {
 			return ret;
 		}
-		for (int i = 0; i < blocks.size(); i++) {
-			LogicBlock nextBlock = blocks.get(i);
-			ret.addAll(nextBlock.evalToCode(config, machine));
-		}
+		ret.addAll(comp.evalToCode(config, machine));
 		return ret;
 	}
 
@@ -81,36 +59,13 @@ public class LogicTerm implements LogicBlock {
 	 */
 	@Override
 	public boolean evalToBoolean(Machine machine) {
-		if (blocks.size() == 0) {
+		if (comp == null) {
 			return true;
 		}
-		boolean res = true;
-		for (int i = 0; i < blocks.size(); i++) {
-			LogicBlock nextBlock = blocks.get(i);
-			LogicOp nextOp = ops.get(i);
-			if (res || !nextOp.isAnd()) {
-				// Skip unnecessary calculations (res is false AND something
-				// will always be false anyway)
-				res = nextOp.eval(machine, res, nextBlock);
-			}
-		}
-
-		if (not) {
-			res = !res;
-		}
-		return res;
+		return comp.evalToBoolean(machine);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see sixtyfour.parser.logic.LogicBlock#not()
-	 */
-	@Override
-	public void not() {
-		not = !not;
-	}
-
+	
 	/**
 	 * Gets the name.
 	 * 
@@ -137,14 +92,7 @@ public class LogicTerm implements LogicBlock {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		if (not) {
-			sb.append(" NOT ");
-		}
-		for (int i = 0; i < blocks.size(); i++) {
-			LogicBlock nextBlock = blocks.get(i);
-			LogicOp nextOp = ops.get(i + 1);
-			sb.append("(").append(nextBlock).append(" ").append(i != blocks.size() - 1 ? nextOp : "").append(")");
-		}
+		sb.append("(").append(comp).append(")");
 		return sb.toString();
 	}
 
@@ -217,9 +165,7 @@ public class LogicTerm implements LogicBlock {
 	@Override
 	public List<Term> getTerms() {
 		List<Term> terms = new ArrayList<Term>();
-		for (LogicBlock block : blocks) {
-			terms.addAll(block.getTerms());
-		}
+		terms.addAll(comp.getTerms());
 		return terms;
 	}
 
@@ -234,41 +180,7 @@ public class LogicTerm implements LogicBlock {
 			return false;
 		}
 		if (o instanceof LogicTerm) {
-
-			boolean eq = true;
-
-			int size0 = blocks.size();
-			int size1 = ((LogicTerm) o).blocks.size();
-
-			if (size0 != size1) {
-				return false;
-			}
-
-			for (int i = 0; i < size0; i++) {
-				LogicBlock lb0 = blocks.get(i);
-				LogicBlock lb1 = ((LogicTerm) o).blocks.get(i);
-				eq &= lb0.equals(lb1);
-				if (!eq) {
-					break;
-				}
-			}
-
-			size0 = ops.size();
-			size1 = ((LogicTerm) o).ops.size();
-
-			if (size0 != size1) {
-				return false;
-			}
-
-			for (int i = 0; i < size0; i++) {
-				LogicOp lo0 = ops.get(i);
-				LogicOp lo1 = ((LogicTerm) o).ops.get(i);
-				eq &= lo0.equals(lo1);
-				if (!eq) {
-					break;
-				}
-			}
-			return eq;
+			return comp.equals(((LogicTerm)o).getComparison());
 		}
 		return false;
 	}
