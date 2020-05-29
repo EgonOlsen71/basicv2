@@ -46,7 +46,7 @@ public class InterpreterTest {
 	
 	private static void testIfComplex() {
 		System.out.println("testIfComplex");
-		String code = "10 i=3:IF sin(0)>1 OR (I<5 AND COS(0)=1) THEN print\"eyha\"";
+		String code = "10 i=3:a=sin(0)=0 or ((i<5 and cos(0)>0)*2):printa:i=8:printi:i=3:a=sin(0)=(0 or ((i<5 and cos(0)>0)*2)):printa";
 		Basic inter = new Basic(code);
 		inter.run(config);
 	 }

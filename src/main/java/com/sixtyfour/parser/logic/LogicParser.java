@@ -214,7 +214,11 @@ public class LogicParser {
 		LogicTerm block = new LogicTerm("{l" + blocks.size() + "}");
 		String part = toProcess;
 		LogicOp op = new LogicAnd();
-
+		
+		
+		// No real idea, what this supposed to do anymore!? I finds the closest comparison operator outside of
+		// brackets. But for terms like sin(x)>0 or ..., this doesn't seem to make much sense. It doesn't
+		// seem to hurt either for some strange reason.
 		boolean inString = false;
 		int closest = -1;
 		for (int i = 0; i < part.length(); i++) {
@@ -317,7 +321,7 @@ public class LogicParser {
 
 			block.add(compy, op);
 		}
-
+		
 		blocks.put(block.getName(), block);
 		return block.getName();
 	}
