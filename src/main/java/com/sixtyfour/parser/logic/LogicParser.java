@@ -322,7 +322,7 @@ public class LogicParser {
 		Type lt = compy.getLeft().getType(true);
 		Type rt = compy.getRight().getType(true);
 		if ((lt == Type.STRING && rt != Type.STRING) || (lt != Type.STRING && rt == Type.STRING)) {
-			throw new RuntimeException("Type mismatch error: " + lt + " | " + rt);
+			//throw new RuntimeException("Type mismatch error: " + lt + " | " + rt);
 		}
 	}
 
