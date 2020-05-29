@@ -884,7 +884,8 @@ public class Parser {
 	private static void checkTypeMismatch(Term t) {
 		if (t.getLeft() != null && t.getRight() != null && (t.getOperator().isAnd() || t.getOperator().isOr())) {
 			if (t.getRight().getType(true) == Type.STRING || t.getLeft().getType(true) == Type.STRING) {
-				throw new RuntimeException("Type mismatch error: " + t + " | " + t.getLeft() + " | " + t.getRight());
+				throw new RuntimeException(
+						"Type mismatch error: term:" + t + " --- left:" + t.getLeft() + " --- right:" + t.getRight());
 			}
 		}
 	}
@@ -1084,7 +1085,7 @@ public class Parser {
 				}
 
 				if (!fun.typesMatch()) {
-					throw new RuntimeException("Type mismatch error: " + linePart+" / "+fun.getTerm());
+					throw new RuntimeException("Type mismatch error: " + linePart + " / " + fun.getTerm());
 				}
 
 				if (pos2 != -1 && pos2 < linePart.length() - 1) {

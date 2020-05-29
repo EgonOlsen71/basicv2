@@ -63,10 +63,11 @@ public class If extends AbstractCommand {
 			termEnd = gp;
 			isGoto = true;
 		}
+		
 		String firstTerm = linePart.substring(2, termEnd);
 		conditionalTerm = firstTerm;
 
-		logicTerm = LogicParser.getTerm(config, firstTerm, machine);
+		logicTerm = LogicParser.getTerm(config, TermEnhancer.addBrackets(TermEnhancer.replaceLogicOperators(firstTerm), 3), machine);
 
 		// System.out.println("Logic term:
 		// "+logicTerm+"/"+logicTerm.getFirstOperation()+"/"+Parser.replaceLogicOperators(firstTerm));

@@ -42,8 +42,20 @@ public class ParserTest {
 		testBrackets();
 		testLogicBrackets();
 		testSimilarity();
+		testNot();
 	}
 
+	private static void testNot() {
+		System.out.println("testNot");
+		Machine machine = new Machine();
+		String term = "not(i>5 or i<12)";
+		String s = TermEnhancer.addBrackets(term);
+		System.out.println(s);
+		Term t = Parser.getTerm(config, term, machine, false, true);
+		System.out.println(t);
+
+	}
+	
 	private static void testSimilarity() {
 		System.out.println("testSimilarity");
 		Machine machine = new Machine();

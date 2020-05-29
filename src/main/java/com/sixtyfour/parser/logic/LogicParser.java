@@ -198,138 +198,122 @@ public class LogicParser {
 	 * @param termMap   the term map
 	 * @return the name of the block
 	 */
+	
 	private static String createLogicBlock(CompilerConfig config, String toProcess, Map<String, LogicTerm> blocks,
 			Machine machine, Map<String, Term> termMap) {
-		String[] delims = { "OR", "AND" };
-		String utp = Parser.replaceStrings(toProcess, '.');
-		int curPos = 0;
-		String minOp = null;
+		// This has been greatly modified to handle not(a<2 and a>3) and similar code.
+		// In the process, quite a lot of logic has been removed from here...I'm not sure what
+		// exactly that logic was supposed to handle. In most cases, it didn't seem to handle
+		// anything. This stripped down version might still contain unneeded stuff (the NOT detection is highly suspicious)
+		// the LogicOp makes no sense, but has to be there...but we'll see....
 		int open = 0;
 		LogicTerm block = new LogicTerm("{l" + blocks.size() + "}");
-		do {
-			int minPos = 999999999;
-			minOp = null;
-			for (String delim : delims) {
-				int pos = utp.indexOf(delim, curPos);
-				if (pos != -1 && pos < minPos) {
-					minPos = pos;
-					minOp = delim;
+		String part = toProcess;
+		LogicOp op = new LogicAnd();
+
+		boolean inString = false;
+		int closest = -1;
+		for (int i = 0; i < part.length(); i++) {
+			char c = part.charAt(i);
+			if (c == '(') {
+				open++;
+			} else if (c == ')') {
+				open--;
+			}
+			if (c == '"') {
+				inString = !inString;
+			}
+			if (!inString) {
+				if (open == 0 && (c == '<' || c == '>' || c == '=')) {
+					closest = i;
+					break;
 				}
 			}
+		}
 
-			String part = toProcess.substring(curPos);
-			LogicOp op = new LogicAnd();
-			if (minOp != null) {
-				if (minOp.equals("OR")) {
-					op = new LogicOr();
-				}
-				part = toProcess.substring(curPos, minPos);
-				curPos = minPos + minOp.length();
+		String left = null;
+		String right = null;
+		Comparator comp = null;
+		boolean not = false;
+
+		if (closest != -1) {
+			left = part.substring(0, closest);
+			right = part.substring(closest);
+
+			comp = Comparator.getComparator(right);
+			if (comp == null) {
+				throw new RuntimeException("Syntax error: " + part);
 			}
+			right = right.substring(comp.getTermLength());
 
-			boolean inString = false;
-			int closest = -1;
-			for (int i = 0; i < part.length(); i++) {
-				char c = part.charAt(i);
-				if (c == '(') {
-					open++;
-				} else if (c == ')') {
-					open--;
+			boolean nt = false;
+			do {
+				nt = VarUtils.toUpper(left).startsWith("0!");
+				if (nt) {
+					left = left.substring(2);
+					not = !not;
 				}
-				if (c == '"') {
-					inString = !inString;
-				}
-				if (!inString) {
-					if (open == 0 && (c == '<' || c == '>' || c == '=')) {
-						closest = i;
-						break;
-					}
-				}
-			}
-
-			String left = null;
-			String right = null;
-			Comparator comp = null;
-			boolean not = false;
-
-			if (closest != -1) {
-				left = part.substring(0, closest);
-				right = part.substring(closest);
-				comp = Comparator.getComparator(right);
-				if (comp == null) {
-					throw new RuntimeException("Syntax error: " + part);
-				}
-				right = right.substring(comp.getTermLength());
+			} while (nt);
+		} else {
+			if (part.contains("}")) {
+				part = part.replace("(", "").replace(")", "");
 
 				boolean nt = false;
 				do {
-					nt = VarUtils.toUpper(left).startsWith("NOT");
+					nt = VarUtils.toUpper(part).startsWith("0!");
 					if (nt) {
-						left = left.substring(3);
+						part = part.substring(2);
 						not = !not;
 					}
 				} while (nt);
-
-			} else {
-				if (part.contains("}")) {
-					part = part.replace("(", "").replace(")", "");
-
-					boolean nt = false;
-					do {
-						nt = VarUtils.toUpper(part).startsWith("NOT");
-						if (nt) {
-							part = part.substring(3);
-							not = !not;
-						}
-					} while (nt);
-					if (!part.startsWith("{")) {
-						throw new RuntimeException("Syntax error: " + part);
-					}
-
-					LogicTerm lt = blocks.get(part);
-					if (not) {
-						lt.not();
-					}
-					block.add(lt, op);
-				} else {
-					left = part;
-					right = null;
-					comp = Comparator.EQUAL;
+				if (!part.startsWith("{")) {
+					throw new RuntimeException("Syntax error: " + part);
 				}
-			}
 
-			if (left != null) {
-				Comparison compy = new Comparison();
-				compy.setComparator(comp);
-
-				int bl = getBracketDelta(left);
-				if (bl > 0) {
-					// This will destroy the term if the brackets are not at the
-					// beginning. But then again, the term is wrong that way
-					// anyway...
-					left = left.substring(bl);
-				} else if (bl < 0) {
-					// This will destroy the term if the brackets are not at the
-					// end. But then again, the term is wrong that way
-					// anyway...
-					left = left.substring(0, left.length() + bl);
-				}
-				compy.setLeft(Parser.getTerm(config, left, machine, false, true, termMap));
-				if (right != null) {
-					int br = getBracketDelta(right);
-					if (br < 0) {
-						right = right.substring(0, right.length() + br);
-					}
-					compy.setRight(Parser.getTerm(config, right, machine, false, true, termMap));
-					checkTypeMismatch(compy);
-				}
+				LogicTerm lt = blocks.get(part);
 				if (not) {
-					compy.not();
+					lt.not();
 				}
-
-				block.add(compy, op);
+				block.add(lt, op);
+			} else {
+				left = part;
+				right = null;
+				comp = Comparator.EQUAL;
 			}
-		} while (minOp != null);
+		}
+		
+		if (left != null) {
+			Comparison compy = new Comparison();
+			compy.setComparator(comp);
+			int bl = getBracketDelta(left);
+			if (bl > 0) {
+				// This will destroy the term if the brackets are not at the
+				// beginning. But then again, the term is wrong that way
+				// anyway...
+				left = left.substring(bl);
+			} else if (bl < 0) {
+				// This will destroy the term if the brackets are not at the
+				// end. But then again, the term is wrong that way
+				// anyway...
+				left = left.substring(0, left.length() + bl);
+			}
+
+			compy.setLeft(Parser.getTerm(config, left, machine, false, true, termMap));
+			if (right != null) {
+				int br = getBracketDelta(right);
+				if (br < 0) {
+					right = right.substring(0, right.length() + br);
+				}
+				compy.setRight(Parser.getTerm(config, right, machine, false, true, termMap));
+				checkTypeMismatch(compy);
+			}
+			if (not) {
+				compy.not();
+			}
+			
+			block.add(compy, op);
+		}
+		
 		blocks.put(block.getName(), block);
 		return block.getName();
 	}

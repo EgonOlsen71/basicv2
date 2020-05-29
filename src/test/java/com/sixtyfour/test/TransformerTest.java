@@ -126,7 +126,6 @@ public class TransformerTest {
 		testCorona();
 		testColors();
 		testJumpOutOfFor();
-
 	}
 
 	private static void testJumpOutOfFor() throws Exception {

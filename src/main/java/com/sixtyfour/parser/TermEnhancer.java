@@ -403,7 +403,7 @@ public class TermEnhancer {
 	 *              level 3 is for logic operators like AND, OR
 	 * @return the resulting term
 	 */
-	private static String addBrackets(String term, int level) {
+	public static String addBrackets(String term, int level) {
 		term = removeWhiteSpace(term);
 		StringBuilder sb = new StringBuilder();
 		boolean inString = false;

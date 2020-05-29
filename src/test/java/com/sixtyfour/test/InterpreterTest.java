@@ -37,8 +37,34 @@ public class InterpreterTest {
 		testStrings();
 		testDefFn();
 		testAnd();
+		testIfNot();
+		testAndString();
+		testIfComplex();
 	}
 
+	 
+	
+	private static void testIfComplex() {
+		System.out.println("testIfComplex");
+		String code = "10 i=3:IF sin(0)>1 OR (I<5 AND COS(0)=1) THEN print\"eyha\"";
+		Basic inter = new Basic(code);
+		inter.run(config);
+	 }
+	 
+	private static void testAndString() {
+		System.out.println("testAndString");
+		String code = "10 a$=\" 4\":for i=0 to 10\n20 if a$<>\"h\" and a$>str$(i) then print i\n30next";
+		Basic inter = new Basic(code);
+		inter.run(config);
+	}
+	
+	private static void testIfNot() {
+		System.out.println("testIfNot");
+		String code = "10 for i=0 to 10\n20 if not(i>3 and i<7) then print i,\n30a=not(i>3 and i<7):printa:next";
+		Basic inter = new Basic(code);
+		inter.run(config);
+	}
+	
 	private static void testAnd() {
 		System.out.println("testtestAndDefFn");
 		String code = "10 a=124:b=3:printaand255-b";
