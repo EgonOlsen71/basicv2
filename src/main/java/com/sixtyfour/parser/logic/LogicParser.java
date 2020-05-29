@@ -323,11 +323,9 @@ public class LogicParser {
 	}
 
 	private static void checkTypeMismatch(Comparison compy) {
-		// Just check REAL against STRING and vice versa, ignore INTEGER because
-		// of...LogicTerms...somehow...
-		Type lt = compy.getLeft().getType(true);
-		Type rt = compy.getRight().getType(true);
 		if (Checker.isTypeMismatch(compy)) {
+			Type lt = compy.getLeft().getType(true);
+			Type rt = compy.getRight().getType(true);
 			throw new RuntimeException(
 					"Type mismatch error: " + lt + " | " + rt + " --- " + compy.getLeft() + " --- " + compy.getRight());
 		}

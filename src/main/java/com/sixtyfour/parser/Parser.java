@@ -883,7 +883,6 @@ public class Parser {
 	 * @param t
 	 */
 	private static void checkTypeMismatch(Term t) {
-		// Just check REAL against STRING and vice versa, ignore INTEGER because of...LogicTerms...somehow...
 		if (t.getLeft() != null && t.getRight() != null && (t.getOperator().isAnd() || t.getOperator().isOr())) {
 			if (Checker.isTypeMismatch(t)) {
 				throw new RuntimeException(
