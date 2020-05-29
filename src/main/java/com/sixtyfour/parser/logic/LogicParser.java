@@ -237,6 +237,7 @@ public class LogicParser {
 			Comparison compy = new Comparison();
 			compy.setComparator(comp);
 			int bl = getBracketDelta(left);
+			// This should not happen anymore...well, anyway...
 			if (bl > 0) {
 				left = left.substring(bl);
 			} else if (bl < 0) {
@@ -245,6 +246,7 @@ public class LogicParser {
 			compy.setLeft(Parser.getTerm(config, left, machine, false, true, termMap));
 			if (right != null) {
 				int br = getBracketDelta(right);
+				// This should not happen anymore...well, anyway...
 				if (br < 0) {
 					right = right.substring(0, right.length() + br);
 				}
