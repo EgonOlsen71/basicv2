@@ -13,7 +13,6 @@ import com.sixtyfour.parser.Term;
 import com.sixtyfour.parser.TermEnhancer;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.Checker;
-import com.sixtyfour.util.VarUtils;
 
 /**
  * A parser for logic terms.
@@ -59,6 +58,7 @@ public class LogicParser {
 					if (end <= i + 1) {
 						throw new RuntimeException("Syntax error: " + term);
 					}
+					/*
 					String part = term.substring(i, end + 1);
 
 					String partS = stripStrings(part);
@@ -73,6 +73,7 @@ public class LogicParser {
 					if (!brackets && !(partS.contains("OR") || partS.contains("AND"))) {
 						continue;
 					}
+					*/
 				} else if (i == term.length() - 1) {
 					String toProcess = lastPart;
 					int startPos = lastStart;
@@ -293,29 +294,6 @@ public class LogicParser {
 		return brackets;
 	}
 
-	/**
-	 * Strip strings from a term.
-	 * 
-	 * @param term the term
-	 * @return the term with the strings
-	 */
-	private static String stripStrings(String term) {
-		StringBuilder sb = new StringBuilder();
-		boolean inString = false;
-		for (int i = 1; i < term.length() - 1; i++) {
-			char c = term.charAt(i);
-			if (c == '"') {
-				inString = !inString;
-				if (inString) {
-					sb.append('"');
-				}
-			}
-			if (!inString) {
-				sb.append(c);
-			}
-		}
-		return VarUtils.toUpper(sb.toString());
-	}
 
 	/**
 	 * Finds the end bracket starting at the current position.
