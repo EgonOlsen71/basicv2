@@ -12,6 +12,7 @@ import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.Term;
 import com.sixtyfour.parser.TermEnhancer;
 import com.sixtyfour.system.Machine;
+import com.sixtyfour.util.Checker;
 import com.sixtyfour.util.VarUtils;
 
 /**
@@ -198,13 +199,16 @@ public class LogicParser {
 	 * @param termMap   the term map
 	 * @return the name of the block
 	 */
-	
+
 	private static String createLogicBlock(CompilerConfig config, String toProcess, Map<String, LogicTerm> blocks,
 			Machine machine, Map<String, Term> termMap) {
 		// This has been greatly modified to handle not(a<2 and a>3) and similar code.
-		// In the process, quite a lot of logic has been removed from here...I'm not sure what
-		// exactly that logic was supposed to handle. In most cases, it didn't seem to handle
-		// anything. This stripped down version might still contain unneeded stuff (the NOT detection is highly suspicious)
+		// In the process, quite a lot of logic has been removed from here...I'm not
+		// sure what
+		// exactly that logic was supposed to handle. In most cases, it didn't seem to
+		// handle
+		// anything. This stripped down version might still contain unneeded stuff (the
+		// NOT detection is highly suspicious)
 		// the LogicOp makes no sense, but has to be there...but we'll see....
 		int open = 0;
 		LogicTerm block = new LogicTerm("{l" + blocks.size() + "}");
@@ -281,7 +285,7 @@ public class LogicParser {
 				comp = Comparator.EQUAL;
 			}
 		}
-		
+
 		if (left != null) {
 			Comparison compy = new Comparison();
 			compy.setComparator(comp);
@@ -310,19 +314,22 @@ public class LogicParser {
 			if (not) {
 				compy.not();
 			}
-			
+
 			block.add(compy, op);
 		}
-		
+
 		blocks.put(block.getName(), block);
 		return block.getName();
 	}
 
 	private static void checkTypeMismatch(Comparison compy) {
+		// Just check REAL against STRING and vice versa, ignore INTEGER because
+		// of...LogicTerms...somehow...
 		Type lt = compy.getLeft().getType(true);
 		Type rt = compy.getRight().getType(true);
-		if ((lt == Type.STRING && rt != Type.STRING) || (lt != Type.STRING && rt == Type.STRING)) {
-			//throw new RuntimeException("Type mismatch error: " + lt + " | " + rt);
+		if (Checker.isTypeMismatch(compy)) {
+			throw new RuntimeException(
+					"Type mismatch error: " + lt + " | " + rt + " --- " + compy.getLeft() + " --- " + compy.getRight());
 		}
 	}
 

@@ -20,6 +20,7 @@ import com.sixtyfour.parser.logic.LogicTerm;
 import com.sixtyfour.parser.optimize.ConstantFolder;
 import com.sixtyfour.parser.optimize.TermOptimizer;
 import com.sixtyfour.system.Machine;
+import com.sixtyfour.util.Checker;
 import com.sixtyfour.util.VarUtils;
 
 /**
@@ -882,10 +883,11 @@ public class Parser {
 	 * @param t
 	 */
 	private static void checkTypeMismatch(Term t) {
+		// Just check REAL against STRING and vice versa, ignore INTEGER because of...LogicTerms...somehow...
 		if (t.getLeft() != null && t.getRight() != null && (t.getOperator().isAnd() || t.getOperator().isOr())) {
-			if (t.getRight().getType(true) == Type.STRING || t.getLeft().getType(true) == Type.STRING) {
-				//throw new RuntimeException(
-					//	"Type mismatch error: term:" + t + " --- left:" + t.getLeft() + " --- right:" + t.getRight());
+			if (Checker.isTypeMismatch(t)) {
+				throw new RuntimeException(
+						"Type mismatch error: term:" + t + " --- left:" + t.getLeft() + " --- right:" + t.getRight());
 			}
 		}
 	}

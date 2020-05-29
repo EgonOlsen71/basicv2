@@ -11,6 +11,7 @@ import com.sixtyfour.elements.Type;
 import com.sixtyfour.elements.functions.Function;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.system.Machine;
+import com.sixtyfour.util.Checker;
 import com.sixtyfour.util.Jitted;
 
 /**
@@ -236,8 +237,10 @@ public class Term implements Atom {
 			if (ignoreMT) {
 				return Type.INTEGER;
 			}
-			throw new RuntimeException("Type mismatch error: " + this.toString() + " | " + left + " | " + right + " | "
-					+ t1 + "/" + t2 + "/" + operator.getType());
+			if (Checker.isTypeMismatch(this)) {
+				throw new RuntimeException("Type mismatch error: " + this.toString() + " | " + left + " | " + right
+						+ " | " + t1 + "/" + t2 + "/" + operator.getType());
+			}
 		}
 		type = t1;
 		return t1;
