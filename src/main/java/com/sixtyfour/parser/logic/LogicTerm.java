@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.Type;
+import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Term;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.system.Machine;
@@ -12,7 +13,7 @@ import com.sixtyfour.system.Machine;
 /**
  * A logic term.
  */
-public class LogicTerm implements LogicBlock {
+public class LogicTerm implements Atom {
 
 	/** The name. */
 	private String name;
@@ -57,7 +58,6 @@ public class LogicTerm implements LogicBlock {
 	 * @see
 	 * sixtyfour.parser.logic.LogicBlock#evalToBoolean(sixtyfour.system.Machine)
 	 */
-	@Override
 	public boolean evalToBoolean(Machine machine) {
 		if (comp == null) {
 			return true;
@@ -162,7 +162,6 @@ public class LogicTerm implements LogicBlock {
 	 * 
 	 * @see com.sixtyfour.parser.logic.LogicBlock#getTerms()
 	 */
-	@Override
 	public List<Term> getTerms() {
 		List<Term> terms = new ArrayList<Term>();
 		terms.addAll(comp.getTerms());
