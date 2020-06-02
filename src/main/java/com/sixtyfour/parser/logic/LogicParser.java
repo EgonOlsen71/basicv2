@@ -235,8 +235,7 @@ public class LogicParser {
 		}
 
 		if (left != null) {
-			Comparison compy = new Comparison();
-			compy.setComparator(comp);
+			block.setComparator(comp);
 			int bl = getBracketDelta(left);
 			// This should not happen anymore...well, anyway...
 			if (bl > 0) {
@@ -244,23 +243,22 @@ public class LogicParser {
 			} else if (bl < 0) {
 				left = left.substring(0, left.length() + bl);
 			}
-			compy.setLeft(Parser.getTerm(config, left, machine, false, true, termMap));
+			block.setLeft(Parser.getTerm(config, left, machine, false, true, termMap));
 			if (right != null) {
 				int br = getBracketDelta(right);
 				// This should not happen anymore...well, anyway...
 				if (br < 0) {
 					right = right.substring(0, right.length() + br);
 				}
-				compy.setRight(Parser.getTerm(config, right, machine, false, true, termMap));
-				checkTypeMismatch(compy);
+				block.setRight(Parser.getTerm(config, right, machine, false, true, termMap));
+				checkTypeMismatch(block);
 			}
-			block.setComparison(compy);
 		}
 		blocks.put(block.getName(), block);
 		return block.getName();
 	}
 
-	private static void checkTypeMismatch(Comparison compy) {
+	private static void checkTypeMismatch(LogicTerm compy) {
 		if (Checker.isTypeMismatch(compy)) {
 			Type lt = compy.getLeft().getType(true);
 			Type rt = compy.getRight().getType(true);

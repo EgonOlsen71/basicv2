@@ -2,7 +2,7 @@ package com.sixtyfour.util;
 
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.parser.Term;
-import com.sixtyfour.parser.logic.Comparison;
+import com.sixtyfour.parser.logic.LogicTerm;
 
 /**
  * Some check methods for type mismatches.
@@ -53,7 +53,7 @@ public class Checker {
 	 * @param t
 	 * @return
 	 */
-	public static boolean isTypeMismatch(Comparison t) {
+	public static boolean isTypeMismatch(LogicTerm t) {
 		Type t1 = t.getLeft().getType(true);
 		Type t2 = t.getRight().getType(true);
 		if ((t1 == Type.STRING && t2 == Type.REAL) || (t1 == Type.REAL && t2 == Type.STRING)) {
