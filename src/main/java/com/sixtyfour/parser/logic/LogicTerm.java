@@ -144,7 +144,7 @@ public class LogicTerm implements Atom {
 	 */
 	@Override
 	public String toCode(Machine machine) {
-		return null;
+		return comp.toCode(machine);
 	}
 
 	/*

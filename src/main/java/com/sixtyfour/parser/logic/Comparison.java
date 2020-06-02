@@ -6,6 +6,7 @@ import java.util.List;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.elements.functions.Function;
+import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Term;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.system.Machine;
@@ -13,7 +14,7 @@ import com.sixtyfour.system.Machine;
 /**
  * A comparison between two terms.
  */
-public class Comparison implements LogicBlock {
+public class Comparison implements Atom {
 
 	/** The left. */
 	private Term left;
@@ -30,7 +31,6 @@ public class Comparison implements LogicBlock {
 	 * @see
 	 * sixtyfour.parser.logic.LogicBlock#evalToBoolean(sixtyfour.system.Machine)
 	 */
-	@Override
 	public boolean evalToBoolean(Machine machine) {
 		Object lo = left.eval(machine);
 		Object ro = right != null ? right.eval(machine) : null;
@@ -205,7 +205,6 @@ public class Comparison implements LogicBlock {
 		return false;
 	}
 
-	@Override
 	public List<Term> getTerms() {
 		List<Term> terms = new ArrayList<Term>();
 		terms.add(right);
