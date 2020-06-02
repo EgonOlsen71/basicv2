@@ -103,7 +103,7 @@ public class LogicParser {
 	 * @param term the term
 	 * @return the string
 	 */
-	public static String processLogicOperations(String term) {
+	private static String processLogicOperations(String term) {
 		// Try to replace logic operations in brackets by placeholders to avoid
 		// parser confusion...
 
