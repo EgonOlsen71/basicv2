@@ -15,7 +15,7 @@ import com.sixtyfour.util.VarUtils;
 /**
  * The ON command.
  */
-public class On extends AbstractCommand {
+public class On extends AbstractCommand implements Jump {
 
 	private static int onCount = 0;
 
@@ -152,6 +152,11 @@ public class On extends AbstractCommand {
 		List<CodeContainer> ccs = new ArrayList<CodeContainer>();
 		ccs.add(cc);
 		return ccs;
+	}
+
+	@Override
+	public List<Integer> getTargetLineNumbers() {
+		return new ArrayList<>(lineNumbers);
 	}
 
 }

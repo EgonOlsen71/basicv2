@@ -3,6 +3,7 @@
  */
 package com.sixtyfour.elements.commands;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.sixtyfour.cbmnative.Util;
@@ -14,15 +15,11 @@ import com.sixtyfour.system.Machine;
 /**
  * The GOSUB command.
  */
-public class Gosub extends AbstractCommand {
+public class Gosub extends AbstractCommand implements Jump {
 
 	/** The pc. */
 	private BasicProgramCounter pc = new BasicProgramCounter(0, 0); // Recycle
 																	// instance
-
-	public int getTargetLineNumber() {
-		return targetLineNumber;
-	}
 
 	private int targetLineNumber = 0;
 
@@ -67,9 +64,20 @@ public class Gosub extends AbstractCommand {
 		machine.push(this);
 		return pc;
 	}
+	
+	public int getTargetLineNumber() {
+		return targetLineNumber;
+	}
 
 	@Override
 	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
 		return Util.createSingleCommand("JSR GOSUB", "JSR " + targetLineNumber);
+	}
+
+	@Override
+	public List<Integer> getTargetLineNumbers() {
+		List<Integer> ret = new ArrayList<>();
+		ret.add(targetLineNumber);
+		return ret;
 	}
 }

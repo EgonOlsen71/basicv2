@@ -48,6 +48,9 @@ public class PCode {
 		return lineNumbers;
 	}
 
+	/**
+	 * @return
+	 */
 	public boolean optimize() {
 		return PCodeOptimizer.optimize(this);
 	}

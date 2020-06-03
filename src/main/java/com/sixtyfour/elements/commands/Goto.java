@@ -3,6 +3,7 @@
  */
 package com.sixtyfour.elements.commands;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.sixtyfour.cbmnative.Util;
@@ -14,19 +15,11 @@ import com.sixtyfour.system.Machine;
 /**
  * The GOTO command.
  */
-public class Goto extends AbstractCommand {
+public class Goto extends AbstractCommand implements Jump {
 
 	/** The pc. */
 	private BasicProgramCounter pc = new BasicProgramCounter(0, 0); // Recycle
 																	// instance
-
-	public int getTargetLineNumber() {
-		return targetLineNumber;
-	}
-
-	public void setTargetLineNumber(int targetLineNumber) {
-		this.targetLineNumber = targetLineNumber;
-	}
 
 	private int targetLineNumber = 0;
 
@@ -71,8 +64,23 @@ public class Goto extends AbstractCommand {
 		return pc;
 	}
 
+	public int getTargetLineNumber() {
+		return targetLineNumber;
+	}
+
+	public void setTargetLineNumber(int targetLineNumber) {
+		this.targetLineNumber = targetLineNumber;
+	}
+	
 	@Override
 	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
 		return Util.createSingleCommand("JMP " + targetLineNumber);
+	}
+
+	@Override
+	public List<Integer> getTargetLineNumbers() {
+		List<Integer> ret=new ArrayList<>();
+		ret.add(targetLineNumber);
+		return ret;
 	}
 }
