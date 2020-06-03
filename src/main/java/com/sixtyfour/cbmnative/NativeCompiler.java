@@ -20,7 +20,6 @@ import com.sixtyfour.parser.Term;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.parser.optimize.ConstantFolder;
 import com.sixtyfour.parser.optimize.ConstantPropagator;
-import com.sixtyfour.parser.optimize.DeadCodeChecker;
 import com.sixtyfour.parser.optimize.DeadStoreEliminator;
 import com.sixtyfour.parser.optimize.TermOptimizer;
 import com.sixtyfour.system.Machine;
