@@ -3,6 +3,6 @@
 .classpath
 .project
 .settings/
-/compiled/*.prg
+/compiled/
 .idea
 *.iml
