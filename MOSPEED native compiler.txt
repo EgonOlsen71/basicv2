@@ -76,6 +76,8 @@ Default is true.
 
 - /deadstoreoptstr=true|false: Just like /deadstoreopt, but for string variables. Default is true.
 
+- /deadcodeopt=true|false - enables/disables dead code elimination. Default is false.
+
 - /loopopt=true|false: Detects and removes empty loops. These loops don't have to be empty in the source code, 
 but if the values that are calculated inside them aren't actually used, they might get removed anyway. Default is true.
 

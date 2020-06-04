@@ -29,6 +29,7 @@ public class CompilerConfig {
 	private boolean flipCasing = false;
 	private boolean aggressiveFloatOptimizations = true;
 	private boolean enhancedInstructionSet = false;
+	private boolean deadCodeElimination = false;
 	private String symbolTable = null;
 	private int threads = -1;
 	private LoopMode loopMode = LoopMode.EXECUTE;
@@ -239,6 +240,14 @@ public class CompilerConfig {
 
 	public void setThreads(int threads) {
 		this.threads = threads;
+	}
+
+	public boolean isDeadCodeElimination() {
+		return deadCodeElimination;
+	}
+
+	public void setDeadCodeElimination(boolean deadCodeElimination) {
+		this.deadCodeElimination = deadCodeElimination;
 	}
 
 }

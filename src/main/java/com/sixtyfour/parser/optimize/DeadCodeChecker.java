@@ -47,7 +47,7 @@ public class DeadCodeChecker {
 		for (Integer num : nums) {
 			if (!used.contains(num)) {
 				lineMap.remove(num);
-				Logger.log("Line " + num + " contains dead code!");
+				//Logger.log("Line " + num + " contains dead code!");
 			}
 		}
 		nums.retainAll(used);

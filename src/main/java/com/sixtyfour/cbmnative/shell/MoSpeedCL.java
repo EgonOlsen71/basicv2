@@ -87,6 +87,7 @@ public class MoSpeedCL {
 
 		cfg.setConstantFolding(getOption("constfolding", cmds));
 		cfg.setConstantPropagation(getOption("constprop", cmds));
+		cfg.setDeadCodeElimination(getOptionIntDefault("deadcodeopt", cmds, false));
 		cfg.setPcodeOptimizations(false /* getOption("pcodeopt", cmds) */);
 		cfg.setDeadStoreElimination(getOption("deadstoreopt", cmds));
 		cfg.setDeadStoreEliminationOfStrings(getOption("deadstoreoptstr", cmds));
@@ -516,6 +517,7 @@ public class MoSpeedCL {
 		System.out.println("/smartlinker=true|false - enables/disables linker optimizations for size");
 		System.out.println("/deadstoreopt=true|false - enables/disables dead store elimination for numbers");
 		System.out.println("/deadstoreoptstr=true|false - enables/disables dead store elimination for strings");
+		System.out.println("/deadcodeopt=true|false - enables/disables dead code elimination. Default is false.");
 		System.out.println("/loopopt=true|false - enables/disables the removal of empty loops");
 		System.out.println("/addressheader=true|false - enables/disables the writing of the two address header bytes");
 		System.out.println(
