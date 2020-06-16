@@ -1219,8 +1219,7 @@ public class PseudoCpu {
 			}
 		}
 	}
-	
-	
+
 	private void initFor(String[] parts) {
 		adjustStack();
 		Number stepVal = getStack().pop();
@@ -2375,7 +2374,10 @@ public class PseudoCpu {
 
 	private int parseInt(String txt) {
 		if (txt.equals("0.0")) {
-			txt="0";
+			txt = "0";
+		}
+		if (txt.endsWith(".0")) {
+			txt = txt.replace(".0", "");
 		}
 		try {
 			return Integer.parseInt(txt);
