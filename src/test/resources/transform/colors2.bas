@@ -7,7 +7,7 @@
 7 ifc3=.thenq=3:c3=c:return
 8 q=sand3:ifqthenreturn
 9 q=peek(a-1)/h(x2)and3:return
-10 fori=24568to24568+8000:pokei,0:next
+10 fori=24576to24576+8000:pokei,0:next
 20 v=53248:pokev+33,.:pokev+32,11:dimc1,c2,c3,c,q:s=rnd(-ti)
 30 p=32576:w$="wait..":fori=ptop+126:pokei,.:next:fori=.to1:z=v+i+i
 40 pokez,136+48*i:pokez+1,235:poke24568+i,253+i:pokev+39+i,3:next
@@ -35,7 +35,7 @@
 260 s=s*4+q:next:pokea,s:a=a+1:next
 270 pokevr,c2+u*c1:pokefr+vr,c3:vr=vr+1:next:next:pokev+21,.
 280 fori=.to96:pokev+32,i:next
-290 poket,.:waitt,1:poke56576,199:sys58648:poket,.:poke56,160:clr:end
+290 poket,.:waitt,1:end
 310 rem farbliste
 320 data 10,02,09,08,07,13,05,03
 330 data 14,06,04,00,11,12,15,01
