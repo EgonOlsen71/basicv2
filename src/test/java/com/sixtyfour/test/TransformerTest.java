@@ -129,6 +129,13 @@ public class TransformerTest {
 		testJumpOutOfFor();
 	}
 
+	private static void testModelbrot() throws Exception {
+		System.out.println("\n\ntestMandelbrot");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/mandelbrot.bas");
+		Assembler assy = initTestEnvironment(vary, false, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++mandelbrot.prg", true);
+	}
+	
 	private static void testColors2() throws Exception {
 		System.out.println("\n\ntestColors2");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/colors2.bas");
