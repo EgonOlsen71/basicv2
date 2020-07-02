@@ -127,6 +127,7 @@ public class TransformerTest {
 		testColors();
 		testColors2();
 		testJumpOutOfFor();
+		testModelbrot();
 	}
 
 	private static void testModelbrot() throws Exception {
