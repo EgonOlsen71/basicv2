@@ -149,7 +149,12 @@ public class UnTokenizer {
 							if (inString && isSpecialChar(c)) {
 								line.append(ControlCodes.getPlaceHolder(b));
 							} else {
-								line.append(convertChar(c));
+							    	if (((int)c)==255) {
+							    	    // Handle PI
+							    	    line.append("3.14159265");
+							    	} else {
+							    	    line.append(convertChar(c));
+							    	}
 							}
 						} else {
 							String token = TOKENS.get(b);
