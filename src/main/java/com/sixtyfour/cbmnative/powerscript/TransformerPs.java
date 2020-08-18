@@ -22,6 +22,7 @@ import com.sixtyfour.elements.Variable;
 import com.sixtyfour.system.DataStore;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.ConstantExtractor;
+import com.sixtyfour.util.VarUtils;
 
 /**
  * The transformer for the Powerscript/-shell target platform. It generates
@@ -166,9 +167,9 @@ public class TransformerPs implements Transformer {
 			Object obj = null;
 			while ((obj = datas.read()) != null) {
 				Type type = Type.STRING;
-				if (obj instanceof Integer) {
+				if (VarUtils.isInteger(obj)) {
 					type = Type.INTEGER;
-				} else if (obj instanceof Float) {
+				} else if (VarUtils.isFloat(obj) || VarUtils.isDouble(obj)) {
 					type = Type.REAL;
 				}
 

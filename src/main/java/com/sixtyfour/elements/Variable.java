@@ -364,7 +364,7 @@ public class Variable implements Atom {
 			return;
 		}
 		// Convert into proper format
-		if (type == Type.INTEGER && VarUtils.isFloat(value)) {
+		if (type == Type.INTEGER && (VarUtils.isFloat(value) || VarUtils.isDouble(value))) {
 			value = IntegerC.valueOf(VarUtils.getInt(value));
 		} else if (type == Type.REAL && VarUtils.isInteger(value)) {
 			value = VarUtils.getFloat(value);
@@ -450,7 +450,7 @@ public class Variable implements Atom {
 			}
 		}
 
-		if (type == Type.INTEGER && VarUtils.isFloat(val)) {
+		if (type == Type.INTEGER && (VarUtils.isFloat(val) || VarUtils.isDouble(val))) {
 			val = IntegerC.valueOf(VarUtils.getInt(val));
 		} else if (type == Type.REAL && VarUtils.isInteger(val)) {
 			val = VarUtils.getFloat(val);

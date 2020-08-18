@@ -135,7 +135,7 @@ public class ConstantPropagator {
 				if (val != (int) val || !POWERS_OF_TWO.contains((int) val)) {
 					if (config.isFloatOptimizations()) {
 						t.setOperator(new Operator('*'));
-						right = new Constant<Float>((float) (1d / val));
+						right = new Constant<Double>((double) (1d / val));
 						t.setRight(right);
 					}
 				} else {

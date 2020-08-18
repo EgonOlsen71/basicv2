@@ -368,25 +368,25 @@ public class Term implements Atom {
 					n2 = (Number) right.eval(machine);
 				}
 
-				float v1 = 0;
+				double v1 = 0;
 				switch (operator.getType()) {
 				case 0:
-					v1 = (float) Math.pow(n1.doubleValue(), n2.doubleValue());
+					v1 = Math.pow(n1.doubleValue(), n2.doubleValue());
 					break;
 				case 1:
-					v1 = n1.floatValue() * n2.floatValue();
+					v1 = n1.doubleValue() * n2.doubleValue();
 					break;
 				case 2:
-					if (n2.floatValue() == 0) {
+					if (n2.doubleValue() == 0) {
 						throw new RuntimeException("Division by zero error: " + n1 + "/" + n2);
 					}
-					v1 = n1.floatValue() / n2.floatValue();
+					v1 = n1.doubleValue() / n2.doubleValue();
 					break;
 				case 3:
-					v1 = n1.floatValue() + n2.floatValue();
+					v1 = n1.doubleValue() + n2.doubleValue();
 					break;
 				case 4:
-					v1 = n1.floatValue() - n2.floatValue();
+					v1 = n1.doubleValue() - n2.doubleValue();
 					break;
 				case 5:
 					break;

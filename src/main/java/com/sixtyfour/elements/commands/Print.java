@@ -140,6 +140,11 @@ public class Print extends AbstractCommand {
 				if (f == (int) f) {
 					obj = (int) f;
 				}
+			} else if (VarUtils.isDouble(obj)) {
+				double f = (Double) obj;
+				if (f == (int) f) {
+					obj = (int) f;
+				}
 			}
 			if (obj == null) {
 				obj = "";

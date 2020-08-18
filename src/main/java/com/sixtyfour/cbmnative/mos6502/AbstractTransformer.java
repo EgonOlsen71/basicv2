@@ -24,6 +24,7 @@ import com.sixtyfour.extensions.BasicExtension;
 import com.sixtyfour.system.DataStore;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.ConstantExtractor;
+import com.sixtyfour.util.VarUtils;
 
 /**
  * Transformer base class for Commodore based target platforms.
@@ -90,7 +91,7 @@ public abstract class AbstractTransformer implements Transformer {
 		Object obj = null;
 		while ((obj = datas.read()) != null) {
 			Type type = Type.STRING;
-			if (obj instanceof Integer) {
+			if (VarUtils.isInteger(obj)) {
 				Integer num = (Integer) obj;
 				if (num < -32768 || num > 32767) {
 					obj = num.floatValue();
@@ -98,7 +99,7 @@ public abstract class AbstractTransformer implements Transformer {
 				} else {
 					type = Type.INTEGER;
 				}
-			} else if (obj instanceof Float) {
+			} else if (VarUtils.isFloat(obj) || VarUtils.isDouble(obj)) {
 				type = Type.REAL;
 			}
 

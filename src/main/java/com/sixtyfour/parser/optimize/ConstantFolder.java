@@ -118,6 +118,8 @@ public class ConstantFolder {
 			conty = new Constant<String>(val.toString());
 		} else if (VarUtils.isFloat(val)) {
 			conty = new Constant<Float>((Float) val);
+		}	else if (VarUtils.isDouble(val)) {
+			conty = new Constant<Double>((Double) val);
 		} else if (VarUtils.isInteger(val)) {
 			conty = new Constant<Integer>((Integer) val);
 		}
@@ -128,13 +130,4 @@ public class ConstantFolder {
 			finalTerm.setConstant(true);
 		}
 	}
-
-	/*
-	 * private static Constant<?> convert(Variable var, Machine machine) {
-	 * Constant<?> conty = null; Object val = var.eval(machine); if
-	 * (var.getType().equals(Type.STRING)) { conty = new
-	 * Constant<String>(val.toString()); } else if (VarUtils.isFloat(val)) { conty =
-	 * new Constant<Float>((Float) val); } else if (VarUtils.isInteger(val)) { conty
-	 * = new Constant<Integer>((Integer) val); } return conty; }
-	 */
 }

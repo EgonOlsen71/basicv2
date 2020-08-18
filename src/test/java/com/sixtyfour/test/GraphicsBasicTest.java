@@ -14,12 +14,12 @@ public class GraphicsBasicTest {
 
 	public static void main(String[] args) throws Exception {
 		/*
-		 * testGronGroff(); testLines(); testPlot(); testCircles(); testFilledCircles();
-		 * testRects(); testClears(); testFloodFill(); testFractal(); testFractal();
-		 * testShapes(); testDoubleBuffer(); testGPrint(); test3D();
-		 * testRotatedShapes();
-		 * 
-		 * // testGget(); testCopy(); testGetShape(); testSprites();
+		  testGronGroff(); testLines(); testPlot(); testCircles(); testFilledCircles();
+		  testRects(); testClears(); testFloodFill(); testFractal(); testFractal();
+		  testShapes(); testDoubleBuffer(); testGPrint(); test3D();
+		  testRotatedShapes();
+		 
+		  testGget(); testCopy(); testGetShape(); testSprites();
 		 */
 		testFractalLand();
 	}

@@ -17,7 +17,7 @@ public final class VarUtils {
 	 * @return true, if it's a number
 	 */
 	public static boolean isNumber(Object obj) {
-		return obj instanceof Float || obj instanceof Integer;
+		return obj instanceof Float || obj instanceof Integer || obj instanceof Double;
 	}
 
 	/**
@@ -28,6 +28,16 @@ public final class VarUtils {
 	 */
 	public static boolean isFloat(Object obj) {
 		return obj instanceof Float;
+	}
+	
+	/**
+	 * Checks an instance is a Double.
+	 * 
+	 * @param obj the instance to check
+	 * @return true, if it's a double
+	 */
+	public static boolean isDouble(Object obj) {
+		return obj instanceof Double;
 	}
 
 	/**
@@ -58,6 +68,16 @@ public final class VarUtils {
 	 */
 	public static float getFloat(Object obj) {
 		return ((Number) obj).floatValue();
+	}
+	
+	/**
+	 * Gets the double value of an instance.
+	 * 
+	 * @param obj the instance
+	 * @return the double value
+	 */
+	public static double getDouble(Object obj) {
+		return ((Number) obj).doubleValue();
 	}
 
 	/**

@@ -12,6 +12,7 @@ import java.util.Set;
 
 import com.sixtyfour.Logger;
 import com.sixtyfour.config.CompilerConfig;
+import com.sixtyfour.util.VarUtils;
 
 /**
  * A helper class that can compact 6502 assembly code by identifying repeating
@@ -56,8 +57,8 @@ public class Compactor {
 				}
 				boolean isHighByte = cst.length() != cn.length();
 				Object val = const2Value.get(cn);
-				if (val instanceof Integer) {
-					int ival = ((Integer) val).intValue();
+				if (VarUtils.isInteger(val)) {
+					int ival = VarUtils.getInt(val);
 					if (isHighByte) {
 						ival = ival >> 8;
 					} else {

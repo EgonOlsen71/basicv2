@@ -948,7 +948,7 @@ public class Parser {
 				if (part.equals(".")) {
 					part = "0.0";
 				}
-				Atom fl = new Constant<Float>(Float.valueOf(part));
+				Atom fl = new Constant<Double>(Double.valueOf(part));
 				return fl;
 			} else {
 				if (part.isEmpty()) {
@@ -961,8 +961,8 @@ public class Parser {
 				try {
 					in = new Constant<Integer>(Integer.valueOf(part));
 				} catch (NumberFormatException nfe) {
-					// The number might too large to fit an int...then usue a float instead
-					in = new Constant<Float>(Float.valueOf(part));
+					// The number might too large to fit an int...then use a float instead
+					in = new Constant<Double>(Double.valueOf(part));
 				}
 				return in;
 			}

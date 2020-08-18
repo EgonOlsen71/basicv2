@@ -20,6 +20,7 @@ import com.sixtyfour.elements.Type;
 import com.sixtyfour.system.DataStore;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.ConstantExtractor;
+import com.sixtyfour.util.VarUtils;
 
 /**
  * The transformer for the Javscript target platform. It generates Javascript
@@ -141,12 +142,11 @@ public class TransformerJs implements Transformer {
 			Object obj = null;
 			while ((obj = datas.read()) != null) {
 				Type type = Type.STRING;
-				if (obj instanceof Integer) {
+				if (VarUtils.isInteger(obj)) {
 					type = Type.INTEGER;
-				} else if (obj instanceof Float) {
+				} else if (VarUtils.isFloat(obj) || VarUtils.isDouble(obj)) {
 					type = Type.REAL;
-				}
-
+				} 
 				if (obj.toString().equals("\\0")) {
 					obj = "";
 				}

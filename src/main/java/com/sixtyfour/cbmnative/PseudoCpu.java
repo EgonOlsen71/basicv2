@@ -531,9 +531,9 @@ public class PseudoCpu {
 		Object obj = null;
 		while ((obj = datas.read()) != null) {
 			Type type = Type.STRING;
-			if (obj instanceof Integer) {
+			if (VarUtils.isInteger(obj)) {
 				type = Type.INTEGER;
-			} else if (obj instanceof Float) {
+			} else if (VarUtils.isFloat(obj) || VarUtils.isDouble(obj)) {
 				type = Type.REAL;
 			}
 
@@ -569,7 +569,7 @@ public class PseudoCpu {
 				int[] mems = new int[vals.size()];
 				int pos = 0;
 				for (Object val : vals) {
-					if (val instanceof String) {
+					if (VarUtils.isString(val)) {
 						if (!val.toString().isEmpty()) {
 							mems[pos++] = memPointer;
 							storeString(null, val.toString());
@@ -586,14 +586,21 @@ public class PseudoCpu {
 				boolean flagged = false;
 				pos = 0;
 				for (Object val : vals) {
-					if (val instanceof Float) {
+					if (VarUtils.isFloat(val)) {
 						if (!flagged) {
 							memory[memPointer++] = 1; // Flags a Float array
 							memory[memPointer++] = vals.size();
 							flagged = true;
 						}
 						memory[memPointer++] = Float.floatToIntBits((Float) val);
-					} else if (val instanceof Integer) {
+					} else if (VarUtils.isDouble(val)) {
+						if (!flagged) {
+							memory[memPointer++] = 1; // Flags a Float array
+							memory[memPointer++] = vals.size();
+							flagged = true;
+						}
+						memory[memPointer++] = Float.floatToIntBits(((Double) val).floatValue());
+					} else if (VarUtils.isInteger(val)) {
 						if (!flagged) {
 							memory[memPointer++] = 0; // Flags an Integer array
 							memory[memPointer++] = vals.size();
@@ -2614,7 +2621,7 @@ public class PseudoCpu {
 				store(addr, stackPos + s);
 				s += 4;
 				int h = 0;
-				if (to instanceof Integer) {
+				if (VarUtils.isInteger(to)) {
 					h = to.intValue();
 					forStack[stackPos + (s++)] = 0;
 				} else {
@@ -2623,7 +2630,7 @@ public class PseudoCpu {
 				}
 				store(h, stackPos + s);
 				s += 4;
-				if (step instanceof Integer) {
+				if (VarUtils.isInteger(step)) {
 					h = step.intValue();
 					forStack[stackPos + (s++)] = 0;
 				} else {

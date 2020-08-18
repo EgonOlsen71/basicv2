@@ -94,13 +94,13 @@ public class Template {
 			String name = entry.getKey();
 			Object obj = entry.getValue();
 
-			if (obj instanceof Double) {
+			if (VarUtils.isDouble(obj)) {
 				obj = ((Number) obj).floatValue();
 			}
 
-			if (obj instanceof Integer && !name.endsWith("%")) {
+			if (VarUtils.isInteger(obj) && !name.endsWith("%")) {
 				name += "%";
-			} else if (obj instanceof String && !name.endsWith("$")) {
+			} else if (VarUtils.isString(obj) && !name.endsWith("$")) {
 				name += "$";
 			}
 			vars.put(name, obj);

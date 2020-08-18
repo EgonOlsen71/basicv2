@@ -300,6 +300,10 @@ public class Basic implements ProgramExecutor {
 		if (VarUtils.isFloat(obj)) {
 			return (Float) obj;
 		}
+
+		if (VarUtils.isDouble(obj)) {
+			return new Float(((Double) obj).floatValue());
+		}
 		return null;
 	}
 

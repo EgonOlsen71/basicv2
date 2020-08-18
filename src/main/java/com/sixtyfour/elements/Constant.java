@@ -33,6 +33,8 @@ public class Constant<T> implements Atom {
 			type = Type.INTEGER;
 		} else if (VarUtils.isFloat(value)) {
 			type = Type.REAL;
+		} else if (VarUtils.isDouble(value)) {
+			type = Type.REAL;
 		} else if (VarUtils.isString(value)) {
 			type = Type.STRING;
 		} else {
@@ -129,6 +131,8 @@ public class Constant<T> implements Atom {
 			return String.valueOf(VarUtils.getInt(value));
 		} else if (VarUtils.isFloat(value)) {
 			return String.valueOf(VarUtils.getFloat(value));
+		} else if (VarUtils.isDouble(value)) {
+			return String.valueOf(VarUtils.getDouble(value));
 		} else if (VarUtils.isString(value)) {
 			return "\"" + value.toString() + "\"";
 		} else {
