@@ -267,9 +267,9 @@ public class LogicTerm implements Atom {
 			Number ron = (Number) ro;
 
 			if (right == null) {
-				ret = lon.floatValue() != 0;
+				ret = lon.doubleValue() != 0;
 			} else {
-				float res = lon.floatValue() - ron.floatValue();
+				double res = lon.doubleValue() - ron.doubleValue();
 				ret = (comparator.equals(Comparator.EQUAL) && res == 0)
 						|| (comparator.equals(Comparator.LARGER) && res > 0)
 						|| (comparator.equals(Comparator.SMALLER) && res < 0)

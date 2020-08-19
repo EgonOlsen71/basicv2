@@ -39,11 +39,11 @@ public class Sqr extends AbstractFunction {
 	@Override
 	public Object eval(Machine machine) {
 		if (!term.getType().equals(Type.STRING)) {
-			float val = VarUtils.getFloat(term.eval(machine));
+			double val = VarUtils.getDouble(term.eval(machine));
 			if (val < 0) {
 				throw new RuntimeException("Illegal quantity error: " + val);
 			}
-			return Float.valueOf((float) Math.sqrt(val));
+			return Double.valueOf(Math.sqrt(val));
 		}
 		throw new RuntimeException("Type mismatch error: " + term.getType());
 	}

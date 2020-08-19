@@ -123,7 +123,7 @@ public class TermOptimizer {
 							}
 						}
 						if (allConst) {
-							float res = VarUtils.getFloat(((If) cmd).getLogicTerm().eval(machine));
+							double res = VarUtils.getDouble(((If) cmd).getLogicTerm().eval(machine));
 							if (res == 0) {
 								Logger.log("Removed conditional block at line " + lineNumber);
 								for (int p = 0; p < line.getCommands().size(); p++) {

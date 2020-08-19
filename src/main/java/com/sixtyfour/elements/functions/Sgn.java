@@ -39,7 +39,7 @@ public class Sgn extends AbstractFunction {
 	@Override
 	public Object eval(Machine machine) {
 		if (!getType().equals(Type.STRING)) {
-			return Float.valueOf((float) Math.signum(VarUtils.getFloat(term.eval(machine))));
+			return Double.valueOf(Math.signum(VarUtils.getFloat(term.eval(machine))));
 		}
 		throw new RuntimeException("Type mismatch error: " + getType());
 	}

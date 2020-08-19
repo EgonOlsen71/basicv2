@@ -72,7 +72,7 @@ public class Val extends AbstractFunction {
 			}
 		}
 		try {
-			return Float.valueOf(sb.toString());
+			return Double.valueOf(sb.toString());
 		} catch (Exception e) {
 			return 0f;
 		}

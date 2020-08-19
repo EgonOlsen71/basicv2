@@ -94,7 +94,7 @@ public class Template {
 			String name = entry.getKey();
 			Object obj = entry.getValue();
 
-			if (VarUtils.isDouble(obj)) {
+			if (VarUtils.isDouble(obj) || VarUtils.isFloat(obj)) {
 				obj = ((Number) obj).floatValue();
 			}
 

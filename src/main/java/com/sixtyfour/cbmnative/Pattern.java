@@ -267,14 +267,14 @@ public class Pattern implements java.lang.Cloneable {
 								if (reg.startsWith("#")) {
 									String num = reg.substring(1);
 									boolean isReal = num.contains(".");
-									float val = Float.parseFloat(num);
+									double val = Double.parseDouble(num);
 									if (!isReal) {
 										val = (int) val;
 									}
 									int pos = lineRight.indexOf("CONST_");
 									if (lineRight.equals(reg)
 											|| (pos != -1 && const2Value.containsKey(lineRight.substring(pos))
-													&& const2Value.get(lineRight.substring(pos)).floatValue() == val)) {
+													&& const2Value.get(lineRight.substring(pos)).doubleValue() == val)) {
 										return inc(ix);
 									}
 									return resetPattern();

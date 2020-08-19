@@ -39,7 +39,7 @@ public class Log extends AbstractFunction {
 	@Override
 	public Object eval(Machine machine) {
 		if (!term.getType().equals(Type.STRING)) {
-			return Float.valueOf((float) Math.log(VarUtils.getFloat(term.eval(machine))));
+			return Double.valueOf(Math.log(VarUtils.getFloat(term.eval(machine))));
 		}
 		throw new RuntimeException("Type mismatch error: " + term.getType());
 	}

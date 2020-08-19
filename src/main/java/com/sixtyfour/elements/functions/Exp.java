@@ -39,7 +39,7 @@ public class Exp extends AbstractFunction {
 	@Override
 	public Object eval(Machine machine) {
 		if (!term.getType().equals(Type.STRING)) {
-			return Float.valueOf((float) Math.exp(VarUtils.getFloat(term.eval(machine))));
+			return Double.valueOf(Math.exp(VarUtils.getFloat(term.eval(machine))));
 		}
 		throw new RuntimeException("Type mismatch error: " + term.getType());
 	}
