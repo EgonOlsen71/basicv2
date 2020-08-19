@@ -67,7 +67,7 @@ public class Util {
 						String number = right.substring(pos + 1).trim();
 						if (type.equals(".REAL") || type.equals(".WORD")) {
 							try {
-								Float num = Float.valueOf(number);
+								Double num = Double.valueOf(number);
 								if (type.equals(".REAL")) {
 									const2Value.put(name, num);
 								} else {
