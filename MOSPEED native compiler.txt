@@ -157,7 +157,8 @@ these variables as constants.
 - Limited support for USR: This function is supported, but only a single floating point value is allowed as input. 
 Strings or multiple parameters are not allowed.
 
-- SYS with parameters: This option isn't supported. Even in the interpreter, it's more of a hack than anything else.
+- SYS with parameters: This option is supported, but because it's actually an interpreter hack in the first place, the call itself
+might be slower in the compiled code.
 
 - INPUT with double quotes: When using INPUT MOSpeed is a little more forgiving with double quotes.
 
