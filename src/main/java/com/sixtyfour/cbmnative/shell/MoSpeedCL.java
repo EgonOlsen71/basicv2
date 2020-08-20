@@ -537,7 +537,7 @@ public class MoSpeedCL {
 		System.out.println(
 				"/runtimestart=xxxxx|$yyyy - the start address of the runtime's code. If none is given, it follows the program's code.");
 		System.out.println(
-				"/sysbuffer=xxxxx|$yyyy - the start address of the buffer used to execute SYS commands with parameters. Default is 820 for the CBM machines and 1024 for the X16.");
+				"/sysbuffer=xxxxx|$yyyy - the start address of the buffer used to execute SYS commands with parameters. Default is 820 for the CBM machines and 1024 for the X16. If set to 0, the runtime will reserve its own buffer in BASIC memory.");
 		System.out.println("/alloff=true|false - if specified, all optimizations will be turned off");
 		System.out.println(
 				"/vice=<path> - sets a path to the VICE executable. If specified, the compiled prg file will be started in VICE right away.");

@@ -114,7 +114,7 @@ Make sure that the memory is readable, i.e. that it isn't shadowed by the ROM. D
 If nothing is given, it will follow the actual program's memory. This is also the default.
 
 - /sysbuffer=xxxxx|$yyyy: Sets the start address of the buffer used to execute SYS commands with parameters. 
-Default is 820 for the CBM machines and 1024 for the X16.
+Default is 820 for the CBM machines and 1024 for the X16. If set to 0, the runtime will reserve its own buffer in BASIC memory.
 
 - /alloff=true|false: If true, all optimizations which are enabled by default will be turned off. Default is false.
 

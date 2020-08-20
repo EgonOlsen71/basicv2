@@ -77,13 +77,21 @@ public abstract class AbstractTransformer implements Transformer {
 	}
 
 	protected void addBasicBuffer(List<String> res, PlatformProvider platform, MemoryConfig memConfig) {
-		if (memConfig.getBasicBufferStart()==-1) {
-			res.add("BASICBUFFER="+platform.getBasicBufferAddress());
+		if (memConfig.getBasicBufferStart() == -1) {
+			res.add("BASICBUFFER=" + platform.getBasicBufferAddress());
 		} else {
-			res.add("BASICBUFFER="+memConfig.getBasicBufferStart());
+			if (memConfig.getBasicBufferStart() != 0) {
+				res.add("BASICBUFFER=" + memConfig.getBasicBufferStart());
+			}
 		}
 	}
 	
+	protected void addInternalBasicBuffer(List<String> res, PlatformProvider platform, MemoryConfig memConfig) {
+		if (memConfig.getBasicBufferStart() == 0) {
+			res.add("BASICBUFFER   .ARRAY 256");
+		}
+	}
+
 	protected void addMemoryLocations(List<String> res) {
 		String[] labels = Loader.loadProgram(TransformerX16.class.getResourceAsStream("/rommap/memloc-c64.map"));
 		addLabels(res, labels);
@@ -334,12 +342,12 @@ public abstract class AbstractTransformer implements Transformer {
 		return cnt;
 	}
 
-	protected void addStructures(CompilerConfig config, Machine machine, PlatformProvider platform, List<String> code,
+	protected void addStructures(CompilerConfig config, MemoryConfig memConfig, Machine machine, PlatformProvider platform, List<String> code,
 			List<String> res, List<String> consts, List<String> vars, List<String> mnems, List<String> subs) {
-		addStructures(config, machine, platform, code, res, consts, vars, mnems, subs, null, null);
+		addStructures(config, memConfig, machine, platform, code, res, consts, vars, mnems, subs, null, null);
 	}
 
-	protected void addStructures(CompilerConfig config, Machine machine, PlatformProvider platform, List<String> code,
+	protected void addStructures(CompilerConfig config, MemoryConfig memConfig, Machine machine, PlatformProvider platform, List<String> code,
 			List<String> res, List<String> consts, List<String> vars, List<String> mnems, List<String> subs,
 			List<String> addOns, StringAdder adder) {
 		Map<String, String> name2label = new HashMap<String, String>();
@@ -462,13 +470,15 @@ public abstract class AbstractTransformer implements Transformer {
 		res.add("LASTVARP\t.WORD 0");
 		res.add("HIGHP\t.WORD STRBUF");
 		res.add("STRBUFP\t.WORD STRBUF");
-		res.add("ENDSTRBUF\t.WORD " + this.stringMemoryEnd);
+		res.add("ENDSTRBUF\t.WORD " + this.stringMemoryEnd); 
 		res.add("INPUTQUEUEP\t.BYTE 0");
 		res.add("PROGRAMEND");
+		addInternalBasicBuffer(res, platform, memConfig);
 		res.add("INPUTQUEUE\t.ARRAY $0F");
 		res.add("FPSTACK .ARRAY " + Math.min(256, platform.getStackSize() * 5));
 		res.add("FORSTACK .ARRAY " + Math.min(1024, platform.getForStackSize() * 17));
 		res.add("STRBUF\t.BYTE 0");
+		
 	}
 
 	@Override
