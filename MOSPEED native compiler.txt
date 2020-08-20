@@ -113,6 +113,9 @@ Make sure that the memory is readable, i.e. that it isn't shadowed by the ROM. D
 - /runtimestart=xxxxx|$yyyy: Sets the start address of the runtime code. This value can be either decimal or hexadecimal. 
 If nothing is given, it will follow the actual program's memory. This is also the default.
 
+/sysbuffer=xxxxx|$yyyy _ Set the start address of the buffer used to execute SYS commands with parameters. 
+Default is 820 for the CBM machines and 1024 for the X16.
+
 - /alloff=true|false: If true, all optimizations which are enabled by default will be turned off. Default is false.
 
 - /vice=<path>: This sets the path to an instance of the VICE|VICE-Emulator (or some other with similar behaviour). 

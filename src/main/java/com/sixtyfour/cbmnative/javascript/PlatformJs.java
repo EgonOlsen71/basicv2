@@ -72,4 +72,9 @@ public class PlatformJs implements PlatformProvider {
 		return 0;
 	}
 
+	@Override
+	public int getBasicBufferAddress() {
+		return 0;
+	}
+
 }

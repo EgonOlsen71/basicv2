@@ -514,13 +514,13 @@ STRINT		LDY #1
 			JSR FACSTR
 			LDY #0
 			STY TMP_ZP+1
-			LDA #$FF
+			LDA #LOFBUF
 			STA TMP_ZP
 			DEY
 STRLOOP		INY
-			LDA $0100,Y
+			LDA LOFBUFH,Y
 			BNE STRLOOP
-			STY $FF
+			STY LOFBUF
 			TYA
 			TAX			; Length in X
 			LDA #<A_REG
@@ -1271,10 +1271,10 @@ RNOTNULL	LDA #<X_REG
 REALOUTINT	LDY #0
 			JSR FACSTR
 			LDY #0
-			LDA $00FF,Y
+			LDA LOFBUF,Y
 STRLOOPRO	JSR CHROUT
 			INY
-			LDA $00FF,Y
+			LDA LOFBUF,Y
 			BNE STRLOOPRO
 			JSR RESETROUTE
 			RTS
@@ -1289,10 +1289,10 @@ RNOTNULLBRK	LDA #<X_REG
 			LDY #0
 			JSR FACSTR
 			LDY #0
-			LDA $00FF,Y
+			LDA LOFBUF,Y
 STRLOOPROB	JSR CHROUT
 			INY
-			LDA $00FF,Y
+			LDA LOFBUF,Y
 			BNE STRLOOPROB
 			LDA #$0D
 			JSR RESETROUTE
@@ -2209,24 +2209,24 @@ STRINTREAD	LDY #1			; Special INT to STR routine that handles the fact that in c
 			JSR FACSTR
 			LDY #0
 			STY TMP_ZP+1
-			LDA #$FF
+			LDA #LOFBUF
 			STA TMP_ZP
 			DEY
 STRLOOPREAD	INY
-			LDA $0100,Y
+			LDA LOFBUFH,Y
 			BNE STRLOOPREAD
-			STY $FF
+			STY LOFBUF
 			TYA
 			TAX			; Length in X
-			LDA $100
+			LDA LOFBUFH
 			CMP #$20
 			BNE STRREADNP
 			INC TMP_ZP	; Starts with blank? Remove it...
 			INC TMP_ZP+1
-			DEC $FF
-			LDA $FF
-			STA $100	; Copy the new length over
-			DEX			; length -1
+			DEC LOFBUF
+			LDA LOFBUF
+			STA LOFBUFH  ; Copy the new length over
+			DEX			 ; length -1
 STRREADNP	LDA #<A_REG
 			LDY #>A_REG
 			STA TMP2_ZP
@@ -2318,7 +2318,7 @@ INPUTSTR2	STA TMP_REG+1
 			STA TMP_FLAG
 			LDX INPUTQUEUEP
 			BEQ INPUTNORM
-			LDA #$FF
+			LDA #LOFBUF
 			LDX #$1
 			CLC
 			ADC INPUTQUEUE
@@ -2342,20 +2342,20 @@ SHRINKQ		INX
 INPUTNORM	AND #$FF
 			JSR INPUT
 			JSR CLEANINPUT
-			LDA #$FF
+			LDA #LOFBUF
 			STA TMP_ZP
 			LDA #$1
 			STA TMP_ZP+1
 			LDY #0
 			DEY
 ISTRLOOP	INY
-			LDA $0200,Y
+			LDA INPUTBUF,Y
 			TAX
 			CMP #$22			; found "?  (" is a replacement for , at this stage because " can't occur in an input string while , can)
 			BNE	ICHECK
 			STA TMP_FLAG
 			LDA #$0
-			STA $0200,Y			; replace , by the string terminator
+			STA INPUTBUF,Y			; replace , by the string terminator
 			LDX INPUTQUEUEP		; load the queue size
 			BNE	INQUEUENE		; If empty, set at least to one
 			STA INPUTQUEUE		; ...and set the first index to 0
@@ -3423,6 +3423,125 @@ SCDO		JSR $FFFF
 			PLA
 			STA $030F
 			RTS
+;###################################
+SETUPMULTIPARS
+			LDA BASICPOINTER
+			STA BPOINTER_TMP
+			LDA BASICPOINTER+1
+			STA BPOINTER_TMP+1
+			LDA #<BASICBUFFER
+			STA BASICPOINTER
+			LDA #>BASICBUFFER
+			STA BASICPOINTER+1
+			LDA #0
+			STA BASICTEXTP
+			RTS
+;###################################
+COPYSTRINGPAR
+			JSR ADDKOMMA
+			JSR ADDQUOTE
+			LDA B_REG
+			STA TMP_ZP
+			LDA B_REG+1
+			STA TMP_ZP+1
+			LDY #0
+			LDA (TMP_ZP),Y
+			TAX
+			INC TMP_ZP
+			BNE CONTBASICC
+			INC TMP_ZP+1
+CONTBASICC	JSR BASICCOPY
+			JSR ADDQUOTE
+			RTS
+;###################################
+COPYREALPAR
+			JSR ADDKOMMA
+			LDA #<X_REG
+			LDY #>X_REG
+			JSR REALFAC
+			LDY #1
+			JSR FACSTR
+			LDY #0
+			DEY
+CRPSTRLOOP	INY
+			LDA LOFBUFH,Y
+			BNE CRPSTRLOOP
+			STY LOFBUF
+			TYA
+			TAX			; Length in X
+			LDA #<LOFBUFH
+			STA TMP_ZP
+			LDA #>LOFBUFH
+			STA TMP_ZP+1
+			LDY #0
+			LDA (TMP_ZP),Y
+			CMP #$20
+			BNE CRPOK
+			DEX
+			INC TMP_ZP
+			BNE CRPOK
+			INC TMP_ZP+1
+CRPOK		JSR BASICCOPY
+			RTS
+;###################################
+ADDGENERIC
+			LDY BASICTEXTP
+			STA (TMP2_ZP),Y
+			INY
+			STY BASICTEXTP
+			RTS
+;###################################
+ADDKOMMA
+			JSR BASICTEXTINIT
+			LDA #$2C
+			JMP ADDGENERIC
+;###################################
+ADDCOLON
+			JSR BASICTEXTINIT
+			LDA #$3A
+			JMP ADDGENERIC
+;###################################
+ADDQUOTE
+			JSR BASICTEXTINIT
+			LDA #$22
+			JMP ADDGENERIC
+;###################################
+PULLDOWNMULTIPARS
+			LDA BPOINTER_TMP
+			STA BASICPOINTER
+			LDA BPOINTER_TMP+1
+			STA BASICPOINTER+1
+			RTS
+;###################################
+BASICTEXTINIT
+			LDA #<BASICBUFFER
+			STA TMP2_ZP
+			LDA #>BASICBUFFER
+			STA TMP2_ZP+1
+			RTS
+;###################################
+BASICCOPY
+			LDY BASICTEXTP
+			LDA #0
+			STA TMP2_REG
+			JSR BASICTEXTINIT
+BASICCOPYLOOP
+			TYA
+			PHA
+			LDY TMP2_REG
+			LDA (TMP_ZP),Y
+			STA TMP2_REG+1
+			INY
+			STY TMP2_REG
+			PLA
+			TAY
+			LDA TMP2_REG+1
+			STA (TMP2_ZP),Y
+			INY
+			DEX
+			BNE BASICCOPYLOOP
+			STY BASICTEXTP
+			RTS			
 ;###################################
 ; Improved floating point routines
 ; ported from Michael Jørgensen's

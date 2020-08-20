@@ -3,6 +3,7 @@ package com.sixtyfour.cbmnative;
 import java.util.List;
 
 import com.sixtyfour.config.CompilerConfig;
+import com.sixtyfour.config.MemoryConfig;
 import com.sixtyfour.system.Machine;
 
 /**
@@ -18,12 +19,13 @@ public interface Transformer {
 	 * Transforms intermediate code into native/assembly code.
 	 * 
 	 * @param config   the compiler's configuration
+	 * @param memConfig the memory configuration
 	 * @param machine  the machine
 	 * @param platform the target platform
 	 * @param code     the intermediate code
 	 * @return the native code
 	 */
-	List<String> transform(CompilerConfig config, Machine machine, PlatformProvider platform, List<String> code);
+	List<String> transform(CompilerConfig config, MemoryConfig memConfig, Machine machine, PlatformProvider platform, List<String> code);
 
 	/**
 	 * Can be implemented to add some additional code that handles the actual

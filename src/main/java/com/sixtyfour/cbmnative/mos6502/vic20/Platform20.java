@@ -86,4 +86,9 @@ public class Platform20 implements PlatformProvider {
 	public Generator getGenerator(String orgLine) {
 		return null;
 	}
+	
+	@Override
+	public int getBasicBufferAddress() {
+		return 820;
+	}
 }

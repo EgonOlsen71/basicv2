@@ -406,6 +406,24 @@ function COMPACT {
 function COMPACTMAX {
 }
 
+function SYSTEMCALLDYN {
+}
+
+function SETUPMULTIPARS {
+}
+
+function COPYSTRINGPAR {
+}
+
+function COPYREALPAR {
+}
+
+function ADDCOLON {
+}
+
+function PULLDOWNMULTIPARS {
+}
+
 function STROUT {
 	out $global:A_REG
 }

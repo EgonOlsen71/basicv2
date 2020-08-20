@@ -11,6 +11,7 @@ import com.sixtyfour.cbmnative.PlatformProvider;
 import com.sixtyfour.cbmnative.mos6502.AbstractTransformer;
 import com.sixtyfour.cbmnative.mos6502.StringAdder;
 import com.sixtyfour.config.CompilerConfig;
+import com.sixtyfour.config.MemoryConfig;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.rommap.CallMapper;
 import com.sixtyfour.util.rommap.Mapping;
@@ -33,7 +34,7 @@ public class TransformerX16 extends AbstractTransformer {
 	}
 
 	@Override
-	public List<String> transform(CompilerConfig config, Machine machine, PlatformProvider platform,
+	public List<String> transform(CompilerConfig config, MemoryConfig memConfig, Machine machine, PlatformProvider platform,
 			List<String> code) {
 		Logger.log("Compiling into native assembly code...");
 		List<String> res = new ArrayList<>();
@@ -67,6 +68,7 @@ public class TransformerX16 extends AbstractTransformer {
 		calls.forEach((k, v) -> res.add(k + " = " + v));
 
 		addMemoryLocations(res);
+		addBasicBuffer(res, platform, memConfig);
 
 		res.add("TMP_ZP = 96");
 		res.add("TMP2_ZP = 101");

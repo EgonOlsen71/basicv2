@@ -88,5 +88,12 @@ public interface PlatformProvider {
 	 * @return
 	 */
 	Generator getGenerator(String orgLine);
+	
+	/**
+	 * Returns the address used for the buffer when executing SYS commands with parameters
+	 * 
+	 * @return
+	 */
+	int getBasicBufferAddress();
 
 }

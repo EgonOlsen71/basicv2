@@ -16,6 +16,7 @@ import com.sixtyfour.cbmnative.Transformer;
 import com.sixtyfour.cbmnative.javascript.generators.GeneratorListJs;
 import com.sixtyfour.cbmnative.mos6502.AbstractTransformer;
 import com.sixtyfour.config.CompilerConfig;
+import com.sixtyfour.config.MemoryConfig;
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.system.DataStore;
 import com.sixtyfour.system.Machine;
@@ -33,7 +34,7 @@ import com.sixtyfour.util.VarUtils;
 public class TransformerJs implements Transformer {
 
 	@Override
-	public List<String> transform(CompilerConfig config, Machine machine, PlatformProvider platform,
+	public List<String> transform(CompilerConfig config, MemoryConfig memConfig, Machine machine, PlatformProvider platform,
 			List<String> code) {
 		Logger.log("Compiling into javascript code...");
 

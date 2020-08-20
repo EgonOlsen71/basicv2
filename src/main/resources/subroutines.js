@@ -390,6 +390,30 @@ this.COMPACTMAX = function() {
 	// Nothing to do in this context
 }
 
+this.SYSTEMCALLDYN = function() {
+	// Nothing to do in this context
+}
+
+this.SETUPMULTIPARS = function() {
+	// Nothing to do in this context
+}
+
+this.COPYSTRINGPAR = function() {
+	// Nothing to do in this context
+}
+
+this.COPYREALPAR = function() {
+	// Nothing to do in this context
+}
+
+this.ADDCOLON = function() {
+	// Nothing to do in this context
+}
+
+this.PULLDOWNMULTIPARS = function() {
+	// Nothing to do in this context
+}
+
 this.STROUT = function() {
 	this.out(this.A_REG);
 }

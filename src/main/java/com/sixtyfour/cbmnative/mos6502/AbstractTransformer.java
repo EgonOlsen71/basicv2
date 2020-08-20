@@ -18,6 +18,7 @@ import com.sixtyfour.cbmnative.mos6502.generators.GeneratorList;
 import com.sixtyfour.cbmnative.mos6502.util.Converter;
 import com.sixtyfour.cbmnative.mos6502.x16.TransformerX16;
 import com.sixtyfour.config.CompilerConfig;
+import com.sixtyfour.config.MemoryConfig;
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.elements.Variable;
 import com.sixtyfour.extensions.BasicExtension;
@@ -75,6 +76,14 @@ public abstract class AbstractTransformer implements Transformer {
 		}
 	}
 
+	protected void addBasicBuffer(List<String> res, PlatformProvider platform, MemoryConfig memConfig) {
+		if (memConfig.getBasicBufferStart()==-1) {
+			res.add("BASICBUFFER="+platform.getBasicBufferAddress());
+		} else {
+			res.add("BASICBUFFER="+memConfig.getBasicBufferStart());
+		}
+	}
+	
 	protected void addMemoryLocations(List<String> res) {
 		String[] labels = Loader.loadProgram(TransformerX16.class.getResourceAsStream("/rommap/memloc-c64.map"));
 		addLabels(res, labels);
@@ -429,6 +438,8 @@ public abstract class AbstractTransformer implements Transformer {
 		res.add("TMP3_REG\t.WORD 0");
 		res.add("TMP4_REG\t.WORD 0");
 		res.add("AS_TMP\t.WORD 0");
+		res.add("BPOINTER_TMP\t.WORD 0");
+		res.add("BASICTEXTP\t.BYTE 0");
 		res.add("STORE1\t.WORD 0");
 		res.add("STORE2\t.WORD 0");
 		res.add("STORE3\t.WORD 0");

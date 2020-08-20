@@ -17,6 +17,7 @@ import com.sixtyfour.cbmnative.Transformer;
 import com.sixtyfour.cbmnative.mos6502.AbstractTransformer;
 import com.sixtyfour.cbmnative.powerscript.generators.GeneratorListPs;
 import com.sixtyfour.config.CompilerConfig;
+import com.sixtyfour.config.MemoryConfig;
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.elements.Variable;
 import com.sixtyfour.system.DataStore;
@@ -35,7 +36,7 @@ import com.sixtyfour.util.VarUtils;
 public class TransformerPs implements Transformer {
 
 	@Override
-	public List<String> transform(CompilerConfig config, Machine machine, PlatformProvider platform,
+	public List<String> transform(CompilerConfig config, MemoryConfig memConfig, Machine machine, PlatformProvider platform,
 			List<String> code) {
 		Logger.log("Compiling into powerscript code...");
 

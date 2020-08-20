@@ -74,6 +74,7 @@ public class MoSpeedCL {
 		MemoryConfig memConfig = new MemoryConfig();
 
 		memConfig.setProgramStart(getNumber("progstart", cmds));
+		memConfig.setBasicBufferStart(getNumber("sysbuffer", cmds));
 		memConfig.setRuntimeStart(getNumber("runtimestart", cmds));
 		memConfig.setVariableStart(getNumber("varstart", cmds));
 		memConfig.setStringEnd(getNumber("varend", cmds));
@@ -535,6 +536,8 @@ public class MoSpeedCL {
 				"/varend=xxxxx|$yyyy - the end address of the variable memory, i.e. in fact of the string memory.");
 		System.out.println(
 				"/runtimestart=xxxxx|$yyyy - the start address of the runtime's code. If none is given, it follows the program's code.");
+		System.out.println(
+				"/sysbuffer=xxxxx|$yyyy - the start address of the buffer used to execute SYS commands with parameters. Default is 820 for the CBM machines and 1024 for the X16.");
 		System.out.println("/alloff=true|false - if specified, all optimizations will be turned off");
 		System.out.println(
 				"/vice=<path> - sets a path to the VICE executable. If specified, the compiled prg file will be started in VICE right away.");

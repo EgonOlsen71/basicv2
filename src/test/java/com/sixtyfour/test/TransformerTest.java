@@ -44,7 +44,7 @@ public class TransformerTest {
 		// testTransformer2();
 		// testTransformer4();
 		// testTransformer5();
-		 testTransformerFractal();
+		// testTransformerFractal();
 		// testTransformer6();
 		// testTransformer7();
 		// testTransformerPrime();
@@ -127,10 +127,18 @@ public class TransformerTest {
 		testColors();
 		testColors2();
 		testJumpOutOfFor();
-		testModelbrot();
+		testMandelbrot();
+		testSysParameters();
 	}
 
-	private static void testModelbrot() throws Exception {
+	private static void testSysParameters() throws Exception {
+		System.out.println("\n\ntestSysParameters");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/systest.bas");
+		Assembler assy = initTestEnvironment(vary, false, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++systest.prg", true);
+	}
+	
+	private static void testMandelbrot() throws Exception {
 		System.out.println("\n\ntestMandelbrot");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/mandelbrot.bas");
 		Assembler assy = initTestEnvironment(vary, false, -1, true);

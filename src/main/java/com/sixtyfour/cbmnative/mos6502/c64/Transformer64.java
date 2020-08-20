@@ -9,6 +9,7 @@ import com.sixtyfour.Logger;
 import com.sixtyfour.cbmnative.PlatformProvider;
 import com.sixtyfour.cbmnative.mos6502.AbstractTransformer;
 import com.sixtyfour.config.CompilerConfig;
+import com.sixtyfour.config.MemoryConfig;
 import com.sixtyfour.system.Machine;
 
 /**
@@ -29,7 +30,7 @@ public class Transformer64 extends AbstractTransformer {
 	}
 
 	@Override
-	public List<String> transform(CompilerConfig config, Machine machine, PlatformProvider platform,
+	public List<String> transform(CompilerConfig config, MemoryConfig memConfig, Machine machine, PlatformProvider platform,
 			List<String> code) {
 		Logger.log("Compiling into native assembly code...");
 		List<String> res = new ArrayList<>();
@@ -119,6 +120,7 @@ public class Transformer64 extends AbstractTransformer {
 		res.add("ERRFNF = $F12F");
 
 		addMemoryLocations(res);
+		addBasicBuffer(res, platform, memConfig);
 
 		res.add("TMP_ZP = 105");
 		res.add("TMP2_ZP = 107");
