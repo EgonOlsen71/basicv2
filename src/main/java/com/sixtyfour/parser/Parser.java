@@ -1011,6 +1011,7 @@ public class Parser {
 	 * @return true, if its a term placeholder
 	 */
 	private static boolean isTermPlaceholder(String txt) {
+		// Note that the second part of this check isn't equal to endsWith("}")...for example: {t0}+{t1}
 		return txt.startsWith("{") && txt.indexOf('}') == (txt.length() - 1);
 	}
 
