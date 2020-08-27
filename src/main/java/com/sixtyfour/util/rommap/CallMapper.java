@@ -80,8 +80,10 @@ public class CallMapper {
 			}
 
 			if (addr.startsWith("ff")) {
-				Logger.log("Call to " + addr + " / " + label
-						+ " seems to be a ROM routine call. Using the same call in the target ROM!");
+				if (verbose) {
+					Logger.log("Call to " + addr + " / " + label
+							+ " seems to be a ROM routine call. Using the same call in the target ROM!");
+				}
 				match = addr;
 				x16r.put(addr, addr); // Hack to add it to the map
 			}
