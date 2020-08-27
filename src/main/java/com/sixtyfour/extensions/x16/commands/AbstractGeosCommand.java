@@ -18,9 +18,6 @@ import com.sixtyfour.system.Machine;
  */
 public class AbstractGeosCommand extends AbstractCommand {
 
-	/** The pars. */
-	protected List<Atom> pars;
-
 	public AbstractGeosCommand(String name) {
 		super(name);
 	}
@@ -30,7 +27,7 @@ public class AbstractGeosCommand extends AbstractCommand {
 			boolean lastPos, Machine machine) {
 		super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine);
 		term = Parser.getTerm(config, this, linePart, machine, true);
-		pars = Parser.getParameters(term);
+		List<Atom> pars = Parser.getParameters(term);
 
 		if (pars.size() < 4 || pars.size() > 5) {
 			syntaxError(linePart);
@@ -41,6 +38,7 @@ public class AbstractGeosCommand extends AbstractCommand {
 	}
 
 	protected List<CodeContainer> evalToCode(CompilerConfig config, Machine machine, String callLabel) {
+		List<Atom> pars = Parser.getParameters(term);
 		Atom xs = pars.get(0);
 		Atom ys = pars.get(1);
 		Atom xe = pars.get(2);

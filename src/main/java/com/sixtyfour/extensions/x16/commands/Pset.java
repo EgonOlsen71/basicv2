@@ -19,9 +19,6 @@ import com.sixtyfour.system.Machine;
  */
 public class Pset extends AbstractCommand {
 
-	/** The pars. */
-	private List<Atom> pars;
-
 	/**
 	 * Instantiates a new wait.
 	 */
@@ -40,7 +37,7 @@ public class Pset extends AbstractCommand {
 			boolean lastPos, Machine machine) {
 		super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine);
 		term = Parser.getTerm(config, this, linePart, machine, true);
-		pars = Parser.getParameters(term);
+		List<Atom> pars = Parser.getParameters(term);
 
 		if (pars.size() < 2 || pars.size() > 3) {
 			syntaxError(linePart);
@@ -52,6 +49,7 @@ public class Pset extends AbstractCommand {
 
 	@Override
 	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
+		List<Atom> pars = Parser.getParameters(term);
 		Atom xc = pars.get(0);
 		Atom yc = pars.get(1);
 		NativeCompiler compiler = NativeCompiler.getCompiler();

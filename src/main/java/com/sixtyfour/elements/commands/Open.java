@@ -18,9 +18,6 @@ import com.sixtyfour.util.VarUtils;
  */
 public class Open extends AbstractCommand {
 
-	/** The pars. */
-	private List<Atom> pars;
-
 	/**
 	 * Instantiates a new open.
 	 */
@@ -39,7 +36,7 @@ public class Open extends AbstractCommand {
 			boolean lastPos, Machine machine) {
 		super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine);
 		term = Parser.getTerm(config, this, linePart, machine, true);
-		pars = Parser.getParameters(term);
+		List<Atom> pars = Parser.getParameters(term);
 
 		if (pars.isEmpty()) {
 			syntaxError(this);
@@ -54,7 +51,8 @@ public class Open extends AbstractCommand {
 		List<String> after = new ArrayList<String>();
 		List<String> expr = new ArrayList<String>();
 		List<String> before = new ArrayList<String>();
-
+		List<Atom> pars = Parser.getParameters(term);
+		
 		try {
 			switch (pars.size()) {
 			case 1:
@@ -112,7 +110,7 @@ public class Open extends AbstractCommand {
 	@Override
 	public BasicProgramCounter execute(CompilerConfig config, Machine machine) {
 		DeviceProvider device = machine.getDeviceProvider();
-
+		List<Atom> pars = Parser.getParameters(term);
 		try {
 			switch (pars.size()) {
 			case 1:

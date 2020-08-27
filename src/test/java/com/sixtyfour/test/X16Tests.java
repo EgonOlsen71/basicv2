@@ -435,7 +435,7 @@ public class X16Tests {
 		conf.setLoopMode(LoopMode.REMOVE);
 		conf.setNonDecimalNumbersAware(true);
 		conf.setConvertStringToLower(true);
-		conf.setAggressiveFloatOptimizations(true);
+		conf.setAggressiveFloatOptimizations(false);
 		// conf.setCompactThreshold(3);
 
 		Basic basic = new Basic(vary);

@@ -23,7 +23,6 @@ public class Dos extends AbstractCommand {
 
 	private boolean command = false;
 	private boolean status = false;
-	private List<Atom> pars;
 
 	/**
 	 * 
@@ -49,7 +48,7 @@ public class Dos extends AbstractCommand {
 			linePart = "\"\"";
 		}
 		term = Parser.getTerm(config, linePart, machine, false, true);
-		pars = Parser.getParameters(term);
+		List<Atom> pars = Parser.getParameters(term);
 
 		if (pars.size() > 1) {
 			syntaxError(this);
@@ -83,6 +82,7 @@ public class Dos extends AbstractCommand {
 
 		try {
 			if (command) {
+				List<Atom> pars = Parser.getParameters(term);
 				expr.addAll(compiler.compileToPseudoCode(config, machine, pars.get(0)));
 				expr.add("POP G");
 				after.add("JSR DOSCALL");

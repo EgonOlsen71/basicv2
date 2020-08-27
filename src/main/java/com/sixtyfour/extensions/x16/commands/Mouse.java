@@ -17,9 +17,6 @@ import com.sixtyfour.system.Machine;
  */
 public class Mouse extends AbstractCommand {
 
-	/** The pars. */
-	private List<Atom> pars;
-
 	/**
 	 * Instantiates a new close.
 	 */
@@ -38,7 +35,7 @@ public class Mouse extends AbstractCommand {
 			boolean lastPos, Machine machine) {
 		super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine);
 		term = Parser.getTerm(config, this, linePart, machine, true);
-		pars = Parser.getParameters(term);
+		List<Atom> pars = Parser.getParameters(term);
 
 		if (pars.size() != 1) {
 			syntaxError(this);
@@ -50,6 +47,7 @@ public class Mouse extends AbstractCommand {
 
 	@Override
 	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
+		List<Atom> pars = Parser.getParameters(term);
 		return this.createSingleParameterCall(config, machine, pars, "MOUSEMODE");
 	}
 

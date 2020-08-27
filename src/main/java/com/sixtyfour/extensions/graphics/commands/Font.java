@@ -1,9 +1,12 @@
 package com.sixtyfour.extensions.graphics.commands;
 
+import java.util.List;
+
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.extensions.graphics.GraphicsDevice;
 import com.sixtyfour.parser.Atom;
+import com.sixtyfour.parser.Parser;
 import com.sixtyfour.system.BasicProgramCounter;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
@@ -24,6 +27,7 @@ public class Font extends AbstractGraphicsCommand {
 	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos,
 			boolean lastPos, Machine machine) {
 		String ret = super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine, 2, 1);
+		List<Atom> pars = Parser.getParameters(term);
 		checkTypes(pars, linePart, null, Type.STRING, Type.STRING);
 		if (!pars.get(0).getType().equals(Type.STRING)) {
 			typeMismatch(linePart);
@@ -33,6 +37,7 @@ public class Font extends AbstractGraphicsCommand {
 
 	@Override
 	public BasicProgramCounter execute(CompilerConfig config, Machine machine) {
+		List<Atom> pars = Parser.getParameters(term);
 		Atom font = pars.get(0);
 		Atom size = pars.get(1);
 		int style = 0;

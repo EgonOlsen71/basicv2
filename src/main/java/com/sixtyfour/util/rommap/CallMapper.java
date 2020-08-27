@@ -78,6 +78,14 @@ public class CallMapper {
 				// The c64 rom only has one mapping for label/address
 				match = matchys.get(0);
 			}
+
+			if (addr.startsWith("ff")) {
+				Logger.log("Call to " + addr + " / " + label
+						+ " seems to be a ROM routine call. Using the same call in the target ROM!");
+				match = addr;
+				x16r.put(addr, addr); // Hack to add it to the map
+			}
+
 			int add = 0;
 			if (match == null) {
 				int iaddr = Integer.parseInt(addr, 16);
@@ -96,6 +104,7 @@ public class CallMapper {
 						claddr = caddr;
 					}
 				}
+
 				if (closest != null) {
 					if (verbose) {
 						Logger.log("Closest match for " + addr + " / " + label + " in source rom is " + closest + " / "
@@ -158,9 +167,15 @@ public class CallMapper {
 			}
 
 			if (isKernalCall(newAddr)) {
-				Logger.log("WARNING: Call to " + match + " / " + newAddr
-						+ " most likely requires a JSRFAR, but doesn't use one!");
-				throw new RuntimeException("JSRFAR call missing!");
+				// throw new RuntimeException("JSRFAR call missing!");
+				newAddr = "0000";
+				if (verbose) {
+					Logger.log("WARNING: Call to " + match + " / " + newAddr
+							+ " most likely requires a JSRFAR, but doesn't use one!");
+					String err = "\n\n\nFailed to properly map symbol for " + label + ":  " + match
+							+ " to target rom\n\n\n\n";
+					Logger.log(err);
+				}
 			}
 
 			if (isKernalCall) {

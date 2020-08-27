@@ -20,9 +20,6 @@ import com.sixtyfour.util.VarUtils;
  */
 public class Poke extends AbstractCommand {
 
-	/** The pars. */
-	protected List<Atom> pars;
-
 	protected Atom addr = null;
 	protected Atom val = null;
 
@@ -44,7 +41,7 @@ public class Poke extends AbstractCommand {
 			boolean lastPos, Machine machine) {
 		super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine);
 		term = Parser.getTerm(config, this, linePart, machine, true);
-		pars = Parser.getParameters(term);
+		List <Atom> pars = Parser.getParameters(term);
 
 		if (pars.size() != 2) {
 			syntaxError(this);
@@ -54,6 +51,13 @@ public class Poke extends AbstractCommand {
 
 		addr = pars.get(0);
 		val = pars.get(1);
+		
+		if (val instanceof Variable) {
+			val=new Term(val);
+		}
+		if (addr instanceof Variable) {
+			addr=new Term(addr);
+		}
 
 		return null;
 	}
@@ -61,18 +65,13 @@ public class Poke extends AbstractCommand {
 	@Override
 	public List<Term> getAllTerms() {
 		List<Term> ret = new ArrayList<Term>();
-
 		if (addr.isTerm()) {
 			ret.add((Term) addr);
-		} else if (addr instanceof Variable) {
-			ret.add(new Term(addr));
-		}
-
+		} 
+		
 		if (val.isTerm()) {
 			ret.add((Term) val);
-		} else if (val instanceof Variable) {
-			ret.add(new Term(val));
-		}
+		} 
 		return ret;
 	}
 

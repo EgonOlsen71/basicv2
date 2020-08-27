@@ -269,6 +269,10 @@ public class NativeCompiler {
 			}
 		}
 
+		if (!getLastEntry(mCode).equals("RTS")) {
+			addEndCode(mCode);
+		}
+		
 		int os = mCode.size();
 		mCode = optimize(config, mCode);
 
@@ -279,9 +283,6 @@ public class NativeCompiler {
 			addEndCode(mCode);
 		}
 
-		if (!getLastEntry(mCode).equals("RTS")) {
-			addEndCode(mCode);
-		}
 		if (!mCode.get(0).equals("0:")) {
 			// Add an artifical LINE_0 if not present to deal with native jumps
 			// to 0 cause by ON X GOTO Y,,,Z
@@ -967,6 +968,7 @@ public class NativeCompiler {
 	}
 
 	private void addEndCode(List<String> mCode) {
+		mCode.add("NOP");
 		mCode.add("JSR END");
 		mCode.add("RTS");
 	}

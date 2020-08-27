@@ -30,8 +30,6 @@ public class Let extends AbstractCommand implements Assignment {
 	/** The index term. */
 	private Term indexTerm;
 
-	private List<Atom> pars;
-
 	private int[] pis;
 
 	/**
@@ -107,7 +105,7 @@ public class Let extends AbstractCommand implements Assignment {
 		}
 
 		if (indexTerm != null) {
-			pars = Parser.getParameters(indexTerm);
+			List<Atom> pars = Parser.getParameters(indexTerm);
 			pis = new int[pars.size()];
 		}
 		machine.trackVariableUsage(var, !varExist);
@@ -141,6 +139,7 @@ public class Let extends AbstractCommand implements Assignment {
 			var.setValue(term.eval(machine));
 		} else {
 			// array
+			List<Atom> pars = Parser.getParameters(indexTerm);
 			for (int i = 0; i < pars.size(); i++) {
 				pis[i] = VarUtils.getInt(pars.get(i).eval(machine));
 			}
@@ -160,6 +159,7 @@ public class Let extends AbstractCommand implements Assignment {
 		String expPush = getPushRegister(expr.get(expr.size() - 1));
 		expr = expr.subList(0, expr.size() - 1);
 		if (indexTerm != null) {
+			List<Atom> pars = Parser.getParameters(indexTerm);
 			before = compiler.compileToPseudoCode(config, machine,
 					Parser.createIndexTerm(config, machine, pars, var.getDimensions()));
 			if (expPush.equals("X")) {

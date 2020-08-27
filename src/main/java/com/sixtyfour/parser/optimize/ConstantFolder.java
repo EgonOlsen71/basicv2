@@ -4,6 +4,7 @@ import com.sixtyfour.Logger;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.Constant;
 import com.sixtyfour.elements.Type;
+import com.sixtyfour.elements.Variable;
 import com.sixtyfour.elements.commands.Command;
 import com.sixtyfour.elements.functions.Function;
 import com.sixtyfour.parser.Atom;
@@ -63,12 +64,16 @@ public class ConstantFolder {
 			Atom right = finalTerm.getRight();
 			Operator op = finalTerm.getOperator();
 
+			//System.out.println("1: "+finalTerm+"/"+finalTerm.isConstant());
+			
 			if (op.isNop()) {
 				if (left.isConstant()) {
 					setConstant(finalTerm, machine, left);
+					//System.out.println("2: "+finalTerm+"/"+finalTerm.isConstant());
 				}
 				return finalTerm;
 			}
+			
 
 			if (left.isConstant() && right.isConstant() && !op.isDelimiter()
 					&& Type.isAssignable(left.getType(), right.getType())) {
@@ -81,21 +86,20 @@ public class ConstantFolder {
 				if (right.isTerm()) {
 					finalTerm.setRight(foldConstants(config, (Term) right, machine));
 				}
-
-				// This should actually handle code like T=198:WAIT T,0...but somehow, T (in
-				// this case)
-				// is still used in the compiled code albeit it's removed from this term. I
-				// can't be bothered
-				// to track this down for now. It's not really an issue anyway. WAIT T+1,1 will
-				// be optimized
-				// just fine, which is the actual purpose of all this.
-
-				/*
-				 * if (left instanceof Variable && left.isConstant()) {
-				 * finalTerm.setLeft(convert((Variable) left, machine)); } if (right instanceof
-				 * Variable && right.isConstant()) { finalTerm.setRight(convert((Variable)
-				 * right, machine)); }
-				 */
+				
+				// Attention: Doing these operations on the variables actually replaces them.
+				// That means that one can't store a Term or a Variable before the optimizer run
+				// and still use it afterwards, because it might has been converted into a const.
+				// This affects multiple command implementations, which had to be modified to reflect this.
+				if (left instanceof Variable && !((Variable) left).isArray() && left.isConstant()) {
+					Constant<?> conty = createConstant(left, left.eval(machine));
+					finalTerm.setLeft(conty);
+				}
+				
+				if (right instanceof Variable && !((Variable) right).isArray() && right.isConstant()) {
+					Constant<?> conty = createConstant(right, right.eval(machine));
+					finalTerm.setRight(conty);
+				}
 
 				if (left instanceof Function) {
 					Function fun = (Function) left;
@@ -108,12 +112,25 @@ public class ConstantFolder {
 				}
 			}
 		}
+		
+		//System.out.println("3: "+finalTerm+"/"+finalTerm.isConstant());
+		
 		return finalTerm;
 	}
 
 	private static void setConstant(Term finalTerm, Machine machine, Atom left) {
-		Constant<?> conty = null;
 		Object val = finalTerm.eval(machine);
+		Constant<?> conty = createConstant(left, val);
+		if (conty != null) {
+			finalTerm.setOperator(Operator.NOP);
+			finalTerm.setLeft(conty);
+			finalTerm.setRight(new Constant<Integer>(0));
+			finalTerm.setConstant(true);
+		}
+	}
+
+	private static Constant<?> createConstant(Atom left, Object val) {
+		Constant<?> conty = null;
 		if (left.getType().equals(Type.STRING)) {
 			conty = new Constant<String>(val.toString());
 		} else if (VarUtils.isFloat(val)) {
@@ -123,11 +140,6 @@ public class ConstantFolder {
 		} else if (VarUtils.isInteger(val)) {
 			conty = new Constant<Integer>((Integer) val);
 		}
-		if (conty != null) {
-			finalTerm.setOperator(Operator.NOP);
-			finalTerm.setLeft(conty);
-			finalTerm.setRight(new Constant<Integer>(0));
-			finalTerm.setConstant(true);
-		}
+		return conty;
 	}
 }

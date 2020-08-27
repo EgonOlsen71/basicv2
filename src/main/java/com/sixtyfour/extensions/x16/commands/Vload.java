@@ -9,6 +9,8 @@ import java.util.List;
 import com.sixtyfour.cbmnative.NativeCompiler;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.commands.FileOperation;
+import com.sixtyfour.parser.Atom;
+import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.plugins.DeviceProvider;
 import com.sixtyfour.system.BasicProgramCounter;
@@ -38,7 +40,7 @@ public class Vload extends FileOperation {
 		List<String> after = new ArrayList<String>();
 		List<String> expr = new ArrayList<String>();
 		List<String> before = new ArrayList<String>();
-
+		List<Atom> pars = Parser.getParameters(term);
 		try {
 			switch (pars.size()) {
 			case 4:
@@ -75,7 +77,7 @@ public class Vload extends FileOperation {
 	@Override
 	public BasicProgramCounter execute(CompilerConfig config, Machine machine) {
 		DeviceProvider device = machine.getDeviceProvider();
-
+		List<Atom> pars = Parser.getParameters(term);
 		try {
 			switch (pars.size()) {
 			case 4:

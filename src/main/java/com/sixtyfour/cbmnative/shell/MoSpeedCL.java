@@ -97,7 +97,7 @@ public class MoSpeedCL {
 		cfg.setOptimizeConstants(getOption("constopt", cmds));
 		cfg.setOptimizedLinker(getOption("smartlinker", cmds));
 		cfg.setOptimizedLinker(getOption("smartlinker", cmds));
-		cfg.setFloatOptimizations(getOption("floatopt", cmds));
+		cfg.setFloatOptimizations(getOptionIntDefault("floatopt", cmds, false));
 		cfg.setIntOptimizations(getOption("intopt", cmds));
 		cfg.setSymbolTable(cmds.get("symboltable"));
 		cfg.setAggressiveFloatOptimizations(getOption("xfloatopt", cmds));
@@ -150,6 +150,7 @@ public class MoSpeedCL {
 				platform = new PlatformX16();
 				Basic.registerExtension(new X16Extensions());
 				cfg.setNonDecimalNumbersAware(true);
+				cfg.setAggressiveFloatOptimizations(false);
 				multiByteTokens = true;
 				appendix = ".prg";
 			} else if (pl.equalsIgnoreCase("ps")) {
@@ -522,7 +523,7 @@ public class MoSpeedCL {
 		System.out.println("/loopopt=true|false - enables/disables the removal of empty loops");
 		System.out.println("/addressheader=true|false - enables/disables the writing of the two address header bytes");
 		System.out.println(
-				"/floatopt=true|false - enables/disables some floating point optimizations, which might impact accuracy");
+				"/floatopt=true|false - enables/disables some additional floating point optimizations, which might impact accuracy. Default is false.");
 		System.out.println(
 				"/xfloatopt=true|false - enables/disables additional floating point optimizations. While they speed up some operations by up to 25%, they need more memory.");
 		System.out.println("/intopt=true|false - enables/disables some integer optimizations");

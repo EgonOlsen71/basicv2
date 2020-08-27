@@ -105,6 +105,7 @@ public class ConstantPropagator {
 		return checkForConstant(config, machine, t, isConstant);
 	}
 
+	@SuppressWarnings("unused")
 	private static boolean checkForConstant(CompilerConfig config, Machine machine, Term t, boolean[] isConstant) {
 
 		// Value up to which divisions by <value> will be converted into
@@ -133,6 +134,7 @@ public class ConstantPropagator {
 			if (right.isConstant() && (val = ((Number) right.eval(machine)).doubleValue()) < thresHold
 					&& val > -thresHold) {
 				if (val != (int) val || !POWERS_OF_TWO.contains((int) val)) {
+					// Disabled for now.
 					if (config.isFloatOptimizations()) {
 						t.setOperator(new Operator('*'));
 						right = new Constant<Double>((double) (1d / val));

@@ -10,6 +10,7 @@ import com.sixtyfour.cbmnative.NativeCompiler;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.elements.commands.FileOperation;
+import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.TermEnhancer;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
@@ -49,7 +50,7 @@ public class Xload extends FileOperation {
 	@Override
 	public BasicProgramCounter execute(CompilerConfig config, Machine machine) {
 		DeviceProvider device = machine.getDeviceProvider();
-
+		List<Atom> pars = Parser.getParameters(term);
 		try {
 			switch (pars.size()) {
 			case 0:
@@ -86,7 +87,7 @@ public class Xload extends FileOperation {
 		List<String> expr = new ArrayList<String>();
 		List<String> before = new ArrayList<String>();
 		boolean extendedLoad = false;
-
+		List<Atom> pars = Parser.getParameters(term);
 		try {
 			switch (pars.size()) {
 			case 0:
@@ -164,7 +165,7 @@ public class Xload extends FileOperation {
 			linePart = "\"\"";
 		}
 		term = Parser.getTerm(config, linePart, machine, false, true);
-		pars = Parser.getParameters(term);
+		List<Atom> pars = Parser.getParameters(term);
 
 		if (pars.size() > 0 && !pars.get(0).getType().equals(Type.STRING)) {
 			syntaxError(this);

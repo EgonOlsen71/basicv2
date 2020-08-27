@@ -86,7 +86,7 @@ prevent the BASIC header from being written as well. Default is true.
 
 - /floatopt=true|false: If true, various optimizations for floating point calculations will be used. In some case, 
 caused by inaccuracies in the calculations, this can lead to small differences but in most cases, this shouldn't be a 
-problem if it's even noticable. Default is true.
+problem if it's even noticable. Default is false for compatibility reasons.
 
 - /xfloatopt=true|false: enables/disables additional floating point optimizations. While they speed up some operations by up to 25%,
 they need more memory. Default is true.

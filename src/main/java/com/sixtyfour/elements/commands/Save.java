@@ -3,6 +3,8 @@ package com.sixtyfour.elements.commands;
 import java.util.List;
 
 import com.sixtyfour.config.CompilerConfig;
+import com.sixtyfour.parser.Atom;
+import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.plugins.DeviceProvider;
 import com.sixtyfour.system.Machine;
@@ -35,7 +37,7 @@ public class Save extends FileOperation {
 	@Override
 	public BasicProgramCounter execute(CompilerConfig config, Machine machine) {
 		DeviceProvider device = machine.getDeviceProvider();
-
+		List<Atom> pars = Parser.getParameters(term);
 		try {
 			switch (pars.size()) {
 			case 0:

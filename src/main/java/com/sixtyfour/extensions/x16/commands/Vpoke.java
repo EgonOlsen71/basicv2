@@ -22,8 +22,6 @@ import com.sixtyfour.util.VarUtils;
  */
 public class Vpoke extends AbstractCommand {
 
-	protected List<Atom> pars;
-
 	protected Atom addr = null;
 	protected Atom val = null;
 	private Atom bank = null;
@@ -47,7 +45,7 @@ public class Vpoke extends AbstractCommand {
 			boolean lastPos, Machine machine) {
 		super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine);
 		term = Parser.getTerm(config, this, linePart, machine, true);
-		pars = Parser.getParameters(term);
+		List<Atom> pars = Parser.getParameters(term);
 
 		if (pars.size() != 3) {
 			syntaxError(this);
@@ -58,6 +56,16 @@ public class Vpoke extends AbstractCommand {
 		bank = pars.get(0);
 		addr = pars.get(1);
 		val = pars.get(2);
+		
+		if (val instanceof Variable) {
+			val=new Term(val);
+		}
+		if (bank instanceof Variable) {
+			bank=new Term(bank);
+		}
+		if (addr instanceof Variable) {
+			addr=new Term(addr);
+		}
 
 		return null;
 	}
@@ -87,21 +95,15 @@ public class Vpoke extends AbstractCommand {
 
 		if (addr.isTerm()) {
 			ret.add((Term) addr);
-		} else if (addr instanceof Variable) {
-			ret.add(new Term(addr));
-		}
+		} 
 
 		if (val.isTerm()) {
 			ret.add((Term) val);
-		} else if (val instanceof Variable) {
-			ret.add(new Term(val));
-		}
+		} 
 
 		if (bank.isTerm()) {
 			ret.add((Term) bank);
-		} else if (bank instanceof Variable) {
-			ret.add(new Term(bank));
-		}
+		} 
 
 		return ret;
 	}

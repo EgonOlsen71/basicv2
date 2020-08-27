@@ -29,8 +29,6 @@ public class ArrayAccess extends AbstractFunction {
 	/** The pis. */
 	private int[] pis;
 
-	private List<Atom> pars;
-
 	/**
 	 * Instantiates a new array access.
 	 */
@@ -148,8 +146,8 @@ public class ArrayAccess extends AbstractFunction {
 	}
 
 	private void fillParameterIndices(Machine machine) {
+		List<Atom> pars = Parser.getParameters(term);
 		if (pis == null) {
-			pars = Parser.getParameters(term);
 			pis = new int[pars.size()];
 		}
 		for (int i = 0; i < pars.size(); i++) {

@@ -17,9 +17,6 @@ import com.sixtyfour.system.Machine;
  */
 public abstract class FileOperation extends AbstractCommand {
 
-	/** The pars. */
-	protected List<Atom> pars;
-
 	/**
 	 * Instantiates a new file operation.
 	 * 
@@ -45,7 +42,7 @@ public abstract class FileOperation extends AbstractCommand {
 			linePart = "\"\"";
 		}
 		term = Parser.getTerm(config, linePart, machine, false, true);
-		pars = Parser.getParameters(term);
+		List<Atom> pars = Parser.getParameters(term);
 
 		if (pars.size() > 0 && !pars.get(0).getType().equals(Type.STRING)) {
 			syntaxError(this);
@@ -68,7 +65,8 @@ public abstract class FileOperation extends AbstractCommand {
 		List<String> after = new ArrayList<String>();
 		List<String> expr = new ArrayList<String>();
 		List<String> before = new ArrayList<String>();
-
+		List<Atom> pars = Parser.getParameters(term);
+		
 		try {
 			switch (pars.size()) {
 			case 0:

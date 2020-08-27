@@ -20,7 +20,6 @@ import com.sixtyfour.util.VarUtils;
 public class Sys extends AbstractCommand {
 
 	/** The pars. */
-	private List<Atom> pars;
 	private Atom addr;
 	private List<Atom> vals;
 
@@ -42,7 +41,7 @@ public class Sys extends AbstractCommand {
 			boolean lastPos, Machine machine) {
 		super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine);
 		term = Parser.getTerm(config, this, linePart, machine, true);
-		pars = Parser.getParameters(term);
+		List<Atom> pars = Parser.getParameters(term);
 
 		if (pars.isEmpty()) {
 			syntaxError(linePart);
@@ -56,6 +55,7 @@ public class Sys extends AbstractCommand {
 
 	@Override
 	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
+		List<Atom> pars = Parser.getParameters(term);
 		if (pars.size() > 1) {
 			return createMultiParsCall(config, machine);
 		}
@@ -117,6 +117,7 @@ public class Sys extends AbstractCommand {
 		List<String> expr = new ArrayList<String>();
 		List<String> before = new ArrayList<String>();
 		before.add("JSR SETUPMULTIPARS");
+		List<Atom> pars = Parser.getParameters(term);
 		for (int i = 1; i < pars.size(); i++) {
 			List<Atom> par = pars.subList(i, i + 1);
 			List<String> part = addSingleParameter(config, machine, compiler, par);

@@ -20,7 +20,6 @@ public class CompilerConfig {
 	private boolean deadStoreElimination = true;
 	private boolean deadStoreEliminationOfStrings = true;
 	private boolean optimizeConstants = true;
-	private boolean floatOptimizations = true;
 	private boolean intOptimizations = true;
 	private boolean loopOptimizations = true;
 	private boolean shiftOptimizations = true;
@@ -30,6 +29,7 @@ public class CompilerConfig {
 	private boolean aggressiveFloatOptimizations = true;
 	private boolean enhancedInstructionSet = false;
 	private boolean deadCodeElimination = false;
+	private boolean floatOptimizations = true;
 	private String symbolTable = null;
 	private int threads = -1;
 	private LoopMode loopMode = LoopMode.EXECUTE;

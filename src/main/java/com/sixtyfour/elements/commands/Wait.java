@@ -20,9 +20,6 @@ public class Wait extends AbstractCommand {
 
 	private static int waitCount = 0;
 
-	/** The pars. */
-	private List<Atom> pars;
-
 	/** The stop. */
 	private boolean stop = false;
 
@@ -44,7 +41,7 @@ public class Wait extends AbstractCommand {
 			boolean lastPos, Machine machine) {
 		super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine);
 		term = Parser.getTerm(config, this, linePart, machine, true);
-		pars = Parser.getParameters(term);
+		List<Atom> pars = Parser.getParameters(term);
 
 		if (pars.size() < 2 || pars.size() > 3) {
 			syntaxError(linePart);
@@ -66,8 +63,13 @@ public class Wait extends AbstractCommand {
 
 	@Override
 	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
+		List<Atom> pars = Parser.getParameters(term);
+		pars = Parser.getParameters(term);
 		Atom addr = pars.get(0);
 		Atom waitFor = pars.get(1);
+		
+		System.out.println("Tröt: "+addr+"/"+waitFor);
+		
 		NativeCompiler compiler = NativeCompiler.getCompiler();
 		List<String> after = new ArrayList<String>();
 		List<String> expr = new ArrayList<String>();
@@ -127,6 +129,7 @@ public class Wait extends AbstractCommand {
 	 */
 	@Override
 	public BasicProgramCounter execute(CompilerConfig config, Machine machine) {
+		List<Atom> pars = Parser.getParameters(term);
 		Atom addr = pars.get(0);
 		Atom waitFor = pars.get(1);
 		int memAddr = VarUtils.getInt(addr.eval(machine));
