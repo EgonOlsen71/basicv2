@@ -29,7 +29,7 @@ public class CompilerConfig {
 	private boolean aggressiveFloatOptimizations = true;
 	private boolean enhancedInstructionSet = false;
 	private boolean deadCodeElimination = false;
-	private boolean floatOptimizations = true;
+	private boolean floatOptimizations = false;
 	private String symbolTable = null;
 	private int threads = -1;
 	private LoopMode loopMode = LoopMode.EXECUTE;
