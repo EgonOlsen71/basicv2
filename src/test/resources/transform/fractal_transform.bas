@@ -52,9 +52,9 @@
 620 if ismnd<>0 then return
 621 p=16384+int(j/8)*320+int(i/8)*8+(jand7)
 622 cc%=iters% and 3
-623 tf%=int(2^(7-(((i+1)/8-int((i+1)/8))*8)))
-625 if cc%=3 then pokep,peek(p) or int(2^(7-((i/8-int(i/8))*8))) or tf%:return
-630 if cc%=2 then pokep,peek(p) or int(2^(7-((i/8-int(i/8))*8))):return
+623 if cc%=2 then pokep,peek(p) or (2^(7-(i and 7))):return
+624 tf%=2^(7-((i+1) and 7))
+625 if cc%=3 then pokep,peek(p) or (2^(7-(i and 7))) or tf%:return
 635 pokep,peek(p) or tf%
 699 return
 700 rem return to normal
