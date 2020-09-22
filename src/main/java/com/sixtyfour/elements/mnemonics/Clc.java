@@ -21,5 +21,5 @@ public class Clc extends AbstractMnemonic {
 	public boolean isSingle() {
 		return true;
 	}
-
+	
 }

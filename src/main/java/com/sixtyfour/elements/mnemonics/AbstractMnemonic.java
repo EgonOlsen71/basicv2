@@ -177,6 +177,11 @@ public abstract class AbstractMnemonic implements Mnemonic {
 	public String toString() {
 		return name;
 	}
+	
+	@Override
+	public int getMaxLength() {
+		return 1;
+	}
 
 	@Override
 	public String getInstruction(int opcode) {
@@ -321,7 +326,7 @@ public abstract class AbstractMnemonic implements Mnemonic {
 		throw new RuntimeException("Address mode not supported: " + opcode);
 
 	}
-
+	
 	private String removeBrackets(String part1) {
 		return part1.replace("(", "").replace(")", "");
 	}

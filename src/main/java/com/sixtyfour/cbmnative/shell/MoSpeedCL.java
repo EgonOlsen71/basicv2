@@ -19,6 +19,9 @@ import com.sixtyfour.cbmnative.ProgressListener;
 import com.sixtyfour.cbmnative.Transformer;
 import com.sixtyfour.cbmnative.javascript.PlatformJs;
 import com.sixtyfour.cbmnative.mos6502.c64.Platform64;
+import com.sixtyfour.cbmnative.mos6502.util.MemoryHole;
+import com.sixtyfour.cbmnative.mos6502.util.SourcePart;
+import com.sixtyfour.cbmnative.mos6502.util.SourceProcessor;
 import com.sixtyfour.cbmnative.mos6502.vic20.Platform20;
 import com.sixtyfour.cbmnative.mos6502.x16.PlatformX16;
 import com.sixtyfour.cbmnative.powerscript.PlatformPs;
@@ -46,6 +49,7 @@ public class MoSpeedCL {
 		System.out.println("(w) by EgonOlsen - https://github.com/EgonOlsen71");
 		System.out.println("-------------------------------------------------");
 		Map<String, String> cmds = new HashMap<>();
+		List<MemoryHole> holes = new ArrayList<>();
 		String srcFile = null;
 		for (String arg : args) {
 			if (arg.startsWith("/") || arg.startsWith("-")) {
@@ -105,6 +109,8 @@ public class MoSpeedCL {
 		cfg.setConvertStringToLower(getOptionIntDefault("tolower", cmds, false));
 		cfg.setFlipCasing(getOptionIntDefault("flipcase", cmds, false));
 		cfg.setLoopMode(getOption("loopopt", cmds) ? LoopMode.REMOVE : LoopMode.EXECUTE);
+
+		holes = parseMemoryHoles(cmds);
 
 		cfg.setProgressListener(new DotPrintingProgressListener());
 
@@ -267,6 +273,13 @@ public class MoSpeedCL {
 			printCause(e);
 			exit(15);
 		}
+
+		if (is6502Platform(platform) && !holes.isEmpty()) {
+			SourceProcessor srcProc = new SourceProcessor(nCode);
+			List<SourcePart> parts = srcProc.split();
+			nCode = srcProc.relocate(cfg, parts, holes);
+		}
+
 		if (genSrc) {
 			write(nCode, nlTarget);
 		}
@@ -291,6 +304,37 @@ public class MoSpeedCL {
 		}
 
 		exit(0);
+	}
+
+	private static List<MemoryHole> parseMemoryHoles(Map<String, String> cmds) {
+		List<MemoryHole> holes = new ArrayList<>();
+		String holeTxt = cmds.get("memhole");
+		if (holeTxt == null || holeTxt.isEmpty()) {
+			return holes;
+		}
+		String[] parts = holeTxt.split(",");
+		for (String part : parts) {
+			String[] subs = part.split("-");
+			if (subs.length == 2) {
+				String start = subs[0].trim();
+				String end = subs[1].trim();
+				int si = 0, ei = 0;
+				try {
+					si = getNumber(start);
+					ei = getNumber(end);
+				} catch (NumberFormatException nfe) {
+					System.out.println("Invalid number: " + holeTxt);
+					exit(37);
+				}
+				if (si != ei && si > 0 && ei > 0) {
+					holes.add(new MemoryHole(si, ei));
+				}
+			} else {
+				System.out.println("Parse error: " + holeTxt);
+				exit(38);
+			}
+		}
+		return holes;
 	}
 
 	private static void printCause(Exception e) {
@@ -481,17 +525,21 @@ public class MoSpeedCL {
 		try {
 			if (options.containsKey(option)) {
 				String nums = options.get(option);
-				if (nums.startsWith("$")) {
-					nums = nums.substring(1);
-					return Integer.parseInt(nums, 16);
-				}
-				return Integer.parseInt(nums);
+				return getNumber(nums);
 			}
 		} catch (Exception e) {
 			System.out.println("Invalid number: " + options.get(option));
 			exit(11);
 		}
 		return -1;
+	}
+
+	private static int getNumber(String nums) {
+		if (nums.startsWith("$")) {
+			nums = nums.substring(1);
+			return Integer.parseInt(nums, 16);
+		}
+		return Integer.parseInt(nums);
 	}
 
 	private static void printOutHelp() {
@@ -554,6 +602,8 @@ public class MoSpeedCL {
 				"/nondecimals=true|false - if true, hexadecimal and binary numbers can be indicated by & and %. Default is false, except for the X16 platform, where it's enabled by default.");
 		System.out.println(
 				"/multipart=true|false - if false (default) the target file contains all binary data regardless of the address in memory. If true, several files will be written if the addresses of the program's parts aren't adjacent.");
+		System.out.println(
+				"/memhole=<start1-end1>,<start2-end2>,... - Defines holes/locked regions in memory. The compiled program won't use these memory locations for compiled code and variables. If a hole is located after the end of the compiled program, it will be ignored. Default is none.");
 		System.out.println();
 	}
 

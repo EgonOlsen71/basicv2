@@ -16,4 +16,9 @@ public class Lsr extends AbstractMnemonic {
 	public String getOptionalParameter() {
 		return "a";
 	}
+	
+	@Override
+	public int getMaxLength() {
+		return 3;
+	}
 }

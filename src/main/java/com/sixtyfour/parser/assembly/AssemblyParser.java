@@ -71,6 +71,16 @@ public class AssemblyParser {
 		}
 		return sb.toString().trim();
 	}
+	
+	/**
+	 * Replaces TABS in the source code with spaces.
+	 * 
+	 * @param line
+	 * @return the line without tabs
+	 */
+	public static String replaceTabs(String line) {
+		return line.replace('\t', ' ').trim();
+	}
 
 	/**
 	 * Gets the label (and code) of a line. If a line contains a label and a

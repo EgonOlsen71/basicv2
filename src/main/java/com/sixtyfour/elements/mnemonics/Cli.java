@@ -21,5 +21,5 @@ public class Cli extends AbstractMnemonic {
 	public boolean isSingle() {
 		return true;
 	}
-
+	
 }

@@ -131,9 +131,9 @@ public class Assembler implements ProgramExecutor {
 		boolean skipMode = false;
 
 		for (String line : code) {
-			String oLine = line;
 			cnt++;
-			line = line.replace('\t', ' ').trim();
+			String oLine = line;
+			line = AssemblyParser.replaceTabs(line);
 			if (line.startsWith(";")) {
 				// Ignore comment lines
 				continue;
@@ -390,6 +390,75 @@ public class Assembler implements ProgramExecutor {
 	 */
 	public void setProgram(Program program) {
 		this.program = program;
+	}
+
+	/**
+	 * Compiles a single line of code and returns the size in bytes of the result.
+	 * This method doesn't report any errors in the way in which the normal
+	 * compile()-method would.
+	 * 
+	 * @param compileMachine
+	 * @param ccon
+	 * @param lcon
+	 * @param config
+	 * @param line
+	 * @return
+	 */
+	public static int compileSingleLine(Machine compileMachine, ConstantsContainer ccon, LabelsContainer lcon,
+			CompilerConfig config, String line) {
+		int dummyAddr = 49152; // Use some 16 bit dummy address.
+		int addr = dummyAddr;
+		line = AssemblyParser.replaceTabs(line);
+		if (line.startsWith(";")) {
+			// Ignore comment lines
+			return 0;
+		}
+
+		line = AssemblyParser.truncateComments(line);
+		String lline = line.toLowerCase(Locale.ENGLISH);
+
+		if (lline.contains("<if") || lline.contains("</if")) {
+			return 0;
+		}
+
+		if (line.length() == 0) {
+			return 0;
+		}
+
+		ConstantValue cv = AssemblyParser.getConstant(config, line, ccon);
+		if (cv != null) {
+			return 0;
+		}
+
+		boolean isData = line.startsWith(".");
+		if (!isData) {
+			Mnemonic mne = AssemblyParser.getMnemonic(config, line);
+			if (mne == null) {
+				LabelAndCode lac = AssemblyParser.getLabel(line);
+				if (lac != null) {
+					if (lac.getCode().startsWith(".")) {
+						isData = true;
+					} else {
+						mne = AssemblyParser.getMnemonic(config, lac.getCode());
+					}
+					line = lac.getCode();
+				}
+			}
+			if (!isData) {
+				if (mne != null) {
+					try {
+						addr = mne.parse(config, line, addr, compileMachine, ccon, lcon);
+					} catch (RuntimeException re) {
+						//
+					}
+				}
+			}
+		}
+		if (isData) {
+			int[] data = AssemblyParser.getBinaryData(config, addr, line, ccon, lcon);
+			addr += data.length;
+		}
+		return addr - dummyAddr;
 	}
 
 	/**

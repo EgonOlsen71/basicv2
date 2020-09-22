@@ -70,4 +70,12 @@ public interface Mnemonic {
 	 */
 	String getOptionalParameter();
 
+	/**
+	 * Returns the maximum length in bytes that an instruction of this kind might
+	 * have. That is, for an LDA for example, 3 bytes albeit it might have just 2.
+	 * 
+	 * @return the maximum length
+	 */
+	int getMaxLength();
+
 }

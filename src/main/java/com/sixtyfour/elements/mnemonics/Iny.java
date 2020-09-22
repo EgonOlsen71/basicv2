@@ -21,5 +21,5 @@ public class Iny extends AbstractMnemonic {
 	public boolean isSingle() {
 		return true;
 	}
-
+	
 }

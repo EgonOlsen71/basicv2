@@ -16,4 +16,9 @@ public class Asl extends AbstractMnemonic {
 	public String getOptionalParameter() {
 		return "a";
 	}
+	
+	@Override
+	public int getMaxLength() {
+		return 3;
+	}
 }
