@@ -7,7 +7,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
-import com.sixtyfour.Assembler;
 import com.sixtyfour.Logger;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.parser.assembly.AssemblyParser;
@@ -106,15 +105,13 @@ public class SourceProcessor {
 
 		for (SourcePart part : parts) {
 			int size = part.calculateCodeSize(config, ccon, lcon);
-			// System.out.println(addr + " / " + (addr + 3 + size) + " /" + size + " /"
-			// + (hole == null ? "" : hole.getStartAddress()));
 			if (hole != null && addr >= 0 && addr + 3 + size >= hole.getStartAddress()) {
 				// The new part doesn't fit anymore, skip the hole...
 				addr = hole.getEndAddress() + 1;
 				String haddr = "$" + Integer.toHexString(addr);
 				res.add(";+++++ SKIP TO " + haddr);
 				if (part.isCompiledCode()) {
-					// This might not be needed, but we don't know this here...
+					// This might not be needed, but we don't know this here for sure, so we add it just in case...
 					res.add("JMP RELOCMEM" + skippies);
 				}
 				Logger.log("Relocating code to " + haddr);
@@ -126,10 +123,9 @@ public class SourceProcessor {
 					hole = null;
 				}
 			}
+			
 			for (String line : part.getSourcePart()) {
-				int lineSize = Assembler.compileSingleLine(machine, ccon, lcon, config, line);
 				res.add(line);
-				addr += lineSize;
 				if (!line.startsWith("*=")) {
 					continue;
 				}
@@ -140,6 +136,7 @@ public class SourceProcessor {
 					}
 				}
 			}
+			addr+=size;
 		}
 
 		return res;

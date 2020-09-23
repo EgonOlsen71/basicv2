@@ -100,7 +100,6 @@ public class MoSpeedCL {
 		cfg.setNativeLanguageOptimizations(getOption("nlangopt", cmds));
 		cfg.setOptimizeConstants(getOption("constopt", cmds));
 		cfg.setOptimizedLinker(getOption("smartlinker", cmds));
-		cfg.setOptimizedLinker(getOption("smartlinker", cmds));
 		cfg.setFloatOptimizations(getOptionIntDefault("floatopt", cmds, false));
 		cfg.setIntOptimizations(getOption("intopt", cmds));
 		cfg.setSymbolTable(cmds.get("symboltable"));

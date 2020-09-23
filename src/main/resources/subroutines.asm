@@ -3012,9 +3012,6 @@ CHECKARGOR2	CMP #$81
 			JMP ARGFAC		; ARG is 1, so just copy it to FAC and exit (implicit)
 NORMALOR	JMP FACOR
 ;###################################
-TILLEGALQUANTITY
-			JMP ILLEGALQUANTITY
-;###################################
 INITOUTCHANNEL
 			LDA #<C_REG
 			LDY #>C_REG
@@ -3341,7 +3338,8 @@ SUPERFIINX	INY
 			CLC
 			ADC #$1
 			CMP #$80
-			BEQ ILLEGALQUANTITY
+			BNE SFIINXNOV
+			JMP ILLEGALQUANTITY
 SFIINXNOV	RTS
 ;###################################
 SUPERFIDEX	CPY #0
@@ -3349,7 +3347,8 @@ SUPERFIDEX	CPY #0
 			SEC
 			SBC #$1
 			CMP #$7F
-			BEQ ILLEGALQUANTITY
+			BNE SUPERFIDEXNOV
+			JMP ILLEGALQUANTITY
 SUPERFIDEXNOV
 			DEY
 			RTS
