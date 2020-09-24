@@ -161,6 +161,17 @@ public class Compressor {
 		header.write((start >> 8));
 	}
 
+	/**
+	 * This is O(n*n) and therefor quite inefficient...anyway, it will do for now...
+	 * 
+	 * @param dump
+	 * @param windowSize
+	 * @param minSize
+	 * @param len
+	 * @param windowPos
+	 * @param window
+	 * @return
+	 */
 	private static List<Part> findMatches(byte[] dump, int windowSize, int minSize, int len, int windowPos,
 			byte[] window) {
 		int curSize = windowSize;
@@ -170,7 +181,11 @@ public class Compressor {
 
 		do {
 			for (int i = windowPos + curSize; i < len - curSize; i++) {
+				if (covered[i] > 0) {
+					continue;
+				}
 				boolean match = true;
+
 				for (int p = 0; p < curSize; p++) {
 					if (covered[i + p] != 0) {
 						match = false;
@@ -186,22 +201,22 @@ public class Compressor {
 				}
 
 				if (match) {
-					boolean cov = false;
-					for (int h = i; h < i + curSize && !cov; h++) {
+					
+					for (int h = i; h < i + curSize; h++) {
 						covered[h] = 1;
 					}
+					
 					Part part = new Part(windowPos, i, curSize);
 					parts.add(part);
-					i += curSize;
-					// log("Found: " + part);
+					i += curSize - 1;
 				}
 			}
 			if (largest >= minSize) {
 				curSize = largest;
 				largest = 0;
 			} else {
-				curSize = windowSize;
 				windowPos++;
+				curSize = windowSize;
 				largest = 0;
 				fillWindow(dump, window, windowPos);
 			}
