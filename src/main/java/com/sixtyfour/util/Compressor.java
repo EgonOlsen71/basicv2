@@ -43,8 +43,8 @@ public class Compressor {
 
 	public static byte[] compress(byte[] dump) {
 		long time = System.currentTimeMillis();
-		int windowSize = 64;
-		int minSize = 16;
+		int windowSize = 128;
+		int minSize = 8;
 		int len = dump.length;
 		int windowPos = 0;
 		byte[] window = new byte[windowSize];
