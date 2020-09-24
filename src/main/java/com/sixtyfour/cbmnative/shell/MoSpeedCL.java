@@ -581,7 +581,7 @@ public class MoSpeedCL {
 		System.out.println(
 				"/varstart=xxxxx|$yyyy - the start address for variables. If none is given, they will be located right after the runtime code.");
 		System.out.println(
-				"/varend=xxxxx|$yyyy - the end address of the variable memory, i.e. in fact of the string memory.");
+				"/varend=xxxxx|$yyyy - the end address of the variable memory, i.e. in fact the end of the string memory.");
 		System.out.println(
 				"/runtimestart=xxxxx|$yyyy - the start address of the runtime's code. If none is given, it follows the program's code.");
 		System.out.println(
