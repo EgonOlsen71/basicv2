@@ -44,14 +44,21 @@ public class Compressor {
 	public static byte[] compress(byte[] dump) {
 		long time = System.currentTimeMillis();
 		int windowSize = 128;
-		int minSize = 8;
+		int minSize = 12;
 		int len = dump.length;
 		int windowPos = 0;
 		byte[] window = new byte[windowSize];
 		fillWindow(dump, window, windowPos);
 
 		List<Part> parts = findMatches(dump, windowSize, minSize, len, windowPos, window);
+
 		byte[] bos = compress(parts, dump);
+
+		if (bos.length >= len) {
+			log("No further compression possible!");
+			return null;
+		}
+
 		log("Binary compressed from " + len + " to " + bos.length + " bytes in " + (System.currentTimeMillis() - time)
 				+ "ms");
 
@@ -177,7 +184,7 @@ public class Compressor {
 						break;
 					}
 				}
-				
+
 				if (match) {
 					boolean cov = false;
 					for (int h = i; h < i + curSize && !cov; h++) {
