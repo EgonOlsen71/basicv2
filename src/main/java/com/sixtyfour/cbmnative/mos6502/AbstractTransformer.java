@@ -100,6 +100,7 @@ public abstract class AbstractTransformer implements Transformer {
 	protected List<String> createDatas(CompilerConfig config, Machine machine) {
 		DataStore datas = machine.getDataStore();
 		List<String> ret = new ArrayList<String>();
+		ret.add(";###############################");
 		ret.add("; ******** DATA ********");
 		ret.add("DATAS");
 
