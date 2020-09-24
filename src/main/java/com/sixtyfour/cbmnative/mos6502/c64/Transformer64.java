@@ -52,6 +52,7 @@ public class Transformer64 extends AbstractTransformer {
 			consts.add("*=$" + Integer.toHexString(variableStart));
 		}
 		consts.add("CONSTANTS");
+		vars.add(";###############################");
 		vars.add("; *** VARIABLES ***");
 		vars.add("VARIABLES");
 
