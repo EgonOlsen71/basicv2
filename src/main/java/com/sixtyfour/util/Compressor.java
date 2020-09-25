@@ -194,7 +194,7 @@ public class Compressor {
 						dataPos = pos + copyLen;
 
 						// Copy uncompressed data back down into memory...
-						System.arraycopy(res, dataPos, res, pos, copyLen);
+						moveData(res, dataPos, pos, copyLen);
 						dataPos += copyLen;
 						pos = target;
 					}
@@ -206,7 +206,7 @@ public class Compressor {
 						dataPos = newDataPos;
 					}
 
-					System.arraycopy(res, start, res, target, len);
+					moveData(res, start, target, len);
 					pos += len;
 					i += 2;
 				} else {
