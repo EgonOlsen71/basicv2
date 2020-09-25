@@ -26,7 +26,7 @@ import com.sixtyfour.Loader;
 public class Compressor {
 
 	public static boolean FAST = true;
-	
+
 	private static final int MAX_WINDOW_SIZE = 128;
 	private static final int MIN_WINDOW_SIZE = 12;
 	private static final int CHUNK_SIZE = 32768;
@@ -38,13 +38,21 @@ public class Compressor {
 		testCompressor("C:\\Users\\EgonOlsen\\Desktop\\++corona.prg");
 	}
 
-	private static void testCompressor(String fileName) {
+	private static void testCompressor(String fileName) throws Exception {
 		log("Compressing " + fileName);
 		byte[] bytes = Loader.loadBlob(fileName);
 		byte[] compressedBytes = compress(bytes);
-		byte[] uncompressedBytes = uncompress(compressedBytes);
+		byte[] uncompressedBytes = decompressInMemory(compressedBytes);
 		log("Uncompressed size: " + uncompressedBytes.length);
 		log("Equals: " + Arrays.equals(bytes, uncompressedBytes));
+
+		/*
+		 * System.out.println(
+		 * "###########################################################");
+		 * System.out.println(new String(bytes, "ISO-8859-1")); System.out.println(
+		 * "###########################################################");
+		 * System.out.println(new String(uncompressedBytes, "ISO-8859-1"));
+		 */
 	}
 
 	public static byte[] compress(byte[] dump) {
@@ -77,13 +85,24 @@ public class Compressor {
 		return bos;
 	}
 
-	public static byte[] uncompress(byte[] bytes) {
+	/**
+	 * Decompresses the compressed data
+	 * 
+	 * @param bytes
+	 * @return
+	 */
+	public static byte[] decompress(byte[] bytes) {
+		long time = System.currentTimeMillis();
 		int clen = bytes.length;
 		int data = readLowHigh(bytes, 0);
+		int compLen = readLowHigh(bytes, 2);
+		int ucLen = readLowHigh(bytes, 4);
 		int dataPos = data;
+		int headerOffset = 6;
+
 		byte[] res = new byte[65536];
 		int pos = 0;
-		for (int i = 2; i < data;) {
+		for (int i = headerOffset; i < data;) {
 			int start = readLowHigh(bytes, i);
 			int target = 0;
 			i += 2;
@@ -111,7 +130,107 @@ public class Compressor {
 			System.arraycopy(bytes, dataPos, res, pos, clen - dataPos);
 			pos += (bytes.length - dataPos);
 		}
+
+		if (pos != ucLen) {
+			throw new RuntimeException("Failed to decompress, size mismatch: " + pos + "/" + ucLen);
+		}
+		log("Decompressed from " + compLen + " to " + ucLen + " bytes in " + (System.currentTimeMillis() - time)
+				+ "ms!");
+
 		return Arrays.copyOf(res, pos);
+	}
+
+	/**
+	 * Decompresses the compressed data but unlike decompress(), it does that in one
+	 * block of 64K memory just like the real machine would have to do it.
+	 * 
+	 * @param bytes
+	 * @return
+	 */
+	public static byte[] decompressInMemory(byte[] bytes) {
+		long time = System.currentTimeMillis();
+		int data = readLowHigh(bytes, 0);
+		int compLen = readLowHigh(bytes, 2);
+		int ucLen = readLowHigh(bytes, 4);
+
+		int memStart = 2049;
+		int memEnd = 53248;
+		int headerOffset = 6;
+		int dataLen = compLen - data;
+
+		byte[] res = new byte[65536];
+		// Copy into memory just like it would be located on a real machine...
+		System.arraycopy(bytes, 0, res, memStart, compLen);
+		data += memStart;
+		int dataPos = data;
+
+		// Copy compression header data to the end of memory...
+		headerOffset += memStart;
+		int headerLen = dataPos - headerOffset;
+		int headerPos = memEnd - headerLen;
+		System.arraycopy(res, headerOffset, res, headerPos, headerLen);
+
+		// Copy uncompressed data to the start of memory...
+		System.arraycopy(res, dataPos, res, memStart, dataLen);
+		dataPos = memStart;
+		int pos = memStart;
+
+		for (int i = headerPos; i < memEnd;) {
+			int start = readLowHigh(res, i) + memStart;
+			int target = 0;
+			i += 2;
+			do {
+				int len = res[i] & 0xFF;
+				i++;
+				target = 0;
+				if (len != 0) {
+					target = readLowHigh(res, i) + memStart;
+					int copyLen = target - pos;
+					if (copyLen > 0) {
+						// Move uncompressed data up in memory to avoid conflict...
+						// Adjust pointer to copied data...
+						moveData(res, dataPos, pos + copyLen, dataLen);
+						dataLen -= copyLen;
+						dataPos = pos + copyLen;
+
+						// Copy uncompressed data back down into memory...
+						System.arraycopy(res, dataPos, res, pos, copyLen);
+						dataPos += copyLen;
+						pos = target;
+					}
+
+					if (target + len >= dataPos) {
+						// Move uncompressed data up in memory to avoid conflict...
+						int newDataPos = target + len;
+						moveData(res, dataPos, newDataPos, dataLen);
+						dataPos = newDataPos;
+					}
+
+					System.arraycopy(res, start, res, target, len);
+					pos += len;
+					i += 2;
+				} else {
+					i++;
+				}
+			} while (target > 0);
+		}
+		if (dataLen > 0) {
+			System.arraycopy(res, dataPos, res, pos, dataLen);
+			pos += dataLen;
+		}
+
+		if (pos - memStart != ucLen) {
+			throw new RuntimeException("Failed to decompress, size mismatch: " + pos + "/" + ucLen);
+		}
+
+		log("Decompressed from " + compLen + " to " + ucLen + " bytes in " + (System.currentTimeMillis() - time)
+				+ "ms!");
+
+		return Arrays.copyOfRange(res, memStart, memStart + ucLen);
+	}
+
+	private static void moveData(byte[] res, int dataPos, int pos, int dataLen) {
+		System.arraycopy(res, dataPos, res, pos, dataLen);
 	}
 
 	private static byte[] compress(List<Part> parts, byte[] dump) {
@@ -144,7 +263,10 @@ public class Compressor {
 		writeEndFlag(header);
 
 		ByteArrayOutputStream res = new ByteArrayOutputStream();
-		writeLowHigh(res, header.size() + 2);
+		int headerLen = header.size() + 6;
+		writeLowHigh(res, headerLen);
+		writeLowHigh(res, headerLen + data.size());
+		writeLowHigh(res, dump.length);
 
 		try {
 			res.write(header.toByteArray());
@@ -170,7 +292,8 @@ public class Compressor {
 	}
 
 	/**
-	 * This is O(n*n) and therefore quite inefficient...anyway, it will do for now...
+	 * This is O(n*n) and therefore quite inefficient...anyway, it will do for
+	 * now...
 	 * 
 	 * @param dump
 	 * @param windowSize
@@ -178,7 +301,7 @@ public class Compressor {
 	 * @param len
 	 * @param windowPos
 	 * @param window
-	 * @param fastMode Less compression, but a lot faster.
+	 * @param fastMode   Less compression, but a lot faster.
 	 * @return
 	 */
 	private static List<Part> findMatches(byte[] dump, int windowSize, int minSize, int len, byte[] window,
