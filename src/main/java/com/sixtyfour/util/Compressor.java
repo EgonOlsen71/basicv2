@@ -158,6 +158,8 @@ public class Compressor {
 		int headerOffset = 6;
 		int dataLen = compLen - data;
 
+		int byteCount = 0;
+
 		byte[] res = new byte[65536];
 		// Copy into memory just like it would be located on a real machine...
 		System.arraycopy(bytes, 0, res, memStart, compLen);
@@ -186,27 +188,27 @@ public class Compressor {
 				if (len != 0) {
 					target = readLowHigh(res, i) + memStart;
 					int copyLen = target - pos;
+					int newDataPos = target + len;
+
 					if (copyLen > 0) {
 						// Move uncompressed data up in memory to avoid conflict...
-						// Adjust pointer to copied data...
-						moveData(res, dataPos, pos + copyLen, dataLen);
+						byteCount+=moveData(res, dataPos, newDataPos, dataLen);
 						dataLen -= copyLen;
-						dataPos = pos + copyLen;
+						dataPos = newDataPos;
 
 						// Copy uncompressed data back down into memory...
-						moveData(res, dataPos, pos, copyLen);
+						byteCount+=moveData(res, dataPos, pos, copyLen);
 						dataPos += copyLen;
 						pos = target;
 					}
 
-					if (target + len >= dataPos) {
+					if (newDataPos >= dataPos) {
 						// Move uncompressed data up in memory to avoid conflict...
-						int newDataPos = target + len;
-						moveData(res, dataPos, newDataPos, dataLen);
+						byteCount+=moveData(res, dataPos, newDataPos, dataLen);
 						dataPos = newDataPos;
 					}
 
-					moveData(res, start, target, len);
+					byteCount+=moveData(res, start, target, len);
 					pos += len;
 					i += 2;
 				} else {
@@ -223,14 +225,15 @@ public class Compressor {
 			throw new RuntimeException("Failed to decompress, size mismatch: " + pos + "/" + ucLen);
 		}
 
-		log("Decompressed from " + compLen + " to " + ucLen + " bytes in " + (System.currentTimeMillis() - time)
-				+ "ms!");
+		log("Decompressed from " + compLen + " to " + ucLen + " bytes in " + (System.currentTimeMillis() - time) + "ms! ("
+				+ byteCount+" bytes moved)");
 
 		return Arrays.copyOfRange(res, memStart, memStart + ucLen);
 	}
 
-	private static void moveData(byte[] res, int dataPos, int pos, int dataLen) {
+	private static int moveData(byte[] res, int dataPos, int pos, int dataLen) {
 		System.arraycopy(res, dataPos, res, pos, dataLen);
+		return dataLen;
 	}
 
 	private static byte[] compress(List<Part> parts, byte[] dump) {
