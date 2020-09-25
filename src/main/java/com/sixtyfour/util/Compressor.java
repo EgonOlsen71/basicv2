@@ -108,7 +108,6 @@ public class Compressor {
 			} while (target > 0);
 		}
 		if (dataPos < clen) {
-			System.out.println(clen + "/" + dataPos + "/" + pos + "/" + res.length + "/" + (clen - dataPos));
 			System.arraycopy(bytes, dataPos, res, pos, clen - dataPos);
 			pos += (bytes.length - dataPos);
 		}
