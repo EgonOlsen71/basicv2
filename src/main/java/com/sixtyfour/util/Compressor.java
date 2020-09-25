@@ -2,6 +2,7 @@ package com.sixtyfour.util;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
@@ -42,6 +43,7 @@ public class Compressor {
 		log("Compressing " + fileName);
 		byte[] bytes = Loader.loadBlob(fileName);
 		byte[] compressedBytes = compress(bytes);
+		// byte[] uncompressedBytes = decompress(compressedBytes);
 		byte[] uncompressedBytes = decompressInMemory(compressedBytes);
 		log("Uncompressed size: " + uncompressedBytes.length);
 		log("Equals: " + Arrays.equals(bytes, uncompressedBytes));
@@ -97,12 +99,12 @@ public class Compressor {
 		int data = readLowHigh(bytes, 0);
 		int compLen = readLowHigh(bytes, 2);
 		int ucLen = readLowHigh(bytes, 4);
-		int dataPos = data;
 		int headerOffset = 6;
+		int dataPos = headerOffset;
 
 		byte[] res = new byte[65536];
 		int pos = 0;
-		for (int i = headerOffset; i < data;) {
+		for (int i = data; i < clen;) {
 			int start = readLowHigh(bytes, i);
 			int target = 0;
 			i += 2;
@@ -126,9 +128,10 @@ public class Compressor {
 				}
 			} while (target > 0);
 		}
-		if (dataPos < clen) {
-			System.arraycopy(bytes, dataPos, res, pos, clen - dataPos);
-			pos += (bytes.length - dataPos);
+		if (dataPos < data) {
+			int len = data - dataPos;
+			System.arraycopy(bytes, dataPos, res, pos, len);
+			pos += len;
 		}
 
 		if (pos != ucLen) {
@@ -156,28 +159,22 @@ public class Compressor {
 		int memStart = 2049;
 		int memEnd = 53248;
 		int headerOffset = 6;
-		int dataLen = compLen - data;
 
 		int byteCount = 0;
+		int totalLen = compLen - headerOffset;
 
 		byte[] res = new byte[65536];
 		// Copy into memory just like it would be located on a real machine...
-		System.arraycopy(bytes, 0, res, memStart, compLen);
-		data += memStart;
-		int dataPos = data;
+		System.arraycopy(bytes, headerOffset, res, memStart, totalLen);
 
-		// Copy compression header data to the end of memory...
-		headerOffset += memStart;
-		int headerLen = dataPos - headerOffset;
-		int headerPos = memEnd - headerLen;
-		System.arraycopy(res, headerOffset, res, headerPos, headerLen);
-
-		// Copy uncompressed data to the start of memory...
-		System.arraycopy(res, dataPos, res, memStart, dataLen);
-		dataPos = memStart;
+		// Copy compressed data to the end of memory...
+		int dataPos = memEnd - totalLen;
+		data -= headerOffset;
+		int compPos = dataPos + data;
+		System.arraycopy(res, memStart, res, dataPos, totalLen);
 		int pos = memStart;
 
-		for (int i = headerPos; i < memEnd;) {
+		for (int i = compPos; i < memEnd;) {
 			int start = readLowHigh(res, i) + memStart;
 			int target = 0;
 			i += 2;
@@ -188,27 +185,14 @@ public class Compressor {
 				if (len != 0) {
 					target = readLowHigh(res, i) + memStart;
 					int copyLen = target - pos;
-					int newDataPos = target + len;
-
 					if (copyLen > 0) {
-						// Move uncompressed data up in memory to avoid conflict...
-						byteCount+=moveData(res, dataPos, newDataPos, dataLen);
-						dataLen -= copyLen;
-						dataPos = newDataPos;
-
 						// Copy uncompressed data back down into memory...
-						byteCount+=moveData(res, dataPos, pos, copyLen);
+						byteCount += moveData(res, dataPos, pos, copyLen);
 						dataPos += copyLen;
 						pos = target;
 					}
 
-					if (newDataPos >= dataPos) {
-						// Move uncompressed data up in memory to avoid conflict...
-						byteCount+=moveData(res, dataPos, newDataPos, dataLen);
-						dataPos = newDataPos;
-					}
-
-					byteCount+=moveData(res, start, target, len);
+					byteCount += moveData(res, start, target, len);
 					pos += len;
 					i += 2;
 				} else {
@@ -216,17 +200,20 @@ public class Compressor {
 				}
 			} while (target > 0);
 		}
-		if (dataLen > 0) {
-			System.arraycopy(res, dataPos, res, pos, dataLen);
-			pos += dataLen;
+
+		int left = compPos - dataPos;
+		if (left > 0) {
+			byteCount += moveData(res, dataPos, pos, left);
+			pos += left;
 		}
 
-		if (pos - memStart != ucLen) {
-			throw new RuntimeException("Failed to decompress, size mismatch: " + pos + "/" + ucLen);
+		int newLen = pos - memStart;
+		if (newLen != ucLen) {
+			throw new RuntimeException("Failed to decompress, size mismatch: " + newLen + "/" + ucLen);
 		}
 
-		log("Decompressed from " + compLen + " to " + ucLen + " bytes in " + (System.currentTimeMillis() - time) + "ms! ("
-				+ byteCount+" bytes moved)");
+		log("Decompressed from " + compLen + " to " + ucLen + " bytes in " + (System.currentTimeMillis() - time)
+				+ "ms! (" + byteCount + " bytes moved)");
 
 		return Arrays.copyOfRange(res, memStart, memStart + ucLen);
 	}
@@ -237,7 +224,7 @@ public class Compressor {
 	}
 
 	private static byte[] compress(List<Part> parts, byte[] dump) {
-		ByteArrayOutputStream header = new ByteArrayOutputStream();
+		ByteArrayOutputStream footer = new ByteArrayOutputStream();
 		ByteArrayOutputStream data = new ByteArrayOutputStream();
 
 		int pos = 0;
@@ -253,27 +240,27 @@ public class Compressor {
 
 			if (start != lastStart) {
 				if (lastStart != -1) {
-					writeEndFlag(header);
+					writeEndFlag(footer);
 				}
-				writeLowHigh(header, start);
+				writeLowHigh(footer, start);
 			}
 			lastStart = start;
-			header.write(part.size);
-			writeLowHigh(header, part.targetAddress);
+			footer.write(part.size);
+			writeLowHigh(footer, part.targetAddress);
 		}
 
 		data.write(dump, pos, dump.length - pos);
-		writeEndFlag(header);
+		writeEndFlag(footer);
 
 		ByteArrayOutputStream res = new ByteArrayOutputStream();
-		int headerLen = header.size() + 6;
-		writeLowHigh(res, headerLen);
-		writeLowHigh(res, headerLen + data.size());
+		int dataLen = data.size() + 6;
+		writeLowHigh(res, dataLen);
+		writeLowHigh(res, dataLen + footer.size());
 		writeLowHigh(res, dump.length);
 
 		try {
-			res.write(header.toByteArray());
 			res.write(data.toByteArray());
+			res.write(footer.toByteArray());
 		} catch (IOException e) {
 			//
 		}
