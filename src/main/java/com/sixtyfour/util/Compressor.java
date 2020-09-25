@@ -171,7 +171,7 @@ public class Compressor {
 	}
 
 	/**
-	 * This is O(n*n) and therefor quite inefficient...anyway, it will do for now...
+	 * This is O(n*n) and therefore quite inefficient...anyway, it will do for now...
 	 * 
 	 * @param dump
 	 * @param windowSize
