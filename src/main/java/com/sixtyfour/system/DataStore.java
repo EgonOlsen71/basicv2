@@ -49,7 +49,12 @@ public class DataStore {
 		} catch (NumberFormatException nfe) {
 			try {
 				Float dat = Float.valueOf(data.trim());
-				datas.add(dat);
+				if (dat.isInfinite() || dat.isNaN()) {
+					// It's a float...but not a proper one...
+					datas.add(data);
+				} else {
+					datas.add(dat);
+				}
 			} catch (NumberFormatException nfe2) {
 				datas.add(data);
 			}
