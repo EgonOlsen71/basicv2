@@ -105,7 +105,6 @@ public class ConstantPropagator {
 		return checkForConstant(config, machine, t, isConstant);
 	}
 
-	@SuppressWarnings("unused")
 	private static boolean checkForConstant(CompilerConfig config, Machine machine, Term t, boolean[] isConstant) {
 
 		// Value up to which divisions by <value> will be converted into
