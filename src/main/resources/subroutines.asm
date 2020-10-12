@@ -294,6 +294,7 @@ STRFUNCNZ	STA (TMP_ZP),Y
 			LDY #>A_REG
 			STA TMP2_ZP
 			STY TMP2_ZP+1
+			LDX TMP_REG			; Put length into X for copy
 			JSR COPYONLY
 EXITSTRFUNC	PLA
 			LDY #0
@@ -823,7 +824,7 @@ GCLOOP		LDY #0
 			STA GCWORK+1		; store the pointer for later use...
 			LDA (TMP_ZP),Y
 			STA GCLEN			; store the length
-			
+
 			INC TMP_ZP
 			BNE GCLOOPNOOV
 			INC TMP_ZP+1
@@ -1088,8 +1089,8 @@ MEMOK		LDY #0
 			INY
 			STA (TMP2_ZP),Y
 			STA TMP3_ZP+1
-			TXA
 			
+			TXA
 			CLC
 			ADC STRBUFP
 			PHP
@@ -1102,7 +1103,7 @@ NOCS1		PLP
 			BCC STRFITS
 			INC STRBUFP+1
 			
-STRFITS		LDY TMP_FLAG	; Check if the pointer to the highest mem addr used by an actual string
+STRFITS		LDY TMP_FLAG	; Check if the pointer to the highest mem addr is used by an actual string
 			BEQ NOHPUPDATE	; has to be updated and do that...
 			LDA HIGHP+1
 			CMP STRBUFP+1
