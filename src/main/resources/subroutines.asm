@@ -605,12 +605,15 @@ LEN			LDA B_REG
 			STA TMP_ZP+1
 			LDY #0
 			LDA (TMP_ZP),Y
+			BEQ ZEROLEN
 			TAY
 			LDA #0
 			JSR INTFAC
 			LDX #<X_REG
 			LDY #>X_REG
 			JMP FACMEM	;RTS is implicit
+ZEROLEN		JMP ZEROSET
+
 ;###################################
 ASC			LDA B_REG
 			STA TMP_ZP
@@ -2521,14 +2524,15 @@ SGTEQ		JSR CMPSTRGTEQ
 			LDX #<X_REG
 			LDY #>X_REG
 			JMP COPY2_XY
-NOTSGTEQ	LDA #0
+NOTSGTEQ	JMP ZEROSET
+;###################################
+ZEROSET		LDA #0
 			STA X_REG
 			STA X_REG+1
 			STA X_REG+2
 			STA X_REG+3
 			STA X_REG+4
 			RTS
-
 ;###################################
 SLTEQ		LDA A_REG
 			LDX B_REG
@@ -2622,14 +2626,7 @@ SGT			JSR CMPSTRGT
 			LDX #<X_REG
 			LDY #>X_REG
 			JMP COPY2_XY
-NOTSGT		LDA #0				; If the exponent is 0, the whole number is...
-			STA X_REG
-			STA X_REG+1
-			STA X_REG+2
-			STA X_REG+3
-			STA X_REG+4
-			RTS
-
+NOTSGT		JMP ZEROSET
 ;###################################
 CMPSTRGT	LDY #0				;Returns 0 if A>B, something else otherwise
 			LDX #1
@@ -2698,13 +2695,7 @@ SEQ			JSR CMPSTR
 			LDX #<X_REG
 			LDY #>X_REG
 			JMP COPY2_XY
-NOTSEQ		LDA #0
-			STA X_REG
-			STA X_REG+1
-			STA X_REG+2
-			STA X_REG+3
-			STA X_REG+4
-			RTS
+NOTSEQ		JMP ZEROSET
 
 ;###################################
 SNEQ		JSR CMPSTR
