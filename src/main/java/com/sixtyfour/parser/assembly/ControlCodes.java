@@ -141,6 +141,7 @@ public class ControlCodes {
 		public void add(int code, String... placeholders) {
 			for (String placy : placeholders) {
 				this.put(placy, code);
+				this.put(placy.replaceFirst("cm", "cbm"), code);
 				this.put(placy.replaceFirst("ctrl", "ct"), code);
 				this.put(placy.replaceFirst("ctrl", "control"), code);
 				this.put(placy.replaceFirst("-", " "), code);
@@ -158,7 +159,8 @@ public class ControlCodes {
 	 */
 	public static int getCode(String placeHolder) {
 		placeHolder = placeHolder.replace("{", "").replace("}", "").toLowerCase(Locale.ENGLISH).trim();
-		if (placeHolder2code.containsKey(placeHolder)) {
+		if (placeHolder2code.containsKey(placeHolder)
+				|| placeHolder2code.containsKey(placeHolder.toLowerCase(Locale.ENGLISH))) {
 			return placeHolder2code.get(placeHolder);
 		}
 		return -1;
