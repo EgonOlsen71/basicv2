@@ -15,7 +15,7 @@ import com.sixtyfour.Loader;
 
 /**
  * A simple compressor that can compress and uncompress byte[]-arrays based on a
- * simple and most likely inefficient sliding window algorithm that I came with
+ * simple and most likely inefficient sliding window algorithm that I came up with
  * while being half asleep.
  * 
  * Not used for anything ATM, but it might get some use later...
@@ -38,6 +38,7 @@ public class Compressor {
 		// testCompressor("C:\\Users\\EgonOlsen\\Desktop\\affine.bas");
 		// testCompressor("C:\\Users\\EgonOlsen\\Desktop\\++corona.prg");
 		testCompressor("E:\\src\\workspace2018\\Adventure\\build\\++xam.prg");
+		testCompressor("E:\\src\\workspace2018\\Adventure\\build\\++brotquest.prg");
 		
 	}
 
