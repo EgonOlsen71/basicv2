@@ -32,10 +32,13 @@ public class Compressor {
 	private static final int CHUNK_SIZE = 32768;
 
 	public static void main(String[] args) throws Exception {
-		testCompressor("C:\\Users\\EgonOlsen\\Desktop\\test.txt");
-		testCompressor("C:\\Users\\EgonOlsen\\Desktop\\++affine.prg");
-		testCompressor("C:\\Users\\EgonOlsen\\Desktop\\affine.bas");
-		testCompressor("C:\\Users\\EgonOlsen\\Desktop\\++corona.prg");
+		
+		// testCompressor("C:\\Users\\EgonOlsen\\Desktop\\test.txt");
+		// testCompressor("C:\\Users\\EgonOlsen\\Desktop\\++affine.prg");
+		// testCompressor("C:\\Users\\EgonOlsen\\Desktop\\affine.bas");
+		// testCompressor("C:\\Users\\EgonOlsen\\Desktop\\++corona.prg");
+		testCompressor("E:\\src\\workspace2018\\Adventure\\build\\++xam.prg");
+		
 	}
 
 	private static void testCompressor(String fileName) throws Exception {
