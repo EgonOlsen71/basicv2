@@ -47,6 +47,8 @@ public class Compressor {
 				"C:\\Users\\EgonOlsen\\Desktop\\++affine_c.prg");
 		testCompressor("E:\\src\\workspace2018\\basicv2\\compiled\\+xtris2.prg",
 				"C:\\Users\\EgonOlsen\\Desktop\\++xtris2_c.prg");
+		testCompressor("E:\\src\\workspace2018\\basicv2\\compiled\\+19 - StarDuel.prg",
+				"C:\\Users\\EgonOlsen\\Desktop\\++StarDuel_c.prg");
 
 	}
 
