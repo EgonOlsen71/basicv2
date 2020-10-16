@@ -164,6 +164,7 @@ public class AssemblyParser {
 
 		if (!number.startsWith("$") && !number.startsWith("%") && !Character.isDigit(number.charAt(0))
 				&& !(number.startsWith("-"))) {
+			
 			ConstantValue cv = ccon.get(number);
 			if (cv != null) {
 				// System.out.println("Assigned: "+cv.getValue());
@@ -172,7 +173,6 @@ public class AssemblyParser {
 				if (!number.startsWith("*")) {
 					cv = getConstantParsed(config, "___", number, ccon, false);
 					if (cv != null && cv.getValue() != 0) {
-						// System.out.println("Calculated: "+cv.getValue());
 						return cv.getValue();
 					}
 				}

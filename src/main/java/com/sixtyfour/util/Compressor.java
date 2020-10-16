@@ -11,12 +11,17 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
+import com.sixtyfour.Assembler;
 import com.sixtyfour.Loader;
+import com.sixtyfour.config.CompilerConfig;
+import com.sixtyfour.system.FileWriter;
+import com.sixtyfour.system.Program;
+import com.sixtyfour.system.ProgramPart;
 
 /**
  * A simple compressor that can compress and uncompress byte[]-arrays based on a
- * simple and most likely inefficient sliding window algorithm that I came up with
- * while being half asleep.
+ * simple and most likely inefficient sliding window algorithm that I came up
+ * with while being half asleep.
  * 
  * Not used for anything ATM, but it might get some use later...
  * 
@@ -32,32 +37,92 @@ public class Compressor {
 	private static final int CHUNK_SIZE = 32768;
 
 	public static void main(String[] args) throws Exception {
-		
+
 		// testCompressor("C:\\Users\\EgonOlsen\\Desktop\\test.txt");
 		// testCompressor("C:\\Users\\EgonOlsen\\Desktop\\++affine.prg");
 		// testCompressor("C:\\Users\\EgonOlsen\\Desktop\\affine.bas");
 		// testCompressor("C:\\Users\\EgonOlsen\\Desktop\\++corona.prg");
-		testCompressor("E:\\src\\workspace2018\\Adventure\\build\\++xam.prg");
-		testCompressor("E:\\src\\workspace2018\\Adventure\\build\\++brotquest.prg");
-		
+		testCompressor("E:\\src\\workspace2018\\Adventure\\build\\++xam.prg",
+				"C:\\Users\\EgonOlsen\\Desktop\\++xam_c.prg");
+		testCompressor("E:\\src\\workspace2018\\Adventure\\build\\++brotquest.prg",
+				"C:\\Users\\EgonOlsen\\Desktop\\++brotquest_c.prg");
+
 	}
 
-	private static void testCompressor(String fileName) throws Exception {
+	private static void testCompressor(String fileName, String resultFile) throws Exception {
 		log("Compressing " + fileName);
 		byte[] bytes = Loader.loadBlob(fileName);
+
+		// Remove the prg header in this case...
+		bytes = Arrays.copyOfRange(bytes, 2, bytes.length);
 		byte[] compressedBytes = compress(bytes);
 		// byte[] uncompressedBytes = decompress(compressedBytes);
 		byte[] uncompressedBytes = decompressInMemory(compressedBytes);
 		log("Uncompressed size: " + uncompressedBytes.length);
 		log("Equals: " + Arrays.equals(bytes, uncompressedBytes));
 
-		/*
-		 * System.out.println(
-		 * "###########################################################");
-		 * System.out.println(new String(bytes, "ISO-8859-1")); System.out.println(
-		 * "###########################################################");
-		 * System.out.println(new String(uncompressedBytes, "ISO-8859-1"));
-		 */
+		// System.out.println(Integer.toHexString(compressedBytes[0] & 0xff));
+		// System.out.println(Integer.toHexString(compressedBytes[1] & 0xff));
+		// System.out.println(Integer.toHexString(compressedBytes[2] & 0xff));
+
+		Program prg = compileHeader();
+		ProgramPart first = prg.getParts().get(0);
+		ProgramPart pp = new ProgramPart();
+		pp.setBytes(convert(compressedBytes));
+		pp.setAddress(first.getEndAddress());
+		pp.setEndAddress(pp.getAddress() + pp.getBytes().length);
+		prg.addPart(pp);
+
+		FileWriter.writeAsPrg(prg, resultFile, false);
+	}
+
+	public static Program compileHeader() {
+
+		Assembler assy = new Assembler(
+				Loader.loadProgram(Compressor.class.getResourceAsStream("/compressor/decruncher.asm")));
+		assy.compile(new CompilerConfig());
+		ProgramPart prg = assy.getProgram().getParts().get(0);
+
+		String[] headerCode = Loader.loadProgram(Compressor.class.getResourceAsStream("/compressor/header.asm"));
+		List<String> code = new ArrayList<>(Arrays.asList(headerCode));
+		List<String> res = new ArrayList<>();
+
+		for (int i = 0; i < code.size(); i++) {
+			String line = code.get(i);
+			if (line.contains("{code}")) {
+				int[] bytes = prg.getBytes();
+				int cnt = 0;
+				String nl = ".byte";
+				for (int p = 0; p < bytes.length; p++) {
+					nl += " $" + Integer.toHexString(bytes[p] & 0xff);
+					cnt++;
+					if (cnt == 16) {
+						res.add(nl);
+						nl = ".byte";
+						cnt = 0;
+					}
+				}
+				if (nl.length() > 5) {
+					res.add(nl);
+				}
+			} else {
+				res.add(line);
+			}
+		}
+
+		// res.forEach(p -> System.out.println(p));
+
+		assy = new Assembler(res.toArray(new String[res.size()]));
+		assy.compile(new CompilerConfig());
+		return assy.getProgram();
+	}
+
+	public static int[] convert(byte[] bytes) {
+		int[] res = new int[bytes.length];
+		for (int i = 0; i < bytes.length; i++) {
+			res[i] = bytes[i] & 0xff;
+		}
+		return res;
 	}
 
 	public static byte[] compress(byte[] dump) {
@@ -160,7 +225,7 @@ public class Compressor {
 		int ucLen = readLowHigh(bytes, 4);
 
 		int memStart = 2049;
-		int memEnd = 53248;
+		int memEnd = 53100;
 		int headerOffset = 6;
 
 		int byteCount = 0;
@@ -177,6 +242,11 @@ public class Compressor {
 		System.arraycopy(res, memStart, res, dataPos, totalLen);
 		int pos = memStart;
 
+		// System.out.println(dataPos+"/"+totalLen+"/"+compPos);
+		// for (int i=compPos; i<compPos+10; i++) {
+		// System.out.print(Integer.toHexString(res[i] & 0xff)+" ");
+		// }
+
 		for (int i = compPos; i < memEnd;) {
 			int start = readLowHigh(res, i) + memStart;
 			int target = 0;
@@ -188,7 +258,7 @@ public class Compressor {
 				if (len != 0) {
 					target = readLowHigh(res, i) + memStart;
 					int copyLen = target - pos;
-					if (copyLen > 0) {
+					if (copyLen != 0) {
 						// Copy uncompressed data back down into memory...
 						byteCount += moveData(res, dataPos, pos, copyLen);
 						dataPos += copyLen;
@@ -201,7 +271,7 @@ public class Compressor {
 				} else {
 					i++;
 				}
-			} while (target > 0);
+			} while (target != 0);
 		}
 
 		int left = compPos - dataPos;
