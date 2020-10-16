@@ -1,7 +1,7 @@
 *=$0400
 
 MEMSTART=2049
-MEMEND=53100
+MEMEND=53248
 
 DATAPOS=$69
 TOTALLEN=$6B
@@ -14,6 +14,8 @@ SCREEN=$0400
 COPYFROM=$61
 COPYTO=$63
 COPYLEN=$65
+
+RUNCALL=$A871
 
 sei
 lda $1
@@ -253,59 +255,45 @@ sta 50
 
 lda tmpreg
 sta $1
-
 cli
 
-
-rts
+;rts
+jmp RUNCALL
 
 copy:
-lda COPYTO
-clc
-adc COPYLEN
-sta COPYTO
-
-lda COPYTO+1
-adc COPYLEN+1
-sta COPYTO+1
-
-lda COPYFROM
-sta copystart
-clc
-adc COPYLEN
-sta COPYFROM
-
-lda COPYFROM+1
-sta copystart+1
-adc COPYLEN+1
-sta COPYFROM+1
 
 ldy #0
-cloop:
-dec COPYTO
-bpl cskip1
-lda COPYTO
-cmp #$ff
-bne cskip1
-dec COPYTO+1
-cskip1:
-dec COPYFROM
-bpl cskip2
-lda COPYFROM
-cmp #$ff
-bne cskip2
-dec COPYFROM+1
-cskip2:
+ldx COPYLEN+1
+beq lowonly
+
+cloop:   
+
 lda (COPYFROM),y
 sta (COPYTO),y
 sta SCREEN+999
-lda copystart+1
-cmp COPYFROM+1
+iny
 bne cloop
-lda copystart
-cmp COPYFROM
+inc COPYFROM+1
+inc COPYTO+1
+dex
 bne cloop
 
+lowonly:   
+  
+ldx COPYLEN
+beq endcopy
+
+clooplow:      
+lda (COPYFROM),y
+sta (COPYTO),y
+sta SCREEN+999
+iny
+dex
+bne clooplow
+
+endcopy:
+ldy #0
+ldx #0
 rts
 
 iposplus2:

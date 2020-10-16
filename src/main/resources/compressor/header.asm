@@ -3,7 +3,7 @@
 .byte $15 $08 $00 $00 $9e $32 $30 $37 $32 $3a $8f $20 $4d $4f $53 $43 $4f $4d $50 $00 $00 $00 $00
 
 MEMSTART=2049
-MEMEND=53100
+MEMEND=53248
 
 COPYFROM=$61
 COPYTO=$63
@@ -12,6 +12,7 @@ COPYLEN=$65
 DATAPOS=$69
 TOTALLEN=$6B
 COMPPOS=$6D
+
 
 SCREEN=$0400
 
@@ -33,7 +34,7 @@ sta COPYTO
 lda #>SCREEN
 sta COPYTO+1
 
-jsr copy
+jsr copydown
 
 sei
 lda $1
@@ -85,62 +86,87 @@ lda COMPPOS+1
 adc DATAPOS+1
 sta COMPPOS+1
 
-jsr copy
+jsr copyup
 
 lda tmpreg
 sta $1
 cli
 
-;rts
 jmp SCREEN
 
-copy:
-lda COPYTO
-clc
-adc COPYLEN
-sta COPYTO
-
-lda COPYTO+1
-adc COPYLEN+1
-sta COPYTO+1
-
-lda COPYFROM
-sta copystart
-clc
-adc COPYLEN
-sta COPYFROM
-
-lda COPYFROM+1
-sta copystart+1
-adc COPYLEN+1
+copyup:
+ldx COPYLEN+1
+cl
+txa
+adc COPYFROM+1
 sta COPYFROM+1
+clc
+txa
+adc COPYTO+1
+sta COPYTO+1
+inx
+ldy COPYLEN
+beq cskip3
+dey
+beq cskip2
 
-ldy #0
-loop:
-dec COPYTO
-bpl skip1
-lda COPYTO
-cmp #$ff
-bne skip1
-dec COPYTO+1
-skip1:
-dec COPYFROM
-bpl skip2
-lda COPYFROM
-cmp #$ff
-bne skip2
-dec COPYFROM+1
-skip2:
+cloop:      
 lda (COPYFROM),y
 sta (COPYTO),y
 sta SCREEN+999
-lda copystart+1
-cmp COPYFROM+1
-bne loop
-lda copystart
-cmp COPYFROM
-bne loop
+dey
+bne cloop
 
+cskip2:    
+lda (COPYFROM),y
+sta (COPYTO),y
+sta SCREEN+999
+  
+cskip3:  
+dey
+dec COPYFROM+1
+dec COPYTO+1
+dex
+bne cloop
+ldy #0
+ldy #0
+rts
+
+
+copydown:
+
+ldy #0
+ldx COPYLEN+1
+beq cdlowonly
+
+cdloop:   
+
+lda (COPYFROM),y
+sta (COPYTO),y
+sta SCREEN+999
+iny
+bne cdloop
+inc COPYFROM+1
+inc COPYTO+1
+dex
+bne cdloop
+
+cdlowonly:   
+  
+ldx COPYLEN
+beq cdendcopy
+
+cdlooplow:      
+lda (COPYFROM),y
+sta (COPYTO),y
+sta SCREEN+999
+iny
+dex
+bne cdlooplow
+
+cdendcopy:
+ldy #0
+ldx #0
 rts
 
 tmpreg:
