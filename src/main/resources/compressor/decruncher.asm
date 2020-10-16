@@ -20,7 +20,7 @@ RUNCALL=$A871
 sei
 lda $1
 sta tmpreg
-and $fe
+and #$fe
 sta $1
 
 lda COMPPOS
