@@ -20,8 +20,10 @@ import com.sixtyfour.system.ProgramPart;
 
 /**
  * A simple compressor that can compress and uncompress byte[]-arrays based on a
- * simple and most likely inefficient sliding window algorithm that I came up
- * with while being half asleep.
+ * simple and most likely inefficient sliding window pattern matching algorithm
+ * that I came up with while being half asleep. It uses a pattern based
+ * approach, no huffman encoding. That's why it's less efficient but should
+ * decompress rather quickly.
  * 
  * Not used for anything ATM, but it might get some use later...
  * 
