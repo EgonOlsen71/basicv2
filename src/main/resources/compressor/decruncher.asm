@@ -270,7 +270,6 @@ cloop:
 
 lda (COPYFROM),y
 sta (COPYTO),y
-sta SCREEN+999
 iny
 bne cloop
 inc COPYFROM+1
@@ -286,7 +285,6 @@ beq endcopy
 clooplow:      
 lda (COPYFROM),y
 sta (COPYTO),y
-sta SCREEN+999
 iny
 dex
 bne clooplow

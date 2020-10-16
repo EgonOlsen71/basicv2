@@ -113,14 +113,12 @@ beq cskip2
 cloop:      
 lda (COPYFROM),y
 sta (COPYTO),y
-sta SCREEN+999
 dey
 bne cloop
 
 cskip2:    
 lda (COPYFROM),y
 sta (COPYTO),y
-sta SCREEN+999
   
 cskip3:  
 dey
@@ -143,7 +141,6 @@ cdloop:
 
 lda (COPYFROM),y
 sta (COPYTO),y
-sta SCREEN+999
 iny
 bne cdloop
 inc COPYFROM+1
@@ -159,7 +156,6 @@ beq cdendcopy
 cdlooplow:      
 lda (COPYFROM),y
 sta (COPYTO),y
-sta SCREEN+999
 iny
 dex
 bne cdlooplow

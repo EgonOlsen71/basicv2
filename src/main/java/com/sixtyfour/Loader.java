@@ -43,7 +43,7 @@ public class Loader {
 		try (InputStream is = new FileInputStream(new File(file))) {
 			return loadBlob(is);
 		} catch (Exception e) {
-			throw new RuntimeException("Failed to binary program file!", e);
+			throw new RuntimeException("Failed to load binary program file!", e);
 		}
 	}
 

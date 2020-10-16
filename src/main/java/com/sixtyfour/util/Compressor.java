@@ -32,7 +32,7 @@ public class Compressor {
 
 	public static boolean FAST = true;
 
-	private static final int MAX_WINDOW_SIZE = 32; //128
+	private static final int MAX_WINDOW_SIZE = 128; // 128
 	private static final int MIN_WINDOW_SIZE = 12;
 	private static final int CHUNK_SIZE = 32768;
 
@@ -46,7 +46,10 @@ public class Compressor {
 				"C:\\Users\\EgonOlsen\\Desktop\\++xam_c.prg");
 		testCompressor("E:\\src\\workspace2018\\Adventure\\build\\++brotquest.prg",
 				"C:\\Users\\EgonOlsen\\Desktop\\++brotquest_c.prg");
-		testCompressor("C:\\Users\\EgonOlsen\\Desktop\\++test.prg", "C:\\Users\\EgonOlsen\\Desktop\\++test_c.prg");
+		testCompressor("E:\\src\\workspace2018\\basicv2\\compiled\\++affine.prg",
+				"C:\\Users\\EgonOlsen\\Desktop\\++affine_c.prg");
+		testCompressor("E:\\src\\workspace2018\\basicv2\\compiled\\+xtris2.prg",
+				"C:\\Users\\EgonOlsen\\Desktop\\++xtris2_c.prg");
 
 	}
 
@@ -155,7 +158,7 @@ public class Compressor {
 		DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.ENGLISH);
 		DecimalFormat decFor = new DecimalFormat("###.##", symbols);
 
-		log("Bytes saved: " + (len-bos.length));
+		log("Bytes saved: " + (len - bos.length));
 		log("Compression ratio: 1:" + decFor.format(((float) len / bos.length)));
 		return bos;
 	}
