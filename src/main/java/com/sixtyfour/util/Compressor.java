@@ -25,8 +25,6 @@ import com.sixtyfour.system.ProgramPart;
  * approach, no huffman encoding. That's why it's less efficient but should
  * decompress rather quickly.
  * 
- * Not used for anything ATM, but it might get some use later...
- * 
  * @author EgonOlsen
  *
  */
@@ -34,16 +32,13 @@ public class Compressor {
 
 	public static boolean FAST = true;
 
-	private static final int MAX_WINDOW_SIZE = 128; // 128
+	private static final int MAX_WINDOW_SIZE_1 = 32;
+	private static final int MAX_WINDOW_SIZE_2 = 128;
 	private static final int MIN_WINDOW_SIZE = 12;
 	private static final int CHUNK_SIZE = 32768;
 
 	public static void main(String[] args) throws Exception {
 
-		// testCompressor("C:\\Users\\EgonOlsen\\Desktop\\test.txt");
-		// testCompressor("C:\\Users\\EgonOlsen\\Desktop\\++affine.prg");
-		// testCompressor("C:\\Users\\EgonOlsen\\Desktop\\affine.bas");
-		// testCompressor("C:\\Users\\EgonOlsen\\Desktop\\++corona.prg");
 		testCompressor("E:\\src\\workspace2018\\Adventure\\build\\++xam.prg",
 				"C:\\Users\\EgonOlsen\\Desktop\\++xam_c.prg");
 		testCompressor("E:\\src\\workspace2018\\Adventure\\build\\++brotquest.prg",
@@ -56,74 +51,12 @@ public class Compressor {
 	}
 
 	private static void testCompressor(String fileName, String resultFile) throws Exception {
-		log("Compressing " + fileName);
-		byte[] bytes = Loader.loadBlob(fileName);
+		byte[] bytes = loadProgram(fileName);
 
-		// Remove the prg header in this case...
-		bytes = Arrays.copyOfRange(bytes, 2, bytes.length);
-		byte[] compressedBytes = compress(bytes);
-		// byte[] uncompressedBytes = decompress(compressedBytes);
-		if (compressedBytes == null) {
-			return;
+		Program prg = compressAndLinkNative(bytes);
+		if (prg != null) {
+			FileWriter.writeAsPrg(prg, resultFile, false);
 		}
-		byte[] uncompressedBytes = decompressInMemory(compressedBytes);
-		log("Uncompressed size: " + uncompressedBytes.length);
-		log("Equals: " + Arrays.equals(bytes, uncompressedBytes));
-
-		// System.out.println(Integer.toHexString(compressedBytes[0] & 0xff));
-		// System.out.println(Integer.toHexString(compressedBytes[1] & 0xff));
-		// System.out.println(Integer.toHexString(compressedBytes[2] & 0xff));
-
-		Program prg = compileHeader();
-		ProgramPart first = prg.getParts().get(0);
-		ProgramPart pp = new ProgramPart();
-		pp.setBytes(convert(compressedBytes));
-		pp.setAddress(first.getEndAddress());
-		pp.setEndAddress(pp.getAddress() + pp.getBytes().length);
-		prg.addPart(pp);
-
-		FileWriter.writeAsPrg(prg, resultFile, false);
-	}
-
-	public static Program compileHeader() {
-
-		Assembler assy = new Assembler(
-				Loader.loadProgram(Compressor.class.getResourceAsStream("/compressor/decruncher.asm")));
-		assy.compile(new CompilerConfig());
-		ProgramPart prg = assy.getProgram().getParts().get(0);
-
-		String[] headerCode = Loader.loadProgram(Compressor.class.getResourceAsStream("/compressor/header.asm"));
-		List<String> code = new ArrayList<>(Arrays.asList(headerCode));
-		List<String> res = new ArrayList<>();
-
-		for (int i = 0; i < code.size(); i++) {
-			String line = code.get(i);
-			if (line.contains("{code}")) {
-				int[] bytes = prg.getBytes();
-				int cnt = 0;
-				String nl = ".byte";
-				for (int p = 0; p < bytes.length; p++) {
-					nl += " $" + Integer.toHexString(bytes[p] & 0xff);
-					cnt++;
-					if (cnt == 16) {
-						res.add(nl);
-						nl = ".byte";
-						cnt = 0;
-					}
-				}
-				if (nl.length() > 5) {
-					res.add(nl);
-				}
-			} else {
-				res.add(line);
-			}
-		}
-
-		// res.forEach(p -> System.out.println(p));
-
-		assy = new Assembler(res.toArray(new String[res.size()]));
-		assy.compile(new CompilerConfig());
-		return assy.getProgram();
 	}
 
 	public static int[] convert(byte[] bytes) {
@@ -134,9 +67,8 @@ public class Compressor {
 		return res;
 	}
 
-	public static byte[] compress(byte[] dump) {
+	public static byte[] compress(byte[] dump, int windowSize) {
 		long time = System.currentTimeMillis();
-		int windowSize = MAX_WINDOW_SIZE;
 		int minSize = MIN_WINDOW_SIZE;
 		int len = dump.length;
 		if (len > 65536) {
@@ -225,8 +157,8 @@ public class Compressor {
 	 * Decompresses the compressed data but unlike decompress(), it does that in one
 	 * block of 64K memory just like the real machine would have to do it.
 	 * 
-	 * @param bytes
-	 * @return
+	 * @param bytes the compressed data
+	 * @return the uncompressed data
 	 */
 	public static byte[] decompressInMemory(byte[] bytes) {
 		long time = System.currentTimeMillis();
@@ -251,11 +183,6 @@ public class Compressor {
 		int compPos = dataPos + data;
 		System.arraycopy(res, memStart, res, dataPos, totalLen);
 		int pos = memStart;
-
-		// System.out.println(dataPos+"/"+totalLen+"/"+compPos);
-		// for (int i=compPos; i<compPos+10; i++) {
-		// System.out.print(Integer.toHexString(res[i] & 0xff)+" ");
-		// }
 
 		for (int i = compPos; i < memEnd;) {
 			int start = readLowHigh(res, i) + memStart;
@@ -299,6 +226,91 @@ public class Compressor {
 				+ "ms! (" + byteCount + " bytes moved)");
 
 		return Arrays.copyOfRange(res, memStart, memStart + ucLen);
+	}
+
+	public static Program compressAndLinkNative(byte[] bytes) {
+		log("Trying to find best compression settings...");
+
+		byte[] compressedBytes = compress(bytes, MAX_WINDOW_SIZE_1);
+		byte[] compressedBytes2 = compress(bytes, MAX_WINDOW_SIZE_2);
+
+		if (compressedBytes == null) {
+			compressedBytes = compressedBytes2;
+		}
+		if (compressedBytes == null) {
+			return null;
+		}
+
+		if (compressedBytes2.length < compressedBytes.length) {
+			compressedBytes = compressedBytes2;
+			log("Setting 2 used!");
+		} else {
+			log("Setting 1 used!");
+		}
+
+		Program prg = compileHeader();
+		ProgramPart first = prg.getParts().get(0);
+		ProgramPart pp = new ProgramPart();
+		pp.setBytes(convert(compressedBytes));
+		pp.setAddress(first.getEndAddress());
+		pp.setEndAddress(pp.getAddress() + pp.getBytes().length);
+		prg.addPart(pp);
+
+		int size = pp.getEndAddress() - first.getAddress();
+		if (size >= bytes.length) {
+			log("No further compression possible!");
+			return null;
+		}
+
+		return prg;
+	}
+
+	public static byte[] loadProgram(String fileName) {
+		log("Compressing " + fileName);
+		byte[] bytes = Loader.loadBlob(fileName);
+		// Remove the prg header in this case...
+		bytes = Arrays.copyOfRange(bytes, 2, bytes.length);
+		return bytes;
+	}	private static Program compileHeader() {
+		log("Assembling decompressor...");
+		Assembler assy = new Assembler(
+				Loader.loadProgram(Compressor.class.getResourceAsStream("/compressor/decruncher.asm")));
+		assy.compile(new CompilerConfig());
+		ProgramPart prg = assy.getProgram().getParts().get(0);
+
+		log("Assembling decompression header...");
+		String[] headerCode = Loader.loadProgram(Compressor.class.getResourceAsStream("/compressor/header.asm"));
+		List<String> code = new ArrayList<>(Arrays.asList(headerCode));
+		List<String> res = new ArrayList<>();
+
+		for (int i = 0; i < code.size(); i++) {
+			String line = code.get(i);
+			if (line.contains("{code}")) {
+				int[] bytes = prg.getBytes();
+				int cnt = 0;
+				String nl = ".byte";
+				for (int p = 0; p < bytes.length; p++) {
+					nl += " $" + Integer.toHexString(bytes[p] & 0xff);
+					cnt++;
+					if (cnt == 16) {
+						res.add(nl);
+						nl = ".byte";
+						cnt = 0;
+					}
+				}
+				if (nl.length() > 5) {
+					res.add(nl);
+				}
+			} else {
+				res.add(line);
+			}
+		}
+
+		// res.forEach(p -> System.out.println(p));
+
+		assy = new Assembler(res.toArray(new String[res.size()]));
+		assy.compile(new CompilerConfig());
+		return assy.getProgram();
 	}
 
 	private static int moveData(byte[] res, int dataPos, int pos, int dataLen) {
@@ -385,7 +397,6 @@ public class Compressor {
 		List<Part> parts = new ArrayList<>();
 		byte[] covered = new byte[len];
 
-		int cnt = 0;
 		int chunkSize = CHUNK_SIZE;
 
 		for (int lenPart = Math.min(len, chunkSize); lenPart <= len; lenPart += chunkSize) {
@@ -394,7 +405,6 @@ public class Compressor {
 					if (covered[i] > 0) {
 						continue;
 					}
-					cnt++;
 					boolean match = true;
 
 					for (int p = 0; p < curSize; p++) {
@@ -451,7 +461,7 @@ public class Compressor {
 		});
 
 		// parts.forEach(p -> System.out.println(p));
-		log("Iterations taken: " + cnt);
+		// log("Iterations taken: " + cnt);
 
 		return parts;
 	}

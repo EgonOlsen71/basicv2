@@ -77,4 +77,9 @@ public class Platform64 implements PlatformProvider {
 	public int getBasicBufferAddress() {
 		return 820;
 	}
+	
+	@Override
+	public boolean supportsCompression() {
+		return true;
+	}
 }

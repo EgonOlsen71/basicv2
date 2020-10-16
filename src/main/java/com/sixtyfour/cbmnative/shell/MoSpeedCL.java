@@ -34,6 +34,7 @@ import com.sixtyfour.parser.cbmnative.UnTokenizer;
 import com.sixtyfour.system.FileWriter;
 import com.sixtyfour.system.Program;
 import com.sixtyfour.system.ProgramPart;
+import com.sixtyfour.util.Compressor;
 
 /**
  * Command line version of the native compiler
@@ -109,6 +110,9 @@ public class MoSpeedCL {
 		cfg.setFlipCasing(getOptionIntDefault("flipcase", cmds, false));
 		cfg.setLoopMode(getOption("loopopt", cmds) ? LoopMode.REMOVE : LoopMode.EXECUTE);
 
+		boolean compress = getOptionIntDefault("compression", cmds, false);
+		boolean multiPart = getOptionIntDefault("multipart", cmds, false);
+
 		holes = parseMemoryHoles(cmds);
 
 		cfg.setProgressListener(new DotPrintingProgressListener());
@@ -179,6 +183,16 @@ public class MoSpeedCL {
 				System.out.println("Target platform " + cmds.get("platform") + " not supported!");
 				exit(4);
 			}
+		}
+
+		if (!platform.supportsCompression() && compress) {
+			System.out.println("WARNING: This target platform doesn't support compression!");
+			compress = false;
+		}
+
+		if (compress && multiPart) {
+			System.out.println("WARNING: Compression isn't supported if the multipart option is enabled!");
+			compress = false;
 		}
 
 		String targetFile = "++" + new File(srcFile).getName().replace(".BAS", "").replace(".bas", "")
@@ -294,8 +308,7 @@ public class MoSpeedCL {
 				exit(15);
 			}
 		}
-		writeTargetFiles(memConfig, targetFile, nCode, assy, platform, addrHeader,
-				getOptionIntDefault("multipart", cmds, false));
+		writeTargetFiles(memConfig, targetFile, nCode, assy, platform, addrHeader, multiPart, compress);
 		System.out.println(srcFile + " compiled in " + (System.currentTimeMillis() - s) + "ms!");
 
 		if (cmds.containsKey("vice")) {
@@ -343,9 +356,9 @@ public class MoSpeedCL {
 	}
 
 	private static void writeTargetFiles(MemoryConfig memConfig, String targetFile, List<String> ncode, Assembler assy,
-			PlatformProvider platform, boolean addrHeader, boolean multiPart) {
+			PlatformProvider platform, boolean addrHeader, boolean multiPart, boolean compress) {
 		if (is6502Platform(platform)) {
-			write6502(memConfig, targetFile, assy, platform, addrHeader, multiPart);
+			write6502(memConfig, targetFile, assy, platform, addrHeader, multiPart, compress);
 			// Check out of memory on write time
 			int se = memConfig.getStringEnd();
 			if (se <= 0) {
@@ -399,15 +412,32 @@ public class MoSpeedCL {
 	}
 
 	private static void write6502(MemoryConfig memConfig, String targetFile, Assembler assy, PlatformProvider platform,
-			boolean addrHeader, boolean multiPart) {
+			boolean addrHeader, boolean multiPart, boolean compress) {
 		try {
 			if (!multiPart) {
 				System.out.println("Writing target file: " + targetFile);
-				FileWriter.writeAsPrg(assy.getProgram(), targetFile,
-						memConfig.getProgramStart() == -1
-								|| (memConfig.getProgramStart() < platform.getMaxHeaderAddress()
-										&& memConfig.getProgramStart() >= platform.getBaseAddress() + 23),
-						platform.getBaseAddress(), addrHeader);
+				boolean basicHeader = memConfig.getProgramStart() == -1
+						|| (memConfig.getProgramStart() < platform.getMaxHeaderAddress()
+								&& memConfig.getProgramStart() >= platform.getBaseAddress() + 23);
+				FileWriter.writeAsPrg(assy.getProgram(), targetFile, basicHeader, platform.getBaseAddress(),
+						addrHeader);
+				if (compress) {
+					if (!basicHeader) {
+						System.out.println(
+								"WARNING: Compression isn't supported for programs not starting at the beginning of BASIC memory!");
+					} else {
+						byte[] bytes = Compressor.loadProgram(targetFile);
+						Program compressed = Compressor.compressAndLinkNative(bytes);
+						if (compressed != null) {
+							String resultFile = targetFile.replace(".prg", "-c.prg");
+							System.out.println("Writing compressed target file: " + resultFile);
+							FileWriter.writeAsPrg(compressed, resultFile, false);
+						} else {
+							System.out.println(
+									"Unable to compress the program any further, no compressed version has been created!");
+						}
+					}
+				}
 			} else {
 				System.out.println("Writing multiple target files!");
 				Program tmp = new Program();

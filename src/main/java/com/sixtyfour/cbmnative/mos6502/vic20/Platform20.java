@@ -91,4 +91,9 @@ public class Platform20 implements PlatformProvider {
 	public int getBasicBufferAddress() {
 		return 820;
 	}
+	
+	@Override
+	public boolean supportsCompression() {
+		return false;
+	}
 }

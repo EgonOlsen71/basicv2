@@ -77,4 +77,9 @@ public class PlatformPs implements PlatformProvider {
 		return 0;
 	}
 
+	@Override
+	public boolean supportsCompression() {
+		return false;
+	}
+	
 }

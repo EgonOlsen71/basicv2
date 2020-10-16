@@ -95,5 +95,12 @@ public interface PlatformProvider {
 	 * @return
 	 */
 	int getBasicBufferAddress();
+	
+	/**
+	 * If true, the option to compress the compiled code is available on this platform
+	 * 
+	 * @return
+	 */
+	boolean supportsCompression();
 
 }

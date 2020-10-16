@@ -90,9 +90,14 @@ public class PlatformX16 implements PlatformProvider {
 			return null;
 		}
 	}
-	
+
 	@Override
 	public int getBasicBufferAddress() {
 		return 1024;
+	}
+
+	@Override
+	public boolean supportsCompression() {
+		return false;
 	}
 }
