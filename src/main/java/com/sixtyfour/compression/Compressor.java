@@ -30,7 +30,7 @@ import com.sixtyfour.system.ProgramPart;
  */
 public class Compressor {
 
-	public static boolean FAST = true;
+	private static final boolean FAST = true;
 
 	private static final int MAX_WINDOW_SIZE_1 = 32;
 	private static final int MAX_WINDOW_SIZE_2 = 128;
