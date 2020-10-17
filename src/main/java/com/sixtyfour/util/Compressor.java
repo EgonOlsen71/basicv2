@@ -169,65 +169,71 @@ public class Compressor {
 		int ucLen = readLowHigh(bytes, 4);
 
 		int memStart = 2049;
-		int memEnd = 53100;
+		int memEnd = 53248;
 		int headerOffset = 6;
 
 		int byteCount = 0;
 		int totalLen = compLen - headerOffset;
 
-		byte[] res = new byte[65536];
-		// Copy into memory just like it would be located on a real machine...
-		System.arraycopy(bytes, headerOffset, res, memStart, totalLen);
+		try {
 
-		// Copy compressed data to the end of memory...
-		int dataPos = memEnd - totalLen;
-		data -= headerOffset;
-		int compPos = dataPos + data;
-		System.arraycopy(res, memStart, res, dataPos, totalLen);
-		int pos = memStart;
+			byte[] res = new byte[65536];
+			// Copy into memory just like it would be located on a real machine...
+			System.arraycopy(bytes, headerOffset, res, memStart, totalLen);
 
-		for (int i = compPos; i < memEnd;) {
-			int start = readLowHigh(res, i) + memStart;
-			int target = 0;
-			i += 2;
-			do {
-				int len = res[i] & 0xFF;
-				i++;
-				target = 0;
-				if (len != 0) {
-					target = readLowHigh(res, i) + memStart;
-					int copyLen = target - pos;
-					if (copyLen != 0) {
-						// Copy uncompressed data back down into memory...
-						byteCount += moveData(res, dataPos, pos, copyLen);
-						dataPos += copyLen;
-						pos = target;
-					}
+			// Copy compressed data to the end of memory...
+			int dataPos = memEnd - totalLen;
+			data -= headerOffset;
+			int compPos = dataPos + data;
+			System.arraycopy(res, memStart, res, dataPos, totalLen);
+			int pos = memStart;
 
-					byteCount += moveData(res, start, target, len);
-					pos += len;
-					i += 2;
-				} else {
+			for (int i = compPos; i < memEnd;) {
+				int start = readLowHigh(res, i) + memStart;
+				int target = 0;
+				i += 2;
+				do {
+					int len = res[i] & 0xFF;
 					i++;
-				}
-			} while (target != 0);
+					target = 0;
+					if (len != 0) {
+						target = readLowHigh(res, i) + memStart;
+						int copyLen = target - pos;
+						if (copyLen != 0) {
+							// Copy uncompressed data back down into memory...
+							byteCount += moveData(res, dataPos, pos, copyLen);
+							dataPos += copyLen;
+							pos = target;
+						}
+
+						byteCount += moveData(res, start, target, len);
+						pos += len;
+						i += 2;
+					} else {
+						i++;
+					}
+				} while (target != 0);
+			}
+
+			int left = compPos - dataPos;
+			if (left > 0) {
+				byteCount += moveData(res, dataPos, pos, left);
+				pos += left;
+			}
+
+			int newLen = pos - memStart;
+			if (newLen != ucLen) {
+				return null;
+			}
+
+			log("Decompressed from " + compLen + " to " + ucLen + " bytes in " + (System.currentTimeMillis() - time)
+					+ "ms! (" + byteCount + " bytes moved)");
+
+			return Arrays.copyOfRange(res, memStart, memStart + ucLen);
+
+		} catch (ArrayIndexOutOfBoundsException e) {
+			return null;
 		}
-
-		int left = compPos - dataPos;
-		if (left > 0) {
-			byteCount += moveData(res, dataPos, pos, left);
-			pos += left;
-		}
-
-		int newLen = pos - memStart;
-		if (newLen != ucLen) {
-			throw new RuntimeException("Failed to decompress, size mismatch: " + newLen + "/" + ucLen);
-		}
-
-		log("Decompressed from " + compLen + " to " + ucLen + " bytes in " + (System.currentTimeMillis() - time)
-				+ "ms! (" + byteCount + " bytes moved)");
-
-		return Arrays.copyOfRange(res, memStart, memStart + ucLen);
 	}
 
 	public static Program compressAndLinkNative(byte[] bytes) {
@@ -248,6 +254,12 @@ public class Compressor {
 			log("Setting 2 used!");
 		} else {
 			log("Setting 1 used!");
+		}
+
+		byte[] uncompressed = decompressInMemory(compressedBytes);
+		if (uncompressed == null || !Arrays.equals(uncompressed, bytes)) {
+			log("Uncompressed data and data table overlap, no compression performed!");
+			return null;
 		}
 
 		Program prg = compileHeader();
@@ -273,7 +285,9 @@ public class Compressor {
 		// Remove the prg header in this case...
 		bytes = Arrays.copyOfRange(bytes, 2, bytes.length);
 		return bytes;
-	}	private static Program compileHeader() {
+	}
+
+	private static Program compileHeader() {
 		log("Assembling decompressor...");
 		Assembler assy = new Assembler(
 				Loader.loadProgram(Compressor.class.getResourceAsStream("/compressor/decruncher.asm")));

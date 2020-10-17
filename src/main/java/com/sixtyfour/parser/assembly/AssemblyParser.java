@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import com.sixtyfour.Logger;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.Variable;
 import com.sixtyfour.elements.mnemonics.Mnemonic;
@@ -71,7 +72,7 @@ public class AssemblyParser {
 		}
 		return sb.toString().trim();
 	}
-	
+
 	/**
 	 * Replaces TABS in the source code with spaces.
 	 * 
@@ -164,7 +165,7 @@ public class AssemblyParser {
 
 		if (!number.startsWith("$") && !number.startsWith("%") && !Character.isDigit(number.charAt(0))
 				&& !(number.startsWith("-"))) {
-			
+
 			ConstantValue cv = ccon.get(number);
 			if (cv != null) {
 				// System.out.println("Assigned: "+cv.getValue());
@@ -529,10 +530,6 @@ public class AssemblyParser {
 		for (String name : names2vars.keySet()) {
 			ConstantValue cv = ccon.get(name);
 			if (cv == null) {
-				/*
-				 * if (raiseError) { throw new RuntimeException( "Undefined constant: " + name);
-				 * }
-				 */
 				return new ConstantDynamic(left, right, config, ccon);
 			}
 			machine.add(new Variable(names2vars.get(name), ccon.get(name).getValue()));
@@ -545,6 +542,8 @@ public class AssemblyParser {
 			if (raiseError) {
 				throw nfe;
 			}
+			Logger.log("Failed to evaluate function " + res + ", maybe a naming conflict with a BASIC function?");
+			Logger.log(nfe.getMessage());
 			return null;
 		}
 		int resultValue = ((Number) ressy.eval(machine)).intValue();
