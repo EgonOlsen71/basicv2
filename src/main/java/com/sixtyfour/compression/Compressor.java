@@ -1,4 +1,4 @@
-package com.sixtyfour.util;
+package com.sixtyfour.compression;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

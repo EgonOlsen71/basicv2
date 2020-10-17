@@ -25,6 +25,7 @@ import com.sixtyfour.cbmnative.mos6502.util.SourceProcessor;
 import com.sixtyfour.cbmnative.mos6502.vic20.Platform20;
 import com.sixtyfour.cbmnative.mos6502.x16.PlatformX16;
 import com.sixtyfour.cbmnative.powerscript.PlatformPs;
+import com.sixtyfour.compression.Compressor;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.config.LoopMode;
 import com.sixtyfour.config.MemoryConfig;
@@ -34,7 +35,6 @@ import com.sixtyfour.parser.cbmnative.UnTokenizer;
 import com.sixtyfour.system.FileWriter;
 import com.sixtyfour.system.Program;
 import com.sixtyfour.system.ProgramPart;
-import com.sixtyfour.util.Compressor;
 
 /**
  * Command line version of the native compiler
