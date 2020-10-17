@@ -40,36 +40,30 @@ public class Compressor {
 	public static void main(String[] args) throws Exception {
 
 		testCompressor("E:\\src\\workspace2018\\Adventure\\build\\++xam.prg",
-				"C:\\Users\\EgonOlsen\\Desktop\\++xam_c.prg");
+				"C:\\Users\\EgonOlsen\\Desktop\\++xam_c.prg", -1);
 		testCompressor("E:\\src\\workspace2018\\Adventure\\build\\++brotquest.prg",
-				"C:\\Users\\EgonOlsen\\Desktop\\++brotquest_c.prg");
+				"C:\\Users\\EgonOlsen\\Desktop\\++brotquest_c.prg", -1);
 		testCompressor("E:\\src\\workspace2018\\basicv2\\compiled\\++affine.prg",
-				"C:\\Users\\EgonOlsen\\Desktop\\++affine_c.prg");
+				"C:\\Users\\EgonOlsen\\Desktop\\++affine_c.prg", -1);
 		testCompressor("E:\\src\\workspace2018\\basicv2\\compiled\\+xtris2.prg",
-				"C:\\Users\\EgonOlsen\\Desktop\\++xtris2_c.prg");
+				"C:\\Users\\EgonOlsen\\Desktop\\++xtris2_c.prg", -1);
 		testCompressor("E:\\src\\workspace2018\\basicv2\\compiled\\+19 - StarDuel.prg",
-				"C:\\Users\\EgonOlsen\\Desktop\\++StarDuel_c.prg");
+				"C:\\Users\\EgonOlsen\\Desktop\\++StarDuel_c.prg", -1);
+		testCompressor("E:\\src\\workspace2018\\basicv2\\compiled\\+30 - Invaders_15000.prg",
+				"C:\\Users\\EgonOlsen\\Desktop\\++Invaders_c.prg", 15000);
 
 	}
 
-	private static void testCompressor(String fileName, String resultFile) throws Exception {
+	private static void testCompressor(String fileName, String resultFile, int startAddr) throws Exception {
 		byte[] bytes = loadProgram(fileName);
 
-		Program prg = compressAndLinkNative(bytes);
+		Program prg = compressAndLinkNative(bytes, startAddr);
 		if (prg != null) {
 			FileWriter.writeAsPrg(prg, resultFile, false);
 		}
 	}
 
-	public static int[] convert(byte[] bytes) {
-		int[] res = new int[bytes.length];
-		for (int i = 0; i < bytes.length; i++) {
-			res[i] = bytes[i] & 0xff;
-		}
-		return res;
-	}
-
-	public static byte[] compress(byte[] dump, int windowSize) {
+	public static byte[] compress(byte[] dump, int windowSize, boolean watchSize) {
 		long time = System.currentTimeMillis();
 		int minSize = MIN_WINDOW_SIZE;
 		int len = dump.length;
@@ -83,7 +77,7 @@ public class Compressor {
 
 		byte[] bos = compress(parts, dump);
 
-		if (bos.length >= len) {
+		if (bos.length >= len && watchSize) {
 			log("No further compression possible!");
 			return null;
 		}
@@ -236,11 +230,11 @@ public class Compressor {
 		}
 	}
 
-	public static Program compressAndLinkNative(byte[] bytes) {
+	public static Program compressAndLinkNative(byte[] bytes, int startAddr) {
 		log("Trying to find best compression settings...");
 
-		byte[] compressedBytes = compress(bytes, MAX_WINDOW_SIZE_1);
-		byte[] compressedBytes2 = compress(bytes, MAX_WINDOW_SIZE_2);
+		byte[] compressedBytes = compress(bytes, MAX_WINDOW_SIZE_1, startAddr == -1);
+		byte[] compressedBytes2 = compress(bytes, MAX_WINDOW_SIZE_2, startAddr == -1);
 
 		if (compressedBytes == null) {
 			compressedBytes = compressedBytes2;
@@ -262,7 +256,7 @@ public class Compressor {
 			return null;
 		}
 
-		Program prg = compileHeader();
+		Program prg = compileHeader(startAddr);
 		ProgramPart first = prg.getParts().get(0);
 		ProgramPart pp = new ProgramPart();
 		pp.setBytes(convert(compressedBytes));
@@ -273,7 +267,9 @@ public class Compressor {
 		int size = pp.getEndAddress() - first.getAddress();
 		if (size >= bytes.length) {
 			log("No further compression possible!");
-			return null;
+			if (startAddr == -1) {
+				return null;
+			}
 		}
 
 		return prg;
@@ -287,10 +283,19 @@ public class Compressor {
 		return bytes;
 	}
 
-	private static Program compileHeader() {
+	private static Program compileHeader(int startAddr) {
 		log("Assembling decompressor...");
-		Assembler assy = new Assembler(
-				Loader.loadProgram(Compressor.class.getResourceAsStream("/compressor/decruncher.asm")));
+
+		String[] decrunchCode = Loader.loadProgram(Compressor.class.getResourceAsStream("/compressor/decruncher.asm"));
+		if (startAddr > 0) {
+			// set SYSADDR flag/value if needed. Otherwise, the decruncher will just call
+			// RUN
+			List<String> code = new ArrayList<>(Arrays.asList(decrunchCode));
+			code.add(1, "SYSADDR=" + startAddr);
+			decrunchCode = code.toArray(new String[code.size()]);
+		}
+
+		Assembler assy = new Assembler(decrunchCode);
 		assy.compile(new CompilerConfig());
 		ProgramPart prg = assy.getProgram().getParts().get(0);
 
@@ -488,6 +493,14 @@ public class Compressor {
 
 	private static void log(String txt) {
 		System.out.println(txt);
+	}
+
+	private static int[] convert(byte[] bytes) {
+		int[] res = new int[bytes.length];
+		for (int i = 0; i < bytes.length; i++) {
+			res[i] = bytes[i] & 0xff;
+		}
+		return res;
 	}
 
 	private static class Part {

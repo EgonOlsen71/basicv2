@@ -3735,7 +3735,7 @@ FFADD_MANSUB2
          	LDA 1,Y
          	SBC 1,X
          	STA FACHO
-         	BCS FNORMAL
+         	BCS FCNORMAL
 
          	LDA FACSGN
          	EOR #$FF
@@ -3758,16 +3758,16 @@ FFADD_MANSUB2
          	CLC
          	ADC #1
          	STA FACOV
-         	BNE FNORMAL
+         	BNE FCNORMAL
          	INC FACLO
-         	BNE FNORMAL
+         	BNE FCNORMAL
          	INC FACMO
-         	BNE FNORMAL
+         	BNE FCNORMAL
          	INC FACMOH
-         	BNE FNORMAL
+         	BNE FCNORMAL
          	INC FACHO
 
-FNORMAL  	BIT FACHO
+FCNORMAL  	BIT FACHO
          	BMI FFADD_RET       ; JUMP IF NUMBER IS ALREADY NORMALIZED.
 
          	LDA #0         		; NUMBER OF BITS ROTATED.
@@ -3966,7 +3966,7 @@ FFMUL_FIN
          	LDA RESLO
          	STA FACOV
 
-         	JMP FNORMAL    		; IN BASIC/XADD.S
+         	JMP FCNORMAL    		; IN BASIC/XADD.S
 MUL10
 
          	JSR ARGFAC      	; ARG = FAC; LEAVES EXPONENT IN A REGISTER.

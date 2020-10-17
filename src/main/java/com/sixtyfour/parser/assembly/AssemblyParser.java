@@ -542,8 +542,6 @@ public class AssemblyParser {
 			if (raiseError) {
 				throw nfe;
 			}
-			Logger.log("Failed to evaluate function " + res + ", maybe a naming conflict with a BASIC function?");
-			Logger.log(nfe.getMessage());
 			return null;
 		}
 		int resultValue = ((Number) ressy.eval(machine)).intValue();

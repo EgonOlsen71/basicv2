@@ -422,20 +422,16 @@ public class MoSpeedCL {
 				FileWriter.writeAsPrg(assy.getProgram(), targetFile, basicHeader, platform.getBaseAddress(),
 						addrHeader);
 				if (compress) {
-					if (!basicHeader) {
-						System.out.println(
-								"WARNING: Compression isn't supported for programs not starting at the beginning of BASIC memory!");
+					byte[] bytes = Compressor.loadProgram(targetFile);
+					Program compressed = Compressor.compressAndLinkNative(bytes,
+							basicHeader ? -1 : memConfig.getProgramStart());
+					if (compressed != null) {
+						String resultFile = targetFile.replace(".prg", "-c.prg");
+						System.out.println("Writing compressed target file: " + resultFile);
+						FileWriter.writeAsPrg(compressed, resultFile, false);
 					} else {
-						byte[] bytes = Compressor.loadProgram(targetFile);
-						Program compressed = Compressor.compressAndLinkNative(bytes);
-						if (compressed != null) {
-							String resultFile = targetFile.replace(".prg", "-c.prg");
-							System.out.println("Writing compressed target file: " + resultFile);
-							FileWriter.writeAsPrg(compressed, resultFile, false);
-						} else {
-							System.out.println(
-									"Unable to compress the program any further, no compressed version has been created!");
-						}
+						System.out.println(
+								"Unable to compress the program any further, no compressed version has been created!");
 					}
 				}
 			} else {

@@ -259,7 +259,7 @@ public class Assembler implements ProgramExecutor {
 		ccon.applyDelayedData(compileMachine);
 
 		if (lcon.hasDelayedLabels()) {
-			raiseError("Undefined label: " + lcon.getFirstDelayedLabel(), addr, cnt);
+			raiseError("Undefined label (maybe a naming conflict with a BASIC function?): " + lcon.getFirstDelayedLabel(), addr, cnt);
 		}
 
 		if (addr != startAddr) {
