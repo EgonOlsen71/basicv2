@@ -262,14 +262,24 @@ function NEXT {
 
 function ARRAYACCESS_REAL {
 	$global:X_REG = $global:G_REG[([math]::floor($global:X_REG))]
+	if ($global:X_REG -eq $null) {
+		$global:X_REG = 0
+	}
 }
 
 function ARRAYACCESS_INTEGER {
-	$global:X_REG = ([math]::floor($global:G_REG[([math]::floor($global:X_REG))]))
+	$global:X_REG = $global:G_REG[([math]::floor($global:X_REG))]
+	if ($global:X_REG -eq $null) {
+		$global:X_REG = 0
+	}
+	$global:X_REG=([math]::floor($global:X_REG))
 }
 
 function ARRAYACCESS_STRING {
 	$global:A_REG = $global:G_REG[([math]::floor($global:X_REG))]
+	if ($global:A_REG -eq $null) {
+		$global:A_REG = ""
+	}
 }
 
 function ARRAYSTORE_REAL {

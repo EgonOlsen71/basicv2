@@ -61,34 +61,37 @@ public class OptimizerJs implements Optimizer {
 				}
 
 				// Remove jumps to "empty" functions.
-				if (lines[0].startsWith("return") && lines[0].contains(" ") && (lines[4].startsWith("return")
-						&& lines[4].contains(" ")
-						|| (lines[5].startsWith("return") && lines[5].contains(" ") && lines[4].startsWith("//")))) {
-					if (lines[4].startsWith("//")) {
-						for (int pp = 4; pp < MAX_AHEAD - 1; pp++) {
-							lines[pp] = lines[pp + 1];
+				if (lines[4] != null) {
+					if (lines[0].startsWith("return") && lines[0].contains(" ")
+							&& (lines[4].startsWith("return") && lines[4].contains(" ")
+									|| (lines[5].startsWith("return") && lines[5].contains(" ")
+											&& lines[4].startsWith("//")))) {
+						if (lines[4].startsWith("//")) {
+							for (int pp = 4; pp < MAX_AHEAD - 1; pp++) {
+								lines[pp] = lines[pp + 1];
+							}
 						}
-					}
-					String label = lines[0].split(" ")[1].replace(";", "").trim();
-					String label4 = lines[4].split(" ")[1].replace(";", "").trim();
+						String label = lines[0].split(" ")[1].replace(";", "").trim();
+						String label4 = lines[4].split(" ")[1].replace(";", "").trim();
 
-					if (label.startsWith("\"")) {
-						label = label.substring(1, label.length() - 1);
-					} else {
-						label = "line_" + label;
-					}
+						if (label.startsWith("\"")) {
+							label = label.substring(1, label.length() - 1);
+						} else {
+							label = "line_" + label;
+						}
 
-					if (label4.startsWith("\"")) {
-						label4 = label4.substring(1, label4.length() - 1);
-					} else {
-						label4 = "line_" + label4;
-					}
-					if (lines[1].startsWith("}") && lines[2].startsWith("//")) {
-						if (lines[3].startsWith("this." + label + " = function")) {
-							if (lines[5].startsWith("}") && lines[6].startsWith("//")) {
-								if (lines[7].startsWith("this." + label4 + " = function")) {
-									replaced = true;
-									ret.add(lines[4]);
+						if (label4.startsWith("\"")) {
+							label4 = label4.substring(1, label4.length() - 1);
+						} else {
+							label4 = "line_" + label4;
+						}
+						if (lines[1].startsWith("}") && lines[2].startsWith("//")) {
+							if (lines[3].startsWith("this." + label + " = function")) {
+								if (lines[5].startsWith("}") && lines[6].startsWith("//")) {
+									if (lines[7].startsWith("this." + label4 + " = function")) {
+										replaced = true;
+										ret.add(lines[4]);
+									}
 								}
 							}
 						}

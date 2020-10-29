@@ -220,6 +220,15 @@ function CbmConsole() {
 		_selfy.charset=_selfy.createCharsetMapping();
 		_selfy.compiledCode=compiledCode;
 		
+		compiledCode.convert = function(c) {
+			if (c >= 'a' && c <= 'z') {
+				c = String.fromCharCode(c.charCodeAt(0) - 32);
+			} else if (c >= 'A' && c <= 'Z') {
+				c = String.fromCharCode(c.charCodeAt(0) + 32);
+			}
+			return c;
+		}
+		
 		compiledCode.out = function(val) {
 			if (val==null) {
 				return;

@@ -23,7 +23,6 @@ public abstract class JumpBaseJs extends GeneratorBaseJs {
 	@Override
 	public void generateCode(GeneratorContext context, String line, List<String> nCode, List<String> subCode,
 			Map<String, String> name2label) {
-		// Logger.log(line);
 		String[] parts = line.split(" ");
 		String label = parts[1];
 		if (label.equals("($JUMP)") && antiCmd != null) {
@@ -39,6 +38,9 @@ public abstract class JumpBaseJs extends GeneratorBaseJs {
 				String pre = "this.";
 				if (p1.equals("RETURN")) {
 					pre = "return this.";
+				}
+				if (p1.startsWith("$")) {
+					pre = "// " + pre;
 				}
 				nCode.add(pre + (cmd + " " + p1 + ((cmd.isEmpty() && !p1.endsWith(")")) ? "();" : ";")).trim());
 			}

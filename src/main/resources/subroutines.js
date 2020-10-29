@@ -6,6 +6,170 @@ this.timeOut=0;
 this.funcName = "PROGRAMSTART";
 this.batchSize=500;
 this.tmpy=0;
+this.disk=new Disk(this);
+
+function File() {
+	this.name;
+	this.content=new Array();
+}
+
+function FilePointer() {
+	this.channel=0;
+	this.file=null;
+	this.position=0;
+	this.disk=null;
+	this.master=null;
+	
+	this.readString = function() {
+		return this.readLine();
+	}
+	
+	this.readLine = function() {
+		var ret="";
+		var content=this.file.content;
+		for (var i=this.position; i<content.length; i++) {
+			var c=content[i];
+			this.position++;
+			c=this.master.convert(c);
+			if (c==',' || c==':' || c=='\n' || c=='\r') {
+				if (c=='\n' && i<content.length-1 && content [i+1]=='\r') {
+					this.position++;
+				}
+				if (c=='\r' && i<content.length-1 && content [i+1]=='\n') {
+					this.position++;
+				}
+				if (i==content.length-1) {
+					this.disk.flagError();
+				}
+				return ret;
+			}
+			ret=ret+c;
+		}
+		this.disk.flagError();
+		return ret;
+	}
+}
+
+function Disk(master) {
+	this.files=new Array();
+	this.openFiles=new Array();
+	this.status=0;
+	this.master=master;
+	
+	this.init = function() {
+		this.status=0;
+	}
+	
+	this.getStatus = function() {
+		return this.status;
+	}
+	
+	this.flagError = function() {
+		this.status=64;
+	}
+	
+	this.get = function(channel) {
+		for (var i=0; i<this.openFiles.length; i++) {
+			var file=this.openFiles[i];
+			if (file.channel==channel) {
+				return file;
+			}
+		}
+		console.log("Channel "+channel+" not open");
+		return null;
+	}
+	
+	this.open = function(channel, device, subAddr, name) {
+		this.close(channel);
+		
+		name=name.toLowerCase();
+		var parts=name.split(",");
+		var type="s";
+		var mode="r";
+		if (parts.length>1) {
+			name=parts[0];
+			if (parts.length==1) {
+				mode=parts[1];
+			}
+			if (parts.length==2) {
+				mode=parts[2];
+				type=parts[1];
+			}
+			if (mode.length>1) {
+				mode=mode.substring(0,1);
+			}
+		}
+		if (subAddr==0) {
+			mode="r";
+		}
+		if (subAddr==1) {
+			mode="w";
+		}
+		
+		var found=null;
+		for (var i=0; i<this.files.length; i++) {
+			var file=this.files[i];
+			if (file.name==name) {
+				found=file;
+				break;
+			}
+		}
+		
+		this.init();
+		
+		if (!found) {
+			found=new File();
+			found.name=name;
+			
+			if (mode=="r") {
+				var xhr = new XMLHttpRequest();
+				console.log("grabbing file "+name);
+				xhr.open('GET', name, false);
+				xhr.overrideMimeType("text/plain; charset=x-user-defined");
+				xhr.onload = function() {
+				    if (xhr.status === 200) {
+				        found.content=xhr.responseText.split('');
+				        //console.log("debug: "+xhr.responseText);
+				        console.log("file "+name+" loaded from remote");
+				    }
+				    else {
+				    	console.log("file "+name+" not found");
+				        found.content=new Array();
+				    }
+				};
+				xhr.send();
+			}
+			
+			this.files.push(found);
+		}
+		
+		if (mode=="w") {
+			found.content=new Array();
+			console.log("emtpy file "+name+" created");
+		}
+		
+		console.log("file "+name+" opened");
+		var pointer=new FilePointer();
+		pointer.file=found;
+		pointer.channel=channel;
+		pointer.position=0;
+		pointer.disk=this;
+		pointer.master=this.master;
+		this.openFiles.push(pointer);
+	}
+	
+	this.close = function(channel) {
+		this.init();
+		for (var i=0; i<this.openFiles.length; i++) {
+			var file=this.openFiles[i];
+			if (file.channel==channel) {
+				console.log("closed channel "+channel+"/"+file.file.name);
+				this.openFiles.splice(i, 1);
+				break;
+			}
+		}
+	}
+}
 
 this.getMemory = function() {
 	return this._memory;
@@ -244,14 +408,24 @@ this.NEXT = function(variable) {
 
 this.ARRAYACCESS_REAL = function() {
 	this.X_REG = this.G_REG[Math.floor(this.X_REG)];
+	if (this.X_REG==null) {
+		this.X_REG=0;
+	}
 }
 
 this.ARRAYACCESS_INTEGER = function() {
-	this.X_REG = Math.floor(this.G_REG[Math.floor(this.X_REG)]);
+	this.X_REG = this.G_REG[Math.floor(this.X_REG)];
+	if (this.X_REG==null) {
+		this.X_REG=0;
+	}
+	this.X_REG=Math.floor(this.X_REG);
 }
 
 this.ARRAYACCESS_STRING = function() {
 	this.A_REG = this.G_REG[Math.floor(this.X_REG)];
+	if (this.A_REG==null) {
+		this.A_REG="";
+	}
 }
 
 this.ARRAYSTORE_REAL = function() {
@@ -275,6 +449,9 @@ this.VAL = function() {
 }
 
 this.LEN = function() {
+	if (this.B_REG==null) {
+		this.B_REG="";
+	}
 	this.X_REG=this.B_REG.length;
 }
 
@@ -489,7 +666,7 @@ this.fill = function(num) {
 }
 
 this.READSTATUS = function() {
-	this.tmpy= 0;
+	this.tmpy= this.disk.getStatus();
 }
 
 this.RESTORE = function() {
@@ -521,11 +698,11 @@ this.FASTFOR = function() {
 }
 
 this.OPEN = function() {
-	console.log("[OPEN not supported for JS, call ignored: "+this.B_REG+"/"+this.X_REG+"/"+this.C_REG+"/"+this.D_REG+"]");
+	this.disk.open(this.X_REG, this.C_REG, this.D_REG, this.B_REG);
 }
 
 this.CLOSE = function() {
-	console.log("[CLOSE not supported for JS, call ignored: "+this.X_REG+"]");
+	this.disk.close(this.X_REG);
 }
 
 this.CMD = function() {
@@ -553,13 +730,19 @@ this.INTOUTCHANNEL = function() {
 }
 
 this.INPUTNUMBERCHANNEL = function() {
-	console.log("[INPUT# not supported for JS, call ignored]");
-	this.X_REG=0;
+	var fp=this.disk.get(this.C_REG);
+	var inp=fp.readString();
+	if (this.isNumeric(inp)) {
+		this.Y_REG=parseFloat(inp);
+		this.X_REG=0;
+	} else {
+		this.X_REG=-1;
+	}
 }
 
 this.INPUTSTRCHANNEL = function() {
-	console.log("[INPUT# not supported for JS, call ignored]");
-	this.A_REG="";
+	var fp=this.disk.get(this.C_REG);
+	this.A_REG=fp.readString();
 }
 
 this.GETSTRCHANNEL = function() {
@@ -654,4 +837,8 @@ this.out = function(txt) {
 	} else {
 		this._line += txt;
 	}
+}
+
+this.convert = function(c) {
+	return c;
 }
