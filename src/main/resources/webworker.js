@@ -228,6 +228,10 @@ function CbmConsole() {
 			for(var i=0; i<val.length; i++) {
 				var c=val.charAt(i);
 				var pos=_selfy.x+_selfy.width*_selfy.y;
+				
+				var col=_selfy.compiledCode.getMemory()[646];
+				_selfy.fontColor=col;
+				
 				if (c=='{') {
 					var end=val.indexOf('}', i);
 					if (end!=-1) {
@@ -253,6 +257,7 @@ function CbmConsole() {
 					_selfy.x=0;
 					_selfy.y++;
 				}
+				
 				if (_selfy.y>=_selfy.height) {
 					_selfy.y=_selfy.height-1;
 					for (var p=_selfy.width;p<_selfy.width*_selfy.height;p++) {
