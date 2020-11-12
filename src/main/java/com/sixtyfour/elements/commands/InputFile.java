@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.sixtyfour.cbmnative.NativeCompiler;
-import com.sixtyfour.cbmnative.Util;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.elements.Variable;
