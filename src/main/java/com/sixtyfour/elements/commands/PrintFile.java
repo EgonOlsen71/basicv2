@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.sixtyfour.cbmnative.NativeCompiler;
+import com.sixtyfour.cbmnative.Util;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.parser.Atom;
@@ -61,12 +62,14 @@ public class PrintFile extends Print {
 		List<String> expr = null;
 		List<String> before = new ArrayList<String>();
 
+		before.add("JSR LOCKCHANNEL");
 		expr = compiler.compileToPseudoCode(config, machine, fileNumber);
 
 		CodeContainer cc = new CodeContainer(before, expr, after);
 		List<CodeContainer> ccs = new ArrayList<CodeContainer>();
 		ccs.add(cc);
 		ccs.addAll(this.evalToCode(config, machine, "CHANNEL"));
+		ccs.addAll(Util.createSingleCommand("JSR UNLOCKCHANNEL"));
 		machine.setCurrentCommand(null);
 		return ccs;
 	}

@@ -20,6 +20,7 @@ ENDGIVEN	LDA #<FPSTACK
 			STA HIGHP
 			STY HIGHP+1
 			LDA #0
+			STA CHLOCKFLAG
 			STA LASTVAR
 			STA LASTVAR+1
 			JSR INITVARS
@@ -561,7 +562,7 @@ TAB			JSR TABSPCINIT
 			CMP #3
 			BEQ NORMALTAB2		; To screen? Normal TAB
 			JMP TABCHANNEL2
-NORMALTAB2	JSR CLRCH
+NORMALTAB2	JSR CLRCHNEW
 NORMALTAB	SEC
 			JMP TABSPC
 ;###################################
@@ -572,7 +573,7 @@ SPC			JSR TABSPCINIT
 			CMP #3
 			BEQ NORMALSPC2		; To screen? Normal SPC
 			JMP TABCHANNEL2
-NORMALSPC2	JSR CLRCH
+NORMALSPC2	JSR CLRCHNEW
 NORMALSPC	CLC
 			JMP TABSPC
 ;###################################
@@ -1257,7 +1258,7 @@ REROUTECMD	RTS
 ;###################################
 RESETROUTE	LDA CMD_NUM		; if CMD mode, disable channel output
 			BEQ RESETROUTECMD
-			JMP CLRCH
+			JMP CLRCHNEW
 RESETROUTECMD
 			RTS
 ;###################################
@@ -1410,7 +1411,7 @@ TABOUT		JSR REROUTE
 			BEQ NORMALTABOUT2		; To screen? Normal TAB
 			JMP TABOUTCHANNEL2
 NORMALTABOUT2
-			JSR CLRCH
+			JSR CLRCHNEW
 NORMALTABOUT
 			SEC
 			JSR CRSRPOS
@@ -3004,7 +3005,26 @@ CHECKARGOR2	CMP #$81
 			JMP ARGFAC		; ARG is 1, so just copy it to FAC and exit (implicit)
 NORMALOR	JMP FACOR
 ;###################################
+LOCKCHANNEL
+			PHA
+			LDA #$FF
+			STA CHLOCKFLAG
+			PLA
+			RTS
+;##################################
+UNLOCKCHANNEL
+			PHA
+			LDA #0
+			STA CHLOCKFLAG
+			PLA
+			JMP CLRCH
+;###################################
 INITOUTCHANNEL
+			LDA CHLOCKFLAG
+			BEQ INITOUT2
+			CMP #$FF
+			BNE SKIPINITCH
+INITOUT2				
 			LDA #<C_REG
 			LDY #>C_REG
 			JSR REALFAC
@@ -3016,7 +3036,10 @@ INITOUTCHANNEL
 			LDY #0
 			STY CMD_NUM			; Reset CMD channel
 CMDNEQUAL	STA CHANNEL
+			STA CHLOCKFLAG
 			JMP CHKOUT
+SKIPINITCH
+			RTS
 ;###################################
 INITINCHANNEL
 			LDA IOCHANNEL
@@ -3030,17 +3053,26 @@ INITINCHANNEL
 			TYA
 			TAX
 			STA CHANNEL
+			STA CHLOCKFLAG
 			JMP CHKIN
+			RTS
+;###################################
+CLRCHNEW
+			LDA CHLOCKFLAG
+			BNE SKIPCLRCH
+			JMP CLRCH
+SKIPCLRCH	
+			RTS			
 ;###################################
 REALOUTCHANNEL
 			JSR INITOUTCHANNEL
 			JSR REALOUT
-			JMP CLRCH
+			JMP CLRCHNEW
 ;###################################
 INTOUTCHANNEL
 			JSR INITOUTCHANNEL
 			JSR INTOUT
-			JMP CLRCH
+			JMP CLRCHNEW
 ;###################################
 GETSTRCHANNEL
 			JSR INITINCHANNEL
@@ -3065,12 +3097,12 @@ INPUTNUMBERCHANNEL
 STROUTCHANNEL
 			JSR INITOUTCHANNEL
 			JSR STROUT
-			JMP CLRCH
+			JMP CLRCHNEW
 ;###################################
 LINEBREAKCHANNEL
 			JSR INITOUTCHANNEL
 			JSR LINEBREAK
-			JMP CLRCH
+			JMP CLRCHNEW
 ;###################################
 SPCCHANNEL
 			JSR INITOUTCHANNEL
@@ -3078,7 +3110,7 @@ SPCCHANNEL
 			CMP #3		; To the screen?
 			BEQ SPCSCREEN
 			JMP TABCHANNEL2
-SPCSCREEN	JSR CLRCH
+SPCSCREEN	JSR CLRCHNEW
 			JMP SPC
 ;###################################
 TABCHANNEL
@@ -3099,7 +3131,7 @@ TABCHANNEL2	LDA IOCHANNEL
 			TAX
 			JMP EXITCHANNEL
 TABSCREEN
-			JSR CLRCH
+			JSR CLRCHNEW
 			JMP TAB
 ;###################################
 TABOUTCHANNEL
@@ -3115,12 +3147,12 @@ TABOUTCHANNEL2
 			LDX #10
 			JMP EXITCHANNEL
 TABOUTSCREEN
-			JSR CLRCH
+			JSR CLRCHNEW
 			JMP TABOUT
 ;###################################
 EXITCHANNEL	CLC
 			JSR TABSPC
-			JSR CLRCH
+			JSR CLRCHNEW
 			LDA STORE1
 			STA IOCHANNEL
 			RTS
@@ -3368,7 +3400,7 @@ SYNTAXERROR
 			JMP ERRSYN
 ;###################################
 FILENOTFOUND
-			JSR CLRCH
+			JSR CLRCHNEW
 			JMP FNFOUT
 FNFTXT		.TEXT "i/o error"
    			.BYTE $0

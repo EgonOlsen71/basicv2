@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.sixtyfour.cbmnative.NativeCompiler;
+import com.sixtyfour.cbmnative.Util;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.elements.Variable;
@@ -66,7 +67,7 @@ public class InputFile extends Input {
 		List<String> after = new ArrayList<String>();
 		List<String> expr = null;
 		List<String> before = new ArrayList<String>();
-
+		
 		expr = compiler.compileToPseudoCode(config, machine, fileNumber);
 
 		CodeContainer cc = new CodeContainer(before, expr, after);

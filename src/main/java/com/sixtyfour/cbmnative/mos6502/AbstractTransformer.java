@@ -468,6 +468,7 @@ public abstract class AbstractTransformer implements Transformer {
 		res.add("FORSTACKP\t.WORD FORSTACK");
 		res.add("DATASP\t.WORD DATAS");
 		res.add("LASTVAR\t.WORD 0");
+		res.add("CHLOCKFLAG\t.BYTE 0");
 		res.add("LASTVARP\t.WORD 0");
 		res.add("HIGHP\t.WORD STRBUF");
 		res.add("STRBUFP\t.WORD STRBUF");
