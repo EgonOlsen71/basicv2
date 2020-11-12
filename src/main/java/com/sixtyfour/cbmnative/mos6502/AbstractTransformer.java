@@ -463,12 +463,12 @@ public abstract class AbstractTransformer implements Transformer {
 		res.add("REAL_CONST_ONE\t.REAL 1.0");
 		res.add("REAL_CONST_ZERO\t.REAL 0.0");
 		res.add("REAL_CONST_MINUS_ONE\t.REAL -1.0");
+		res.add("CHLOCKFLAG\t.BYTE 0");
 		res.add("EMPTYSTR\t.BYTE 0");
 		res.add("FPSTACKP\t.WORD FPSTACK");
 		res.add("FORSTACKP\t.WORD FORSTACK");
 		res.add("DATASP\t.WORD DATAS");
 		res.add("LASTVAR\t.WORD 0");
-		res.add("CHLOCKFLAG\t.BYTE 0");
 		res.add("LASTVARP\t.WORD 0");
 		res.add("HIGHP\t.WORD STRBUF");
 		res.add("STRBUFP\t.WORD STRBUF");
