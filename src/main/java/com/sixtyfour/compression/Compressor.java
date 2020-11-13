@@ -460,7 +460,7 @@ public class Compressor {
 					largest = 0;
 				} else {
 					if (fastMode) {
-						windowPos += Math.max(largest, 1);
+						windowPos += Math.max(largest>>1, 1);
 						if (windowPos + windowSize >= lenPart) {
 							windowPos -= (windowPos + windowSize - lenPart);
 						}
