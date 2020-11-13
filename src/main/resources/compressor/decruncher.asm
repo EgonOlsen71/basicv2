@@ -15,7 +15,8 @@ COPYFROM=$61
 COPYTO=$63
 COPYLEN=$65
 
-RUNCALL=$A871
+RESETEXE=$A659
+RUNCALL=$A7AE
 NEWCALL=$A644
 ENDCALL=$A834
 
@@ -260,7 +261,8 @@ endfor:
 		lda tmpreg
 		sta $1
 		cli
-		jmp RUNCALL
+		JSR RESETEXE
+		JMP RUNCALL
 		</IF>
 		
 		; Somewhere else in memory, then copy up and jump into it
