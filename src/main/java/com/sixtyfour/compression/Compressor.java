@@ -245,8 +245,6 @@ public class Compressor {
 			return null;
 		}
 
-		System.out.println(compressedBytes + "/" + compressedBytes2);
-
 		if (compressedBytes2.length < compressedBytes.length) {
 			compressedBytes = compressedBytes2;
 			log("Setting 2 used!");
