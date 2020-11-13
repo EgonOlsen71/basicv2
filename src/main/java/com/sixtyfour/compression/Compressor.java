@@ -238,10 +238,14 @@ public class Compressor {
 
 		if (compressedBytes == null) {
 			compressedBytes = compressedBytes2;
+		} else if (compressedBytes2 == null) {
+			compressedBytes2 = compressedBytes;
 		}
 		if (compressedBytes == null) {
 			return null;
 		}
+
+		System.out.println(compressedBytes + "/" + compressedBytes2);
 
 		if (compressedBytes2.length < compressedBytes.length) {
 			compressedBytes = compressedBytes2;
