@@ -422,7 +422,7 @@ public class Compressor {
 
 		int chunkSize = CHUNK_SIZE;
 
-		for (int lenPart = Math.min(len, chunkSize); lenPart <= len; lenPart += chunkSize) {
+		for (int lenPart = Math.min(len, chunkSize); lenPart <= len;) {
 			do {
 				for (int i = windowPos + curSize; i < lenPart - curSize; i++) {
 					if (covered[i] > 0) {
@@ -460,7 +460,7 @@ public class Compressor {
 					largest = 0;
 				} else {
 					if (fastMode) {
-						windowPos += Math.max(largest>>1, 1);
+						windowPos += Math.max(largest >> 1, 1);
 						if (windowPos + windowSize >= lenPart) {
 							windowPos -= (windowPos + windowSize - lenPart);
 						}
@@ -473,6 +473,12 @@ public class Compressor {
 				}
 			} while (windowPos + curSize < lenPart);
 			windowPos = lenPart - curSize;
+
+			if (lenPart < len && lenPart + chunkSize > len) {
+				lenPart = len;
+			} else {
+				lenPart += chunkSize;
+			}
 		}
 		Collections.sort(parts, new Comparator<Part>() {
 
