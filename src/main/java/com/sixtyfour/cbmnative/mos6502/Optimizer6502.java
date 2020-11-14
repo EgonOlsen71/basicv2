@@ -749,6 +749,16 @@ public class Optimizer6502 implements Optimizer {
 						"JSR FACMUL"));
 				this.add(new Pattern(false, "Combine load and sub", new String[] { "JSR MEMSUB" }, "JSR MEMARG",
 						"JSR FACSUB"));
+
+				this.add(new Pattern(false, "Swap AND order",
+						new String[] { "{LINE0}", "{LINE1}", "{LINE2}", "{LINE3}", "{LINE4}", "{LINE8}", "{LINE9}" },
+						"LDX #<X_REG", "LDY #>X_REG", "JSR FACMEM", "LDA #<{MEM0}", "LDY #>{MEM0}", "JSR REALFAC",
+						"LDA #<X_REG", "LDY #>X_REG", "JSR MEMARG", "JSR FASTAND"));
+				this.add(new Pattern(false, "Swap OR order",
+						new String[] { "{LINE0}", "{LINE1}", "{LINE2}", "{LINE3}", "{LINE4}", "{LINE8}", "{LINE9}" },
+						"LDX #<X_REG", "LDY #>X_REG", "JSR FACMEM", "LDA #<{MEM0}", "LDY #>{MEM0}", "JSR REALFAC",
+						"LDA #<X_REG", "LDY #>X_REG", "JSR MEMARG", "JSR FASTOR"));
+
 				// This optimizes stuff like: a=i*1:if a>1...by not loading a again for the if
 				// if it's already in the FAC: It has to cross the NOP gap between the command
 				// to do this though...

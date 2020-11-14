@@ -72,14 +72,25 @@ public class NativeOptimizer {
 		patterns.add(new NativePattern(
 				new String[] { "MOV Y*", "MOV X*", "PUSH Y", "MOV G*", "CHGCTX #0", "JSR ARRAYACCESS", "POP Y" },
 				new String[] { "{1}", "{3}", "{4}", "{5}", "{0}" }));
-		// This should actually improve speed, by avoiding pushs and pulls, but it slows
-		// things down...it might disable other optimizations
-		// patterns.add(new NativePattern(new String[]{"MOV Y*", "PUSH Y", "MOV Y*",
-		// "*", "POP Y"}, new String[]{"{2}", "{3}", "{0}"}));
-		// This could replace CHR$(<const>) calls with the actual String, but it doesn't
-		// seem to be worth it...
-		// patterns.add(new NativePattern(new String[] { "MOV Y,#*", "CHGCTX #1","JSR
-		// CHR"}, new String[] {"{0:MOV Y,>MOV A,§CHR§}"}));
+		patterns.add(new NativePattern(new String[] { "MOV Y,#*", "PUSH Y", "MOV Y*", "MOVB X,(Y)", "POP Y" },
+				new String[] { "{2}", "{3}", "{0}" }));
+
+		// Some microoptimizations to speed up https://www.lemon64.com/forum/privmsg.php?folder=inbox&mode=read&p=348822
+		
+		patterns.add(new NativePattern(new String[] { "MOV Y*", "MOVB X,(Y)", "MOV Y,#%", "ADD X,Y" },
+				new String[] { "{0}", "{2:MOV Y>MOV A}", "JSR POKEBYTEADD" }));
+
+		patterns.add(new NativePattern(new String[] { "JSR POKEBYTEADD", "MOV Y,#%", "AND X,Y" },
+				new String[] { "{1:MOV Y>MOV B}", "JSR POKEBYTEADDAND" }));
+
+		patterns.add(new NativePattern(new String[] { "JSR POKEBYTEADD", "MOV Y,#%", "OR X,Y" },
+				new String[] { "{1:MOV Y>MOV B}", "JSR POKEBYTEADDOR" }));
+
+		patterns.add(new NativePattern(new String[] { "MOV Y,*", "MOVB X,(Y)", "MOV Y,#%", "AND X,Y" },
+				new String[] { "{0}", "{2:MOV Y>MOV A}", "JSR POKEBYTEAND" }));
+
+		patterns.add(new NativePattern(new String[] { "MOV Y,*", "MOVB X,(Y)", "MOV Y,#%", "OR X,Y" },
+				new String[] { "{0}", "{2:MOV Y>MOV A}", "JSR POKEBYTEOR" }));
 
 	}
 
@@ -153,7 +164,7 @@ public class NativeOptimizer {
 						String[] parts = sf.split("\\|");
 						boolean subMatch = true;
 						for (String sfs : parts) {
-							String sfo = sfs.replace("*", "");
+							String sfo = sfs.replace("*", "").replace("%", "");
 							if (sfo.contains("?")) {
 								String[] pps = sfo.split("\\?");
 								if (lines[p].startsWith(pps[0]) && lines[p].endsWith(pps[1])) {
@@ -163,14 +174,36 @@ public class NativeOptimizer {
 									break;
 								}
 							} else {
-								if ((sfs.startsWith("*") && sfs.endsWith("*") && lines[p].contains(sfo))
-										|| (sfs.startsWith("*") && lines[p].endsWith(sfo)
-												|| (sfs.endsWith("*") && lines[p].startsWith(sfo))
-												|| sfs.equals(lines[p]))) {
-									subMatch = true;
+								if (sfs.contains("%")) {
+									if (sfs.endsWith("%") && lines[p].startsWith(sfo)
+											&& lines[p].endsWith("{INTEGER}")) {
+										String num = lines[p].replace(sfo, "").replace("{INTEGER}", "");
+										try {
+											int numi = Integer.parseInt(num);
+											if (numi > 0 && numi <= 255) {
+												subMatch = true;
+											} else {
+												subMatch = false;
+												break;
+											}
+										} catch (Exception e) {
+											subMatch = false;
+											break;
+										}
+									} else {
+										subMatch = false;
+										break;
+									}
 								} else {
-									subMatch = false;
-									break;
+									if ((sfs.startsWith("*") && sfs.endsWith("*") && lines[p].contains(sfo))
+											|| (sfs.startsWith("*") && lines[p].endsWith(sfo)
+													|| (sfs.endsWith("*") && lines[p].startsWith(sfo))
+													|| sfs.equals(lines[p]))) {
+										subMatch = true;
+									} else {
+										subMatch = false;
+										break;
+									}
 								}
 							}
 						}

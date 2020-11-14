@@ -2917,6 +2917,71 @@ COPY3_XY	LDY #0
 			STA (TMP_ZP),Y
 			RTS
 ;###################################
+POKEBYTEADDAND
+			JSR POKEBYTEADDSUB
+			TYA
+			AND B_REG
+			TAY
+			LDA #0
+			JMP POKEBYTESTORE
+;###################################
+POKEBYTEADDOR
+			JSR POKEBYTEADDSUB
+			TYA
+			ORA B_REG
+			TAY
+			LDA #0
+			JMP POKEBYTESTORE
+;###################################
+POKEBYTEAND
+			JSR POKEBYTESUB
+			TYA
+			AND A_REG
+			TAY
+			LDA #0
+			JMP POKEBYTESTORE
+;###################################
+POKEBYTEOR
+			JSR POKEBYTESUB
+			TYA
+			ORA A_REG
+			TAY
+			LDA #0
+			JMP POKEBYTESTORE
+;###################################
+POKEBYTEADD
+			JSR POKEBYTEADDSUB
+			JMP POKEBYTESTORE
+;###################################
+POKEBYTESTORE
+			JSR	INTFAC
+			LDX #<X_REG
+			LDY #>X_REG
+			JMP FACMEM
+;###################################
+POKEBYTEADDSUB
+			JSR POKEBYTESUB
+			TYA
+			CLC
+			ADC A_REG
+			BCC PBNOOV
+			INX
+PBNOOV		TAY
+			TXA
+			RTS
+;###################################
+POKEBYTESUB
+			LDA #<Y_REG
+			LDY #>Y_REG
+			JSR REALFAC
+			JSR FACWORD
+			STY POKEBYTE+1
+			STA POKEBYTE+2
+POKEBYTE
+			LDY $FFFF
+			LDX #0
+			RTS
+;###################################
 FASTAND		LDA ARGEXP			; Check ARG for 0
 			BNE CHECKFAC	
 			STA FACSGN			; if so, set FAC to 0 and exit
