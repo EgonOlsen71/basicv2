@@ -78,19 +78,19 @@ public class NativeOptimizer {
 		// Some microoptimizations to speed up https://www.lemon64.com/forum/privmsg.php?folder=inbox&mode=read&p=348822
 		
 		patterns.add(new NativePattern(new String[] { "MOV Y*", "MOVB X,(Y)", "MOV Y,#%", "ADD X,Y" },
-				new String[] { "{0}", "{2:MOV Y>MOV A}", "JSR POKEBYTEADD" }));
+				new String[] { "{0}", "{2:MOV Y>MOV A}", "JSR PEEKBYTEADD" }));
 
-		patterns.add(new NativePattern(new String[] { "JSR POKEBYTEADD", "MOV Y,#%", "AND X,Y" },
-				new String[] { "{1:MOV Y>MOV B}", "JSR POKEBYTEADDAND" }));
+		patterns.add(new NativePattern(new String[] { "JSR PEEKBYTEADD", "MOV Y,#%", "AND X,Y" },
+				new String[] { "{1:MOV Y>MOV B}", "JSR PEEKBYTEADDAND" }));
 
-		patterns.add(new NativePattern(new String[] { "JSR POKEBYTEADD", "MOV Y,#%", "OR X,Y" },
-				new String[] { "{1:MOV Y>MOV B}", "JSR POKEBYTEADDOR" }));
+		patterns.add(new NativePattern(new String[] { "JSR PEEKBYTEADD", "MOV Y,#%", "OR X,Y" },
+				new String[] { "{1:MOV Y>MOV B}", "JSR PEEKBYTEADDOR" }));
 
 		patterns.add(new NativePattern(new String[] { "MOV Y,*", "MOVB X,(Y)", "MOV Y,#%", "AND X,Y" },
-				new String[] { "{0}", "{2:MOV Y>MOV A}", "JSR POKEBYTEAND" }));
+				new String[] { "{0}", "{2:MOV Y>MOV A}", "JSR PEEKBYTEAND" }));
 
 		patterns.add(new NativePattern(new String[] { "MOV Y,*", "MOVB X,(Y)", "MOV Y,#%", "OR X,Y" },
-				new String[] { "{0}", "{2:MOV Y>MOV A}", "JSR POKEBYTEOR" }));
+				new String[] { "{0}", "{2:MOV Y>MOV A}", "JSR PEEKBYTEOR" }));
 
 	}
 

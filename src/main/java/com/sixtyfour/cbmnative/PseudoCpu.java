@@ -1008,20 +1008,20 @@ public class PseudoCpu {
 		case "START":
 			start(parts);
 			return;
-		case "POKEBYTEAND":
-			pokeByteAnd(parts);
+		case "PEEKBYTEAND":
+			peekByteAnd(parts);
 			return;
-		case "POKEBYTEOR":
-			pokeByteOr(parts);
+		case "PEEKBYTEOR":
+			peekByteOr(parts);
 			return;
-		case "POKEBYTEADD":
-			pokeByteAdd(parts);
+		case "PEEKBYTEADD":
+			peekByteAdd(parts);
 			return;
-		case "POKEBYTEADDAND":
-			pokeByteAddAnd(parts);
+		case "PEEKBYTEADDAND":
+			peekByteAddAnd(parts);
 			return;
-		case "POKEBYTEADDOR":
-			pokeByteAddOr(parts);
+		case "PEEKBYTEADDOR":
+			peekByteAddOr(parts);
 			return;
 		default:
 			jumpStack.push(addr);
@@ -1029,7 +1029,7 @@ public class PseudoCpu {
 		}
 	}
 
-	private void pokeByteAddAnd(String[] parts) {
+	private void peekByteAddAnd(String[] parts) {
 		int andVal = regs[B].intValue();
 		int addVal = regs[A].intValue();
 		int pval = regs[Y].intValue();
@@ -1037,7 +1037,7 @@ public class PseudoCpu {
 		updateZeroFlag(regs[X]);
 	}
 
-	private void pokeByteAddOr(String[] parts) {
+	private void peekByteAddOr(String[] parts) {
 		int orVal = regs[B].intValue();
 		int addVal = regs[A].intValue();
 		int pval = regs[Y].intValue();
@@ -1045,21 +1045,21 @@ public class PseudoCpu {
 		updateZeroFlag(regs[X]);
 	}
 
-	private void pokeByteAdd(String[] parts) {
+	private void peekByteAdd(String[] parts) {
 		int addVal = regs[A].intValue();
 		int pval = regs[Y].intValue();
 		regs[X] = addVal + pval;
 		updateZeroFlag(regs[X]);
 	}
 
-	private void pokeByteAnd(String[] parts) {
+	private void peekByteAnd(String[] parts) {
 		int andVal = regs[A].intValue();
 		int pval = regs[Y].intValue();
 		regs[X] = andVal & pval;
 		updateZeroFlag(regs[X]);
 	}
 
-	private void pokeByteOr(String[] parts) {
+	private void peekByteOr(String[] parts) {
 		int orVal = regs[A].intValue();
 		int pval = regs[Y].intValue();
 		regs[X] = orVal | pval;
