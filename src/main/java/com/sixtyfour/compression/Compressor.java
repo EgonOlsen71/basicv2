@@ -63,6 +63,16 @@ public class Compressor {
 		}
 	}
 
+	/**
+	 * Compresses a given byte array and returns the comressed array or null, if no
+	 * compression has been performed.
+	 * 
+	 * @param dump       the byte array to compress
+	 * @param windowSize the size of the sliding window
+	 * @param watchSize  if true, no compression will be performed if the result
+	 *                   will actually increase in size
+	 * @return the compressed array or null
+	 */
 	public static byte[] compress(byte[] dump, int windowSize, boolean watchSize) {
 		long time = System.currentTimeMillis();
 		int minSize = MIN_WINDOW_SIZE;
@@ -230,6 +240,17 @@ public class Compressor {
 		}
 	}
 
+	/**
+	 * Compress a compiled program and link the decompressor onto it.
+	 * 
+	 * @param bytes     the program
+	 * @param startAddr the start address of the program. If given, the decompressed
+	 *                  program will be copied to that memory address and started
+	 *                  directly. If not given, the program will reside on the start
+	 *                  of BASIC memory and started with RUN.
+	 * @return the executable, compressed program or null, if no compression was
+	 *         possible
+	 */
 	public static Program compressAndLinkNative(byte[] bytes, int startAddr) {
 		log("Trying to find best compression settings...");
 
@@ -277,6 +298,12 @@ public class Compressor {
 		return prg;
 	}
 
+	/**
+	 * Loads a file into a byte array.
+	 * 
+	 * @param fileName
+	 * @return the file in a byte array
+	 */
 	public static byte[] loadProgram(String fileName) {
 		log("Compressing " + fileName);
 		byte[] bytes = Loader.loadBlob(fileName);
