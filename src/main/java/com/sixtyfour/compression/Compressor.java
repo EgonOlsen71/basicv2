@@ -23,7 +23,8 @@ import com.sixtyfour.system.ProgramPart;
  * simple and most likely inefficient sliding window pattern matching algorithm
  * that I came up with while being half asleep. It uses a pattern based
  * approach, no huffman encoding. That's why it's less efficient but should
- * decompress rather quickly.
+ * decompress rather quickly. It can also compress a compiled C64 program, link
+ * the decompressor to it and return the executable result.
  * 
  * @author EgonOlsen
  *
