@@ -759,6 +759,12 @@ public class Optimizer6502 implements Optimizer {
 						"LDX #<X_REG", "LDY #>X_REG", "JSR FACMEM", "LDA #<{MEM0}", "LDY #>{MEM0}", "JSR REALFAC",
 						"LDA #<X_REG", "LDY #>X_REG", "JSR MEMARG", "JSR FASTOR"));
 
+				this.add(new Pattern(false, "Fast byte copy",
+						new String[] { "{LINE0}", "STY TMP_ZP", "{LINE6}", "{LINE7}", "{LINE8}", "{LINE9}",
+								"LDY TMP_ZP", "{LINE14}", "{LINE15}" },
+						"LDY $FFFF", "LDA #0", "JSR INTFAC", "LDX #<{REG0}", "LDY #>{REG0}", "JSR FACMEM",
+						"JSR POPREAL", "JSR FACWORD", "STY {*}", "STA {*}", "LDA #<{REG0}", "LDY #>{REG0}",
+						"JSR REALFAC", "JSR FACWORD", "{LABEL}", "STY $FFFF"));
 				// This optimizes stuff like: a=i*1:if a>1...by not loading a again for the if
 				// if it's already in the FAC: It has to cross the NOP gap between the command
 				// to do this though...
