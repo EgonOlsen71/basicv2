@@ -40,6 +40,9 @@ ENDGIVEN	LDA #<FPSTACK
 			</IF>
 			JSR RESTORE
 			CLC
+			<IF BOOST>
+			JSR BOOSTENABLE
+			</IF>
 			RTS
 ;###################################
 RESTARTPRG	LDA #<FPSTACK
@@ -176,6 +179,9 @@ ARRAYQUIT	RTS
 ;###################################
 END			LDX SP_SAVE
 			TXS
+			<IF BOOST>
+			JSR BOOSTDIASBLE
+			</IF>
 			RTS
 ;###################################
 RUN			LDX SP_SAVE
@@ -3242,7 +3248,11 @@ CHECKCMD	LDA CMD_NUM		; if CMD mode, then print an additional space
 			JSR RESETROUTE
 NOCMD		RTS
 ;###################################
-SAVE		LDA #1
+SAVE		
+			<IF BOOST>
+			JSR BOOSTOFF
+			</IF>
+			LDA #1
 			STA SECADDR		; set secondary address to 1
 			LDA #0
 			STA STATUS		; reset status
@@ -3259,7 +3269,11 @@ SAVE		LDA #1
 			LDY 46
 			LDA #BASICSTART
 
-			JMP SAVEXX
+			JSR SAVEXX
+			<IF BOOST>
+			JSR BOOSTON
+			</IF>
+			RTS
 ;###################################
 VERIFY		JSR SETNAMEPRT
 			LDA #1
@@ -3270,7 +3284,11 @@ LOAD		JSR SETNAMEPRT
 			LDA #$0
 			STA VERCHK		; reset Load/Verify-Flag
 			STA STATUS		; reset status
-LOADINT		LDA #<X_REG
+LOADINT		
+			<IF BOOST>
+			JSR BOOSTOFF
+			</IF>
+			LDA #<X_REG
 			LDY #>X_REG
 			JSR REALFAC
 			JSR FACWORD
@@ -3298,7 +3316,11 @@ SKPBAS		STA SECADDR
 			CMP #LOADOK_STATUS
 			BEQ LOADOK
 			JMP FILENOTFOUND
-LOADOK		RTS
+LOADOK		
+			<IF BOOST>
+			JSR BOOSTON
+			</IF>
+			RTS
 ;###################################
 OPEN		JSR SETEMPTYSTR	; Prepare with an empty string
 			LDA #<Y_REG
@@ -3333,7 +3355,11 @@ OPEN		JSR SETEMPTYSTR	; Prepare with an empty string
 
 			JSR SETNAMEPRT
 
-ALLPARAMS	JMP OPENCH
+ALLPARAMS	
+			<IF BOOST>
+			JSR BOOSTOFF
+			</IF>
+			JMP OPENCH
 ;###################################
 SETEMPTYSTR
 			LDA #<EMPTYSTR
@@ -3370,7 +3396,11 @@ CLOSE		LDA #<X_REG
 			JSR REALFAC
 			JSR FACWORD
 			TYA				; file number into A
-			JMP CLOSECH
+			JSR CLOSECH
+			<IF BOOST>
+			JSR BOOSTON
+			</IF>
+			RTS
 ;###################################
 FACXOR		JSR FACINT		; simple XOR implementation...only needed for WAIT, so it doesn't really matter how optimal it is.
 			STY TMP3_ZP			
@@ -3442,26 +3472,50 @@ SUPERFIDEXNOV
 			DEY
 			RTS
 ;###################################
-NEXTWOFOR	LDX #$0A
+NEXTWOFOR	
+			<IF BOOST>
+			JSR BOOSTDIASBLE
+			</IF>
+			LDX #$0A
 			JMP ERRALL
 ;###################################
-OUTOFDATA	LDX #$0D 
+OUTOFDATA	
+			<IF BOOST>
+			JSR BOOSTDIASBLE
+			</IF>
+			LDX #$0D 
 			JMP ERRALL 
 ;###################################
-OUTOFMEMORY	LDX #$10
+OUTOFMEMORY	
+			<IF BOOST>
+			JSR BOOSTDIASBLE
+			</IF>
+			LDX #$10
 			JMP ERRALL 
 ;###################################
 STRINGTOOLONG
+			<IF BOOST>
+			JSR BOOSTDIASBLE
+			</IF>
 			LDX #$17       
 			JMP ERRALL 
 ;###################################
 ILLEGALQUANTITY
+			<IF BOOST>
+			JSR BOOSTDIASBLE
+			</IF>
 			JMP ERRIQ
 ;###################################
 EXTRAIGNORED
+			<IF BOOST>
+			JSR BOOSTDIASBLE
+			</IF>
 			JMP ERREI
 ;###################################
 SYNTAXERROR 
+			<IF BOOST>
+			JSR BOOSTDIASBLE
+			</IF>
 			JMP ERRSYN
 ;###################################
 FILENOTFOUND
@@ -3481,6 +3535,9 @@ FNFST		LDY STATUS
 			JMP REALOUTINT
 ;###################################
 ERROR		
+			<IF BOOST>
+			JSR BOOSTDIASBLE
+			</IF>
 			JMP ERRSYN	;General purpose error, here a syntax error
 ;###################################
 SYSTEMCALLDYN
@@ -3629,7 +3686,113 @@ BASICCOPYLOOP
 			DEX
 			BNE BASICCOPYLOOP
 			STY BASICTEXTP
-			RTS			
+			RTS	
+;###################################
+<IF BOOST>
+BOOSTENABLE	
+			LDA $D030
+			CMP #$FF
+			BNE C128
+			RTS
+			
+C128		
+			LDA #1
+			STA BOOSTFLAG
+			LDA $0314
+			STA IRQROUT
+			LDA $0315
+			STA IRQROUT+1
+			SEI                                 
+			LDA #<MYRASTER
+			STA $0314 
+			LDA #>MYRASTER
+			STA $0315
+			 
+			LDA #46
+			STA $D012
+			 
+			LDA $D011
+			AND #127
+			STA $D011
+			 
+			LDA $D01A
+			ORA #1
+			STA $D01A
+			CLI
+			RTS
+		
+MYRASTER 
+			LDA $D019
+			BMI RASTER
+		 	LDA $DC0D
+		 	CLI
+		 	JMP $EA31 
+		 	
+RASTER                       
+			STA $D019
+			LDA $D012
+			CMP #254
+		 	BCS SETSTART
+		 	LDA #0
+		 	STA $D030
+		 	LDA #254
+		 	STA $D012
+		 	JMP EXIT
+		 
+SETSTART
+		 	LDA #1
+		 	STA $D030
+		 	LDA #46
+		 	STA $D012
+		
+EXIT
+			PLA                              
+			TAY
+			PLA                                
+			TAX
+			PLA                            
+			RTI
+		 
+BOOSTFLAG
+			.BYTE 0	
+IRQROUT
+			.WORD 0	 
+
+NOBOOST		
+			RTS
+		 
+BOOSTOFF
+		 	LDA BOOSTFLAG
+		 	BEQ NOBOOST
+		 	SEI 
+			LDA $D01A
+			AND #14
+			STA $D01A
+			LDA #0
+		 	STA $D030
+			CLI
+			RTS
+BOOSTON
+			LDA BOOSTFLAG
+		 	BEQ NOBOOST
+			SEI 
+			LDA $D01A
+			ORA #1
+			STA $D01A
+			CLI
+			RTS
+BOOSTDIASBLE
+			LDA BOOSTFLAG
+		 	BEQ NOBOOST
+		 	JSR BOOSTOFF
+		 	SEI
+		 	LDA IRQROUT
+		 	STA $0314
+		 	LDA IRQROUT+1
+		 	STA $0315
+		 	CLI
+		 	RTS
+</IF>				
 ;###################################
 ; Improved floating point routines
 ; ported from Michael Jørgensen's

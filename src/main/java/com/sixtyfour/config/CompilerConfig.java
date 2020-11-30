@@ -30,6 +30,7 @@ public class CompilerConfig {
 	private boolean enhancedInstructionSet = false;
 	private boolean deadCodeElimination = false;
 	private boolean floatOptimizations = false;
+	private boolean boostMode = false;
 	private String symbolTable = null;
 	private int threads = -1;
 	private LoopMode loopMode = LoopMode.EXECUTE;
@@ -248,6 +249,14 @@ public class CompilerConfig {
 
 	public void setDeadCodeElimination(boolean deadCodeElimination) {
 		this.deadCodeElimination = deadCodeElimination;
+	}
+
+	public boolean isBoostMode() {
+		return boostMode;
+	}
+
+	public void setBoostMode(boolean boostMode) {
+		this.boostMode = boostMode;
 	}
 
 }

@@ -30,8 +30,8 @@ public class Transformer64 extends AbstractTransformer {
 	}
 
 	@Override
-	public List<String> transform(CompilerConfig config, MemoryConfig memConfig, Machine machine, PlatformProvider platform,
-			List<String> code) {
+	public List<String> transform(CompilerConfig config, MemoryConfig memConfig, Machine machine,
+			PlatformProvider platform, List<String> code) {
 		Logger.log("Compiling into native assembly code...");
 		List<String> res = new ArrayList<>();
 		List<String> consts = new ArrayList<String>();
@@ -120,6 +120,10 @@ public class Transformer64 extends AbstractTransformer {
 		res.add("ERRSYN = $AF08");
 		res.add("ERRFNF = $F12F");
 
+		if (config.isBoostMode()) {
+			// optional boost on a C128 in C64 mode
+			res.add("BOOST = 1");
+		}
 		addMemoryLocations(res);
 		addBasicBuffer(res, platform, memConfig);
 

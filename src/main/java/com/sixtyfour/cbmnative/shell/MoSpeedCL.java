@@ -109,6 +109,7 @@ public class MoSpeedCL {
 		cfg.setConvertStringToLower(getOptionIntDefault("tolower", cmds, false));
 		cfg.setFlipCasing(getOptionIntDefault("flipcase", cmds, false));
 		cfg.setLoopMode(getOption("loopopt", cmds) ? LoopMode.REMOVE : LoopMode.EXECUTE);
+		cfg.setBoostMode(getOptionIntDefault("boost", cmds, false));
 
 		boolean compress = getOptionIntDefault("compression", cmds, false);
 		boolean multiPart = getOptionIntDefault("multipart", cmds, false);
@@ -629,6 +630,8 @@ public class MoSpeedCL {
 				"/multipart=true|false - if false (default) the target file contains all binary data regardless of the address in memory. If true, several files will be written if the addresses of the program's parts aren't adjacent.");
 		System.out.println(
 				"/memhole=<start1-end1>,<start2-end2>,... - Defines holes/locked regions in memory. The compiled program won't use these memory locations for compiled code and variables. If a hole is located after the end of the compiled program, it will be ignored. Default is none.");
+		System.out.println(
+				"/boost=true|false - If true, a compiled C64 program will use the C128's 2 Mhz mode to increase performance up to 25%. This only works on the C128 in C64 mode, it has no effect when run on a real C64. It might also not be compatible with all programs. Default is false.");
 		System.out.println();
 	}
 
