@@ -3698,6 +3698,8 @@ BOOSTENABLE
 C128		
 			LDA #1
 			STA BOOSTFLAG
+			LDA #0
+			STA BOOSTCNT
 			LDA $0314
 			STA IRQROUT
 			LDA $0315
@@ -3755,6 +3757,8 @@ EXIT
 		 
 BOOSTFLAG
 			.BYTE 0	
+BOOSTCNT	
+			.BYTE 0
 IRQROUT
 			.WORD 0	 
 
@@ -3770,11 +3774,22 @@ BOOSTOFF
 			STA $D01A
 			LDA #0
 		 	STA $D030
+		 	INC BOOSTCNT
 			CLI
 			RTS
 BOOSTON
 			LDA BOOSTFLAG
 		 	BEQ NOBOOST
+		 	LDA BOOSTCNT
+		 	BEQ BOOSTZERO	; Zero? Then just enable boost
+		 	BPL BOOSTNOV
+		 	LDA #0			; Counter >128, then reset it anyway (should not occur)
+		 	STA BOOSTCNT
+		 	JMP BOOSTZERO
+BOOSTNOV
+			DEC BOOSTCNT
+			BNE NOBOOST
+BOOSTZERO
 			SEI 
 			LDA $D01A
 			ORA #1
