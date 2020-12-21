@@ -24,6 +24,7 @@ public class ControlCodes {
 			add(28, "red", "ctrl-3", "ctrl-£", "ctrl-pound");
 			add(159, "cyan", "cyn", "ctrl-4");
 			add(156, "purple", "pur", "pink", "cm-3");
+			add(126, "pi");
 			add(30, "green", "grn", "ctrl-6", "ctrl-up arrow", "ctrl-↑");
 			add(31, "blue", "blu", "ctrl-7", "ctrl-=");
 			add(158, "yellow", "yel", "ctrl-8");
@@ -162,6 +163,16 @@ public class ControlCodes {
 		if (placeHolder2code.containsKey(placeHolder)
 				|| placeHolder2code.containsKey(placeHolder.toLowerCase(Locale.ENGLISH))) {
 			return placeHolder2code.get(placeHolder);
+		}
+		if (placeHolder.length() == 0) {
+			return -1;
+		}
+		
+		// Handle pound symbol in a hacky way...
+		char c = placeHolder.charAt(placeHolder.length() - 1);
+		if (((int) c) == 65533) {
+			placeHolder = placeHolder.substring(0, placeHolder.length() - 1) + "pound";
+			return getCode(placeHolder);
 		}
 		return -1;
 	}

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.sixtyfour.cbmnative.NativeCompiler;
+import com.sixtyfour.cbmnative.Util;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.elements.Variable;
@@ -72,6 +73,7 @@ public class InputFile extends Input {
 		CodeContainer cc = new CodeContainer(before, expr, after);
 		List<CodeContainer> ccs = new ArrayList<CodeContainer>();
 		ccs.add(cc);
+		ccs.addAll(Util.createSingleCommand("JSR CLEARQUEUE", "JSR COMPACTMAX"));
 		ccs.addAll(this.evalToCodeFile(config, machine, "INPUTSTRCHANNEL", "INPUTNUMBERCHANNEL"));
 		return ccs;
 	}

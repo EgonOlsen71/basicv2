@@ -147,14 +147,19 @@ public class UnTokenizer {
 						wasSpace = c == ' ';
 						if (b < 128 || inString || (b > 203 && (!multiByte || b != 206))) {
 							if (inString && isSpecialChar(c)) {
-								line.append(ControlCodes.getPlaceHolder(b));
+								String ph = ControlCodes.getPlaceHolder(b);
+								if (ph == null) {
+									// BLARGH...
+									ph = "{pi}";
+								}
+								line.append(ph);
 							} else {
-							    	if (((int)c)==255) {
-							    	    // Handle PI
-							    	    line.append("3.14159265");
-							    	} else {
-							    	    line.append(convertChar(c));
-							    	}
+								if (((int) c) == 255) {
+									// Handle PI
+									line.append("3.14159265");
+								} else {
+									line.append(convertChar(c));
+								}
 							}
 						} else {
 							String token = TOKENS.get(b);

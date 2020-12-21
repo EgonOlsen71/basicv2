@@ -22,6 +22,7 @@ public class Sys extends AbstractCommand {
 	/** The pars. */
 	private Atom addr;
 	private List<Atom> vals;
+	private boolean noFirstSeparator = false;
 
 	/**
 	 * Instantiates a new sys.
@@ -40,6 +41,19 @@ public class Sys extends AbstractCommand {
 	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos,
 			boolean lastPos, Machine machine) {
 		super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine);
+
+		// Handle SYS 57921"Blah",8,0 and such...
+		if (linePart.contains("\"")) {
+			int pos = linePart.indexOf("\"");
+			if (pos > 0) {
+				char c = linePart.charAt(pos - 1);
+				if (c != ',') {
+					linePart = linePart.substring(0, pos) + "," + linePart.substring(pos);
+					noFirstSeparator = true;
+				}
+			}
+		}
+
 		term = Parser.getTerm(config, this, linePart, machine, true);
 		List<Atom> pars = Parser.getParameters(term);
 
@@ -110,7 +124,7 @@ public class Sys extends AbstractCommand {
 
 		return null;
 	}
-	
+
 	private List<CodeContainer> createMultiParsCall(CompilerConfig config, Machine machine) {
 		NativeCompiler compiler = NativeCompiler.getCompiler();
 		List<String> after = new ArrayList<String>();
@@ -123,10 +137,18 @@ public class Sys extends AbstractCommand {
 			List<String> part = addSingleParameter(config, machine, compiler, par);
 			if (par.get(0).getType(true) == Type.STRING) {
 				// It's a STRING (in B_REG)
-				part.add("JSR COPYSTRINGPAR");
+				if (i == 1 && noFirstSeparator) {
+					part.add("JSR COPYSTRINGPARNK");
+				} else {
+					part.add("JSR COPYSTRINGPAR");
+				}
 			} else {
 				// It's a number (in X_REG)
-				part.add("JSR COPYREALPAR");
+				if (i == 1 && noFirstSeparator) {
+					part.add("JSR COPYSTRINGPARNK");
+				} else {
+					part.add("JSR COPYREALPAR");
+				}
 			}
 			before.addAll(part);
 		}
@@ -151,6 +173,5 @@ public class Sys extends AbstractCommand {
 		ccs.add(cc);
 		return ccs;
 	}
-
 
 }
