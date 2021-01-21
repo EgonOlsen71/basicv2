@@ -62,8 +62,7 @@ public class BasicShell {
 	 * Main thread entry point
 	 */
 	public static void main(String[] unused) {
-		System.setProperty("sun.java2d.d3d", "false"); // To make it work on my
-														// Radeon HD 290X...;-)
+		System.setProperty("sun.java2d.d3d", "false"); 
 		JFrame frame = new JFrame("Commodore BASIC V2");
 		frame.setIconImage(ResourceLoader.getIcon());
 		BasicShell shellFrame = new BasicShell();
