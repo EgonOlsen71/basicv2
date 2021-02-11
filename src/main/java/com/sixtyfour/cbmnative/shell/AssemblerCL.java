@@ -72,7 +72,7 @@ public class AssemblerCL {
 			targetFile += ".prg";
 			try {
 				System.out.println("Writing target file (binary): " + targetFile);
-				FileWriter.writeAsPrg(asm.getProgram(), targetFile, false, asm.getProgram().getCodeStart(), true);
+				FileWriter.writeAsPrg(asm.getProgram(), targetFile, false, asm.getProgram().getCodeStart(), !getOption("noheader", cmds));
 			} catch (Exception e) {
 				System.out.println("Failed to write target file '" + targetFile + "': " + e.getMessage());
 				exit(9);
@@ -111,6 +111,7 @@ public class AssemblerCL {
 		System.out.println("/target=<target file> -  the target file name");
 		System.out.println(
 				"/datas=true|false -  write the assembled program as a set of data statements in ASCII form instead of a binary. Default is false.");
+		System.out.println("/noheader=true|false -  if true, the address header won't be written into the generated file. Default is false.");
 		System.out.println();
 	}
 
