@@ -177,7 +177,7 @@ public abstract class AbstractMnemonic implements Mnemonic {
 	public String toString() {
 		return name;
 	}
-	
+
 	@Override
 	public int getMaxLength() {
 		return 1;
@@ -265,7 +265,11 @@ public abstract class AbstractMnemonic implements Mnemonic {
 		int pos = pars.lastIndexOf("+");
 		if (pos != -1 && pos >= pars.lastIndexOf("\"")) {
 			try {
-				addrAdd = Integer.parseInt(pars.substring(pos + 1));
+				String suby = pars.substring(pos + 1);
+				if (suby.contains(",")) {
+					suby = suby.substring(0, suby.indexOf(","));
+				}
+				addrAdd = Integer.parseInt(suby);
 			} catch (Exception e) {
 				throw new RuntimeException("Parse error in " + pars + "/" + addr);
 			}
@@ -326,7 +330,7 @@ public abstract class AbstractMnemonic implements Mnemonic {
 		throw new RuntimeException("Address mode not supported: " + opcode);
 
 	}
-	
+
 	private String removeBrackets(String part1) {
 		return part1.replace("(", "").replace(")", "");
 	}
