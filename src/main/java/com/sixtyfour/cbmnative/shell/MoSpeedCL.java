@@ -261,6 +261,8 @@ public class MoSpeedCL {
 			}
 		}
 
+		src = Preprocessor.convertSpecialChars(src);
+
 		Basic basic = new Basic(src);
 		try {
 			System.out.println("Checking source file...");

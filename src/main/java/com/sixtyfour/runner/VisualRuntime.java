@@ -227,6 +227,7 @@ public class VisualRuntime {
 			}
 			break;
 		}
+		code = Preprocessor.convertSpecialChars(code);
 		run.setEnabled(true);
 		frame.setTitle(file.getName());
 	}

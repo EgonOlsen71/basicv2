@@ -75,7 +75,7 @@ public class Preprocessor {
 					if (com == null || (label.length() > com.getName().length()
 							&& label.charAt(com.getName().length()) == '_')) {
 						label2line.put(label, ln);
-						//System.out.println("Adding: " + label + "/" + ln);
+						// System.out.println("Adding: " + label + "/" + ln);
 						line = line.substring(pos + 1).trim();
 						if (line.isEmpty()) {
 							line = "rem jump target";
@@ -159,6 +159,39 @@ public class Preprocessor {
 				res.add(ln + " " + line);
 			}
 			ln += INC;
+		}
+
+		return res.toArray(new String[res.size()]);
+	}
+
+	/**
+	 * Converts pound and pi in strings into something usable.
+	 * @param code
+	 * @return
+	 */
+	public static String[] convertSpecialChars(String[] code) {
+		List<String> res = new ArrayList<String>();
+
+		Map<Character, String> replacements = new HashMap<>();
+		replacements.put('£', "{pound}");
+		replacements.put('π', "{pi}");
+
+		StringBuilder sb=new StringBuilder();
+		for (String line : code) {
+			boolean inString = false;
+			for (int i = 0; i < line.length(); i++) {
+				char c = line.charAt(i);
+				if (c == '"') {
+					inString = !inString;
+				}
+				if (inString && replacements.containsKey(c)) {
+					sb.append(replacements.get(c));
+				} else {
+					sb.append(c);
+				}
+			}
+			res.add(sb.toString());
+			sb.setLength(0);
 		}
 
 		return res.toArray(new String[res.size()]);

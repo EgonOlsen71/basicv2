@@ -168,7 +168,7 @@ public class ControlCodes {
 			return -1;
 		}
 		
-		// Handle pound symbol in a hacky way...
+		// Handle pound symbol in a hacky way...not sure, if this even triggers...
 		char c = placeHolder.charAt(placeHolder.length() - 1);
 		if (((int) c) == 65533) {
 			placeHolder = placeHolder.substring(0, placeHolder.length() - 1) + "pound";

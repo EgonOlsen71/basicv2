@@ -436,6 +436,7 @@ public class VisualMospeed {
 			}
 			break;
 		}
+		code = Preprocessor.convertSpecialChars(code);
 		compile.setEnabled(true);
 		frame.setTitle(file.getName());
 	}
