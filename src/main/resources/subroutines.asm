@@ -9,6 +9,55 @@ END			LDX SP_SAVE
 			</IF>
 			RTS
 ;###################################
+SYSTEMCALLDYN
+			LDA #<X_REG
+			LDY #>X_REG
+			JSR REALFAC
+			JSR FACWORD
+			STY TMP_ZP
+			STA TMP_ZP+1
+			JMP SYSTEMCALL
+;###################################
+SYSTEMCALL
+			LDA TMP_ZP
+			STA SCDO+1
+			LDA TMP_ZP+1
+			STA SCDO+2
+			LDA $030F
+			PHA
+			LDA $030C
+			LDX $030D
+			LDY $030E
+			PLP
+			<IF BIGRAM>
+				JSR ENABLEROM
+			</IF>
+SCDO		JSR $FFFF
+			<IF BIGRAM>
+				JSR DISABLEROM
+			</IF>
+			PHP
+			STA $030C
+			STX $030D
+			STY $030E
+			PLA
+			STA $030F
+			RTS
+;###################################
+USR			LDA #<Y_REG
+			LDY #>Y_REG
+			JSR REALFAC
+			<IF BIGRAM>
+				JSR ENABLEROM
+			</IF>
+			JMP ($0311)
+			<IF BIGRAM>
+				JSR DISABLEROM
+			</IF>
+			LDX #<X_REG
+			LDY #>X_REG
+			JMP FACMEM	;RTS is implicit
+;###################################
 START		LDA ENDSTRBUF+1
 			BNE ENDGIVEN
 			LDA BASICEND
@@ -516,7 +565,6 @@ OFFPOSCHECK2
 			BCC OFFPOSLOOP
 			BEQ OFFPOSLOOP
 			JMP FFDONE
-
 ;###################################
 STR			LDA #<Y_REG
 			LDY #>Y_REG
@@ -539,14 +587,6 @@ STRLOOP		INY
 			STA TMP2_ZP
 			STY TMP2_ZP+1
 			JMP COPYONLY
-;###################################
-USR			LDA #<Y_REG
-			LDY #>Y_REG
-			JSR REALFAC
-			JMP ($0311)
-			LDX #<X_REG
-			LDY #>X_REG
-			JMP FACMEM	;RTS is implicit
 ;###################################
 VAL			LDA B_REG
 			STA INDEX1
@@ -3546,35 +3586,6 @@ ERROR
 			JSR BOOSTDIASBLE
 			</IF>
 			JMP ERRSYN	;General purpose error, here a syntax error
-;###################################
-SYSTEMCALLDYN
-			LDA #<X_REG
-			LDY #>X_REG
-			JSR REALFAC
-			JSR FACWORD
-			STY TMP_ZP
-			STA TMP_ZP+1
-			JMP SYSTEMCALL
-;###################################
-SYSTEMCALL
-			LDA TMP_ZP
-			STA SCDO+1
-			LDA TMP_ZP+1
-			STA SCDO+2
-			LDA $030F
-			PHA
-			LDA $030C
-			LDX $030D
-			LDY $030E
-			PLP
-SCDO		JSR $FFFF
-			PHP
-			STA $030C
-			STX $030D
-			STY $030E
-			PLA
-			STA $030F
-			RTS
 ;###################################
 SETUPMULTIPARS
 			LDA BASICPOINTER
