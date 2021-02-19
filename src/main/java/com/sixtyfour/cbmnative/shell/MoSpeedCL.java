@@ -110,6 +110,15 @@ public class MoSpeedCL {
 		cfg.setFlipCasing(getOptionIntDefault("flipcase", cmds, false));
 		cfg.setLoopMode(getOption("loopopt", cmds) ? LoopMode.REMOVE : LoopMode.EXECUTE);
 		cfg.setBoostMode(getOptionIntDefault("boost", cmds, false));
+		cfg.setBigRam(getOptionIntDefault("bigram", cmds, false));
+
+		if (cfg.isBigRam()) {
+			if (memConfig.getStringEnd() == -1) {
+				memConfig.setStringEnd(53247);
+			}
+			System.out
+					.println("BigRam option enabled, highest memory address available is " + memConfig.getStringEnd());
+		}
 
 		boolean compress = getOptionIntDefault("compression", cmds, false);
 		boolean multiPart = getOptionIntDefault("multipart", cmds, false);
@@ -634,6 +643,9 @@ public class MoSpeedCL {
 				"/memhole=<start1-end1>,<start2-end2>,... - Defines holes/locked regions in memory. The compiled program won't use these memory locations for compiled code and variables. If a hole is located after the end of the compiled program, it will be ignored. Default is none.");
 		System.out.println(
 				"/boost=true|false - If true, a compiled C64 program will use the C128's 2 Mhz mode to increase performance up to 25%. This only works on the C128 in C64 mode, it has no effect when run on a real C64. It might also not be compatible with all programs. Default is false.");
+		System.out.println(
+				"/bigram=true|false - *Experimental* - If true, the RAM under the BASIC ROM as well as the higher 4K of RAM will be used for the compiled program as well. This will reduce performance, especially when accessing memory under the ROM. Default is false.");
+
 		System.out.println();
 	}
 

@@ -1,4 +1,14 @@
 ;###################################
+END			LDX SP_SAVE
+			TXS
+			<IF BIGRAM>
+			JSR ENABLEROM
+			</IF>
+			<IF BOOST>
+			JSR BOOSTDIASBLE
+			</IF>
+			RTS
+;###################################
 START		LDA ENDSTRBUF+1
 			BNE ENDGIVEN
 			LDA BASICEND
@@ -176,13 +186,6 @@ ARRAYSKIP2	STA TMP_REG
 			LDY TMP_ZP+1
 			JMP ARRAYLOOP				
 ARRAYQUIT	RTS
-;###################################
-END			LDX SP_SAVE
-			TXS
-			<IF BOOST>
-			JSR BOOSTDIASBLE
-			</IF>
-			RTS
 ;###################################
 RUN			LDX SP_SAVE
 			TXS
@@ -552,7 +555,9 @@ VAL			LDA B_REG
 			LDY #0
 			STY VALTYPE
 			LDA (INDEX1),Y
-			TAY
+			BNE	DOACVAL
+			JMP ZEROSET
+DOACVAL		TAY
 			INC INDEX1
 			BNE VALSTR
 			INC INDEX1+1

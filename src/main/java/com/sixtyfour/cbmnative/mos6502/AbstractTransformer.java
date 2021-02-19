@@ -344,13 +344,13 @@ public abstract class AbstractTransformer implements Transformer {
 	}
 
 	protected void addStructures(CompilerConfig config, MemoryConfig memConfig, Machine machine, PlatformProvider platform, List<String> code,
-			List<String> res, List<String> consts, List<String> vars, List<String> mnems, List<String> subs) {
-		addStructures(config, memConfig, machine, platform, code, res, consts, vars, mnems, subs, null, null);
+			List<String> res, List<String> consts, List<String> vars, List<String> mnems, List<String> subs, List<String> bigRamCode) {
+		addStructures(config, memConfig, machine, platform, code, res, consts, vars, mnems, subs, null, bigRamCode, null);
 	}
 
 	protected void addStructures(CompilerConfig config, MemoryConfig memConfig, Machine machine, PlatformProvider platform, List<String> code,
 			List<String> res, List<String> consts, List<String> vars, List<String> mnems, List<String> subs,
-			List<String> addOns, StringAdder adder) {
+			List<String> addOns, List<String> bigRamCode, StringAdder adder) {
 		Map<String, String> name2label = new HashMap<String, String>();
 		int cnt = 0;
 
@@ -389,6 +389,10 @@ public abstract class AbstractTransformer implements Transformer {
 			}
 		}
 
+		if (bigRamCode != null) {
+			mnems.addAll(1, bigRamCode);
+		}
+		
 		if (!mnems.get(mnems.size() - 1).equals("RTS")) {
 			mnems.add("RTS");
 		}

@@ -1,4 +1,4 @@
-10 wd=30:ht=20:mx=16:t$="000000"
+10 wd=30:ht=20:mx=16:ti$="000000"
 20 poke 53281,0:poke 646,7:print chr$(147)"calculating mandelbrot fractal..."
 40 for py=0 to ht-1
 50 yy=py/0.4/ht-1

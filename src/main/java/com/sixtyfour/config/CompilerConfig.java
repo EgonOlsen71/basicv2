@@ -31,6 +31,8 @@ public class CompilerConfig {
 	private boolean deadCodeElimination = false;
 	private boolean floatOptimizations = false;
 	private boolean boostMode = false;
+	private boolean bigRam = false;
+
 	private String symbolTable = null;
 	private int threads = -1;
 	private LoopMode loopMode = LoopMode.EXECUTE;
@@ -145,6 +147,14 @@ public class CompilerConfig {
 	 */
 	public void setOptimizeConstants(boolean optimizeConstants) {
 		this.optimizeConstants = optimizeConstants;
+	}
+
+	public boolean isBigRam() {
+		return bigRam;
+	}
+
+	public void setBigRam(boolean bigRam) {
+		this.bigRam = bigRam;
 	}
 
 	public ProgressListener getProgressListener() {
