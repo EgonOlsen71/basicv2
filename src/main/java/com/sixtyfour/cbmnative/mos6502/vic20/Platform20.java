@@ -96,4 +96,9 @@ public class Platform20 implements PlatformProvider {
 	public boolean supportsCompression() {
 		return false;
 	}
+	
+	@Override
+	public boolean supportsBigRam() {
+		return false;
+	}
 }

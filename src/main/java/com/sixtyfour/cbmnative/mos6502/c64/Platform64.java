@@ -82,4 +82,9 @@ public class Platform64 implements PlatformProvider {
 	public boolean supportsCompression() {
 		return true;
 	}
+	
+	@Override
+	public boolean supportsBigRam() {
+		return true;
+	}
 }

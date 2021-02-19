@@ -102,5 +102,12 @@ public interface PlatformProvider {
 	 * @return
 	 */
 	boolean supportsCompression();
+	
+	/**
+	 * If true, this platform supports the BigRam option.
+	 * 
+	 * @return
+	 */
+	boolean supportsBigRam();
 
 }

@@ -81,5 +81,10 @@ public class PlatformPs implements PlatformProvider {
 	public boolean supportsCompression() {
 		return false;
 	}
+
+	@Override
+	public boolean supportsBigRam() {
+		return false;
+	}
 	
 }
