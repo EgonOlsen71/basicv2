@@ -214,6 +214,7 @@ public class Transformer64 extends AbstractTransformer {
 
 		res.add("BIGRAM = 1");
 		res.add("BRROMSTART = $9F00");	// Actually, this is ROMSTART-256 to handle potentially overlapping data at the cost of some performance
+		res.add("BRROMEND = $C000");
 	}
 
 }
