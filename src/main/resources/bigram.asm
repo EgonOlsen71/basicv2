@@ -77,7 +77,51 @@ MEMARG		STA $22
 			LDA ($22),Y
 			STA $69
 			LDA $61
-			RTS    
+			RTS
+;###################################
+REALFAC		STA $22
+			STY $23
+			LDY #$04
+			LDA ($22),Y
+			STA $65
+			DEY
+			LDA ($22),Y
+			STA $64
+			DEY
+			LDA ($22),Y
+			STA $63
+			DEY
+			LDA ($22),Y
+			STA $66
+			ORA #$80
+			STA $62
+			DEY
+			LDA ($22),Y
+			STA $61
+			STY $70
+			RTS
+;###################################
+FACMEM		STX $22
+			STY $23
+			LDY #$04
+			LDA $65
+			STA ($22),Y
+			DEY
+			LDA $64
+			STA ($22),Y
+			DEY
+			LDA $63
+			STA ($22),Y
+			DEY
+			LDA $66
+			ORA #$7F
+			AND $62
+			STA ($22),Y
+			DEY
+			LDA $61
+			STA ($22),Y
+			STY $70
+			RTS 
 ;###################################
 MEMMUL		CPY #>BRROMSTART
 			BCC BRMEMMULN
@@ -123,50 +167,6 @@ CMPFAC		CPY #>BRROMSTART
 BRCMPFACN	JSR ENABLEROM
 			JSR BRCMPFAC
 			JMP DISABLEROM
-;###################################
-REALFAC		STA $22
-			STY $23
-			LDY #$04
-			LDA ($22),Y
-			STA $65
-			DEY
-			LDA ($22),Y
-			STA $64
-			DEY
-			LDA ($22),Y
-			STA $63
-			DEY
-			LDA ($22),Y
-			STA $66
-			ORA #$80
-			STA $62
-			DEY
-			LDA ($22),Y
-			STA $61
-			STY $70
-			RTS
-;###################################
-FACMEM		STX $22
-			STY $23
-			LDY #$04
-			LDA $65
-			STA ($22),Y
-			DEY
-			LDA $64
-			STA ($22),Y
-			DEY
-			LDA $63
-			STA ($22),Y
-			DEY
-			LDA $66
-			ORA #$7F
-			AND $62
-			STA ($22),Y
-			DEY
-			LDA $61
-			STA ($22),Y
-			STY $70
-			RTS
 ;###################################
 VALS		PHA
 			LDA INDEX1+1			; y = length, INDEX1/INDEX1+1 address
