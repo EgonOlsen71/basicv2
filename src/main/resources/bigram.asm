@@ -54,23 +54,30 @@ BRCOPYSTRINGLOOP
 			PLA
 			RTS
 ;###################################
-REALFAC		CPY #>BRROMSTART
-			BCC BRREALFACN
-			CPY #>BRROMEND
-			BCS BRREALFACN
-			JSR BRCOPYREALAY
-BRREALFACN	JSR ENABLEROM
-			JSR BRREALFAC
-			JMP DISABLEROM
-;###################################
-MEMARG		CPY #>BRROMSTART
-			BCC BRMEMARGN
-			CPY #>BRROMEND
-			BCS BRMEMARGN
-			JSR BRCOPYREALAY
-BRMEMARGN	JSR ENABLEROM
-			JSR BRMEMARG
-			JMP DISABLEROM
+MEMARG		STA $22
+			STY $23
+			LDY #$04
+			LDA ($22),Y
+			STA $6D
+			DEY
+			LDA ($22),Y
+			STA $6C
+			DEY
+			LDA ($22),Y
+			STA $6B
+			DEY
+			LDA ($22),Y
+			STA $6E
+			EOR $66
+			STA $6F
+			LDA $6E
+			ORA #$80
+			STA $6A
+			DEY
+			LDA ($22),Y
+			STA $69
+			LDA $61
+			RTS    
 ;###################################
 MEMMUL		CPY #>BRROMSTART
 			BCC BRMEMMULN
@@ -117,21 +124,49 @@ BRCMPFACN	JSR ENABLEROM
 			JSR BRCMPFAC
 			JMP DISABLEROM
 ;###################################
-FACMEM		CPY #>BRROMSTART
-			BCC BRFACMEMN
-			CPY #>BRROMEND
-			BCS BRFACMEMN
-			STX BRBUFFER+6			;save X
-			STY BRBUFFER+7			;save Y
-			LDX #<BRBUFFER
-			LDY #>BRBUFFER
-			JSR ENABLEROM
-			JSR BRFACMEM
-			JSR DISABLEROM
-			JMP BRCOPYREALXY
-BRFACMEMN	JSR ENABLEROM			; x low,y high
-			JSR BRFACMEM
-			JMP DISABLEROM
+REALFAC		STA $22
+			STY $23
+			LDY #$04
+			LDA ($22),Y
+			STA $65
+			DEY
+			LDA ($22),Y
+			STA $64
+			DEY
+			LDA ($22),Y
+			STA $63
+			DEY
+			LDA ($22),Y
+			STA $66
+			ORA #$80
+			STA $62
+			DEY
+			LDA ($22),Y
+			STA $61
+			STY $70
+			RTS
+;###################################
+FACMEM		STX $22
+			STY $23
+			LDY #$04
+			LDA $65
+			STA ($22),Y
+			DEY
+			LDA $64
+			STA ($22),Y
+			DEY
+			LDA $63
+			STA ($22),Y
+			DEY
+			LDA $66
+			ORA #$7F
+			AND $62
+			STA ($22),Y
+			DEY
+			LDA $61
+			STA ($22),Y
+			STY $70
+			RTS
 ;###################################
 VALS		PHA
 			LDA INDEX1+1			; y = length, INDEX1/INDEX1+1 address
