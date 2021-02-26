@@ -3615,86 +3615,86 @@ BASICCOPYLOOP
 			STY BASICTEXTP
 			RTS	
 ;###################################
-FACXREG		LDA $65
+FACXREG		LDA FACLO
 			STA X_REG+4
-			LDA $64
+			LDA FACMO
 			STA X_REG+3
-			LDA $63
+			LDA FACMOH
 			STA X_REG+2
-			LDA $66
+			LDA FACSGN
 			ORA #$7F
-			AND $62
+			AND FACHO
 			STA X_REG+1
-			LDA $61
+			LDA FACEXP
 			STA X_REG
 			LDA #0
-			STA $70
+			STA FACOV
 			RTS
 ;###################################
-FACYREG		LDA $65
+FACYREG		LDA FACLO
 			STA Y_REG+4
-			LDA $64
+			LDA FACMO
 			STA Y_REG+3
-			LDA $63
+			LDA FACMOH
 			STA Y_REG+2
-			LDA $66
+			LDA FACSGN
 			ORA #$7F
-			AND $62
+			AND FACHO
 			STA Y_REG+1
-			LDA $61
+			LDA FACEXP
 			STA Y_REG
 			LDA #0
-			STA $70
+			STA FACOV
 			RTS
 ;###################################
 XREGFAC		LDA X_REG+4
-			STA $65
+			STA FACLO
 			LDA X_REG+3
-			STA $64
+			STA FACMO
 			LDA X_REG+2
-			STA $63
+			STA FACMOH
 			LDA X_REG+1
-			STA $66
+			STA FACSGN
 			ORA #$80
-			STA $62
+			STA FACHO
 			LDA X_REG
-			STA $61
+			STA FACEXP
 			LDA #0
-			STA $70
+			STA FACOV
 			RTS
 ;###################################
 XREGARG		LDA X_REG+4
-			STA $6D
+			STA ARGLO
 			LDA X_REG+3
-			STA $6C
+			STA ARGMO
 			LDA X_REG+2
-			STA $6B
+			STA ARGMOH
 			LDA X_REG+1
-			STA $6E
-			EOR $66
-			STA $6F
-			LDA $6E
+			STA ARGSGN
+			EOR FACSGN
+			STA ARISGN
+			LDA ARGSGN
 			ORA #$80
-			STA $6A
+			STA ARGHO
 			LDA X_REG
-			STA $69
-			LDA $61
+			STA ARGEXP
+			LDA FACEXP
 			RTS
 ;###################################
 YREGFAC		LDA Y_REG+4
-			STA $65
+			STA FACLO
 			LDA Y_REG+3
-			STA $64
+			STA FACMO
 			LDA Y_REG+2
-			STA $63
+			STA FACMOH
 			LDA Y_REG+1
-			STA $66
+			STA FACSGN
 			ORA #$80
-			STA $62
+			STA FACHO
 			LDA Y_REG
-			STA $61
+			STA FACEXP
 			LDA #0
-			STA $70
+			STA FACOV
 			RTS
 ;###################################
 <IF BOOST>

@@ -58,69 +58,69 @@ MEMARG		STA $22
 			STY $23
 			LDY #$04
 			LDA ($22),Y
-			STA $6D
+			STA ARGLO
 			DEY
 			LDA ($22),Y
-			STA $6C
+			STA ARGMO
 			DEY
 			LDA ($22),Y
-			STA $6B
+			STA ARGMOH
 			DEY
 			LDA ($22),Y
-			STA $6E
-			EOR $66
-			STA $6F
-			LDA $6E
+			STA ARGSGN
+			EOR FACSGN
+			STA ARISGN
+			LDA ARGSGN
 			ORA #$80
-			STA $6A
+			STA ARGHO
 			DEY
 			LDA ($22),Y
-			STA $69
-			LDA $61
+			STA ARGEXP
+			LDA FACEXP
 			RTS
 ;###################################
 REALFAC		STA $22
 			STY $23
 			LDY #$04
 			LDA ($22),Y
-			STA $65
+			STA FACLO
 			DEY
 			LDA ($22),Y
-			STA $64
+			STA FACMO
 			DEY
 			LDA ($22),Y
-			STA $63
+			STA FACMOH
 			DEY
 			LDA ($22),Y
-			STA $66
+			STA FACSGN
 			ORA #$80
-			STA $62
+			STA FACHO
 			DEY
 			LDA ($22),Y
-			STA $61
-			STY $70
+			STA FACEXP
+			STY FACOV
 			RTS
 ;###################################
 FACMEM		STX $22
 			STY $23
 			LDY #$04
-			LDA $65
+			LDA FACLO
 			STA ($22),Y
 			DEY
-			LDA $64
+			LDA FACMO
 			STA ($22),Y
 			DEY
-			LDA $63
+			LDA FACMOH
 			STA ($22),Y
 			DEY
-			LDA $66
+			LDA FACSGN
 			ORA #$7F
-			AND $62
+			AND FACHO
 			STA ($22),Y
 			DEY
-			LDA $61
+			LDA FACEXP
 			STA ($22),Y
-			STY $70
+			STY FACOV
 			RTS 
 ;###################################
 MEMMUL		CPY #>BRROMSTART
