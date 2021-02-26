@@ -1,4 +1,5 @@
 JMP SKIPROMHANDLER
+; *** ROMHANDLER ***
 ;###################################
 ENABLEROM	PHA
 			LDA $1
@@ -15,5 +16,6 @@ DISABLEROM	PHA
 			PLA
 			RTS
 ;###################################
+; *** ROMHANDLER END ***
 SKIPROMHANDLER
 			JSR DISABLEROM

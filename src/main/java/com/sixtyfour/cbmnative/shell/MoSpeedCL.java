@@ -308,6 +308,11 @@ public class MoSpeedCL {
 			List<SourcePart> parts = srcProc.split();
 			nCode = srcProc.relocate(cfg, parts, holes);
 		}
+		
+		if (cfg.isBigRam()) {
+			SourceProcessor srcProc = new SourceProcessor(nCode);
+			nCode = srcProc.moveRuntime();
+		}
 
 		if (genSrc) {
 			write(nCode, nlTarget);

@@ -10,9 +10,7 @@ END			LDX SP_SAVE
 			RTS
 ;###################################
 SYSTEMCALLDYN
-			LDA #<X_REG
-			LDY #>X_REG
-			JSR REALFAC
+			JSR XREGFAC
 			JSR FACWORD
 			STY TMP_ZP
 			STA TMP_ZP+1
@@ -44,9 +42,7 @@ SCDO		JSR $FFFF
 			STA $030F
 			RTS
 ;###################################
-USR			LDA #<Y_REG
-			LDY #>Y_REG
-			JSR REALFAC
+			JSR YREGFAC
 			<IF BIGRAM>
 				JSR ENABLEROM
 			</IF>
@@ -54,9 +50,7 @@ USR			LDA #<Y_REG
 			<IF BIGRAM>
 				JSR DISABLEROM
 			</IF>
-			LDX #<X_REG
-			LDY #>X_REG
-			JMP FACMEM	;RTS is implicit
+			JMP FACXREG	;RTS is implicit
 ;###################################
 START		LDA ENDSTRBUF+1
 			BNE ENDGIVEN
@@ -450,9 +444,7 @@ FFPOSSTEP	JSR FACWORD	; to WORD
 			STY TMP2_ZP+2
 			STA TMP2_ZP+3	; end
 
-			LDA #<X_REG
-			LDY #>X_REG
-			JSR REALFAC
+			JSR XREGFAC
 			JSR FACINT
 			STY TMP3_ZP		; value
 
@@ -566,9 +558,7 @@ OFFPOSCHECK2
 			BEQ OFFPOSLOOP
 			JMP FFDONE
 ;###################################
-STR			LDA #<Y_REG
-			LDY #>Y_REG
-			JSR REALFAC
+STR			JSR YREGFAC
 STRINT		LDY #1
 			JSR FACSTR
 			LDY #0
@@ -602,9 +592,7 @@ DOACVAL		TAY
 			BNE VALSTR
 			INC INDEX1+1
 VALSTR		JSR VALS
-			LDX #<X_REG
-			LDY #>X_REG
-			JMP FACMEM	;RTS is implicit
+			JMP FACXREG	;RTS is implicit
 ;###################################
 TAB			JSR TABSPCINIT
 			JSR REROUTE
@@ -631,9 +619,7 @@ NORMALSPC	CLC
 TABSPCINIT	SEC
 			JSR CRSRPOS
 			STY $09
-			LDA #<Y_REG
-			LDY #>Y_REG
-			JSR REALFAC
+			JSR YREGFAC
 			JSR FACWORD
 			TYA
 			TAX
@@ -661,9 +647,7 @@ LEN			LDA B_REG
 			TAY
 			LDA #0
 			JSR INTFAC
-			LDX #<X_REG
-			LDY #>X_REG
-			JMP FACMEM	;RTS is implicit
+			JMP FACXREG	;RTS is implicit
 ZEROLEN		JMP ZEROSET
 
 ;###################################
@@ -680,9 +664,7 @@ DOASC		INY
 			TAY
 			LDA #0
 			JSR INTFAC
-			LDX #<X_REG
-			LDY #>X_REG
-			JMP FACMEM
+			JMP FACXREG
 ;###################################
 CHR			LDA STRBUFP
 			STA TMP_ZP
@@ -693,9 +675,7 @@ CHR			LDA STRBUFP
 			LDA #1
 			LDY #0
 			STA (TMP_ZP),Y
-			LDA #<Y_REG
-			LDY #>Y_REG
-			JSR REALFAC
+			JSR YREGFAC
 			JSR FACWORD
 			TYA
 			LDY #1
@@ -1321,9 +1301,7 @@ REALOUT		JSR REROUTE
 			LDA X_REG
 			BNE RNOTNULL
 			JMP PRINTNULL
-RNOTNULL	LDA #<X_REG
-			LDY #>X_REG
-			JSR REALFAC
+RNOTNULL	JSR XREGFAC
 REALOUTINT	LDY #0
 			JSR FACSTR
 			LDY #0
@@ -1339,9 +1317,7 @@ REALOUTBRK  JSR REROUTE
 			LDA X_REG
 			BNE RNOTNULLBRK
 			JMP PRINTNULLBRK
-RNOTNULLBRK	LDA #<X_REG
-			LDY #>X_REG
-			JSR REALFAC
+RNOTNULLBRK	JSR XREGFAC
 			LDY #0
 			JSR FACSTR
 			LDY #0
@@ -1438,9 +1414,7 @@ PRINTSTR2	JSR PRINTSTRS
 POS			SEC 
 			JSR CRSRPOS
 			JSR BYTEFAC
-			LDX #<X_REG
-			LDY #>X_REG
-			JMP FACMEM
+			JMP FACXREG
 ;###################################
 FRE			
 			JSR GCEXE
@@ -1451,9 +1425,7 @@ FRE
 			LDA ENDSTRBUF+1
 			SBC STRBUFP+1
 			JSR INTFAC
-			LDX #<X_REG
-			LDY #>X_REG
-			JMP FACMEM
+			JMP FACXREG
 ;###################################
 TABOUT		JSR REROUTE
 			LDA CMD_NUM
@@ -1481,9 +1453,7 @@ TABRIGHT	JSR CRSRRIGHT
 			JMP TABLOOP
 ;###################################
 ARRAYACCESS_STRING
-			LDA #<X_REG
-			LDY #>X_REG
-			JSR REALFAC
+			JSR XREGFAC
 			JSR FACINT
 ARRAYACCESS_STRING_INT
 			LDX G_REG
@@ -1515,9 +1485,7 @@ ARRAYACCESS_STRING_INT
 ARRAYACCESS_INTEGER_SI
 			STA G_REG
 			STY G_REG+1
-			LDA #<X_REG
-			LDY #>X_REG
-			JSR REALFAC
+			JSR XREGFAC
 			JSR FACINT
 ARRAYACCESS_INTEGER_INT_SI
 			LDX G_REG
@@ -1552,9 +1520,7 @@ ARRAYACCESS_INTEGER_S
 			STA G_REG
 			STY G_REG+1
 ARRAYACCESS_INTEGER
-			LDA #<X_REG
-			LDY #>X_REG
-			JSR REALFAC
+			JSR XREGFAC
 			JSR FACINT
 ARRAYACCESS_INTEGER_INT
 			LDX G_REG
@@ -1583,18 +1549,13 @@ ARRAYACCESS_INTEGER_INT
 			TAY
 			TXA
 			JSR INTFAC
-			LDX #<X_REG
-			LDY #>X_REG
-			; FAC to (X/Y)
-			JMP FACMEM	;RTS is implicit
+			JMP FACXREG	;RTS is implicit
 ;###################################
 ARRAYACCESS_REAL_S
 			STA G_REG
 			STY G_REG+1
 ARRAYACCESS_REAL
-			LDA #<X_REG
-			LDY #>X_REG
-			JSR REALFAC
+			JSR XREGFAC
 			JSR FACINT
 ARRAYACCESS_REAL_INT
 			LDX G_REG
@@ -1637,9 +1598,7 @@ ARRAYACCESS_REAL_INT
 			JMP COPY3_XY	;RTS is implicit
 ;###################################
 ARRAYSTORE_STRING
-			LDA #<X_REG
-			LDY #>X_REG
-			JSR REALFAC
+			JSR XREGFAC
 			JSR FACINT
 ARRAYSTORE_STRING_INT
 			LDX G_REG
@@ -1668,9 +1627,7 @@ ARRAYSTORE_STRING_INT
 			JMP COPYSTRING	; RTS is implicit
 ;###################################
 ARRAYSTORE_INT_INTEGER
-			LDA #<X_REG
-			LDY #>X_REG
-			JSR REALFAC
+			JSR XREGFAC
 			JSR FACINT
 			LDX G_REG
 			STX TMP_ZP
@@ -1699,9 +1656,7 @@ ARRAYSTORE_INT_INTEGER
 			RTS
 ;###################################
 ARRAYSTORE_INTEGER
-			LDA #<X_REG
-			LDY #>X_REG
-			JSR REALFAC
+			JSR XREGFAC
 			JSR FACINT
 ARRAYSTORE_INTEGER_INT
 			LDX G_REG
@@ -1722,9 +1677,7 @@ ARRAYSTORE_INTEGER_INT
 			LDA TMP_ZP+1
 			ADC TMP2_ZP+1
 			STA TMP_ZP+1
-			LDA #<Y_REG
-			LDY #>Y_REG
-			JSR REALFAC
+			JSR YREGFAC
 			JSR FACINT
 			STY TMP3_ZP
 			LDY #1
@@ -1735,9 +1688,7 @@ ARRAYSTORE_INTEGER_INT
 			RTS
 ;###################################
 ARRAYSTORE_REAL
-			LDA #<X_REG
-			LDY #>X_REG
-			JSR REALFAC
+			JSR XREGFAC
 			JSR FACINT
 ARRAYSTORE_REAL_INT
 			LDX G_REG
@@ -2106,17 +2057,13 @@ SOMENUMKEY	SEC
 			BCS NUMERROR
 			TAY
 			JSR BYTEFAC
-			LDX #<Y_REG
-			LDY #>Y_REG
-			JMP FACMEM
+			JMP FACYREG
 NUMERROR	JMP	SYNTAXERROR
 ;###################################
 QUEUESIZE	LDY INPUTQUEUEP
 			LDA #0
 			JSR INTFAC
-			LDX #<X_REG
-			LDY #>X_REG
-			JMP FACMEM
+			JMP FACXREG
 ;###################################
 CLEARQUEUE	LDA #$0
 			STA INPUTQUEUEP
@@ -2200,9 +2147,7 @@ NUMREADREAL	LDA TMP3_ZP
 			LDX #5
 			JSR READADDPTR					
 NUMREAD		JSR NEXTDATA
-			LDX #<Y_REG
-			LDY #>Y_REG
-			JMP FACMEM		; ...and return
+			JMP FACYREG		; ...and return
 ;###################################
 READSTR		JSR READINIT
 			CMP #$2
@@ -2529,9 +2474,7 @@ NUMOK		LDA TMP_REG
 			JSR VALS
 			LDA #$0			; flag as number
 			STA X_REG
-			LDX #<Y_REG
-			LDY #>Y_REG
-			JMP FACMEM		; ...and return
+			JMP FACYREG		; ...and return
 ;###################################
 GETSTR		LDA #8
 			LDY #0
@@ -2891,9 +2834,7 @@ POPREAL2X	LDA FPSTACKP
 NOPVPR2X	LDA FPSTACKP
 			LDY FPSTACKP+1
 			JSR REALFAC
-			LDA #<X_REG
-			LDY #>X_REG
-			JSR MEMARG
+			JSR XREGARG
 			RTS
 
 ;###################################
@@ -3008,9 +2949,7 @@ PEEKBYTEADD
 ;###################################
 PEEKBYTESTORE
 			JSR	INTFAC
-			LDX #<X_REG
-			LDY #>X_REG
-			JMP FACMEM
+			JMP FACXREG
 ;###################################
 PEEKBYTEADDSUB
 			JSR PEEKBYTESUB
@@ -3024,9 +2963,7 @@ PBNOOV		TAY
 			RTS
 ;###################################
 PEEKBYTESUB
-			LDA #<Y_REG
-			LDY #>Y_REG
-			JSR REALFAC
+			JSR YREGFAC
 			JSR FACWORD
 			STY PEEKBYTE+1
 			STA PEEKBYTE+2
@@ -3241,9 +3178,7 @@ TABCHANNEL2	LDA IOCHANNEL
 			STA STORE1
 			LDA #1
 			STA IOCHANNEL		; Something that's not the screen...that's enough for the check the CRSRRIGHT does...
-			LDA #<Y_REG
-			LDY #>Y_REG
-			JSR REALFAC
+			JSR YREGFAC
 			JSR FACWORD
 			TYA
 			TAX
@@ -3280,9 +3215,7 @@ CLRINCH		JSR CLRCH
 			STA IOCHANNEL
 			RTS
 ;###################################
-CMD			LDA #<X_REG
-			LDY #>X_REG
-			JSR REALFAC
+CMD			JSR XREGFAC
 			JSR FACWORD
 			STY CMD_NUM
 			RTS
@@ -3305,9 +3238,7 @@ SAVE
 			STA STATUS		; reset status
 			STA VERCHK		; reset Load/Verify-Flag
 
-			LDA #<X_REG
-			LDY #>X_REG
-			JSR REALFAC
+			JSR XREGFAC
 			JSR FACWORD
 			STY DEVICENUM	; Store device number
 			JSR SETNAMEPRT
@@ -3335,14 +3266,10 @@ LOADINT
 			<IF BOOST>
 			JSR BOOSTOFF
 			</IF>
-			LDA #<X_REG
-			LDY #>X_REG
-			JSR REALFAC
+			JSR XREGFAC
 			JSR FACWORD
 			STY DEVICENUM	; Store device number
-			LDA #<Y_REG		; read secondary address
-			LDY #>Y_REG
-			JSR REALFAC
+			JSR YREGFAC		; read secondary address
 			JSR FACWORD
 			TYA
 			BNE LOADBAS
@@ -3370,15 +3297,11 @@ LOADOK
 			RTS
 ;###################################
 OPEN		JSR SETEMPTYSTR	; Prepare with an empty string
-			LDA #<Y_REG
-			LDY #>Y_REG
-			JSR REALFAC
+			JSR YREGFAC
 			JSR FACWORD
 			STY TMP_REG		; store parameter count in TMP_REG
 
-			LDA #<X_REG
-			LDY #>X_REG
-			JSR REALFAC
+			JSR XREGFAC
 			JSR FACWORD
 			STY LOGICADDR	; store logical address
 			DEC TMP_REG
@@ -3438,9 +3361,7 @@ SNPNOOV		LDA G_REG
 			STY FILEADDR+1	; high byte of string parameter
 			RTS
 ;###################################
-CLOSE		LDA #<X_REG
-			LDY #>X_REG
-			JSR REALFAC
+CLOSE		JSR XREGFAC
 			JSR FACWORD
 			TYA				; file number into A
 			JSR CLOSECH
@@ -3461,24 +3382,16 @@ FACXOR		JSR FACINT		; simple XOR implementation...only needed for WAIT, so it do
 FINX		LDA #<REAL_CONST_ONE
 			LDY #>REAL_CONST_ONE
 			JSR REALFAC
-			LDA #<X_REG
-			LDY #>X_REG
-			JSR MEMARG
+			JSR XREGARG
 			JSR ARGADD
-			LDX #<X_REG
-			LDY #>X_REG
-			JMP FACMEM
+			JMP FACXREG
 ;###################################
 FDEX		LDA #<REAL_CONST_ONE
 			LDY #>REAL_CONST_ONE
 			JSR REALFAC
-			LDA #<X_REG
-			LDY #>X_REG
-			JSR MEMARG
+			JSR XREGARG
 			JSR FACSUB
-			LDX #<X_REG
-			LDY #>X_REG
-			JMP FACMEM
+			JMP FACXREG
 ;###################################
 FIDEX		CPY #0
 			BNE FIDEXNOV
@@ -3486,18 +3399,14 @@ FIDEX		CPY #0
 			SBC #$1
 FIDEXNOV	DEY
 			JSR INTFAC
-			LDX #<X_REG
-			LDY #>X_REG
-			JMP FACMEM
+			JMP FACXREG
 ;###################################
 FIINX		INY
 			BNE FIINXNOV
 			CLC
 			ADC #$1
 FIINXNOV	JSR INTFAC
-			LDX #<X_REG
-			LDY #>X_REG
-			JMP FACMEM
+			JMP FACXREG
 ;###################################
 SUPERFIINX	INY
 			BNE SFIINXNOV
@@ -3621,9 +3530,7 @@ CONTBASICC	JSR BASICCOPY
 COPYREALPAR
 			JSR ADDKOMMA
 COPYREALPARNK
-			LDA #<X_REG
-			LDY #>X_REG
-			JSR REALFAC
+			JSR XREGFAC
 			LDY #1
 			JSR FACSTR
 			LDY #0
@@ -3707,6 +3614,88 @@ BASICCOPYLOOP
 			BNE BASICCOPYLOOP
 			STY BASICTEXTP
 			RTS	
+;###################################
+FACXREG		LDA $65
+			STA X_REG+4
+			LDA $64
+			STA X_REG+3
+			LDA $63
+			STA X_REG+2
+			LDA $66
+			ORA #$7F
+			AND $62
+			STA X_REG+1
+			LDA $61
+			STA X_REG
+			LDA #0
+			STA $70
+			RTS
+;###################################
+FACYREG		LDA $65
+			STA Y_REG+4
+			LDA $64
+			STA Y_REG+3
+			LDA $63
+			STA Y_REG+2
+			LDA $66
+			ORA #$7F
+			AND $62
+			STA Y_REG+1
+			LDA $61
+			STA Y_REG
+			LDA #0
+			STA $70
+			RTS
+;###################################
+XREGFAC		LDA X_REG+4
+			STA $65
+			LDA X_REG+3
+			STA $64
+			LDA X_REG+2
+			STA $63
+			LDA X_REG+1
+			STA $66
+			ORA #$80
+			STA $62
+			LDA X_REG
+			STA $61
+			LDA #0
+			STA $70
+			RTS
+;###################################
+XREGARG		LDA X_REG+4
+			STA $6D
+			LDA X_REG+3
+			STA $6C
+			LDA X_REG+2
+			STA $6B
+			LDA X_REG+1
+			STA $6E
+			EOR $66
+			STA $6F
+			LDA $6E
+			ORA #$80
+			STA $6A
+			LDA X_REG
+			STA $69
+			LDA $61
+			RTS
+;###################################
+YREGFAC		LDA Y_REG+4
+			STA $65
+			LDA Y_REG+3
+			STA $64
+			LDA Y_REG+2
+			STA $63
+			LDA Y_REG+1
+			STA $66
+			ORA #$80
+			STA $62
+			LDA Y_REG
+			STA $61
+			LDA #0
+			STA $70
+			RTS
 ;###################################
 <IF BOOST>
 BOOSTENABLE	

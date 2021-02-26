@@ -216,4 +216,45 @@ public class SourceProcessor {
 		return res;
 	}
 
+	/**
+	 * Moves runtime code to the front for optimizing for big ram.
+	 * @return
+	 */
+	public List<String> moveRuntime() {
+		Logger.log("Relocating runtime code for big ram usage");
+		
+		int romHandlerPos=-1;
+		int subPos=-1;
+		int subEnd=-1;
+		
+		int cnt=0;
+		for (String line: src) {
+			if (line.startsWith(";")) {
+			if (line.contains("*** ROMHANDLER END ***")) {
+				romHandlerPos=cnt;
+			}
+			if (line.contains("*** SUBROUTINES ***")) {
+				subPos=cnt;
+			}
+			if (line.contains("*** SUBROUTINES END ***")) {
+				subEnd=cnt;
+				break;
+			}
+			}
+			cnt++;
+		}
+		
+		if (romHandlerPos==-1 || subPos==-1 || subEnd==-1) {
+			throw new RuntimeException("Failed to find code blocks for big ram!");
+		}
+		
+		List<String> res=new ArrayList<>();
+		res.addAll(src.subList(0, romHandlerPos+1));
+		res.addAll(src.subList(subPos, subEnd+1));
+		res.addAll(src.subList(romHandlerPos+1, subPos));
+		res.addAll(src.subList(subEnd+1, src.size()));
+		
+		return res;
+	}
+
 }

@@ -46,8 +46,8 @@ public class Transformer64 extends AbstractTransformer {
 		subs.add("; *** SUBROUTINES ***");
 
 		if (config.isBigRam()) {
-			bigRamCode = Arrays.asList(Loader.loadProgram(this.getClass().getResourceAsStream("/romhandler.asm")));
-			subs.addAll(Arrays.asList(Loader.loadProgram(this.getClass().getResourceAsStream("/bigram.asm"))));
+			bigRamCode = Arrays.asList(Loader.loadProgram(this.getClass().getResourceAsStream("/bigram/romhandler.asm")));
+			subs.addAll(Arrays.asList(Loader.loadProgram(this.getClass().getResourceAsStream("/bigram/bigram.asm"))));
 		}
 		subs.addAll(Arrays.asList(Loader.loadProgram(this.getClass().getResourceAsStream("/subroutines.asm"))));
 
