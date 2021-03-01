@@ -771,18 +771,31 @@ public class Optimizer6502 implements Optimizer {
 				this.add(new Pattern(false, "Omit FAC load",
 						new String[] { "{LINE0}", "{LINE1}", "{LINE2}", "{LINE3}" }, "LDX #<{MEM1}", "LDY #>{MEM1}",
 						"JSR FACMEM", "NOP", "LDA #<{MEM1}", "LDY #>{MEM1}", "JSR REALFAC"));
-				
-				this.add(new Pattern(false, "FAC 2 X_REG(1)", new String[] {"JSR FACXREG"}, "LDY #>X_REG", "LDX #<X_REG", "JSR FACMEM"));
-				this.add(new Pattern(false, "FAC 2 Y_REG(1)", new String[] {"JSR FACYREG"}, "LDY #>Y_REG", "LDX #<Y_REG", "JSR FACMEM"));
-				
-				this.add(new Pattern(false, "FAC 2 X_REG(2)", new String[] {"JSR FACXREG"}, "LDX #<X_REG", "LDY #>X_REG", "JSR FACMEM"));
-				this.add(new Pattern(false, "FAC 2 Y_REG(2)", new String[] {"JSR FACYREG"}, "LDX #<Y_REG", "LDY #>Y_REG", "JSR FACMEM"));
-				
-				this.add(new Pattern(false, "X_REG 2 FAC(1)", new String[] {"JSR XREGFAC"}, "LDA #<X_REG", "LDY #>X_REG", "JSR REALFAC"));
-				this.add(new Pattern(false, "X_REG 2 FAC(2)", new String[] {"JSR XREGFAC"}, "TXA", "LDY #>X_REG", "JSR REALFAC"));
-				this.add(new Pattern(false, "Y_REG 2 FAC(1)", new String[] {"JSR YREGFAC"}, "LDA #<Y_REG", "LDY #>Y_REG", "JSR REALFAC"));
-				
-				this.add(new Pattern(false, "X_REG 2 ARG", new String[] {"JSR XREGARG"}, "LDA #<X_REG", "LDY #>X_REG", "JSR MEMARG"));
+
+				this.add(new Pattern(false, "FAC 2 X_REG(1)", new String[] { "JSR FACXREG" }, "LDY #>X_REG",
+						"LDX #<X_REG", "JSR FACMEM"));
+				this.add(new Pattern(false, "FAC 2 Y_REG(1)", new String[] { "JSR FACYREG" }, "LDY #>Y_REG",
+						"LDX #<Y_REG", "JSR FACMEM"));
+
+				this.add(new Pattern(false, "FAC 2 X_REG(2)", new String[] { "JSR FACXREG" }, "LDX #<X_REG",
+						"LDY #>X_REG", "JSR FACMEM"));
+				this.add(new Pattern(false, "FAC 2 Y_REG(2)", new String[] { "JSR FACYREG" }, "LDX #<Y_REG",
+						"LDY #>Y_REG", "JSR FACMEM"));
+
+				this.add(new Pattern(false, "X_REG 2 FAC(1)", new String[] { "JSR XREGFAC" }, "LDA #<X_REG",
+						"LDY #>X_REG", "JSR REALFAC"));
+				this.add(new Pattern(false, "X_REG 2 FAC(2)", new String[] { "JSR XREGFAC" }, "TXA", "LDY #>X_REG",
+						"JSR REALFAC"));
+				this.add(new Pattern(false, "Y_REG 2 FAC(1)", new String[] { "JSR YREGFAC" }, "LDA #<Y_REG",
+						"LDY #>Y_REG", "JSR REALFAC"));
+
+				this.add(new Pattern(false, "X_REG 2 ARG", new String[] { "JSR XREGARG" }, "LDA #<X_REG", "LDY #>X_REG",
+						"JSR MEMARG"));
+
+				this.add(new Pattern(false, "MEM 2 X_REG", new String[] { "{LINE0}", "{LINE1}", "JSR COPY2_XYA_XREG" },
+						"LDA #<{MEM0}", "LDY #>{MEM0}", "STY TMP3_ZP+1", "LDX #<X_REG", "LDY #>X_REG", "JSR COPY2_XYA"));
+				this.add(new Pattern(false, "MEM 2 Y_REG", new String[] { "{LINE0}", "{LINE1}", "JSR COPY2_XYA_YREG" },
+						"LDA #<{MEM0}", "LDY #>{MEM0}", "STY TMP3_ZP+1", "LDX #<Y_REG", "LDY #>Y_REG", "JSR COPY2_XYA"));
 			}
 		};
 	}

@@ -2046,9 +2046,7 @@ IGNOREKEY	LDA #<REAL_CONST_ZERO
 			STA TMP3_ZP
 			LDA #>REAL_CONST_ZERO
 			STA TMP3_ZP+1
-			LDX #<Y_REG
-			LDY #>Y_REG
-			JSR COPY2_XY
+			JSR COPY2_XY_YREG
 			RTS
 SOMENUMKEY	SEC
 			SBC #$30
@@ -2465,9 +2463,7 @@ CHECKERR	LDA #<REAL_CONST_MINUS_ONE
 			STA TMP3_ZP
 			LDA #>REAL_CONST_MINUS_ONE
 			STA TMP3_ZP+1
-			LDX #<X_REG
-			LDY #>X_REG
-			JMP COPY2_XY
+			JMP COPY2_XY_XREG
 			RTS				; Flag error and return
 							; check, if the input string looked like a number
 NUMOK		LDA TMP_REG
@@ -2518,9 +2514,7 @@ SGTEQ		JSR CMPSTRGTEQ
 			STA TMP3_ZP
 			LDA #>REAL_CONST_MINUS_ONE
 			STA TMP3_ZP+1
-			LDX #<X_REG
-			LDY #>X_REG
-			JMP COPY2_XY
+			JMP COPY2_XY_XREG
 NOTSGTEQ	JMP ZEROSET
 ;###################################
 ZEROSET		LDA #0
@@ -2620,9 +2614,7 @@ SGT			JSR CMPSTRGT
 			STA TMP3_ZP
 			LDA #>REAL_CONST_MINUS_ONE
 			STA TMP3_ZP+1
-			LDX #<X_REG
-			LDY #>X_REG
-			JMP COPY2_XY
+			JMP COPY2_XY_XREG
 NOTSGT		JMP ZEROSET
 ;###################################
 CMPSTRGT	LDY #0				;Returns 0 if A>B, something else otherwise
@@ -2689,9 +2681,7 @@ SEQ			JSR CMPSTR
 			STA TMP3_ZP
 			LDA #>REAL_CONST_MINUS_ONE
 			STA TMP3_ZP+1
-			LDX #<X_REG
-			LDY #>X_REG
-			JMP COPY2_XY
+			JMP COPY2_XY_XREG
 NOTSEQ		JMP ZEROSET
 
 ;###################################
@@ -2702,9 +2692,7 @@ SNEQ		JSR CMPSTR
 			STA TMP3_ZP
 			LDA #>REAL_CONST_MINUS_ONE
 			STA TMP3_ZP+1
-			LDX #<X_REG
-			LDY #>X_REG
-			JMP COPY2_XY
+			JMP COPY2_XY_XREG
 
 ;###################################
 CMPSTR		LDY #0			;Returns 0 if strings are equal, something else otherwise
@@ -2909,6 +2897,48 @@ COPY3_XY	LDY #0
 			INY
 			LDA (TMP3_ZP),Y
 			STA (TMP_ZP),Y
+			RTS
+;###################################
+COPY2_XYA_XREG
+			STA TMP3_ZP
+			STY TMP3_ZP+1
+COPY2_XY_XREG
+			LDY #0
+			LDA (TMP3_ZP),Y
+			STA X_REG
+			INY
+			LDA (TMP3_ZP),Y
+			STA X_REG+1
+			INY
+			LDA (TMP3_ZP),Y
+			STA X_REG+2
+			INY
+			LDA (TMP3_ZP),Y
+			STA X_REG+3
+			INY
+			LDA (TMP3_ZP),Y
+			STA X_REG+4
+			RTS
+;###################################
+COPY2_XYA_YREG
+			STA TMP3_ZP
+			STY TMP3_ZP+1
+COPY2_XY_YREG
+			LDY #0
+			LDA (TMP3_ZP),Y
+			STA Y_REG
+			INY
+			LDA (TMP3_ZP),Y
+			STA Y_REG+1
+			INY
+			LDA (TMP3_ZP),Y
+			STA Y_REG+2
+			INY
+			LDA (TMP3_ZP),Y
+			STA Y_REG+3
+			INY
+			LDA (TMP3_ZP),Y
+			STA Y_REG+4
 			RTS
 ;###################################
 PEEKBYTEADDAND
