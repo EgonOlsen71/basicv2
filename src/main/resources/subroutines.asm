@@ -3002,6 +3002,20 @@ PEEKBYTE
 			LDX #0
 			RTS
 ;###################################
+PEEKBYTEANDFAST
+			JSR PEEKBYTESUB
+			TYA
+			AND A_REG
+			TAY
+			RTS
+;###################################
+PEEKBYTEORFAST
+			JSR PEEKBYTESUB
+			TYA
+			ORA A_REG
+			TAY
+			RTS
+;###################################
 FASTAND		LDA ARGEXP			; Check ARG for 0
 			BNE CHECKFAC	
 			STA FACSGN			; if so, set FAC to 0 and exit

@@ -796,6 +796,11 @@ public class Optimizer6502 implements Optimizer {
 						"LDA #<{MEM0}", "LDY #>{MEM0}", "STY TMP3_ZP+1", "LDX #<X_REG", "LDY #>X_REG", "JSR COPY2_XYA"));
 				this.add(new Pattern(false, "MEM 2 Y_REG", new String[] { "{LINE0}", "{LINE1}", "JSR COPY2_XYA_YREG" },
 						"LDA #<{MEM0}", "LDY #>{MEM0}", "STY TMP3_ZP+1", "LDX #<Y_REG", "LDY #>Y_REG", "JSR COPY2_XYA"));
+				
+				this.add(new Pattern(false, "Faster PEEKBYTEAND", new String[] { "JSR PEEKBYTEANDFAST", "{LINE3}" },
+						"JSR PEEKBYTEAND", "JSR XREGFAC", "JSR FACWORD", "STY {*}"));
+				this.add(new Pattern(false, "Faster PEEKBYTEOR", new String[] { "JSR PEEKBYTEORFAST", "{LINE3}" },
+						"JSR PEEKBYTEOR", "JSR XREGFAC", "JSR FACWORD", "STY {*}"));
 			}
 		};
 	}
