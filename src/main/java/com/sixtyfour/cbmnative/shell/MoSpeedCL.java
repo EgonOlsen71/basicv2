@@ -260,6 +260,12 @@ public class MoSpeedCL {
 		if (src == null) {
 			src = loadSource(srcFile);
 		}
+		
+		if (src==null || src.length==0) {
+			System.out.println("\nSource file is empty!");
+			exit(45);
+		}
+		
 		for (String line : src) {
 			if (!line.trim().isEmpty()) {
 				char c = line.charAt(0);
