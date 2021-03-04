@@ -42,7 +42,7 @@ SCDO		JSR $FFFF
 			STA $030F
 			RTS
 ;###################################
-			JSR YREGFAC
+USR			JSR YREGFAC
 			<IF BIGRAM>
 				JSR ENABLEROM
 			</IF>
