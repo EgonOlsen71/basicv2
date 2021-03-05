@@ -71,14 +71,15 @@ public class TransformerX16 extends AbstractTransformer {
 		addMemoryLocations(res);
 		addBasicBuffer(res, platform, memConfig);
 
-		res.add("TMP_ZP = 96");
-		res.add("TMP2_ZP = 101");
-		res.add("TMP3_ZP = 106");
+		res.add("TMP_ZP = 48");
+		res.add("TMP2_ZP = 53");
+		res.add("TMP3_ZP = 58");
 		res.add(";make sure that JUMP_TARGET's low can't be $ff");
-		res.add("JUMP_TARGET = 111");
+		res.add("JUMP_TARGET = 63");
 		if (preferZeropage) {
-			res.add("TMP_REG=116");
-			res.add("G_REG=121");
+			res.add("TMP_REG=68");
+			res.add("G_REG=73");
+			res.add("X_REG=78");
 		}
 		res.add("TMP_BANK=95");
 		res.add("*=" + startAddress);

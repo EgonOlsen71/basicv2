@@ -801,6 +801,13 @@ public class Optimizer6502 implements Optimizer {
 						"JSR PEEKBYTEAND", "JSR XREGFAC", "JSR FACWORD", "STY {*}"));
 				this.add(new Pattern(false, "Faster PEEKBYTEOR", new String[] { "JSR PEEKBYTEORFAST", "{LINE3}" },
 						"JSR PEEKBYTEOR", "JSR XREGFAC", "JSR FACWORD", "STY {*}"));
+				
+				this.add(new Pattern(false, "Shorter SHL", new String[] { "{LINE0}", "{LINE2}", "{LINE4}", "{LINE5}"},
+						"LDY {*}", "LDA {*}", "STY A_REG", "STA A_REG+1", "JSR XREGFAC", "JSR SHL"));
+				
+				this.add(new Pattern(false, "Shorter SHR", new String[] { "{LINE0}", "{LINE2}", "{LINE4}", "{LINE5}"},
+						"LDY {*}", "LDA {*}", "STY A_REG", "STA A_REG+1", "JSR XREGFAC", "JSR SHR"));
+				
 			}
 		};
 	}

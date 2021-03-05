@@ -430,7 +430,9 @@ public abstract class AbstractTransformer implements Transformer {
 		res.addAll(vars);
 		res.add("VARIABLES_END");
 		res.add("; *** INTERNAL ***");
-		res.add("X_REG\t.REAL 0.0");
+		if (!preferZeropage) {
+			res.add("X_REG\t.REAL 0.0");
+		}
 		res.add("Y_REG\t.REAL 0.0");
 		res.add("C_REG\t.REAL 0.0");
 		res.add("D_REG\t.REAL 0.0");
