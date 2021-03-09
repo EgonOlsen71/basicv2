@@ -10,6 +10,7 @@ import com.sixtyfour.Logger;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.Variable;
 import com.sixtyfour.elements.commands.Command;
+import com.sixtyfour.elements.commands.For;
 import com.sixtyfour.elements.commands.Let;
 import com.sixtyfour.elements.functions.Function;
 import com.sixtyfour.parser.Atom;
@@ -44,6 +45,11 @@ public class DeadStoreEliminator {
 					if (cmdTerm != null && !ConstantPropagator.checkForConstant(config, basic.getMachine(), cmdTerm)) {
 						terms.add(cmdTerm);
 					}
+				}
+				if (cmd instanceof For) {
+					// Add variables used in FORs to prevent elimination of early out conditions by setting the loop's
+					// variable inside the loop but not using it anywhere else.
+					terms.add(new Term(((For) cmd).getVar()));
 				}
 			}
 
