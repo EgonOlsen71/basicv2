@@ -169,6 +169,7 @@ public class If extends AbstractCommand {
 		// Looks like as if the comparison is supposed to happen to a pointer register. That makes no sense,
 		// so it's obviously a pointer to a string (what else could it be?). We "wrap" that into a LEN call
 		// and compare with X instead to fix this. 
+		// It would be better to catch this on a higher level, but...well...who cares...
 		if (expPush.equals("B") || expPush.equals("A")) {
 			if (expPush.equals("A")) {
 				after.add("MOV B,A");
