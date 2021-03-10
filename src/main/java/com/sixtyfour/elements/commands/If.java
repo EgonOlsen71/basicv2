@@ -130,8 +130,10 @@ public class If extends AbstractCommand {
 		List<String> before = null;
 
 		String expPush = getPushRegister(expr.get(expr.size() - 1));
-		expr = expr.subList(0, expr.size() - 1); // Remove trailing PUSH
-		// X/PUSH_A
+		expr = expr.subList(0, expr.size() - 1); // Remove trailing PUSH X/PUSH_A
+		
+		expPush = handleNoOpStrings(after, expPush);
+		
 		if (!compatibleConditionalBranches) {
 			// This combination might not work on a 6502 cpu, because the
 			// conditional branch target has to be within +-127/8 bytes
@@ -159,5 +161,22 @@ public class If extends AbstractCommand {
 	@Override
 	public boolean isConditional() {
 		return true;
+	}
+	
+	private String handleNoOpStrings(List<String> after, String expPush) {
+		// Handle IF A$ THEN and other string "comparisons" of that kind properly...quite hacky, but anyway...
+		
+		// Looks like as if the comparison is supposed to happen to a pointer register. That makes no sense,
+		// so it's obviously a pointer to a string (what else could it be?). We "wrap" that into a LEN call
+		// and compare with X instead to fix this. 
+		if (expPush.equals("B") || expPush.equals("A")) {
+			if (expPush.equals("A")) {
+				after.add("MOV B,A");
+			}
+			after.add("CHGCTX #0");
+			after.add("JSR LEN");
+			expPush = "X";
+		}
+		return expPush;
 	}
 }
