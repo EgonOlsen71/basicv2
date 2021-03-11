@@ -83,6 +83,11 @@ public class MoSpeedCL {
 		memConfig.setRuntimeStart(getNumber("runtimestart", cmds));
 		memConfig.setVariableStart(getNumber("varstart", cmds));
 		memConfig.setStringEnd(getNumber("varend", cmds));
+		
+		if (cfg.isBigRam()) {
+			System.out.println("Runtime start configuration ignored, because bigram is true!");
+			memConfig.setRuntimeStart(-1);
+		}
 
 		if (!memConfig.isValid()) {
 			System.out.println("Invalid memory configuration!");
@@ -636,7 +641,7 @@ public class MoSpeedCL {
 		System.out.println(
 				"/varend=xxxxx|$yyyy - the end address of the variable memory, i.e. in fact the end of the string memory.");
 		System.out.println(
-				"/runtimestart=xxxxx|$yyyy - the start address of the runtime's code. If none is given, it follows the program's code.");
+				"/runtimestart=xxxxx|$yyyy - the start address of the runtime's code. If none is given, it follows the program's code. This setting will be ignored when using the bigram option.");
 		System.out.println(
 				"/sysbuffer=xxxxx|$yyyy - the start address of the buffer used to execute SYS commands with parameters. Default is 820 for the CBM machines and 1024 for the X16. If set to 0, the runtime will reserve its own buffer in BASIC memory.");
 		System.out.println("/alloff=true|false - if specified, all optimizations will be turned off");
