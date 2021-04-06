@@ -2941,6 +2941,20 @@ COPY2_XY_YREG
 			STA Y_REG+4
 			RTS
 ;###################################
+PEEKBYTEADDANDFAST
+			JSR PEEKBYTEADDSUB
+			TYA
+			AND B_REG
+			STA A_REG
+			RTS
+;###################################
+PEEKBYTEADDORFAST
+			JSR PEEKBYTEADDSUB
+			TYA
+			ORA B_REG
+			STA A_REG
+			RTS
+;###################################
 PEEKBYTEADDAND
 			JSR PEEKBYTEADDSUB
 			TYA

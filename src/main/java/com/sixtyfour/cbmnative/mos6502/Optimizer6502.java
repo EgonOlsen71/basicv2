@@ -793,21 +793,35 @@ public class Optimizer6502 implements Optimizer {
 						"JSR MEMARG"));
 
 				this.add(new Pattern(false, "MEM 2 X_REG", new String[] { "{LINE0}", "{LINE1}", "JSR COPY2_XYA_XREG" },
-						"LDA #<{MEM0}", "LDY #>{MEM0}", "STY TMP3_ZP+1", "LDX #<X_REG", "LDY #>X_REG", "JSR COPY2_XYA"));
+						"LDA #<{MEM0}", "LDY #>{MEM0}", "STY TMP3_ZP+1", "LDX #<X_REG", "LDY #>X_REG",
+						"JSR COPY2_XYA"));
 				this.add(new Pattern(false, "MEM 2 Y_REG", new String[] { "{LINE0}", "{LINE1}", "JSR COPY2_XYA_YREG" },
-						"LDA #<{MEM0}", "LDY #>{MEM0}", "STY TMP3_ZP+1", "LDX #<Y_REG", "LDY #>Y_REG", "JSR COPY2_XYA"));
-				
+						"LDA #<{MEM0}", "LDY #>{MEM0}", "STY TMP3_ZP+1", "LDX #<Y_REG", "LDY #>Y_REG",
+						"JSR COPY2_XYA"));
+
 				this.add(new Pattern(false, "Faster PEEKBYTEAND", new String[] { "JSR PEEKBYTEANDFAST", "{LINE3}" },
 						"JSR PEEKBYTEAND", "JSR XREGFAC", "JSR FACWORD", "STY {*}"));
 				this.add(new Pattern(false, "Faster PEEKBYTEOR", new String[] { "JSR PEEKBYTEORFAST", "{LINE3}" },
 						"JSR PEEKBYTEOR", "JSR XREGFAC", "JSR FACWORD", "STY {*}"));
-				
-				this.add(new Pattern(false, "Shorter SHL", new String[] { "{LINE0}", "{LINE2}", "{LINE4}", "{LINE5}"},
+
+				this.add(new Pattern(false, "Shorter SHL", new String[] { "{LINE0}", "{LINE2}", "{LINE4}", "{LINE5}" },
 						"LDY {*}", "LDA {*}", "STY A_REG", "STA A_REG+1", "JSR XREGFAC", "JSR SHL"));
-				
-				this.add(new Pattern(false, "Shorter SHR", new String[] { "{LINE0}", "{LINE2}", "{LINE4}", "{LINE5}"},
+
+				this.add(new Pattern(false, "Shorter SHR", new String[] { "{LINE0}", "{LINE2}", "{LINE4}", "{LINE5}" },
 						"LDY {*}", "LDA {*}", "STY A_REG", "STA A_REG+1", "JSR XREGFAC", "JSR SHR"));
+
+				this.add(new Pattern(false, "Faster PEEKBYTEADDAND",
+						new String[] { "JSR PEEKBYTEADDANDFAST", "{LINE1}", "{LINE2}", "{LINE3}", "{LINE4}",
+								"LDY A_REG", "{LINE7}", "{LINE8}" },
+						"JSR PEEKBYTEADDAND", "JSR POPREAL", "JSR FACWORD", "STY MOVBSELF1+1", "STA MOVBSELF1+2",
+						"JSR XREGFAC", "JSR FACWORD", "{LABEL}", "STY $FFFF"));
 				
+				this.add(new Pattern(false, "Faster PEEKBYTEADDOR",
+						new String[] { "JSR PEEKBYTEADDORFAST", "{LINE1}", "{LINE2}", "{LINE3}", "{LINE4}",
+								"LDY A_REG", "{LINE7}", "{LINE8}" },
+						"JSR PEEKBYTEADDOR", "JSR POPREAL", "JSR FACWORD", "STY MOVBSELF1+1", "STA MOVBSELF1+2",
+						"JSR XREGFAC", "JSR FACWORD", "{LABEL}", "STY $FFFF"));
+
 			}
 		};
 	}
