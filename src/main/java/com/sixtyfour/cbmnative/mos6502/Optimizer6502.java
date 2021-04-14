@@ -825,6 +825,10 @@ public class Optimizer6502 implements Optimizer {
 				this.add(new Pattern(true, "Faster setting to 1", new String[] {"JSR ONETOFAC"}, "LDA #<{#1.0}",
 						"LDY #>{#1.0}", "JSR REALFAC"));
 				
+				// This optimizes a special case, which happens in my affine texture mapper quite a lot but maybe not much elsewhere...
+				this.add(new Pattern(true, "Omit XREG->FAC", new String[] {"{LINE0}","{LINE1}","{LINE2}"}, "JSR FACXREG",
+						"LDY {*}", "STY {*}", "JSR XREGFAC"));
+				
 
 			}
 		};
