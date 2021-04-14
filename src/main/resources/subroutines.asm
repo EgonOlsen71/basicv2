@@ -3030,6 +3030,18 @@ PEEKBYTEORFAST
 			TAY
 			RTS
 ;###################################
+ONETOFAC    LDX #129
+			STX FAC
+			DEX
+			STX FAC+1
+			LDX #0
+			STX FAC+2
+			STX FAC+3
+			STX FAC+4
+			STX FAC+5
+			STX FAC+6
+			RTS
+;###################################
 FASTAND		LDA ARGEXP			; Check ARG for 0
 			BNE CHECKFAC	
 			STA FACSGN			; if so, set FAC to 0 and exit

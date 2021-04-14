@@ -821,6 +821,10 @@ public class Optimizer6502 implements Optimizer {
 								"LDY A_REG", "{LINE7}", "{LINE8}" },
 						"JSR PEEKBYTEADDOR", "JSR POPREAL", "JSR FACWORD", "STY MOVBSELF1+1", "STA MOVBSELF1+2",
 						"JSR XREGFAC", "JSR FACWORD", "{LABEL}", "STY $FFFF"));
+				
+				this.add(new Pattern(true, "Faster setting to 1", new String[] {"JSR ONETOFAC"}, "LDA #<{#1.0}",
+						"LDY #>{#1.0}", "JSR REALFAC"));
+				
 
 			}
 		};

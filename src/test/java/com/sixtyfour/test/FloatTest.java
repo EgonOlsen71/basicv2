@@ -30,7 +30,7 @@ public class FloatTest {
 	private static void testNumbers() {
 		for (float i = -10; i < 20; i++) {
 			int[] fl = Conversions.convertFloat(i);
-			System.out.println(Arrays.toString(fl));
+			System.out.println(i + " : " + Arrays.toString(fl));
 		}
 	}
 
