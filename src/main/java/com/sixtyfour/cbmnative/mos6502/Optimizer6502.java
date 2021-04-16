@@ -241,7 +241,7 @@ public class Optimizer6502 implements Optimizer {
 		input = applyFloatingPointPatterns(config, platform, input);
 		input = applyEnhancedOptimizations(config, platform, input);
 		input = aggregateLoads(input);
-		//input = aggregateAssignments(input);
+		input = aggregateAssignments(input);
 		return input;
 	}
 
@@ -267,68 +267,72 @@ public class Optimizer6502 implements Optimizer {
 		return input;
 	}
 
-	/**
-	// Clunky code, that doesn't really help with performance. Disabled for now... 
 	private List<String> aggregateAssignments(List<String> input) {
-		try {
-			List<String> res = new ArrayList<>();
-			List<String> tmp = new ArrayList<>();
-			List<String> buf = new ArrayList<>();
-			int pos = 0;
-			int blocks = 0;
-			String[] pattern = new String[] { "LDX #4", "dcloop", "LDA", "STA VAR", "DEX", "BPL dcloop" };
+		List<String> res = new ArrayList<>();
+		List<String> tmp = new ArrayList<>();
+		List<String> buf = new ArrayList<>();
+		List<Integer> blockSize = new ArrayList<>();
+		int[][] positions = new int[11][6];
+		int pos = 0;
+		int blocks = 0;
+		boolean limit = false;
+		String[] pattern = new String[] { "LDX #4", "dcloop", "LDA", "STA VAR", "DEX", "BPL dcloop" };
 
-			for (Iterator<String> itty = input.iterator(); itty.hasNext();) {
-				String line = itty.next().trim();
-				buf.add(line);
-				if (line.startsWith(";") || line.isEmpty() || line.equals("NOP")) {
-					continue;
-				}
-				if (line.startsWith(pattern[pos])) {
-					pos++;
-					if (pos == pattern.length) {
-						blocks++;
-						tmp.addAll(buf);
-						buf.clear();
-						pos = 0;
-					}
-				} else {
-					if (blocks > 1) {
-						for (int i = 2; i < 4; i++) {
-							res.add(tmp.get(i));
-						}
-						int delta = tmp.size()/blocks;
-						int end = tmp.size();
-						for (int i = 4; i < end; i += delta) {
-							res.add(tmp.get(i));
-							res.add(tmp.get(i + 1));
-						}
-						for (int i = 6; i < 8; i++) {
-							res.add(tmp.get(i));
-						}
-						res.add("; Special rule: Aggregation of assignments (" + blocks + ")");
-						tmp.clear();
-					} else {
-						if (blocks == 1) {
-							res.addAll(tmp);
-						}
-					}
-					if (!buf.isEmpty()) {
-						res.addAll(buf);
-						buf.clear();
-					}
-					blocks = 0;
+		for (Iterator<String> itty = input.iterator(); itty.hasNext();) {
+			String line = itty.next().trim();
+			buf.add(line);
+			if (line.startsWith(";") || line.isEmpty() || line.equals("NOP")) {
+				continue;
+			}
+			int oPos = pos;
+			if (line.startsWith(pattern[oPos]) && !limit) {
+				positions[blocks][oPos] = tmp.size() + buf.size()-1;
+				pos++;
+				if (pos == pattern.length) {
+					tmp.addAll(buf);
+					blockSize.add(buf.size());
+					buf.clear();
 					pos = 0;
-					tmp.clear();
+					blocks++;
+					if (blocks > 10) {
+						limit = true;
+					}
 				}
 			}
-			return res;
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new RuntimeException(e);
+			if (!line.startsWith(pattern[oPos]) || limit) {
+				if (blocks > 1) {
+					for (int b = 0; b < blocks; b++) {
+						if (b == 0) {
+							res.add(tmp.get(positions[b][0]));
+							res.add(tmp.get(positions[b][1]));
+						}
+						res.add(tmp.get(positions[b][2]));
+						res.add(tmp.get(positions[b][3]));
+						if (b == blocks - 1) {
+							res.add(tmp.get(positions[0][4]));
+							res.add(tmp.get(positions[0][5]));
+						}
+					}
+					res.add("; Special rule: Aggregation of assignments (" + blocks + ")");
+				} else {
+					if (blocks == 1) {
+						res.addAll(tmp);
+					}
+				}
+				if (!buf.isEmpty()) {
+					res.addAll(buf);
+					buf.clear();
+				}
+				limit = false;
+				blocks = 0;
+				pos = 0;
+				tmp.clear();
+				blockSize.clear();
+			}
 		}
+		return res;
 	}
-		**/
+
 	private List<String> trackAndModifyRegisterUsage(List<String> code) {
 		Map<String, Integer[]> regState = new HashMap<>();
 		Set<Integer> swaps = new HashSet<>();
