@@ -4,6 +4,7 @@
 package com.sixtyfour;
 
 import java.io.PrintStream;
+import java.util.WeakHashMap;
 
 /**
  * A very basic Logger that outputs logging messages onto the console. If you
@@ -13,6 +14,7 @@ import java.io.PrintStream;
 public class Logger {
 
 	private static PrintStream out = System.out;
+	private static WeakHashMap<Thread, PrintStream> streams=new WeakHashMap<>();
 
 	/**
 	 * Logs a message.
@@ -20,7 +22,7 @@ public class Logger {
 	 * @param msg the message
 	 */
 	public static void log(String msg) {
-		out.println(msg);
+		getPrintStream().println(msg);
 	}
 
 	/**
@@ -30,8 +32,8 @@ public class Logger {
 	 * @param t   the throwable
 	 */
 	public static void log(String msg, Throwable t) {
-		out.println(msg);
-		t.printStackTrace(out);
+		getPrintStream().println(msg);
+		t.printStackTrace(getPrintStream());
 	}
 
 	/**
@@ -40,7 +42,7 @@ public class Logger {
 	 * @param t the Throwable
 	 */
 	public static void log(Throwable t) {
-		t.printStackTrace(out);
+		t.printStackTrace(getPrintStream());
 	}
 
 	/**
@@ -51,6 +53,20 @@ public class Logger {
 	 */
 	public static void setPrintStream(PrintStream ps) {
 		out = ps;
+	}
+	
+	/**
+	 * Sets a printstream bound to the current thread. Instead of the global one, this one will
+	 * be used, if the logging happens in this thread. Once the thread dies, the entry
+	 * will be automatically removed as well.
+	 * @param ps the new PrintStream
+	 */
+	public static void setThreadBoundPrintStream(PrintStream ps) {
+		streams.put(Thread.currentThread(), ps);
+	}
+	
+	private static PrintStream getPrintStream() {
+		return streams.getOrDefault(Thread.currentThread(), out);
 	}
 
 }
