@@ -703,17 +703,18 @@ public class TermEnhancer {
 		int brackets = 0;
 		boolean inString = false;
 		int st = calcPositionAfter(term, pos);
+		
 		for (int i = st; i < term.length(); i++) {
 			char c = term.charAt(i);
 			if (c == '"') {
 				inString = !inString;
 			}
 			if (!inString) {
+				/*
 				if (c == ',' && brackets == 0) {
 					return i;
 				}
-
-				// System.out.println(c+"/"+brackets+"/"+strict+"/"+term);
+				 */
 				if (brackets == 0 && (c == '°' || (c == '&' && strict))) {
 					return i;
 				}
@@ -738,19 +739,19 @@ public class TermEnhancer {
 		int brackets = 0;
 		boolean inString = false;
 		int st = calcPositionBefore(term, pos);
+		
 		for (int i = st; i >= 0; i--) {
 			char c = term.charAt(i);
+			
 			if (c == '"') {
 				inString = !inString;
 			}
 			if (!inString) {
+				/*
 				if (c == ',' && brackets == 0) {
 					return i + 1;
 				}
-				if (c == '$' && brackets == 0) {
-					// Handle preceeding string function like in mid$(str$(c and 15),2)
-					return i + 1;
-				}
+				*/
 				if (brackets == 0 && c == '°') {
 					return i + 1;
 				}

@@ -45,7 +45,7 @@ public class ParserTest {
 		testNot();
 		testMidStrAnd();
 	}
-
+	
 	private static void testMidStrAnd() {
 		System.out.println("testMidStrAnd");
 		Machine machine = new Machine();
@@ -53,6 +53,30 @@ public class ParserTest {
 		String s = TermEnhancer.addBrackets(term);
 		System.out.println(s);
 		Term t = Parser.getTerm(config, term, machine, false, true);
+		System.out.println(t);
+		
+		term = "a$=\"\" and peek(56320)=127>2";
+		s = TermEnhancer.addBrackets(term);
+		System.out.println(s);
+		t = Parser.getTerm(config, term, machine, false, true);
+		System.out.println(t);
+		
+		term = "a$(cand15, sin(cand15))=\"\" and peek(56320)=127";
+		s = TermEnhancer.addBrackets(term);
+		System.out.println(s);
+		t = Parser.getTerm(config, term, machine, false, true);
+		System.out.println(t);
+		
+		term = "str$(cand15)=\"\" and peek(56320)=127";
+		s = TermEnhancer.addBrackets(term);
+		System.out.println(s);
+		t = Parser.getTerm(config, term, machine, false, true);
+		System.out.println(t);
+		
+		term = "mid$(a$,c and 15, b(2,3) and 3)";
+		s = TermEnhancer.addBrackets(term);
+		System.out.println(s);
+		t = Parser.getTerm(config, term, machine, false, true);
 		System.out.println(t);
 	}
 
