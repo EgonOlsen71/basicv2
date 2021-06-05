@@ -711,6 +711,7 @@ public class TermEnhancer {
 			}
 			if (!inString) {
 				/*
+				// Not sure why this was in here...it hurts stuff like mid$(str$(cand15),2)
 				if (c == ',' && brackets == 0) {
 					return i;
 				}
@@ -748,6 +749,7 @@ public class TermEnhancer {
 			}
 			if (!inString) {
 				/*
+				// Not sure why this was in here...it hurts stuff like mid$(str$(cand15),2)
 				if (c == ',' && brackets == 0) {
 					return i + 1;
 				}
