@@ -49,10 +49,24 @@ public class ParserTest {
 	private static void testMidStrAnd() {
 		System.out.println("testMidStrAnd");
 		Machine machine = new Machine();
-		String term = "mid$(str$(cand15),2)";
+		String term = "str$(12 and a(3,34))=mid$(str$(c or 5 and 15),2)";
 		String s = TermEnhancer.addBrackets(term);
 		System.out.println(s);
 		Term t = Parser.getTerm(config, term, machine, false, true);
+		System.out.println(t);
+		
+		machine = new Machine();
+		term = "mid$(str$(c and 15),2)";
+		s = TermEnhancer.addBrackets(term);
+		System.out.println(s);
+		t = Parser.getTerm(config, term, machine, false, true);
+		System.out.println(t);
+		
+		machine = new Machine();
+		term = "mid$(str$(c+4*5),2)";
+		s = TermEnhancer.addBrackets(term);
+		System.out.println(s);
+		t = Parser.getTerm(config, term, machine, false, true);
 		System.out.println(t);
 		
 		term = "a$=\"\" and peek(56320)=127>2";

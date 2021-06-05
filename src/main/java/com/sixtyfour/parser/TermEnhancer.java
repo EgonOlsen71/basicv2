@@ -243,7 +243,7 @@ public class TermEnhancer {
 						term = term.substring(0, pos) + replacers[i + 1] + term.substring(pos + torep.length());
 						uTerm = uTerm.substring(0, pos) + replacers[i + 1] + uTerm.substring(pos + torep.length());
 						if (torep.equals("NOT")) {
-							int end = findLogicEnd(uTerm, pos + 3, true);
+							int end = findLogicEnd(uTerm, pos + 3, true, false)[0];
 							term = term.substring(0, end) + "))" + term.substring(end);
 							uTerm = uTerm.substring(0, end) + "))" + uTerm.substring(end);
 						}
@@ -381,10 +381,10 @@ public class TermEnhancer {
 			}
 
 			if (c == '&') {
-				int start = findLogicStart(term, i);
-				int end = findLogicEnd(term, i);
+				int[] start = findLogicStart(term, i);
+				int[] end = findLogicEnd(term, i, start[1]==1);
 
-				i = addBracketsInternal(term, sb, i, start, end);
+				i = addBracketsInternal(term, sb, i, start[0], end[0]);
 				term = sb.toString();
 				sb.setLength(0);
 			}
@@ -687,8 +687,8 @@ public class TermEnhancer {
 	 * @param pos
 	 * @return
 	 */
-	private static int findLogicEnd(String term, int pos) {
-		return findLogicEnd(term, pos, false);
+	private static int[] findLogicEnd(String term, int pos, boolean wasOr) {
+		return findLogicEnd(term, pos, false, wasOr);
 	}
 
 	/**
@@ -699,25 +699,30 @@ public class TermEnhancer {
 	 * @param strict
 	 * @return
 	 */
-	private static int findLogicEnd(String term, int pos, boolean strict) {
+	private static int[] findLogicEnd(String term, int pos, boolean strict, boolean wasOr) {
 		int brackets = 0;
+		int[] res=new int[2];
+		res[0]=term.length();
 		boolean inString = false;
 		int st = calcPositionAfter(term, pos);
-		
 		for (int i = st; i < term.length(); i++) {
 			char c = term.charAt(i);
 			if (c == '"') {
 				inString = !inString;
 			}
 			if (!inString) {
-				/*
-				// Not sure why this was in here...it hurts stuff like mid$(str$(cand15),2)
-				if (c == ',' && brackets == 0) {
-					return i;
+				
+				// Only break at a , if the start was an OR...oh boy, this can't be correct...
+				if (c == ',' && brackets == 0 && wasOr) {
+					res[0]=i;
+					res[1]=0;
+					return res;
 				}
-				 */
+				 
 				if (brackets == 0 && (c == '°' || (c == '&' && strict))) {
-					return i;
+					res[0]=i;
+					res[1]=1;
+					return res;
 				}
 				if (c == '(') {
 					brackets++;
@@ -726,7 +731,7 @@ public class TermEnhancer {
 				}
 			}
 		}
-		return term.length();
+		return res;
 	}
 
 	/**
@@ -736,11 +741,11 @@ public class TermEnhancer {
 	 * @param pos
 	 * @return
 	 */
-	private static int findLogicStart(String term, int pos) {
+	private static int[] findLogicStart(String term, int pos) {
 		int brackets = 0;
+		int[] res=new int[2];
 		boolean inString = false;
 		int st = calcPositionBefore(term, pos);
-		
 		for (int i = st; i >= 0; i--) {
 			char c = term.charAt(i);
 			
@@ -750,12 +755,16 @@ public class TermEnhancer {
 			if (!inString) {
 				/*
 				// Not sure why this was in here...it hurts stuff like mid$(str$(cand15),2)
+				// Maybe we need this again, after making the check in findLogigEnd dependend 
+				// on the presence of an OR or not. Or maybe it's pointless anyway...I'm not sure...
 				if (c == ',' && brackets == 0) {
 					return i + 1;
 				}
 				*/
 				if (brackets == 0 && c == '°') {
-					return i + 1;
+					res[0]=i+1;
+					res[1]=1;
+					return res;
 				}
 				if (c == ')') {
 					brackets++;
@@ -764,7 +773,7 @@ public class TermEnhancer {
 				}
 			}
 		}
-		return 0;
+		return res;
 	}
 
 	private static int calcPositionBefore(String term, int pos) {
