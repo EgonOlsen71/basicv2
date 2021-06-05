@@ -452,13 +452,10 @@ public class TermEnhancer {
 
 		if (level == 3) {
 			// Kludge to handle the priorities between logic AND and OR. Mainly because I
-			// initially thought that
-			// there isn't one and once I discovered that there is, I couldn't understand
-			// the addBrackets()-method
-			// enough anymore to handle it there...:-)
+			// initially thought that there isn't one and once I discovered that there is, I couldn't understand
+			// the addBrackets()-method enough anymore to handle it there...:-)
 			term = addLogicBrackets(term);
 		}
-
 		return term;
 	}
 
@@ -695,7 +692,7 @@ public class TermEnhancer {
 	}
 
 	/**
-	 * Finds the start of an AND-Block
+	 * Finds the end of an AND/OR-Block
 	 * 
 	 * @param term
 	 * @param pos
@@ -731,7 +728,7 @@ public class TermEnhancer {
 	}
 
 	/**
-	 * Finds the end of an END-Block
+	 * Finds the start of an AND/OR-Block
 	 * 
 	 * @param term
 	 * @param pos
@@ -748,6 +745,10 @@ public class TermEnhancer {
 			}
 			if (!inString) {
 				if (c == ',' && brackets == 0) {
+					return i + 1;
+				}
+				if (c == '$' && brackets == 0) {
+					// Handle preceeding string function like in mid$(str$(c and 15),2)
 					return i + 1;
 				}
 				if (brackets == 0 && c == '°') {

@@ -107,7 +107,14 @@ public class NativeCompilerTest {
 		// testStringExpression10();
 		// testStringExpression11();
 		// testFrog();
-		test10Line();
+		// test10Line();
+		testMidStrAnd();
+	}
+
+	private static void testMidStrAnd() {
+		System.out.println("\n\ntestMidStrAnd");
+		String prg = "10 pa$=mid$(str$(cand15),2)\n";
+		compileAndRun(prg);
 	}
 
 	private static void testFiles() {

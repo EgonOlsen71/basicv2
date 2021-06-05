@@ -43,6 +43,17 @@ public class ParserTest {
 		testLogicBrackets();
 		testSimilarity();
 		testNot();
+		testMidStrAnd();
+	}
+
+	private static void testMidStrAnd() {
+		System.out.println("testMidStrAnd");
+		Machine machine = new Machine();
+		String term = "mid$(str$(cand15),2)";
+		String s = TermEnhancer.addBrackets(term);
+		System.out.println(s);
+		Term t = Parser.getTerm(config, term, machine, false, true);
+		System.out.println(t);
 	}
 
 	private static void testNot() {
