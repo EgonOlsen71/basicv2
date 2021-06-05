@@ -167,7 +167,7 @@ public class ParserTest {
 
 	private static void testLogicBrackets() {
 		System.out.println("testLogicBrackets");
-		String term = "u or 4 +56-23 or z=160 or l>1 and l<10 and z=32";
+		String term = "u or 4 +56-23 or z=160 or l>1 and l<10 and z(2,3*4)=32";
 		System.out.println("Before: " + term);
 		String s = TermEnhancer.addBrackets(term);
 		System.out.println("After:" + s);
