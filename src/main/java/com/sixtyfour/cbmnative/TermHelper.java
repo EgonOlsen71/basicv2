@@ -27,8 +27,7 @@ public class TermHelper {
 		if (term == null) {
 			throw new RuntimeException("Term is null!");
 		}
-		return Parser.getTerm(config, linearize(term.getInitial(), config.isNonDecimalNumbersAware()), machine, false,
-				true);
+		return Parser.getTerm(config, linearize(term.getInitial(), config.isNonDecimalNumbersAware()), machine, false, true, term.isSealed());
 	}
 
 	/**

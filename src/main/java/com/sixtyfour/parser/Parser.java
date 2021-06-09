@@ -398,8 +398,25 @@ public class Parser {
 	 */
 	public static Term getTerm(CompilerConfig config, String term, Machine machine, boolean stripAssignment,
 			boolean checkForLogicTerm) {
-
-		checkForInvalidChars(term);
+		return getTerm(config, term, machine, stripAssignment, checkForLogicTerm, false);
+	}
+	
+	/**
+	 * Returns the term that represents the term in the text. The result will be a
+	 * binary tree build out of terms with the returned term being the root element.
+	 * 
+	 * @param term              the term as text
+	 * @param machine           the machine
+	 * @param stripAssignment   if true, assignments will be stripped
+	 * @param checkForLogicTerm if true, logic terms will be checked for as well
+	 * @param isSealed			if true, some characters won't be checked because they are expected to be here
+	 * @return the resulting term
+	 */
+	public static Term getTerm(CompilerConfig config, String term, Machine machine, boolean stripAssignment,
+			boolean checkForLogicTerm, boolean isSealed) {
+		if (!isSealed) {
+			checkForInvalidChars(term);
+		}
 		Term ret = getTerm(config, term, machine, stripAssignment, checkForLogicTerm, null);
 		ret.setInitial(TermEnhancer.stripAssignment(term, stripAssignment));
 		return ret;
@@ -534,14 +551,9 @@ public class Parser {
 		}
 
 		String newTerm = TermOptimizer.optimizeLinearIndexTerm(sb.toString());
-		/*
-		 * if (newTerm.length()!=sb.length()) {
-		 * System.out.println("Index term(1): "+sb.toString());
-		 * System.out.println("Index term(2): "+newTerm); }
-		 */
-
 		Term t = Parser.getTermWithoutChecks(config, newTerm, machine, false, true);
-
+		t.setSealed(true);
+		
 		return t;
 	}
 
@@ -1109,6 +1121,7 @@ public class Parser {
 			}
 			if (!inString) {
 				if ("&!|~?'§{}[]°".indexOf(c) != -1) {
+					new Exception().printStackTrace();
 					throw new RuntimeException("Syntax error: " + term + "/" + c);
 				}
 			}

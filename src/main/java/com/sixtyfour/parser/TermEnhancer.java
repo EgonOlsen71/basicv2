@@ -368,8 +368,31 @@ public class TermEnhancer {
 	 */
 	private static String addLogicBrackets(String term) {
 		term = removeWhiteSpace(term);
-		StringBuilder sb = new StringBuilder();
+		int orCnt = 0;
 		boolean inString = false;
+		// First step: Count, if there's anything to do at all...
+		for (int i = 0; i < term.length(); i++) {
+			char c = term.charAt(i);
+			if (c == '"') {
+				inString = !inString;
+			}
+			if (inString) {
+				continue;
+			}
+			if (c=='°') {
+				orCnt++;
+			}
+		}
+		
+		if (orCnt==0) {
+			// No OR? Nothing to do then, because there's not priority handling needed at all.
+			return term;
+		}
+
+		// If there are ORs, there might as well be ANDs, which we handle here...
+		
+		StringBuilder sb = new StringBuilder();
+		inString = false;
 		for (int i = 0; i < term.length(); i++) {
 			// System.out.println(term);
 			char c = term.charAt(i);
@@ -382,7 +405,7 @@ public class TermEnhancer {
 
 			if (c == '&') {
 				int[] start = findLogicStart(term, i);
-				int[] end = findLogicEnd(term, i, start[1]==1);
+				int[] end = findLogicEnd(term, i, start[1] == 1);
 
 				i = addBracketsInternal(term, sb, i, start[0], end[0]);
 				term = sb.toString();
@@ -452,7 +475,8 @@ public class TermEnhancer {
 
 		if (level == 3) {
 			// Kludge to handle the priorities between logic AND and OR. Mainly because I
-			// initially thought that there isn't one and once I discovered that there is, I couldn't understand
+			// initially thought that there isn't one and once I discovered that there is, I
+			// couldn't understand
 			// the addBrackets()-method enough anymore to handle it there...:-)
 			term = addLogicBrackets(term);
 		}
@@ -701,8 +725,8 @@ public class TermEnhancer {
 	 */
 	private static int[] findLogicEnd(String term, int pos, boolean strict, boolean wasOr) {
 		int brackets = 0;
-		int[] res=new int[2];
-		res[0]=term.length();
+		int[] res = new int[2];
+		res[0] = term.length();
 		boolean inString = false;
 		int st = calcPositionAfter(term, pos);
 		for (int i = st; i < term.length(); i++) {
@@ -711,17 +735,17 @@ public class TermEnhancer {
 				inString = !inString;
 			}
 			if (!inString) {
-				
+
 				// Only break at a , if the start was an OR...oh boy, this can't be correct...
 				if (c == ',' && brackets == 0 && wasOr) {
-					res[0]=i;
-					res[1]=0;
+					res[0] = i;
+					res[1] = 0;
 					return res;
 				}
-				 
+
 				if (brackets == 0 && (c == '°' || (c == '&' && strict))) {
-					res[0]=i;
-					res[1]=1;
+					res[0] = i;
+					res[1] = 1;
 					return res;
 				}
 				if (c == '(') {
@@ -743,27 +767,25 @@ public class TermEnhancer {
 	 */
 	private static int[] findLogicStart(String term, int pos) {
 		int brackets = 0;
-		int[] res=new int[2];
+		int[] res = new int[2];
 		boolean inString = false;
 		int st = calcPositionBefore(term, pos);
 		for (int i = st; i >= 0; i--) {
 			char c = term.charAt(i);
-			
+
 			if (c == '"') {
 				inString = !inString;
 			}
 			if (!inString) {
 				/*
-				// Not sure why this was in here...it hurts stuff like mid$(str$(cand15),2)
-				// Maybe we need this again, after making the check in findLogigEnd dependend 
-				// on the presence of an OR or not. Or maybe it's pointless anyway...I'm not sure...
-				if (c == ',' && brackets == 0) {
-					return i + 1;
-				}
-				*/
+				 * // Not sure why this was in here...it hurts stuff like mid$(str$(cand15),2)
+				 * // Maybe we need this again, after making the check in findLogigEnd dependend
+				 * // on the presence of an OR or not. Or maybe it's pointless anyway...I'm not
+				 * sure... if (c == ',' && brackets == 0) { return i + 1; }
+				 */
 				if (brackets == 0 && c == '°') {
-					res[0]=i+1;
-					res[1]=1;
+					res[0] = i + 1;
+					res[1] = 1;
 					return res;
 				}
 				if (c == ')') {

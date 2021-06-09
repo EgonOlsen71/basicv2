@@ -54,6 +54,10 @@ public class Term implements Atom {
 	private boolean jitRun = false;
 
 	private boolean constant = false;
+	
+	// If true, the term is valid and doesn't have to be checked for unwanted chars anymore.
+	// Should be true only for array index terms
+	private boolean sealed = false;
 
 	/**
 	 * Instantiates a new term based on the given expression.
@@ -683,6 +687,14 @@ public class Term implements Atom {
 	@Override
 	public int hashCode() {
 		return (this.left != null ? this.left.hashCode() : 0) + (this.right != null ? this.right.hashCode() : 0);
+	}
+
+	public boolean isSealed() {
+		return sealed;
+	}
+
+	public void setSealed(boolean sealed) {
+		this.sealed = sealed;
 	}
 
 }
