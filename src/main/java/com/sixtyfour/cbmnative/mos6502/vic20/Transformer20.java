@@ -81,7 +81,7 @@ public class Transformer20 extends AbstractTransformer {
 		res.add("FACSIG = $DC39"); // ok
 		res.add("FACNOT = $CED4"); // ok
 		res.add("FACRND = $E094"); // ok
-		res.add("FACWORD = $D7F7"); // ok
+		res.add("XFACWORD = $D7F7"); // ok
 		res.add("FACDIV = $DB0F"); // ok
 		res.add("BASINT = $DCCC"); // ok
 		res.add("FACPOW = $DF7B"); // ok
