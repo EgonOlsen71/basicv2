@@ -96,11 +96,12 @@ public class AssemblyParser {
 			return null;
 		}
 		String linePart2 = Parser.replaceStrings(linePart, '_').trim();
+		
 		int pos = linePart2.indexOf(" ");
 		if (pos != -1) {
-			return new LabelAndCode(linePart.substring(0, pos).replace(":", ""), linePart.substring(pos + 1).trim());
+			return new LabelAndCode(linePart.substring(0, pos).replace(":", "").trim(), linePart.substring(pos + 1).trim());
 		} else {
-			return new LabelAndCode(linePart.replace(":", ""), "");
+			return new LabelAndCode(linePart.replace(":", "").trim(), "");
 		}
 	}
 
