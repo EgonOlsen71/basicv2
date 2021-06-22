@@ -68,15 +68,19 @@ public class FloodFiller {
 			boolean downLine = false;
 
 			for (int xi = xl; xi <= xr; xi++) {
-				if (y > 0 && pixels[xi + ypm] == oldColor && !upLine) {
-					points.addFirst(new int[] { xi, y - 1 });
-					upLine = true;
+				if (y > 0 && pixels[xi + ypm] == oldColor) {
+					if (!upLine) {
+						points.addFirst(new int[] { xi, y - 1 });
+						upLine = true;
+					}
 				} else {
 					upLine = false;
 				}
-				if (y < height - 1 && pixels[xi + ypp] == oldColor && !downLine) {
-					points.addFirst(new int[] { xi, y + 1 });
-					downLine = true;
+				if (y < height - 1 && pixels[xi + ypp] == oldColor) {
+					if (!downLine) {
+						points.addFirst(new int[] { xi, y + 1 });
+						downLine = true;
+					}
 				} else {
 					downLine = false;
 				}
