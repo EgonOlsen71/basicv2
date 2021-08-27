@@ -51,7 +51,7 @@ public class Transformer64 extends AbstractTransformer {
 		}
 		subs.addAll(Arrays.asList(Loader.loadProgram(this.getClass().getResourceAsStream("/subroutines.asm"))));
 
-		AbstractTransformer.addExtensionSubroutines(subs, "asm");
+		AbstractTransformer.addExtensionSubroutines(subs, "asm64");
 
 		consts.add("; *** CONSTANTS ***");
 		if (variableStart >= 0) {

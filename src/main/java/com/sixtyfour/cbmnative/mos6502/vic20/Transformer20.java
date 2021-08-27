@@ -49,7 +49,7 @@ public class Transformer20 extends AbstractTransformer {
 		subs.add("; *** SUBROUTINES ***");
 
 		subs.addAll(Arrays.asList(Loader.loadProgram(this.getClass().getResourceAsStream("/subroutines.asm"))));
-		AbstractTransformer.addExtensionSubroutines(subs, "asm");
+		AbstractTransformer.addExtensionSubroutines(subs, "asm20");
 
 		consts.add("; *** CONSTANTS ***");
 		if (variableStart >= 0) {

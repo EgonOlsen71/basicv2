@@ -49,7 +49,7 @@ public class TransformerX16 extends AbstractTransformer {
 		subs.add("; *** SUBROUTINES ***");
 
 		subs.addAll(Arrays.asList(Loader.loadProgram(this.getClass().getResourceAsStream("/subroutines.asm"))));
-		AbstractTransformer.addExtensionSubroutines(subs, "asm");
+		AbstractTransformer.addExtensionSubroutines(subs, "asmx16");
 
 		consts.add("; *** CONSTANTS ***");
 		if (variableStart >= 0) {
