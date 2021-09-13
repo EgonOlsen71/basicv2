@@ -2095,12 +2095,14 @@ MORENUMDATA CMP #$2				; Strings are not allowed here
 			BNE NUMNUM
 			LDA (TMP3_ZP),Y		; ...unless they are empty, which makes them count as 0
 			BEQ RNESTR
-			CMP #1				; or a ".", which is 0 as well...so length has to be 1..
+			CMP #1				; or a "." or "e", which is 0 as well...so length has to be 1..
 			BEQ STRGNUMCHK
 			JMP SYNTAXERROR
 STRGNUMCHK 	INY
 			LDA (TMP3_ZP),Y
 			CMP #46				; ...and really a "."?
+			BEQ RNESTR2
+			CMP #69				; ...or really an "e"?
 			BEQ RNESTR2
 			JMP SYNTAXERROR
 RNESTR2		LDA #0
