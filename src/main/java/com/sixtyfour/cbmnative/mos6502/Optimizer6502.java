@@ -286,7 +286,7 @@ public class Optimizer6502 implements Optimizer {
 			}
 			int oPos = pos;
 			if (line.startsWith(pattern[oPos]) && !limit) {
-				positions[blocks][oPos] = tmp.size() + buf.size()-1;
+				positions[blocks][oPos] = tmp.size() + buf.size() - 1;
 				pos++;
 				if (pos == pattern.length) {
 					tmp.addAll(buf);
@@ -889,6 +889,9 @@ public class Optimizer6502 implements Optimizer {
 								"{LINE7}", "{LINE8}" },
 						"JSR PEEKBYTEADDOR", "JSR POPREAL", "JSR FACWORD", "STY MOVBSELF1+1", "STA MOVBSELF1+2",
 						"JSR XREGFAC", "JSR FACWORD", "{LABEL}", "STY $FFFF"));
+
+				this.add(new Pattern(true, "Faster POKE,PEEK", new String[] { "{LINE0}", "{LINE4}" }, "LDY {MEM1}",
+						"LDA #0", "JSR INTFAC", "JSR FACWORD", "STY {MEM2}"));
 
 				this.add(new Pattern(true, "Faster setting to 1", new String[] { "JSR ONETOFAC" }, "LDA #<{#1.0}",
 						"LDY #>{#1.0}", "JSR REALFAC"));
