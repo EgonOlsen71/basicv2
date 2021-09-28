@@ -896,6 +896,19 @@ public class Optimizer6502 implements Optimizer {
 				this.add(new Pattern(true, "Faster setting to 1", new String[] { "JSR ONETOFAC" }, "LDA #<{#1.0}",
 						"LDY #>{#1.0}", "JSR REALFAC"));
 
+				// The following two optimizations trigger very seldom. But when they do, they can improve performance up to 10% for these cases.
+				this.add(new Pattern(false, "Avoid PUSH/POP(2)",
+						new String[] { "{LINE3}", "{LINE4}", "{LINE5}", "{LINE6}", "JSR XREGARG", "{LINE0}", "{LINE1}",
+								"JSR REALFAC" },
+						"LDA #<{MEM1}", "LDY #>{MEM1}", "JSR REALFACPUSH", "LDY {*}", "LDA #0", "JSR INTFAC", "JSR FACXREG",
+						"JSR POPREAL2X"));
+				
+				this.add(new Pattern(false, "Avoid PUSH/POP(3)",
+						new String[] { "{LINE3}", "{LINE4}", "{LINE5}", "{LINE6}", "JSR XREGARG", "{LINE0}", "{LINE1}",
+								"JSR REALFAC" },
+						"LDA #<Y_REG", "LDY #>Y_REG", "JSR REALFACPUSH", "LDY {*}", "LDA #0", "JSR INTFAC", "JSR FACXREG",
+						"JSR POPREAL2X"));
+
 				// This optimizes a special case, which happens in my affine texture mapper
 				// quite a lot but maybe not much elsewhere...
 				this.add(new Pattern(true, "Omit XREG->FAC", new String[] { "{LINE0}", "{LINE1}", "{LINE2}" },
