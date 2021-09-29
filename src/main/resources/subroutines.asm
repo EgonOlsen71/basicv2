@@ -1591,11 +1591,7 @@ ARRAYACCESS_REAL_INT
 			LDA TMP_ZP+1
 			ADC TMP2_ZP+1
 			STA TMP3_ZP+1
-			LDX #<X_REG
-			STX TMP_ZP
-			LDY #>X_REG
-			STY TMP_ZP+1
-			JMP COPY3_XY	;RTS is implicit
+			JMP COPY2_XY_XREG
 ;###################################
 ARRAYSTORE_STRING
 			JSR XREGFAC
@@ -1724,11 +1720,7 @@ ARRAYSTORE_REAL_INT
 			LDA TMP_ZP+1
 			ADC TMP2_ZP+1
 			STA TMP_ZP+1
-			LDA #<Y_REG
-			STA TMP3_ZP
-			LDY #>Y_REG
-			STY TMP3_ZP+1
-			JMP COPY3_XY	;RTS is implicit
+			JMP COPY2_YREG_XYA	;RTS is implicit
 ;###################################
 ADJUSTSTACK LDA FORSTACKP	; Adjust the FORSTACK in case a new loop uses an unclosed old one (i.e. the code jumped out of that loop with goto)
 			STA TMP_ZP
@@ -2898,6 +2890,24 @@ COPY3_XY	LDY #0
 			STA (TMP_ZP),Y
 			INY
 			LDA (TMP3_ZP),Y
+			STA (TMP_ZP),Y
+			RTS
+;###################################
+COPY2_YREG_XYA
+			LDY #0
+			LDA Y_REG
+			STA (TMP_ZP),Y
+			INY
+			LDA Y_REG+1
+			STA (TMP_ZP),Y
+			INY
+			LDA Y_REG+2
+			STA (TMP_ZP),Y
+			INY
+			LDA Y_REG+3
+			STA (TMP_ZP),Y
+			INY
+			LDA Y_REG+4
 			STA (TMP_ZP),Y
 			RTS
 ;###################################
