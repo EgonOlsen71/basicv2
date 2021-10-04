@@ -93,7 +93,7 @@ public class Def extends AbstractCommand {
 				} else {
 					String tmp = VarUtils.toUpper(sb.toString());
 					if (tmp.equals(varName)) {
-						String add = "_" + varName + fnName;
+						String add = "_" + varName + "_" + fnName;
 						term = term.substring(0, i - varName.length()) + add + term.substring(i);
 						modTerm = modTerm.substring(0, i - varName.length()) + add + modTerm.substring(i);
 						i += add.length() - 1;
@@ -103,7 +103,7 @@ public class Def extends AbstractCommand {
 			}
 		}
 
-		varName = "_" + varName + fnName;
+		varName = "_" + varName + "_" + fnName;
 		// System.out.println("New DEF-Term: " + term + " - " + fnName + " - " +
 		// varName);
 		this.term = Parser.getTerm(config, term, machine, false, true, null);

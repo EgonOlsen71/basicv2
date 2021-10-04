@@ -80,12 +80,14 @@ public class NativeCompiler {
 	private final static Set<String> STRING_OPERATORS = new HashSet<String>() {
 		private static final long serialVersionUID = 1L;
 		{
-			this.add("CHR");
+			
 			this.add(".");
 			this.add("STR");
 			this.add("MID");
 			this.add("LEFT");
 			this.add("RIGHT");
+			
+			this.add("CHR");
 			this.add("TAB");
 			this.add("SPC");
 			this.add("TABCHANNEL");
@@ -99,6 +101,19 @@ public class NativeCompiler {
 			// complete operator string instead...yeah, it's not really
 			// elegant...
 			this.add("SCMP");
+		}
+	};
+	
+	// All functions that TAKE an int but CREATE a string. These has to be handled differently in one instance...
+	private final static Set<String> INT2STRING = new HashSet<String>() {
+		private static final long serialVersionUID = 1L;
+		{
+			this.add("STR");
+			this.add("CHR");
+			this.add("TAB");
+			this.add("SPC");
+			this.add("TABCHANNEL");
+			this.add("SPCCHANNEL");
 		}
 	};
 
@@ -530,6 +545,11 @@ public class NativeCompiler {
 							if (modeSwitchCnt > 1 && !code.isEmpty()) {
 								ntr = "A";
 								nsr = "B";
+								if (INT2STRING.contains(opStart)) {
+									// In this case, it's a call that produces a string, but takes an int. This has to be handled
+									// differently when adding a POP "new source register"
+									nsr = "Y";
+								}
 								// withStrings = true;
 							}
 						}
@@ -797,8 +817,7 @@ public class NativeCompiler {
 							code.add("JSR " + label);
 							if (expCnt >= expr.size()) {
 								// POP the last result from the fn call, if
-								// that's
-								// needed...Am I sure, that this is 100% water
+								// that's needed...Am I sure, that this is 100% water
 								// proof...? Well...no, actually not...
 								code.add("POP " + tr);
 							}
