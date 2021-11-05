@@ -171,7 +171,7 @@ public class Dim extends AbstractCommand {
 			Variable var = vars.get(i);
 			List<Atom> pars = terms.get(var.getName());
 			for (Atom par : pars) {
-				if (((Number) par.eval(machine)).intValue() == 0) {
+				if (((Number) par.eval(machine)).intValue() <= 0) {
 					throw new RuntimeException(
 							"Arrays have to be defined static and can't have a zero size @ line " + this.lineNumber);
 				}

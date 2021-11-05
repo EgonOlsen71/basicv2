@@ -309,7 +309,10 @@ public class MoSpeedCL {
 			nCode = nComp.compile(cfg, basic, memConfig, platform);
 		} catch (Exception e) {
 			System.out.println("\n!!! Error compiling: " + e.getMessage());
-			System.out.println("Error in line: " + nComp.getLastProcessedLine());
+			String ll=nComp.getLastProcessedLine();
+			if (ll!=null) {
+				System.out.println("Error at: " + ll);
+			}
 			printCause(e);
 			exit(15);
 		}
