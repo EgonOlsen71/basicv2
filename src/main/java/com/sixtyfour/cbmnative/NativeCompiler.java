@@ -208,6 +208,7 @@ public class NativeCompiler {
 	 * @return the intermediate code
 	 */
 	public List<String> compileToPseudoCode(CompilerConfig config, Basic basic) {
+		lastProcessedLine = null;
 		Logger.log("Compiling into intermediate code...");
 
 		long s = System.currentTimeMillis();
