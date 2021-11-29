@@ -3042,12 +3042,14 @@ PEEKBYTEORFAST
 			TAY
 			RTS
 ;###################################
+<IF !BIGRAM>
 FACWORD
 			LDA FACEXP			; Check if there's a -0 in FAC1
 			BNE DOFACWORD
 			STA FACSGN			; make sure that it's not -0
 DOFACWORD:
 			JMP XFACWORD
+</IF>
 ;###################################
 ONETOFAC    LDX #129
 			STX FAC

@@ -263,6 +263,10 @@ FACRND		JSR ENABLEROM
 			JMP DISABLEROM
 ;###################################
 FACWORD		JSR ENABLEROM
+			LDA FACEXP			; Check if there's a -0 in FAC1
+			BNE DOBRFACWORD
+			STA FACSGN			; make sure that it's not -0
+DOBRFACWORD:
 			JSR BRFACWORD
 			JMP DISABLEROM
 ;###################################
