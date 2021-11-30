@@ -323,10 +323,13 @@ public class MoSpeedCL {
 			nCode = srcProc.relocate(cfg, parts, holes);
 		}
 		
+		// Relocated into the actual compile step to be executed before the compact run
+		/*
 		if (cfg.isBigRam()) {
 			SourceProcessor srcProc = new SourceProcessor(nCode);
 			nCode = srcProc.moveRuntime();
 		}
+		*/
 
 		if (genSrc) {
 			write(nCode, nlTarget);

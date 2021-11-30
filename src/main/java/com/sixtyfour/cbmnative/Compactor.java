@@ -175,16 +175,31 @@ public class Compactor {
 		if (pl != null) {
 			pl.start();
 		}
-		strip(input);
+		strip(conf, input);
 
 		// for (String line : input) { System.out.println(line); }
 
 		int insertAt = 0;
+		int startLine = 0;
+		String lookOutFor = "SUBROUTINES END";
+		String startText = null;
+		if (conf.isBigRam()) {
+			startText = lookOutFor;
+			lookOutFor = "*** CONSTANTS ***";
+		}
+
 		for (int i = 0; i < input.size() && insertAt == 0; i++) {
-			if (input.get(i).contains("SUBROUTINES END")) {
-				insertAt = i;
-				input.add(insertAt++, ";##END_COMPACT");
+			if (startText != null && input.get(i).contains(startText)) {
+				startLine = i;
 			}
+			if (input.get(i).contains(lookOutFor)) {
+				insertAt = i;
+				input.add(i + 1, ";##END_COMPACT");
+			}
+		}
+
+		if (startLine != 0) {
+			insertAt = startLine;
 		}
 
 		int oldSize = input.size();
@@ -200,7 +215,7 @@ public class Compactor {
 			}
 		};
 
-		for (int i = 0; i < input.size(); i++) {
+		for (int i = startLine; i < input.size(); i++) {
 			if (pl != null && i % 300 == 0) {
 				// Advance the progress listener...
 				pl.nextStep();
@@ -318,7 +333,7 @@ public class Compactor {
 			}
 		}
 
-		strip(input);
+		strip(conf, input);
 		if (pl != null) {
 			pl.done();
 		}
@@ -326,21 +341,27 @@ public class Compactor {
 		Logger.log("Old size: " + oldSize);
 		Logger.log("New size: " + input.size());
 		return input;
-
 	}
 
-	private void strip(List<String> input) {
+	private void strip(CompilerConfig conf, List<String> input) {
+		
+		String lookOutFor = "SUBROUTINES END";
+		if (conf.isBigRam()) {
+			lookOutFor = "*** CONSTANTS ***";
+		}
+		
 		for (Iterator<String> itty = input.iterator(); itty.hasNext();) {
 			String val = itty.next().trim();
-			if (val.contains("SUBROUTINES END")) {
+			if (val.contains(lookOutFor)) {
 				return;
 			}
 			if (val.isEmpty() || val.equals("NOP")
-					|| (val.startsWith(";") && !val.contains("##") && !val.contains("SUBROUTINES END"))) {
+					|| (val.startsWith(";") && !val.contains("##") && !val.contains(lookOutFor))) {
 				itty.remove();
 			}
 		}
 	}
+		
 
 	private void updateLineMap(List<String> input) {
 		lines.clear();

@@ -10,6 +10,7 @@ import java.util.Set;
 
 import com.sixtyfour.Basic;
 import com.sixtyfour.Logger;
+import com.sixtyfour.cbmnative.mos6502.util.SourceProcessor;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.config.MemoryConfig;
 import com.sixtyfour.elements.commands.Command;
@@ -192,6 +193,11 @@ public class NativeCompiler {
 			Compactor comp = new Compactor(0);
 			nCode = comp.inlineIntegerConstants(nCode);
 			nCode = comp.removeUnusedConstants(nCode);
+		}
+		
+		if (conf.isBigRam()) {
+			SourceProcessor srcProc = new SourceProcessor(nCode);
+			nCode = srcProc.moveRuntime();
 		}
 
 		if (conf.getCompactThreshold() > 1) {
