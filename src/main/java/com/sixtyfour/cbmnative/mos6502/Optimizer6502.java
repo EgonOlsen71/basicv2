@@ -35,23 +35,23 @@ public class Optimizer6502 implements Optimizer {
 		// if (true) return input;
 		Logger.log("Optimizing native assembly code...");
 		long s = System.currentTimeMillis();
-		trimLines(input);
+		trimLines(config, input);
 		input = trackAndModifyRegisterUsage(input);
-		input = optimizeInternal(platform, input, pg, config.getThreads());
+		input = optimizeInternal(config, platform, input, pg, config.getThreads());
 		input = applySpecialRules(config, platform, input);
 		input = removeNops(input);
 		Logger.log("Assembly code optimized in " + (System.currentTimeMillis() - s) + "ms");
 		return input;
 	}
 
-	private List<String> optimizeInternal(PlatformProvider platform, List<String> input, ProgressListener pg,
+	private List<String> optimizeInternal(CompilerConfig conf, PlatformProvider platform, List<String> input, ProgressListener pg,
 			int threads) {
 		Map<String, Number> const2Value = extractConstants(input);
 		int cpus = threads;
 		if (cpus <= 0) {
 			cpus = Runtime.getRuntime().availableProcessors();
 		}
-		int[] ps = getStartAndEnd(input);
+		int[] ps = getStartAndEnd(conf, input);
 		int codeStart = ps[0];
 		int codeEnd = ps[1];
 
@@ -85,7 +85,7 @@ public class Optimizer6502 implements Optimizer {
 		for (List<String> part : parts) {
 			List<Pattern> patterns = getPatterns();
 			Future<OptimizationResult> task = executor.submit(() -> {
-				return optimizeInternalThreaded(patterns, platform, part, pg, const2Value);
+				return optimizeInternalThreaded(conf, patterns, platform, part, pg, const2Value);
 			});
 			futures.add(task);
 		}
@@ -119,12 +119,12 @@ public class Optimizer6502 implements Optimizer {
 		}
 	}
 
-	private OptimizationResult optimizeInternalThreaded(List<Pattern> patterns, PlatformProvider platform,
+	private OptimizationResult optimizeInternalThreaded(CompilerConfig conf, List<Pattern> patterns, PlatformProvider platform,
 			List<String> input, ProgressListener pg, Map<String, Number> const2Val) {
-		return optimizeInternalThreaded(patterns, platform, input, pg, const2Val, false);
+		return optimizeInternalThreaded(conf, patterns, platform, input, pg, const2Val, false);
 	}
 
-	private OptimizationResult optimizeInternalThreaded(List<Pattern> patterns, PlatformProvider platform,
+	private OptimizationResult optimizeInternalThreaded(CompilerConfig conf, List<Pattern> patterns, PlatformProvider platform,
 			List<String> input, ProgressListener pg, Map<String, Number> const2Val, boolean allLines) {
 		Map<String, Integer> type2count = new HashMap<>();
 		Map<String, Number> const2Value = new HashMap<>(const2Val);
@@ -134,7 +134,7 @@ public class Optimizer6502 implements Optimizer {
 		int lastPattern = -1;
 		int lastLine = input.size();
 
-		int[] ps = getStartAndEnd(input);
+		int[] ps = getStartAndEnd(conf, input);
 		int codeStart = ps[0];
 		int codeEnd = ps[1];
 		if (allLines) {
@@ -216,13 +216,11 @@ public class Optimizer6502 implements Optimizer {
 		return new OptimizationResult(input, type2count);
 	}
 
-	private void trimLines(List<String> input) {
-		for (int i = 0; i < input.size(); i++) {
-			String line = input.get(i).trim();
-			if (line.startsWith("; *** SUBROUTINES ***")) {
-				break;
-			}
-			input.set(i, line);
+	private void trimLines(CompilerConfig config, List<String> input) {
+		int[] startEnd = getStartAndEnd(config, input);
+		
+		for (int i = startEnd[0]; i < startEnd[1]; i++) {
+			input.set(i, input.get(i).trim());
 		}
 	}
 
@@ -236,8 +234,8 @@ public class Optimizer6502 implements Optimizer {
 	}
 
 	private List<String> applySpecialRules(CompilerConfig config, PlatformProvider platform, List<String> input) {
-		input = simplifyBranches(input);
-		input = applyAdditionalPatterns(platform, input);
+		input = simplifyBranches(config, input);
+		input = applyAdditionalPatterns(config, platform, input);
 		input = applyFloatingPointPatterns(config, platform, input);
 		input = applyEnhancedOptimizations(config, platform, input);
 		input = aggregateLoads(input);
@@ -402,13 +400,14 @@ public class Optimizer6502 implements Optimizer {
 		return code;
 	}
 
-	private List<String> simplifyBranches(List<String> input) {
+	private List<String> simplifyBranches(CompilerConfig conf, List<String> input) {
 		List<String> ret = new ArrayList<String>();
+		String end = getEndText(conf);
 		for (int i = 0; i < input.size() - 2; i++) {
 			String line = trimLine(input, i);
 			String line2 = trimLine(input, i + 1);
 			String line3 = trimLine(input, i + 2);
-			if (line.startsWith("; *** SUBROUTINES ***")) {
+			if (line.startsWith(end)) {
 				ret.addAll(input.subList(i, input.size()));
 				break;
 			}
@@ -439,7 +438,7 @@ public class Optimizer6502 implements Optimizer {
 		return ret;
 	}
 
-	private List<String> applyAdditionalPatterns(PlatformProvider platform, List<String> ret) {
+	private List<String> applyAdditionalPatterns(CompilerConfig conf, PlatformProvider platform, List<String> ret) {
 		// Do another run with the normal optimizer method but with some
 		// additional rules. Unlike the "big" run, this one happens in a single
 		// thread, because it's quite cheap to do anyway.
@@ -466,7 +465,7 @@ public class Optimizer6502 implements Optimizer {
 				"LDA #<{MEM0}", "LDY #>{MEM0}", "JSR REALFAC", "LDA #<{MEM1}", "LDY #>{MEM1}", "JSR CMPFAC", "{LABEL}",
 				"{LABEL}", "{LABEL}", "BEQ {*}");
 		others.add(tmpPat);
-		OptimizationResult res = optimizeInternalThreaded(others, platform, ret, null, extractConstants(ret));
+		OptimizationResult res = optimizeInternalThreaded(conf, others, platform, ret, null, extractConstants(ret));
 		printOutResults(res.getType2count());
 		return res.getCode();
 	}
@@ -479,7 +478,7 @@ public class Optimizer6502 implements Optimizer {
 			others.add(new Pattern(true, "STZ (1)", new String[] { "{LINE1}|STA>STZ", "{LINE2}|STA>STZ" }, "LDA #0",
 					"STA {*}", "STA {*}"));
 			others.add(new Pattern(true, "STZ (2)", new String[] { "{LINE1}|STA>STZ" }, "LDA #0", "STA {*}"));
-			OptimizationResult res = optimizeInternalThreaded(others, platform, ret, null, extractConstants(ret),
+			OptimizationResult res = optimizeInternalThreaded(config, others, platform, ret, null, extractConstants(ret),
 					false);
 			printOutResults(res.getType2count());
 			return res.getCode();
@@ -499,7 +498,7 @@ public class Optimizer6502 implements Optimizer {
 			others.add(new Pattern(true, "Fast FSUB (ARG)", new String[] { "JSR FASTFSUBARG" }, "JSR FACSUB"));
 			others.add(new Pattern(true, "Fast FSUB (MEM)", new String[] { "JSR FASTFSUBMEM" }, "JSR MEMSUB"));
 			others.add(new Pattern(true, "Fast FSQRT (NEW)", new String[] { "JSR FASTFSQRT" }, "JSR FACSQR"));
-			OptimizationResult res = optimizeInternalThreaded(others, platform, ret, null, extractConstants(ret), true);
+			OptimizationResult res = optimizeInternalThreaded(config, others, platform, ret, null, extractConstants(ret), true);
 			printOutResults(res.getType2count());
 			return res.getCode();
 		}
@@ -516,16 +515,17 @@ public class Optimizer6502 implements Optimizer {
 		return line3;
 	}
 
-	private int[] getStartAndEnd(List<String> input) {
+	private int[] getStartAndEnd(CompilerConfig conf, List<String> input) {
 		int codeEnd = input.size();
 		int codeStart = 0;
-
+		String end = getEndText(conf);
+		
 		for (int i = 0; i < input.size(); i++) {
 			String line = input.get(i);
 			if (line.startsWith("; *** CODE ***")) {
 				codeStart = i;
 			}
-			if (line.startsWith("; *** SUBROUTINES ***")) {
+			if (line.startsWith(end)) {
 				codeEnd = i;
 				break;
 			}
@@ -533,6 +533,13 @@ public class Optimizer6502 implements Optimizer {
 		return new int[] { codeStart, codeEnd };
 	}
 
+	private String getEndText(CompilerConfig conf) {
+		if (conf.isBigRam()) {
+			return "; *** CONSTANTS ***";
+		}
+		return "; *** SUBROUTINES ***";
+	}
+	
 	private List<Pattern> getPatterns() {
 		return new ArrayList<Pattern>() {
 			private static final long serialVersionUID = 1L;
