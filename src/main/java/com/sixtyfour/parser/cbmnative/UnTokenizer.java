@@ -133,6 +133,7 @@ public class UnTokenizer {
 				int b = 0;
 				boolean inString = false;
 				boolean wasSpace = false;
+				boolean isData = false;
 				do {
 					b = program[(addr++) - start] & 0xff;
 					if (b != 0) {
@@ -154,7 +155,7 @@ public class UnTokenizer {
 								}
 								line.append(ph);
 							} else {
-								if (((int) c) == 255) {
+								if (((int) c) == 255 && !isData) {
 									// Handle PI
 									line.append("3.14159265");
 								} else {
@@ -172,6 +173,9 @@ public class UnTokenizer {
 								String part = line.substring(Math.max(line.length() - 40, 0), line.length());
 								Logger.log("Unknown token near: " + part + " @ line " + ln);
 								throw new RuntimeException("Unknown token: $" + Integer.toHexString(mb));
+							}
+							if (token.equals("DATA")) {
+								isData = true;
 							}
 							if (line.length() > 0 && line.charAt(line.length() - 1) != ' ' && b < 180
 									&& token.length() > 1) {
