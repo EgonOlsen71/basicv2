@@ -99,6 +99,9 @@ public class Transformer64 extends AbstractTransformer {
 			res.add("TMP_REG=71");
 			res.add("G_REG=73");
 			res.add("X_REG=61");
+			// A_REG and B_REG now in tape loading memory...should be fine and reduces code size...
+			res.add("A_REG=167");
+			res.add("B_REG=169");
 		}
 		res.add("*=" + startAddress);
 		res.add("TSX");

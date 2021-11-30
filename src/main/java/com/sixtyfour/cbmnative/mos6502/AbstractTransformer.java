@@ -438,9 +438,9 @@ public abstract class AbstractTransformer implements Transformer {
 		res.add("D_REG\t.REAL 0.0");
 		res.add("E_REG\t.REAL 0.0");
 		res.add("F_REG\t.REAL 0.0");
-		res.add("A_REG\t.WORD 0");
-		res.add("B_REG\t.WORD 0");
 		if (!preferZeropage) {
+			res.add("A_REG\t.WORD 0");
+			res.add("B_REG\t.WORD 0");
 			res.add("G_REG\t.WORD 0");
 		}
 		res.add("CMD_NUM\t.BYTE 0");
