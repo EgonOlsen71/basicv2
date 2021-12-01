@@ -37,6 +37,8 @@ public class CompilerConfig {
 	private int threads = -1;
 	private LoopMode loopMode = LoopMode.EXECUTE;
 	private ProgressListener progressListener;
+	
+	private RuntimeAddition runtimeAddition = null;
 
 	private int compactThreshold = 0;
 
@@ -267,6 +269,14 @@ public class CompilerConfig {
 
 	public void setBoostMode(boolean boostMode) {
 		this.boostMode = boostMode;
+	}
+
+	public RuntimeAddition getRuntimeAddition() {
+		return runtimeAddition;
+	}
+
+	public void setRuntimeAddition(RuntimeAddition runtimeAddition) {
+		this.runtimeAddition = runtimeAddition;
 	}
 
 }

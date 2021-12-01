@@ -14,6 +14,7 @@ import com.sixtyfour.Assembler;
 import com.sixtyfour.Basic;
 import com.sixtyfour.Loader;
 import com.sixtyfour.cbmnative.NativeCompiler;
+import com.sixtyfour.cbmnative.Pattern;
 import com.sixtyfour.cbmnative.PlatformProvider;
 import com.sixtyfour.cbmnative.ProgressListener;
 import com.sixtyfour.cbmnative.Transformer;
@@ -29,9 +30,12 @@ import com.sixtyfour.compression.Compressor;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.config.LoopMode;
 import com.sixtyfour.config.MemoryConfig;
+import com.sixtyfour.config.RuntimeAddition;
 import com.sixtyfour.extensions.x16.X16Extensions;
 import com.sixtyfour.parser.Preprocessor;
+import com.sixtyfour.parser.RuntimeAddParser;
 import com.sixtyfour.parser.cbmnative.UnTokenizer;
+import com.sixtyfour.plugins.AssemblerMonitor;
 import com.sixtyfour.system.FileWriter;
 import com.sixtyfour.system.Program;
 import com.sixtyfour.system.ProgramPart;
@@ -83,7 +87,7 @@ public class MoSpeedCL {
 		memConfig.setRuntimeStart(getNumber("runtimestart", cmds));
 		memConfig.setVariableStart(getNumber("varstart", cmds));
 		memConfig.setStringEnd(getNumber("varend", cmds));
-		
+
 		if (cfg.isBigRam()) {
 			System.out.println("Runtime start configuration ignored, because bigram is true!");
 			memConfig.setRuntimeStart(-1);
@@ -116,6 +120,25 @@ public class MoSpeedCL {
 		cfg.setLoopMode(getOption("loopopt", cmds) ? LoopMode.REMOVE : LoopMode.EXECUTE);
 		cfg.setBoostMode(getOptionIntDefault("boost", cmds, false));
 		cfg.setBigRam(getOptionIntDefault("bigram", cmds, false));
+		
+		if (cmds.containsKey("specops")) {
+			System.out.println("reading runtime/optimizer information!");
+			final RuntimeAddParser addy = new RuntimeAddParser(loadSource(cmds.get("specops")));
+			RuntimeAddition rta = new RuntimeAddition() {
+
+				@Override
+				public List<Pattern> getAdditionalPatterns() {
+					return addy.getPatterns();
+				}
+
+				@Override
+				public List<String> getAdditionalRuntimeCode() {
+					return addy.getCode();
+				}
+				
+			};
+			cfg.setRuntimeAddition(rta);
+		}
 
 		boolean compress = getOptionIntDefault("compression", cmds, false);
 		boolean multiPart = getOptionIntDefault("multipart", cmds, false);
@@ -150,6 +173,7 @@ public class MoSpeedCL {
 		String ilTarget = null;
 		String nlTarget = null;
 		String ascTarget = null;
+		String asmTarget = null;
 
 		PlatformProvider platform = new Platform64();
 		String appendix = ".prg";
@@ -233,6 +257,7 @@ public class MoSpeedCL {
 			ilTarget = targetFile + ".il";
 			nlTarget = targetFile + ".nl";
 			ascTarget = targetFile + ".asc";
+			asmTarget = targetFile + ".dbg";
 			ok = delete(ilTarget) && delete(nlTarget) && delete(ascTarget);
 			if (!ok) {
 				System.out.println(
@@ -265,12 +290,12 @@ public class MoSpeedCL {
 		if (src == null) {
 			src = loadSource(srcFile);
 		}
-		
-		if (src==null || src.length==0) {
+
+		if (src == null || src.length == 0) {
 			System.out.println("\nSource file is empty!");
 			exit(45);
 		}
-		
+
 		for (String line : src) {
 			if (!line.trim().isEmpty()) {
 				char c = line.charAt(0);
@@ -309,8 +334,8 @@ public class MoSpeedCL {
 			nCode = nComp.compile(cfg, basic, memConfig, platform);
 		} catch (Exception e) {
 			System.out.println("\n!!! Error compiling: " + e.getMessage());
-			String ll=nComp.getLastProcessedLine();
-			if (ll!=null) {
+			String ll = nComp.getLastProcessedLine();
+			if (ll != null) {
 				System.out.println("Error at: " + ll);
 			}
 			printCause(e);
@@ -322,14 +347,12 @@ public class MoSpeedCL {
 			List<SourcePart> parts = srcProc.split();
 			nCode = srcProc.relocate(cfg, parts, holes);
 		}
-		
+
 		// Relocated into the actual compile step to be executed before the compact run
 		/*
-		if (cfg.isBigRam()) {
-			SourceProcessor srcProc = new SourceProcessor(nCode);
-			nCode = srcProc.moveRuntime();
-		}
-		*/
+		 * if (cfg.isBigRam()) { SourceProcessor srcProc = new SourceProcessor(nCode);
+		 * nCode = srcProc.moveRuntime(); }
+		 */
 
 		if (genSrc) {
 			write(nCode, nlTarget);
@@ -337,13 +360,31 @@ public class MoSpeedCL {
 
 		Assembler assy = null;
 		if (is6502Platform(platform)) {
-			assy = new Assembler(nCode);
+			PrintWriter pwa = null;
 			try {
+				assy = new Assembler(nCode);
+				if (genSrc) {
+					pwa = new PrintWriter(asmTarget);
+					final PrintWriter pwd = pwa;
+					assy.setMonitor(new AssemblerMonitor() {
+						@Override
+						public void doneWithLine(int addr, int lineNumber, String line) {
+							if (!line.isEmpty()) {
+								pwd.println(lineNumber + "\t.$" + Integer.toHexString(addr) + "\t" + line);
+							}
+						}
+
+					});
+				}
 				assy.compile(cfg);
 			} catch (Exception e) {
 				System.out.println("\n!!! Error running assembler: " + e.getMessage());
 				printCause(e);
 				exit(15);
+			} finally {
+				if (pwa != null) {
+					pwa.close();
+				}
 			}
 		}
 		writeTargetFiles(memConfig, targetFile, nCode, assy, platform, addrHeader, multiPart, compress);
@@ -547,7 +588,7 @@ public class MoSpeedCL {
 		try {
 			src = Loader.loadProgram(srcFile);
 		} catch (Exception e) {
-			System.out.println("Failed to load source file: " + e.getMessage());
+			System.out.println("Failed to load source file ("+srcFile+"): " + e.getMessage());
 			exit(6);
 		}
 		List<String> res = new ArrayList<>();
@@ -674,7 +715,6 @@ public class MoSpeedCL {
 		System.out.println(
 				"/compression=true|false - *Experimental* - If true, the compiled program will be compressed to achieve a smaller file size. The compressed file will be saved in addition to the normal binary. Compression isn't always possible. In that case, no compressed file will be written.");
 
-		
 		System.out.println();
 	}
 

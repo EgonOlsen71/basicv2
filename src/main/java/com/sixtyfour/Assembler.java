@@ -16,6 +16,7 @@ import com.sixtyfour.parser.assembly.ConstantValue;
 import com.sixtyfour.parser.assembly.ConstantsContainer;
 import com.sixtyfour.parser.assembly.LabelAndCode;
 import com.sixtyfour.parser.assembly.LabelsContainer;
+import com.sixtyfour.plugins.AssemblerMonitor;
 import com.sixtyfour.system.Cpu;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.system.Program;
@@ -38,6 +39,7 @@ public class Assembler implements ProgramExecutor {
 	private Machine machine = null;
 	private Program program = null;
 	private boolean running = false;
+	private AssemblerMonitor monitor = null;
 	private Map<Integer, String> addr2code = new HashMap<Integer, String>();
 
 	/**
@@ -132,6 +134,7 @@ public class Assembler implements ProgramExecutor {
 
 		for (String line : code) {
 			cnt++;
+			int oAddr=addr;
 			String oLine = line;
 			line = AssemblyParser.replaceTabs(line);
 			if (line.startsWith(";")) {
@@ -141,6 +144,7 @@ public class Assembler implements ProgramExecutor {
 
 			line = AssemblyParser.truncateComments(line);
 			String lline = line.toLowerCase(Locale.ENGLISH);
+			String oldLine = line;
 
 			if (lline.contains("<if ")) {
 				String cond = line.substring(4);
@@ -253,6 +257,9 @@ public class Assembler implements ProgramExecutor {
 				int oldAddr = addr;
 				addr += data.length;
 				flagAddress(usedAddrs, oldAddr, addr);
+			}
+			if (monitor != null) {
+				monitor.doneWithLine(oAddr, cnt, oldLine);
 			}
 		}
 
@@ -461,6 +468,19 @@ public class Assembler implements ProgramExecutor {
 		return addr - dummyAddr;
 	}
 
+	@Override
+	public boolean isRunning() {
+		return running;
+	}
+
+	public AssemblerMonitor getMonitor() {
+		return monitor;
+	}
+
+	public void setMonitor(AssemblerMonitor monitor) {
+		this.monitor = monitor;
+	}
+	
 	/**
 	 * Dumps the compiled program into a kind of monitor view. If the program hasn't
 	 * been compiled yet, an empty string will be returned.
@@ -531,10 +551,5 @@ public class Assembler implements ProgramExecutor {
 			}
 			used.add(i);
 		}
-	}
-
-	@Override
-	public boolean isRunning() {
-		return running;
 	}
 }

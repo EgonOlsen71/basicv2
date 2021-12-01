@@ -160,8 +160,7 @@ public class ControlCodes {
 	 */
 	public static int getCode(String placeHolder) {
 		placeHolder = placeHolder.replace("{", "").replace("}", "").toLowerCase(Locale.ENGLISH).trim();
-		if (placeHolder2code.containsKey(placeHolder)
-				|| placeHolder2code.containsKey(placeHolder.toLowerCase(Locale.ENGLISH))) {
+		if (placeHolder2code.containsKey(placeHolder)) {
 			return placeHolder2code.get(placeHolder);
 		}
 		if (placeHolder.length() == 0) {
@@ -190,6 +189,10 @@ public class ControlCodes {
 			}
 		}
 		return null;
+	}
+	
+	public static void main(String[] args) {
+		System.out.println(getCode("{control-q}"));
 	}
 
 }

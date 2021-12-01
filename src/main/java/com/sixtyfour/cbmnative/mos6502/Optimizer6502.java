@@ -19,6 +19,7 @@ import com.sixtyfour.cbmnative.PlatformProvider;
 import com.sixtyfour.cbmnative.ProgressListener;
 import com.sixtyfour.cbmnative.Util;
 import com.sixtyfour.config.CompilerConfig;
+import com.sixtyfour.config.RuntimeAddition;
 
 /**
  * An optimizer implementation for the 6520 cpu. Because it might run a large
@@ -44,8 +45,8 @@ public class Optimizer6502 implements Optimizer {
 		return input;
 	}
 
-	private List<String> optimizeInternal(CompilerConfig conf, PlatformProvider platform, List<String> input, ProgressListener pg,
-			int threads) {
+	private List<String> optimizeInternal(CompilerConfig conf, PlatformProvider platform, List<String> input,
+			ProgressListener pg, int threads) {
 		Map<String, Number> const2Value = extractConstants(input);
 		int cpus = threads;
 		if (cpus <= 0) {
@@ -84,6 +85,10 @@ public class Optimizer6502 implements Optimizer {
 		List<Future<OptimizationResult>> futures = new ArrayList<>();
 		for (List<String> part : parts) {
 			List<Pattern> patterns = getPatterns();
+			RuntimeAddition add = conf.getRuntimeAddition();
+			if (add!=null && add.getAdditionalPatterns()!=null) {
+				patterns.addAll(add.getAdditionalPatterns());
+			}
 			Future<OptimizationResult> task = executor.submit(() -> {
 				return optimizeInternalThreaded(conf, patterns, platform, part, pg, const2Value);
 			});
@@ -102,6 +107,7 @@ public class Optimizer6502 implements Optimizer {
 						.forEach((k, v) -> type2count.put(k, type2count.containsKey(k) ? v + type2count.get(k) : v));
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new RuntimeException("Failed to run optimizer!", e);
 		}
 
@@ -119,13 +125,14 @@ public class Optimizer6502 implements Optimizer {
 		}
 	}
 
-	private OptimizationResult optimizeInternalThreaded(CompilerConfig conf, List<Pattern> patterns, PlatformProvider platform,
-			List<String> input, ProgressListener pg, Map<String, Number> const2Val) {
+	private OptimizationResult optimizeInternalThreaded(CompilerConfig conf, List<Pattern> patterns,
+			PlatformProvider platform, List<String> input, ProgressListener pg, Map<String, Number> const2Val) {
 		return optimizeInternalThreaded(conf, patterns, platform, input, pg, const2Val, false);
 	}
 
-	private OptimizationResult optimizeInternalThreaded(CompilerConfig conf, List<Pattern> patterns, PlatformProvider platform,
-			List<String> input, ProgressListener pg, Map<String, Number> const2Val, boolean allLines) {
+	private OptimizationResult optimizeInternalThreaded(CompilerConfig conf, List<Pattern> patterns,
+			PlatformProvider platform, List<String> input, ProgressListener pg, Map<String, Number> const2Val,
+			boolean allLines) {
 		Map<String, Integer> type2count = new HashMap<>();
 		Map<String, Number> const2Value = new HashMap<>(const2Val);
 		Set<Pattern> used = new HashSet<Pattern>();
@@ -218,7 +225,7 @@ public class Optimizer6502 implements Optimizer {
 
 	private void trimLines(CompilerConfig config, List<String> input) {
 		int[] startEnd = getStartAndEnd(config, input);
-		
+
 		for (int i = startEnd[0]; i < startEnd[1]; i++) {
 			input.set(i, input.get(i).trim());
 		}
@@ -240,6 +247,7 @@ public class Optimizer6502 implements Optimizer {
 		input = applyEnhancedOptimizations(config, platform, input);
 		input = aggregateLoads(input);
 		input = aggregateAssignments(input);
+		// input = simplifyRemainingBranches(config, input);
 		return input;
 	}
 
@@ -429,6 +437,7 @@ public class Optimizer6502 implements Optimizer {
 					}
 				}
 			}
+
 			if (skip) {
 				continue;
 			}
@@ -437,6 +446,28 @@ public class Optimizer6502 implements Optimizer {
 
 		return ret;
 	}
+	/*
+	 * private List<String> simplifyRemainingBranches(CompilerConfig conf,
+	 * List<String> input) { List<String> ret = new ArrayList<String>(); String end
+	 * = getEndText(conf); for (int i = 0; i < input.size() - 2; i++) { String line
+	 * = trimLine(input, i); String line2 = trimLine(input, i + 1); String line3 =
+	 * trimLine(input, i + 2); if (line.startsWith(end)) {
+	 * ret.addAll(input.subList(i, input.size())); break; } boolean skip = false;
+	 * int add = 1; if (line2.startsWith(";")) { line2 = line3; add = 2; }
+	 * 
+	 * if (line.contains("LDA #0") && line2.startsWith("JMP") &&
+	 * line2.contains("EQ_SKIP")) { String label =
+	 * line2.substring(line2.indexOf(" ")).replace("_SKIP", "").trim()+":"; for (int
+	 * p = i + 1; p < Math.min(input.size(), i + 5); p++) { String subLine =
+	 * input.get(p); if (subLine.endsWith(label)) { ret.add(line);
+	 * ret.add(line2.replace("JMP", "BEQ"));
+	 * ret.add("; Memory saving conditional branch"); i += add; skip = true; break;
+	 * } } }
+	 * 
+	 * if (skip) { continue; } ret.add(line); }
+	 * 
+	 * return ret; }
+	 */
 
 	private List<String> applyAdditionalPatterns(CompilerConfig conf, PlatformProvider platform, List<String> ret) {
 		// Do another run with the normal optimizer method but with some
@@ -478,8 +509,8 @@ public class Optimizer6502 implements Optimizer {
 			others.add(new Pattern(true, "STZ (1)", new String[] { "{LINE1}|STA>STZ", "{LINE2}|STA>STZ" }, "LDA #0",
 					"STA {*}", "STA {*}"));
 			others.add(new Pattern(true, "STZ (2)", new String[] { "{LINE1}|STA>STZ" }, "LDA #0", "STA {*}"));
-			OptimizationResult res = optimizeInternalThreaded(config, others, platform, ret, null, extractConstants(ret),
-					false);
+			OptimizationResult res = optimizeInternalThreaded(config, others, platform, ret, null,
+					extractConstants(ret), false);
 			printOutResults(res.getType2count());
 			return res.getCode();
 		}
@@ -498,7 +529,8 @@ public class Optimizer6502 implements Optimizer {
 			others.add(new Pattern(true, "Fast FSUB (ARG)", new String[] { "JSR FASTFSUBARG" }, "JSR FACSUB"));
 			others.add(new Pattern(true, "Fast FSUB (MEM)", new String[] { "JSR FASTFSUBMEM" }, "JSR MEMSUB"));
 			others.add(new Pattern(true, "Fast FSQRT (NEW)", new String[] { "JSR FASTFSQRT" }, "JSR FACSQR"));
-			OptimizationResult res = optimizeInternalThreaded(config, others, platform, ret, null, extractConstants(ret), true);
+			OptimizationResult res = optimizeInternalThreaded(config, others, platform, ret, null,
+					extractConstants(ret), true);
 			printOutResults(res.getType2count());
 			return res.getCode();
 		}
@@ -519,7 +551,7 @@ public class Optimizer6502 implements Optimizer {
 		int codeEnd = input.size();
 		int codeStart = 0;
 		String end = getEndText(conf);
-		
+
 		for (int i = 0; i < input.size(); i++) {
 			String line = input.get(i);
 			if (line.startsWith("; *** CODE ***")) {
@@ -539,12 +571,14 @@ public class Optimizer6502 implements Optimizer {
 		}
 		return "; *** SUBROUTINES ***";
 	}
-	
+
 	private List<Pattern> getPatterns() {
 		return new ArrayList<Pattern>() {
 			private static final long serialVersionUID = 1L;
 			{
-				this.add(new Pattern("Simplified setting to 0", new String[] { "LDA #0", "STA {MEM0}", "STA {MEM0}+1", "STA {MEM0}+2", "STA {MEM0}+3", "STA {MEM0}+4" },
+				this.add(new Pattern("Simplified setting to 0",
+						new String[] { "LDA #0", "STA {MEM0}", "STA {MEM0}+1", "STA {MEM0}+2", "STA {MEM0}+3",
+								"STA {MEM0}+4" },
 						"LDA #<{#0.0}", "LDY #>{#0.0}", "JSR REALFAC", "LDX #<{MEM0}", "LDY #>{MEM0}", "JSR FACMEM"));
 				this.add(new Pattern(false, "Faster logic OR", new String[] { "JSR FASTOR" }, "JSR FACOR"));
 				this.add(new Pattern(false, "Faster logic AND", new String[] { "JSR FASTAND" }, "JSR ARGAND"));
@@ -903,23 +937,36 @@ public class Optimizer6502 implements Optimizer {
 				this.add(new Pattern(true, "Faster setting to 1", new String[] { "JSR ONETOFAC" }, "LDA #<{#1.0}",
 						"LDY #>{#1.0}", "JSR REALFAC"));
 
-				// The following two optimizations trigger very seldom. But when they do, they can improve performance up to 10% for these cases.
+				// The following two optimizations trigger very seldom. But when they do, they
+				// can improve performance up to 10% for these cases.
 				this.add(new Pattern(false, "Avoid PUSH/POP(2)",
 						new String[] { "{LINE3}", "{LINE4}", "{LINE5}", "{LINE6}", "JSR XREGARG", "{LINE0}", "{LINE1}",
 								"JSR REALFAC" },
-						"LDA #<{MEM1}", "LDY #>{MEM1}", "JSR REALFACPUSH", "LDY {*}", "LDA #0", "JSR INTFAC", "JSR FACXREG",
-						"JSR POPREAL2X"));
-				
+						"LDA #<{MEM1}", "LDY #>{MEM1}", "JSR REALFACPUSH", "LDY {*}", "LDA #0", "JSR INTFAC",
+						"JSR FACXREG", "JSR POPREAL2X"));
+
 				this.add(new Pattern(false, "Avoid PUSH/POP(3)",
 						new String[] { "{LINE3}", "{LINE4}", "{LINE5}", "{LINE6}", "JSR XREGARG", "{LINE0}", "{LINE1}",
 								"JSR REALFAC" },
-						"LDA #<Y_REG", "LDY #>Y_REG", "JSR REALFACPUSH", "LDY {*}", "LDA #0", "JSR INTFAC", "JSR FACXREG",
-						"JSR POPREAL2X"));
+						"LDA #<Y_REG", "LDY #>Y_REG", "JSR REALFACPUSH", "LDY {*}", "LDA #0", "JSR INTFAC",
+						"JSR FACXREG", "JSR POPREAL2X"));
 
 				// This optimizes a special case, which happens in my affine texture mapper
 				// quite a lot but maybe not much elsewhere...
 				this.add(new Pattern(true, "Omit XREG->FAC", new String[] { "{LINE0}", "{LINE1}", "{LINE2}" },
 						"JSR FACXREG", "LDY {*}", "STY {*}", "JSR XREGFAC"));
+
+				this.add(new Pattern(true, "Combine copy and real par", new String[] { "JSR COPY2_XREG_REALPAR" },
+						"JSR COPY2_XYA_XREG", "JSR COPYREALPAR"));
+				
+				this.add(new Pattern(true, "Combine copy and add colon", new String[] { "JSR COPY_AND_ADDCOLON" },
+						"JSR COPY2_XREG_REALPAR", "JSR ADDCOLON"));
+				
+				this.add(new Pattern(true, "Combine dynamic sys call and pull down", new String[] {"JSR SYS_AND_PULLDOWN" },
+						 "JSR COPY2_XYA_XREG", "JSR SYSTEMCALLDYN", "JSR PULLDOWNMULTIPARS"));
+				
+				this.add(new Pattern(true, "Combine static sys call and pull down", new String[] {"JSR SYS_AND_PULLDOWN_SIMPLE" },
+						 "JSR SYSTEMCALL", "JSR PULLDOWNMULTIPARS"));
 
 			}
 		};

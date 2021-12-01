@@ -3618,6 +3618,24 @@ CONTBASICC	JSR BASICCOPY
 			JSR ADDQUOTE
 			RTS
 ;###################################
+COPY2_XREG_REALPAR
+			JSR COPY2_XYA_XREG
+			JMP COPYREALPAR
+;###################################
+COPY_AND_ADDCOLON
+			JSR COPY2_XYA_XREG
+			JSR COPYREALPAR
+			JMP ADDCOLON
+;###################################
+SYS_AND_PULLDOWN
+			JSR COPY2_XYA_XREG
+			JSR SYSTEMCALLDYN
+			JMP PULLDOWNMULTIPARS
+;###################################
+SYS_AND_PULLDOWN_SIMPLE
+			JSR SYSTEMCALL
+			JMP PULLDOWNMULTIPARS
+;###################################
 COPYREALPAR
 			JSR ADDKOMMA
 COPYREALPARNK

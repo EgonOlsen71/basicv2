@@ -10,6 +10,7 @@ import com.sixtyfour.cbmnative.PlatformProvider;
 import com.sixtyfour.cbmnative.mos6502.AbstractTransformer;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.config.MemoryConfig;
+import com.sixtyfour.config.RuntimeAddition;
 import com.sixtyfour.system.Machine;
 
 /**
@@ -20,6 +21,8 @@ import com.sixtyfour.system.Machine;
  * 
  */
 public class Transformer64 extends AbstractTransformer {
+
+	private static final String SEP = ";###################################";
 
 	public Transformer64() {
 		variableStart = -1;
@@ -46,10 +49,18 @@ public class Transformer64 extends AbstractTransformer {
 		subs.add("; *** SUBROUTINES ***");
 
 		if (config.isBigRam()) {
-			bigRamCode = Arrays.asList(Loader.loadProgram(this.getClass().getResourceAsStream("/bigram/romhandler.asm")));
+			bigRamCode = Arrays
+					.asList(Loader.loadProgram(this.getClass().getResourceAsStream("/bigram/romhandler.asm")));
 			subs.addAll(Arrays.asList(Loader.loadProgram(this.getClass().getResourceAsStream("/bigram/bigram.asm"))));
 		}
 		subs.addAll(Arrays.asList(Loader.loadProgram(this.getClass().getResourceAsStream("/subroutines.asm"))));
+		RuntimeAddition add = config.getRuntimeAddition();
+		if (add != null && add.getAdditionalRuntimeCode() != null) {
+			Logger.log("Adding user provided runtime code: "+add.getAdditionalRuntimeCode().size()+" lines");
+			subs.add(SEP);
+			subs.addAll(add.getAdditionalRuntimeCode());
+			subs.add(SEP);
+		}
 
 		AbstractTransformer.addExtensionSubroutines(subs, "asm64");
 
@@ -58,7 +69,7 @@ public class Transformer64 extends AbstractTransformer {
 			consts.add("*=$" + Integer.toHexString(variableStart));
 		}
 		consts.add("CONSTANTS");
-		vars.add(";###############################");
+		vars.add(SEP);
 		vars.add("; *** VARIABLES ***");
 		vars.add("VARIABLES");
 
@@ -99,7 +110,8 @@ public class Transformer64 extends AbstractTransformer {
 			res.add("TMP_REG=71");
 			res.add("G_REG=73");
 			res.add("X_REG=61");
-			// A_REG and B_REG now in tape loading memory...should be fine and reduces code size...
+			// A_REG and B_REG now in tape loading memory...should be fine and reduces code
+			// size...
 			res.add("A_REG=167");
 			res.add("B_REG=169");
 		}
@@ -217,7 +229,8 @@ public class Transformer64 extends AbstractTransformer {
 		res.add("BRINPUT = $A560");
 
 		res.add("BIGRAM = 1");
-		res.add("BRROMSTART = $9F00");	// Actually, this is ROMSTART-256 to handle potentially overlapping data at the cost of some performance
+		res.add("BRROMSTART = $9F00"); // Actually, this is ROMSTART-256 to handle potentially overlapping data at the
+										// cost of some performance
 		res.add("BRROMEND = $C000");
 	}
 

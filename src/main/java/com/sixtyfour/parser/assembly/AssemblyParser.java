@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import com.sixtyfour.Logger;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.Variable;
 import com.sixtyfour.elements.mnemonics.Mnemonic;
@@ -322,6 +323,7 @@ public class AssemblyParser {
 								for (int i = 0; i < mul; i++) {
 									int code = ControlCodes.getCode(part);
 									if (code == -1) {
+										Logger.log("Symbol not found: "+part);
 										addToRam(ram, part);
 									} else {
 										ram.add(code);

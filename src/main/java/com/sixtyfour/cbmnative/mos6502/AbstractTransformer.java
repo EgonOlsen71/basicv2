@@ -172,8 +172,25 @@ public abstract class AbstractTransformer implements Transformer {
 		inits.add("INITVARS");
 
 		inits.add("JSR INITSTRVARS");
-
 		inits.add("LDA #0");
+		
+		List<String> vary=new ArrayList<>();
+		List<String> vary2=new ArrayList<>(vars);
+		for (String var:vars) {
+			if (var.contains("%") || var.contains("[]") || var.contains("$")) {
+				// Collect all but real vars...
+				vary.add(var);
+			}
+		}
+		// This keep the vars in order...
+		vary2.removeAll(vary);
+		vary2.addAll(vary);
+		
+		vars=vary2;
+		
+		boolean realInit=false;
+		int cnt=0;
+		
 		for (String var : vars) {
 			var = var.trim().replace("\t", " ");
 			if (var.startsWith("VAR_")) {
@@ -183,12 +200,24 @@ public abstract class AbstractTransformer implements Transformer {
 					if (parts[1].equals(".REAL")) {
 						// INT and REAL arrays are both marked "ARRAY", so this
 						// branch can only happen if it a single REAL.
-						inits.add("STA " + parts[0]);
-						inits.add("STA " + parts[0] + "+1");
-						// inits.add("STA " + parts[0] + "+2");
-						// inits.add("STA " + parts[0] + "+3");
-						// inits.add("STA " + parts[0] + "+4");
+						if (!realInit) {
+							// Open real init loop
+							realInit=true;
+							inits.add("LDY #4");
+							inits.add("REALINITLOOP"+cnt+":");
+						}
+						inits.add("STA "+parts[0]+",Y");
 					} else {
+						if (realInit) {
+							// Close real init loop. There should be only one, but
+							// the code can handle multiple loop anyway...
+							inits.add("DEY");
+							inits.add("BMI REALLOOPEXIT"+cnt);
+							inits.add("JMP REALINITLOOP"+cnt);
+							inits.add("REALLOOPEXIT"+cnt+":");
+							realInit=false;
+							cnt++;
+						}
 						// INT or ARRAY
 						if (isArray) {
 							if (inits.get(inits.size() - 1).equals("LDA #0")) {
@@ -209,6 +238,12 @@ public abstract class AbstractTransformer implements Transformer {
 					}
 				}
 			}
+		}
+		if (realInit) {
+			inits.add("DEY");
+			inits.add("BMI REALLOOPEXIT"+cnt);
+			inits.add("JMP REALINITLOOP"+cnt);
+			inits.add("REALLOOPEXIT"+cnt+":");
 		}
 		inits.add("RTS");
 		inits.add(";###############################");
