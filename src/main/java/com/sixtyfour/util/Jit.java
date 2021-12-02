@@ -187,6 +187,7 @@ public class Jit {
 							URLClassLoader classLoader = URLClassLoader
 									.newInstance(new URL[] { new File(".").toURI().toURL() });
 							Class<?> cls = Class.forName(clazzName, true, classLoader);
+							@SuppressWarnings("deprecation")
 							Jitted jittedCode = (Jitted) cls.newInstance();
 							jittedCode.setVars(vars.toArray(new Variable[vars.size()]));
 

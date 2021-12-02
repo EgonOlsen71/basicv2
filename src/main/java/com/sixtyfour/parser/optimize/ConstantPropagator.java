@@ -1,18 +1,13 @@
 package com.sixtyfour.parser.optimize;
 
-import java.util.Set;
-import java.util.HashSet;
-
 import com.sixtyfour.Logger;
 import com.sixtyfour.config.CompilerConfig;
-import com.sixtyfour.elements.Constant;
 import com.sixtyfour.elements.Type;
 import com.sixtyfour.elements.Variable;
 import com.sixtyfour.elements.commands.Command;
 import com.sixtyfour.elements.commands.Let;
 import com.sixtyfour.elements.functions.Function;
 import com.sixtyfour.parser.Atom;
-import com.sixtyfour.parser.Operator;
 import com.sixtyfour.parser.Term;
 import com.sixtyfour.system.Machine;
 
@@ -25,21 +20,6 @@ import com.sixtyfour.system.Machine;
  * 
  */
 public class ConstantPropagator {
-
-	private final static Set<Integer> POWERS_OF_TWO = new HashSet<Integer>() {
-		private static final long serialVersionUID = 1L;
-		{
-			this.add(2);
-			this.add(4);
-			this.add(8);
-			this.add(16);
-			this.add(32);
-			this.add(64);
-			this.add(128);
-			this.add(256);
-			this.add(512);
-		}
-	};
 
 	/**
 	 * Propagates constants so that the constant folder can run more efficiently.
@@ -102,14 +82,16 @@ public class ConstantPropagator {
 		}
 		boolean[] isConstant = new boolean[1];
 		isConstant[0] = true;
-		return checkForConstant(config, machine, t, isConstant);
+		boolean val = checkForConstant(config, machine, t, isConstant);
+		if (!val) {
+			TermOptimizer.optimizeCalculations(config, machine, t);
+		}
+		return val;
 	}
 
-	private static boolean checkForConstant(CompilerConfig config, Machine machine, Term t, boolean[] isConstant) {
+	
 
-		// Value up to which divisions by <value> will be converted into
-		// *1/<value>
-		double thresHold = 1000;
+	private static boolean checkForConstant(CompilerConfig config, Machine machine, Term t, boolean[] isConstant) {
 
 		if (t.getOperator().isDelimiter()) {
 			isConstant[0] = false;
@@ -125,82 +107,6 @@ public class ConstantPropagator {
 
 		Atom left = t.getLeft();
 		Atom right = t.getRight();
-
-		// While we are at it: Optimize some divisions to multiplications by
-		// 1/... or shifts...
-		if (t.getOperator().isDivision()) {
-			double val = 0;
-			if (right.isConstant() && (val = ((Number) right.eval(machine)).doubleValue()) < thresHold
-					&& val > -thresHold) {
-				if (val != (int) val || !POWERS_OF_TWO.contains((int) val)) {
-					// Disabled for now.
-					if (config.isFloatOptimizations()) {
-						t.setOperator(new Operator('*'));
-						right = new Constant<Double>((double) (1d / val));
-						t.setRight(right);
-					}
-				} else {
-					if (POWERS_OF_TWO.contains((int) val)) {
-						right = new Constant<Integer>((int) val);
-						t.setRight(right);
-					}
-				}
-			}
-		}
-
-		// Swap X+Constant to Constant+X
-		/*
-		 * // While this helps with performance, it increases the size. The performance
-		 * gain is somewhere in the 0.05% range, so it's not really worth it. if (false
-		 * && t.getType(true) != Type.STRING && !t.getLeft().isConstant() &&
-		 * t.getRight().isConstant() && t.getOperator().isPlus()) { Atom
-		 * rt=t.getRight(); t.setRight(t.getLeft()); t.setLeft(rt); }
-		 */
-
-		// Convert 1+X to X+1...
-		if (t.getOperator().isPlus() && t.getType(true) != Type.STRING) {
-			if (left.isConstant() && ((Number) left.eval(machine)).doubleValue() == 1d) {
-				t.setLeft(right);
-				t.setRight(left);
-				left = t.getLeft();
-				right = t.getRight();
-			}
-		}
-
-		// ... and some multiplications by shifts as well
-		if (t.getOperator().isMultiplication()) {
-			double val = 0;
-			if (right.isConstant() && (val = ((Number) right.eval(machine)).doubleValue()) < thresHold
-					&& val > -thresHold) {
-				if (val == (int) val && POWERS_OF_TWO.contains((int) val)) {
-					right = new Constant<Integer>((int) val);
-					t.setRight(right);
-				}
-			} else {
-				if (left.isConstant() && (val = ((Number) left.eval(machine)).doubleValue()) < thresHold
-						&& val > -thresHold) {
-					if (val == (int) val && POWERS_OF_TWO.contains((int) val)) {
-						// Swap operators to keep the optimizer simpler.
-						left = right;
-						right = new Constant<Integer>((int) val);
-						t.setLeft(left);
-						t.setRight(right);
-					}
-				}
-			}
-		}
-
-		// Works around the ROM routines a=16777217:print 10*a,a*10 bug...this
-		// doesn't cover all cases, but at least the trivial ones.
-		if (t.getOperator().isMultiplication()) {
-			if ((left.isConstant() && ((Number) left.eval(machine)).doubleValue() == 10)
-					|| ((right.isConstant() && ((Number) right.eval(machine)).doubleValue() == 16777217))) {
-				t.setLeft(right);
-				t.setRight(left);
-				left = t.getLeft();
-				right = t.getRight();
-			}
-		}
 
 		// ****
 

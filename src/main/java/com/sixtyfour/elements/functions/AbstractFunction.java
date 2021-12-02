@@ -121,6 +121,7 @@ public abstract class AbstractFunction implements Function {
 	 * 
 	 * @see java.lang.Object#clone()
 	 */
+	@SuppressWarnings("deprecation")
 	public Function clone() {
 		try {
 			AbstractFunction clone = this.getClass().newInstance();

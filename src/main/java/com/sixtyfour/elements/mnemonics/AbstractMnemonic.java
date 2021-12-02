@@ -150,6 +150,7 @@ public abstract class AbstractMnemonic implements Mnemonic {
 	@Override
 	public AbstractMnemonic clone() {
 		try {
+			@SuppressWarnings("deprecation")
 			AbstractMnemonic clone = this.getClass().newInstance();
 			clone.name = name;
 			return clone;

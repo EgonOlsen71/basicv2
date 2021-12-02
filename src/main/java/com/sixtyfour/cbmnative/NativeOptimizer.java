@@ -74,11 +74,12 @@ public class NativeOptimizer {
 				new String[] { "{1}", "{3}", "{4}", "{5}", "{0}" }));
 		patterns.add(new NativePattern(new String[] { "MOV Y,#*", "PUSH Y", "MOV Y*", "MOVB X,(Y)", "POP Y" },
 				new String[] { "{2}", "{3}", "{0}" }));
-		
-		patterns.add(new NativePattern(new String[] {"PUSH C", "MOV *", "POP C"}, new String[] {"{1}"}));
 
-		// Some microoptimizations to speed up https://www.lemon64.com/forum/privmsg.php?folder=inbox&mode=read&p=348822
-		
+		patterns.add(new NativePattern(new String[] { "PUSH C", "MOV *", "POP C" }, new String[] { "{1}" }));
+
+		// Some microoptimizations to speed up
+		// https://www.lemon64.com/forum/privmsg.php?folder=inbox&mode=read&p=348822
+
 		patterns.add(new NativePattern(new String[] { "MOV Y*", "MOVB X,(Y)", "MOV Y,#%", "ADD X,Y" },
 				new String[] { "{0}", "{2:MOV Y>MOV A}", "JSR PEEKBYTEADD" }));
 
@@ -93,7 +94,6 @@ public class NativeOptimizer {
 
 		patterns.add(new NativePattern(new String[] { "MOV Y,*", "MOVB X,(Y)", "MOV Y,#%", "OR X,Y" },
 				new String[] { "{0}", "{2:MOV Y>MOV A}", "JSR PEEKBYTEOR" }));
-
 	}
 
 	/**

@@ -58,6 +58,7 @@ public abstract class AbstractCommand implements Command {
 	 */
 	public Command cloneCommand() {
 		try {
+			@SuppressWarnings("deprecation")
 			AbstractCommand clone = this.getClass().newInstance();
 			clone.name = name;
 			return clone;

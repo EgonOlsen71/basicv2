@@ -46,6 +46,7 @@ public class BlockCaret extends DefaultCaret {
 		if (isVisible()) {
 			try {
 				JTextComponent component = getComponent();
+				@SuppressWarnings("deprecation")
 				Rectangle r = component.getUI().modelToView(component, getDot());
 				Color c = g.getColor();
 				g.setColor(component.getBackground());

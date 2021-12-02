@@ -1,6 +1,8 @@
 package com.sixtyfour.parser.optimize;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import com.sixtyfour.Basic;
 import com.sixtyfour.Logger;
@@ -11,6 +13,7 @@ import com.sixtyfour.elements.Type;
 import com.sixtyfour.elements.commands.Command;
 import com.sixtyfour.elements.commands.If;
 import com.sixtyfour.elements.commands.Rem;
+import com.sixtyfour.elements.functions.Function;
 import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Line;
 import com.sixtyfour.parser.Operator;
@@ -29,6 +32,21 @@ import com.sixtyfour.util.VarUtils;
  * 
  */
 public class TermOptimizer {
+
+	private final static Set<Integer> POWERS_OF_TWO = new HashSet<Integer>() {
+		private static final long serialVersionUID = 1L;
+		{
+			this.add(2);
+			this.add(4);
+			this.add(8);
+			this.add(16);
+			this.add(32);
+			this.add(64);
+			this.add(128);
+			this.add(256);
+			this.add(512);
+		}
+	};
 
 	/**
 	 * Tries to optimize terms used in print by detection cases like a$
@@ -186,6 +204,135 @@ public class TermOptimizer {
 			// System.out.println("Replaced by: " + ret);
 		}
 		return ret;
+	}
+
+	/**
+	 * Optimizes the calculations in a term if possible.
+	 * 
+	 * @param config
+	 * @param machine
+	 * @param t
+	 */
+	public static void optimizeCalculations(CompilerConfig config, Machine machine, Term t) {
+		if (t.getType(true) == Type.STRING) {
+			return;
+		}
+
+		double thresHold = 1000;
+
+		Atom left = t.getLeft();
+		Atom right = t.getRight();
+
+		//System.out.println(t.getInitial() + "/" + left.isTerm() + "/" + right.isTerm());
+
+		// While we are at it: Optimize some divisions to multiplications by
+		// 1/... or shifts...
+		if (t.getOperator().isDivision()) {
+			double val = 0;
+			if (right.isConstant() && (val = ((Number) right.eval(machine)).doubleValue()) < thresHold
+					&& val > -thresHold) {
+				if (val != (int) val || !POWERS_OF_TWO.contains((int) val)) {
+					// Disabled for now.
+					if (config.isFloatOptimizations()) {
+						t.setOperator(new Operator('*'));
+						right = new Constant<Double>((double) (1d / val));
+						t.setRight(right);
+					}
+				} else {
+					if (POWERS_OF_TWO.contains((int) val)) {
+						right = new Constant<Integer>((int) val);
+						t.setRight(right);
+					}
+				}
+			}
+		}
+
+		// Swap X+Constant to Constant+X
+		/*
+		 * // While this helps with performance, it increases the size. The performance
+		 * gain is somewhere in the 0.05% range, so it's not really worth it. if (false
+		 * && t.getType(true) != Type.STRING && !t.getLeft().isConstant() &&
+		 * t.getRight().isConstant() && t.getOperator().isPlus()) { Atom
+		 * rt=t.getRight(); t.setRight(t.getLeft()); t.setLeft(rt); }
+		 */
+
+		// Convert 1+X to X+1...
+		if (t.getOperator().isPlus() && t.getType(true) != Type.STRING) {
+			if (left.isConstant() && ((Number) left.eval(machine)).doubleValue() == 1d) {
+				t.setLeft(right);
+				t.setRight(left);
+				left = t.getLeft();
+				right = t.getRight();
+			}
+		}
+
+		// ... and some multiplications by shifts as well
+		if (t.getOperator().isMultiplication()) {
+			double val = 0;
+			if (right.isConstant() && (val = ((Number) right.eval(machine)).doubleValue()) < thresHold
+					&& val > -thresHold) {
+				if (val == (int) val && POWERS_OF_TWO.contains((int) val)) {
+					right = new Constant<Integer>((int) val);
+					t.setRight(right);
+				}
+			} else {
+				if (left.isConstant() && (val = ((Number) left.eval(machine)).doubleValue()) < thresHold
+						&& val > -thresHold) {
+					if (val == (int) val && POWERS_OF_TWO.contains((int) val)) {
+						// Swap operators to keep the optimizer simpler.
+						left = right;
+						right = new Constant<Integer>((int) val);
+						t.setLeft(left);
+						t.setRight(right);
+					}
+				}
+			}
+		}
+
+		// Replace x*1 or 1*x by simply x...has this happens in code...
+		if (t.getOperator().isMultiplication()) {
+			if (right.isConstant() && ((Number) right.eval(machine)).doubleValue() == 1) {
+				t.setOperator(Operator.NOP);
+			} else {
+				if (left.isConstant() && ((Number) left.eval(machine)).doubleValue() == 1) {
+					t.setLeft(right);
+					t.setRight(left);
+					left = t.getLeft();
+					right = t.getRight();
+					t.setOperator(Operator.NOP);
+				}
+			}
+		}
+
+		// Works around the ROM routines a=16777217:print 10*a,a*10 bug...this
+		// doesn't cover all cases, but at least the trivial ones.
+		if (t.getOperator().isMultiplication()) {
+			if ((left.isConstant() && ((Number) left.eval(machine)).doubleValue() == 10)
+					|| ((right.isConstant() && ((Number) right.eval(machine)).doubleValue() == 16777217))) {
+				t.setLeft(right);
+				t.setRight(left);
+				left = t.getLeft();
+				right = t.getRight();
+			}
+		}
+
+		if (left.isTerm()) {
+			optimizeCalculations(config, machine, (Term) left);
+		} else if (left instanceof Function) {
+			Function func = (Function) left;
+			if (func.isDeterministic() && !func.isExcluded()) {
+				optimizeCalculations(config, machine, func.getTerm());
+			}
+		}
+		if (right.isTerm()) {
+			optimizeCalculations(config, machine, (Term) right);
+
+		} else if (right instanceof Function) {
+			Function func = (Function) right;
+			if (func.isDeterministic() && !func.isExcluded()) {
+				optimizeCalculations(config, machine, func.getTerm());
+			}
+		}
 	}
 
 	/**

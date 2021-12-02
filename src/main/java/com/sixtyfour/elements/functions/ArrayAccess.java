@@ -11,6 +11,7 @@ import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.Term;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
+import com.sixtyfour.parser.optimize.TermOptimizer;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
@@ -111,6 +112,7 @@ public class ArrayAccess extends AbstractFunction {
 
 		// System.out.println("Creating term: "+this.variableName+"/"+pars);
 		Term t = Parser.createIndexTerm(config, machine, pars, dimensions);
+		TermOptimizer.optimizeCalculations(config, machine, t);
 
 		List<String> n1 = t.evalToCode(config, machine).get(0).getExpression();
 		n1.addAll(vary.evalToCode(config, machine).get(0).getExpression());

@@ -189,6 +189,7 @@ public class Basic implements ProgramExecutor {
 	 * 
 	 * @param extension the extension class to add
 	 */
+	@SuppressWarnings("deprecation")
 	public static void registerExtension(Class<? extends BasicExtension> clazz) {
 		try {
 			registerExtension(clazz.newInstance());
@@ -302,7 +303,7 @@ public class Basic implements ProgramExecutor {
 		}
 
 		if (VarUtils.isDouble(obj)) {
-			return new Float(((Double) obj).floatValue());
+			return Float.valueOf(((Double) obj).floatValue());
 		}
 		return null;
 	}
