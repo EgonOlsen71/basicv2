@@ -94,6 +94,11 @@ public class NativeOptimizer {
 
 		patterns.add(new NativePattern(new String[] { "MOV Y,*", "MOVB X,(Y)", "MOV Y,#%", "OR X,Y" },
 				new String[] { "{0}", "{2:MOV Y>MOV A}", "JSR PEEKBYTEOR" }));
+
+		// This optimizes the array access for multi-dimensional arrays whose dimensions are a power of 2, like k%(15,15)
+		// It does this by rearranging the operations, so that the resulting shr-optimization triggers.
+		patterns.add(new NativePattern(new String[] { "MOV Y,#*", "PUSH Y", "MOV Y,*", "INT X,Y", "POP Y", "MUL X,Y" },
+				new String[] { "{2}", "{3}", "PUSH X", "{0}", "POP X", "{5}" }));
 	}
 
 	/**
