@@ -112,7 +112,6 @@ public class ArrayAccess extends AbstractFunction {
 
 		// System.out.println("Creating term: "+this.variableName+"/"+pars);
 		Term t = Parser.createIndexTerm(config, machine, pars, dimensions);
-		TermOptimizer.optimizeCalculations(config, machine, t);
 
 		List<String> n1 = t.evalToCode(config, machine).get(0).getExpression();
 		n1.addAll(vary.evalToCode(config, machine).get(0).getExpression());
