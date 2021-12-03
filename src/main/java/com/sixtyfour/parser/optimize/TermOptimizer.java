@@ -10,6 +10,7 @@ import com.sixtyfour.cbmnative.PCode;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.Constant;
 import com.sixtyfour.elements.Type;
+import com.sixtyfour.elements.Variable;
 import com.sixtyfour.elements.commands.Command;
 import com.sixtyfour.elements.commands.If;
 import com.sixtyfour.elements.commands.Rem;
@@ -266,6 +267,16 @@ public class TermOptimizer {
 			}
 		}
 
+		// Replace i+i by 2*i. While the former is faster in BASIC, the latter is faster here,
+		// because it will be replaced by a shift operation later on.
+		if (t.getOperator().isPlus()) {
+			if (right instanceof Variable && right==left) {
+				t.setOperator(new Operator("*"));
+				t.setLeft(new Constant<Integer>(2));
+				left = t.getLeft();
+			} 
+		}
+		
 		// ... and some multiplications by shifts as well
 		if (t.getOperator().isMultiplication()) {
 			double val = 0;
