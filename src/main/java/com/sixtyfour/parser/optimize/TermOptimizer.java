@@ -248,35 +248,6 @@ public class TermOptimizer {
 			}
 		}
 
-		// Swap X+Constant to Constant+X
-		/*
-		 * // While this helps with performance, it increases the size. The performance
-		 * gain is somewhere in the 0.05% range, so it's not really worth it. if (false
-		 * && t.getType(true) != Type.STRING && !t.getLeft().isConstant() &&
-		 * t.getRight().isConstant() && t.getOperator().isPlus()) { Atom
-		 * rt=t.getRight(); t.setRight(t.getLeft()); t.setLeft(rt); }
-		 */
-
-		// Convert 1+X to X+1...
-		if (t.getOperator().isPlus() && t.getType(true) != Type.STRING) {
-			if (left.isConstant() && ((Number) left.eval(machine)).doubleValue() == 1d) {
-				t.setLeft(right);
-				t.setRight(left);
-				left = t.getLeft();
-				right = t.getRight();
-			}
-		}
-
-		// Replace i+i by 2*i. While the former is faster in BASIC, the latter is faster here,
-		// because it will be replaced by a shift operation later on.
-		if (t.getOperator().isPlus()) {
-			if (right instanceof Variable && right==left) {
-				t.setOperator(new Operator("*"));
-				t.setLeft(new Constant<Integer>(2));
-				left = t.getLeft();
-			} 
-		}
-		
 		// ... and some multiplications by shifts as well
 		if (t.getOperator().isMultiplication()) {
 			double val = 0;
@@ -297,6 +268,27 @@ public class TermOptimizer {
 						t.setRight(right);
 					}
 				}
+			}
+		}
+
+		// Convert 1+X to X+1...
+		if (t.getOperator().isPlus() && t.getType(true) != Type.STRING) {
+			if (left.isConstant() && ((Number) left.eval(machine)).doubleValue() == 1d) {
+				t.setLeft(right);
+				t.setRight(left);
+				left = t.getLeft();
+				right = t.getRight();
+			}
+		}
+
+		// Replace i+i by 2*i. While the former is faster in BASIC, the latter is faster
+		// here,
+		// because it will be replaced by a shift operation later on.
+		if (t.getOperator().isPlus()) {
+			if (right instanceof Variable && right == left) {
+				t.setOperator(new Operator("*"));
+				t.setLeft(new Constant<Integer>(2));
+				left = t.getLeft();
 			}
 		}
 

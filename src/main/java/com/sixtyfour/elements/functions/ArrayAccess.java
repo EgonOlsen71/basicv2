@@ -11,7 +11,6 @@ import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.Term;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
-import com.sixtyfour.parser.optimize.TermOptimizer;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
