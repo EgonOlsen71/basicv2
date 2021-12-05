@@ -61,7 +61,7 @@ public class Sys extends AbstractCommand {
 				int pos=-1;
 				for (int i=4; i<linePart.length(); i++) {
 					c=linePart.charAt(i);
-					if (Character.isDigit(c)) {
+					if (Character.isDigit(c) || (!Character.isAlphabetic(c) && c!=',')) {
 						continue;
 					}
 					if (c==',') {
