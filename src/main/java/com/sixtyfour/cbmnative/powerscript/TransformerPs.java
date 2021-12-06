@@ -361,4 +361,14 @@ public class TransformerPs implements Transformer {
 		varName = varName.replace("$", "_STR_");
 		return varName;
 	}
+
+	@Override
+	public boolean isOptimizedStringPointers() {
+		return false;
+	}
+
+	@Override
+	public void setOptimizedStringPointers(boolean optimized) {
+		
+	}
 }

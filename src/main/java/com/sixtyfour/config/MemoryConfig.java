@@ -16,6 +16,7 @@ public class MemoryConfig {
 	private int runtimeStart = -1;
 	private int basicBufferStart = -1;
 	private boolean optimizedTempStorage = true;
+	private boolean optimizedStringPointers = false;
 
 	/**
 	 * Creates a new config with default values.
@@ -89,5 +90,13 @@ public class MemoryConfig {
 
 	public void setBasicBufferStart(int basicBufferStart) {
 		this.basicBufferStart = basicBufferStart;
+	}
+
+	public boolean isOptimizedStringPointers() {
+		return optimizedStringPointers;
+	}
+
+	public void setOptimizedStringPointers(boolean optimizedStringPointers) {
+		this.optimizedStringPointers = optimizedStringPointers;
 	}
 }

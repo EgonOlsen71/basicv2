@@ -332,5 +332,14 @@ public class TransformerJs implements Transformer {
 		// return res.stream().map(p -> p.replace("{*}",
 		// calleeName)).collect(Collectors.toList());
 	}
+	
+	public boolean isOptimizedStringPointers() {
+		return false;
+	}
+
+	@Override
+	public void setOptimizedStringPointers(boolean optimized) {
+		
+	}
 
 }

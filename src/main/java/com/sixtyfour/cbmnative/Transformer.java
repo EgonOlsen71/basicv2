@@ -109,4 +109,8 @@ public interface Transformer {
 	 * @param optimizedTemp should it?
 	 */
 	void setOptimizedTempStorage(boolean optimizedTemp);
+
+	boolean isOptimizedStringPointers();
+
+	void setOptimizedStringPointers(boolean optimized);
 }

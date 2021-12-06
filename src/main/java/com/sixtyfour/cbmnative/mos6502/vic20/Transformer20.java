@@ -31,6 +31,7 @@ public class Transformer20 extends AbstractTransformer {
 		stringMemoryEnd = 0; // will be adjusted in the runtime according to 55/56
 		startAddress = 4632; // will be adjusted according to the values that Platform20 provides
 		preferZeropage = true;
+		stringRegInZeropage = false;
 	}
 
 	@Override

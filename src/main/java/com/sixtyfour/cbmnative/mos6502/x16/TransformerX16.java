@@ -31,6 +31,7 @@ public class TransformerX16 extends AbstractTransformer {
 		stringMemoryEnd = 0; // will be adjusted in the runtime according to BASIC END
 		startAddress = 2072;
 		preferZeropage = true;
+		stringRegInZeropage = false;
 	}
 
 	@Override

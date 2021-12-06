@@ -166,6 +166,7 @@ public class NativeCompiler {
 		Transformer tf = platform.getTransformer();
 		tf.setVariableStart(memConfig.getVariableStart());
 		tf.setOptimizedTempStorage(memConfig.isOptimizedTempStorage());
+		tf.setOptimizedStringPointers(memConfig.isOptimizedStringPointers());
 		if (memConfig.getStringEnd() != -1) {
 			tf.setStringMemoryEnd(memConfig.getStringEnd());
 		}

@@ -40,6 +40,7 @@ public abstract class AbstractTransformer implements Transformer {
 	protected int stringMemoryEnd = 0;
 	protected int startAddress = 0;
 	protected boolean preferZeropage = true;
+	protected boolean stringRegInZeropage = false;
 
 	public static void addExtensionSubroutines(List<String> addTo, String postFix) {
 		List<BasicExtension> exts = Basic.getExtensions();
@@ -473,9 +474,11 @@ public abstract class AbstractTransformer implements Transformer {
 		res.add("D_REG\t.REAL 0.0");
 		res.add("E_REG\t.REAL 0.0");
 		res.add("F_REG\t.REAL 0.0");
-		if (!preferZeropage) {
+		if (!stringRegInZeropage) {
 			res.add("A_REG\t.WORD 0");
 			res.add("B_REG\t.WORD 0");
+		}
+		if (!preferZeropage) {
 			res.add("G_REG\t.WORD 0");
 		}
 		res.add("CMD_NUM\t.BYTE 0");
@@ -564,6 +567,16 @@ public abstract class AbstractTransformer implements Transformer {
 		this.runtimeStart = runtimeStart;
 	}
 
+	@Override
+	public boolean isOptimizedStringPointers() {
+		return stringRegInZeropage;
+	}
+
+	@Override
+	public void setOptimizedStringPointers(boolean optimized) {
+		this.stringRegInZeropage = optimized;
+	}
+	
 	@Override
 	public boolean isOptimizedTempStorage() {
 		return preferZeropage;

@@ -30,6 +30,7 @@ public class Transformer64 extends AbstractTransformer {
 		stringMemoryEnd = 0; // will be adjusted in the runtime according to 55/56
 		startAddress = 2072;
 		preferZeropage = true;
+		stringRegInZeropage = false;
 	}
 
 	@Override
@@ -110,8 +111,8 @@ public class Transformer64 extends AbstractTransformer {
 			res.add("TMP_REG=71");
 			res.add("G_REG=73");
 			res.add("X_REG=61");
-			// A_REG and B_REG now in tape loading memory...should be fine and reduces code
-			// size...
+		}
+		if (stringRegInZeropage) {
 			res.add("A_REG=167");
 			res.add("B_REG=169");
 		}
