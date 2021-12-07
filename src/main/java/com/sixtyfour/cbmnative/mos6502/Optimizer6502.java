@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
 import com.sixtyfour.Logger;
 import com.sixtyfour.cbmnative.Optimizer;
@@ -86,7 +87,7 @@ public class Optimizer6502 implements Optimizer {
 		for (List<String> part : parts) {
 			List<Pattern> patterns = getPatterns();
 			RuntimeAddition add = conf.getRuntimeAddition();
-			if (add!=null && add.getAdditionalPatterns()!=null) {
+			if (add != null && add.getAdditionalPatterns() != null) {
 				patterns.addAll(add.getAdditionalPatterns());
 			}
 			Future<OptimizationResult> task = executor.submit(() -> {
@@ -247,7 +248,79 @@ public class Optimizer6502 implements Optimizer {
 		input = applyEnhancedOptimizations(config, platform, input);
 		input = aggregateLoads(input);
 		input = aggregateAssignments(input);
+		input = applyPeekOptimization(config, platform, input);
 		// input = simplifyRemainingBranches(config, input);
+		return input;
+	}
+
+	/**
+	 * Optimization for things like: ...peek(xxx)=|<>|>=|<=|<|>CONST...because this is one of the seldom
+	 * code fragments wher eon ecan be sure to deal with actual byte values.
+	 * 
+	 * @param conf
+	 * @param platform
+	 * @param input
+	 * @return
+	 */
+	
+	private List<String> applyPeekOptimization(CompilerConfig conf, PlatformProvider platform, List<String> input) {
+		Map<String, Number> const2Value = extractConstants(input);
+
+		int[] ps = getStartAndEnd(conf, input);
+		int codeStart = ps[0];
+		int codeEnd = ps[1];
+
+		Pattern pattern = new Pattern(true, "Optimized comparison for PEEK", new String[] {}, "LDY {*}", "LDA #0",
+				"JSR INTFAC", "JSR FACXREG", "LDA #<{CONST0}", "LDY #>{CONST0}", "JSR REALFAC", "LDA #<X_REG",
+				"LDY #>X_REG", "JSR CMPFAC");
+
+		int peekCnt = 0;
+		for (int i = codeStart; i < codeEnd; i++) {
+			String line = input.get(i);
+			if (line.trim().startsWith(";") && pattern.isSkipComments()) {
+				continue;
+			}
+			boolean matches = pattern.matches(line, i, const2Value);
+			if (matches) {
+				List<List<String>> parts = pattern.split(input);
+				List<String> cleaned = parts.get(1).stream().filter(p -> !p.startsWith(";"))
+						.collect(Collectors.toList());
+				String consty = cleaned.get(4);
+				consty = consty.substring(consty.indexOf("<") + 1);
+				Number num = const2Value.get(consty);
+				double numd = num.doubleValue();
+				if (numd == (int) numd && numd >= 0 && numd < 256) {
+					List<String> rep = new ArrayList<>();
+					rep.add(cleaned.get(0).replace("LDY", "LDA"));
+					rep.add("CMP #" + (int) numd);
+					rep.add("BCC PEEKLT" + peekCnt);
+					rep.add("BEQ PEEKEQ" + peekCnt);
+					rep.add("LDA #$FF");
+					rep.add("JMP PEEKDONE" + peekCnt);
+					rep.add("PEEKLT" + peekCnt + ":");
+					rep.add("LDA #$01");
+					rep.add("JMP PEEKDONE" + peekCnt);
+					rep.add("PEEKEQ" + peekCnt + ":");
+					rep.add("LDA #0");
+					rep.add("PEEKDONE" + (peekCnt++)+":");
+					rep.add("; " + pattern.getName());
+					for (int p = rep.size(); p < parts.get(1).size(); p++) {
+						rep.add(";");
+					}
+					input = new ArrayList<>(parts.get(0));
+					input.addAll(rep);
+					input.addAll(parts.get(2));
+				} else {
+					//
+				}
+				pattern.reset();
+			}
+		}
+
+		if (peekCnt>0) {
+			Logger.log("Optimization "+pattern.getName()+" applied "+peekCnt+" times!");
+		}
+		
 		return input;
 	}
 
@@ -446,28 +519,6 @@ public class Optimizer6502 implements Optimizer {
 
 		return ret;
 	}
-	/*
-	 * private List<String> simplifyRemainingBranches(CompilerConfig conf,
-	 * List<String> input) { List<String> ret = new ArrayList<String>(); String end
-	 * = getEndText(conf); for (int i = 0; i < input.size() - 2; i++) { String line
-	 * = trimLine(input, i); String line2 = trimLine(input, i + 1); String line3 =
-	 * trimLine(input, i + 2); if (line.startsWith(end)) {
-	 * ret.addAll(input.subList(i, input.size())); break; } boolean skip = false;
-	 * int add = 1; if (line2.startsWith(";")) { line2 = line3; add = 2; }
-	 * 
-	 * if (line.contains("LDA #0") && line2.startsWith("JMP") &&
-	 * line2.contains("EQ_SKIP")) { String label =
-	 * line2.substring(line2.indexOf(" ")).replace("_SKIP", "").trim()+":"; for (int
-	 * p = i + 1; p < Math.min(input.size(), i + 5); p++) { String subLine =
-	 * input.get(p); if (subLine.endsWith(label)) { ret.add(line);
-	 * ret.add(line2.replace("JMP", "BEQ"));
-	 * ret.add("; Memory saving conditional branch"); i += add; skip = true; break;
-	 * } } }
-	 * 
-	 * if (skip) { continue; } ret.add(line); }
-	 * 
-	 * return ret; }
-	 */
 
 	private List<String> applyAdditionalPatterns(CompilerConfig conf, PlatformProvider platform, List<String> ret) {
 		// Do another run with the normal optimizer method but with some
@@ -958,15 +1009,16 @@ public class Optimizer6502 implements Optimizer {
 
 				this.add(new Pattern(true, "Combine copy and real par", new String[] { "JSR COPY2_XREG_REALPAR" },
 						"JSR COPY2_XYA_XREG", "JSR COPYREALPAR"));
-				
+
 				this.add(new Pattern(true, "Combine copy and add colon", new String[] { "JSR COPY_AND_ADDCOLON" },
 						"JSR COPY2_XREG_REALPAR", "JSR ADDCOLON"));
-				
-				this.add(new Pattern(true, "Combine dynamic sys call and pull down", new String[] {"JSR SYS_AND_PULLDOWN" },
-						 "JSR COPY2_XYA_XREG", "JSR SYSTEMCALLDYN", "JSR PULLDOWNMULTIPARS"));
-				
-				this.add(new Pattern(true, "Combine static sys call and pull down", new String[] {"JSR SYS_AND_PULLDOWN_SIMPLE" },
-						 "JSR SYSTEMCALL", "JSR PULLDOWNMULTIPARS"));
+
+				this.add(new Pattern(true, "Combine dynamic sys call and pull down",
+						new String[] { "JSR SYS_AND_PULLDOWN" }, "JSR COPY2_XYA_XREG", "JSR SYSTEMCALLDYN",
+						"JSR PULLDOWNMULTIPARS"));
+
+				this.add(new Pattern(true, "Combine static sys call and pull down",
+						new String[] { "JSR SYS_AND_PULLDOWN_SIMPLE" }, "JSR SYSTEMCALL", "JSR PULLDOWNMULTIPARS"));
 
 			}
 		};

@@ -95,10 +95,20 @@ public class NativeOptimizer {
 		patterns.add(new NativePattern(new String[] { "MOV Y,*", "MOVB X,(Y)", "MOV Y,#%", "OR X,Y" },
 				new String[] { "{0}", "{2:MOV Y>MOV A}", "JSR PEEKBYTEOR" }));
 
-		// This optimizes the array access for multi-dimensional arrays whose dimensions are a power of 2, like k%(15,15)
-		// It does this by rearranging the operations, so that the resulting shr-optimization triggers.
+		// This optimizes the array access for multi-dimensional arrays whose dimensions
+		// are a power of 2, like k%(15,15)
+		// It does this by rearranging the operations, so that the resulting
+		// shr-optimization triggers.
 		patterns.add(new NativePattern(new String[] { "MOV Y,#*", "PUSH Y", "MOV Y,*", "INT X,Y", "POP Y", "MUL X,Y" },
 				new String[] { "{2}", "{3}", "PUSH X", "{0}", "POP X", "{5}" }));
+
+		// Optimizes the special case of a multiplication by 40. Is is quite common in C64 BASIC-code because of the screen's width...
+		patterns.add(new NativePattern(new String[] { "MOV X,#40{INTEGER}", "MUL X,Y" },
+				new String[] { "MOV A,#5{INTEGER}", "MOV X,Y", "SHL X,A", "MOV A,#3{INTEGER}", "SHL Y,A", "ADD X,Y" }));
+		
+		//...and the same thing for 320...
+		patterns.add(new NativePattern(new String[] { "MOV X,#320{INTEGER}", "MUL X,Y" },
+				new String[] { "MOV A,#8{INTEGER}", "MOV X,Y", "SHL X,A", "MOV A,#6{INTEGER}", "SHL Y,A", "ADD X,Y" }));
 	}
 
 	/**

@@ -396,7 +396,22 @@ public class Pattern implements java.lang.Cloneable {
 		end = ix;
 		return pos == pattern.size();
 	}
+	
+	public List<List<String>> split(List<String> code) {
+		List<List<String>> ret = new ArrayList<>();
+		List<String> first = code.subList(0, index);
+		List<String> last = code.subList(end + 1, code.size());
+		List<String> between = code.subList(index,  end+1);
+		ret.add(first);
+		ret.add(between);
+		ret.add(last);
+		return ret;
+	}
 
+	public void reset() {
+		resetPattern();
+	}
+	
 	public boolean isLooseTypes() {
 		return looseTypes;
 	}

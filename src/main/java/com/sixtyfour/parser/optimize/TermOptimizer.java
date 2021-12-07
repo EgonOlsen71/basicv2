@@ -280,6 +280,19 @@ public class TermOptimizer {
 				right = t.getRight();
 			}
 		}
+		
+		// Swap (...)*40 to 40*(...) to allow for a special optimization later in...
+		// Actually, it's faster to do this anyway for some combinations...but sadly not for others, so it's impossible to decide which
+		// variant is generally better...so we leave it untouched...
+		if (t.getOperator().isMultiplication()) {
+			double val=0;
+			if (right.isConstant() && (val=((Number) right.eval(machine)).doubleValue())==40d || val==320) {
+				t.setLeft(right);
+				t.setRight(left);
+				left = t.getLeft();
+				right = t.getRight();
+			}
+		}
 
 		// Replace i+i by 2*i. While the former is faster in BASIC, the latter is faster
 		// here,
