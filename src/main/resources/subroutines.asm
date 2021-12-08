@@ -1548,6 +1548,8 @@ ARRAYACCESS_INTEGER_INT
 			LDA (TMP_ZP),Y
 			TAY
 			TXA
+			STY TMP2_ZP		; Store for integer optimization later on
+			STA TMP2_ZP+1
 			JSR INTFAC
 			JMP FACXREG	;RTS is implicit
 ;###################################
@@ -2873,6 +2875,27 @@ INCTMPZP	LDA TMP_ZP
 			INC TMP_ZP+1
 NOPV2		RTS
 ;###################################
+ICMP		STY TMP3_ZP
+			STA TMP3_ZP+1
+			LDA TMP_ZP+1
+			CMP TMP3_ZP+1
+			BNE ICMPNE2
+			LDA TMP_ZP
+			CMP TMP3_ZP
+ICMPNE		BEQ ICMPEQ
+			BCS ICMPHIGHER
+			JMP ICMPLOWER
+ICMPNE2		BPL ICMPHIGHER
+			JMP ICMPLOWER
+ICMPEQ		LDA #0
+			RTS
+ICMPLOWER	LDA #$FF
+			SEC
+			RTS
+ICMPHIGHER	LDA #$01
+			CLC
+			RTS	
+;###################################
 COPY2_XYA	STA TMP3_ZP
 COPY2_XY	STX TMP_ZP
 			STY TMP_ZP+1
@@ -2950,6 +2973,19 @@ COPY2_XY_YREG
 			STA Y_REG+3
 			INY
 			LDA (TMP3_ZP),Y
+			STA Y_REG+4
+			RTS
+;###################################
+COPY_XREG2YREG
+			LDA X_REG
+			STA Y_REG
+			LDA X_REG+1
+			STA Y_REG+1
+			LDA X_REG+2
+			STA Y_REG+2
+			LDA X_REG+3
+			STA Y_REG+3
+			LDA X_REG+4
 			STA Y_REG+4
 			RTS
 ;###################################

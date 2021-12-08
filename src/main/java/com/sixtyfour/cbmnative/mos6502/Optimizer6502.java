@@ -249,20 +249,22 @@ public class Optimizer6502 implements Optimizer {
 		input = aggregateLoads(input);
 		input = aggregateAssignments(input);
 		input = applyPeekOptimization(config, platform, input);
+		input = applyIntOptimizations(config, platform, input);
 		// input = simplifyRemainingBranches(config, input);
 		return input;
 	}
 
 	/**
-	 * Optimization for things like: ...peek(xxx)=|<>|>=|<=|<|>CONST...because this is one of the seldom
-	 * code fragments wher eon ecan be sure to deal with actual byte values.
+	 * Optimization for things like: ...peek(xxx)=|<>|>=|<=|<|>CONST...because this
+	 * is one of the seldom code fragments wher eon ecan be sure to deal with actual
+	 * byte values.
 	 * 
 	 * @param conf
 	 * @param platform
 	 * @param input
 	 * @return
 	 */
-	
+
 	private List<String> applyPeekOptimization(CompilerConfig conf, PlatformProvider platform, List<String> input) {
 		Map<String, Number> const2Value = extractConstants(input);
 
@@ -286,7 +288,7 @@ public class Optimizer6502 implements Optimizer {
 				List<String> cleaned = parts.get(1).stream().filter(p -> !p.startsWith(";"))
 						.collect(Collectors.toList());
 				String consty = cleaned.get(4);
-				consty = consty.substring(consty.indexOf("<") + 1);
+				consty = consty.substring(consty.indexOf("<") + 1).trim();
 				Number num = const2Value.get(consty);
 				double numd = num.doubleValue();
 				if (numd == (int) numd && numd >= 0 && numd < 256) {
@@ -302,7 +304,7 @@ public class Optimizer6502 implements Optimizer {
 					rep.add("JMP PEEKDONE" + peekCnt);
 					rep.add("PEEKEQ" + peekCnt + ":");
 					rep.add("LDA #0");
-					rep.add("PEEKDONE" + (peekCnt++)+":");
+					rep.add("PEEKDONE" + (peekCnt++) + ":");
 					rep.add("; " + pattern.getName());
 					for (int p = rep.size(); p < parts.get(1).size(); p++) {
 						rep.add(";");
@@ -317,11 +319,192 @@ public class Optimizer6502 implements Optimizer {
 			}
 		}
 
-		if (peekCnt>0) {
-			Logger.log("Optimization "+pattern.getName()+" applied "+peekCnt+" times!");
+		if (peekCnt > 0) {
+			Logger.log("Optimization " + pattern.getName() + " applied " + peekCnt + " times!");
 		}
-		
+
 		return input;
+	}
+
+	private List<String> applyIntOptimizations(CompilerConfig conf, PlatformProvider platform, List<String> input) {
+		Map<String, Number> const2Value = extractConstants(input);
+		int[] ps = getStartAndEnd(conf, input);
+		int codeStart = ps[0];
+		int codeEnd = ps[1];
+
+		List<IntPattern> intPatterns = new ArrayList<>();
+
+		// if l%=h% etc.
+		intPatterns.add(new IntPattern(true, "Optimized comparison for Integer(1)",
+				new String[] { "LDY {*}", "LDA {*}", "JSR INTFAC", "JSR FACYREG", "LDY {*}", "LDA {*}", "JSR INTFAC",
+						"JSR FACXREG", "JSR YREGFAC", "LDA #<X_REG", "LDY #>X_REG", "JSR CMPFAC" },
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						List<String> rep = new ArrayList<>();
+						rep.add(cleaned.get(0));
+						rep.add(cleaned.get(1));
+						rep.add("STY TMP_ZP");
+						rep.add("STA TMP_ZP+1");
+						rep.add(cleaned.get(4));
+						rep.add(cleaned.get(5));
+						rep.add("JSR ICMP");
+						return combine(pattern, rep);
+					}
+				}));
+
+		// if l%=123 etc.
+		intPatterns.add(new IntPattern(true, "Optimized comparison for Integer(2)",
+				new String[] { "LDA #<{CONST0}", "LDY #>{CONST0}", "JSR COPY2_XYA_YREG", "LDY {*}", "LDA {*}",
+						"JSR INTFAC", "JSR FACXREG", "JSR YREGFAC", "LDA #<X_REG", "LDY #>X_REG", "JSR CMPFAC" },
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						String consty = cleaned.get(0);
+						consty = consty.substring(consty.indexOf("<") + 1).trim();
+						Number num = const2Value.get(consty);
+						double numd = num.doubleValue();
+						if (numd == (int) numd && numd >= -32768 && numd < 32768) {
+							String numHex = getHex(numd);
+							List<String> rep = new ArrayList<>();
+							rep.add("LDA #$" + numHex.substring(2));
+							rep.add("LDY #$" + numHex.substring(0, 2));
+							rep.add("STA TMP_ZP");
+							rep.add("STY TMP_ZP+1");
+							rep.add(cleaned.get(3));
+							rep.add(cleaned.get(4));
+							rep.add("JSR ICMP");
+							return combine(pattern, rep);
+						}
+						pattern.reset();
+						return input;
+					}
+				}));
+
+		// if 123=l% etc.
+		intPatterns.add(new IntPattern(true, "Optimized comparison for Integer(3)",
+				new String[] { "LDY {*}", "LDA {*}", "JSR INTFAC", "JSR FACYREG", "LDA #<{CONST0}", "LDY #>{CONST0}",
+						"JSR COPY2_XYA XREG", "JSR YREGFAC", "LDA #<X_REG", "LDY #>X_REG", "JSR CMPFAC" },
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						String consty = cleaned.get(4);
+						consty = consty.substring(consty.indexOf("<") + 1).trim();
+						Number num = const2Value.get(consty);
+						double numd = num.doubleValue();
+						if (numd == (int) numd && numd >= -32768 && numd < 32768) {
+							String numHex = getHex(numd);
+							List<String> rep = new ArrayList<>();
+							rep.add(cleaned.get(0));
+							rep.add(cleaned.get(1));
+							rep.add("STY TMP_ZP");
+							rep.add("STA TMP_ZP+1");
+							rep.add("LDA #$" + numHex.substring(2));
+							rep.add("LDY #$" + numHex.substring(0, 2));
+							rep.add("JSR ICMP");
+							return combine(pattern, rep);
+						}
+						pattern.reset();
+						return input;
+					}
+				}));
+
+		// if l%(6)=h% etc.
+		intPatterns.add(new IntPattern(true, "Optimized comparison for Integer(4)", new String[] { "JSR {*}", "LDY {*}",
+				"LDA {*}", "JSR INTFAC", "LDA #<X_REG", "LDY #>X_REG", "JSR CMPFAC" }, new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						String jumpy = cleaned.get(0);
+						if (jumpy.contains("ARRAYACCESS_INTEGER")) {
+							List<String> rep = new ArrayList<>();
+							rep.add(cleaned.get(0));
+							rep.add(cleaned.get(1));
+							rep.add(cleaned.get(2));
+							rep.add("STY TMP_ZP");
+							rep.add("STA TMP_ZP+1");
+							rep.add("LDY TMP2_ZP");
+							rep.add("LDA TMP2_ZP+1");
+							rep.add("JSR ICMP");
+							return combine(pattern, rep);
+						}
+						pattern.reset();
+						return input;
+					}
+				}));
+
+		// if h%=l%(6) etc.
+		intPatterns.add(new IntPattern(true, "Optimized comparison for Integer(5)",
+				new String[] { "JSR {*}", "LDA #<X_REG", "LDY #>X_REG", "STY TMP3_ZP+1", "LDX #<Y_REG", "LDY #>Y_REG",
+						"JSR COPY2_XYA", "LDY {*}", "LDA {*}", "JSR INTFAC", "JSR FACXREG", "JSR YREGFAC",
+						"LDA #<X_REG", "LDY #>X_REG", "JSR CMPFAC" },
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						String jumpy = cleaned.get(0);
+						if (jumpy.contains("ARRAYACCESS_INTEGER")) {
+							List<String> rep = new ArrayList<>();
+							rep.add(cleaned.get(0));
+							rep.add("LDY TMP2_ZP");
+							rep.add("LDA TMP2_ZP+1");
+							rep.add("STY TMP_ZP");
+							rep.add("STA TMP_ZP+1");
+							rep.add(cleaned.get(7));
+							rep.add(cleaned.get(8));
+							rep.add("JSR ICMP");
+							return combine(pattern, rep);
+						}
+						pattern.reset();
+						return input;
+					}
+				}));
+
+		// if i% then...
+		intPatterns.add(new IntPattern(true, "Optimized comparison for Integer(6)",
+				new String[] { "LDY {*}", "LDA {*}", "JSR INTFAC", "JSR FACYREG", "LDA Y_REG", "{LABEL}", "BEQ {*}" },
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						List<String> rep = new ArrayList<>();
+						rep.add(cleaned.get(0).replace("LDY", "LDA"));
+						rep.add(cleaned.get(1).replace("LDA", "ORA"));
+						rep.add(cleaned.get(5));
+						rep.add(cleaned.get(6));
+						return combine(pattern, rep);
+					}
+				}));
+
+		for (int i = codeStart; i < codeEnd; i++) {
+			String line = input.get(i);
+			if (line.trim().startsWith(";")) {
+				continue;
+			}
+
+			for (IntPattern pattern : intPatterns) {
+				boolean matches = pattern.matches(line, i, const2Value);
+				if (matches) {
+					input = pattern.modify(input);
+				}
+			}
+		}
+
+		int cnt = intPatterns.stream().map(p -> p.getUsage()).reduce(0, Integer::sum);
+		if (cnt > 0) {
+			Logger.log("Optimization Optimized comparison for Integer applied " + cnt + " times!");
+		}
+
+		return input;
+	}
+
+	private String getHex(double value) {
+		int nummy = (((int) value) & 0x0000ffff);
+		String numHex = Integer.toHexString(nummy);
+		return "0000".substring(numHex.length()) + numHex;
 	}
 
 	private List<String> aggregateLoads(List<String> input) {
@@ -546,6 +729,11 @@ public class Optimizer6502 implements Optimizer {
 						"{LINE9}|BEQ LINE_SKIP>BNE LINE_NSKIP", "DEX", "BPL dcneloop{cnt}", "{LINE9}|BEQ>JMP" },
 				"LDA #<{MEM0}", "LDY #>{MEM0}", "JSR REALFAC", "LDA #<{MEM1}", "LDY #>{MEM1}", "JSR CMPFAC", "{LABEL}",
 				"{LABEL}", "{LABEL}", "BEQ {*}");
+		others.add(tmpPat);
+		// Optimizes =0 slightly...nothing to write home about, though...
+		tmpPat = new Pattern(true, "Reverted comparison",
+				new String[] { "{LINE0}", "{LINE3}|JMP>BEQ", "{LINE4}", "{LINE8}|BEQ>JMP", "{LINE6}", "{LINE7}" },
+				"LDA {MEM0}", "BEQ {*}", "LDA #0", "JMP {*}", "{LABEL}", "LDA #$1", "{LABEL}", "{LABEL}", "BEQ {*}");
 		others.add(tmpPat);
 		OptimizationResult res = optimizeInternalThreaded(conf, others, platform, ret, null, extractConstants(ret));
 		printOutResults(res.getType2count());
@@ -1019,6 +1207,11 @@ public class Optimizer6502 implements Optimizer {
 
 				this.add(new Pattern(true, "Combine static sys call and pull down",
 						new String[] { "JSR SYS_AND_PULLDOWN_SIMPLE" }, "JSR SYSTEMCALL", "JSR PULLDOWNMULTIPARS"));
+				
+				this.add(new Pattern("Direct copy from X to Y", new String[] { "JSR COPY_XREG2YREG" },
+						"LDA #<X_REG", "LDY #>X_REG", "STY TMP3_ZP+1", "LDX #<Y_REG", "LDY #>Y_REG", "JSR COPY2_XYA"));
+				
+				this.add(new Pattern(true, "Simplified RETURN", new String[] {"JMP RETURN"}, "JSR RETURN", "RTS"));
 
 			}
 		};
