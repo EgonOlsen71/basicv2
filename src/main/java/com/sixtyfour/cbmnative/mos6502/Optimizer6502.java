@@ -1210,9 +1210,6 @@ public class Optimizer6502 implements Optimizer {
 				
 				this.add(new Pattern("Direct copy from X to Y", new String[] { "JSR COPY_XREG2YREG" },
 						"LDA #<X_REG", "LDY #>X_REG", "STY TMP3_ZP+1", "LDX #<Y_REG", "LDY #>Y_REG", "JSR COPY2_XYA"));
-				
-				this.add(new Pattern(true, "Simplified RETURN", new String[] {"JMP RETURN"}, "JSR RETURN", "RTS"));
-
 			}
 		};
 	}

@@ -62,7 +62,7 @@ public class Return extends AbstractCommand {
 
 	@Override
 	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
-		return Util.createSingleCommand("JSR RETURN", "RTS");
+		return Util.createSingleCommand("JMP RETURN");
 	}
 
 }
