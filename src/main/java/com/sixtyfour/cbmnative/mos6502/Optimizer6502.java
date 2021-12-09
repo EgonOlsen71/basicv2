@@ -1336,7 +1336,7 @@ public class Optimizer6502 implements Optimizer {
 				this.add(new Pattern("Direct copy from X to Y", new String[] { "JSR COPY_XREG2YREG" }, "LDA #<X_REG",
 						"LDY #>X_REG", "STY TMP3_ZP+1", "LDX #<Y_REG", "LDY #>Y_REG", "JSR COPY2_XYA"));
 
-				// faulty...
+				// This conflicted with the "already in X optimization". See COPY2_XYA_CREG for a dirty fix...
 				this.add(new Pattern(true, "Direct copy from MEM to C",
 						new String[] { "{LINE0}", "{LINE1}", "JSR COPY2_XYA_CREG" }, "LDA #<{MEM0}", "LDY #>{MEM0}",
 						"STY TMP3_ZP+1", "LDX #<C_REG", "LDY #>C_REG", "JSR COPY2_XYA"));
