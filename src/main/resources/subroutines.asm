@@ -2837,6 +2837,41 @@ NOPVPR		LDA FPSTACKP
 			LDY FPSTACKP+1
 			JMP REALFAC
 ;###################################
+POPREALXREG LDA FPSTACKP
+			SEC
+			SBC #5
+			STA FPSTACKP
+			BCS NOPVPRXR
+			DEC FPSTACKP+1
+NOPVPRXR	LDA FPSTACKP
+			LDY FPSTACKP+1
+			STA TMP_ZP
+			STY TMP_ZP+1
+			LDY #$4
+			LDA (TMP_ZP),Y
+			STA X_REG+4
+			STA FACLO
+			DEY
+			LDA (TMP_ZP),Y
+			STA X_REG+3
+			STA FACMO
+			DEY
+			LDA (TMP_ZP),Y
+			STA X_REG+2
+			STA FACMOH
+			DEY
+			LDA (TMP_ZP),Y
+			STA X_REG+1
+			STA FACSGN
+			ORA #$80
+			STA FACHO
+			DEY
+			LDA (TMP_ZP),Y
+			STA X_REG
+			STA FACEXP
+			STY FACOV
+			RTS
+;###################################
 SHR			LDA FACEXP
 			BEQ SHROK
 			SEC
@@ -3799,7 +3834,7 @@ FACXREG		LDA FACLO
 			STA X_REG+1
 			LDA FACEXP
 			STA X_REG
-			LDA #0
+			LDA #0			; Why? Don't know...the ROM does this as well...
 			STA FACOV
 			RTS
 ;###################################
@@ -3815,7 +3850,7 @@ FACYREG		LDA FACLO
 			STA Y_REG+1
 			LDA FACEXP
 			STA Y_REG
-			LDA #0
+			LDA #0			; Why? Don't know...the ROM does this as well...
 			STA FACOV
 			RTS
 ;###################################

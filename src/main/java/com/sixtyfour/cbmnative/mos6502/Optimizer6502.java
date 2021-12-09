@@ -331,7 +331,6 @@ public class Optimizer6502 implements Optimizer {
 		int[] ps = getStartAndEnd(conf, input);
 		int codeStart = ps[0];
 		int codeEnd = ps[1];
-
 		List<IntPattern> intPatterns = new ArrayList<>();
 
 		// if l%=h% etc.
@@ -859,6 +858,7 @@ public class Optimizer6502 implements Optimizer {
 				new String[] { "{LINE0}", "{LINE3}|JMP>BEQ", "{LINE4}", "{LINE8}|BEQ>JMP", "{LINE6}", "{LINE7}" },
 				"LDA {MEM0}", "BEQ {*}", "LDA #0", "JMP {*}", "{LABEL}", "LDA #$1", "{LABEL}", "{LABEL}", "BEQ {*}");
 		others.add(tmpPat);
+		
 		OptimizationResult res = optimizeInternalThreaded(conf, others, platform, ret, null, extractConstants(ret));
 		printOutResults(res.getType2count());
 		return res.getCode();
@@ -1332,13 +1332,14 @@ public class Optimizer6502 implements Optimizer {
 				this.add(new Pattern(true, "Combine static sys call and pull down",
 						new String[] { "JSR SYS_AND_PULLDOWN_SIMPLE" }, "JSR SYSTEMCALL", "JSR PULLDOWNMULTIPARS"));
 
+				
 				this.add(new Pattern("Direct copy from X to Y", new String[] { "JSR COPY_XREG2YREG" }, "LDA #<X_REG",
 						"LDY #>X_REG", "STY TMP3_ZP+1", "LDX #<Y_REG", "LDY #>Y_REG", "JSR COPY2_XYA"));
-
+/*
 				this.add(new Pattern(true, "Direct copy from MEM to C",
 						new String[] { "{LINE0}", "{LINE1}", "JSR COPY2_XYA_CREG" }, "LDA #<{MEM0}", "LDY #>{MEM0}",
 						"STY TMP3_ZP+1", "LDX #<C_REG", "LDY #>C_REG", "JSR COPY2_XYA"));
-
+*/
 				this.add(new Pattern(true, "Value already in FAC(1)",
 						new String[] { "{LINE0}", "{LINE1}", "{LINE2}", "{LINE3}", "{LINE4}",
 								"JSR ARRAYSTORE_INTEGER_NX" },
@@ -1348,7 +1349,11 @@ public class Optimizer6502 implements Optimizer {
 				this.add(new Pattern(true, "Value already in FAC(2)",
 						new String[] { "{LINE0}", "{LINE1}", "{LINE2}", "JSR ARRAYACCESS_INTEGER_SNX" }, "JSR FACXREG",
 						"LDA #<{MEM0}", "LDY #>{MEM0}", "JSR ARRAYACCESS_INTEGER_S"));
-
+				
+				this.add(new Pattern(true, "POP and XREG combined",
+						new String[] { "JSR POPREALXREG" }, "JSR POPREAL",
+						"JSR FACXREG"));
+						
 			}
 		};
 	}
