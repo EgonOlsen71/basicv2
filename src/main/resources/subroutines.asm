@@ -246,7 +246,7 @@ MID			LDA #<D_REG
 			JSR SGNFAC
 			ROL
 			BCC MIDLENGTH		; an actual length was given...
-			JSR STRFUNCINT		; ...no, it wasn't.
+MIDNEGC		JSR STRFUNCINT		; ...no, it wasn't.
 			LDA TMP_REG			; copy start position from TMP_REG into TMP_REG+1
 			STA TMP_REG+1
 			BNE MIDOK2
@@ -260,7 +260,7 @@ MIDOK2		DEC TMP_REG+1		; BASIC starts at 1, we start at 0
 			STY TMP_REG			; Set length to 0, if start>string length
 			JMP MIDNOV
 MIDLENGTH	JSR FACWORD
-			STY TMP2_REG		; save the length in TMP2_REG
+MIDCONST	STY TMP2_REG		; save the length in TMP2_REG
 			JSR STRFUNCINT
 			LDA TMP_REG			; copy start position from TMP_REG into TMP_REG+1
 			BNE MIDOK
@@ -1515,12 +1515,17 @@ ARRAYACCESS_INTEGER_INT_SI
 			TXA
 			RTS
 ;###################################
+ARRAYACCESS_INTEGER_SNX
+			STA G_REG
+			STY G_REG+1
+			JMP ARRAYACCESS_INTEGER_NX
 ;###################################
 ARRAYACCESS_INTEGER_S
 			STA G_REG
 			STY G_REG+1
 ARRAYACCESS_INTEGER
 			JSR XREGFAC
+ARRAYACCESS_INTEGER_NX
 			JSR FACINT
 ARRAYACCESS_INTEGER_INT
 			LDX G_REG
@@ -1655,6 +1660,7 @@ ARRAYSTORE_INT_INTEGER
 ;###################################
 ARRAYSTORE_INTEGER
 			JSR XREGFAC
+ARRAYSTORE_INTEGER_NX
 			JSR FACINT
 ARRAYSTORE_INTEGER_INT
 			LDX G_REG
@@ -2012,8 +2018,7 @@ GOSUB		LDA FORSTACKP
 			ADC TMP_ZP
 			STA FORSTACKP
 			BCC GOSUBNOOV
-			INC FORSTACKP+1
-			
+			INC FORSTACKP+1	
 GOSUBNOOV	RTS
 ;###################################
 GETNUMBER	
@@ -2955,6 +2960,27 @@ COPY2_XY_XREG
 			STA X_REG+4
 			RTS
 ;###################################
+COPY2_XYA_CREG
+			STA TMP3_ZP
+			STY TMP3_ZP+1
+COPY2_XY_CREG
+			LDY #0
+			LDA (TMP3_ZP),Y
+			STA C_REG
+			INY
+			LDA (TMP3_ZP),Y
+			STA C_REG+1
+			INY
+			LDA (TMP3_ZP),Y
+			STA C_REG+2
+			INY
+			LDA (TMP3_ZP),Y
+			STA C_REG+3
+			INY
+			LDA (TMP3_ZP),Y
+			STA C_REG+4
+			RTS
+;###################################
 COPY2_XYA_YREG
 			STA TMP3_ZP
 			STY TMP3_ZP+1
@@ -3040,6 +3066,7 @@ PEEKBYTEADD
 			JMP PEEKBYTESTORE
 ;###################################
 PEEKBYTESTORE
+			STY TMP2_ZP		; Store here for later optimization
 			JSR	INTFAC
 			JMP FACXREG
 ;###################################

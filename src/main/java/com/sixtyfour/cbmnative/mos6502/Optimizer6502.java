@@ -335,7 +335,7 @@ public class Optimizer6502 implements Optimizer {
 		List<IntPattern> intPatterns = new ArrayList<>();
 
 		// if l%=h% etc.
-		intPatterns.add(new IntPattern(true, "Optimized comparison for Integer(1)",
+		intPatterns.add(new IntPattern(true, "Optimized code for Integer(1)",
 				new String[] { "LDY {*}", "LDA {*}", "JSR INTFAC", "JSR FACYREG", "LDY {*}", "LDA {*}", "JSR INTFAC",
 						"JSR FACXREG", "JSR YREGFAC", "LDA #<X_REG", "LDY #>X_REG", "JSR CMPFAC" },
 				new AbstractCodeModifier() {
@@ -355,7 +355,7 @@ public class Optimizer6502 implements Optimizer {
 				}));
 
 		// if l%=123 etc.
-		intPatterns.add(new IntPattern(true, "Optimized comparison for Integer(2)",
+		intPatterns.add(new IntPattern(true, "Optimized code for Integer(2)",
 				new String[] { "LDA #<{CONST0}", "LDY #>{CONST0}", "JSR COPY2_XYA_YREG", "LDY {*}", "LDA {*}",
 						"JSR INTFAC", "JSR FACXREG", "JSR YREGFAC", "LDA #<X_REG", "LDY #>X_REG", "JSR CMPFAC" },
 				new AbstractCodeModifier() {
@@ -384,7 +384,7 @@ public class Optimizer6502 implements Optimizer {
 				}));
 
 		// if 123=l% etc.
-		intPatterns.add(new IntPattern(true, "Optimized comparison for Integer(3)",
+		intPatterns.add(new IntPattern(true, "Optimized code for Integer(3)",
 				new String[] { "LDY {*}", "LDA {*}", "JSR INTFAC", "JSR FACYREG", "LDA #<{CONST0}", "LDY #>{CONST0}",
 						"JSR COPY2_XYA XREG", "JSR YREGFAC", "LDA #<X_REG", "LDY #>X_REG", "JSR CMPFAC" },
 				new AbstractCodeModifier() {
@@ -413,7 +413,7 @@ public class Optimizer6502 implements Optimizer {
 				}));
 
 		// if l%(6)=h% etc.
-		intPatterns.add(new IntPattern(true, "Optimized comparison for Integer(4)", new String[] { "JSR {*}", "LDY {*}",
+		intPatterns.add(new IntPattern(true, "Optimized code for Integer(4)", new String[] { "JSR {*}", "LDY {*}",
 				"LDA {*}", "JSR INTFAC", "LDA #<X_REG", "LDY #>X_REG", "JSR CMPFAC" }, new AbstractCodeModifier() {
 					@Override
 					public List<String> modify(IntPattern pattern, List<String> input) {
@@ -437,7 +437,7 @@ public class Optimizer6502 implements Optimizer {
 				}));
 
 		// if h%=l%(6) etc.
-		intPatterns.add(new IntPattern(true, "Optimized comparison for Integer(5)",
+		intPatterns.add(new IntPattern(true, "Optimized code for Integer(5)",
 				new String[] { "JSR {*}", "LDA #<X_REG", "LDY #>X_REG", "STY TMP3_ZP+1", "LDX #<Y_REG", "LDY #>Y_REG",
 						"JSR COPY2_XYA", "LDY {*}", "LDA {*}", "JSR INTFAC", "JSR FACXREG", "JSR YREGFAC",
 						"LDA #<X_REG", "LDY #>X_REG", "JSR CMPFAC" },
@@ -464,7 +464,7 @@ public class Optimizer6502 implements Optimizer {
 				}));
 
 		// if i% then...
-		intPatterns.add(new IntPattern(true, "Optimized comparison for Integer(6)",
+		intPatterns.add(new IntPattern(true, "Optimized code for Integer(6)",
 				new String[] { "LDY {*}", "LDA {*}", "JSR INTFAC", "JSR FACYREG", "LDA Y_REG", "{LABEL}", "BEQ {*}" },
 				new AbstractCodeModifier() {
 					@Override
@@ -476,6 +476,130 @@ public class Optimizer6502 implements Optimizer {
 						rep.add(cleaned.get(5));
 						rep.add(cleaned.get(6));
 						return combine(pattern, rep);
+					}
+				}));
+
+		// mid$(a$,i,<const>)
+		intPatterns.add(new IntPattern(true, "Optimized code for MID",
+				new String[] { "LDA #<{CONST0}", "LDY #>{CONST0}", "STY TMP3_ZP+1", "LDX #<D_REG", "LDY #>D_REG",
+						"JSR COPY2_XYA", "LDA {MEM0}", "LDY {MEM0}", "STA B_REG", "STY B_REG+1", "JSR MID" },
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						String consty = cleaned.get(0);
+						consty = consty.substring(consty.indexOf("<") + 1).trim();
+						Number num = const2Value.get(consty);
+						int numd = num.intValue();
+						List<String> rep = new ArrayList<>();
+						// While this isn't what the interpreter would do, it's bs anyway, so we handle
+						// it like this...
+						if (numd < 0) {
+							rep.add(cleaned.get(6));
+							rep.add(cleaned.get(7));
+							rep.add(cleaned.get(8));
+							rep.add(cleaned.get(9));
+							rep.add("JSR MIDNEGC");
+						} else {
+							if (numd > 255) {
+								numd = 255;
+							}
+							rep.add(cleaned.get(6));
+							rep.add(cleaned.get(7));
+							rep.add(cleaned.get(8));
+							rep.add(cleaned.get(9));
+							rep.add("LDY #" + numd);
+							rep.add("JSR MIDCONST");
+						}
+						return combine(pattern, rep);
+					}
+				}));
+
+		// ON XX GOTO/GOSUB...
+		intPatterns.add(new IntPattern(true, "Optimized code for ON XX GOYYY",
+				new String[] { "JSR BASINT", "JSR {*}", "{LABEL}", "JSR ONETOFAC" }, new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						String label = cleaned.get(2);
+						
+						// The result of BASINT can either be stored in X or Y, so we have to handle both...
+						if (label.startsWith("ON") && label.contains("SUB") && cleaned.get(1).contains("FAC")) {
+
+							// Search for the end of the ON XX block and adjust the lists
+							// accordingly...
+							List<String> bet = new ArrayList<>(parts.get(1));
+							List<String> last = new ArrayList<>(parts.get(2));
+
+							for (Iterator<String> itty = last.iterator(); itty.hasNext();) {
+								String line = itty.next();
+								if (line.startsWith("GSKIPON")) {
+									break;
+								}
+								itty.remove();
+								bet.add(line);
+							}
+
+							// Set the new parts...
+							parts.set(1, bet);
+							parts.set(2, last);
+
+							List<String> rep = new ArrayList<>();
+							rep.add("JSR FACWORD");
+							rep.add("STY TMP_ZP");
+							int cnt = 0;
+							int block = 0;
+							boolean skip = false;
+							
+							// Finally replace the performance heavy section with something much simpler...
+							for (String line : bet) {
+								cnt++;
+								if (cnt < 3) {
+									continue;
+								}
+								if (!skip) {
+									rep.add(line);
+								}
+								if (line.startsWith("ON") && line.contains("SUB")) {
+									block++;
+									skip = true;
+								}
+								if (line.equals("JSR CMPFAC")) {
+									skip = false;
+									rep.add("LDA #" + block);
+									rep.add("CMP TMP_ZP");
+								}
+							}
+							return combine(pattern, rep);
+						}
+						pattern.reset();
+						return input;
+					}
+				}));
+		
+		// POKE I,PEEK(I) AND 234
+		intPatterns.add(new IntPattern(true, "Optimized code for POKE,PEEK",
+				new String[] { "JSR {*}", "JSR POPREAL", "JSR FACWORD", "STY {*}", "STA {*}", "JSR XREGFAC", "JSR FACWORD",
+						"{LABEL}", "STY $FFFF" },
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						String jumpy = cleaned.get(0);
+						if (jumpy.contains("PEEKBYTE")) {
+							List<String> rep = new ArrayList<>();
+							rep.add(cleaned.get(0));
+							rep.add(cleaned.get(1));
+							rep.add(cleaned.get(2));
+							rep.add(cleaned.get(3));
+							rep.add(cleaned.get(4));
+							rep.add("LDY TMP2_ZP");
+							rep.add(cleaned.get(7));
+							rep.add(cleaned.get(8));
+						return combine(pattern, rep);
+						} 
+						pattern.reset();
+						return input;
 					}
 				}));
 
@@ -495,7 +619,7 @@ public class Optimizer6502 implements Optimizer {
 
 		int cnt = intPatterns.stream().map(p -> p.getUsage()).reduce(0, Integer::sum);
 		if (cnt > 0) {
-			Logger.log("Optimization Optimized comparison for Integer applied " + cnt + " times!");
+			Logger.log("Optimization Optimized code for Integer applied " + cnt + " times!");
 		}
 
 		return input;
@@ -1207,9 +1331,24 @@ public class Optimizer6502 implements Optimizer {
 
 				this.add(new Pattern(true, "Combine static sys call and pull down",
 						new String[] { "JSR SYS_AND_PULLDOWN_SIMPLE" }, "JSR SYSTEMCALL", "JSR PULLDOWNMULTIPARS"));
-				
-				this.add(new Pattern("Direct copy from X to Y", new String[] { "JSR COPY_XREG2YREG" },
-						"LDA #<X_REG", "LDY #>X_REG", "STY TMP3_ZP+1", "LDX #<Y_REG", "LDY #>Y_REG", "JSR COPY2_XYA"));
+
+				this.add(new Pattern("Direct copy from X to Y", new String[] { "JSR COPY_XREG2YREG" }, "LDA #<X_REG",
+						"LDY #>X_REG", "STY TMP3_ZP+1", "LDX #<Y_REG", "LDY #>Y_REG", "JSR COPY2_XYA"));
+
+				this.add(new Pattern(true, "Direct copy from MEM to C",
+						new String[] { "{LINE0}", "{LINE1}", "JSR COPY2_XYA_CREG" }, "LDA #<{MEM0}", "LDY #>{MEM0}",
+						"STY TMP3_ZP+1", "LDX #<C_REG", "LDY #>C_REG", "JSR COPY2_XYA"));
+
+				this.add(new Pattern(true, "Value already in FAC(1)",
+						new String[] { "{LINE0}", "{LINE1}", "{LINE2}", "{LINE3}", "{LINE4}",
+								"JSR ARRAYSTORE_INTEGER_NX" },
+						"JSR FACXREG", "LDA #<{MEM0}", "LDY #>{MEM0}", "STA G_REG", "STY G_REG+1",
+						"JSR ARRAYSTORE_INTEGER"));
+
+				this.add(new Pattern(true, "Value already in FAC(2)",
+						new String[] { "{LINE0}", "{LINE1}", "{LINE2}", "JSR ARRAYACCESS_INTEGER_SNX" }, "JSR FACXREG",
+						"LDA #<{MEM0}", "LDY #>{MEM0}", "JSR ARRAYACCESS_INTEGER_S"));
+
 			}
 		};
 	}

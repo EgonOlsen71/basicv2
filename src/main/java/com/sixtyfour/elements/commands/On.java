@@ -126,7 +126,7 @@ public class On extends AbstractCommand implements Jump {
 
 		int oc = onCount++;
 
-		// Shouldn't be calle SKIPON only (as before), because the native compiler will
+		// Shouldn't be called SKIPON only (as before), because the native compiler will
 		// mangle it thinking that it is part of an IF
 		String label = "GSKIPON" + oc;
 
