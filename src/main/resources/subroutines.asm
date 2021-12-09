@@ -2978,6 +2978,7 @@ COPY2_XYA_XREG
 			STA TMP3_ZP
 			STY TMP3_ZP+1
 COPY2_XY_XREG
+			LDX #<X_REG		; the pointer to X_REG has to be in X, because the "value already in X"-optimization might expect it to be there! YIKES!
 			LDY #0
 			LDA (TMP3_ZP),Y
 			STA X_REG
@@ -2999,6 +3000,7 @@ COPY2_XYA_CREG
 			STA TMP3_ZP
 			STY TMP3_ZP+1
 COPY2_XY_CREG
+			LDX #<C_REG		; the pointer to C_REG has to be in X, because the "value already in X"-optimization might expect it to be there! YIKES!
 			LDY #0
 			LDA (TMP3_ZP),Y
 			STA C_REG
@@ -3020,6 +3022,7 @@ COPY2_XYA_YREG
 			STA TMP3_ZP
 			STY TMP3_ZP+1
 COPY2_XY_YREG
+			LDX #<Y_REG		; the pointer to Y_REG has to be in X, because the "value already in X"-optimization might expect it to be there! YIKES!
 			LDY #0
 			LDA (TMP3_ZP),Y
 			STA Y_REG
