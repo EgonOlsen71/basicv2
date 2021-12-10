@@ -264,7 +264,7 @@ public class Optimizer6502 implements Optimizer {
 
 	/**
 	 * Optimization for things like: ...peek(xxx)=|<>|>=|<=|<|>CONST...because this
-	 * is one of the seldom code fragments wher eon ecan be sure to deal with actual
+	 * is one of the seldom code fragments where one can be sure to deal with actual
 	 * byte values.
 	 * 
 	 * @param conf
