@@ -286,7 +286,7 @@ public class TermOptimizer {
 		// variant is generally better...so we leave it untouched...
 		if (t.getOperator().isMultiplication()) {
 			double val=0;
-			if (right.isConstant() && (val=((Number) right.eval(machine)).doubleValue())==40d || val==320) {
+			if (right.isConstant() && ((val=((Number) right.eval(machine)).doubleValue())==40d || val==320 || val==80 || val==160)) {
 				t.setLeft(right);
 				t.setRight(left);
 				left = t.getLeft();
@@ -336,7 +336,7 @@ public class TermOptimizer {
 			optimizeCalculations(config, machine, (Term) left);
 		} else if (left instanceof Function) {
 			Function func = (Function) left;
-			if (func.isDeterministic() && !func.isExcluded()) {
+			if (!func.isExcluded()) {
 				optimizeCalculations(config, machine, func.getTerm());
 			}
 		}
@@ -345,7 +345,7 @@ public class TermOptimizer {
 
 		} else if (right instanceof Function) {
 			Function func = (Function) right;
-			if (func.isDeterministic() && !func.isExcluded()) {
+			if (!func.isExcluded()) {
 				optimizeCalculations(config, machine, func.getTerm());
 			}
 		}

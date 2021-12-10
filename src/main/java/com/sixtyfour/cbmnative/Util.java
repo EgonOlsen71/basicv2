@@ -70,6 +70,10 @@ public class Util {
 								Double num = Double.valueOf(number);
 								if (type.equals(".REAL")) {
 									const2Value.put(name, num);
+									if (!name.endsWith("R") && !const2Value.containsKey(name+"R")) {
+										// Just to make sure that CONST_0R exists...
+										const2Value.put(name+"R", num);
+									}
 								} else {
 									const2Value.put(name, num.intValue());
 								}

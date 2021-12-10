@@ -248,8 +248,16 @@ public class Optimizer6502 implements Optimizer {
 		input = applyEnhancedOptimizations(config, platform, input);
 		input = aggregateLoads(input);
 		input = aggregateAssignments(input);
-		input = applyPeekOptimization(config, platform, input);
-		input = applyIntOptimizations(config, platform, input);
+		try {
+			input = applyPeekOptimization(config, platform, input);
+		} catch(Exception e) {
+			Logger.log("!!! Failed to apply peek optimizations: "+e.getMessage());
+		}
+		try {
+			input = applyIntOptimizations(config, platform, input);
+		} catch(Exception e) {
+			Logger.log("!!! Failed to apply integer optimizations: "+e.getMessage());
+		}
 		// input = simplifyRemainingBranches(config, input);
 		return input;
 	}
@@ -521,8 +529,9 @@ public class Optimizer6502 implements Optimizer {
 					public List<String> modify(IntPattern pattern, List<String> input) {
 						input = super.modify(pattern, input);
 						String label = cleaned.get(2);
-						
-						// The result of BASINT can either be stored in X or Y, so we have to handle both...
+
+						// The result of BASINT can either be stored in X or Y, so we have to handle
+						// both...
 						if (label.startsWith("ON") && label.contains("SUB") && cleaned.get(1).contains("FAC")) {
 
 							// Search for the end of the ON XX block and adjust the lists
@@ -549,7 +558,7 @@ public class Optimizer6502 implements Optimizer {
 							int cnt = 0;
 							int block = 0;
 							boolean skip = false;
-							
+
 							// Finally replace the performance heavy section with something much simpler...
 							for (String line : bet) {
 								cnt++;
@@ -575,28 +584,50 @@ public class Optimizer6502 implements Optimizer {
 						return input;
 					}
 				}));
-		
+
 		// POKE I,PEEK(I) AND 234
-		intPatterns.add(new IntPattern(true, "Optimized code for POKE,PEEK",
-				new String[] { "JSR {*}", "JSR POPREAL", "JSR FACWORD", "STY {*}", "STA {*}", "JSR XREGFAC", "JSR FACWORD",
-						"{LABEL}", "STY $FFFF" },
+		intPatterns
+				.add(new IntPattern(
+						true, "Optimized code for POKE,PEEK", new String[] { "JSR {*}", "JSR POPREAL", "JSR FACWORD",
+								"STY {*}", "STA {*}", "JSR XREGFAC", "JSR FACWORD", "{LABEL}", "STY $FFFF" },
+						new AbstractCodeModifier() {
+							@Override
+							public List<String> modify(IntPattern pattern, List<String> input) {
+								input = super.modify(pattern, input);
+								String jumpy = cleaned.get(0);
+								if (jumpy.contains("PEEKBYTE")) {
+									List<String> rep = new ArrayList<>();
+									rep.add(cleaned.get(0));
+									rep.add(cleaned.get(1));
+									rep.add(cleaned.get(2));
+									rep.add(cleaned.get(3));
+									rep.add(cleaned.get(4));
+									rep.add("LDY TMP2_ZP");
+									rep.add(cleaned.get(7));
+									rep.add(cleaned.get(8));
+									return combine(pattern, rep);
+								}
+								pattern.reset();
+								return input;
+							}
+						}));
+
+		// POKE I,PEEK(J%)
+		intPatterns.add(new IntPattern(true, "Optimized code for PEEK with Integer",
+				new String[] { "LDY {MEM0}", "LDA {MEM0}", "JSR INTFAC", "JSR FACWORD", "STY {*}", "STA {*}" },
 				new AbstractCodeModifier() {
 					@Override
 					public List<String> modify(IntPattern pattern, List<String> input) {
 						input = super.modify(pattern, input);
-						String jumpy = cleaned.get(0);
-						if (jumpy.contains("PEEKBYTE")) {
+						String vary = cleaned.get(0);
+						if (vary.contains("%") && cleaned.get(4).contains("MOVBSELF")) {
 							List<String> rep = new ArrayList<>();
 							rep.add(cleaned.get(0));
 							rep.add(cleaned.get(1));
-							rep.add(cleaned.get(2));
-							rep.add(cleaned.get(3));
 							rep.add(cleaned.get(4));
-							rep.add("LDY TMP2_ZP");
-							rep.add(cleaned.get(7));
-							rep.add(cleaned.get(8));
-						return combine(pattern, rep);
-						} 
+							rep.add(cleaned.get(5));
+							return combine(pattern, rep);
+						}
 						pattern.reset();
 						return input;
 					}
@@ -858,7 +889,7 @@ public class Optimizer6502 implements Optimizer {
 				new String[] { "{LINE0}", "{LINE3}|JMP>BEQ", "{LINE4}", "{LINE8}|BEQ>JMP", "{LINE6}", "{LINE7}" },
 				"LDA {MEM0}", "BEQ {*}", "LDA #0", "JMP {*}", "{LABEL}", "LDA #$1", "{LABEL}", "{LABEL}", "BEQ {*}");
 		others.add(tmpPat);
-		
+
 		OptimizationResult res = optimizeInternalThreaded(conf, others, platform, ret, null, extractConstants(ret));
 		printOutResults(res.getType2count());
 		return res.getCode();
@@ -1332,11 +1363,11 @@ public class Optimizer6502 implements Optimizer {
 				this.add(new Pattern(true, "Combine static sys call and pull down",
 						new String[] { "JSR SYS_AND_PULLDOWN_SIMPLE" }, "JSR SYSTEMCALL", "JSR PULLDOWNMULTIPARS"));
 
-				
 				this.add(new Pattern("Direct copy from X to Y", new String[] { "JSR COPY_XREG2YREG" }, "LDA #<X_REG",
 						"LDY #>X_REG", "STY TMP3_ZP+1", "LDX #<Y_REG", "LDY #>Y_REG", "JSR COPY2_XYA"));
 
-				// This conflicted with the "already in X optimization". See COPY2_XYA_CREG for a dirty fix...
+				// This conflicted with the "already in X optimization". See COPY2_XYA_CREG for
+				// a dirty fix...
 				this.add(new Pattern(true, "Direct copy from MEM to C",
 						new String[] { "{LINE0}", "{LINE1}", "JSR COPY2_XYA_CREG" }, "LDA #<{MEM0}", "LDY #>{MEM0}",
 						"STY TMP3_ZP+1", "LDX #<C_REG", "LDY #>C_REG", "JSR COPY2_XYA"));
@@ -1350,11 +1381,15 @@ public class Optimizer6502 implements Optimizer {
 				this.add(new Pattern(true, "Value already in FAC(2)",
 						new String[] { "{LINE0}", "{LINE1}", "{LINE2}", "JSR ARRAYACCESS_INTEGER_SNX" }, "JSR FACXREG",
 						"LDA #<{MEM0}", "LDY #>{MEM0}", "JSR ARRAYACCESS_INTEGER_S"));
-				
-				this.add(new Pattern(true, "POP and XREG combined",
-						new String[] { "JSR POPREALXREG" }, "JSR POPREAL",
+
+				this.add(new Pattern(true, "POP and XREG combined", new String[] { "JSR POPREALXREG" }, "JSR POPREAL",
 						"JSR FACXREG"));
-						
+
+				// Avoid int conversions...
+				this.add(new Pattern(false, "Avoid multiple int conversions",
+						new String[] { "{LINE0}", "{LINE1}", "{LINE2}", "{LINE3}", "{LINE4}" }, "STY {MEM0}", "STA {MEM0}", "NOP",
+						"JSR INTFAC", "JSR PUSHREAL", "LDY {MEM0}", "LDA {MEM0}", "JSR INTFAC"));
+
 			}
 		};
 	}

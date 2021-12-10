@@ -109,6 +109,32 @@ public class NativeOptimizer {
 		//...and the same thing for 320...
 		patterns.add(new NativePattern(new String[] { "MOV X,#320{INTEGER}", "MUL X,Y" },
 				new String[] { "MOV A,#8{INTEGER}", "MOV X,Y", "SHL X,A", "MOV A,#6{INTEGER}", "SHL Y,A", "ADD X,Y" }));
+		
+		//...and the same thing for 80...
+		patterns.add(new NativePattern(new String[] { "MOV X,#80{INTEGER}", "MUL X,Y" },
+				new String[] { "MOV A,#6{INTEGER}", "MOV X,Y", "SHL X,A", "MOV A,#4{INTEGER}", "SHL Y,A", "ADD X,Y" }));
+		
+		//...and the same thing for 160...
+		patterns.add(new NativePattern(new String[] { "MOV X,#160{INTEGER}", "MUL X,Y" },
+				new String[] { "MOV A,#7{INTEGER}", "MOV X,Y", "SHL X,A", "MOV A,#5{INTEGER}", "SHL Y,A", "ADD X,Y" }));
+		
+		// And once more for the constant value in Y...
+		// Optimizes the special case of a multiplication by 40. Is is quite common in C64 BASIC-code because of the screen's width...
+		patterns.add(new NativePattern(new String[] { "MOV Y,#40{INTEGER}", "MUL X,Y" },
+				new String[] { "MOV A,#5{INTEGER}", "MOV Y,X", "SHL X,A", "MOV A,#3{INTEGER}", "SHL Y,A", "ADD X,Y" }));
+		
+		//...and the same thing for 320...
+		patterns.add(new NativePattern(new String[] { "MOV Y,#320{INTEGER}", "MUL X,Y" },
+				new String[] { "MOV A,#8{INTEGER}", "MOV Y,X", "SHL X,A", "MOV A,#6{INTEGER}", "SHL Y,A", "ADD X,Y" }));
+		
+		//...and the same thing for 80...
+		patterns.add(new NativePattern(new String[] { "MOV Y,#80{INTEGER}", "MUL X,Y" },
+				new String[] { "MOV A,#6{INTEGER}", "MOV Y,X", "SHL X,A", "MOV A,#4{INTEGER}", "SHL Y,A", "ADD X,Y" }));
+		
+		//...and the same thing for 160...
+		patterns.add(new NativePattern(new String[] { "MOV Y,#160{INTEGER}", "MUL X,Y" },
+				new String[] { "MOV A,#7{INTEGER}", "MOV Y,X", "SHL X,A", "MOV A,#5{INTEGER}", "SHL Y,A", "ADD X,Y" }));
+				
 	}
 
 	/**
