@@ -15,6 +15,7 @@ import com.sixtyfour.elements.commands.Command;
 import com.sixtyfour.elements.commands.If;
 import com.sixtyfour.elements.commands.Rem;
 import com.sixtyfour.elements.functions.Function;
+import com.sixtyfour.elements.functions.Peek;
 import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Line;
 import com.sixtyfour.parser.Operator;
@@ -224,7 +225,8 @@ public class TermOptimizer {
 		Atom left = t.getLeft();
 		Atom right = t.getRight();
 
-		//System.out.println(t.getInitial() + "/" + left.isTerm() + "/" + right.isTerm());
+		// System.out.println(t.getInitial() + "/" + left.isTerm() + "/" +
+		// right.isTerm());
 
 		// While we are at it: Optimize some divisions to multiplications by
 		// 1/... or shifts...
@@ -280,17 +282,32 @@ public class TermOptimizer {
 				right = t.getRight();
 			}
 		}
-		
+
 		// Swap (...)*40 to 40*(...) to allow for a special optimization later in...
-		// Actually, it's faster to do this anyway for some combinations...but sadly not for others, so it's impossible to decide which
+		// Actually, it's faster to do this anyway for some combinations...but sadly not
+		// for others, so it's impossible to decide which
 		// variant is generally better...so we leave it untouched...
 		if (t.getOperator().isMultiplication()) {
-			double val=0;
-			if (right.isConstant() && ((val=((Number) right.eval(machine)).doubleValue())==40d || val==320 || val==80 || val==160)) {
+			double val = 0;
+			if (right.isConstant() && ((val = ((Number) right.eval(machine)).doubleValue()) == 40d || val == 320
+					|| val == 80 || val == 160)) {
 				t.setLeft(right);
 				t.setRight(left);
 				left = t.getLeft();
 				right = t.getRight();
+			}
+		}
+
+		// Swap <CONST> and/or PEEK(X) for later PEEKBYTEAND/OR optimization
+		if (t.getOperator().isAnd() || t.getOperator().isOr()) {
+			if (left.isConstant() && right.isTerm()) {
+				Term tr = (Term) right;
+				if (tr.getLeft() instanceof Peek) {
+					t.setLeft(right);
+					t.setRight(left);
+					left = t.getLeft();
+					right = t.getRight();
+				}
 			}
 		}
 
