@@ -264,7 +264,9 @@ public class Optimizer6502 implements Optimizer {
 	}
 
 	/**
-	 * Removes code that might be left over by some of the more advanced optimizations...
+	 * Removes code that might be left over by some of the more advanced
+	 * optimizations...
+	 * 
 	 * @param conf
 	 * @param platform
 	 * @param ret
@@ -272,14 +274,13 @@ public class Optimizer6502 implements Optimizer {
 	 */
 	private List<String> doLastCleanups(CompilerConfig conf, PlatformProvider platform, List<String> ret) {
 		List<Pattern> others = new ArrayList<>();
-		Pattern tmpPat = new Pattern(false, "Remove PUSH/POP",
-				new String[] { "" }, "JSR PUSHREAL", "JSR POPREAL");
+		Pattern tmpPat = new Pattern(false, "Remove PUSH/POP", new String[] { "" }, "JSR PUSHREAL", "JSR POPREAL");
 		others.add(tmpPat);
-		
-		tmpPat = new Pattern(false, "Remove FAC/PUSH/POP",
-				new String[] { "JSR REALFAC" }, "JSR REALFACPUSH", "JSR POPREAL");
+
+		tmpPat = new Pattern(false, "Remove FAC/PUSH/POP", new String[] { "JSR REALFAC" }, "JSR REALFACPUSH",
+				"JSR POPREAL");
 		others.add(tmpPat);
-		
+
 		OptimizationResult res = optimizeInternalThreaded(conf, others, platform, ret, null, extractConstants(ret));
 		printOutResults(res.getType2count());
 		return res.getCode();
@@ -358,6 +359,9 @@ public class Optimizer6502 implements Optimizer {
 	}
 
 	private List<String> applyIntOptimizations(CompilerConfig conf, PlatformProvider platform, List<String> input) {
+		
+		//if (true) return input;
+		
 		Map<String, Number> const2Value = extractConstants(input);
 		int[] ps = getStartAndEnd(conf, input);
 		int codeStart = ps[0];
@@ -658,7 +662,8 @@ public class Optimizer6502 implements Optimizer {
 
 		// POKE I,X%...(this one takes negative values as bytes instead of causing an
 		// error...well, who cares...). It also omits the XREG-storage of the INT, but
-		// that shouldn't matter here, because the block is done after the POKE anyway and
+		// that shouldn't matter here, because the block is done after the POKE anyway
+		// and
 		// there should be no further code referencing the value.
 		intPatterns.add(new IntPattern(true, "Optimized code for POKE of Integer values",
 				new String[] { "LDY {MEM0}", "LDA {MEM0}", "JSR INTFAC", "JSR FACXREG", "JSR POPREAL", "JSR FACWORD",
@@ -1441,12 +1446,24 @@ public class Optimizer6502 implements Optimizer {
 				this.add(new Pattern(false, "Avoid multiple int conversions",
 						new String[] { "{LINE0}", "{LINE1}", "{LINE2}", "{LINE3}", "{LINE4}" }, "STY {MEM0}",
 						"STA {MEM0}", "NOP", "JSR INTFAC", "JSR PUSHREAL", "LDY {MEM0}", "LDA {MEM0}", "JSR INTFAC"));
-				
-				// Note: This ignores the fact that the variable might be negative. Instead of throwing an error, this will just
-				// POKE nonsense, but that shouldn't really matter too much...
-				this.add(new Pattern(false, "Remove INTFAC/FACWORD",
-						new String[] { "{LINE0}" , "{LINE4}"}, "LDY {MEM0}", "LDA {MEM0}", "JSR INTFAC", "JSR FACWORD", "STY {*}")); 
 
+				// Note: This ignores the fact that the variable might be negative. Instead of
+				// throwing an error, this will just
+				// POKE nonsense, but that shouldn't really matter too much...
+				this.add(new Pattern(false, "Remove INTFAC/FACWORD", new String[] { "{LINE0}", "{LINE4}" },
+						"LDY {MEM0}", "LDA {MEM0}", "JSR INTFAC", "JSR FACWORD", "STY {*}"));
+
+				this.add(new Pattern(false, "Memory saving single char out(1)",
+						new String[] { "{LINE1}", "JSR SINGLECHROUTMAX" }, "JSR COMPACTMAX", "LDA {*}",
+						"JSR SINGLECHROUT"));
+
+				this.add(new Pattern(false, "Memory saving single char out(2)",
+						new String[] { "{LINE1}", "JSR SINGLECHROUTBRKMAX" }, "JSR COMPACTMAX", "LDA {*}",
+						"JSR SINGLECHROUTBRK"));
+
+				this.add(new Pattern(false, "LEN to integer variable",
+						new String[] { "{LINE0}", "LDA #0", "LDY TMP2_ZP", "{LINE3}", "{LINE4}" }, "JSR LEN",
+						"JSR XREGFAC", "JSR FACINT", "STY {MEM0}", "STA {MEM0}"));
 			}
 		};
 	}

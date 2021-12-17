@@ -643,6 +643,7 @@ LEN			LDA B_REG
 			STA TMP_ZP+1
 			LDY #0
 			LDA (TMP_ZP),Y
+			STA TMP2_ZP		;For use in a later optimization
 			BEQ ZEROLEN
 			TAY
 			LDA #0
@@ -1373,6 +1374,10 @@ PRINTSTR	JSR PRINTSTRS
 			JSR RESETROUTE
 			RTS
 ;###################################
+SINGLECHROUTBRKMAX
+			JSR SINGLECHROUTBRK
+			JMP COMPACTMAX
+;###################################
 SINGLECHROUTBRK
 			STA TMP_ZP
 			JSR REROUTE
@@ -1381,6 +1386,10 @@ SINGLECHROUTBRK
 			LDA #$0D
 			JSR CHROUT
 			JMP RESETROUTE
+;###################################
+SINGLECHROUTMAX
+			JSR SINGLECHROUT
+			JMP COMPACTMAX
 ;###################################
 SINGLECHROUT
 			STA TMP_ZP
