@@ -107,7 +107,7 @@ public class ConstantPropagator {
 
 		Atom left = t.getLeft();
 		Atom right = t.getRight();
-
+		
 		// ****
 
 		if (!isConstant[0]) {

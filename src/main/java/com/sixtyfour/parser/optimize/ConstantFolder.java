@@ -71,6 +71,13 @@ public class ConstantFolder {
 					setConstant(finalTerm, machine, left);
 					//System.out.println("2: "+finalTerm+"/"+finalTerm.isConstant());
 				}
+				// Make sure that stuff like PEEK(<Constant>+<Constant>) is handled properly
+				// If there are actual left AND right functions, this will be handled below...but
+				// this case is special and has to be done here...or one has to refactor the part
+				// below, but who wants to do that....?
+				if (left instanceof Function) {
+					((Function) left).setTerm(foldConstants(config, ((Function) left).getTerm(), machine));
+				}
 				return finalTerm;
 			}
 			

@@ -359,9 +359,9 @@ public class Optimizer6502 implements Optimizer {
 	}
 
 	private List<String> applyIntOptimizations(CompilerConfig conf, PlatformProvider platform, List<String> input) {
-		
-		//if (true) return input;
-		
+
+		// if (true) return input;
+
 		Map<String, Number> const2Value = extractConstants(input);
 		int[] ps = getStartAndEnd(conf, input);
 		int codeStart = ps[0];
@@ -609,6 +609,27 @@ public class Optimizer6502 implements Optimizer {
 						}
 						pattern.reset();
 						return input;
+					}
+				}));
+
+		// PEEK(XXXX) with XXXX being a constant
+		intPatterns.add(new IntPattern(true, "Optimized code for PEEK(<constant>)",
+				new String[] { "LDA #<{CONST0}", "LDY #>{CONST0}", "JSR REALFAC", "JSR FACWORD", "STY {*}", "STA {*}" },
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						String consty = cleaned.get(0);
+						consty = consty.substring(consty.indexOf("<") + 1).trim();
+						Number num = const2Value.get(consty);
+						int numd = num.intValue();
+						
+						List<String> rep = new ArrayList<>();
+						rep.add("LDY #" + (numd & 0xff));
+						rep.add("LDA #"+ ((numd & 0xff00)>>8));
+						rep.add(cleaned.get(4));
+						rep.add(cleaned.get(5));
+						return combine(pattern, rep);
 					}
 				}));
 
