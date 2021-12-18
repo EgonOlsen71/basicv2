@@ -1485,6 +1485,10 @@ public class Optimizer6502 implements Optimizer {
 				this.add(new Pattern(false, "LEN to integer variable",
 						new String[] { "{LINE0}", "LDA #0", "LDY TMP2_ZP", "{LINE3}", "{LINE4}" }, "JSR LEN",
 						"JSR XREGFAC", "JSR FACINT", "STY {MEM0}", "STA {MEM0}"));
+				
+				this.add(new Pattern(false, "ASC to integer variable",
+						new String[] { "{LINE0}", "LDA #0", "LDY TMP2_ZP", "{LINE3}", "{LINE4}" }, "JSR ASC",
+						"JSR XREGFAC", "JSR FACINT", "STY {MEM0}", "STA {MEM0}"));
 			}
 		};
 	}

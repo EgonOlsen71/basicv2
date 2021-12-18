@@ -662,6 +662,7 @@ ASC			LDA B_REG
 			JMP ILLEGALQUANTITY
 DOASC		INY
 			LDA (TMP_ZP),Y
+			STA TMP2_ZP		;For use in a later optimization
 			TAY
 			LDA #0
 			JSR INTFAC
