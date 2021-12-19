@@ -13,6 +13,7 @@ import java.util.Locale;
 
 import com.sixtyfour.Assembler;
 import com.sixtyfour.Loader;
+import com.sixtyfour.cbmnative.shell.FileData;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.system.FileWriter;
 import com.sixtyfour.system.Program;
@@ -306,11 +307,22 @@ public class Compressor {
 	 * @return the file in a byte array
 	 */
 	public static byte[] loadProgram(String fileName) {
+		return loadProgramData(fileName).getData();
+	}
+
+	/**
+	 * Loads a file into a byte array.
+	 * 
+	 * @param fileName
+	 * @return the file's data
+	 */
+	public static FileData loadProgramData(String fileName) {
 		log("Compressing " + fileName);
 		byte[] bytes = Loader.loadBlob(fileName);
-		// Remove the prg header in this case...
-		bytes = Arrays.copyOfRange(bytes, 2, bytes.length);
-		return bytes;
+		FileData fd = new FileData();
+		fd.setData(Arrays.copyOfRange(bytes, 2, bytes.length));
+		fd.setAddress((bytes[0] & 0xff) + (bytes[1] & 0xff) << 8);
+		return fd;
 	}
 
 	private static Program compileHeader(int startAddr) {

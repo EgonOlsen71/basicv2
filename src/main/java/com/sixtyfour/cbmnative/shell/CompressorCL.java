@@ -19,7 +19,7 @@ public class CompressorCL {
 
 	public static void main(String[] args) throws Exception {
 		long s = System.currentTimeMillis();
-		System.out.println("***** MOScrunch - a cross compressor *****");
+		System.out.println("***** MOScrunch - a C64 cross compressor *****");
 		System.out.println("(w) by EgonOlsen - https://github.com/EgonOlsen71");
 		System.out.println("-------------------------------------------------");
 		Map<String, String> cmds = new HashMap<>();
@@ -59,7 +59,45 @@ public class CompressorCL {
 			targetFile = cmds.get("target");
 		}
 
+		String[] addFiles = null;
+		if (cmds.containsKey("addfiles")) {
+			String addys = cmds.get("addfiles");
+			if (!addys.isEmpty()) {
+				addFiles = addys.split(",");
+			}
+		}
+
 		int startAddr = getNumber("startaddress", cmds);
+
+		int binStart = startAddr != -1 ? startAddr : 2049;
+
+		if (addFiles != null) {
+			// Add files into data...
+			for (String file : addFiles) {
+				System.out.println("Adding file: " + file);
+				FileData dat = Compressor.loadProgramData(file);
+				int end = dat.getAddress() + dat.getLength();
+				int start = dat.getAddress();
+				System.out.println("Start address: " + start);
+				System.out.println("End address: " + end);
+				end = end - binStart;
+				start = start - binStart;
+				if (end > data.length) {
+					byte[] newData = new byte[end];
+					System.arraycopy(data, 0, newData, 0, data.length);
+					System.arraycopy(dat.getData(), 0, newData, start, dat.getLength());
+					data = newData;
+				}
+				if (start < binStart) {
+					int offset = binStart - start;
+					byte[] newData = new byte[end + offset];
+					System.arraycopy(data, 0, newData, offset, data.length);
+					System.arraycopy(dat.getData(), 0, newData, 0, dat.getLength());
+					binStart = start;
+					data = newData;
+				}
+			}
+		}
 
 		Program compressed = Compressor.compressAndLinkNative(data, startAddr);
 
@@ -115,6 +153,8 @@ public class CompressorCL {
 		System.out.println("/target=<target file> -  the target file name");
 		System.out.println(
 				"/startaddress=xxxxx|$yyyy -  start address of the program, if no basic header is present. If none is given, RUN will be executed instead. This is also the default.");
+		System.out.println(
+				"/addfiles=<file1>,<file2>,... -  link and compress additional files into the binary. The files have to be in C64 prg format and will be added at their speficied memory locations.");
 		System.out.println();
 	}
 
