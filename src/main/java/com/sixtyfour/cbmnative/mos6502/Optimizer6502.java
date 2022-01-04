@@ -1491,22 +1491,27 @@ public class Optimizer6502 implements Optimizer {
 						"JSR XREGFAC", "JSR FACINT", "STY {MEM0}", "STA {MEM0}"));
 
 				/*
-				this.add(new Pattern(true, "Simplified string array assignment",
-						new String[] { "{LINE3}", "{LINE4}", "{LINE5}", "{LINE6}", "{LINE0}", "{LINE1}",
-								"JSR COPY2_XYA_XREG" },
-						"LDA #<{MEM0}", "LDY #>{MEM0}", "JSR REALFACPUSH", "LDA #<{MEM1}", "LDY #>{MEM1}", "STA A_REG",
-						"STY A_REG+1", "JSR POPREALXREG"));
-				*/
-				
+				 * this.add(new Pattern(true, "Simplified string array assignment", new String[]
+				 * { "{LINE3}", "{LINE4}", "{LINE5}", "{LINE6}", "{LINE0}", "{LINE1}",
+				 * "JSR COPY2_XYA_XREG" }, "LDA #<{MEM0}", "LDY #>{MEM0}", "JSR REALFACPUSH",
+				 * "LDA #<{MEM1}", "LDY #>{MEM1}", "STA A_REG", "STY A_REG+1",
+				 * "JSR POPREALXREG"));
+				 */
+
 				this.add(new Pattern(false, "Simplified string array assignment",
 						new String[] { "{LINE4}", "{LINE5}", "{LINE6}", "{LINE7}", "{LINE0}", "{LINE1}",
 								"JSR COPY2_XYA_XREG" },
-						"LDA #<{MEM0}", "LDY #>{MEM0}", "JSR REALFACPUSH", "NOP", "LDA #<{MEM1}", "LDY #>{MEM1}", "STA A_REG",
-						"STY A_REG+1", "JSR POPREALXREG"));
+						"LDA #<{MEM0}", "LDY #>{MEM0}", "JSR REALFACPUSH", "NOP", "LDA #<{MEM1}", "LDY #>{MEM1}",
+						"STA A_REG", "STY A_REG+1", "JSR POPREALXREG"));
+
+				this.add(new Pattern(false, "Simplified POPINT", new String[] { "JSR POPINT2B" }, "JSR POPINT",
+						"LDY TMP_ZP", "LDA TMP_ZP+1", "STY B_REG", "STA B_REG+1"));
+
+				this.add(new Pattern(false, "No need for INT(1)", new String[] { "JSR FASTAND" }, "JSR FASTAND",
+						"JSR BASINT"));
 				
-				this.add(new Pattern(false, "Simplified POPINT",
-						new String[] { "JSR POPINT2B" },
-						"JSR POPINT", "LDY TMP_ZP", "LDA TMP_ZP+1", "STY B_REG", "STA B_REG+1"));
+				this.add(new Pattern(false, "No need for INT(2)", new String[] { "JSR FASTOR" }, "JSR FASTOR",
+						"JSR BASINT"));
 			}
 		};
 	}
