@@ -148,7 +148,7 @@ public class NativeOptimizer {
 			patterns.add(p);
 
 			p = new NativePattern(new String[] { "MOV Y,#" + (pow + 1) + "{INTEGER}", "MUL X,Y" },
-					new String[] { "MOV A,#" + i + "{INTEGER}", "MOV Y,X", "SHL X,A", "ADD X,Y" });
+					new String[] { "MOV A,#" + i + "{INTEGER}", "MOV Y,X", "SHL Y,A", "ADD X,Y" });
 			//System.out.println(p);
 			patterns.add(p);
 		}
@@ -180,14 +180,25 @@ public class NativeOptimizer {
 				if (pg != null) {
 					pg.nextStep();
 				}
-				oldCode = code.size();
+				oldCode = getChecksum(code);
 				code = applyPatterns(config, code);
-			} while (oldCode != code.size());
+			} while (oldCode != getChecksum(code));
 			if (pg != null) {
 				pg.done();
 			}
 		}
 		return code;
+	}
+	
+	private static int getChecksum(List<String> code) {
+		// the optimizer has optimization that change order or commands, but not the actual length.
+		// So we can't rely on size for change-detection here. This isn't 100% safe either, but 
+		// that shouldn't matter.
+		int val = 0;
+		for (String line:code) {
+			val^=line.hashCode();
+		}
+		return val;
 	}
 
 	private static List<String> applyPatterns(CompilerConfig config, List<String> code) {
@@ -441,6 +452,7 @@ public class NativeOptimizer {
 					continue;
 				}
 
+				
 				if (lines[0].contains("INTEGER") && lines[0].startsWith("MOV Y,#")
 						&& (lines[1].equals("MOV X,(Y)") || lines[1].equals("MOVB X,(Y)"))) {
 					try {
