@@ -2782,6 +2782,25 @@ POPINT		LDA FPSTACKP
 			LDA (TMP2_ZP),Y
 			STA TMP_ZP+1
 			RTS
+;###################################
+POPINT2B	LDA FPSTACKP
+			SEC
+			SBC #2
+			STA FPSTACKP
+			LDA FPSTACKP+1
+			SBC #0
+			STA FPSTACKP+1
+			LDX FPSTACKP
+			STX TMP2_ZP
+			LDX FPSTACKP+1
+			STX TMP2_ZP+1
+			LDY #0
+			LDA (TMP2_ZP),Y
+			STA B_REG
+			INY
+			LDA (TMP2_ZP),Y
+			STA B_REG+1
+			RTS
 ;##################################
 REALFACPUSH	STA TMP_ZP
 			STY	TMP_ZP+1

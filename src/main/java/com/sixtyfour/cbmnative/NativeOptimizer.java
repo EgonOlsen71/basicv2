@@ -1,6 +1,7 @@
 package com.sixtyfour.cbmnative;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.sixtyfour.Logger;
@@ -102,39 +103,55 @@ public class NativeOptimizer {
 		patterns.add(new NativePattern(new String[] { "MOV Y,#*", "PUSH Y", "MOV Y,*", "INT X,Y", "POP Y", "MUL X,Y" },
 				new String[] { "{2}", "{3}", "PUSH X", "{0}", "POP X", "{5}" }));
 
-		// Optimizes the special case of a multiplication by 40. Is is quite common in C64 BASIC-code because of the screen's width...
+		// Optimizes the special case of a multiplication by 40. Is is quite common in
+		// C64 BASIC-code because of the screen's width...
 		patterns.add(new NativePattern(new String[] { "MOV X,#40{INTEGER}", "MUL X,Y" },
 				new String[] { "MOV A,#5{INTEGER}", "MOV X,Y", "SHL X,A", "MOV A,#3{INTEGER}", "SHL Y,A", "ADD X,Y" }));
-		
-		//...and the same thing for 320...
+
+		// ...and the same thing for 320...
 		patterns.add(new NativePattern(new String[] { "MOV X,#320{INTEGER}", "MUL X,Y" },
 				new String[] { "MOV A,#8{INTEGER}", "MOV X,Y", "SHL X,A", "MOV A,#6{INTEGER}", "SHL Y,A", "ADD X,Y" }));
-		
-		//...and the same thing for 80...
+
+		// ...and the same thing for 80...
 		patterns.add(new NativePattern(new String[] { "MOV X,#80{INTEGER}", "MUL X,Y" },
 				new String[] { "MOV A,#6{INTEGER}", "MOV X,Y", "SHL X,A", "MOV A,#4{INTEGER}", "SHL Y,A", "ADD X,Y" }));
-		
-		//...and the same thing for 160...
+
+		// ...and the same thing for 160...
 		patterns.add(new NativePattern(new String[] { "MOV X,#160{INTEGER}", "MUL X,Y" },
 				new String[] { "MOV A,#7{INTEGER}", "MOV X,Y", "SHL X,A", "MOV A,#5{INTEGER}", "SHL Y,A", "ADD X,Y" }));
-		
+
 		// And once more for the constant value in Y...
-		// Optimizes the special case of a multiplication by 40. Is is quite common in C64 BASIC-code because of the screen's width...
+		// Optimizes the special case of a multiplication by 40. Is is quite common in
+		// C64 BASIC-code because of the screen's width...
 		patterns.add(new NativePattern(new String[] { "MOV Y,#40{INTEGER}", "MUL X,Y" },
 				new String[] { "MOV A,#5{INTEGER}", "MOV Y,X", "SHL X,A", "MOV A,#3{INTEGER}", "SHL Y,A", "ADD X,Y" }));
-		
-		//...and the same thing for 320...
+
+		// ...and the same thing for 320...
 		patterns.add(new NativePattern(new String[] { "MOV Y,#320{INTEGER}", "MUL X,Y" },
 				new String[] { "MOV A,#8{INTEGER}", "MOV Y,X", "SHL X,A", "MOV A,#6{INTEGER}", "SHL Y,A", "ADD X,Y" }));
-		
-		//...and the same thing for 80...
+
+		// ...and the same thing for 80...
 		patterns.add(new NativePattern(new String[] { "MOV Y,#80{INTEGER}", "MUL X,Y" },
 				new String[] { "MOV A,#6{INTEGER}", "MOV Y,X", "SHL X,A", "MOV A,#4{INTEGER}", "SHL Y,A", "ADD X,Y" }));
-		
-		//...and the same thing for 160...
+
+		// ...and the same thing for 160...
 		patterns.add(new NativePattern(new String[] { "MOV Y,#160{INTEGER}", "MUL X,Y" },
 				new String[] { "MOV A,#7{INTEGER}", "MOV Y,X", "SHL X,A", "MOV A,#5{INTEGER}", "SHL Y,A", "ADD X,Y" }));
-				
+
+		// Some stuff that applies mostly for Arrays like dim k%(16,16), which are
+		// actually 17,17 in size but people keep forgetting...
+		for (int i = 1; i < 9; i++) {
+			int pow = 1 << i;
+			NativePattern p = new NativePattern(new String[] { "MOV X,#" + (pow + 1) + "{INTEGER}", "MUL X,Y" },
+					new String[] { "MOV A,#" + i + "{INTEGER}", "MOV X,Y", "SHL X,A", "ADD X,Y" });
+			//System.out.println(p);
+			patterns.add(p);
+
+			p = new NativePattern(new String[] { "MOV Y,#" + (pow + 1) + "{INTEGER}", "MUL X,Y" },
+					new String[] { "MOV A,#" + i + "{INTEGER}", "MOV Y,X", "SHL X,A", "ADD X,Y" });
+			//System.out.println(p);
+			patterns.add(p);
+		}
 	}
 
 	/**
@@ -576,6 +593,10 @@ public class NativeOptimizer {
 
 		public String[] getReplaceWith() {
 			return replaceWith;
+		}
+		
+		public String toString() {
+			return Arrays.toString(toReplace)+" -> "+Arrays.toString(replaceWith);
 		}
 	}
 }

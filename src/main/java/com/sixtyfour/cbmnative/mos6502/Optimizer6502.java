@@ -623,10 +623,10 @@ public class Optimizer6502 implements Optimizer {
 						consty = consty.substring(consty.indexOf("<") + 1).trim();
 						Number num = const2Value.get(consty);
 						int numd = num.intValue();
-						
+
 						List<String> rep = new ArrayList<>();
 						rep.add("LDY #" + (numd & 0xff));
-						rep.add("LDA #"+ ((numd & 0xff00)>>8));
+						rep.add("LDA #" + ((numd & 0xff00) >> 8));
 						rep.add(cleaned.get(4));
 						rep.add(cleaned.get(5));
 						return combine(pattern, rep);
@@ -1485,10 +1485,28 @@ public class Optimizer6502 implements Optimizer {
 				this.add(new Pattern(false, "LEN to integer variable",
 						new String[] { "{LINE0}", "LDA #0", "LDY TMP2_ZP", "{LINE3}", "{LINE4}" }, "JSR LEN",
 						"JSR XREGFAC", "JSR FACINT", "STY {MEM0}", "STA {MEM0}"));
-				
+
 				this.add(new Pattern(false, "ASC to integer variable",
 						new String[] { "{LINE0}", "LDA #0", "LDY TMP2_ZP", "{LINE3}", "{LINE4}" }, "JSR ASC",
 						"JSR XREGFAC", "JSR FACINT", "STY {MEM0}", "STA {MEM0}"));
+
+				/*
+				this.add(new Pattern(true, "Simplified string array assignment",
+						new String[] { "{LINE3}", "{LINE4}", "{LINE5}", "{LINE6}", "{LINE0}", "{LINE1}",
+								"JSR COPY2_XYA_XREG" },
+						"LDA #<{MEM0}", "LDY #>{MEM0}", "JSR REALFACPUSH", "LDA #<{MEM1}", "LDY #>{MEM1}", "STA A_REG",
+						"STY A_REG+1", "JSR POPREALXREG"));
+				*/
+				
+				this.add(new Pattern(false, "Simplified string array assignment",
+						new String[] { "{LINE4}", "{LINE5}", "{LINE6}", "{LINE7}", "{LINE0}", "{LINE1}",
+								"JSR COPY2_XYA_XREG" },
+						"LDA #<{MEM0}", "LDY #>{MEM0}", "JSR REALFACPUSH", "NOP", "LDA #<{MEM1}", "LDY #>{MEM1}", "STA A_REG",
+						"STY A_REG+1", "JSR POPREALXREG"));
+				
+				this.add(new Pattern(false, "Simplified POPINT",
+						new String[] { "JSR POPINT2B" },
+						"JSR POPINT", "LDY TMP_ZP", "LDA TMP_ZP+1", "STY B_REG", "STA B_REG+1"));
 			}
 		};
 	}
