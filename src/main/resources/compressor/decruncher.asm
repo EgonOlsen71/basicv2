@@ -1,7 +1,7 @@
 *=$0400
 
 MEMSTART=2049
-MEMEND=53248
+MEMEND=$ffff
 
 DATAPOS=$69
 TOTALLEN=$6B
@@ -23,7 +23,7 @@ ENDCALL=$A834
 		sei
 		lda $1
 		sta tmpreg
-		and #$fe
+		and #248
 		sta $1
 		
 		lda COMPPOS

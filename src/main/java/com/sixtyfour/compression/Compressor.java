@@ -175,7 +175,7 @@ public class Compressor {
 		int ucLen = readLowHigh(bytes, 4);
 
 		int memStart = 2049;
-		int memEnd = 53248;
+		int memEnd = 65535;
 		int headerOffset = 6;
 
 		int byteCount = 0;
