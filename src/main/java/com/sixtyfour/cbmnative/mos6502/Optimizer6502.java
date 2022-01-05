@@ -516,7 +516,7 @@ public class Optimizer6502 implements Optimizer {
 		// mid$(a$,i,<const>)
 		intPatterns.add(new IntPattern(true, "Optimized code for MID",
 				new String[] { "LDA #<{CONST0}", "LDY #>{CONST0}", "STY TMP3_ZP+1", "LDX #<D_REG", "LDY #>D_REG",
-						"JSR COPY2_XYA", "LDA {MEM0}", "LDY {MEM0}", "STA B_REG", "STY B_REG+1", "JSR MID" },
+						"JSR COPY2_XYA", "LDA {*}", "LDY {*}", "STA B_REG", "STY B_REG+1", "JSR MID" },
 				new AbstractCodeModifier() {
 					@Override
 					public List<String> modify(IntPattern pattern, List<String> input) {
@@ -710,6 +710,36 @@ public class Optimizer6502 implements Optimizer {
 						return input;
 					}
 				}));
+		
+		// Integer array storage with contant index value
+		intPatterns.add(new IntPattern(true, "Optimized code for fixed integer index",
+				new String[] { "LDA #<{CONST0}", "LDY #>{CONST0}", "JSR COPY2_XYA_XREG", "LDY {*}", "LDA {*}", "STY AS_TMP",
+						"STA AS_TMP+1", "LDA #<{MEM0}", "LDY #>{MEM0}", "STA G_REG", "STY G_REG+1", "JSR ARRAYSTORE_INT_INTEGER" },
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						String consty = cleaned.get(0);
+						consty = consty.substring(consty.indexOf("<") + 1).trim();
+						Number num = const2Value.get(consty);
+						int numd = num.intValue();
+						List<String> rep = new ArrayList<>();
+						
+						rep.add(cleaned.get(3));
+						rep.add(cleaned.get(4));
+						rep.add(cleaned.get(5));
+						rep.add(cleaned.get(6));
+						rep.add(cleaned.get(7));
+						rep.add(cleaned.get(8));
+						rep.add(cleaned.get(9));
+						rep.add(cleaned.get(10));
+						rep.add("LDY #" + (numd & 0xff));
+						rep.add("LDA #" + ((numd & 0xff00) >> 8));
+						rep.add("JSR ARRAYSTORE_INT_INTEGER_AC");
+						return combine(pattern, rep);
+					}
+				}));
+		
 
 		for (int i = codeStart; i < codeEnd; i++) {
 			String line = input.get(i);
@@ -1512,6 +1542,7 @@ public class Optimizer6502 implements Optimizer {
 				
 				this.add(new Pattern(false, "No need for INT(2)", new String[] { "JSR FASTOR" }, "JSR FASTOR",
 						"JSR BASINT"));
+						
 			}
 		};
 	}

@@ -255,7 +255,11 @@ public abstract class AbstractTransformer implements Transformer {
 		if (platform.useLooseTypes()) {
 			if (line.contains("#") && line.endsWith("{INTEGER}")) {
 				int val = getConstantValue(line);
-				if (val < 0 || val > 255) {
+				// This was limited to 0..255 since the beginning of time and I fail to see why.
+				// Maybe I wanted to prevent too many CONT2/CONST2R combinations that way, but these
+				// will be removed anyway, so it's not an issue. Maybe it once was...
+				// Not sure about negative numbers though, so we'll leave them out for now.
+				if (val < 0 || val > 32767) {
 					line = line.replace("{INTEGER}", "{REAL}");
 				}
 			}
