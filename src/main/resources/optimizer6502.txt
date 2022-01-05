@@ -1,0 +1,372 @@
+#1: Simplified setting to 0
+"Simplified setting to 0"	true	false	false	"LDA #<{#0.0}|LDY #>{#0.0}|JSR REALFAC|LDX #<{MEM0}|LDY #>{MEM0}|JSR FACMEM|"	"LDA #0|STA {MEM0}|STA {MEM0}+1|STA {MEM0}+2|STA {MEM0}+3|STA {MEM0}+4|"
+
+#2: Faster logic OR
+"Faster logic OR"	false	false	false	"JSR FACOR|"	"JSR FASTOR|"
+
+#3: Faster logic AND
+"Faster logic AND"	false	false	false	"JSR ARGAND|"	"JSR FASTAND|"
+
+#4: Simple POKE
+"Simple POKE"	false	false	false	"LDY {MEM0}|LDA #0|STY {*}|"	"{LINE0}|{LINE2}|"
+
+#5: REALOUT + LINEBRK
+"REALOUT + LINEBRK"	true	false	false	"JSR REALOUT|JSR LINEBREAK|"	"JSR REALOUTBRK|"
+
+#6: STROUT + LINEBRK
+"STROUT + LINEBRK"	true	false	false	"JSR STROUT|JSR LINEBREAK|"	"JSR STROUTBRK|"
+
+#7: INTOUT + LINEBRK
+"INTOUT + LINEBRK"	true	false	false	"JSR INTOUT|JSR LINEBREAK|"	"JSR INTOUTBRK|"
+
+#8: POP, REG0, VAR0
+"POP, REG0, VAR0"	true	false	false	"JSR POPREAL|LDX #<{REG0}|LDY #>{REG0}|JSR FACMEM|LDA #<{REG0}|LDY #>{REG0}|JSR REALFAC|"	"{LINE0}|{LINE1}|{LINE2}|{LINE3}|"
+
+#9: Array index is integer (store)
+"Array index is integer (store)"	false	false	false	"LDY {MEM0}|LDA {MEM0}|JSR INTFAC|LDX #<{REG0}|LDY #>{REG0}|JSR FACMEM|LDA #<{REG0}|LDY #>{REG0}|JSR REALFAC|JSR PUSHREAL|LDA {*}|LDY {*}|STA {REG1}|STY {REG1}|JSR POPREAL|LDX #<{REG2}|LDY #>{REG2}|JSR FACMEM|LDA #<{MEM2}|LDY #>{MEM2}|STA G_REG|STY G_REG+1|JSR ARRAYSTORE{*}|"	"{LINE10}|{LINE11}|{LINE12}|{LINE13}|{LINE18}|{LINE19}|{LINE20}|{LINE21}|{LINE0}|{LINE1}|{LINE22}_INT|"
+
+#10: Array index is integer (load)
+"Array index is integer (load)"	false	false	false	"LDY {MEM0}|LDA {MEM0}|JSR INTFAC|LDX #<{REG0}|LDY #>{REG0}|JSR FACMEM|LDA #<{MEM1}|LDY #>{MEM1}|STA G_REG|STY G_REG+1|JSR ARRAYACCESS{*}|"	"{LINE6}|{LINE7}|{LINE8}|{LINE9}|{LINE0}|{LINE1}|{LINE10}_INT|"
+
+#11: Array content is integer (store)
+"Array content is integer (store)"	false	false	false	"LDY {MEM0}|LDA {MEM0}|JSR INTFAC|LDX #<Y_REG|LDY #>Y_REG|JSR FACMEM|LDA #<{MEM1}|LDY #>{MEM1}|STA G_REG|STY G_REG+1|JSR ARRAYSTORE_INTEGER|"	"{LINE0}|{LINE1}|STY AS_TMP|STA AS_TMP+1|{LINE6}|{LINE7}|{LINE8}|{LINE9}|JSR ARRAYSTORE_INT_INTEGER|"
+
+#12: Avoid PUSH/POP
+"Avoid PUSH/POP"	true	false	false	"JSR REALFACPUSH|NOP|JSR POPREAL|"	"JSR REALFAC|"
+
+#13: Quick copy into REG
+"Quick copy into REG"	true	false	false	"LDA #<{MEM0}|LDY #>{MEM0}|JSR REALFAC|LDX #<{REG0}|LDY #>{REG0}|JSR FACMEM|"	"{LINE0}|{LINE1}|STA TMP3_ZP|STY TMP3_ZP+1|{LINE3}|{LINE4}|JSR COPY2_XY|"
+
+#14: Simplified CMP with 0
+"Simplified CMP with 0"	false	false	false	"JSR REALFAC|LDX #<{REG0}|LDY #>{REG0}|JSR FACMEM|LDA #<{#0.0}|LDY #>{#0.0}|JSR REALFAC|LDA #<{REG0}|LDY #>{REG0}|JSR CMPFAC|"	"{LINE0}|LDA FAC|"
+
+#15: REG0->REG1, REG1->REG0
+"REG0->REG1, REG1->REG0"	true	false	false	"LDX #<{MEM0}|LDY #>{MEM0}|JSR FACMEM|LDA #<{REG0}|LDY #>{REG0}|JSR REALFAC|LDX #<{REG1}|LDY #>{REG1}|JSR FACMEM|LDA #<{REG1}|LDY #>{REG1}|JSR REALFAC|LDX #<{REG0}|LDY #>{REG0}|JSR FACMEM|LDA #<{REG0}|LDY #>{REG0}|JSR REALFAC|"	"{LINE0}|{LINE1}|{LINE2}|"
+
+#16: REG0->VAR, REG0->REG1
+"REG0->VAR, REG0->REG1"	true	false	false	"LDX #<{REG0}|LDY #>{REG0}|JSR FACMEM|LDA #<{REG0}|LDY #>{REG0}|JSR REALFAC|LDX #<{MEM0}|LDY #>{MEM0}|JSR FACMEM|LDA #<{REG0}|LDY #>{REG0}|JSR REALFAC|LDX #<{REG1}|LDY #>{REG1}|JSR FACMEM|LDA #<{REG1}|LDY #>{REG1}|JSR REALFAC|"	"{LINE6}|{LINE7}|{LINE8}|"
+
+#17: FAC into REG?, REG? into FAC
+"FAC into REG?, REG? into FAC"	true	false	false	"LDX #<{REG0}|LDY #>{REG0}|JSR FACMEM|LDA #<{REG0}|LDY #>{REG0}|JSR REALFAC|"	""
+
+#18: INT to FAC, FAC to INT
+"INT to FAC, FAC to INT"	true	false	false	"LDY {*}|LDA {*}|JSR INTFAC|JSR FACINT|"	"{LINE0}|{LINE1}|"
+
+#19: STY A...LDY A...STY B
+"STY A...LDY A...STY B"	true	false	false	"STY {MEM0}|LDY {MEM0}|LDA #0|STY {*}|"	"{LINE0}|{LINE3}|"
+
+#20: FAC to INT, INT to FAC
+"FAC to INT, INT to FAC"	true	false	false	"JSR INTFAC|JSR FACINT|"	""
+
+#21: VAR into FAC, FAC into VAR
+"VAR into FAC, FAC into VAR"	true	false	false	"LDA #<{MEM0}|LDY #>{MEM0}|JSR REALFAC|LDX #<{MEM0}|LDY #>{MEM0}|JSR FACMEM|"	""
+
+#22: CHR with integer constant
+"CHR with integer constant"	false	false	false	"LDY {MEM0}|LDA {MEM0}|JSR INTFAC|LDX #<{REG0}|LDY #>{REG0}|JSR FACMEM|JSR CHR|"	"LDA {MEM0}|JSR CHRINT|"
+
+#23: NEXT check simplified
+"NEXT check simplified"	false	false	false	"JSR NEXT|LDY {MEM0}|LDA {MEM0}|CPY A_REG|BNE {*}|CMP A_REG+1|BNE {*}|{LABEL}|BNE {*}|JMP (JUMP_TARGET)|"	"JSR NEXT|LDA A_REG|{LINE8}|JMP (JUMP_TARGET)|"
+
+#24: Multiple loads of the same value(1)
+"Multiple loads of the same value(1)"	false	false	false	"LDA #<{MEM0}|LDY #>{MEM0}|JSR REALFAC|LDX #<{REG0}|LDY #>{REG0}|JSR FACMEM|LDA #<{MEM0}|LDY #>{MEM0}|JSR REALFAC|LDX #<{REG1}|LDY #>{REG1}|JSR FACMEM|"	"{LINE0}|{LINE1}|{LINE2}|{LINE3}|{LINE4}|{LINE5}|{LINE9}|{LINE10}|{LINE11}|"
+
+#25: Multiple loads of the same value(2)
+"Multiple loads of the same value(2)"	false	false	false	"LDA #<{MEM0}|LDY #>{MEM0}|STA TMP3_ZP|STY TMP3_ZP+1|LDX #<{REG0}|LDY #>{REG0}|JSR COPY2_XY|LDA #<{MEM0}|LDY #>{MEM0}|STA TMP3_ZP|STY TMP3_ZP+1|LDX #<{REG1}|LDY #>{REG1}|JSR COPY2_XY|"	"{LINE0}|{LINE1}|{LINE2}|{LINE3}|{LINE4}|{LINE5}|{LINE6}|{LINE11}|{LINE12}|{LINE13}|"
+
+#26: Value already in X
+"Value already in X"	true	false	false	"LDX #<{REG0}|LDY #>{REG0}|JSR COPY2_XY|LDA #<{REG0}|LDY #>{REG0}|"	"{LINE0}|{LINE1}|{LINE2}|TXA|{LINE4}|"
+
+#27: Variable used twice in calculation
+"Variable used twice in calculation"	false	false	false	"LDX #<{REG0}|LDY #>{REG0}|JSR COPY2_XY|LDX #<{REG1}|LDY #>{REG1}|JSR COPY2_XY|LDA #<{REG0}|LDY #>{REG0}|JSR REALFAC|LDA #<{REG1}|LDY #>{REG1}|JSR MEMARG|JSR {*}|"	"{LINE3}|{LINE4}|{LINE5}|TXA|{LINE10}|{LINE8}|{LINE9}|{LINE10}|{LINE11}|{LINE12}|"
+
+#28: Variable used twice in calculation (mul)
+"Variable used twice in calculation (mul)"	false	false	false	"LDX #<{REG0}|LDY #>{REG0}|JSR COPY2_XY|LDX #<{REG1}|LDY #>{REG1}|JSR COPY2_XY|LDA #<{REG0}|LDY #>{REG0}|JSR REALFAC|LDA #<{REG1}|LDY #>{REG1}|JSR MEMMUL|"	"{LINE3}|{LINE4}|{LINE5}|TXA|{LINE10}|{LINE8}|{LINE9}|{LINE10}|{LINE11}|"
+
+#29: Avoid INTEGER->REAL conversion
+"Avoid INTEGER->REAL conversion"	true	true	false	"LDY {CONST0}|LDA {CONST0}|JSR INTFAC|"	"LDA #<{CONST0}R|LDY #>{CONST0}R|JSR REALFAC|"
+
+#30: Array value used twice in calculation
+"Array value used twice in calculation"	false	false	false	"LDA #<{MEM0}|LDY #>{MEM0}|STA TMP3_ZP|STY TMP3_ZP+1|LDX #<{REG0}|LDY #>{REG0}|JSR COPY2_XY|LDA #<{MEM1}|LDY #>{MEM1}|STA {REG1}|STY {REG1}|JSR {*}|LDA #<{REG0}|LDY #>{REG0}|JSR REALFAC|JSR PUSHREAL|LDA #<{MEM0}|LDY #>{MEM0}|STA TMP3_ZP|STY TMP3_ZP+1|LDX #<{REG0}|LDY #>{REG0}|JSR COPY2_XY|LDA #<{MEM1}|LDY #>{MEM1}|STA {REG1}|STY {REG1}|JSR {*}|JSR POPREAL|LDA #<{REG0}|LDY #>{REG0}|JSR MEMARG|"	"{LINE0}|{LINE1}|{LINE2}|{LINE3}|{LINE4}|{LINE5}|{LINE6}|{LINE7}|{LINE8}|{LINE9}|{LINE10}|{LINE11}|{LINE12}|{LINE13}|{LINE14}|{LINE12}|{LINE13}|JSR MEMARG|"
+
+#31: Array value used twice in calculation (mul)
+"Array value used twice in calculation (mul)"	false	false	false	"LDA #<{MEM0}|LDY #>{MEM0}|STA TMP3_ZP|STY TMP3_ZP+1|LDX #<{REG0}|LDY #>{REG0}|JSR COPY2_XY|LDA #<{MEM1}|LDY #>{MEM1}|STA {REG1}|STY {REG1}|JSR {*}|LDA #<{REG0}|LDY #>{REG0}|JSR REALFAC|JSR PUSHREAL|LDA #<{MEM0}|LDY #>{MEM0}|STA TMP3_ZP|STY TMP3_ZP+1|LDX #<{REG0}|LDY #>{REG0}|JSR COPY2_XY|LDA #<{MEM1}|LDY #>{MEM1}|STA {REG1}|STY {REG1}|JSR {*}|JSR POPREAL|LDA #<{REG0}|LDY #>{REG0}|JSR MEMMUL|"	"{LINE0}|{LINE1}|{LINE2}|{LINE3}|{LINE4}|{LINE5}|{LINE6}|{LINE7}|{LINE8}|{LINE9}|{LINE10}|{LINE11}|{LINE12}|{LINE13}|{LINE14}|{LINE12}|{LINE13}|JSR MEMMUL|"
+
+#32: Constant directly into FAC
+"Constant directly into FAC"	true	false	false	"LDA #<REAL_CONST_ZERO|LDY #>REAL_CONST_ZERO|JMP {*}|{LABEL}|LDA #<REAL_CONST_MINUS_ONE|LDY #>REAL_CONST_MINUS_ONE|{LABEL}|JSR REALFAC|LDA FAC|"	"LDA #0|STA FAC|{LINE2}|{LINE3}|LDA #0|STA FACMOH|STA FACMO|STA FACLO|LDY #128|STY FACHO|INY|STY FAC|LDY #$FF|STY FACSGN|{LINE6}|{LINE8}|"
+
+#33: Highly simplified loading for CMP
+"Highly simplified loading for CMP"	false	false	false	"LDA #<{MEM0}|LDY #>{MEM0}|STA TMP3_ZP|STY TMP3_ZP+1|LDX #<{REG0}|LDY #>{REG0}|JSR COPY2_XY|LDA #<{MEM1}|LDY #>{MEM1}|STA TMP3_ZP|STY TMP3_ZP+1|LDX #<{REG1}|LDY #>{REG1}|JSR COPY2_XY|LDA #<{REG0}|LDY #>{REG0}|JSR REALFAC|LDA #<{REG1}|LDY #>{REG1}|JSR CMPFAC|"	"{LINE0}|{LINE1}|JSR REALFAC|{LINE7}|{LINE8}|{LINE19}|"
+
+#34: Highly simplified loading for calculations
+"Highly simplified loading for calculations"	false	false	false	"LDA #<{MEM0}|LDY #>{MEM0}|STA TMP3_ZP|STY TMP3_ZP+1|LDX #<{REG0}|LDY #>{REG0}|JSR COPY2_XY|LDA #<{MEM1}|LDY #>{MEM1}|STA TMP3_ZP|STY TMP3_ZP+1|LDX #<{REG1}|LDY #>{REG1}|JSR COPY2_XY|LDA #<{REG0}|LDY #>{REG0}|JSR REALFAC|LDA #<{REG1}|LDY #>{REG1}|JSR MEMARG|JSR {*}|"	"{LINE0}|{LINE1}|JSR REALFAC|{LINE7}|{LINE8}|{LINE19}|{LINE20}|"
+
+#35: Highly simplified loading for calculations (mul)
+"Highly simplified loading for calculations (mul)"	false	false	false	"LDA #<{MEM0}|LDY #>{MEM0}|STA TMP3_ZP|STY TMP3_ZP+1|LDX #<{REG0}|LDY #>{REG0}|JSR COPY2_XY|LDA #<{MEM1}|LDY #>{MEM1}|STA TMP3_ZP|STY TMP3_ZP+1|LDX #<{REG1}|LDY #>{REG1}|JSR COPY2_XY|LDA #<{REG0}|LDY #>{REG0}|JSR REALFAC|LDA #<{REG1}|LDY #>{REG1}|JSR MEMMUL|"	"{LINE0}|{LINE1}|JSR REALFAC|{LINE7}|{LINE8}|{LINE19}|"
+
+#36: NEXT with no variable name simplified
+"NEXT with no variable name simplified"	false	false	false	"LDY {CONST0}|LDA {CONST0}|STY A_REG|STA A_REG+1|JSR NEXT|"	"LDA #0|STA A_REG|STA A_REG+1|JSR NEXT|"
+
+#37: Improved copy from REG0 to REG1
+"Improved copy from REG0 to REG1"	true	false	false	"LDA #<{REG0}|LDY #>{REG0}|JSR REALFAC|LDX #<{REG1}|LDY #>{REG1}|JSR FACMEM|"	"{LINE0}|{LINE1}|STA TMP3_ZP|STY TMP3_ZP+1|{LINE3}|{LINE4}|JSR COPY2_XY|"
+
+#38: Fast address push
+"Fast address push"	false	false	false	"STA {REG0}|STY {REG0}|LDA {REG0}|LDY {REG0}|STA TMP_ZP|STY TMP_ZP+1|JSR PUSHINT|"	"{LINE4}|{LINE5}|{LINE6}|"
+
+#39: Simplified loading of Strings
+"Simplified loading of Strings"	false	false	false	"STA {REG0}|STY {REG0}|LDA {REG0}|LDY {REG0}|STA TMP_ZP|STY TMP_ZP+1|LDA #<{MEM0}|LDY #>{MEM0}|JSR COPYSTRING|"	"{LINE4}|{LINE5}|{LINE6}|{LINE7}|{LINE8}|"
+
+#40: MEM->REG, REG->TMP_ZP
+"MEM->REG, REG->TMP_ZP"	true	false	false	"LDA #<{MEM0}|LDY #>{MEM0}|STA {REG0}|STY {REG0}|LDA {REG0}|LDY {REG0}|STA TMP_ZP|STY TMP_ZP+1|"	"{LINE0}|{LINE1}|{LINE6}|{LINE7}|"
+
+#41: Direct loading of values into FAC
+"Direct loading of values into FAC"	true	false	false	"LDA #<{MEM0}|LDY #>{MEM0}|STA TMP3_ZP|STY TMP3_ZP+1|LDX #<Y_REG|LDY #>Y_REG|JSR COPY2_XY|TXA|LDY #>Y_REG|JSR REALFAC|"	"{LINE0}|{LINE1}|{LINE9}|"
+
+#42: POP, REG0, VAR0 -> direct calc
+"POP, REG0, VAR0 -> direct calc"	false	false	false	"JSR POPREAL|LDX #<{REG0}|LDY #>{REG0}|JSR FACMEM|LDA #<{REG1}|LDY #>{REG1}|JSR MEMARG|JSR {*}|"	"{LINE0}|{LINE4}|{LINE5}|{LINE6}|{LINE7}|"
+
+#43: POP, REG0, VAR0 -> direct calc (mul)
+"POP, REG0, VAR0 -> direct calc (mul)"	false	false	false	"JSR POPREAL|LDX #<{REG0}|LDY #>{REG0}|JSR FACMEM|LDA #<{REG1}|LDY #>{REG1}|JSR MEMMUL|"	"{LINE0}|{LINE4}|{LINE5}|{LINE6}|"
+
+#44: POP, REG0, VAR0 -> to WORD
+"POP, REG0, VAR0 -> to WORD"	false	false	false	"JSR POPREAL|LDX #<{REG0}|LDY #>{REG0}|JSR FACMEM|JSR FACWORD|"	"{LINE0}|{LINE4}|"
+
+#45: Load and PUSH combined
+"Load and PUSH combined"	false	false	false	"JSR REALFAC|JSR PUSHREAL|"	"JSR REALFACPUSH|"
+
+#46: Memory saving copy
+"Memory saving copy"	false	false	false	"STA TMP3_ZP|STY TMP3_ZP+1|LDX #<{REG0}|LDY #>{REG0}|JSR COPY2_XY|"	"{LINE1}|{LINE2}|{LINE3}|JSR COPY2_XYA|"
+
+#47: Memory saving array access (real)
+"Memory saving array access (real)"	false	false	false	"LDA #<{MEM0}|LDY #>{MEM0}|STA G_REG|STY G_REG+1|JSR ARRAYACCESS_REAL|"	"{LINE0}|{LINE1}|JSR ARRAYACCESS_REAL_S|"
+
+#48: Memory saving array access (integer)
+"Memory saving array access (integer)"	false	false	false	"LDA #<{MEM0}|LDY #>{MEM0}|STA G_REG|STY G_REG+1|JSR ARRAYACCESS_INTEGER|"	"{LINE0}|{LINE1}|JSR ARRAYACCESS_INTEGER_S|"
+
+#49: POPREAL and load X
+"POPREAL and load X"	false	false	false	"JSR POPREAL|LDA #<X_REG|LDY #>X_REG|JSR MEMARG|"	"JSR POPREAL2X|"
+
+#50: Simplified CMP redux
+"Simplified CMP redux"	false	false	false	"LDA #0|STA FAC|JMP {*}|{LABEL}|LDA #0|STA FACMOH|STA FACMO|STA FACLO|LDY #128|STY FACHO|INY|STY FAC|LDY #$FF|STY FACSGN|{LABEL}|LDA FAC|{LABEL}|BNE {*}|"	"{LINE0}|{LINE2}|{LINE3}|LDA #$1|{LINE14}|{LINE16}|{LINE17}|"
+
+#51: CMP (REG) = 0
+"CMP (REG) = 0"	false	false	false	"LDA #<{#0.0}|LDY #>{#0.0}|JSR REALFAC|LDA #<{REG0}|LDY #>{REG0}|JSR CMPFAC|BEQ {*}|LDA #0|"	"LDA {REG0}|{LINE6}|{LINE7}|"
+
+#52: CMP (REG) != 0
+"CMP (REG) != 0"	false	false	false	"LDA #<{#0.0}|LDY #>{#0.0}|JSR REALFAC|LDA #<{REG0}|LDY #>{REG0}|JSR CMPFAC|BNE {*}|LDA #0|"	"LDA {REG0}|{LINE6}|{LINE7}|"
+
+#53: CMP (MEM) = 0
+"CMP (MEM) = 0"	false	false	false	"LDA #<{#0.0}|LDY #>{#0.0}|JSR REALFAC|LDA #<{MEM0}|LDY #>{MEM0}|JSR CMPFAC|BEQ {*}|LDA #0|"	"LDA {MEM0}|{LINE6}|{LINE7}|"
+
+#54: CMP (MEM) != 0
+"CMP (MEM) != 0"	false	false	false	"LDA #<{#0.0}|LDY #>{#0.0}|JSR REALFAC|LDA #<{MEM0}|LDY #>{MEM0}|JSR CMPFAC|BNE {*}|LDA #0|"	"LDA {MEM0}|{LINE6}|{LINE7}|"
+
+#55: CMP (REG) = 0(2)
+"CMP (REG) = 0(2)"	false	false	false	"LDA #<{#0.0}|LDY #>{#0.0}|JSR REALFAC|LDA #<{REG0}|LDY #>{REG0}|JSR CMPFAC|{LABEL}|BEQ {*}|"	"LDA {REG0}|{LINE6}|{LINE7}|"
+
+#56: CMP (REG) != 0(2)
+"CMP (REG) != 0(2)"	false	false	false	"LDA #<{#0.0}|LDY #>{#0.0}|JSR REALFAC|LDA #<{REG0}|LDY #>{REG0}|JSR CMPFAC|{LABEL}|BNE {*}|"	"LDA {REG0}|{LINE6}|{LINE7}|"
+
+#57: CMP (MEM) = 0(2)
+"CMP (MEM) = 0(2)"	false	false	false	"LDA #<{#0.0}|LDY #>{#0.0}|JSR REALFAC|LDA #<{MEM0}|LDY #>{MEM0}|JSR CMPFAC|{LABEL}|BEQ {*}|"	"LDA {MEM0}|{LINE6}|{LINE7}|"
+
+#58: CMP (MEM) != 0(2)
+"CMP (MEM) != 0(2)"	false	false	false	"LDA #<{#0.0}|LDY #>{#0.0}|JSR REALFAC|LDA #<{MEM0}|LDY #>{MEM0}|JSR CMPFAC|{LABEL}|BNE {*}|"	"LDA {MEM0}|{LINE6}|{LINE7}|"
+
+#59: Direct loading of 0
+"Direct loading of 0"	false	false	false	"LDA #<{#0.0}|LDY #>{#0.0}|JSR REALFAC|"	"LDA #$0|STA FAC|STA FACHO|STA FACMOH|STA FACMO|STA FACLO|STA FACSGN|"
+
+#60: FAC into REG?, REG? into FAC (2)
+"FAC into REG?, REG? into FAC (2)"	false	false	false	"LDY #>{REG0}|LDX #<{REG0}|JSR FACMEM|LDA #<{REG0}|LDY #>{REG0}|JSR REALFAC|"	"{LINE0}|{LINE1}|{LINE2}|"
+
+#61: Fast INTEGER array access (1)
+"Fast INTEGER array access (1)"	false	false	false	"JSR ARRAYACCESS_INTEGER_S|LDA #<X_REG|LDY #>X_REG|JSR REALFAC|JSR FACINT|STY {MEM0}|STA {MEM0}|"	"JSR ARRAYACCESS_INTEGER_SI|{LINE5}|{LINE6}|"
+
+#62: Fast INTEGER array access (2)
+"Fast INTEGER array access (2)"	false	false	false	"JSR ARRAYACCESS_INTEGER_INT|LDA #<X_REG|LDY #>X_REG|JSR REALFAC|JSR FACINT|STY {MEM0}|STA {MEM0}|"	"JSR ARRAYACCESS_INTEGER_INT_SI|{LINE5}|{LINE6}|"
+
+#63: Fast INTEGER INC
+"Fast INTEGER INC"	false	false	false	"LDY {MEM0}|LDA {MEM0}|JSR INTFAC|LDX #<X_REG|LDY #>X_REG|JSR FACMEM|JSR FINX|"	"{LINE0}|{LINE1}|JSR FIINX|"
+
+#64: Fast INTEGER DEC
+"Fast INTEGER DEC"	false	false	false	"LDY {MEM0}|LDA {MEM0}|JSR INTFAC|LDX #<X_REG|LDY #>X_REG|JSR FACMEM|JSR FDEX|"	"{LINE0}|{LINE1}|JSR FIDEX|"
+
+#65: Even faster INTEGER INC
+"Even faster INTEGER INC"	false	false	false	"JSR FIINX|LDA #<X_REG|LDY #>X_REG|JSR REALFAC|JSR FACINT|"	"JSR SUPERFIINX|"
+
+#66: Even faster INTEGER DEC
+"Even faster INTEGER DEC"	false	false	false	"JSR FIDEX|LDA #<X_REG|LDY #>X_REG|JSR REALFAC|JSR FACINT|"	"JSR SUPERFIDEX|"
+
+#67: Store and load
+"Store and load"	false	false	false	"STY {MEM0}|STA {MEM0}|NOP|LDY {MEM0}|LDA {MEM0}|"	"{LINE0}|{LINE1}|NOP|"
+
+#68: Memory saving STROUT
+"Memory saving STROUT"	false	false	false	"STA A_REG|STY A_REG+1|JSR STROUT|"	"JSR STROUTWL|"
+
+#69: Memory saving STROUTBRK
+"Memory saving STROUTBRK"	false	false	false	"STA A_REG|STY A_REG+1|JSR STROUTBRK|"	"JSR STROUTBRKWL|"
+
+#70: Simplified loading of A
+"Simplified loading of A"	false	false	false	"LDX #<{MEM0}|LDY #>{MEM0}|JSR FACMEM|LDA #<{MEM0}|LDY #>{MEM0}|STA A_REG|STY A_REG+1|"	"{LINE0}|{LINE1}|STX A_REG|STY A_REG+1|{LINE2}|"
+
+#71: Direct copy of floats into mem
+"Direct copy of floats into mem"	false	false	false	"LDA #<{MEM0}|LDY #>{MEM0}|JSR REALFAC|LDX #<{MEM1}|LDY #>{MEM1}|JSR FACMEM|"	"LDX #4|dcloop{cnt}:|LDA {MEM0},X|STA {MEM1},X|DEX|BPL dcloop{cnt}|"
+
+#72: Single character output
+"Single character output"	false	false	false	"LDA  {*}|JSR CHRINT|JSR STROUT|"	"{LINE0}|JSR SINGLECHROUT|"
+
+#73: Single character output and break
+"Single character output and break"	false	false	false	"LDA  {*}|JSR CHRINT|JSR STROUTBRK|"	"{LINE0}|JSR SINGLECHROUTBRK|"
+
+#74: Fast byte conversion and store
+"Fast byte conversion and store"	false	false	false	"LDA #<{MEM0}|LDY #>{MEM0}|JSR REALFACPUSH|LDY {MEM1}|STY {*}|JSR POPREAL|JSR FACWORD|"	"{LINE3}|{LINE4}|{LINE0}|{LINE1}|JSR REALFAC|{LINE6}|"
+
+#75: Byte store between PUSH/POP
+"Byte store between PUSH/POP"	false	false	false	"JSR PUSHREAL|LDY {MEM1}|STY {*}|JSR POPREAL|"	"{LINE1}|{LINE2}|"
+
+#76: Combine load and add
+"Combine load and add"	false	false	false	"JSR MEMARG|JSR ARGADD|"	"JSR FACADD|"
+
+#77: Combine load and div
+"Combine load and div"	false	false	false	"JSR MEMARG|JSR ARGDIV|"	"JSR FACDIV|"
+
+#78: Combine load and mul
+"Combine load and mul"	false	false	false	"JSR MEMARG|JSR FACMUL|"	"JSR MEMMUL|"
+
+#79: Combine load and sub
+"Combine load and sub"	false	false	false	"JSR MEMARG|JSR FACSUB|"	"JSR MEMSUB|"
+
+#80: Swap AND order
+"Swap AND order"	false	false	false	"LDX #<X_REG|LDY #>X_REG|JSR FACMEM|LDA #<{MEM0}|LDY #>{MEM0}|JSR REALFAC|LDA #<X_REG|LDY #>X_REG|JSR MEMARG|JSR FASTAND|"	"{LINE0}|{LINE1}|{LINE2}|{LINE3}|{LINE4}|{LINE8}|{LINE9}|"
+
+#81: Swap OR order
+"Swap OR order"	false	false	false	"LDX #<X_REG|LDY #>X_REG|JSR FACMEM|LDA #<{MEM0}|LDY #>{MEM0}|JSR REALFAC|LDA #<X_REG|LDY #>X_REG|JSR MEMARG|JSR FASTOR|"	"{LINE0}|{LINE1}|{LINE2}|{LINE3}|{LINE4}|{LINE8}|{LINE9}|"
+
+#82: Fast byte copy
+"Fast byte copy"	false	false	false	"LDY $FFFF|LDA #0|JSR INTFAC|LDX #<{REG0}|LDY #>{REG0}|JSR FACMEM|JSR POPREAL|JSR FACWORD|STY {*}|STA {*}|LDA #<{REG0}|LDY #>{REG0}|JSR REALFAC|JSR FACWORD|{LABEL}|STY $FFFF|"	"{LINE0}|STY TMP_ZP|{LINE6}|{LINE7}|{LINE8}|{LINE9}|LDY TMP_ZP|{LINE14}|{LINE15}|"
+
+#83: Omit FAC load
+"Omit FAC load"	false	false	false	"LDX #<{MEM1}|LDY #>{MEM1}|JSR FACMEM|NOP|LDA #<{MEM1}|LDY #>{MEM1}|JSR REALFAC|"	"{LINE0}|{LINE1}|{LINE2}|{LINE3}|"
+
+#84: FAC 2 X_REG(1)
+"FAC 2 X_REG(1)"	false	false	false	"LDY #>X_REG|LDX #<X_REG|JSR FACMEM|"	"JSR FACXREG|"
+
+#85: FAC 2 Y_REG(1)
+"FAC 2 Y_REG(1)"	false	false	false	"LDY #>Y_REG|LDX #<Y_REG|JSR FACMEM|"	"JSR FACYREG|"
+
+#86: FAC 2 X_REG(2)
+"FAC 2 X_REG(2)"	false	false	false	"LDX #<X_REG|LDY #>X_REG|JSR FACMEM|"	"JSR FACXREG|"
+
+#87: FAC 2 Y_REG(2)
+"FAC 2 Y_REG(2)"	false	false	false	"LDX #<Y_REG|LDY #>Y_REG|JSR FACMEM|"	"JSR FACYREG|"
+
+#88: X_REG 2 FAC(1)
+"X_REG 2 FAC(1)"	false	false	false	"LDA #<X_REG|LDY #>X_REG|JSR REALFAC|"	"JSR XREGFAC|"
+
+#89: X_REG 2 FAC(2)
+"X_REG 2 FAC(2)"	false	false	false	"TXA|LDY #>X_REG|JSR REALFAC|"	"JSR XREGFAC|"
+
+#90: Y_REG 2 FAC(1)
+"Y_REG 2 FAC(1)"	false	false	false	"LDA #<Y_REG|LDY #>Y_REG|JSR REALFAC|"	"JSR YREGFAC|"
+
+#91: X_REG 2 ARG
+"X_REG 2 ARG"	false	false	false	"LDA #<X_REG|LDY #>X_REG|JSR MEMARG|"	"JSR XREGARG|"
+
+#92: MEM 2 X_REG
+"MEM 2 X_REG"	false	false	false	"LDA #<{MEM0}|LDY #>{MEM0}|STY TMP3_ZP+1|LDX #<X_REG|LDY #>X_REG|JSR COPY2_XYA|"	"{LINE0}|{LINE1}|JSR COPY2_XYA_XREG|"
+
+#93: MEM 2 Y_REG
+"MEM 2 Y_REG"	false	false	false	"LDA #<{MEM0}|LDY #>{MEM0}|STY TMP3_ZP+1|LDX #<Y_REG|LDY #>Y_REG|JSR COPY2_XYA|"	"{LINE0}|{LINE1}|JSR COPY2_XYA_YREG|"
+
+#94: Faster PEEKBYTEAND
+"Faster PEEKBYTEAND"	false	false	false	"JSR PEEKBYTEAND|JSR XREGFAC|JSR FACWORD|STY {*}|"	"JSR PEEKBYTEANDFAST|{LINE3}|"
+
+#95: Faster PEEKBYTEOR
+"Faster PEEKBYTEOR"	false	false	false	"JSR PEEKBYTEOR|JSR XREGFAC|JSR FACWORD|STY {*}|"	"JSR PEEKBYTEORFAST|{LINE3}|"
+
+#96: Shorter SHL
+"Shorter SHL"	false	false	false	"LDY {*}|LDA {*}|STY A_REG|STA A_REG+1|JSR XREGFAC|JSR SHL|"	"{LINE0}|{LINE2}|{LINE4}|{LINE5}|"
+
+#97: Shorter SHR
+"Shorter SHR"	false	false	false	"LDY {*}|LDA {*}|STY A_REG|STA A_REG+1|JSR XREGFAC|JSR SHR|"	"{LINE0}|{LINE2}|{LINE4}|{LINE5}|"
+
+#98: Faster PEEKBYTEADDAND
+"Faster PEEKBYTEADDAND"	false	false	false	"JSR PEEKBYTEADDAND|JSR POPREAL|JSR FACWORD|STY MOVBSELF1+1|STA MOVBSELF1+2|JSR XREGFAC|JSR FACWORD|{LABEL}|STY $FFFF|"	"JSR PEEKBYTEADDANDFAST|{LINE1}|{LINE2}|{LINE3}|{LINE4}|LDY A_REG|{LINE7}|{LINE8}|"
+
+#99: Faster PEEKBYTEADDOR
+"Faster PEEKBYTEADDOR"	false	false	false	"JSR PEEKBYTEADDOR|JSR POPREAL|JSR FACWORD|STY MOVBSELF1+1|STA MOVBSELF1+2|JSR XREGFAC|JSR FACWORD|{LABEL}|STY $FFFF|"	"JSR PEEKBYTEADDORFAST|{LINE1}|{LINE2}|{LINE3}|{LINE4}|LDY A_REG|{LINE7}|{LINE8}|"
+
+#100: Faster POKE,PEEK
+"Faster POKE,PEEK"	true	false	false	"LDY {MEM1}|LDA #0|JSR INTFAC|JSR FACWORD|STY {MEM2}|"	"{LINE0}|{LINE4}|"
+
+#101: Faster setting to 1
+"Faster setting to 1"	true	false	false	"LDA #<{#1.0}|LDY #>{#1.0}|JSR REALFAC|"	"JSR ONETOFAC|"
+
+#102: Avoid PUSH/POP(2)
+"Avoid PUSH/POP(2)"	false	false	false	"LDA #<{MEM1}|LDY #>{MEM1}|JSR REALFACPUSH|LDY {*}|LDA #0|JSR INTFAC|JSR FACXREG|JSR POPREAL2X|"	"{LINE3}|{LINE4}|{LINE5}|{LINE6}|JSR XREGARG|{LINE0}|{LINE1}|JSR REALFAC|"
+
+#103: Avoid PUSH/POP(3)
+"Avoid PUSH/POP(3)"	false	false	false	"LDA #<Y_REG|LDY #>Y_REG|JSR REALFACPUSH|LDY {*}|LDA #0|JSR INTFAC|JSR FACXREG|JSR POPREAL2X|"	"{LINE3}|{LINE4}|{LINE5}|{LINE6}|JSR XREGARG|{LINE0}|{LINE1}|JSR REALFAC|"
+
+#104: Omit XREG->FAC
+"Omit XREG->FAC"	true	false	false	"JSR FACXREG|LDY {*}|STY {*}|JSR XREGFAC|"	"{LINE0}|{LINE1}|{LINE2}|"
+
+#105: Combine copy and real par
+"Combine copy and real par"	true	false	false	"JSR COPY2_XYA_XREG|JSR COPYREALPAR|"	"JSR COPY2_XREG_REALPAR|"
+
+#106: Combine copy and add colon
+"Combine copy and add colon"	true	false	false	"JSR COPY2_XREG_REALPAR|JSR ADDCOLON|"	"JSR COPY_AND_ADDCOLON|"
+
+#107: Combine dynamic sys call and pull down
+"Combine dynamic sys call and pull down"	true	false	false	"JSR COPY2_XYA_XREG|JSR SYSTEMCALLDYN|JSR PULLDOWNMULTIPARS|"	"JSR SYS_AND_PULLDOWN|"
+
+#108: Combine static sys call and pull down
+"Combine static sys call and pull down"	true	false	false	"JSR SYSTEMCALL|JSR PULLDOWNMULTIPARS|"	"JSR SYS_AND_PULLDOWN_SIMPLE|"
+
+#109: Direct copy from X to Y
+"Direct copy from X to Y"	true	false	false	"LDA #<X_REG|LDY #>X_REG|STY TMP3_ZP+1|LDX #<Y_REG|LDY #>Y_REG|JSR COPY2_XYA|"	"JSR COPY_XREG2YREG|"
+
+#110: Direct copy from MEM to C
+"Direct copy from MEM to C"	true	false	false	"LDA #<{MEM0}|LDY #>{MEM0}|STY TMP3_ZP+1|LDX #<C_REG|LDY #>C_REG|JSR COPY2_XYA|"	"{LINE0}|{LINE1}|JSR COPY2_XYA_CREG|"
+
+#111: Value already in FAC(1)
+"Value already in FAC(1)"	true	false	false	"JSR FACXREG|LDA #<{MEM0}|LDY #>{MEM0}|STA G_REG|STY G_REG+1|JSR ARRAYSTORE_INTEGER|"	"{LINE0}|{LINE1}|{LINE2}|{LINE3}|{LINE4}|JSR ARRAYSTORE_INTEGER_NX|"
+
+#112: Value already in FAC(2)
+"Value already in FAC(2)"	true	false	false	"JSR FACXREG|LDA #<{MEM0}|LDY #>{MEM0}|JSR ARRAYACCESS_INTEGER_S|"	"{LINE0}|{LINE1}|{LINE2}|JSR ARRAYACCESS_INTEGER_SNX|"
+
+#113: POP and XREG combined
+"POP and XREG combined"	true	false	false	"JSR POPREAL|JSR FACXREG|"	"JSR POPREALXREG|"
+
+#114: Avoid multiple int conversions
+"Avoid multiple int conversions"	false	false	false	"STY {MEM0}|STA {MEM0}|NOP|JSR INTFAC|JSR PUSHREAL|LDY {MEM0}|LDA {MEM0}|JSR INTFAC|"	"{LINE0}|{LINE1}|{LINE2}|{LINE3}|{LINE4}|"
+
+#115: Remove INTFAC/FACWORD
+"Remove INTFAC/FACWORD"	false	false	false	"LDY {MEM0}|LDA {MEM0}|JSR INTFAC|JSR FACWORD|STY {*}|"	"{LINE0}|{LINE4}|"
+
+#116: Memory saving single char out(1)
+"Memory saving single char out(1)"	false	false	false	"JSR COMPACTMAX|LDA {*}|JSR SINGLECHROUT|"	"{LINE1}|JSR SINGLECHROUTMAX|"
+
+#117: Memory saving single char out(2)
+"Memory saving single char out(2)"	false	false	false	"JSR COMPACTMAX|LDA {*}|JSR SINGLECHROUTBRK|"	"{LINE1}|JSR SINGLECHROUTBRKMAX|"
+
+#118: LEN to integer variable
+"LEN to integer variable"	false	false	false	"JSR LEN|JSR XREGFAC|JSR FACINT|STY {MEM0}|STA {MEM0}|"	"{LINE0}|LDA #0|LDY TMP2_ZP|{LINE3}|{LINE4}|"
+
+#119: ASC to integer variable
+"ASC to integer variable"	false	false	false	"JSR ASC|JSR XREGFAC|JSR FACINT|STY {MEM0}|STA {MEM0}|"	"{LINE0}|LDA #0|LDY TMP2_ZP|{LINE3}|{LINE4}|"
+
+#120: Simplified string array assignment
+"Simplified string array assignment"	false	false	false	"LDA #<{MEM0}|LDY #>{MEM0}|JSR REALFACPUSH|NOP|LDA #<{MEM1}|LDY #>{MEM1}|STA A_REG|STY A_REG+1|JSR POPREALXREG|"	"{LINE4}|{LINE5}|{LINE6}|{LINE7}|{LINE0}|{LINE1}|JSR COPY2_XYA_XREG|"
+
+#121: Simplified POPINT
+"Simplified POPINT"	false	false	false	"JSR POPINT|LDY TMP_ZP|LDA TMP_ZP+1|STY B_REG|STA B_REG+1|"	"JSR POPINT2B|"
+
+#122: No need for INT(1)
+"No need for INT(1)"	false	false	false	"JSR FASTAND|JSR BASINT|"	"JSR FASTAND|"
+
+#123: No need for INT(2)
+"No need for INT(2)"	false	false	false	"JSR FASTOR|JSR BASINT|"	"JSR FASTOR|"
+
+#124: No need for INT(3)
+"No need for INT(3)"	false	false	false	"JSR BASINT|JSR FACINT|"	"JSR FACINT|"
+

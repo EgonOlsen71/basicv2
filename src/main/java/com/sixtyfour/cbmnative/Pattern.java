@@ -2,6 +2,7 @@ package com.sixtyfour.cbmnative;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -347,6 +348,24 @@ public class Pattern implements java.lang.Cloneable {
 		}
 		return resetPattern();
 	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public List<String> getInputPattern() {
+		return new ArrayList<>(pattern);
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public List<String> getOutputPattern() {
+		return new ArrayList<>(replacement==null?((List<String>)Collections.EMPTY_LIST):Arrays.asList(replacement));
+	}
+	
 
 	private void replace(String[] replacement, int i, int pos, int offset, String[] values) {
 		int endi = replacement[i].indexOf("}");
