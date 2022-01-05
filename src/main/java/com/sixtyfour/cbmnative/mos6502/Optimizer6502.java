@@ -1542,7 +1542,9 @@ public class Optimizer6502 implements Optimizer {
 				
 				this.add(new Pattern(false, "No need for INT(2)", new String[] { "JSR FASTOR" }, "JSR FASTOR",
 						"JSR BASINT"));
-						
+				
+				this.add(new Pattern(false, "No need for INT(3)", new String[] { "JSR FACINT" }, "JSR BASINT",
+						"JSR FACINT"));
 			}
 		};
 	}
