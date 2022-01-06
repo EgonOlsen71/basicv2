@@ -28,9 +28,10 @@ public class FloatTest {
 	}
 
 	private static void testNumbers() {
-		for (float i = -10; i < 20; i++) {
+		for (float i = -10; i < 18; i++) {
 			int[] fl = Conversions.convertFloat(i);
 			System.out.println(i + " : " + Arrays.toString(fl));
+			System.out.println(2*((fl[0]-129)+((fl[1]-128)>>4)));
 		}
 	}
 

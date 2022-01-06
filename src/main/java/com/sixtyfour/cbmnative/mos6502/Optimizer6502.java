@@ -234,6 +234,7 @@ public class Optimizer6502 implements Optimizer {
 	}
 
 	private List<String> removeNops(List<String> input) {
+		// if (true) return input;
 		for (Iterator<String> itty = input.iterator(); itty.hasNext();) {
 			if (itty.next().equals("NOP")) {
 				itty.remove();
@@ -711,11 +712,12 @@ public class Optimizer6502 implements Optimizer {
 						return input;
 					}
 				}));
-		
+
 		// Integer array storage with contant index value
 		intPatterns.add(new IntPattern(true, "Optimized code for fixed integer index",
-				new String[] { "LDA #<{CONST0}", "LDY #>{CONST0}", "JSR COPY2_XYA_XREG", "LDY {*}", "LDA {*}", "STY AS_TMP",
-						"STA AS_TMP+1", "LDA #<{MEM0}", "LDY #>{MEM0}", "STA G_REG", "STY G_REG+1", "JSR ARRAYSTORE_INT_INTEGER" },
+				new String[] { "LDA #<{CONST0}", "LDY #>{CONST0}", "JSR COPY2_XYA_XREG", "LDY {*}", "LDA {*}",
+						"STY AS_TMP", "STA AS_TMP+1", "LDA #<{MEM0}", "LDY #>{MEM0}", "STA G_REG", "STY G_REG+1",
+						"JSR ARRAYSTORE_INT_INTEGER" },
 				new AbstractCodeModifier() {
 					@Override
 					public List<String> modify(IntPattern pattern, List<String> input) {
@@ -725,7 +727,7 @@ public class Optimizer6502 implements Optimizer {
 						Number num = const2Value.get(consty);
 						int numd = num.intValue();
 						List<String> rep = new ArrayList<>();
-						
+
 						rep.add(cleaned.get(3));
 						rep.add(cleaned.get(4));
 						rep.add(cleaned.get(5));
@@ -740,7 +742,79 @@ public class Optimizer6502 implements Optimizer {
 						return combine(pattern, rep);
 					}
 				}));
-		
+
+		// f%(l%)=f%(r%)...still semi-optimal, because the intermediate result is stored
+		// as float, but anyway...
+		intPatterns.add(new IntPattern(true, "Optimized code for copying from int-array to int-array(1)",
+				new String[] { "LDY {MEM0}", "LDA {MEM0}", "JSR INTFAC", "JSR PUSHREAL", "NOP", "LDA #<{MEM1}",
+						"LDY #>{MEM1}", "STA G_REG", "STY G_REG+1", "LDY {MEM2}", "LDA {MEM2}",
+						"JSR ARRAYACCESS_INTEGER_INT", "JSR COPY_XREG2YREG", "JSR POPREALXREG", "LDA #<{MEM1}",
+						"LDY #>{MEM1}", "STA G_REG", "STY G_REG+1", "JSR ARRAYSTORE_INTEGER_NX" },
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						String vary = cleaned.get(0);
+						if (vary.contains("%")) {
+							List<String> rep = new ArrayList<>();
+							rep.add(cleaned.get(5));
+							rep.add(cleaned.get(6));
+							rep.add(cleaned.get(7));
+							rep.add(cleaned.get(8));
+							rep.add(cleaned.get(9));
+							rep.add(cleaned.get(10));
+							rep.add(cleaned.get(11));
+							rep.add(cleaned.get(12));
+							rep.add(cleaned.get(14));
+							rep.add(cleaned.get(15));
+							rep.add(cleaned.get(16));
+							rep.add(cleaned.get(17));
+							rep.add(cleaned.get(0));
+							rep.add(cleaned.get(1));
+							rep.add("JSR ARRAYSTORE_INTEGER_INT");
+							return combine(pattern, rep);
+						}
+						pattern.reset();
+						return input;
+					}
+				}));
+
+		// f%(l%+1)=f%(r%)...still semi-optimal, because the intermediate result is
+		// stored as float, but anyway. This is quite a special case, but anyway...
+		intPatterns.add(new IntPattern(true, "Optimized code for copying from int-array to int-array(2)",
+				new String[] { "LDY {MEM0}", "LDA {MEM0}", "JSR FIINX", "LDA #<X_REG", "LDY #>X_REG", "JSR REALFACPUSH",
+						"NOP", "LDA #<{MEM1}", "LDY #>{MEM1}", "STA G_REG", "STY G_REG+1", "LDY {MEM2}", "LDA {MEM2}",
+						"JSR ARRAYACCESS_INTEGER_INT", "JSR COPY_XREG2YREG", "JSR POPREALXREG", "LDA #<{MEM1}",
+						"LDY #>{MEM1}", "STA G_REG", "STY G_REG+1", "JSR ARRAYSTORE_INTEGER_NX" },
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						String vary = cleaned.get(0);
+						if (vary.contains("%")) {
+							List<String> rep = new ArrayList<>();
+							rep.add(cleaned.get(7));
+							rep.add(cleaned.get(8));
+							rep.add(cleaned.get(9));
+							rep.add(cleaned.get(10));
+							rep.add(cleaned.get(11));
+							rep.add(cleaned.get(12));
+							rep.add(cleaned.get(13));
+							rep.add(cleaned.get(14));
+							rep.add(cleaned.get(16));
+							rep.add(cleaned.get(17));
+							rep.add(cleaned.get(18));
+							rep.add(cleaned.get(19));
+							rep.add(cleaned.get(0));
+							rep.add(cleaned.get(1));
+							rep.add("JSR SUPERFIINX");
+							rep.add("JSR ARRAYSTORE_INTEGER_INT");
+							return combine(pattern, rep);
+						}
+						pattern.reset();
+						return input;
+					}
+				}));
 
 		for (int i = codeStart; i < codeEnd; i++) {
 			String line = input.get(i);
@@ -970,7 +1044,7 @@ public class Optimizer6502 implements Optimizer {
 		// Do another run with the normal optimizer method but with some
 		// additional rules. Unlike the "big" run, this one happens in a single
 		// thread, because it's quite cheap to do anyway.
-		
+
 		List<Pattern> others = new PatternProcessor().getPatterns("optimizer6502x.txt");
 		OptimizationResult res = optimizeInternalThreaded(conf, others, platform, ret, null, extractConstants(ret));
 		printOutResults(res.getType2count());
