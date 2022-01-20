@@ -46,7 +46,7 @@ public class Str extends AbstractFunction {
 		if (num.floatValue() == (int) num.floatValue()) {
 			str = str.substring(0, str.length() - 2);
 		}
-		if (num > 0) {
+		if (num >= 0) {
 			str = " " + str;
 		}
 		return str;
