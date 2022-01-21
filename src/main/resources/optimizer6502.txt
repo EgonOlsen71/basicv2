@@ -370,3 +370,9 @@
 #124: No need for INT(3)
 "No need for INT(3)"	false	false	false	"JSR BASINT|JSR FACINT|"	"JSR FACINT|"
 
+#125: CHR with integer value(1)
+"CHR with integer value(1)"	false	false	false	"JSR INTFAC|JSR FACYREG|JSR CHR|"	"TYA|TAX|JSR CHRINT|" 
+
+#126: CHR with integer value(2)
+"CHR with integer value(2)"	false	false	false	"JSR INTFAC|JSR FACXREG|JSR COPY_XREG2YREG|JSR CHR|"	"TYA|TAX|JSR CHRINT|" 
+
