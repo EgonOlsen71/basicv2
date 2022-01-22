@@ -166,6 +166,7 @@ public class Preprocessor {
 
 	/**
 	 * Converts pound and pi in strings into something usable.
+	 * 
 	 * @param code
 	 * @return
 	 */
@@ -176,16 +177,27 @@ public class Preprocessor {
 		replacements.put('£', "{pound}");
 		replacements.put('π', "{pi}");
 
-		StringBuilder sb=new StringBuilder();
+		StringBuilder sb = new StringBuilder();
 		for (String line : code) {
+			int brackets = 0;
 			boolean inString = false;
 			for (int i = 0; i < line.length(); i++) {
 				char c = line.charAt(i);
 				if (c == '"') {
 					inString = !inString;
 				}
+				if (c == '{') {
+					brackets++;
+				} else if (c == '}') {
+					brackets--;
+				}
 				if (inString && replacements.containsKey(c)) {
-					sb.append(replacements.get(c));
+					String rep = replacements.get(c);
+					if (brackets>0) {
+						// We are in curly braches already...don't add another layer of them...
+						rep = rep.substring(1, rep.length()-1);
+					}
+					sb.append(rep);
 				} else {
 					sb.append(c);
 				}
