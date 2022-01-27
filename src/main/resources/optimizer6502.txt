@@ -343,7 +343,7 @@
 "Avoid multiple int conversions"	false	false	false	"STY {MEM0}|STA {MEM0}|NOP|JSR INTFAC|JSR PUSHREAL|LDY {MEM0}|LDA {MEM0}|JSR INTFAC|"	"{LINE0}|{LINE1}|{LINE2}|{LINE3}|{LINE4}|"
 
 #115: Remove INTFAC/FACWORD
-"Remove INTFAC/FACWORD"	false	false	false	"LDY {MEM0}|LDA {MEM0}|JSR INTFAC|JSR FACWORD|STY {*}|"	"{LINE0}|{LINE4}|"
+"Remove INTFAC/FACWORD"	false	false	false	"LDY {MEM0}|LDA {MEM0}|JSR INTFAC|JSR FACWORD|STY {*}|"	"{LINE0}|{LINE1}|{LINE4}|"
 
 #116: Memory saving single char out(1)
 "Memory saving single char out(1)"	false	false	false	"JSR COMPACTMAX|LDA {*}|JSR SINGLECHROUT|"	"{LINE1}|JSR SINGLECHROUTMAX|"
