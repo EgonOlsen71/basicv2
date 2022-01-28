@@ -711,6 +711,20 @@ CHRINT		TAX
 			INC STRBUFP+1
 NOCHR2		RTS
 ;###################################
+CHRINTCALC
+			TAX
+			LDA TMP2_ZP+1
+			BEQ CHRINTSUB
+			CLC
+			TYA
+			ADC TMP2_ZP
+			JMP CHRINT
+CHRINTSUB
+			SEC
+			TYA
+			SBC TMP2_ZP
+			JMP CHRINT
+;###################################
 WRITETID	LDY #0
 			LDA (TMP_ZP),Y
 			CMP #$6

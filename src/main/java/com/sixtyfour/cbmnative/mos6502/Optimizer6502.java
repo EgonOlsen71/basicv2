@@ -259,6 +259,7 @@ public class Optimizer6502 implements Optimizer {
 			input = applyIntOptimizations(config, platform, input);
 		} catch (Exception e) {
 			Logger.log("!!! Failed to apply integer optimizations: " + e.getMessage());
+			e.printStackTrace();
 		}
 		input = doLastCleanups(config, platform, input);
 		// input = simplifyRemainingBranches(config, input);
@@ -879,6 +880,40 @@ public class Optimizer6502 implements Optimizer {
 							rep.add(cleaned.get(1));
 							rep.add("JSR SUPERFIINX");
 							rep.add("JSR ARRAYSTORE_INTEGER_INT");
+							return combine(pattern, rep);
+						}
+						pattern.reset();
+						return input;
+					}
+				}));
+
+		// CHR$(X%+-CONST)...yes, that's quite a special ans rare case...
+		intPatterns.add(new IntPattern(true, "Optimized code CHR plus ADD/SUB",
+				new String[] { "LDA #<{CONST0}", "LDY #>{CONST0}", "JSR COPY2_XYA_YREG", "LDY {MEM0}", "LDA {MEM0}",
+						"JSR INTFAC", "JSR FACXREG", "JSR YREGFAC", "LDA #<X_REG", "LDY #>X_REG", "JSR {*}",
+						"JSR FACYREG", "JSR CHR" },
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						String consty = cleaned.get(0);
+						String vary = cleaned.get(3);
+						String calcy = cleaned.get(10);
+						consty = consty.substring(consty.indexOf("<") + 1).trim();
+						Number num = const2Value.get(consty);
+						int numd = num.intValue();
+						if (vary.contains("%") && (calcy.contains("SUBMEM") || calcy.contains("ADDMEM"))) {
+							List<String> rep = new ArrayList<>();
+							rep.add("LDA #"+(numd & 0xff));
+							rep.add("STA TMP2_ZP");
+							if (calcy.contains("SUBMEM")) {
+								rep.add("LDA #0");
+							} else {
+								rep.add("LDA #1");
+							}
+							rep.add("STA TMP2_ZP+1");
+							rep.add(cleaned.get(3));
+							rep.add("JSR CHRINTCALC");
 							return combine(pattern, rep);
 						}
 						pattern.reset();
