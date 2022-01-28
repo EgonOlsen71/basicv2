@@ -212,7 +212,7 @@
 "Direct copy of floats into mem"	false	false	false	"LDA #<{MEM0}|LDY #>{MEM0}|JSR REALFAC|LDX #<{MEM1}|LDY #>{MEM1}|JSR FACMEM|"	"LDX #4|dcloop{cnt}:|LDA {MEM0},X|STA {MEM1},X|DEX|BPL dcloop{cnt}|"
 
 #72: Single character output
-"Single character output"	false	false	false	"LDA  {*}|JSR CHRINT|JSR STROUT|"	"{LINE0}|JSR SINGLECHROUT|"
+"Single character output"	false	false	false	"LDA {*}|JSR CHRINT|JSR STROUT|"	"{LINE0}|JSR SINGLECHROUT|"
 
 #73: Single character output and break
 "Single character output and break"	false	false	false	"LDA  {*}|JSR CHRINT|JSR STROUTBRK|"	"{LINE0}|JSR SINGLECHROUTBRK|"

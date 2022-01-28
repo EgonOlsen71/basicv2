@@ -725,6 +725,20 @@ CHRINTSUB
 			SBC TMP2_ZP
 			JMP CHRINT
 ;###################################
+SINGLECHRCALCOUT
+			STY TMP_ZP
+			LDA TMP2_ZP+1
+			BEQ SINGLECHRINTSUB
+			CLC
+			TYA
+			ADC TMP2_ZP
+			JMP SINGLECHROUT
+SINGLECHRINTSUB
+			SEC
+			TYA
+			SBC TMP2_ZP
+			JMP SINGLECHROUT
+;###################################
 WRITETID	LDY #0
 			LDA (TMP_ZP),Y
 			CMP #$6

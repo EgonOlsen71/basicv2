@@ -283,7 +283,11 @@ public class Optimizer6502 implements Optimizer {
 		tmpPat = new Pattern(false, "Remove FAC/PUSH/POP", new String[] { "JSR REALFAC" }, "JSR REALFACPUSH",
 				"JSR POPREAL");
 		others.add(tmpPat);
-
+		
+		tmpPat = new Pattern(false, "Single character output with calculation", new String[] { "JSR SINGLECHRCALCOUT" }, "JSR CHRINTCALC",
+				"JSR STROUT");
+		others.add(tmpPat);
+		
 		OptimizationResult res = optimizeInternalThreaded(conf, others, platform, ret, null, extractConstants(ret));
 		printOutResults(res.getType2count());
 		return res.getCode();
