@@ -283,11 +283,11 @@ public class Optimizer6502 implements Optimizer {
 		tmpPat = new Pattern(false, "Remove FAC/PUSH/POP", new String[] { "JSR REALFAC" }, "JSR REALFACPUSH",
 				"JSR POPREAL");
 		others.add(tmpPat);
-		
-		tmpPat = new Pattern(false, "Single character output with calculation", new String[] { "JSR SINGLECHRCALCOUT" }, "JSR CHRINTCALC",
-				"JSR STROUT");
+
+		tmpPat = new Pattern(false, "Single character output with calculation", new String[] { "JSR SINGLECHRCALCOUT" },
+				"JSR CHRINTCALC", "JSR STROUT");
 		others.add(tmpPat);
-		
+
 		OptimizationResult res = optimizeInternalThreaded(conf, others, platform, ret, null, extractConstants(ret));
 		printOutResults(res.getType2count());
 		return res.getCode();
@@ -710,26 +710,25 @@ public class Optimizer6502 implements Optimizer {
 					}
 				}));
 
-		// POKE CONST, CONST...after THEN (yeah, for some reason other optimizations don't cover this)
-		intPatterns
-				.add(new IntPattern(
-						true, "Optimized code for POKE CONST,CONST", new String[] { "LDA #<{CONST0}", "LDY #>{CONST0}", "JSR COPY2_XYA_YREG", "NOP",
-								"JSR YREGFAC", "JSR FACWORD", "STY {*}" },
-						new AbstractCodeModifier() {
-							@Override
-							public List<String> modify(IntPattern pattern, List<String> input) {
-								input = super.modify(pattern, input);
-								String consty = cleaned.get(0);
-								consty = consty.substring(consty.indexOf("<") + 1).trim();
-								Number num = const2Value.get(consty);
-								int numd = num.intValue();
-								
-								List<String> rep = new ArrayList<>();
-								rep.add("LDY #" + (numd & 0xff));
-								rep.add(cleaned.get(6));
-								return combine(pattern, rep);
-							}
-						}));
+		// CONST into Y/A
+		intPatterns.add(new IntPattern(
+				true, "Optimized code for CONST into Y/A", new String[] { "LDA #<{CONST0}", "LDY #>{CONST0}",
+						"JSR COPY2_XYA_YREG", "NOP", "JSR YREGFAC", "JSR FACWORD" },
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						String consty = cleaned.get(0);
+						consty = consty.substring(consty.indexOf("<") + 1).trim();
+						Number num = const2Value.get(consty);
+						int numd = num.intValue();
+						// Apply to constants only
+						List<String> rep = new ArrayList<>();
+						rep.add("LDY #" + (numd & 0xff));
+						rep.add("LDA #" + ((numd & 0xff00) >> 8));
+						return combine(pattern, rep);
+					}
+				}));
 
 		// POKE I,PEEK(I) AND 234
 		intPatterns
@@ -929,7 +928,7 @@ public class Optimizer6502 implements Optimizer {
 						int numd = num.intValue();
 						if (vary.contains("%") && (calcy.contains("SUBMEM") || calcy.contains("ADDMEM"))) {
 							List<String> rep = new ArrayList<>();
-							rep.add("LDA #"+(numd & 0xff));
+							rep.add("LDA #" + (numd & 0xff));
 							rep.add("STA TMP2_ZP");
 							if (calcy.contains("SUBMEM")) {
 								rep.add("LDA #0");
