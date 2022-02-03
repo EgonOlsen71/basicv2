@@ -710,6 +710,27 @@ public class Optimizer6502 implements Optimizer {
 					}
 				}));
 
+		// POKE CONST, CONST...after THEN (yeah, for some reason other optimizations don't cover this)
+		intPatterns
+				.add(new IntPattern(
+						true, "Optimized code for POKE CONST,CONST", new String[] { "LDA #<{CONST0}", "LDY #>{CONST0}", "JSR COPY2_XYA_YREG", "NOP",
+								"JSR YREGFAC", "JSR FACWORD", "STY {*}" },
+						new AbstractCodeModifier() {
+							@Override
+							public List<String> modify(IntPattern pattern, List<String> input) {
+								input = super.modify(pattern, input);
+								String consty = cleaned.get(0);
+								consty = consty.substring(consty.indexOf("<") + 1).trim();
+								Number num = const2Value.get(consty);
+								int numd = num.intValue();
+								
+								List<String> rep = new ArrayList<>();
+								rep.add("LDY #" + (numd & 0xff));
+								rep.add(cleaned.get(6));
+								return combine(pattern, rep);
+							}
+						}));
+
 		// POKE I,PEEK(I) AND 234
 		intPatterns
 				.add(new IntPattern(
