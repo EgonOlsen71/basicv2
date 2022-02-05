@@ -317,7 +317,7 @@ public class Compressor {
 	 * @return the file's data
 	 */
 	public static FileData loadProgramData(String fileName) {
-		log("Compressing " + fileName);
+		log("Loading " + fileName);
 		byte[] bytes = Loader.loadBlob(fileName);
 		FileData fd = new FileData();
 		fd.setData(Arrays.copyOfRange(bytes, 2, bytes.length));
