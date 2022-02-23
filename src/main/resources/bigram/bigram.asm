@@ -310,7 +310,9 @@ INTFAC		JSR ENABLEROM
 			JSR BRINTFAC
 			JMP DISABLEROM
 ;###################################
-WRITETIS	JSR ENABLEROM
+WRITETIS	LDY #$06
+			JSR BRCOPYSTRING
+			JSR ENABLEROM
 			JSR BRWRITETIS
 			JMP DISABLEROM
 ;###################################
