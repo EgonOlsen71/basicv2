@@ -129,6 +129,7 @@ public class Def extends AbstractCommand {
 			throw new RuntimeException("Redef'd function error: " + fnName + "/" + cmd.getTerm());
 		}
 		machine.setFunction(fnName, this);
+		term.setSealed(true);
 		NativeCompiler compiler = NativeCompiler.getCompiler();
 		List<String> after = new ArrayList<String>();
 		List<String> expr = compiler.compileToPseudoCode(config, machine, term);
