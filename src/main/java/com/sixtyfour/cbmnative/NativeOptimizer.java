@@ -119,6 +119,10 @@ public class NativeOptimizer {
 		// ...and the same thing for 160...
 		patterns.add(new NativePattern(new String[] { "MOV X,#160{INTEGER}", "MUL X,Y" },
 				new String[] { "MOV A,#7{INTEGER}", "MOV X,Y", "SHL X,A", "MOV A,#5{INTEGER}", "SHL Y,A", "ADD X,Y" }));
+		
+		// ...and the same thing for 10...
+		patterns.add(new NativePattern(new String[] { "MOV X,#10{INTEGER}", "MUL X,Y" },
+				new String[] { "MOV A,#3{INTEGER}", "MOV X,Y", "SHL X,A", "MOV A,#1{INTEGER}", "SHL Y,A", "ADD X,Y" }));
 
 		// And once more for the constant value in Y...
 		// Optimizes the special case of a multiplication by 40. Is is quite common in
@@ -137,6 +141,10 @@ public class NativeOptimizer {
 		// ...and the same thing for 160...
 		patterns.add(new NativePattern(new String[] { "MOV Y,#160{INTEGER}", "MUL X,Y" },
 				new String[] { "MOV A,#7{INTEGER}", "MOV Y,X", "SHL X,A", "MOV A,#5{INTEGER}", "SHL Y,A", "ADD X,Y" }));
+		
+		// ...and the same thing for 10...
+		patterns.add(new NativePattern(new String[] { "MOV Y,#10{INTEGER}", "MUL X,Y" },
+				new String[] { "MOV A,#3{INTEGER}", "MOV Y,X", "SHL X,A", "MOV A,#1{INTEGER}", "SHL Y,A", "ADD X,Y" }));
 
 		// Some stuff that applies mostly for Arrays like dim k%(16,16), which are
 		// actually 17,17 in size but people keep forgetting...
