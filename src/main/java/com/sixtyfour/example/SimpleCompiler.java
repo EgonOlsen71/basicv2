@@ -88,11 +88,6 @@ public class SimpleCompiler {
 			nCode = srcProc.relocate(cfg, parts, memHoles);
 		}
 
-		if (cfg.isBigRam()) {
-			SourceProcessor srcProc = new SourceProcessor(nCode);
-			nCode = srcProc.moveRuntime();
-		}
-
 		// Assemble compiled program
 		Assembler assy = null;
 		assy = new Assembler(nCode);
