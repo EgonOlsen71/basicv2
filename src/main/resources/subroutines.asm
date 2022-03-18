@@ -690,6 +690,13 @@ CHR			LDA STRBUFP
 			INC STRBUFP+1
 NOCHR1		RTS
 ;###################################
+CHRINTB		JSR CHRINT
+			LDY A_REG
+			LDA A_REG+1
+			STY B_REG
+			STA B_REG+1
+			RTS
+;###################################
 CHRINT		TAX
 			LDA STRBUFP
 			STA TMP_ZP

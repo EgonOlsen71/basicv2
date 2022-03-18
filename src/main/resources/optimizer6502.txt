@@ -381,4 +381,5 @@
 #127: Move variable directly in XREG (LDX #<X_REG in the last line to keep another optimization valid)
 "Move variable directly in XREG"	false	false	false	"LDX #<{MEM0}|LDY #>{MEM0}|JSR FACMEM|NOP|LDA #<{MEM1}|LDY #>{MEM1}|JSR REALFACPUSH|LDA #<{MEM0}|LDY #>{MEM0}|JSR COPY2_XYA_XREG|JSR POPREAL"	"{LINE0}|{LINE1}|{LINE2}|{LINE3}|JSR FACXREG|{LINE4}|{LINE5}|JSR REALFAC|LDX #<X_REG|" 
 
-
+#128: Memory saving CHRINT
+"Memory saving CHRINT"	false	false	false	"JSR CHRINT|LDY A_REG|LDA A_REG+1|STY B_REG|STA B_REG+1"	"JSR CHRINTB"
