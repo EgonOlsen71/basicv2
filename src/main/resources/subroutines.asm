@@ -2519,6 +2519,15 @@ NUMOK		LDA TMP_REG
 			STA X_REG
 			JMP FACYREG		; ...and return
 ;###################################
+GETADOLLAR	JSR GETSTR		; Saves memory in the common GET A$ case...
+			LDA A_REG
+			LDY A_REG+1
+			STA TMP_ZP
+			STY TMP_ZP+1
+			LDA #<VAR_A$
+			LDY #>VAR_A$
+			JMP COPYSTRING
+;###################################
 GETSTR		LDA #8
 			LDY #0
 			JSR COMPACTF

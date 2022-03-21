@@ -383,3 +383,7 @@
 
 #128: Memory saving CHRINT
 "Memory saving CHRINT"	false	false	false	"JSR CHRINT|LDY A_REG|LDA A_REG+1|STY B_REG|STA B_REG+1"	"JSR CHRINTB"
+
+#129: Memory saving GET A$
+"Memory saving GET A$"	false	false	false	"JSR GETSTR|LDA A_REG|LDY A_REG+1|STA TMP_ZP|STY TMP_ZP+1|LDA #<VAR_A$|LDY #>VAR_A$|JSR COPYSTRING"	"JSR GETADOLLAR"
+
