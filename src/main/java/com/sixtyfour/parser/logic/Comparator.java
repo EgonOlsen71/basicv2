@@ -5,11 +5,11 @@ package com.sixtyfour.parser.logic;
 
 /**
  * Comparator is an enum that contains all possible comparators that a BASIC
- * program can contain, as there are =, <>, >=, =>, <=, =<, > and <
+ * program can contain, as there are =, <>, ><, >=, =>, <=, =<, > and <
  */
 public enum Comparator {
 
-	NOT_EQUAL("<>"), LARGER_OR_EQUAL(">=", "=>"), SMALLER_OR_EQUAL("<=", "=<"), EQUAL("="), LARGER(">"), SMALLER("<"),
+	NOT_EQUAL("<>", "><"), LARGER_OR_EQUAL(">=", "=>"), SMALLER_OR_EQUAL("<=", "=<"), EQUAL("="), LARGER(">"), SMALLER("<"),
 	EXISTS();
 
 	/** The term */
