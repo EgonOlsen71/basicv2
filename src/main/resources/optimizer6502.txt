@@ -387,3 +387,8 @@
 #129: Memory saving GET A$
 "Memory saving GET A$"	false	false	false	"JSR GETSTR|LDA A_REG|LDY A_REG+1|STA TMP_ZP|STY TMP_ZP+1|LDA #<VAR_A$|LDY #>VAR_A$|JSR COPYSTRING"	"JSR GETADOLLAR"
 
+#130: Simplified NEXT
+"Simplified comparison"	false	false	false	"LDY #0|TYA|STY A_REG|STA A_REG+1|NOP|JSR NEXT"	"LDA #0|STA A_REG|STA A_REG+1|NOP|JSR NEXT"
+
+
+
