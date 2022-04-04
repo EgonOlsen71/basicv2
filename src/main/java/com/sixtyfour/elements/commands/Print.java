@@ -17,6 +17,7 @@ import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.parser.optimize.TermOptimizer;
 import com.sixtyfour.plugins.PrintConsumer;
 import com.sixtyfour.system.BasicProgramCounter;
+import com.sixtyfour.system.Conversions;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.CompilerException;
 import com.sixtyfour.util.VarUtils;
@@ -74,7 +75,13 @@ public class Print extends AbstractCommand {
 			PrintPart newLine = new PrintPart("\"\"", ' ');
 			parts.add(newLine);
 		}
+		
 		for (PrintPart part : parts) {
+			// If possible, replace printing of a single char string with a PRINT CHR$(<value>) instead...
+			String txt=part.part;
+			if (txt!=null && txt.length()==3 && txt.startsWith("\"") && txt.endsWith("\"")) {
+				part.part="chr$("+(int) (Conversions.convertAscii2Petscii(txt.charAt(1)))+")";
+			}
 			part.term = Parser.getTerm(config, part.part, machine, false, true);
 		}
 		this.parts = parts;

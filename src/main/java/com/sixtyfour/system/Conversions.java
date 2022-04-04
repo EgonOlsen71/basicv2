@@ -127,6 +127,21 @@ public class Conversions {
 		return convertFloat(ram[addr] & 0xff, ram[addr + 5] & 0x80, ram[addr + 4] & 0xff, ram[addr + 3] & 0xff,
 				ram[addr + 2] & 0xff, ram[addr + 1] & 0xff);
 	}
+	
+	/**
+	 * Converts an ASCII char to the corresponsing PETSCII char
+	 * @param c
+	 * @return
+	 */
+	public static char convertAscii2Petscii(char c) {
+		if (c > 64 && c < 91) {
+			return (char) (c + 32);
+		}
+		if (c > 96 && c < 123) {
+			return (char) (c - 32);
+		}
+		return c;
+	}
 
 	/**
 	 * Converts a float from C64 5 byte format into Java format.
