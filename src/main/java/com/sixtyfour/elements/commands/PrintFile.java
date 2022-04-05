@@ -50,7 +50,7 @@ public class PrintFile extends Print {
 		}
 		fileNumber = pars.get(0);
 		checkTypes(pars, linePart, Type.STRING);
-		super.parse(config, "PRINT" + linePart, lineCnt, lineNumber, linePos, lastPos, machine);
+		super.parse(config, "PRINT" + linePart, lineCnt, lineNumber, linePos, lastPos, machine, false);
 		return null;
 	}
 

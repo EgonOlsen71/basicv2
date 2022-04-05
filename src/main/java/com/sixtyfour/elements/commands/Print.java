@@ -57,15 +57,20 @@ public class Print extends AbstractCommand {
 		return term.getType();
 	}
 
+	@Override
+	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos,
+			boolean lastPos, Machine machine) {
+		return parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine, true);
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see sixtyfour.elements.commands.AbstractCommand#parse(java.lang.String, int,
 	 * int, int, boolean, sixtyfour.system.Machine)
 	 */
-	@Override
-	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos,
-			boolean lastPos, Machine machine) {
+	protected String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos,
+			boolean lastPos, Machine machine, boolean optimizeChars) {
 		super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine);
 		orgLine = linePart;
 		String aLine = linePart.substring(linePart.startsWith("?") ? 1 : 5);
@@ -76,13 +81,16 @@ public class Print extends AbstractCommand {
 			parts.add(newLine);
 		}
 		
-		for (PrintPart part : parts) {
-			// If possible, replace printing of a single char string with a PRINT CHR$(<value>) instead...
-			String txt=part.part;
-			if (txt!=null && txt.length()==3 && txt.startsWith("\"") && txt.endsWith("\"")) {
-				part.part="chr$("+(int) (Conversions.convertAscii2Petscii(txt.charAt(1)))+")";
+		if (optimizeChars) {
+			// Disabled for PRINT#x, until I'm sure it's safe to do this...
+			for (PrintPart part : parts) {
+				// If possible, replace printing of a single char string with a PRINT CHR$(<value>) instead...
+				String txt=part.part;
+				if (txt!=null && txt.length()==3 && txt.startsWith("\"") && txt.endsWith("\"")) {
+					part.part="chr$("+(int) (Conversions.convertAscii2Petscii(txt.charAt(1)))+")";
+				}
+				part.term = Parser.getTerm(config, part.part, machine, false, true);
 			}
-			part.term = Parser.getTerm(config, part.part, machine, false, true);
 		}
 		this.parts = parts;
 		return null;
