@@ -81,16 +81,14 @@ public class Print extends AbstractCommand {
 			parts.add(newLine);
 		}
 		
-		if (optimizeChars) {
-			// Disabled for PRINT#x, until I'm sure it's safe to do this...
-			for (PrintPart part : parts) {
-				// If possible, replace printing of a single char string with a PRINT CHR$(<value>) instead...
-				String txt=part.part;
-				if (txt!=null && txt.length()==3 && txt.startsWith("\"") && txt.endsWith("\"")) {
-					part.part="chr$("+(int) (Conversions.convertAscii2Petscii(txt.charAt(1)))+")";
-				}
-				part.term = Parser.getTerm(config, part.part, machine, false, true);
+		for (PrintPart part : parts) {
+			// If possible, replace printing of a single char string with a PRINT CHR$(<value>) instead...
+			String txt=part.part;
+			if (optimizeChars && txt!=null && txt.length()==3 && txt.startsWith("\"") && txt.endsWith("\"")) {
+				// Disabled for PRINT#x, until I'm sure it's safe to do this...
+				part.part="chr$("+(int) (Conversions.convertAscii2Petscii(txt.charAt(1)))+")";
 			}
+			part.term = Parser.getTerm(config, part.part, machine, false, true);
 		}
 		this.parts = parts;
 		return null;
