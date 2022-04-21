@@ -3,7 +3,7 @@
 .byte $15 $08 $00 $00 $9e $32 $30 $37 $32 $3a $8f $20 $4d $4f $53 $43 $4f $4d $50 $00 $00 $00 $00
 
 MEMSTART=2049
-MEMEND=$ffff
+MEMEND=$FFFF
 
 COPYFROM=$61
 COPYTO=$63
