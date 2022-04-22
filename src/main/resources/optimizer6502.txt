@@ -438,4 +438,7 @@
 #147: Omit Y_REG
 "Omit Y_REG"	false	false	false	"LDY {MEM0}|LDA {MEM0}|JSR INTFAC|JSR FACYREG|LDA #<{MEM1}|LDY #>{MEM1}|JSR COPY2_XYA_XREG|JSR YREGFAC"	"{LINE0}|{LINE1}|{LINE2}|{LINE4}|{LINE5}|{LINE6}"
 
+#148: Faster empty string
+"Faster empty string"	false	false	false	"LDA #<{#""}|LDY #>{#""}|STA TMP_ZP|STY TMP_ZP+1|LDA #<{MEM0}|LDY #>{MEM0}|JSR COPYSTRING"	"LDA #<EMPTYSTR|LDY #>EMPTYSTR|STA {MEM0}|STY {MEM0}+1"
+
 

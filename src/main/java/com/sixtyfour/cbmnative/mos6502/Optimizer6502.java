@@ -50,6 +50,7 @@ public class Optimizer6502 implements Optimizer {
 	private List<String> optimizeInternal(CompilerConfig conf, PlatformProvider platform, List<String> input,
 			ProgressListener pg, int threads) {
 		Map<String, Number> const2Value = extractConstants(input);
+		Map<String, String> strConst2Value = extractStringConstants(input);
 		int cpus = threads;
 		if (cpus <= 0) {
 			cpus = Runtime.getRuntime().availableProcessors();
@@ -92,7 +93,7 @@ public class Optimizer6502 implements Optimizer {
 				patterns.addAll(add.getAdditionalPatterns());
 			}
 			Future<OptimizationResult> task = executor.submit(() -> {
-				return optimizeInternalThreaded(conf, patterns, platform, part, pg, const2Value);
+				return optimizeInternalThreaded(conf, patterns, platform, part, pg, const2Value, strConst2Value);
 			});
 			futures.add(task);
 		}
@@ -128,15 +129,16 @@ public class Optimizer6502 implements Optimizer {
 	}
 
 	private OptimizationResult optimizeInternalThreaded(CompilerConfig conf, List<Pattern> patterns,
-			PlatformProvider platform, List<String> input, ProgressListener pg, Map<String, Number> const2Val) {
-		return optimizeInternalThreaded(conf, patterns, platform, input, pg, const2Val, false);
+			PlatformProvider platform, List<String> input, ProgressListener pg, Map<String, Number> const2Val, Map<String, String> strConst2Val) {
+		return optimizeInternalThreaded(conf, patterns, platform, input, pg, const2Val, strConst2Val, false);
 	}
 
 	private OptimizationResult optimizeInternalThreaded(CompilerConfig conf, List<Pattern> patterns,
-			PlatformProvider platform, List<String> input, ProgressListener pg, Map<String, Number> const2Val,
+			PlatformProvider platform, List<String> input, ProgressListener pg, Map<String, Number> const2Val, Map<String, String> strConst2Val,
 			boolean allLines) {
 		Map<String, Integer> type2count = new HashMap<>();
 		Map<String, Number> const2Value = new HashMap<>(const2Val);
+		Map<String, String> strConst2Value = new HashMap<>(strConst2Val);
 		Set<Pattern> used = new HashSet<Pattern>();
 		boolean optimized = false;
 
@@ -188,7 +190,7 @@ public class Optimizer6502 implements Optimizer {
 						continue;
 					}
 					int sp = pattern.getPos();
-					boolean matches = pattern.matches(line, i, const2Value);
+					boolean matches = pattern.matches(line, i, const2Value, strConst2Value);
 					if (matches) {
 						String name = pattern.getName();
 						Integer cnt = type2count.get(name);
@@ -288,7 +290,7 @@ public class Optimizer6502 implements Optimizer {
 				"JSR CHRINTCALC", "JSR STROUT");
 		others.add(tmpPat);
 
-		OptimizationResult res = optimizeInternalThreaded(conf, others, platform, ret, null, extractConstants(ret));
+		OptimizationResult res = optimizeInternalThreaded(conf, others, platform, ret, null, extractConstants(ret), extractStringConstants(ret));
 		printOutResults(res.getType2count());
 		return res.getCode();
 	}
@@ -306,6 +308,7 @@ public class Optimizer6502 implements Optimizer {
 
 	private List<String> applyPeekOptimization(CompilerConfig conf, PlatformProvider platform, List<String> input) {
 		Map<String, Number> const2Value = extractConstants(input);
+		Map<String, String> strConst2Value = extractStringConstants(input);
 
 		int[] ps = getStartAndEnd(conf, input);
 		int codeStart = ps[0];
@@ -321,7 +324,7 @@ public class Optimizer6502 implements Optimizer {
 			if (line.trim().startsWith(";") && pattern.isSkipComments()) {
 				continue;
 			}
-			boolean matches = pattern.matches(line, i, const2Value);
+			boolean matches = pattern.matches(line, i, const2Value, strConst2Value);
 			if (matches) {
 				List<List<String>> parts = pattern.split(input);
 				List<String> cleaned = parts.get(1).stream().filter(p -> !p.startsWith(";"))
@@ -370,6 +373,7 @@ public class Optimizer6502 implements Optimizer {
 		// if (true) return input;
 
 		Map<String, Number> const2Value = extractConstants(input);
+		Map<String, String> strConst2Value = extractStringConstants(input);
 		int[] ps = getStartAndEnd(conf, input);
 		int codeStart = ps[0];
 		int codeEnd = ps[1];
@@ -952,7 +956,7 @@ public class Optimizer6502 implements Optimizer {
 			}
 
 			for (IntPattern pattern : intPatterns) {
-				boolean matches = pattern.matches(line, i, const2Value);
+				boolean matches = pattern.matches(line, i, const2Value, strConst2Value);
 				if (matches) {
 					input = pattern.modify(input);
 				}
@@ -1175,7 +1179,7 @@ public class Optimizer6502 implements Optimizer {
 		// thread, because it's quite cheap to do anyway.
 
 		List<Pattern> others = new PatternProcessor().getPatterns("optimizer6502x.txt");
-		OptimizationResult res = optimizeInternalThreaded(conf, others, platform, ret, null, extractConstants(ret));
+		OptimizationResult res = optimizeInternalThreaded(conf, others, platform, ret, null, extractConstants(ret), extractStringConstants(ret));
 		printOutResults(res.getType2count());
 		return res.getCode();
 	}
@@ -1189,7 +1193,7 @@ public class Optimizer6502 implements Optimizer {
 					"STA {*}", "STA {*}"));
 			others.add(new Pattern(true, "STZ (2)", new String[] { "{LINE1}|STA>STZ" }, "LDA #0", "STA {*}"));
 			OptimizationResult res = optimizeInternalThreaded(config, others, platform, ret, null,
-					extractConstants(ret), false);
+					extractConstants(ret), extractStringConstants(ret), false);
 			printOutResults(res.getType2count());
 			return res.getCode();
 		}
@@ -1209,7 +1213,7 @@ public class Optimizer6502 implements Optimizer {
 			others.add(new Pattern(true, "Fast FSUB (MEM)", new String[] { "JSR FASTFSUBMEM" }, "JSR MEMSUB"));
 			others.add(new Pattern(true, "Fast FSQRT (NEW)", new String[] { "JSR FASTFSQRT" }, "JSR FACSQR"));
 			OptimizationResult res = optimizeInternalThreaded(config, others, platform, ret, null,
-					extractConstants(ret), true);
+					extractConstants(ret), extractStringConstants(ret), true);
 			printOutResults(res.getType2count());
 			return res.getCode();
 		}
@@ -1218,6 +1222,10 @@ public class Optimizer6502 implements Optimizer {
 
 	private Map<String, Number> extractConstants(List<String> ret) {
 		return Collections.unmodifiableMap(Util.extractNumberConstants(ret));
+	}
+	
+	private Map<String, String> extractStringConstants(List<String> ret) {
+		return Collections.unmodifiableMap(Util.extractStringConstants(ret));
 	}
 
 	private String trimLine(List<String> input, int i) {

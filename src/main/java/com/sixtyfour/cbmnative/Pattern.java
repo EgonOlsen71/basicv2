@@ -222,7 +222,7 @@ public class Pattern implements java.lang.Cloneable {
 	 * @param const2Value a mapping from constants to their values
 	 * @return does it match?
 	 */
-	public boolean matches(String line, int ix, Map<String, Number> const2Value) {
+	public boolean matches(String line, int ix, Map<String, Number> const2Value, Map<String, String> strConst2Value) {
 		if (line.startsWith(";")) {
 			return false;
 		}
@@ -268,15 +268,28 @@ public class Pattern implements java.lang.Cloneable {
 								if (reg.startsWith("#")) {
 									String num = reg.substring(1);
 									boolean isReal = num.contains(".");
-									double val = Double.parseDouble(num);
-									if (!isReal) {
-										val = (int) val;
-									}
-									int pos = lineRight.indexOf("CONST_");
-									if (lineRight.equals(reg)
-											|| (pos != -1 && const2Value.containsKey(lineRight.substring(pos))
-													&& const2Value.get(lineRight.substring(pos)).doubleValue() == val)) {
-										return inc(ix);
+									boolean isString = num.contains("\"");
+									if (!isString) {
+										// Not a string...
+										double val = Double.parseDouble(num);
+										if (!isReal) {
+											val = (int) val;
+										}
+										int pos = lineRight.indexOf("CONST_");
+										if (lineRight.equals(reg) || (pos != -1
+												&& const2Value.containsKey(lineRight.substring(pos))
+												&& const2Value.get(lineRight.substring(pos)).doubleValue() == val)) {
+											return inc(ix);
+										}
+									} else {
+										// a string...
+										String val = num.replace("\"", "");
+										int pos = lineRight.indexOf("CONST_");
+										if (lineRight.equals(reg) || (pos != -1
+												&& strConst2Value.containsKey(lineRight.substring(pos))
+												&& strConst2Value.get(lineRight.substring(pos)).equals(val))) {
+											return inc(ix);
+										}
 									}
 									return resetPattern();
 								} else {
@@ -348,7 +361,7 @@ public class Pattern implements java.lang.Cloneable {
 		}
 		return resetPattern();
 	}
-	
+
 	/**
 	 * 
 	 * @return
@@ -356,16 +369,16 @@ public class Pattern implements java.lang.Cloneable {
 	public List<String> getInputPattern() {
 		return new ArrayList<>(pattern);
 	}
-	
+
 	/**
 	 * 
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
 	public List<String> getOutputPattern() {
-		return new ArrayList<>(replacement==null?((List<String>)Collections.EMPTY_LIST):Arrays.asList(replacement));
+		return new ArrayList<>(
+				replacement == null ? ((List<String>) Collections.EMPTY_LIST) : Arrays.asList(replacement));
 	}
-	
 
 	private void replace(String[] replacement, int i, int pos, int offset, String[] values) {
 		int endi = replacement[i].indexOf("}");
@@ -415,12 +428,12 @@ public class Pattern implements java.lang.Cloneable {
 		end = ix;
 		return pos == pattern.size();
 	}
-	
+
 	public List<List<String>> split(List<String> code) {
 		List<List<String>> ret = new ArrayList<>();
 		List<String> first = code.subList(0, index);
 		List<String> last = code.subList(end + 1, code.size());
-		List<String> between = code.subList(index,  end+1);
+		List<String> between = code.subList(index, end + 1);
 		ret.add(first);
 		ret.add(between);
 		ret.add(last);
@@ -430,7 +443,7 @@ public class Pattern implements java.lang.Cloneable {
 	public void reset() {
 		resetPattern();
 	}
-	
+
 	public boolean isLooseTypes() {
 		return looseTypes;
 	}
