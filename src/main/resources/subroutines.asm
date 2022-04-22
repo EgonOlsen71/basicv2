@@ -1562,6 +1562,16 @@ ARRAYACCESS_INTEGER_INT_SI
 			TXA
 			RTS
 ;###################################
+INTADD16 	CLC
+			TAX
+			TYA
+			ADC TMP4_REG
+			STA TMP4_REG
+			TXA
+			ADC TMP4_REG+1
+			STA TMP4_REG+1
+			RTS
+;###################################
 ARRAYACCESS_INTEGER_SNX
 			STA G_REG
 			STY G_REG+1
@@ -3941,6 +3951,37 @@ FACYREG		LDA FACLO
 			STA Y_REG
 			LDA #0			; Why? Don't know...the ROM does this as well...
 			STA FACOV
+			RTS
+;###################################
+XXBASINT	LDA ARGLO		;BASINT breaks the content of ARG, so we save and restore it in F_REG
+			STA F_REG+4
+			LDA ARGMO
+			STA F_REG+3
+			LDA ARGMOH
+			STA F_REG+2
+			LDA ARGSGN
+			ORA #$7F
+			AND ARGHO
+			STA F_REG+1
+			LDA ARGEXP
+			STA F_REG
+			JSR BASINT
+			LDA F_REG+4
+			STA ARGLO
+			LDA F_REG+3
+			STA ARGMO
+			LDA F_REG+2
+			STA ARGMOH
+			LDA F_REG+1
+			STA ARGSGN
+			EOR FACSGN		; Does this have a point in this context? I'm not sure...
+			STA ARISGN
+			LDA ARGSGN
+			ORA #$80
+			STA ARGHO
+			LDA F_REG
+			STA ARGEXP
+			LDA FACEXP
 			RTS
 ;###################################
 XREGFAC		LDA X_REG+4
