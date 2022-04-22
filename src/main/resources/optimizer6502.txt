@@ -434,3 +434,8 @@
 
 #146: Memory saving array access (real)
 "Memory saving array access (real)"	false	false	false	"LDA #<{MEM0}|LDY #>{MEM0}|STA G_REG|STY G_REG+1|JSR ARRAYACCESS_REAL|"	"{LINE0}|{LINE1}|JSR ARRAYACCESS_REAL_S|"
+
+#147: Omit Y_REG
+"Omit Y_REG"	false	false	false	"LDY {MEM0}|LDA {MEM0}|JSR INTFAC|JSR FACYREG|LDA #<{MEM1}|LDY #>{MEM1}|JSR COPY2_XYA_XREG|JSR YREGFAC"	"{LINE0}|{LINE1}|{LINE2}|{LINE4}|{LINE5}|{LINE6}"
+
+

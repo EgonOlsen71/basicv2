@@ -228,6 +228,17 @@ public class TermOptimizer {
 		// System.out.println(t.getInitial() + "/" + left.isTerm() + "/" +
 		// right.isTerm());
 
+		// Replace i+i by 2*i. While the former is faster in BASIC, the latter is faster
+		// here, because it will be replaced by a shift operation later on.
+		if (t.getOperator().isPlus()) {
+			if (right instanceof Variable && right == left) {
+				t.setOperator(new Operator("*"));
+				t.setLeft(new Constant<Integer>(2));
+				left = t.getLeft();
+			}
+		}
+
+		
 		// While we are at it: Optimize some divisions to multiplications by
 		// 1/... or shifts...
 		if (t.getOperator().isDivision()) {
@@ -311,18 +322,7 @@ public class TermOptimizer {
 			}
 		}
 
-		// Replace i+i by 2*i. While the former is faster in BASIC, the latter is faster
-		// here,
-		// because it will be replaced by a shift operation later on.
-		if (t.getOperator().isPlus()) {
-			if (right instanceof Variable && right == left) {
-				t.setOperator(new Operator("*"));
-				t.setLeft(new Constant<Integer>(2));
-				left = t.getLeft();
-			}
-		}
-
-		// Replace x*1 or 1*x by simply x...has this happens in code...
+		// Replace x*1 or 1*x by simply x...
 		if (t.getOperator().isMultiplication()) {
 			if (right.isConstant() && ((Number) right.eval(machine)).doubleValue() == 1) {
 				t.setOperator(Operator.NOP);
