@@ -441,4 +441,3 @@
 #148: Faster empty string
 "Faster empty string"	false	false	false	"LDA #<{#""}|LDY #>{#""}|STA TMP_ZP|STY TMP_ZP+1|LDA #<{MEM0}|LDY #>{MEM0}|JSR COPYSTRING"	"LDA #<EMPTYSTR|LDY #>EMPTYSTR|STA {MEM0}|STY {MEM0}+1"
 
-

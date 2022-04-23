@@ -2880,7 +2880,7 @@ REALFACPUSH	STA TMP_ZP
 			INY
 			LDA (TMP_ZP),Y
 			STA (TMP2_ZP),Y
-			LDA FPSTACKP
+			TXA				;LDA FPSTACKP
 			CLC
 			ADC #5
 			STA FPSTACKP
@@ -4153,7 +4153,7 @@ BOOSTDIASBLE
 		 	STA $0315
 		 	CLI
 		 	RTS
-</IF>				
+</IF>	
 ;###################################
 ; Improved floating point routines
 ; ported from Michael Jørgensen's
