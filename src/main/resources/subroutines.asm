@@ -284,10 +284,12 @@ MIDCLAMP	LDA (TMP_ZP),Y		; Clamp to the string's length, if needed...
 			BCS MIDCOPY
 			STY TMP_REG
 			JMP MIDCOPY
-
+;###################################
+RIGHTCONST	JSR STRFUNCINTINT
+			JMP RIGHT2
 ;###################################
 RIGHT		JSR STRFUNCINT
-			LDA (TMP_ZP),Y
+RIGHT2		LDA (TMP_ZP),Y
 			TAX
 			CMP TMP_REG			; compare the source string's length with the parameter
 			BCS RIGHTBELOW
@@ -300,8 +302,11 @@ RIGHTBELOW	TXA
 RIGHTNOV	STA TMP_REG+1
 			JMP STRFUNC
 ;###################################
+LEFTCONST	JSR STRFUNCINTINT
+			JMP LEFT2
+;###################################
 LEFT		JSR STRFUNCINT
-			STY TMP_REG+1		; store the start position (always 0 for left$)
+LEFT2		STY TMP_REG+1		; store the start position (always 0 for left$)
 			LDA (TMP_ZP),Y
 			CMP TMP_REG			; compare the source string's length with the parameter
 			BCS LEFTBELOW
@@ -316,6 +321,15 @@ STRFUNCINT 	LDA B_REG			;the source string
 			LDY #>C_REG
 			JSR REALFAC
 			JSR FACWORD
+			STY TMP_REG			; store the parameter
+			LDY #0
+			RTS
+;###################################
+STRFUNCINTINT
+		 	LDA B_REG			;the source string
+			STA TMP_ZP
+			LDA B_REG+1
+			STA TMP_ZP+1
 			STY TMP_REG			; store the parameter
 			LDY #0
 			RTS

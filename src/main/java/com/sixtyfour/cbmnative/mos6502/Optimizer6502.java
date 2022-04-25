@@ -629,6 +629,39 @@ public class Optimizer6502 implements Optimizer {
 						return combine(pattern, rep);
 					}
 				}));
+		
+		// left$(a$,<const>)/right$(a$, <const>)
+		intPatterns.add(new IntPattern(true, "Optimized code for LEFT",
+				new String[] { "LDA #<{CONST0}", "LDY #>{CONST0}", "JSR COPY2_XYA_CREG", "LDA {*}", "LDY {*}", "STA B_REG", "STY B_REG+1", "JSR {*}" },
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						String consty = cleaned.get(0);
+						consty = consty.substring(consty.indexOf("<") + 1).trim();
+						Number num = const2Value.get(consty);
+						int numd = num.intValue();
+						List<String> rep = new ArrayList<>();
+						// While this isn't what the interpreter would do, it's bs anyway, so we handle
+						// it like this...
+						String func = cleaned.get(7).replace("JSR", "").trim();
+						if (numd <= 0 || (!func.equals("LEFT") && !func.equals("RIGHT"))) {
+							pattern.reset();
+							return input;
+						} else {
+							if (numd > 255) {
+								numd = 255;
+							}
+							rep.add(cleaned.get(3));
+							rep.add(cleaned.get(4));
+							rep.add(cleaned.get(5));
+							rep.add(cleaned.get(6));
+							rep.add("LDY #" + numd);
+							rep.add("JSR "+func+"CONST");
+						}
+						return combine(pattern, rep);
+					}
+				}));
 
 		// ON XX GOTO/GOSUB...
 		intPatterns.add(new IntPattern(true, "Optimized code for ON XX GOYYY",
