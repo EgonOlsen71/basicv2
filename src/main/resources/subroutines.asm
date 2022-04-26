@@ -240,6 +240,15 @@ RESTORE		LDA #<DATAS
 			STY DATASP+1
 			RTS
 ;###################################
+MIDCONSTA	CMP #0
+			BNE MIDCONSTA2
+			JMP MIDCONST
+MIDCONSTA2	AND #$80
+			BNE MIDCONSTA3
+			JMP MIDNEGC
+MIDCONSTA3	LDY #$FF
+			JMP MIDCONST			
+;###################################
 MID			LDA #<D_REG
 			LDY #>D_REG
 			JSR REALFAC
@@ -285,6 +294,9 @@ MIDCLAMP	LDA (TMP_ZP),Y		; Clamp to the string's length, if needed...
 			STY TMP_REG
 			JMP MIDCOPY
 ;###################################
+RIGHTCONSTA	CMP #0
+			BEQ RIGHTCONST
+			LDY #$FF
 RIGHTCONST	JSR STRFUNCINTINT
 			JMP RIGHT2
 ;###################################
@@ -302,6 +314,9 @@ RIGHTBELOW	TXA
 RIGHTNOV	STA TMP_REG+1
 			JMP STRFUNC
 ;###################################
+LEFTCONSTA	CMP #0
+			BEQ LEFTCONST
+			LDY #$FF
 LEFTCONST	JSR STRFUNCINTINT
 			JMP LEFT2
 ;###################################
