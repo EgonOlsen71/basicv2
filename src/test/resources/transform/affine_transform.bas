@@ -284,11 +284,11 @@ unpack:
 print"{clr}unpacking texture..."
 p=tx
 packloop:
-read c,v
+read c,v%
 if c=0 then extend
 for i=1 to c
-pokep,v
-poke 53280,v
+pokep,v%
+poke 53280,v%
 p=p+4
 nexti
 goto packloop

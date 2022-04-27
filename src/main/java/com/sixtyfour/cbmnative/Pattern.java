@@ -226,7 +226,6 @@ public class Pattern implements java.lang.Cloneable {
 		if (line.startsWith(";")) {
 			return false;
 		}
-
 		String part = pattern.get(pos);
 
 		int p0 = spacePos.get(pos);

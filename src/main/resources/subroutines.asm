@@ -2176,6 +2176,23 @@ READADDPTR	STX TMP_REG+1
 			INC TMP3_ZP+1
 READADDPTRX	RTS
 ;###################################
+READMAYBEBYTE					; Version of READ for Bytes...maybe. Can switch to the old routine, if needed....
+			JSR READINIT
+			CMP #3
+			BCS RMBISBYTE
+			JSR MORENUMDATA
+			JMP FACINT
+RMBISBYTE	BNE RMBNOTYPE
+			LDA (TMP3_ZP),Y
+			TAY
+			LDX #1
+			JSR READADDPTR
+			JMP RMBNOTYPE2
+RMBNOTYPE	TAY
+RMBNOTYPE2	JSR NEXTDATA
+			LDA #0
+			RTS		
+;###################################
 READNUMBER	JSR READINIT
 MORENUMDATA CMP #$2				; Strings are not allowed here
 			BNE NUMNUM

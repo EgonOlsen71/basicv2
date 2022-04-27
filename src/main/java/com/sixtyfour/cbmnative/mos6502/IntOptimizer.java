@@ -425,7 +425,7 @@ public class IntOptimizer {
 						return input;
 					}
 				}));
-
+		
 		// PEEK(XXXX) with XXXX being a constant
 		intPatterns.add(new IntPattern(true, "Optimized code for PEEK(<constant>)",
 				new String[] { "LDA #<{CONST0}", "LDY #>{CONST0}", "JSR REALFAC", "JSR FACWORD", "STY {*}", "STA {*}" },
@@ -612,7 +612,7 @@ public class IntOptimizer {
 				}));
 
 		// f%(l%+1)=f%(r%)...still semi-optimal, because the intermediate result is
-		// stored as float, but anyway. This is quite a special case, but anyway...
+		// stored as float, but anyway. This is quite a special case anyway...
 		intPatterns.add(new IntPattern(true, "Optimized code for copying from int-array to int-array(2)",
 				new String[] { "LDY {MEM0}", "LDA {MEM0}", "JSR FIINX", "LDA #<X_REG", "LDY #>X_REG", "JSR REALFACPUSH",
 						"NOP", "LDA #<{MEM1}", "LDY #>{MEM1}", "STA G_REG", "STY G_REG+1", "LDY {MEM2}", "LDA {MEM2}",
@@ -648,7 +648,7 @@ public class IntOptimizer {
 					}
 				}));
 
-		// CHR$(X%+-CONST)...yes, that's quite a special ans rare case...
+		// CHR$(X%+-CONST)...yes, that's quite a special and rare case...
 		intPatterns.add(new IntPattern(true, "Optimized code CHR plus ADD/SUB",
 				new String[] { "LDA #<{CONST0}", "LDY #>{CONST0}", "JSR COPY2_XYA_YREG", "LDY {MEM0}", "LDA {MEM0}",
 						"JSR INTFAC", "JSR FACXREG", "JSR YREGFAC", "LDA #<X_REG", "LDY #>X_REG", "JSR {*}",
@@ -681,6 +681,85 @@ public class IntOptimizer {
 						return input;
 					}
 				}));
+		
+		// p% and/or <const>0>
+		intPatterns.add(new IntPattern(true, "Optimized code for AND/OR",
+				new String[] { "LDA {*}", "LDY {*}", "JSR COPY2_XYA_YREG", "LDY {*}", "LDA {*}", "JSR INTFAC",
+						"JSR FACXREG", "JSR YREGFAC", "JSR XREGARG", "JSR FAST{*}", "JSR {*}" },
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						String consty = cleaned.get(0);
+						consty = consty.substring(consty.indexOf("<") + 1).trim();
+						Number num = const2Value.get(consty);
+						double numd = num.doubleValue();
+						boolean isFacInt = cleaned.get(10).contains("FACINT");
+						boolean isXreg = cleaned.get(10).contains("FACXREG");
+						if ((isFacInt || isXreg) && numd == (int) numd && numd >= -32767 && numd < 32768) {
+							String op = cleaned.get(9).substring(8).replace("OR", "ORA");
+							String numHex = getHex(numd);
+							List<String> rep = new ArrayList<>();
+							rep.add(cleaned.get(4));
+							rep.add(op+" #$"+numHex.substring(0, 2));
+							rep.add("TAX");
+							rep.add(cleaned.get(3));
+							rep.add("TYA");
+							rep.add(op+" #$"+numHex.substring(2));
+							rep.add("TAY");
+							rep.add("TXA");
+							if (isXreg) {
+								rep.add("JSR INTFAC");
+								rep.add("JSR BASINT");	// Actually, this isn't needed but it triggers the ON GOTO-Optimization in the second pass
+								rep.add("JSR FACXREG");
+							}
+							return combine(pattern, rep);
+						}
+						pattern.reset();
+						return input;
+					}
+				}));
+		
+		// p%+1 and/or <const>0>
+		intPatterns.add(new IntPattern(true, "Optimized code for +1 AND/OR",
+				new String[] { "LDY {*}", "LDA {*}", "JSR FI{*}", "LDA {*}", "LDY {*}",
+						"JSR REALFAC", "JSR XREGARG", "JSR FAST{*}", "JSR {*}" },
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						String consty = cleaned.get(3);
+						consty = consty.substring(consty.indexOf("<") + 1).trim();
+						Number num = const2Value.get(consty);
+						double numd = num.doubleValue();
+						boolean isIncDec = cleaned.get(2).contains("FIINX") || cleaned.get(2).contains("FIDEX");
+						boolean isFacInt = cleaned.get(8).contains("FACINT");
+						boolean isXreg = cleaned.get(8).contains("FACXREG");
+						if ((isFacInt || isXreg) && isIncDec && numd == (int) numd && numd >= -32767 && numd < 32768) {
+							String op = cleaned.get(7).substring(8).replace("OR", "ORA");
+							String numHex = getHex(numd);
+							List<String> rep = new ArrayList<>();
+							rep.add(cleaned.get(0));
+							rep.add(cleaned.get(1));
+							rep.add(cleaned.get(2).replace("JSR ", "JSR SUPER"));
+							rep.add(op+" #$"+numHex.substring(0, 2));
+							rep.add("TAX");
+							rep.add("TYA");
+							rep.add(op+" #$"+numHex.substring(2));
+							rep.add("TAY");
+							rep.add("TXA");
+							if (isXreg) {
+								rep.add("JSR INTFAC");
+								rep.add("JSR BASINT");	// Actually, this isn't needed but it triggers the ON GOTO-Optimization in the second pass
+								rep.add("JSR FACXREG");
+							}
+							return combine(pattern, rep);
+						}
+						pattern.reset();
+						return input;
+					}
+				}));
+		
 
 		for (int i = codeStart; i < codeEnd; i++) {
 			String line = input.get(i);

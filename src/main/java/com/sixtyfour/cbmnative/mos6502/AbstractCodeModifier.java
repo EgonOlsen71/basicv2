@@ -19,7 +19,6 @@ public abstract class AbstractCodeModifier implements CodeModifier {
 		parts = pattern.split(input);
 		cleaned = parts.get(1).stream().filter(p -> !p.startsWith(";"))
 				.collect(Collectors.toList());
-		
 		return input;
 	}
 

@@ -170,7 +170,7 @@
 "CMP (MEM) != 0(2)"	false	false	false	"LDA #<{#0.0}|LDY #>{#0.0}|JSR REALFAC|LDA #<{MEM0}|LDY #>{MEM0}|JSR CMPFAC|{LABEL}|BNE {*}|"	"LDA {MEM0}|{LINE6}|{LINE7}|"
 
 #59: Direct loading of 0
-"Direct loading of 0"	false	false	false	"LDA #<{#0.0}|LDY #>{#0.0}|JSR REALFAC|"	"LDA #$0|STA FAC|STA FACHO|STA FACMOH|STA FACMO|STA FACLO|STA FACSGN|"
+"Direct loading of 0"	false	false	false	"#LDA #<{#0.0}|LDY #>{#0.0}|JSR REALFAC|"	"LDA #$0|STA FAC|STA FACHO|STA FACMOH|STA FACMO|STA FACLO|STA FACSGN|"
 
 #60: FAC into REG?, REG? into FAC (2)
 "FAC into REG?, REG? into FAC (2)"	false	false	false	"LDY #>{REG0}|LDX #<{REG0}|JSR FACMEM|LDA #<{REG0}|LDY #>{REG0}|JSR REALFAC|"	"{LINE0}|{LINE1}|{LINE2}|"
@@ -440,4 +440,10 @@
 
 #148: Faster empty string
 "Faster empty string"	false	false	false	"LDA #<{#""}|LDY #>{#""}|STA TMP_ZP|STY TMP_ZP+1|LDA #<{MEM0}|LDY #>{MEM0}|JSR COPYSTRING"	"LDA #<EMPTYSTR|LDY #>EMPTYSTR|STA {MEM0}|STY {MEM0}+1"
+
+#149: Improved READ for bytes
+"Improved READ for bytes"	false	false	false	"JSR READNUMBER|JSR YREGFAC|JSR FACINT"	"JSR READMAYBEBYTE"
+
+#150: Improved READ for bytes
+"Improved READ for bytes"	false	false	false	"JSR READNUMBER|LDY #>Y_REG|LDA #<Y_REG|JSR REALFAC|JSR FACINT"	"JSR READMAYBEBYTE"
 

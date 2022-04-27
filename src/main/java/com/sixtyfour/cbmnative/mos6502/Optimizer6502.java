@@ -258,6 +258,9 @@ public class Optimizer6502 implements Optimizer {
 			Logger.log("!!! Failed to apply peek optimizations: " + e.getMessage());
 		}
 		try {
+			Logger.log("Integer pass 1...");
+			input = new IntOptimizer().applyIntOptimizations(config, platform, input, getStartAndEnd(config, input));
+			Logger.log("Integer pass 2...");
 			input = new IntOptimizer().applyIntOptimizations(config, platform, input, getStartAndEnd(config, input));
 		} catch (Exception e) {
 			Logger.log("!!! Failed to apply integer optimizations: " + e.getMessage());
@@ -288,6 +291,16 @@ public class Optimizer6502 implements Optimizer {
 
 		tmpPat = new Pattern(false, "Single character output with calculation", new String[] { "JSR SINGLECHRCALCOUT" },
 				"JSR CHRINTCALC", "JSR STROUT");
+		others.add(tmpPat);
+		
+		// This is actually done in the normal optimizer run, but this sequence might be reintroduced by the int-optimizer for...reasons...so we remove it here again...
+		tmpPat = new Pattern(false, "Substitute double INT()", new String[] { "JSR INTFAC" },
+				"JSR INTFAC", "JSR BASINT");
+		others.add(tmpPat);
+		
+		// This can be introduced by the int-optimizer as well...we handle it here.
+		tmpPat = new Pattern(false, "Remove INT conversions", new String[] { "{LINE2}" },
+				"JSR INTFAC", "JSR FACWORD", "STY TMP_ZP");
 		others.add(tmpPat);
 
 		OptimizationResult res = optimizeInternalThreaded(conf, others, platform, ret, null, extractConstants(ret), extractStringConstants(ret));
