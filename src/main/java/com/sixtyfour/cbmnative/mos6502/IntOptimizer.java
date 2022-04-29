@@ -30,6 +30,64 @@ public class IntOptimizer {
 		int codeEnd = ps[1];
 		List<IntPattern> intPatterns = new ArrayList<>();
 
+		// intvar+<const> - Variant 1
+		intPatterns.add(new IntPattern(true, "Optimized code for adding INTs (1)",
+				new String[] { "LDA #<{*}", "LDY #>{*}", "JSR COPY2_XYA_YREG", "LDY {*}", "LDA {*}", "JSR INTFAC",
+						"JSR FACXREG", "JSR YREGFAC", "LDA #<X_REG", "LDY #>X_REG", "JSR FASTFADDMEM" },
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						String consty = cleaned.get(0);
+						consty = consty.substring(consty.indexOf("<") + 1).trim();
+						Number num = const2Value.get(consty);
+						double numd = num.doubleValue();
+						if (numd == (int) numd && numd >= 0 && numd <= 16383) {
+							String numHex = getHex(numd);
+							List<String> rep = new ArrayList<>();
+							rep.add("LDY #$"+numHex.substring(0, 2));
+							rep.add("LDA #$"+numHex.substring(2));
+							rep.add("STA TMP3_ZP");
+							rep.add("STY TMP3_ZP+1");
+							rep.add(cleaned.get(3));
+							rep.add(cleaned.get(4));
+							rep.add("JSR INTADD");
+							return combine(pattern, rep);
+						}
+						pattern.reset();
+						return input;
+					}
+				}));
+		
+		// intvar+<const> - Variant 2
+		intPatterns.add(new IntPattern(true, "Optimized code for adding INTs (2)",
+				new String[] { "LDY {*}", "LDA {*}", "JSR INTFAC", "LDA #<{*}", "LDY #>{*}", "JSR COPY2_XYA_XREG",
+						"LDA #<X_REG", "LDY #>X_REG", "JSR FASTFADDMEM" },
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						String consty = cleaned.get(3);
+						consty = consty.substring(consty.indexOf("<") + 1).trim();
+						Number num = const2Value.get(consty);
+						double numd = num.doubleValue();
+						if (numd == (int) numd && numd >= 0 && numd <= 16383) {
+							String numHex = getHex(numd);
+							List<String> rep = new ArrayList<>();
+							rep.add("LDY #$"+numHex.substring(0, 2));
+							rep.add("LDA #$"+numHex.substring(2));
+							rep.add("STA TMP3_ZP");
+							rep.add("STY TMP3_ZP+1");
+							rep.add(cleaned.get(0));
+							rep.add(cleaned.get(1));
+							rep.add("JSR INTADD");
+							return combine(pattern, rep);
+						}
+						pattern.reset();
+						return input;
+					}
+				}));
+		
 		// if l%=h% etc.
 		intPatterns.add(new IntPattern(true, "Optimized code for Integer(1)",
 				new String[] { "LDY {*}", "LDA {*}", "JSR INTFAC", "JSR FACYREG", "LDY {*}", "LDA {*}", "JSR INTFAC",
