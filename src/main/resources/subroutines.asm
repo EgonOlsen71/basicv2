@@ -2153,7 +2153,7 @@ CLEARQUEUE	LDA #$0
 			STA INPUTQUEUEP
 			RTS
 ;###################################
-INTADD		LDX #128		; Do the fast way for nagative numbers and everything below 16384
+INTADD		LDX #128		; Do the fast way for negative numbers and everything below 16384
 			STX TMP_REG
 			BIT TMP_REG
 			BNE INTINTADD
