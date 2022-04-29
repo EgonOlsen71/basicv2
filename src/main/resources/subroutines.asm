@@ -2153,11 +2153,15 @@ CLEARQUEUE	LDA #$0
 			STA INPUTQUEUEP
 			RTS
 ;###################################
-INTADD		LDX #192
+INTADD		LDX #128		; Do the fast way for nagative numbers and everything below 16384
+			STX TMP_REG
+			BIT TMP_REG
+			BNE INTINTADD
+			LDX #64
 			STX TMP_REG
 			BIT TMP_REG
 			BNE FLOATINTADD
-			PHA
+INTINTADD	PHA
 			TYA
 			CLC
 			ADC TMP3_ZP
