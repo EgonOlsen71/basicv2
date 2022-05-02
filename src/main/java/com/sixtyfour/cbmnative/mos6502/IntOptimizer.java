@@ -89,6 +89,27 @@ public class IntOptimizer {
 								return input;
 							}
 						}));
+		
+		// intvar+intvar
+		intPatterns
+				.add(new IntPattern(true, "Optimized code for adding INT variables",
+						new String[] { "LDY {MEM0}", "LDA {MEM0}", "JSR INTFAC", "JSR FACYREG", "LDY {MEM1}", "LDA {MEM1}",
+								"JSR INTFAC", "JSR FACXREG", "JSR YREGFAC", "LDA #<X_REG", "LDY #>X_REG", "JSR FASTFADDMEM" },
+						new AbstractCodeModifier() {
+							@Override
+							public List<String> modify(IntPattern pattern, List<String> input) {
+								input = super.modify(pattern, input);
+								List<String> rep = new ArrayList<>();
+								rep.add(cleaned.get(4));
+								rep.add(cleaned.get(5));
+								rep.add("STY TMP3_ZP");
+								rep.add("STA TMP3_ZP+1");
+								rep.add(cleaned.get(0));
+								rep.add(cleaned.get(1));
+								rep.add("JSR INTADDVAR");
+								return combine(pattern, rep);
+							}
+						}));
 
 		// if l%=h% etc.
 		intPatterns.add(new IntPattern(true, "Optimized code for Integer(1)",

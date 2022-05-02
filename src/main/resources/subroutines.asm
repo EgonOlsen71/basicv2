@@ -2153,6 +2153,49 @@ CLEARQUEUE	LDA #$0
 			STA INPUTQUEUEP
 			RTS
 ;###################################
+INTADDVAR	LDX #128		; Do the fast way for negative numbers and everything below 16384...first var
+			STX TMP_REG
+			BIT TMP_REG
+			BNE INTADDVARC2
+			LDX #64
+			STX TMP_REG
+			BIT TMP_REG
+			BEQ INTADDVARC2
+			JMP FLOATINTADD
+INTADDVARC2			
+			PHA
+			LDA TMP3_ZP+1
+			LDX #128		; Do the fast way for everything below 16384 but positive...second var
+			STX TMP_REG		; If var is negative, and var2 isn't, this could always be done, but we are ignoring
+			BIT TMP_REG		; this here for now to simplify the check...
+			BEQ INTADDVARC3
+			PLA
+			JMP FLOATINTADD
+			
+INTADDVARC3
+			LDX #64
+			STX TMP_REG
+			BIT TMP_REG
+			BEQ INTINTADDVAR2
+			PLA
+			JMP FLOATINTADD
+INTINTADDVAR2
+			TYA
+			CLC
+			ADC TMP3_ZP
+			TAY
+			PLA
+			ADC TMP3_ZP+1
+			JMP INTFAC
+;###################################			
+FLOATINTADD	JSR INTFAC
+			JSR FACXREG
+			LDY TMP3_ZP
+			LDA TMP3_ZP+1
+			JSR INTFAC
+			JSR XREGARG
+			JMP FASTFADDARG
+;###################################
 INTADD		LDX #128		; Do the fast way for negative numbers and everything below 16384
 			STX TMP_REG
 			BIT TMP_REG
@@ -2161,6 +2204,7 @@ INTADD		LDX #128		; Do the fast way for negative numbers and everything below 16
 			STX TMP_REG
 			BIT TMP_REG
 			BNE FLOATINTADD
+			
 INTINTADD	PHA
 			TYA
 			CLC
@@ -2169,14 +2213,6 @@ INTINTADD	PHA
 			PLA
 			ADC TMP3_ZP+1
 			JMP INTFAC
-			
-FLOATINTADD	JSR INTFAC
-			JSR FACXREG
-			LDY TMP3_ZP
-			LDA TMP3_ZP+1
-			JSR INTFAC
-			JSR XREGARG
-			JMP FASTFADDARG
 ;###################################
 READINIT	LDA DATASP
 			STA TMP3_ZP
