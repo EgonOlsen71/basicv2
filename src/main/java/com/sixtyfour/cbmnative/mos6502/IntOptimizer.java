@@ -89,26 +89,35 @@ public class IntOptimizer {
 					}
 				}));
 
-		// intvar+intvar
-		intPatterns.add(new IntPattern(true, "Optimized code for adding INT variables",
+		// intvar+-intvar
+		intPatterns.add(new IntPattern(true, "Optimized code for adding/subtracting INT variables",
 				new String[] { "LDY {MEM0}", "LDA {MEM0}", "JSR INTFAC", "JSR FACYREG", "LDY {MEM1}", "LDA {MEM1}",
-						"JSR INTFAC", "JSR FACXREG", "JSR YREGFAC", "LDA #<X_REG", "LDY #>X_REG", "JSR FASTFADDMEM" },
+						"JSR INTFAC", "JSR FACXREG", "JSR YREGFAC", "LDA #<X_REG", "LDY #>X_REG", "JSR FAST{*}" },
 				new AbstractCodeModifier() {
 					@Override
 					public List<String> modify(IntPattern pattern, List<String> input) {
 						input = super.modify(pattern, input);
-						List<String> rep = new ArrayList<>();
-						rep.add(cleaned.get(4));
-						rep.add(cleaned.get(5));
-						rep.add("STY TMP3_ZP");
-						rep.add("STA TMP3_ZP+1");
-						rep.add(cleaned.get(0));
-						rep.add(cleaned.get(1));
-						rep.add("JSR INTADDVAR");
-						return combine(pattern, rep);
+						String func = cleaned.get(11);
+						if (func.contains("FASTFADDMEM") || func.contains("FASTFSUBMEM")) {
+							List<String> rep = new ArrayList<>();
+							rep.add(cleaned.get(4));
+							rep.add(cleaned.get(5));
+							rep.add("STY TMP3_ZP");
+							rep.add("STA TMP3_ZP+1");
+							rep.add(cleaned.get(0));
+							rep.add(cleaned.get(1));
+							if (func.contains("FASTFADDMEM")) {
+								rep.add("JSR INTADDVAR");
+							} else {
+								rep.add("JSR INTSUBVAR");
+							}
+							return combine(pattern, rep);
+						}
+						pattern.reset();
+						return input;
 					}
 				}));
-
+		
 		// if l%=h% etc.
 		intPatterns.add(new IntPattern(true, "Optimized code for Integer(1)",
 				new String[] { "LDY {*}", "LDA {*}", "JSR INTFAC", "JSR FACYREG", "LDY {*}", "LDA {*}", "JSR INTFAC",

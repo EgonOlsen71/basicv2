@@ -2153,10 +2153,43 @@ CLEARQUEUE	LDA #$0
 			STA INPUTQUEUEP
 			RTS
 ;###################################
-INTADDVAR	LDX #128		; Do the fast way for negative numbers and everything below 16384...first var
+INTSUBVAR	LDX #128		; Do the fast way for positive numbers  below 16384...second var
 			STX TMP_REG
 			BIT TMP_REG
-			BNE INTADDVARC2
+			BEQ INTSUBVARC2
+			JMP FLOATINTSUB
+INTSUBVARC2			
+			LDX #64
+			STX TMP_REG
+			BIT TMP_REG
+			BEQ INTSUBVARC3
+			JMP FLOATINTSUB
+INTSUBVARC3			
+			PHA
+			LDA TMP3_ZP+1
+			LDX #128		; Do the fast way for everything positive...first var
+			STX TMP_REG		
+			BIT TMP_REG		
+			BEQ INTINTSUBVAR2
+			PLA
+			JMP FLOATINTSUB
+INTINTSUBVAR2
+			TYA 
+			STA TMP_REG
+			PLA
+			STA TMP_REG+1
+			LDA TMP3_ZP
+			SEC
+			SBC TMP_REG
+			TAY
+			LDA TMP3_ZP+1
+			SBC TMP_REG+1
+			JMP INTFAC
+;###################################
+INTADDVAR	LDX #128		; Do the fast way for negative numbers and everything below 16384...first var
+			STX TMP_REG		; Note to self: What I call first here, is actually the second variable and what I call
+			BIT TMP_REG		; second is the first. Because this is an addition, it doesn't really matter unless people
+			BNE INTADDVARC2	; tend to use smaller values more on the right side, which I simply don't know...
 			LDX #64
 			STX TMP_REG
 			BIT TMP_REG
@@ -2187,6 +2220,15 @@ INTINTADDVAR2
 			PLA
 			ADC TMP3_ZP+1
 			JMP INTFAC
+;###################################			
+FLOATINTSUB	JSR INTFAC
+			JSR FACXREG
+			LDY TMP3_ZP
+			LDA TMP3_ZP+1
+			JSR INTFAC
+			JSR FACARG
+			JSR XREGFAC
+			JMP FASTFSUBARG
 ;###################################			
 FLOATINTADD	JSR INTFAC
 			JSR FACXREG
