@@ -15,7 +15,7 @@ the source code like some other compilers for the C64 do.
 
 The performance on average is between 10 and 20 % higher than the performance of a BASIC-BOSS compiled 
 program without any special variable declarations, but can be much higher in some special cases as well.
-On average, MOSpeed increases the performance of BASIC V2 programs by a factor of 3 to 5. 
+On average, MOSpeed increases the performance of BASIC V2 programs by a factor of 3 to 5.
 
 
 
