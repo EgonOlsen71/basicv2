@@ -1,0 +1,344 @@
+package com.sixtyfour.elements.mnemonics;
+
+import com.sixtyfour.config.CompilerConfig;
+import com.sixtyfour.parser.TermEnhancer;
+import com.sixtyfour.parser.assembly.AssemblyParser;
+import com.sixtyfour.parser.assembly.ConstantsContainer;
+import com.sixtyfour.parser.assembly.LabelsContainer;
+import com.sixtyfour.parser.assembly.Parameters;
+import com.sixtyfour.system.Machine;
+import com.sixtyfour.util.VarUtils;
+
+/**
+ * Abstract implementation for mnemonics.
+ * 
+ * @author EgonOlsen
+ * 
+ */
+public abstract class AbstractMnemonic implements Mnemonic {
+	private String name;
+
+	protected int[] opcodes = null;
+
+	/**
+	 * Creates a new instance for a mnemonic of the given name. The list of opcodes
+	 * has to have a length of 12 and has to contain opcodes for all the possible
+	 * addressing modes that the mnemonic can use. Those that it can't use have to
+	 * be 0.
+	 * 
+	 * @param name    the name
+	 * @param opcodes the list of opcodes
+	 */
+	public AbstractMnemonic(String name, int[] opcodes) {
+		this.name = name;
+		this.opcodes = opcodes;
+		if (opcodes.length != 12) {
+			throw new RuntimeException("Invalid opcode list: " + opcodes.length);
+		}
+	}
+
+	@Override
+	public int parse(CompilerConfig config, String linePart, int addr, Machine machine, ConstantsContainer ccon,
+			LabelsContainer lcon) {
+		if (addr > 65535) {
+			throw new RuntimeException("Compiled code exceeds 64K memory limit!");
+		}
+
+		linePart = linePart.trim().substring(3);
+		Parameters pars = this.parseParameters(config, linePart, addr, ccon, lcon);
+
+		if (opcodes[0] == 0 && pars == null) {
+			raiseSyntaxError(linePart);
+		}
+
+		if (opcodes[0] != 0 && pars != null && isSingle()) {
+			raiseSyntaxError(linePart);
+		}
+
+		if (opcodes[0] != 0 && pars != null && !isSingle() && this.getOptionalParameter() != null
+				&& this.getOptionalParameter().equalsIgnoreCase(pars.getRegister())) {
+			// Stuff like ROR A...the A can be ignored then.
+			pars = null;
+		}
+
+		int[] ram = machine.getRam();
+
+		if (pars == null) {
+			return store(ram, opcodes[0], addr);
+		}
+
+		if (pars.getValue() != null) {
+			// Value
+			addr = storeByte(ram, opcodes[1], pars.getValue(), addr);
+		} else {
+			if (!pars.isIndirect()) {
+				if (pars.isX()) {
+					// ,X
+					if (pars.isZeropage() && opcodes[6] != 0) {
+						// Direct/Zeropage
+						addr = storeByte(ram, opcodes[6], pars.getAddr(), addr);
+					} else {
+						// Direct/Memory
+						addr = store(ram, opcodes[3], pars.getAddr(), addr);
+					}
+				} else if (pars.isY()) {
+					// ,Y
+					if (pars.isZeropage() && opcodes[7] != 0) {
+						addr = storeByte(ram, opcodes[7], pars.getAddr(), addr);
+					} else {
+						// Direct/Memory
+						addr = store(ram, opcodes[4], pars.getAddr(), addr);
+					}
+				} else {
+					// Direct
+					if (pars.isZeropage() && opcodes[5] != 0) {
+						// Direct/Zeropage
+						addr = storeByte(ram, opcodes[5], pars.getAddr(), addr);
+					} else {
+						// Direct/Memory
+						if (!this.isRelative()) {
+							addr = store(ram, opcodes[2], pars.getAddr(), addr);
+						} else {
+							int offset = pars.getAddr() - (addr + 2);
+							if (offset <= 127 && offset >= -128) {
+								addr = storeByte(ram, opcodes[11], offset, addr);
+							} else {
+								throw new RuntimeException("Destination address out of range: " + pars.getAddr() + "/"
+										+ addr + "/" + offset);
+							}
+						}
+					}
+				}
+			} else {
+				// Indirect
+				if (!pars.isZeropage() && (pars.isX() || pars.isY())) {
+					raiseAddrError(linePart);
+				}
+				if (pars.isX()) {
+					// ,X
+					addr = storeByte(ram, opcodes[9], pars.getAddr(), addr);
+				} else if (pars.isY()) {
+					// ,Y
+					addr = storeByte(ram, opcodes[10], pars.getAddr(), addr);
+				} else {
+					// ...
+					addr = store(ram, opcodes[8], pars.getAddr(), addr);
+				}
+			}
+		}
+
+		return addr;
+	}
+
+	@Override
+	public String getOptionalParameter() {
+		return null;
+	}
+
+	@Override
+	public boolean isMnemonic(String linePart) {
+		boolean mne = VarUtils.toUpper(linePart.trim()).startsWith(name);
+		if (mne && linePart.length() > name.length()) {
+			char c = linePart.charAt(name.length());
+			if (Character.isLetter(c)) {
+				return false;
+			}
+		}
+		return mne;
+	}
+
+	@Override
+	public AbstractMnemonic clone() {
+		try {
+			@SuppressWarnings("deprecation")
+			AbstractMnemonic clone = this.getClass().newInstance();
+			clone.name = name;
+			return clone;
+		} catch (Exception e) {
+			throw new RuntimeException("Unable to instantiate mnemonic: " + name);
+		}
+	}
+
+	@Override
+	public boolean isRelative() {
+		return false;
+	}
+
+	@Override
+	public boolean isSingle() {
+		return false;
+	}
+
+	@Override
+	public boolean isJump() {
+		return false;
+	}
+
+	@Override
+	public String toString() {
+		return name;
+	}
+
+	@Override
+	public int getMaxLength() {
+		return 1;
+	}
+
+	@Override
+	public String getInstruction(int opcode) {
+		int cnt = 0;
+		for (int oc : opcodes) {
+			if (oc == opcode) {
+				switch (cnt) {
+				case 0:
+					return name;
+				case 1:
+					return name + " #$nn";
+				case 2:
+					return name + " $hhll";
+				case 3:
+					return name + " $hhll, X";
+				case 4:
+					return name + " $hhll, Y";
+				case 5:
+					return name + " $ll";
+				case 6:
+					return name + " $ll, X";
+				case 7:
+					return name + " $ll, Y";
+				case 8:
+					return name + " ($llhh)";
+				case 9:
+					return name + " ($ll, X)";
+				case 10:
+					return name + " ($ll), Y";
+				case 11:
+					return name + " $llhh";
+				}
+				break;
+			}
+			cnt++;
+		}
+		return null;
+	}
+
+	protected void raiseAddrError(String linePart) {
+		throw new RuntimeException("Address mode not supported: " + linePart);
+	}
+
+	protected void raiseSyntaxError(String linePart) {
+		throw new RuntimeException("Syntax error: " + linePart);
+	}
+
+	protected int storeByte(int[] ram, int opcode, int value, int addr) {
+		checkOpcode(opcode);
+		ram[addr++] = opcode(opcode);
+		ram[addr++] = AssemblyParser.getLowByte(value);
+		return addr;
+	}
+
+	private int opcode(int opcode) {
+		return opcode == -9999 ? 0 : opcode;
+	}
+
+	protected int store(int[] ram, int opcode, int value, int addr) {
+		checkOpcode(opcode);
+		ram[addr++] = opcode(opcode);
+		ram[addr++] = AssemblyParser.getLowByte(value);
+		ram[addr++] = AssemblyParser.getHighByte(value);
+		return addr;
+	}
+
+	protected int store(int[] ram, int opcode, int addr) {
+		checkOpcode(opcode);
+		ram[addr++] = opcode(opcode);
+		return addr;
+	}
+
+	protected Parameters parseParameters(CompilerConfig config, String pars, int addr, ConstantsContainer ccon,
+			LabelsContainer lcon) {
+		pars = TermEnhancer.removeWhiteSpace(pars);
+
+		if (pars.isEmpty()) {
+			return null;
+		}
+		int addrAdd = 0;
+		int pos = pars.lastIndexOf("+");
+		if (pos != -1 && pos >= pars.lastIndexOf("\"")) {
+			try {
+				String suby = pars.substring(pos + 1);
+				if (suby.contains(",")) {
+					suby = suby.substring(0, suby.indexOf(","));
+				}
+				addrAdd = Integer.parseInt(suby);
+			} catch (Exception e) {
+				throw new RuntimeException("Parse error in " + pars + "/" + addr);
+			}
+		}
+
+		boolean isValue = pars.startsWith("#");
+		boolean isIndirect = pars.startsWith("(");
+		int indexedPos = pars.indexOf(',');
+		boolean indexed = indexedPos != -1;
+		pars = pars.replace("#", "");
+
+		boolean lowByte = pars.startsWith("<");
+		boolean highByte = pars.startsWith(">");
+
+		pars = pars.replace("<", "").replace(">", "");
+
+		String part1 = indexed ? pars.substring(0, indexedPos) : pars;
+		String part2 = indexed ? VarUtils.toUpper(pars.substring(indexedPos + 1)) : "";
+
+		if (isIndirect && !((part2.isEmpty() && part1.endsWith(")")) || (part2.endsWith(")") && part2.startsWith("X"))
+				|| (part1.endsWith(")") && part2.startsWith("Y")))) {
+			throw new RuntimeException("Invalid indirect addressing: " + pars);
+		}
+
+		part1 = removeBrackets(part1);
+		part2 = removeBrackets(part2);
+
+		Parameters par = new Parameters();
+		par.setX(part2.startsWith("X"));
+		par.setY(part2.startsWith("Y"));
+		par.setIndirect(isIndirect);
+
+		if (pars.equalsIgnoreCase("a")) {
+			par.setRegister(pars);
+			return par;
+		}
+
+		int val = AssemblyParser.getValue(config, part1, addr, ccon, lcon, lowByte, highByte, addrAdd, false);
+		if (lowByte) {
+			val = AssemblyParser.getLowByte(val);
+		} else if (highByte) {
+			val = AssemblyParser.getHighByte(val);
+		}
+
+		if (isValue) {
+			par.setValue(val);
+		} else {
+			par.setAddr(val);
+			if (val < 256) {
+				par.setZeropage(!part1.trim().endsWith("\\"));
+			}
+		}
+
+		return par;
+	}
+
+	protected void raiseOpcodeError(int opcode) {
+		throw new RuntimeException("Address mode not supported: " + opcode);
+
+	}
+
+	private String removeBrackets(String part1) {
+		return part1.replace("(", "").replace(")", "");
+	}
+
+	private void checkOpcode(int opcode) {
+		if (opcode == 0) {
+			raiseOpcodeError(opcode);
+		}
+	}
+}

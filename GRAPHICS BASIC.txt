@@ -1,0 +1,75 @@
+An introduction to Graphics Basic
+
+Graphics Basic is a BASIC extension that is implemented on top of this BASIC V2 environment. It adds graphics capabilities far superior to those of the Commodore 64 while still maintaining the simplicity of BASIC V2. This documentation gives a brief overview of how to use it.
+
+
+Initialization
+
+Using Graphics Basic is pretty simple. You just have to register the extension to Basic, like so:
+
+String[] code = Loader.loadProgram("src/test/resources/ext/doublebuffer.bas");
+Basic.registerExtension(new GraphicsBasic());
+Basic basic = new Basic(code);
+basic.run();
+
+Note that the extension is added to Basic in a static way, i.e. it is available to all Basic instances from there on. The included BASIC shell provides support for this extension by default.
+
+
+Examples
+
+Examples can be found in the test class com.sixtyfour.test.BasicExtensionTest respectively in src/test/resources/ext.
+
+
+Functions
+
+id=LOADSHAPE("filename") -  Loads a file in PNG/JPG format and assigns it to a shape. This function returns an ID which can be used to draw the shape later on. For this function to work, a graphics output has to be created. After closing it, the shapes become undefined again and can't (unlike other graphical primitives like lines and points) be drawn into nothingness.
+
+id=GETSHAPE(xs, ys, xe, ye) - Copies a region of the screen buffer into a shape. This function returns an ID which can be used to draw the shape later on. For this function to work, a graphics output has to be created. After closing it, the shapes become undefined again and can't (unlike other graphical primitives like lines and points) be drawn into nothingness.
+
+id=SPRITESHAPE(addr, multicolor) - This creates a shape out of sprite data in the simulated RAM. It's meant to be a bridge between GRAPHICS BASIC and C64's old way of doing movable objects. addr indicates the address on which the C64 sprite is located in ram and multicolor=0 means, that it's a single colored sprite. multicolor=1 means, it's a multi-color sprite. The color(s) of the created shape will be taken out of the VICII-register(s) for sprite 0.
+
+id=LINKSHAPE(mode) - This is a bridge to another BASIC extension, the CONSOLE SUPPORT (see CONSOLE SUPPORT.txt). With this function, you can convert the content of PETSCII console created by CONSOLE SUPPORT into a shape. mode can either be 1 or 0. 1 means, that changes to the console output will be reflected in the shape, 0 means that they won't.
+
+Commands
+
+GRON x,y - Opens a new graphics output of the given size. If there is already one open for the current machine, this command will be ignored.
+
+GROFF - Closes an open graphics output. If there is none open for the current machine, nothing happens.
+
+COLOR r,g,b(,a) -  Sets the paint color. Each value is [0..255]. Values outside of this range will overflow, i.e. 257 will result in 1. The forth parameter is an optional alpha value. If none is given, the color will be fully opaque.
+
+CLEAR - Clears the screen with the current paint color.
+
+BUFFERMODE 0|1 - Sets the buffer mode. 0 is single buffered and default. All graphics operations happen on the front buffer in this mode. 1 is double buffering, i.e. all graphics operations happen in a back buffer and won't be visible until you call FLIP. Any other value will be treated just like 1.
+
+FLIP - flips the buffers if double buffering is enabled. Doesn't do anything, if it's not.
+
+FILLMODE 0|1 - Sets the fill mode for circles and rectangles. 0 means that only the outlines will be drawn. 1 (or any other value) means, that the form will be filled with the current paint color.
+
+PLOT x,y - Plots a point at x,y in the current paint color.
+
+LINE xs, ys, xe, ye - Draws a line from xs,ys to xe,ye in the current paint color.
+
+CIRCLE x, y, xr (,yr) - Draws a circle/an ellipse with a midpoint of x,y and a radius of xr in x- and yr in y-direction in the current paint color. If the optional yr parameter isn't given, it is assumed to be xr, i.e. the result will be an actual circle.
+
+RECT xs, ys, xe, ye - Draw a rectangle from xs,ys to xe,ye in the current paint color.
+
+FILL x,y - does a flood fill starting at x,y. All adjacent pixels of the same color as the pixel at x,y will be filled with the current paint color.
+
+GSAVE "filename" - Saves the current screen to disk with the given filename. The resulting file will be in PNG format.
+
+DRAWSHAPE id, x, y(, xd, yd) -  Draws a shape with the id "id" at position x,y. xd and yd are optional scaling parameter which indicate the size of the drawn shape in x- respectively y-direction.
+
+ROTATESHAPE id, x, y, zoom, rotation - Draws a zoomed and rotated shape at position x,y. The position is the position of the unscaled, unrotated shape here. zoom is some value between 0 and something and r is the rotation angle in radians.
+
+AAMODE 0|1 - Sets the anti-aliasing mode. 0 is off (default) and 1 (or any other value) is on.
+
+FONT "font name", size(, style) -  Sets a font to be used to text rendering. "font name" should be name of a font that's installed on the system. Something like "Arial" for example. size is the size in pixels. style is an optional parameter. If given, it can either be 0 (for plain), 1 (for bold) or 2 (for italic). Default is plain, any other value will be treated as such as well.
+
+GPRINT x,y,"what to print" - Prints text onto the graphics screen. The basic syntax is the same as for a normal PRINT in BASIC put it takes two additional parameters for the location.
+
+COPY xs, ys, xe, ye, xt, yt - Copies a region of the screen buffer into another one. xs,ys define the upper left and xe,ye the lower right corner of the region to copy. xt and yt define the upper left position of the target region.
+
+LIMIT fps - Limits the frame rate to the set value in frames per second, if it isn't lower anyway. This can be used to achieve a constant timing without adding busy-wait loops to the BASIC code. 0 means no limit.
+
+GGET <var> - Similar to GET in BASIC V2 but limited to one variable. This method can be used to query the keyboard in the context of the graphical output window. GET itself doesn't work here, because it's bound to the actual input provider in which the program's normal output appears (usually the console). In addition to how normal GET works, you can define a set of allowed characters for GGET, if the target variable is of type STRING. To do that, just initialize the variable with a string that contains all the allowed characters before calling the GGET command the first time. If the string is empty at that time, all keys will be accepted. Unlike a normal GET command, this one handles keys that are pressed for a longer period of time as well by reporting the same key repeatedly as long as one presses it.

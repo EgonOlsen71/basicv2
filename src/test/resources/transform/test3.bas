@@ -1,0 +1,1 @@
+10 for i=2023to1024step-1:pokei,32:next

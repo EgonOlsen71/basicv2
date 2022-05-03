@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title><?cbm 10 PRINT "Title: ";TT$?></title>
+<?cbm:asm
+	*=$c000
+	MEMORY = $2000
+
+    			ldx #$00          
+	loop        lda TEXT,X        
+             	beq end          
+             	sta MEMORY,X         
+             	inx               
+             	jmp loop
+
+	end         rts              
+
+	TEXT        .text "<li>C64 rocks!</li>" 
+             	.byte $00
+?>
+</head>
+<body>
+	A nice looking list:
+	<ul>
+	<?cbm
+		20 FOR I=1 TO CN
+	?>
+	<li><?cbm 25 PRINT NA$;":";I;?></li>
+	<?cbm
+		30 IF I=5 THEN GOSUB 100
+	?>
+	<!-- YEAH -->
+	<?cbm
+		40 NEXT I
+		45 GOSUB 300
+		50 GOTO 500
+		99 REM SUBROUTINE
+		100 PRINT"<li>Five is a nice number</li>":RETURN
+		200 REM ---
+		210 REM run assembler code and print out the result
+		300 SYS 49152
+		310 FOR I=8192 TO 8210:PRINTCHR$(PEEK(I));:NEXT
+		320 RETURN
+		500 REM --- end of basic program
+	?>
+	</ul>
+</body>
+</html>

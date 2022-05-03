@@ -1,0 +1,16 @@
+*=$c000
+LDY #$a0
+LDA #$11
+JSR INTFAC
+ldx #00
+ldy #$20
+jsr 48087
+jsr 43708
+LDA #00
+LDY #$20
+JSR REALFAC
+jsr 43708
+LDA #00
+LDY #$20
+JSR REALFAC
+RTS

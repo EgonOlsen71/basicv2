@@ -1,0 +1,45 @@
+An introduction to Console Support
+
+Console Support is a BASIC extension that is implemented on top of this BASIC V2 environment. It adds PETSCII console capabilities. It mimics the C64's normal text output and supports:
+
+- Screen ram from 1024-2023
+- Color ram from 55296-56295
+- cursor color in 646
+- background color in 53281
+- font mode in 53272 (21 or 23)
+- poking, peeking and waiting in/from/for 198
+- C64 like GET and INPUT behaviour redirected into the console
+- control codes in PRINT commands like PRINT CHR$(147) and such
+
+This documentation gives a brief overview of how to use it.
+
+
+Initialization
+
+Using Console Support is pretty simple. You just have to register the extension to Basic, like so:
+
+String[] code = Loader.loadProgram("src/test/resources/ext/printconsole.bas");
+Basic.registerExtension(new ConsoleSupport());
+Basic basic = new Basic(code);
+basic.run();
+
+Note that the extension is added to Basic in a static way, i.e. it is available to all Basic instances from there on. The included BASIC shell provides support for this extension by default.
+
+You can combine this extension with Graphics Basic, if you want to. If you want to use the console's output in Graphics Basic, please refer to Graphics Basic's LINKSHAPE function.
+
+
+Examples
+
+Examples can be found in the test class com.sixtyfour.test.BasicExtensionTest respectively in src/test/resources/ext.
+
+
+Functions
+
+None
+
+
+Commands
+
+CONSOLE mode (,clear, width, height) - Opens or closes a console. If mode is 0, the console will be closed. If it's >0, a new console will be opened, PRINT output as well as GET and INPUT input will be redirected to it and the console will be shown in a window. If it's <0, the console will be "opened" as well, but not made visible. This is meant for consoles that are supposed to be used in combination with Graphics Basic but that shouldn't be visible. If clear is 0, the console's content (i.e. screen and color ram) won't be cleared. If it's anything else, they will, which is also the default. With width and height, you can specify the console's dimensions. Default is 800*500. The width is leading and the console will always show 40*25 characters. If the height doesn't match this ratio, the output will either be cut off early or won't reach the end of the console. A CONSOLE 1 call after a console has been opened will result in an update of the console. That can be useful, if assembler programs have written something into the console, because that will remain unnoticed by the console otherwise.
+
+CONSOLEFONT case -  Changes the default font to lower or upper case mode. If case is 0, the lower case font will be used, everything else will enable to upper case/graphics symbols font.

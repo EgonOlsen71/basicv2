@@ -1,0 +1,14 @@
+#1: Simplified not equal comparison
+"Simplified not equal comparison"	false	false	true	"JSR CMPFAC|BNE {*}|LDA #0|JMP {*}|{LABEL}|LDA #$1|{LABEL}|{LABEL}|BEQ {*}|{LABEL}|"	"{LINE0}|{LINE4}|{LINE6}|{LINE7}|{LINE8}|{LINE9}|"
+
+#2: Simplified equal comparison
+"Simplified equal comparison"	false	false	true	"JSR CMPFAC|BEQ {*}|LDA #0|JMP {*}|{LABEL}|LDA #$1|{LABEL}|{LABEL}|BEQ {*}|{LABEL}|"	"{LINE0}|{LINE4}|{LINE6}|{LINE7}|{LINE8}~BEQ>BNE|{LINE9}|"
+
+#3: Direct compare(=) of floats
+"Direct compare(=) of floats"	false	false	false	"LDA #<{MEM0}|LDY #>{MEM0}|JSR REALFAC|LDA #<{MEM1}|LDY #>{MEM1}|JSR CMPFAC|{LABEL}|{LABEL}|{LABEL}|BNE {*}|"	"LDX #4|dceloop{cnt}:|LDA {MEM0},X|CMP {MEM1},X|{LINE9}|DEX|BPL dceloop{cnt}|"
+
+#4: Direct compare(<>) of floats
+"Direct compare(<>) of floats"	false	false	false	"LDA #<{MEM0}|LDY #>{MEM0}|JSR REALFAC|LDA #<{MEM1}|LDY #>{MEM1}|JSR CMPFAC|{LABEL}|{LABEL}|{LABEL}|BEQ {*}|"	"LDX #4|dcneloop{cnt}:|LDA {MEM0},X|CMP {MEM1},X|{LINE9}~BEQ LINE_SKIP>BNE LINE_NSKIP|DEX|BPL dcneloop{cnt}|{LINE9}~BEQ>JMP|"
+
+#5: Reverted comparison
+"Reverted comparison"	true	false	false	"LDA {MEM0}|BEQ {*}|LDA #0|JMP {*}|{LABEL}|LDA #$1|{LABEL}|{LABEL}|BEQ {*}|"	"{LINE0}|{LINE3}~JMP>BEQ|{LINE4}|{LINE8}~BEQ>JMP|{LINE6}|{LINE7}|"

@@ -1,0 +1,1 @@
+120 def fn k(x)=int(100*sin(.27318197*x)+.5)1000 di=123453020 yk=fn k(di)4000 printyk

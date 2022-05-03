@@ -1,0 +1,82 @@
+/*
+ * 
+ */
+package com.sixtyfour.elements.functions;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+/**
+ * A list of all known functions.
+ */
+public class FunctionList {
+
+	/** The FUNCTIONS. */
+	private static List<Function> FUNCTIONS = Collections.unmodifiableList(new ArrayList<Function>() {
+		private static final long serialVersionUID = 1L;
+
+		{
+			this.add(new Sin());
+			this.add(new Cos());
+			this.add(new Peek());
+			this.add(new Mid());
+			this.add(new Spc());
+			this.add(new Tab());
+			this.add(new Pos());
+			this.add(new Int());
+			this.add(new Fre());
+			this.add(new Rnd());
+			this.add(new Usr());
+			this.add(new Abs());
+			this.add(new Atn());
+			this.add(new Exp());
+			this.add(new Log());
+			this.add(new Sgn());
+			this.add(new Sqr());
+			this.add(new Tan());
+			this.add(new Len());
+			this.add(new Asc());
+			this.add(new Val());
+			this.add(new Chr());
+			this.add(new Str());
+			this.add(new Left());
+			this.add(new Right());
+			this.add(new Fn());
+		}
+	});
+
+	public static void registerNewFunctions(List<Function> functions) {
+		if (functions != null && !functions.isEmpty()) {
+			FUNCTIONS = new ArrayList<Function>(FUNCTIONS);
+
+			// If there is new function that overrides the old one of the same name,
+			// then remove the old one first.
+			Set<String> newNames = functions.stream().filter(p -> p.isOverride()).map(p -> p.getName())
+					.collect(Collectors.toSet());
+			FUNCTIONS = FUNCTIONS.stream().filter(p -> !newNames.contains(p.getName())).collect(Collectors.toList());
+			FUNCTIONS.addAll(functions);
+			FUNCTIONS = Collections.unmodifiableList(FUNCTIONS);
+			List<String> names = new ArrayList<String>();
+			for (Function command : FUNCTIONS) {
+				for (String name : names) {
+					if (command.getName().startsWith(name)) {
+						throw new RuntimeException("Naming conflict: " + command.getName() + " is hidden by " + name);
+					}
+				}
+				names.add(command.getName());
+			}
+		}
+	}
+
+	/**
+	 * Gets the function list.
+	 * 
+	 * @return all functions
+	 */
+	public static List<Function> getFunctions() {
+		return FUNCTIONS;
+	}
+}

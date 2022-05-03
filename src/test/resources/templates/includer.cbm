@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<!LABELS>
+<html>
+<head>
+<title>Include Test <?cbm print ST%,EN%,M$?></title>
+</head>
+<body>
+	<ul>
+	<?cbm
+		FORI=ST%TOEN%
+		PRINT I
+		LOAD"include1.cbm",8
+		NEXTI
+	?>
+	</ul>
+	<?cbm
+	LOAD"include2.cbm",8
+	?>
+</body>
+</html>

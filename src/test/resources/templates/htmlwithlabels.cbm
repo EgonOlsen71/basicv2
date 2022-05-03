@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<!LABELS>
+<html>
+<head>
+<title><?cbm PRINT "Page: ";TT$?></title>
+</head>
+<body>
+	Watch this:
+	<ul>
+	<?cbm
+		W=5000:DIMF(W)
+		FORI=1TOCN
+		P=1:A=3
+		loop:
+		F(P)=A:P=P+1:IFP>WTHENGOTO output
+		inc: A=A+2:X=1
+		sub: S=A/F(X):IFS=INT(S)GOTO inc
+		X=X+1:IFX<PANDF(X)*F(X)<=AGOTO sub
+		GOTO loop
+		output: PRINT"<li>Last prime: "A"</li>"
+	?>
+	<li><?cbm PRINT NA$;":";I;?></li>
+	<?cbm
+		IF I=5 THEN GOSUB output_msg
+	?>
+	<?cbm
+		NEXTI
+		GOTO final
+		REM SUBROUTINE
+		output_msg:
+		PRINT"<li>Five is a nice number</li>":RETURN
+		final: REM ---
+	?>
+	</ul>
+</body>
+</html>
