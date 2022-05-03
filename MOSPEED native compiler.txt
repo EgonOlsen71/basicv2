@@ -11,7 +11,7 @@ In this case, the file to compile has to end on .prg or the compiler won't recog
 MOSpeed is written in Java. It requires a Java runtime environment version 8 or higher.
 
 MOSpeed can be configured via command line parameters. It doesn't make use of compiler directives directly in 
-the source code like some other compilers for the C64 do.
+the source code like some other compilers for the C64 do!
 
 The performance on average is between 10 and 20 % higher than the performance of a BASIC-BOSS compiled 
 program without any special variable declarations, but can be much higher in some special cases as well.
