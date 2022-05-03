@@ -18,7 +18,7 @@ public class IntPattern extends Pattern {
 		super(simple, name, new String[] {}, parts);
 		this.modifier = modifier;
 	}
-	
+
 	public List<String> modify(List<String> input) {
 		return modifier.modify(this, input);
 	}
@@ -30,7 +30,7 @@ public class IntPattern extends Pattern {
 	public void setUsage(int usage) {
 		this.usage = usage;
 	}
-	
+
 	public void incUsage() {
 		usage++;
 	}

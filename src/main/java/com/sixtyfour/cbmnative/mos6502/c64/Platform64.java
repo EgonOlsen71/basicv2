@@ -72,17 +72,17 @@ public class Platform64 implements PlatformProvider {
 	public Generator getGenerator(String orgLine) {
 		return null;
 	}
-	
+
 	@Override
 	public int getBasicBufferAddress() {
 		return 820;
 	}
-	
+
 	@Override
 	public boolean supportsCompression() {
 		return true;
 	}
-	
+
 	@Override
 	public boolean supportsBigRam() {
 		return true;

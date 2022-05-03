@@ -284,9 +284,9 @@ public class Pattern implements java.lang.Cloneable {
 										// a string...
 										String val = num.replace("\"", "");
 										int pos = lineRight.indexOf("CONST_");
-										if (lineRight.equals(reg) || (pos != -1
-												&& strConst2Value.containsKey(lineRight.substring(pos))
-												&& strConst2Value.get(lineRight.substring(pos)).equals(val))) {
+										if (lineRight.equals(reg)
+												|| (pos != -1 && strConst2Value.containsKey(lineRight.substring(pos))
+														&& strConst2Value.get(lineRight.substring(pos)).equals(val))) {
 											return inc(ix);
 										}
 									}

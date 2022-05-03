@@ -15,15 +15,12 @@ import com.sixtyfour.cbmnative.Pattern;
  * 
  * Format is like:
  * 
- *	#patterns
- *  (name) = (old code) ; (new code)
- *	optimized replacement = LDA #<{#24.0}, LDY #>{#24.0}, JSR TEST123 ; JSR TEST456
+ * #patterns (name) = (old code) ; (new code) optimized replacement = LDA
+ * #<{#24.0}, LDY #>{#24.0}, JSR TEST123 ; JSR TEST456
  *
- *	#code
+ * #code
  *
- * 	TEST456
- *		...<some code>
- *		RTS
+ * TEST456 ...<some code> RTS
  * 
  * @author EgonOlsen
  *
@@ -64,8 +61,10 @@ public class RuntimeAddParser {
 						String old = rule.substring(0, pos).trim();
 						String niu = rule.substring(pos + 1).trim();
 
-						String[] oParts = Arrays.asList(old.split(",")).stream().map(p -> p.trim()).collect(Collectors.toList()).toArray(new String[0]);
-						String[] nParts = Arrays.asList(niu.split(",")).stream().map(p -> p.trim()).collect(Collectors.toList()).toArray(new String[0]);
+						String[] oParts = Arrays.asList(old.split(",")).stream().map(p -> p.trim())
+								.collect(Collectors.toList()).toArray(new String[0]);
+						String[] nParts = Arrays.asList(niu.split(",")).stream().map(p -> p.trim())
+								.collect(Collectors.toList()).toArray(new String[0]);
 
 						Pattern patty = new Pattern(true, name, nParts, oParts);
 						patterns.add(patty);

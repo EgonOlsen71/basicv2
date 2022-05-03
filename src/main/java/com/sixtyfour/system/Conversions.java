@@ -127,9 +127,10 @@ public class Conversions {
 		return convertFloat(ram[addr] & 0xff, ram[addr + 5] & 0x80, ram[addr + 4] & 0xff, ram[addr + 3] & 0xff,
 				ram[addr + 2] & 0xff, ram[addr + 1] & 0xff);
 	}
-	
+
 	/**
 	 * Converts an ASCII char to the corresponsing PETSCII char
+	 * 
 	 * @param c
 	 * @return
 	 */

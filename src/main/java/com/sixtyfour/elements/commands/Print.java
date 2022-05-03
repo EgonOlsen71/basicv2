@@ -62,7 +62,7 @@ public class Print extends AbstractCommand {
 			boolean lastPos, Machine machine) {
 		return parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine, true);
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -80,13 +80,14 @@ public class Print extends AbstractCommand {
 			PrintPart newLine = new PrintPart("\"\"", ' ');
 			parts.add(newLine);
 		}
-		
+
 		for (PrintPart part : parts) {
-			// If possible, replace printing of a single char string with a PRINT CHR$(<value>) instead...
-			String txt=part.part;
-			if (optimizeChars && txt!=null && txt.length()==3 && txt.startsWith("\"") && txt.endsWith("\"")) {
+			// If possible, replace printing of a single char string with a PRINT
+			// CHR$(<value>) instead...
+			String txt = part.part;
+			if (optimizeChars && txt != null && txt.length() == 3 && txt.startsWith("\"") && txt.endsWith("\"")) {
 				// Disabled for PRINT#x, until I'm sure it's safe to do this...
-				part.part="chr$("+(int) (Conversions.convertAscii2Petscii(txt.charAt(1)))+")";
+				part.part = "chr$(" + (int) (Conversions.convertAscii2Petscii(txt.charAt(1))) + ")";
 			}
 			part.term = Parser.getTerm(config, part.part, machine, false, true);
 		}

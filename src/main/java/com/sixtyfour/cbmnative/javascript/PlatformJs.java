@@ -76,12 +76,12 @@ public class PlatformJs implements PlatformProvider {
 	public int getBasicBufferAddress() {
 		return 0;
 	}
-	
+
 	@Override
 	public boolean supportsCompression() {
 		return false;
 	}
-	
+
 	@Override
 	public boolean supportsBigRam() {
 		return false;

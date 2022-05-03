@@ -90,19 +90,19 @@ public class ArrayAccess extends AbstractFunction {
 		ret.add("_");
 		Variable vary = machine.getVariableUpperCase(variableName);
 		List<Atom> pars = Parser.getParameters(term);
-		
+
 		if (vary == null) {
-			int[] dims=new int[Math.max(pars.size(), 1)];
-			for (int i=0; i<dims.length; i++) {
-				dims[i]=10;
+			int[] dims = new int[Math.max(pars.size(), 1)];
+			for (int i = 0; i < dims.length; i++) {
+				dims[i] = 10;
 			}
 			Variable tmpVar = new Variable(variableName, null, dims);
 			machine.add(tmpVar);
-			Logger.log("Array not defined: " + variableName + ", defaulting to a depth of 10 with "+pars.size()+" dimensions!");
+			Logger.log("Array not defined: " + variableName + ", defaulting to a depth of 10 with " + pars.size()
+					+ " dimensions!");
 			vary = machine.getVariableUpperCase(variableName);
 		}
 
-		
 		int[] dimensions = vary.getDimensions();
 		if (pars.size() != dimensions.length) {
 			throw new RuntimeException("Array indices don't match (" + variableName + "): " + this + "/" + pars.size()

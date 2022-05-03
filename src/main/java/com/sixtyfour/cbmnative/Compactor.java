@@ -344,12 +344,12 @@ public class Compactor {
 	}
 
 	private void strip(CompilerConfig conf, List<String> input) {
-		
+
 		String lookOutFor = "SUBROUTINES END";
 		if (conf.isBigRam()) {
 			lookOutFor = "*** CONSTANTS ***";
 		}
-		
+
 		for (Iterator<String> itty = input.iterator(); itty.hasNext();) {
 			String val = itty.next().trim();
 			if (val.contains(lookOutFor)) {
@@ -361,7 +361,6 @@ public class Compactor {
 			}
 		}
 	}
-		
 
 	private void updateLineMap(List<String> input) {
 		lines.clear();

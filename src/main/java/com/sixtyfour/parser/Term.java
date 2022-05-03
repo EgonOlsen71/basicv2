@@ -54,8 +54,9 @@ public class Term implements Atom {
 	private boolean jitRun = false;
 
 	private boolean constant = false;
-	
-	// If true, the term is valid and doesn't have to be checked for unwanted chars anymore.
+
+	// If true, the term is valid and doesn't have to be checked for unwanted chars
+	// anymore.
 	// Should be true only for array index terms
 	private boolean sealed = false;
 

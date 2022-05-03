@@ -35,8 +35,8 @@ public class TransformerX16 extends AbstractTransformer {
 	}
 
 	@Override
-	public List<String> transform(CompilerConfig config, MemoryConfig memConfig, Machine machine, PlatformProvider platform,
-			List<String> code) {
+	public List<String> transform(CompilerConfig config, MemoryConfig memConfig, Machine machine,
+			PlatformProvider platform, List<String> code) {
 		Logger.log("Compiling into native assembly code...");
 		List<String> res = new ArrayList<>();
 		List<String> consts = new ArrayList<String>();
@@ -87,8 +87,8 @@ public class TransformerX16 extends AbstractTransformer {
 		res.add("TSX");
 		res.add("STX SP_SAVE");
 
-		addStructures(config, memConfig, machine, platform, code, res, consts, vars, mnems, subs, mapping.getFarCalls(), null,
-				new StringAdder() {
+		addStructures(config, memConfig, machine, platform, code, res, consts, vars, mnems, subs, mapping.getFarCalls(),
+				null, new StringAdder() {
 					@Override
 					public void addStringVars(List<String> strVars) {
 						// Add DA$ if needed.

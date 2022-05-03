@@ -119,7 +119,7 @@ public class NativeOptimizer {
 		// ...and the same thing for 160...
 		patterns.add(new NativePattern(new String[] { "MOV X,#160{INTEGER}", "MUL X,Y" },
 				new String[] { "MOV A,#7{INTEGER}", "MOV X,Y", "SHL X,A", "MOV A,#5{INTEGER}", "SHL Y,A", "ADD X,Y" }));
-		
+
 		// ...and the same thing for 10...
 		patterns.add(new NativePattern(new String[] { "MOV X,#10{INTEGER}", "MUL X,Y" },
 				new String[] { "MOV A,#3{INTEGER}", "MOV X,Y", "SHL X,A", "MOV A,#1{INTEGER}", "SHL Y,A", "ADD X,Y" }));
@@ -141,7 +141,7 @@ public class NativeOptimizer {
 		// ...and the same thing for 160...
 		patterns.add(new NativePattern(new String[] { "MOV Y,#160{INTEGER}", "MUL X,Y" },
 				new String[] { "MOV A,#7{INTEGER}", "MOV Y,X", "SHL X,A", "MOV A,#5{INTEGER}", "SHL Y,A", "ADD X,Y" }));
-		
+
 		// ...and the same thing for 10...
 		patterns.add(new NativePattern(new String[] { "MOV Y,#10{INTEGER}", "MUL X,Y" },
 				new String[] { "MOV A,#3{INTEGER}", "MOV Y,X", "SHL X,A", "MOV A,#1{INTEGER}", "SHL Y,A", "ADD X,Y" }));
@@ -152,12 +152,12 @@ public class NativeOptimizer {
 			int pow = 1 << i;
 			NativePattern p = new NativePattern(new String[] { "MOV X,#" + (pow + 1) + "{INTEGER}", "MUL X,Y" },
 					new String[] { "MOV A,#" + i + "{INTEGER}", "MOV X,Y", "SHL X,A", "ADD X,Y" });
-			//System.out.println(p);
+			// System.out.println(p);
 			patterns.add(p);
 
 			p = new NativePattern(new String[] { "MOV Y,#" + (pow + 1) + "{INTEGER}", "MUL X,Y" },
 					new String[] { "MOV A,#" + i + "{INTEGER}", "MOV Y,X", "SHL Y,A", "ADD X,Y" });
-			//System.out.println(p);
+			// System.out.println(p);
 			patterns.add(p);
 		}
 	}
@@ -197,14 +197,16 @@ public class NativeOptimizer {
 		}
 		return code;
 	}
-	
+
 	private static int getChecksum(List<String> code) {
-		// the optimizer has optimization that change order or commands, but not the actual length.
-		// So we can't rely on size for change-detection here. This isn't 100% safe either, but 
+		// the optimizer has optimization that change order or commands, but not the
+		// actual length.
+		// So we can't rely on size for change-detection here. This isn't 100% safe
+		// either, but
 		// that shouldn't matter.
 		int val = 0;
-		for (String line:code) {
-			val^=line.hashCode();
+		for (String line : code) {
+			val ^= line.hashCode();
 		}
 		return val;
 	}
@@ -460,7 +462,6 @@ public class NativeOptimizer {
 					continue;
 				}
 
-				
 				if (lines[0].contains("INTEGER") && lines[0].startsWith("MOV Y,#")
 						&& (lines[1].equals("MOV X,(Y)") || lines[1].equals("MOVB X,(Y)"))) {
 					try {
@@ -614,9 +615,9 @@ public class NativeOptimizer {
 		public String[] getReplaceWith() {
 			return replaceWith;
 		}
-		
+
 		public String toString() {
-			return Arrays.toString(toReplace)+" -> "+Arrays.toString(replaceWith);
+			return Arrays.toString(toReplace) + " -> " + Arrays.toString(replaceWith);
 		}
 	}
 }

@@ -21,5 +21,5 @@ public class Dey extends AbstractMnemonic {
 	public boolean isSingle() {
 		return true;
 	}
-	
+
 }

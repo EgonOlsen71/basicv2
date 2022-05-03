@@ -64,23 +64,24 @@ public class ConstantFolder {
 			Atom right = finalTerm.getRight();
 			Operator op = finalTerm.getOperator();
 
-			//System.out.println("1: "+finalTerm+"/"+finalTerm.isConstant());
-			
+			// System.out.println("1: "+finalTerm+"/"+finalTerm.isConstant());
+
 			if (op.isNop()) {
 				if (left.isConstant()) {
 					setConstant(finalTerm, machine, left);
-					//System.out.println("2: "+finalTerm+"/"+finalTerm.isConstant());
+					// System.out.println("2: "+finalTerm+"/"+finalTerm.isConstant());
 				}
 				// Make sure that stuff like PEEK(<Constant>+<Constant>) is handled properly
-				// If there are actual left AND right functions, this will be handled below...but
-				// this case is special and has to be done here...or one has to refactor the part
+				// If there are actual left AND right functions, this will be handled
+				// below...but
+				// this case is special and has to be done here...or one has to refactor the
+				// part
 				// below, but who wants to do that....?
 				if (left instanceof Function) {
 					((Function) left).setTerm(foldConstants(config, ((Function) left).getTerm(), machine));
 				}
 				return finalTerm;
 			}
-			
 
 			if (left.isConstant() && right.isConstant() && !op.isDelimiter()
 					&& Type.isAssignable(left.getType(), right.getType())) {
@@ -93,16 +94,18 @@ public class ConstantFolder {
 				if (right.isTerm()) {
 					finalTerm.setRight(foldConstants(config, (Term) right, machine));
 				}
-				
+
 				// Attention: Doing these operations on the variables actually replaces them.
 				// That means that one can't store a Term or a Variable before the optimizer run
-				// and still use it afterwards, because it might has been converted into a const.
-				// This affects multiple command implementations, which had to be modified to reflect this.
+				// and still use it afterwards, because it might has been converted into a
+				// const.
+				// This affects multiple command implementations, which had to be modified to
+				// reflect this.
 				if (left instanceof Variable && !((Variable) left).isArray() && left.isConstant()) {
 					Constant<?> conty = createConstant(left, left.eval(machine));
 					finalTerm.setLeft(conty);
 				}
-				
+
 				if (right instanceof Variable && !((Variable) right).isArray() && right.isConstant()) {
 					Constant<?> conty = createConstant(right, right.eval(machine));
 					finalTerm.setRight(conty);
@@ -119,9 +122,9 @@ public class ConstantFolder {
 				}
 			}
 		}
-		
-		//System.out.println("3: "+finalTerm+"/"+finalTerm.isConstant());
-		
+
+		// System.out.println("3: "+finalTerm+"/"+finalTerm.isConstant());
+
 		return finalTerm;
 	}
 
@@ -142,7 +145,7 @@ public class ConstantFolder {
 			conty = new Constant<String>(val.toString());
 		} else if (VarUtils.isFloat(val)) {
 			conty = new Constant<Float>((Float) val);
-		}	else if (VarUtils.isDouble(val)) {
+		} else if (VarUtils.isDouble(val)) {
 			conty = new Constant<Double>((Double) val);
 		} else if (VarUtils.isInteger(val)) {
 			conty = new Constant<Integer>((Integer) val);

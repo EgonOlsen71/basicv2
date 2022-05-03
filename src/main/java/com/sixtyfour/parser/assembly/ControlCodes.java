@@ -166,7 +166,7 @@ public class ControlCodes {
 		if (placeHolder.length() == 0) {
 			return -1;
 		}
-		
+
 		// Handle pound symbol in a hacky way...not sure, if this even triggers...
 		char c = placeHolder.charAt(placeHolder.length() - 1);
 		if (((int) c) == 65533) {
@@ -190,7 +190,7 @@ public class ControlCodes {
 		}
 		return null;
 	}
-	
+
 	public static void main(String[] args) {
 		System.out.println(getCode("{control-q}"));
 	}

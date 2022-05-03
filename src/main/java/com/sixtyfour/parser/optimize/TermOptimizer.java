@@ -238,7 +238,6 @@ public class TermOptimizer {
 			}
 		}
 
-		
 		// While we are at it: Optimize some divisions to multiplications by
 		// 1/... or shifts...
 		if (t.getOperator().isDivision()) {

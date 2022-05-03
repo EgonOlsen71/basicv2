@@ -120,7 +120,7 @@ public class MoSpeedCL {
 		cfg.setLoopMode(getOption("loopopt", cmds) ? LoopMode.REMOVE : LoopMode.EXECUTE);
 		cfg.setBoostMode(getOptionIntDefault("boost", cmds, false));
 		cfg.setBigRam(getOptionIntDefault("bigram", cmds, false));
-		
+
 		if (cmds.containsKey("specops")) {
 			System.out.println("reading runtime/optimizer information!");
 			final RuntimeAddParser addy = new RuntimeAddParser(loadSource(cmds.get("specops")));
@@ -135,7 +135,7 @@ public class MoSpeedCL {
 				public List<String> getAdditionalRuntimeCode() {
 					return addy.getCode();
 				}
-				
+
 			};
 			cfg.setRuntimeAddition(rta);
 		}
@@ -333,7 +333,7 @@ public class MoSpeedCL {
 			// basic = new Basic(src);
 			nCode = nComp.compile(cfg, basic, memConfig, platform);
 		} catch (Exception e) {
-			//e.printStackTrace();
+			// e.printStackTrace();
 			System.out.println("\n!!! Error compiling: " + e.getMessage());
 			String ll = nComp.getLastProcessedLine();
 			if (ll != null) {
@@ -589,7 +589,7 @@ public class MoSpeedCL {
 		try {
 			src = Loader.loadProgram(srcFile);
 		} catch (Exception e) {
-			System.out.println("Failed to load source file ("+srcFile+"): " + e.getMessage());
+			System.out.println("Failed to load source file (" + srcFile + "): " + e.getMessage());
 			exit(6);
 		}
 		List<String> res = new ArrayList<>();

@@ -7,6 +7,6 @@ package com.sixtyfour.plugins;
  *
  */
 public interface AssemblerMonitor {
-	
+
 	void doneWithLine(int addr, int lineNumber, String line);
 }

@@ -129,13 +129,14 @@ public class Optimizer6502 implements Optimizer {
 	}
 
 	private OptimizationResult optimizeInternalThreaded(CompilerConfig conf, List<Pattern> patterns,
-			PlatformProvider platform, List<String> input, ProgressListener pg, Map<String, Number> const2Val, Map<String, String> strConst2Val) {
+			PlatformProvider platform, List<String> input, ProgressListener pg, Map<String, Number> const2Val,
+			Map<String, String> strConst2Val) {
 		return optimizeInternalThreaded(conf, patterns, platform, input, pg, const2Val, strConst2Val, false);
 	}
 
 	private OptimizationResult optimizeInternalThreaded(CompilerConfig conf, List<Pattern> patterns,
-			PlatformProvider platform, List<String> input, ProgressListener pg, Map<String, Number> const2Val, Map<String, String> strConst2Val,
-			boolean allLines) {
+			PlatformProvider platform, List<String> input, ProgressListener pg, Map<String, Number> const2Val,
+			Map<String, String> strConst2Val, boolean allLines) {
 		Map<String, Integer> type2count = new HashMap<>();
 		Map<String, Number> const2Value = new HashMap<>(const2Val);
 		Map<String, String> strConst2Value = new HashMap<>(strConst2Val);
@@ -292,18 +293,21 @@ public class Optimizer6502 implements Optimizer {
 		tmpPat = new Pattern(false, "Single character output with calculation", new String[] { "JSR SINGLECHRCALCOUT" },
 				"JSR CHRINTCALC", "JSR STROUT");
 		others.add(tmpPat);
-		
-		// This is actually done in the normal optimizer run, but this sequence might be reintroduced by the int-optimizer for...reasons...so we remove it here again...
-		tmpPat = new Pattern(false, "Substitute double INT()", new String[] { "JSR INTFAC" },
-				"JSR INTFAC", "JSR BASINT");
-		others.add(tmpPat);
-		
-		// This can be introduced by the int-optimizer as well...we handle it here.
-		tmpPat = new Pattern(false, "Remove INT conversions", new String[] { "{LINE2}" },
-				"JSR INTFAC", "JSR FACWORD", "STY TMP_ZP");
+
+		// This is actually done in the normal optimizer run, but this sequence might be
+		// reintroduced by the int-optimizer for...reasons...so we remove it here
+		// again...
+		tmpPat = new Pattern(false, "Substitute double INT()", new String[] { "JSR INTFAC" }, "JSR INTFAC",
+				"JSR BASINT");
 		others.add(tmpPat);
 
-		OptimizationResult res = optimizeInternalThreaded(conf, others, platform, ret, null, extractConstants(ret), extractStringConstants(ret));
+		// This can be introduced by the int-optimizer as well...we handle it here.
+		tmpPat = new Pattern(false, "Remove INT conversions", new String[] { "{LINE2}" }, "JSR INTFAC", "JSR FACWORD",
+				"STY TMP_ZP");
+		others.add(tmpPat);
+
+		OptimizationResult res = optimizeInternalThreaded(conf, others, platform, ret, null, extractConstants(ret),
+				extractStringConstants(ret));
 		printOutResults(res.getType2count());
 		return res.getCode();
 	}
@@ -583,7 +587,8 @@ public class Optimizer6502 implements Optimizer {
 		// thread, because it's quite cheap to do anyway.
 
 		List<Pattern> others = new PatternProcessor().getPatterns("optimizer6502x.txt");
-		OptimizationResult res = optimizeInternalThreaded(conf, others, platform, ret, null, extractConstants(ret), extractStringConstants(ret));
+		OptimizationResult res = optimizeInternalThreaded(conf, others, platform, ret, null, extractConstants(ret),
+				extractStringConstants(ret));
 		printOutResults(res.getType2count());
 		return res.getCode();
 	}
@@ -633,11 +638,11 @@ public class Optimizer6502 implements Optimizer {
 	private Map<String, Number> extractConstants(List<String> ret) {
 		return Collections.unmodifiableMap(Util.extractNumberConstants(ret));
 	}
-	
+
 	private Map<String, String> extractStringConstants(List<String> ret) {
 		return Collections.unmodifiableMap(Util.extractStringConstants(ret));
 	}
-	
+
 	private int[] getStartAndEnd(CompilerConfig conf, List<String> input) {
 		int codeEnd = input.size();
 		int codeStart = 0;

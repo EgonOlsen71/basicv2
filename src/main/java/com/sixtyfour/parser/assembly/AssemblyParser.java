@@ -97,10 +97,11 @@ public class AssemblyParser {
 			return null;
 		}
 		String linePart2 = Parser.replaceStrings(linePart, '_').trim();
-		
+
 		int pos = linePart2.indexOf(" ");
 		if (pos != -1) {
-			return new LabelAndCode(linePart.substring(0, pos).replace(":", "").trim(), linePart.substring(pos + 1).trim());
+			return new LabelAndCode(linePart.substring(0, pos).replace(":", "").trim(),
+					linePart.substring(pos + 1).trim());
 		} else {
 			return new LabelAndCode(linePart.replace(":", "").trim(), "");
 		}
@@ -323,7 +324,7 @@ public class AssemblyParser {
 								for (int i = 0; i < mul; i++) {
 									int code = ControlCodes.getCode(part);
 									if (code == -1) {
-										Logger.log("Symbol not found: "+part);
+										Logger.log("Symbol not found: " + part);
 										addToRam(ram, part);
 									} else {
 										ram.add(code);

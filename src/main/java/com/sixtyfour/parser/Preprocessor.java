@@ -193,9 +193,9 @@ public class Preprocessor {
 				}
 				if (inString && replacements.containsKey(c)) {
 					String rep = replacements.get(c);
-					if (brackets>0) {
+					if (brackets > 0) {
 						// We are in curly braches already...don't add another layer of them...
-						rep = rep.substring(1, rep.length()-1);
+						rep = rep.substring(1, rep.length() - 1);
 					}
 					sb.append(rep);
 				} else {

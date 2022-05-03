@@ -13,12 +13,11 @@ public abstract class AbstractCodeModifier implements CodeModifier {
 
 	protected List<List<String>> parts;
 	protected List<String> cleaned;
-	
+
 	@Override
 	public List<String> modify(IntPattern pattern, List<String> input) {
 		parts = pattern.split(input);
-		cleaned = parts.get(1).stream().filter(p -> !p.startsWith(";"))
-				.collect(Collectors.toList());
+		cleaned = parts.get(1).stream().filter(p -> !p.startsWith(";")).collect(Collectors.toList());
 		return input;
 	}
 
@@ -34,5 +33,5 @@ public abstract class AbstractCodeModifier implements CodeModifier {
 		pattern.incUsage();
 		return input;
 	}
-	
+
 }

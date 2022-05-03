@@ -134,7 +134,7 @@ public class Assembler implements ProgramExecutor {
 
 		for (String line : code) {
 			cnt++;
-			int oAddr=addr;
+			int oAddr = addr;
 			String oLine = line;
 			line = AssemblyParser.replaceTabs(line);
 			if (line.startsWith(";")) {
@@ -268,9 +268,11 @@ public class Assembler implements ProgramExecutor {
 		if (lcon.hasDelayedLabels()) {
 			String label = lcon.getFirstDelayedLabel();
 			if (label.startsWith("LINE_")) {
-				raiseError("Missing line number in BASIC program: " + lcon.getFirstDelayedLabel().replace("LINE_",""), addr, cnt);
+				raiseError("Missing line number in BASIC program: " + lcon.getFirstDelayedLabel().replace("LINE_", ""),
+						addr, cnt);
 			} else {
-				raiseError("Undefined label (maybe a naming conflict with a BASIC function?): " + lcon.getFirstDelayedLabel(), addr, cnt);
+				raiseError("Undefined label (maybe a naming conflict with a BASIC function?): "
+						+ lcon.getFirstDelayedLabel(), addr, cnt);
 			}
 		}
 
@@ -485,7 +487,7 @@ public class Assembler implements ProgramExecutor {
 	public void setMonitor(AssemblerMonitor monitor) {
 		this.monitor = monitor;
 	}
-	
+
 	/**
 	 * Dumps the compiled program into a kind of monitor view. If the program hasn't
 	 * been compiled yet, an empty string will be returned.

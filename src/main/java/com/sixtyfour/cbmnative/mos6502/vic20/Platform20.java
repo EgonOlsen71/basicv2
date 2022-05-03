@@ -86,17 +86,17 @@ public class Platform20 implements PlatformProvider {
 	public Generator getGenerator(String orgLine) {
 		return null;
 	}
-	
+
 	@Override
 	public int getBasicBufferAddress() {
 		return 820;
 	}
-	
+
 	@Override
 	public boolean supportsCompression() {
 		return false;
 	}
-	
+
 	@Override
 	public boolean supportsBigRam() {
 		return false;

@@ -34,8 +34,8 @@ import com.sixtyfour.util.VarUtils;
 public class TransformerJs implements Transformer {
 
 	@Override
-	public List<String> transform(CompilerConfig config, MemoryConfig memConfig, Machine machine, PlatformProvider platform,
-			List<String> code) {
+	public List<String> transform(CompilerConfig config, MemoryConfig memConfig, Machine machine,
+			PlatformProvider platform, List<String> code) {
 		Logger.log("Compiling into javascript code...");
 
 		addContinues(code);
@@ -147,7 +147,7 @@ public class TransformerJs implements Transformer {
 					type = Type.INTEGER;
 				} else if (VarUtils.isFloat(obj) || VarUtils.isDouble(obj)) {
 					type = Type.REAL;
-				} 
+				}
 				if (obj.toString().equals("\\0")) {
 					obj = "";
 				}
@@ -332,14 +332,14 @@ public class TransformerJs implements Transformer {
 		// return res.stream().map(p -> p.replace("{*}",
 		// calleeName)).collect(Collectors.toList());
 	}
-	
+
 	public boolean isOptimizedStringPointers() {
 		return false;
 	}
 
 	@Override
 	public void setOptimizedStringPointers(boolean optimized) {
-		
+
 	}
 
 }

@@ -47,7 +47,8 @@ public class DeadStoreEliminator {
 					}
 				}
 				if (cmd instanceof For) {
-					// Add variables used in FORs to prevent elimination of early out conditions by setting the loop's
+					// Add variables used in FORs to prevent elimination of early out conditions by
+					// setting the loop's
 					// variable inside the loop but not using it anywhere else.
 					terms.add(new Term(((For) cmd).getVar()));
 				}

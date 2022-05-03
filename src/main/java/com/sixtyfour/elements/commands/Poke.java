@@ -41,7 +41,7 @@ public class Poke extends AbstractCommand {
 			boolean lastPos, Machine machine) {
 		super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine);
 		term = Parser.getTerm(config, this, linePart, machine, true);
-		List <Atom> pars = Parser.getParameters(term);
+		List<Atom> pars = Parser.getParameters(term);
 
 		if (pars.size() != 2) {
 			syntaxError(this);
@@ -51,12 +51,12 @@ public class Poke extends AbstractCommand {
 
 		addr = pars.get(0);
 		val = pars.get(1);
-		
+
 		if (val instanceof Variable) {
-			val=new Term(val);
+			val = new Term(val);
 		}
 		if (addr instanceof Variable) {
-			addr=new Term(addr);
+			addr = new Term(addr);
 		}
 
 		return null;
@@ -67,11 +67,11 @@ public class Poke extends AbstractCommand {
 		List<Term> ret = new ArrayList<Term>();
 		if (addr.isTerm()) {
 			ret.add((Term) addr);
-		} 
-		
+		}
+
 		if (val.isTerm()) {
 			ret.add((Term) val);
-		} 
+		}
 		return ret;
 	}
 

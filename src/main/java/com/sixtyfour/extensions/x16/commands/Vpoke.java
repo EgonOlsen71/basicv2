@@ -56,15 +56,15 @@ public class Vpoke extends AbstractCommand {
 		bank = pars.get(0);
 		addr = pars.get(1);
 		val = pars.get(2);
-		
+
 		if (val instanceof Variable) {
-			val=new Term(val);
+			val = new Term(val);
 		}
 		if (bank instanceof Variable) {
-			bank=new Term(bank);
+			bank = new Term(bank);
 		}
 		if (addr instanceof Variable) {
-			addr=new Term(addr);
+			addr = new Term(addr);
 		}
 
 		return null;
@@ -95,15 +95,15 @@ public class Vpoke extends AbstractCommand {
 
 		if (addr.isTerm()) {
 			ret.add((Term) addr);
-		} 
+		}
 
 		if (val.isTerm()) {
 			ret.add((Term) val);
-		} 
+		}
 
 		if (bank.isTerm()) {
 			ret.add((Term) bank);
-		} 
+		}
 
 		return ret;
 	}

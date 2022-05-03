@@ -86,7 +86,7 @@ public abstract class AbstractTransformer implements Transformer {
 			}
 		}
 	}
-	
+
 	protected void addInternalBasicBuffer(List<String> res, PlatformProvider platform, MemoryConfig memConfig) {
 		if (memConfig.getBasicBufferStart() == 0) {
 			res.add("BASICBUFFER   .ARRAY 256");
@@ -174,10 +174,10 @@ public abstract class AbstractTransformer implements Transformer {
 
 		inits.add("JSR INITSTRVARS");
 		inits.add("LDA #0");
-		
-		List<String> vary=new ArrayList<>();
-		List<String> vary2=new ArrayList<>(vars);
-		for (String var:vars) {
+
+		List<String> vary = new ArrayList<>();
+		List<String> vary2 = new ArrayList<>(vars);
+		for (String var : vars) {
 			if (var.contains("%") || var.contains("[]") || var.contains("$")) {
 				// Collect all but real vars...
 				vary.add(var);
@@ -186,12 +186,12 @@ public abstract class AbstractTransformer implements Transformer {
 		// This keep the vars in order...
 		vary2.removeAll(vary);
 		vary2.addAll(vary);
-		
-		vars=vary2;
-		
-		boolean realInit=false;
-		int cnt=0;
-		
+
+		vars = vary2;
+
+		boolean realInit = false;
+		int cnt = 0;
+
 		for (String var : vars) {
 			var = var.trim().replace("\t", " ");
 			if (var.startsWith("VAR_")) {
@@ -203,20 +203,20 @@ public abstract class AbstractTransformer implements Transformer {
 						// branch can only happen if it a single REAL.
 						if (!realInit) {
 							// Open real init loop
-							realInit=true;
+							realInit = true;
 							inits.add("LDY #4");
-							inits.add("REALINITLOOP"+cnt+":");
+							inits.add("REALINITLOOP" + cnt + ":");
 						}
-						inits.add("STA "+parts[0]+",Y");
+						inits.add("STA " + parts[0] + ",Y");
 					} else {
 						if (realInit) {
 							// Close real init loop. There should be only one, but
 							// the code can handle multiple loop anyway...
 							inits.add("DEY");
-							inits.add("BMI REALLOOPEXIT"+cnt);
-							inits.add("JMP REALINITLOOP"+cnt);
-							inits.add("REALLOOPEXIT"+cnt+":");
-							realInit=false;
+							inits.add("BMI REALLOOPEXIT" + cnt);
+							inits.add("JMP REALINITLOOP" + cnt);
+							inits.add("REALLOOPEXIT" + cnt + ":");
+							realInit = false;
 							cnt++;
 						}
 						// INT or ARRAY
@@ -242,9 +242,9 @@ public abstract class AbstractTransformer implements Transformer {
 		}
 		if (realInit) {
 			inits.add("DEY");
-			inits.add("BMI REALLOOPEXIT"+cnt);
-			inits.add("JMP REALINITLOOP"+cnt);
-			inits.add("REALLOOPEXIT"+cnt+":");
+			inits.add("BMI REALLOOPEXIT" + cnt);
+			inits.add("JMP REALINITLOOP" + cnt);
+			inits.add("REALLOOPEXIT" + cnt + ":");
 		}
 		inits.add("RTS");
 		inits.add(";###############################");
@@ -256,7 +256,8 @@ public abstract class AbstractTransformer implements Transformer {
 			if (line.contains("#") && line.endsWith("{INTEGER}")) {
 				int val = getConstantValue(line);
 				// This was limited to 0..255 since the beginning of time and I fail to see why.
-				// Maybe I wanted to prevent too many CONT2/CONST2R combinations that way, but these
+				// Maybe I wanted to prevent too many CONT2/CONST2R combinations that way, but
+				// these
 				// will be removed anyway, so it's not an issue. Maybe it once was...
 				// Not sure about negative numbers though, so we'll leave them out for now.
 				if (val < 0 || val > 32767) {
@@ -383,14 +384,16 @@ public abstract class AbstractTransformer implements Transformer {
 		return cnt;
 	}
 
-	protected void addStructures(CompilerConfig config, MemoryConfig memConfig, Machine machine, PlatformProvider platform, List<String> code,
-			List<String> res, List<String> consts, List<String> vars, List<String> mnems, List<String> subs, List<String> bigRamCode) {
-		addStructures(config, memConfig, machine, platform, code, res, consts, vars, mnems, subs, null, bigRamCode, null);
+	protected void addStructures(CompilerConfig config, MemoryConfig memConfig, Machine machine,
+			PlatformProvider platform, List<String> code, List<String> res, List<String> consts, List<String> vars,
+			List<String> mnems, List<String> subs, List<String> bigRamCode) {
+		addStructures(config, memConfig, machine, platform, code, res, consts, vars, mnems, subs, null, bigRamCode,
+				null);
 	}
 
-	protected void addStructures(CompilerConfig config, MemoryConfig memConfig, Machine machine, PlatformProvider platform, List<String> code,
-			List<String> res, List<String> consts, List<String> vars, List<String> mnems, List<String> subs,
-			List<String> addOns, List<String> bigRamCode, StringAdder adder) {
+	protected void addStructures(CompilerConfig config, MemoryConfig memConfig, Machine machine,
+			PlatformProvider platform, List<String> code, List<String> res, List<String> consts, List<String> vars,
+			List<String> mnems, List<String> subs, List<String> addOns, List<String> bigRamCode, StringAdder adder) {
 		Map<String, String> name2label = new HashMap<String, String>();
 		int cnt = 0;
 
@@ -432,7 +435,7 @@ public abstract class AbstractTransformer implements Transformer {
 		if (bigRamCode != null) {
 			mnems.addAll(1, bigRamCode);
 		}
-		
+
 		if (!mnems.get(mnems.size() - 1).equals("RTS")) {
 			mnems.add("RTS");
 		}
@@ -520,7 +523,7 @@ public abstract class AbstractTransformer implements Transformer {
 		res.add("LASTVARP\t.WORD 0");
 		res.add("HIGHP\t.WORD STRBUF");
 		res.add("STRBUFP\t.WORD STRBUF");
-		res.add("ENDSTRBUF\t.WORD " + this.stringMemoryEnd); 
+		res.add("ENDSTRBUF\t.WORD " + this.stringMemoryEnd);
 		res.add("INPUTQUEUEP\t.BYTE 0");
 		res.add("PROGRAMEND");
 		addInternalBasicBuffer(res, platform, memConfig);
@@ -528,7 +531,7 @@ public abstract class AbstractTransformer implements Transformer {
 		res.add("FPSTACK .ARRAY " + Math.min(256, platform.getStackSize() * 5));
 		res.add("FORSTACK .ARRAY " + Math.min(1024, platform.getForStackSize() * 17));
 		res.add("STRBUF\t.BYTE 0");
-		
+
 	}
 
 	@Override
@@ -580,7 +583,7 @@ public abstract class AbstractTransformer implements Transformer {
 	public void setOptimizedStringPointers(boolean optimized) {
 		this.stringRegInZeropage = optimized;
 	}
-	
+
 	@Override
 	public boolean isOptimizedTempStorage() {
 		return preferZeropage;

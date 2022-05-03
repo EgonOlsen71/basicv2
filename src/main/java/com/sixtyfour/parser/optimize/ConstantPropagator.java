@@ -89,8 +89,6 @@ public class ConstantPropagator {
 		return val;
 	}
 
-	
-
 	private static boolean checkForConstant(CompilerConfig config, Machine machine, Term t, boolean[] isConstant) {
 
 		if (t.getOperator().isDelimiter()) {
@@ -107,7 +105,7 @@ public class ConstantPropagator {
 
 		Atom left = t.getLeft();
 		Atom right = t.getRight();
-		
+
 		// ****
 
 		if (!isConstant[0]) {

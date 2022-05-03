@@ -37,7 +37,7 @@ public class CompilerConfig {
 	private int threads = -1;
 	private LoopMode loopMode = LoopMode.EXECUTE;
 	private ProgressListener progressListener;
-	
+
 	private RuntimeAddition runtimeAddition = null;
 
 	private int compactThreshold = 0;

@@ -71,7 +71,7 @@ public class Goto extends AbstractCommand implements Jump {
 	public void setTargetLineNumber(int targetLineNumber) {
 		this.targetLineNumber = targetLineNumber;
 	}
-	
+
 	@Override
 	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
 		return Util.createSingleCommand("JMP " + targetLineNumber);
@@ -79,7 +79,7 @@ public class Goto extends AbstractCommand implements Jump {
 
 	@Override
 	public List<Integer> getTargetLineNumbers() {
-		List<Integer> ret=new ArrayList<>();
+		List<Integer> ret = new ArrayList<>();
 		ret.add(targetLineNumber);
 		return ret;
 	}

@@ -52,7 +52,7 @@ public class Open extends AbstractCommand {
 		List<String> expr = new ArrayList<String>();
 		List<String> before = new ArrayList<String>();
 		List<Atom> pars = Parser.getParameters(term);
-		
+
 		try {
 			switch (pars.size()) {
 			case 1:

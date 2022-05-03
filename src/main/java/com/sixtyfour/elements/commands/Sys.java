@@ -43,43 +43,37 @@ public class Sys extends AbstractCommand {
 		super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine);
 		// Handle things like SYS 57921"Blah",8,0
 		/*
-		if (linePart.contains("\"")) {
-			int pos = linePart.indexOf("\"");
-			if (pos > 0) {
-				char c = linePart.charAt(pos - 1);
-				if (c != ',') {
-					linePart = linePart.substring(0, pos) + "," + linePart.substring(pos);
-					noFirstSeparator = true;
-				}
-			}
-		}
-		*/
+		 * if (linePart.contains("\"")) { int pos = linePart.indexOf("\""); if (pos > 0)
+		 * { char c = linePart.charAt(pos - 1); if (c != ',') { linePart =
+		 * linePart.substring(0, pos) + "," + linePart.substring(pos); noFirstSeparator
+		 * = true; } } }
+		 */
 		// Handle things like SYS 57921"Blah",8,0 or 57921A$,8,0 following...
-		if (linePart.length()>6) {
-			char c=linePart.charAt(4);
+		if (linePart.length() > 6) {
+			char c = linePart.charAt(4);
 			if (Character.isDigit(c)) {
-				int pos=-1;
-				for (int i=4; i<linePart.length(); i++) {
-					c=linePart.charAt(i);
-					if (Character.isDigit(c) || (!Character.isAlphabetic(c) && c!=',')) {
+				int pos = -1;
+				for (int i = 4; i < linePart.length(); i++) {
+					c = linePart.charAt(i);
+					if (Character.isDigit(c) || (!Character.isAlphabetic(c) && c != ',')) {
 						continue;
 					}
-					if (c==',') {
+					if (c == ',') {
 						// out of here...
 						break;
 					}
 					// Found something that's not a number but not a comma as well...
-					pos=i;
+					pos = i;
 					break;
 				}
-				if (pos!=-1) {
+				if (pos != -1) {
 					// add a comma to allow proper parsing...
 					linePart = linePart.substring(0, pos) + "," + linePart.substring(pos);
 					noFirstSeparator = true;
 				}
 			}
 		}
-		
+
 		term = Parser.getTerm(config, this, linePart, machine, true);
 		List<Atom> pars = Parser.getParameters(term);
 

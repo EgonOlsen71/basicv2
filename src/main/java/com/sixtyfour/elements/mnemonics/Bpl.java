@@ -31,7 +31,7 @@ public class Bpl extends AbstractMnemonic {
 	public boolean isJump() {
 		return true;
 	}
-	
+
 	@Override
 	public int getMaxLength() {
 		return 2;

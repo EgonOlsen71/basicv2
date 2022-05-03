@@ -14,7 +14,7 @@ import java.util.WeakHashMap;
 public class Logger {
 
 	private static PrintStream out = System.out;
-	private static WeakHashMap<Thread, PrintStream> streams=new WeakHashMap<>();
+	private static WeakHashMap<Thread, PrintStream> streams = new WeakHashMap<>();
 
 	/**
 	 * Logs a message.
@@ -54,17 +54,18 @@ public class Logger {
 	public static void setPrintStream(PrintStream ps) {
 		out = ps;
 	}
-	
+
 	/**
-	 * Sets a printstream bound to the current thread. Instead of the global one, this one will
-	 * be used, if the logging happens in this thread. Once the thread dies, the entry
-	 * will be automatically removed as well.
+	 * Sets a printstream bound to the current thread. Instead of the global one,
+	 * this one will be used, if the logging happens in this thread. Once the thread
+	 * dies, the entry will be automatically removed as well.
+	 * 
 	 * @param ps the new PrintStream
 	 */
 	public static void setThreadBoundPrintStream(PrintStream ps) {
 		streams.put(Thread.currentThread(), ps);
 	}
-	
+
 	private static PrintStream getPrintStream() {
 		return streams.getOrDefault(Thread.currentThread(), out);
 	}

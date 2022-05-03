@@ -67,9 +67,9 @@ public class Wait extends AbstractCommand {
 		pars = Parser.getParameters(term);
 		Atom addr = pars.get(0);
 		Atom waitFor = pars.get(1);
-		
-		//System.out.println("Tröt: "+addr+"/"+waitFor);
-		
+
+		// System.out.println("Tröt: "+addr+"/"+waitFor);
+
 		NativeCompiler compiler = NativeCompiler.getCompiler();
 		List<String> after = new ArrayList<String>();
 		List<String> expr = new ArrayList<String>();

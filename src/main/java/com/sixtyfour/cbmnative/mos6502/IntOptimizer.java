@@ -33,8 +33,8 @@ public class IntOptimizer {
 
 		// intvar+<const> - Variant 1
 		intPatterns.add(new IntPattern(true, "Optimized code for adding INTs (1)",
-				new String[] { "LDA #<{CONST0}", "LDY #>{CONST0}", "JSR COPY2_XYA_YREG", "LDY {*}", "LDA {*}", "JSR INTFAC",
-						"JSR FACXREG", "JSR YREGFAC", "LDA #<X_REG", "LDY #>X_REG", "JSR FASTFADDMEM" },
+				new String[] { "LDA #<{CONST0}", "LDY #>{CONST0}", "JSR COPY2_XYA_YREG", "LDY {*}", "LDA {*}",
+						"JSR INTFAC", "JSR FACXREG", "JSR YREGFAC", "LDA #<X_REG", "LDY #>X_REG", "JSR FASTFADDMEM" },
 				new AbstractCodeModifier() {
 					@Override
 					public List<String> modify(IntPattern pattern, List<String> input) {
@@ -61,55 +61,53 @@ public class IntOptimizer {
 				}));
 
 		// intvar+<const> - Variant 2
-		intPatterns
-				.add(new IntPattern(true, "Optimized code for adding INTs (2)",
-						new String[] { "LDY {*}", "LDA {*}", "JSR INTFAC", "LDA #<{CONST0}", "LDY #>{CONST0}",
-								"JSR COPY2_XYA_XREG", "LDA #<X_REG", "LDY #>X_REG", "JSR FASTFADDMEM" },
-						new AbstractCodeModifier() {
-							@Override
-							public List<String> modify(IntPattern pattern, List<String> input) {
-								input = super.modify(pattern, input);
-								String consty = cleaned.get(3);
-								consty = consty.substring(consty.indexOf("<") + 1).trim();
-								Number num = const2Value.get(consty);
-								double numd = num.doubleValue();
-								if (numd == (int) numd && numd >= 0 && numd <= 16383) {
-									String numHex = getHex(numd);
-									List<String> rep = new ArrayList<>();
-									rep.add("LDY #$" + numHex.substring(0, 2));
-									rep.add("LDA #$" + numHex.substring(2));
-									rep.add("STA TMP3_ZP");
-									rep.add("STY TMP3_ZP+1");
-									rep.add(cleaned.get(0));
-									rep.add(cleaned.get(1));
-									rep.add("JSR INTADD");
-									return combine(pattern, rep);
-								}
-								pattern.reset();
-								return input;
-							}
-						}));
-		
+		intPatterns.add(new IntPattern(true, "Optimized code for adding INTs (2)",
+				new String[] { "LDY {*}", "LDA {*}", "JSR INTFAC", "LDA #<{CONST0}", "LDY #>{CONST0}",
+						"JSR COPY2_XYA_XREG", "LDA #<X_REG", "LDY #>X_REG", "JSR FASTFADDMEM" },
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						String consty = cleaned.get(3);
+						consty = consty.substring(consty.indexOf("<") + 1).trim();
+						Number num = const2Value.get(consty);
+						double numd = num.doubleValue();
+						if (numd == (int) numd && numd >= 0 && numd <= 16383) {
+							String numHex = getHex(numd);
+							List<String> rep = new ArrayList<>();
+							rep.add("LDY #$" + numHex.substring(0, 2));
+							rep.add("LDA #$" + numHex.substring(2));
+							rep.add("STA TMP3_ZP");
+							rep.add("STY TMP3_ZP+1");
+							rep.add(cleaned.get(0));
+							rep.add(cleaned.get(1));
+							rep.add("JSR INTADD");
+							return combine(pattern, rep);
+						}
+						pattern.reset();
+						return input;
+					}
+				}));
+
 		// intvar+intvar
-		intPatterns
-				.add(new IntPattern(true, "Optimized code for adding INT variables",
-						new String[] { "LDY {MEM0}", "LDA {MEM0}", "JSR INTFAC", "JSR FACYREG", "LDY {MEM1}", "LDA {MEM1}",
-								"JSR INTFAC", "JSR FACXREG", "JSR YREGFAC", "LDA #<X_REG", "LDY #>X_REG", "JSR FASTFADDMEM" },
-						new AbstractCodeModifier() {
-							@Override
-							public List<String> modify(IntPattern pattern, List<String> input) {
-								input = super.modify(pattern, input);
-								List<String> rep = new ArrayList<>();
-								rep.add(cleaned.get(4));
-								rep.add(cleaned.get(5));
-								rep.add("STY TMP3_ZP");
-								rep.add("STA TMP3_ZP+1");
-								rep.add(cleaned.get(0));
-								rep.add(cleaned.get(1));
-								rep.add("JSR INTADDVAR");
-								return combine(pattern, rep);
-							}
-						}));
+		intPatterns.add(new IntPattern(true, "Optimized code for adding INT variables",
+				new String[] { "LDY {MEM0}", "LDA {MEM0}", "JSR INTFAC", "JSR FACYREG", "LDY {MEM1}", "LDA {MEM1}",
+						"JSR INTFAC", "JSR FACXREG", "JSR YREGFAC", "LDA #<X_REG", "LDY #>X_REG", "JSR FASTFADDMEM" },
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						List<String> rep = new ArrayList<>();
+						rep.add(cleaned.get(4));
+						rep.add(cleaned.get(5));
+						rep.add("STY TMP3_ZP");
+						rep.add("STA TMP3_ZP+1");
+						rep.add(cleaned.get(0));
+						rep.add(cleaned.get(1));
+						rep.add("JSR INTADDVAR");
+						return combine(pattern, rep);
+					}
+				}));
 
 		// if l%=h% etc.
 		intPatterns.add(new IntPattern(true, "Optimized code for Integer(1)",
@@ -768,8 +766,8 @@ public class IntOptimizer {
 
 		// p% and/or <const>0>
 		intPatterns.add(new IntPattern(true, "Optimized code for AND/OR",
-				new String[] { "LDA #<{CONST0}", "LDY #>{CONST0}", "JSR COPY2_XYA_YREG", "LDY {*}", "LDA {*}", "JSR INTFAC",
-						"JSR FACXREG", "JSR YREGFAC", "JSR XREGARG", "JSR FAST{*}", "JSR {*}" },
+				new String[] { "LDA #<{CONST0}", "LDY #>{CONST0}", "JSR COPY2_XYA_YREG", "LDY {*}", "LDA {*}",
+						"JSR INTFAC", "JSR FACXREG", "JSR YREGFAC", "JSR XREGARG", "JSR FAST{*}", "JSR {*}" },
 				new AbstractCodeModifier() {
 					@Override
 					public List<String> modify(IntPattern pattern, List<String> input) {
@@ -807,8 +805,8 @@ public class IntOptimizer {
 
 		// p%+1 and/or <const>0>
 		intPatterns.add(new IntPattern(
-				true, "Optimized code for +1 AND/OR", new String[] { "LDY {*}", "LDA {*}", "JSR FI{*}", "LDA #<{CONST0}",
-						"LDY #>{CONST0}", "JSR REALFAC", "JSR XREGARG", "JSR FAST{*}", "JSR {*}" },
+				true, "Optimized code for +1 AND/OR", new String[] { "LDY {*}", "LDA {*}", "JSR FI{*}",
+						"LDA #<{CONST0}", "LDY #>{CONST0}", "JSR REALFAC", "JSR XREGARG", "JSR FAST{*}", "JSR {*}" },
 				new AbstractCodeModifier() {
 					@Override
 					public List<String> modify(IntPattern pattern, List<String> input) {

@@ -81,13 +81,13 @@ public class NativeCompiler {
 	private final static Set<String> STRING_OPERATORS = new HashSet<String>() {
 		private static final long serialVersionUID = 1L;
 		{
-			
+
 			this.add(".");
 			this.add("STR");
 			this.add("MID");
 			this.add("LEFT");
 			this.add("RIGHT");
-			
+
 			this.add("CHR");
 			this.add("TAB");
 			this.add("SPC");
@@ -104,8 +104,9 @@ public class NativeCompiler {
 			this.add("SCMP");
 		}
 	};
-	
-	// All functions that TAKE an int but CREATE a string. These has to be handled differently in one instance...
+
+	// All functions that TAKE an int but CREATE a string. These has to be handled
+	// differently in one instance...
 	private final static Set<String> INT2STRING = new HashSet<String>() {
 		private static final long serialVersionUID = 1L;
 		{
@@ -195,7 +196,7 @@ public class NativeCompiler {
 			nCode = comp.inlineIntegerConstants(nCode);
 			nCode = comp.removeUnusedConstants(nCode);
 		}
-		
+
 		if (conf.isBigRam()) {
 			SourceProcessor srcProc = new SourceProcessor(nCode);
 			nCode = srcProc.moveRuntime();
@@ -554,7 +555,8 @@ public class NativeCompiler {
 								ntr = "A";
 								nsr = "B";
 								if (INT2STRING.contains(opStart)) {
-									// In this case, it's a call that produces a string, but takes an int. This has to be handled
+									// In this case, it's a call that produces a string, but takes an int. This has
+									// to be handled
 									// differently when adding a POP "new source register"
 									nsr = "Y";
 								}
@@ -966,7 +968,7 @@ public class NativeCompiler {
 		}
 		return true;
 	}
-	
+
 	private boolean isSingle(String op) {
 		// first, ask all registered extension about it...
 		for (BasicExtension ext : Basic.getExtensions()) {

@@ -400,7 +400,7 @@ public class Parser {
 			boolean checkForLogicTerm) {
 		return getTerm(config, term, machine, stripAssignment, checkForLogicTerm, false);
 	}
-	
+
 	/**
 	 * Returns the term that represents the term in the text. The result will be a
 	 * binary tree build out of terms with the returned term being the root element.
@@ -409,7 +409,8 @@ public class Parser {
 	 * @param machine           the machine
 	 * @param stripAssignment   if true, assignments will be stripped
 	 * @param checkForLogicTerm if true, logic terms will be checked for as well
-	 * @param isSealed			if true, some characters won't be checked because they are expected to be here
+	 * @param isSealed          if true, some characters won't be checked because
+	 *                          they are expected to be here
 	 * @return the resulting term
 	 */
 	public static Term getTerm(CompilerConfig config, String term, Machine machine, boolean stripAssignment,
@@ -553,7 +554,7 @@ public class Parser {
 		String newTerm = TermOptimizer.optimizeLinearIndexTerm(sb.toString());
 		Term t = Parser.getTermWithoutChecks(config, newTerm, machine, false, true);
 		t.setSealed(true);
-		
+
 		return t;
 	}
 
@@ -1023,7 +1024,8 @@ public class Parser {
 	 * @return true, if its a term placeholder
 	 */
 	private static boolean isTermPlaceholder(String txt) {
-		// Note that the second part of this check isn't equal to endsWith("}")...for example: {t0}+{t1}
+		// Note that the second part of this check isn't equal to endsWith("}")...for
+		// example: {t0}+{t1}
 		return txt.startsWith("{") && txt.indexOf('}') == (txt.length() - 1);
 	}
 

@@ -84,7 +84,7 @@ public class PatternProcessor {
 		synchronized (fileContentCache) {
 			lines = fileContentCache.get(setName);
 			if (lines == null) {
-				Logger.log("Reading optimizer rules from file "+setName);
+				Logger.log("Reading optimizer rules from file " + setName);
 				lines = Loader.loadProgram(this.getClass().getResourceAsStream("/" + setName));
 				fileContentCache.put(setName, lines);
 			}

@@ -57,7 +57,7 @@ public class Transformer64 extends AbstractTransformer {
 		subs.addAll(Arrays.asList(Loader.loadProgram(this.getClass().getResourceAsStream("/subroutines.asm"))));
 		RuntimeAddition add = config.getRuntimeAddition();
 		if (add != null && add.getAdditionalRuntimeCode() != null) {
-			Logger.log("Adding user provided runtime code: "+add.getAdditionalRuntimeCode().size()+" lines");
+			Logger.log("Adding user provided runtime code: " + add.getAdditionalRuntimeCode().size() + " lines");
 			subs.add(SEP);
 			subs.addAll(add.getAdditionalRuntimeCode());
 			subs.add(SEP);

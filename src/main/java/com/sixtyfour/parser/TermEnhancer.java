@@ -379,18 +379,19 @@ public class TermEnhancer {
 			if (inString) {
 				continue;
 			}
-			if (c=='°') {
+			if (c == '°') {
 				orCnt++;
 			}
 		}
-		
-		if (orCnt==0) {
-			// No OR? Nothing to do then, because there's not priority handling needed at all.
+
+		if (orCnt == 0) {
+			// No OR? Nothing to do then, because there's not priority handling needed at
+			// all.
 			return term;
 		}
 
 		// If there are ORs, there might as well be ANDs, which we handle here...
-		
+
 		StringBuilder sb = new StringBuilder();
 		inString = false;
 		for (int i = 0; i < term.length(); i++) {

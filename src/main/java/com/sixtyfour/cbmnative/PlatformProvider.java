@@ -88,21 +88,23 @@ public interface PlatformProvider {
 	 * @return
 	 */
 	Generator getGenerator(String orgLine);
-	
+
 	/**
-	 * Returns the address used for the buffer when executing SYS commands with parameters
+	 * Returns the address used for the buffer when executing SYS commands with
+	 * parameters
 	 * 
 	 * @return
 	 */
 	int getBasicBufferAddress();
-	
+
 	/**
-	 * If true, the option to compress the compiled code is available on this platform
+	 * If true, the option to compress the compiled code is available on this
+	 * platform
 	 * 
 	 * @return
 	 */
 	boolean supportsCompression();
-	
+
 	/**
 	 * If true, this platform supports the BigRam option.
 	 * 

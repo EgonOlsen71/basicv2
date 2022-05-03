@@ -67,7 +67,7 @@ public class InputFile extends Input {
 		List<String> after = new ArrayList<String>();
 		List<String> expr = null;
 		List<String> before = new ArrayList<String>();
-		
+
 		expr = compiler.compileToPseudoCode(config, machine, fileNumber);
 
 		CodeContainer cc = new CodeContainer(before, expr, after);

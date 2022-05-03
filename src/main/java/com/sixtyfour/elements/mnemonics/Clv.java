@@ -21,5 +21,5 @@ public class Clv extends AbstractMnemonic {
 	public boolean isSingle() {
 		return true;
 	}
-	
+
 }

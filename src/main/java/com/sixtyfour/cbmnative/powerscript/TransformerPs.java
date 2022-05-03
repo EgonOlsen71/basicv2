@@ -36,8 +36,8 @@ import com.sixtyfour.util.VarUtils;
 public class TransformerPs implements Transformer {
 
 	@Override
-	public List<String> transform(CompilerConfig config, MemoryConfig memConfig, Machine machine, PlatformProvider platform,
-			List<String> code) {
+	public List<String> transform(CompilerConfig config, MemoryConfig memConfig, Machine machine,
+			PlatformProvider platform, List<String> code) {
 		Logger.log("Compiling into powerscript code...");
 
 		addContinues(code);
@@ -369,6 +369,6 @@ public class TransformerPs implements Transformer {
 
 	@Override
 	public void setOptimizedStringPointers(boolean optimized) {
-		
+
 	}
 }

@@ -71,7 +71,7 @@ public class PlatformPs implements PlatformProvider {
 	public int getBasicMemoryEndAddress() {
 		return 0;
 	}
-	
+
 	@Override
 	public int getBasicBufferAddress() {
 		return 0;
@@ -86,5 +86,5 @@ public class PlatformPs implements PlatformProvider {
 	public boolean supportsBigRam() {
 		return false;
 	}
-	
+
 }

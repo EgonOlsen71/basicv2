@@ -29,7 +29,7 @@ public final class VarUtils {
 	public static boolean isFloat(Object obj) {
 		return obj instanceof Float;
 	}
-	
+
 	/**
 	 * Checks an instance is a Double.
 	 * 
@@ -69,7 +69,7 @@ public final class VarUtils {
 	public static float getFloat(Object obj) {
 		return ((Number) obj).floatValue();
 	}
-	
+
 	/**
 	 * Gets the double value of an instance.
 	 * 

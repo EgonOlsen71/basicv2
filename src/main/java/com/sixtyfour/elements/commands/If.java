@@ -62,10 +62,10 @@ public class If extends AbstractCommand {
 			termEnd = gp;
 			isGoto = true;
 		}
-		
+
 		conditionalTerm = linePart.substring(2, termEnd);
 		logicTerm = Parser.getTerm(config, conditionalTerm, machine, false, true);
-		
+
 		if (isGoto) {
 			return linePart.substring(termEnd);
 		}
@@ -108,14 +108,14 @@ public class If extends AbstractCommand {
 	}
 
 	private boolean evalToBoolean(Machine machine, Term term) {
-		Object res=logicTerm.eval(machine);
+		Object res = logicTerm.eval(machine);
 		if (VarUtils.isNumber(res)) {
-			int ret=VarUtils.getInt(res);
-			return ret==-1;
+			int ret = VarUtils.getInt(res);
+			return ret == -1;
 		}
 		return false;
 	}
-	
+
 	@Override
 	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
 
@@ -131,9 +131,9 @@ public class If extends AbstractCommand {
 
 		String expPush = getPushRegister(expr.get(expr.size() - 1));
 		expr = expr.subList(0, expr.size() - 1); // Remove trailing PUSH X/PUSH_A
-		
+
 		expPush = handleNoOpStrings(after, expPush);
-		
+
 		if (!compatibleConditionalBranches) {
 			// This combination might not work on a 6502 cpu, because the
 			// conditional branch target has to be within +-127/8 bytes
@@ -162,13 +162,16 @@ public class If extends AbstractCommand {
 	public boolean isConditional() {
 		return true;
 	}
-	
+
 	private String handleNoOpStrings(List<String> after, String expPush) {
-		// Handle IF A$ THEN and other string "comparisons" of that kind properly...quite hacky, but anyway...
-		
-		// Looks like as if the comparison is supposed to happen to a pointer register. That makes no sense,
-		// so it's obviously a pointer to a string (what else could it be?). We "wrap" that into a LEN call
-		// and compare with X instead to fix this. 
+		// Handle IF A$ THEN and other string "comparisons" of that kind
+		// properly...quite hacky, but anyway...
+
+		// Looks like as if the comparison is supposed to happen to a pointer register.
+		// That makes no sense,
+		// so it's obviously a pointer to a string (what else could it be?). We "wrap"
+		// that into a LEN call
+		// and compare with X instead to fix this.
 		// It would be better to catch this on a higher level, but...well...who cares...
 		if (expPush.equals("B") || expPush.equals("A")) {
 			if (expPush.equals("A")) {

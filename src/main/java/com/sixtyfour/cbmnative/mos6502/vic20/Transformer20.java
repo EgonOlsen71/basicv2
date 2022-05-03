@@ -35,8 +35,8 @@ public class Transformer20 extends AbstractTransformer {
 	}
 
 	@Override
-	public List<String> transform(CompilerConfig config, MemoryConfig memConfig, Machine machine, PlatformProvider platform,
-			List<String> code) {
+	public List<String> transform(CompilerConfig config, MemoryConfig memConfig, Machine machine,
+			PlatformProvider platform, List<String> code) {
 		Logger.log("Compiling into native assembly code...");
 		List<String> res = new ArrayList<>();
 		List<String> consts = new ArrayList<String>();

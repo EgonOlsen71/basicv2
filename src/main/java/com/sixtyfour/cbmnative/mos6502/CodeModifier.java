@@ -10,5 +10,5 @@ import java.util.List;
 public interface CodeModifier {
 
 	public List<String> modify(IntPattern pattern, List<String> input);
-	
+
 }

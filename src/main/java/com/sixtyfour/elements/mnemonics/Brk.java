@@ -21,7 +21,7 @@ public class Brk extends AbstractMnemonic {
 	public boolean isSingle() {
 		return true;
 	}
-	
+
 	@Override
 	public int getMaxLength() {
 		return 1;

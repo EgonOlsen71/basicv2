@@ -64,7 +64,7 @@ public class Gosub extends AbstractCommand implements Jump {
 		machine.push(this);
 		return pc;
 	}
-	
+
 	public int getTargetLineNumber() {
 		return targetLineNumber;
 	}

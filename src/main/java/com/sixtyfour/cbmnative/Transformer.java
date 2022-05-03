@@ -18,14 +18,15 @@ public interface Transformer {
 	/**
 	 * Transforms intermediate code into native/assembly code.
 	 * 
-	 * @param config   the compiler's configuration
+	 * @param config    the compiler's configuration
 	 * @param memConfig the memory configuration
-	 * @param machine  the machine
-	 * @param platform the target platform
-	 * @param code     the intermediate code
+	 * @param machine   the machine
+	 * @param platform  the target platform
+	 * @param code      the intermediate code
 	 * @return the native code
 	 */
-	List<String> transform(CompilerConfig config, MemoryConfig memConfig, Machine machine, PlatformProvider platform, List<String> code);
+	List<String> transform(CompilerConfig config, MemoryConfig memConfig, Machine machine, PlatformProvider platform,
+			List<String> code);
 
 	/**
 	 * Can be implemented to add some additional code that handles the actual

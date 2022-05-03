@@ -9,8 +9,8 @@ package com.sixtyfour.parser.logic;
  */
 public enum Comparator {
 
-	NOT_EQUAL("<>", "><"), LARGER_OR_EQUAL(">=", "=>"), SMALLER_OR_EQUAL("<=", "=<"), EQUAL("="), LARGER(">"), SMALLER("<"),
-	EXISTS();
+	NOT_EQUAL("<>", "><"), LARGER_OR_EQUAL(">=", "=>"), SMALLER_OR_EQUAL("<=", "=<"), EQUAL("="), LARGER(">"),
+	SMALLER("<"), EXISTS();
 
 	/** The term */
 	private String[] term;

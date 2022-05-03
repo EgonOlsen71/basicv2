@@ -59,21 +59,17 @@ public class LogicParser {
 						throw new RuntimeException("Syntax error: " + term);
 					}
 					/*
-					String part = term.substring(i, end + 1);
-
-					String partS = stripStrings(part);
-
-					boolean brackets = partS.contains("(");
-					if ((partS.contains("OR") || partS.contains("AND")) && brackets) {
-						lastPart = part;
-						lastStart = i;
-						continue;
-					}
-
-					if (!brackets && !(partS.contains("OR") || partS.contains("AND"))) {
-						continue;
-					}
-					*/
+					 * String part = term.substring(i, end + 1);
+					 * 
+					 * String partS = stripStrings(part);
+					 * 
+					 * boolean brackets = partS.contains("("); if ((partS.contains("OR") ||
+					 * partS.contains("AND")) && brackets) { lastPart = part; lastStart = i;
+					 * continue; }
+					 * 
+					 * if (!brackets && !(partS.contains("OR") || partS.contains("AND"))) {
+					 * continue; }
+					 */
 				} else if (i == term.length() - 1) {
 					String toProcess = lastPart;
 					int startPos = lastStart;
@@ -291,7 +287,6 @@ public class LogicParser {
 		}
 		return brackets;
 	}
-
 
 	/**
 	 * Finds the end bracket starting at the current position.

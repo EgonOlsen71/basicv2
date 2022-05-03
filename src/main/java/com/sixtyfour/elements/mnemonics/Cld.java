@@ -21,5 +21,5 @@ public class Cld extends AbstractMnemonic {
 	public boolean isSingle() {
 		return true;
 	}
-	
+
 }

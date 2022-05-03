@@ -21,5 +21,5 @@ public class Dex extends AbstractMnemonic {
 	public boolean isSingle() {
 		return true;
 	}
-	
+
 }

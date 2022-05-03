@@ -252,8 +252,8 @@ public class VisualMospeed {
 				nCode = nComp.compile(conf, basic, memConfig, platform);
 			} catch (Exception e) {
 				Logger.log("\n!!! Error compiling: " + e.getMessage());
-				String ll=nComp.getLastProcessedLine();
-				if (ll!=null) {
+				String ll = nComp.getLastProcessedLine();
+				if (ll != null) {
 					Logger.log("Error at: " + ll);
 				}
 				return;

@@ -70,9 +70,9 @@ public class Util {
 								Double num = Double.valueOf(number);
 								if (type.equals(".REAL")) {
 									const2Value.put(name, num);
-									if (!name.endsWith("R") && !const2Value.containsKey(name+"R")) {
+									if (!name.endsWith("R") && !const2Value.containsKey(name + "R")) {
 										// Just to make sure that CONST_0R exists...
-										const2Value.put(name+"R", num);
+										const2Value.put(name + "R", num);
 									}
 								} else {
 									const2Value.put(name, num.intValue());
@@ -87,10 +87,10 @@ public class Util {
 		}
 		return const2Value;
 	}
-	
+
 	public static Map<String, String> extractStringConstants(List<String> input) {
 		Map<String, String> const2Value = new HashMap<>();
-		int cnt=0;
+		int cnt = 0;
 		for (String line : input) {
 			line = line.replace("\t", " ");
 			if (line.startsWith("CONST_")) {
@@ -101,17 +101,17 @@ public class Util {
 					pos = right.indexOf(" ");
 					if (pos != -1) {
 						String type = right.substring(0, pos).trim();
-						if (type.equals(".BYTE") && cnt<input.size()-1) {
+						if (type.equals(".BYTE") && cnt < input.size() - 1) {
 							try {
-								String nextLine=input.get(cnt+1);
+								String nextLine = input.get(cnt + 1);
 								nextLine = nextLine.replace("\t", " ").trim();
 								if (nextLine.startsWith(".STRG")) {
-									String val=nextLine.substring(6).replace("\"", "").trim();
+									String val = nextLine.substring(6).replace("\"", "").trim();
 									const2Value.put(name, val);
-									//System.out.println("Extracted "+name+" : "+val);
+									// System.out.println("Extracted "+name+" : "+val);
 								}
 							} catch (Exception e) {
-								Logger.log("Failed to parse string for "+line);
+								Logger.log("Failed to parse string for " + line);
 							}
 						}
 					}
