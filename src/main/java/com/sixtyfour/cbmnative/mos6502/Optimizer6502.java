@@ -259,10 +259,14 @@ public class Optimizer6502 implements Optimizer {
 			Logger.log("!!! Failed to apply peek optimizations: " + e.getMessage());
 		}
 		try {
-			Logger.log("Integer pass 1...");
-			input = new IntOptimizer().applyIntOptimizations(config, platform, input, getStartAndEnd(config, input));
-			Logger.log("Integer pass 2...");
-			input = new IntOptimizer().applyIntOptimizations(config, platform, input, getStartAndEnd(config, input));
+			if (config.isIntOptimizations()) {
+				Logger.log("Integer pass 1...");
+				input = new IntOptimizer().applyIntOptimizations(config, platform, input,
+						getStartAndEnd(config, input));
+				Logger.log("Integer pass 2...");
+				input = new IntOptimizer().applyIntOptimizations(config, platform, input,
+						getStartAndEnd(config, input));
+			}
 		} catch (Exception e) {
 			Logger.log("!!! Failed to apply integer optimizations: " + e.getMessage());
 			e.printStackTrace();
