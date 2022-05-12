@@ -300,7 +300,7 @@ public class TermOptimizer {
 		if (t.getOperator().isMultiplication()) {
 			double val = 0;
 			if (right.isConstant() && ((val = ((Number) right.eval(machine)).doubleValue()) == 40d || val == 320
-					|| val == 80 || val == 160 || val == 10)) {
+					|| val == 80 || val == 160 || val == 10 || val == 12)) {
 				t.setLeft(right);
 				t.setRight(left);
 				left = t.getLeft();
