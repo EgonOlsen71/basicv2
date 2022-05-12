@@ -125,7 +125,7 @@ public class NativeOptimizer {
 				new String[] { "MOV A,#3{INTEGER}", "MOV X,Y", "SHL X,A", "MOV A,#1{INTEGER}", "SHL Y,A", "ADD X,Y" }));
 
 		// ...and the same thing for 12...
-		patterns.add(new NativePattern(new String[] { "MOV X,#10{INTEGER}", "MUL X,Y" },
+		patterns.add(new NativePattern(new String[] { "MOV X,#12{INTEGER}", "MUL X,Y" },
 				new String[] { "MOV A,#3{INTEGER}", "MOV X,Y", "SHL X,A", "MOV A,#2{INTEGER}", "SHL Y,A", "ADD X,Y" }));
 
 		// And once more for the constant value in Y...
@@ -151,7 +151,7 @@ public class NativeOptimizer {
 				new String[] { "MOV A,#3{INTEGER}", "MOV Y,X", "SHL X,A", "MOV A,#1{INTEGER}", "SHL Y,A", "ADD X,Y" }));
 
 		// ...and the same thing for 12...
-		patterns.add(new NativePattern(new String[] { "MOV Y,#10{INTEGER}", "MUL X,Y" },
+		patterns.add(new NativePattern(new String[] { "MOV Y,#12{INTEGER}", "MUL X,Y" },
 				new String[] { "MOV A,#3{INTEGER}", "MOV Y,X", "SHL X,A", "MOV A,#2{INTEGER}", "SHL Y,A", "ADD X,Y" }));
 
 		// Some stuff that applies mostly for Arrays like dim k%(16,16), which are
