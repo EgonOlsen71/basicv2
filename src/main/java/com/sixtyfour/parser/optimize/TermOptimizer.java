@@ -49,6 +49,49 @@ public class TermOptimizer {
 			this.add(512);
 		}
 	};
+	
+	
+	private final static Set<Double> ADDED_POWERS_OF_TWO = new HashSet<Double>() {
+		private static final long serialVersionUID = 1L;
+		{
+			this.add(3d);
+			this.add(5d);
+			this.add(6d);
+			this.add(9d);
+			this.add(10d);
+			this.add(12d);
+			this.add(17d);
+			this.add(18d);
+			this.add(20d);
+			this.add(24d);
+			this.add(33d);
+			this.add(34d);
+			this.add(36d);
+			this.add(40d);
+			this.add(48d);
+			this.add(65d);
+			this.add(66d);
+			this.add(68d);
+			this.add(72d);
+			this.add(80d);
+			this.add(96d);
+			this.add(129d);
+			this.add(130d);
+			this.add(132d);
+			this.add(136d);
+			this.add(144d);
+			this.add(160d);
+			this.add(192d);
+			this.add(257d);
+			this.add(258d);
+			this.add(260d);
+			this.add(264d);
+			this.add(272d);
+			this.add(288d);
+			this.add(320d);
+		}
+	};
+	
 
 	/**
 	 * Tries to optimize terms used in print by detection cases like a$
@@ -298,9 +341,7 @@ public class TermOptimizer {
 		// for others, so it's impossible to decide which
 		// variant is generally better...so we leave it untouched...
 		if (t.getOperator().isMultiplication()) {
-			double val = 0;
-			if (right.isConstant() && ((val = ((Number) right.eval(machine)).doubleValue()) == 40d || val == 320
-					|| val == 80 || val == 160 || val == 10 || val == 12)) {
+			if (right.isConstant() && ADDED_POWERS_OF_TWO.contains(((Number) right.eval(machine)).doubleValue())) {
 				t.setLeft(right);
 				t.setRight(left);
 				left = t.getLeft();

@@ -19,6 +19,11 @@ public class NativeOptimizer {
 	private static List<NativePattern> patterns = new ArrayList<NativePattern>();
 
 	static {
+		List<Integer> pots = new ArrayList<>();
+		for (int i = 0; i < 12; i++) {
+			pots.add(Integer.valueOf((int) Math.pow(2, i)));
+		}
+
 		patterns.add(new NativePattern(new String[] { "PUSH*", "POP*" }, new String[] { "MOV p1,p0" }));
 		patterns.add(new NativePattern(new String[] { "PUSH X", "MOV C*|*[]*", "POP Y" }, new String[] { "{1}" }));
 		patterns.add(
@@ -103,70 +108,41 @@ public class NativeOptimizer {
 		patterns.add(new NativePattern(new String[] { "MOV Y,#*", "PUSH Y", "MOV Y,*", "INT X,Y", "POP Y", "MUL X,Y" },
 				new String[] { "{2}", "{3}", "PUSH X", "{0}", "POP X", "{5}" }));
 
-		// Optimizes the special case of a multiplication by 40. Is is quite common in
-		// C64 BASIC-code because of the screen's width...
-		patterns.add(new NativePattern(new String[] { "MOV X,#40{INTEGER}", "MUL X,Y" },
-				new String[] { "MOV A,#5{INTEGER}", "MOV X,Y", "SHL X,A", "MOV A,#3{INTEGER}", "SHL Y,A", "ADD X,Y" }));
+		// Optimizes special cases of a multiplication by, for example, 40 (and similar muls).
+		// ...this also covers the former special case for arrays like a(16,16), which require a *17...
+		for (int i = 0; i <= 320; i++) {
+			int firstShift = getNearestPot(pots, i);
+			if (firstShift >= 0) {
+				int firstPart = pots.get(firstShift);
+				int dif = i - firstPart;
+				if (dif != 0) {
+					int secondShift = getNearestPot(pots, dif);
+					if (secondShift >= 0) {
+						int secondPart = pots.get(secondShift);
+						int total = firstPart + secondPart;
+						if (total == i) {
+							if (secondShift > 0) {
+								patterns.add(new NativePattern(new String[] { "MOV X,#" + i + "{INTEGER}", "MUL X,Y" },
+										new String[] { "MOV A,#" + firstShift + "{INTEGER}", "MOV X,Y", "SHL X,A",
+												"MOV A,#" + secondShift + "{INTEGER}", "SHL Y,A", "ADD X,Y" }));
 
-		// ...and the same thing for 320...
-		patterns.add(new NativePattern(new String[] { "MOV X,#320{INTEGER}", "MUL X,Y" },
-				new String[] { "MOV A,#8{INTEGER}", "MOV X,Y", "SHL X,A", "MOV A,#6{INTEGER}", "SHL Y,A", "ADD X,Y" }));
+								patterns.add(new NativePattern(new String[] { "MOV Y,#" + i + "{INTEGER}", "MUL X,Y" },
+										new String[] { "MOV A,#" + firstShift + "{INTEGER}", "MOV Y,X", "SHL X,A",
+												"MOV A,#" + secondShift + "{INTEGER}", "SHL Y,A", "ADD X,Y" }));
+							} else {
+								
+								patterns.add(new NativePattern(new String[] { "MOV X,#" + i + "{INTEGER}", "MUL X,Y" },
+										new String[] { "MOV A,#" + firstShift + "{INTEGER}", "MOV X,Y", "SHL X,A",
+												"ADD X,Y" }));
+								patterns.add(new NativePattern(new String[] { "MOV Y,#" + i + "{INTEGER}", "MUL X,Y" },
+										new String[] { "MOV A,#" + firstShift + "{INTEGER}", "MOV Y,X", "SHL Y,A",
+												"ADD X,Y" }));
 
-		// ...and the same thing for 80...
-		patterns.add(new NativePattern(new String[] { "MOV X,#80{INTEGER}", "MUL X,Y" },
-				new String[] { "MOV A,#6{INTEGER}", "MOV X,Y", "SHL X,A", "MOV A,#4{INTEGER}", "SHL Y,A", "ADD X,Y" }));
-
-		// ...and the same thing for 160...
-		patterns.add(new NativePattern(new String[] { "MOV X,#160{INTEGER}", "MUL X,Y" },
-				new String[] { "MOV A,#7{INTEGER}", "MOV X,Y", "SHL X,A", "MOV A,#5{INTEGER}", "SHL Y,A", "ADD X,Y" }));
-
-		// ...and the same thing for 10...
-		patterns.add(new NativePattern(new String[] { "MOV X,#10{INTEGER}", "MUL X,Y" },
-				new String[] { "MOV A,#3{INTEGER}", "MOV X,Y", "SHL X,A", "MOV A,#1{INTEGER}", "SHL Y,A", "ADD X,Y" }));
-
-		// ...and the same thing for 12...
-		patterns.add(new NativePattern(new String[] { "MOV X,#12{INTEGER}", "MUL X,Y" },
-				new String[] { "MOV A,#3{INTEGER}", "MOV X,Y", "SHL X,A", "MOV A,#2{INTEGER}", "SHL Y,A", "ADD X,Y" }));
-
-		// And once more for the constant value in Y...
-		// Optimizes the special case of a multiplication by 40. Is is quite common in
-		// C64 BASIC-code because of the screen's width...
-		patterns.add(new NativePattern(new String[] { "MOV Y,#40{INTEGER}", "MUL X,Y" },
-				new String[] { "MOV A,#5{INTEGER}", "MOV Y,X", "SHL X,A", "MOV A,#3{INTEGER}", "SHL Y,A", "ADD X,Y" }));
-
-		// ...and the same thing for 320...
-		patterns.add(new NativePattern(new String[] { "MOV Y,#320{INTEGER}", "MUL X,Y" },
-				new String[] { "MOV A,#8{INTEGER}", "MOV Y,X", "SHL X,A", "MOV A,#6{INTEGER}", "SHL Y,A", "ADD X,Y" }));
-
-		// ...and the same thing for 80...
-		patterns.add(new NativePattern(new String[] { "MOV Y,#80{INTEGER}", "MUL X,Y" },
-				new String[] { "MOV A,#6{INTEGER}", "MOV Y,X", "SHL X,A", "MOV A,#4{INTEGER}", "SHL Y,A", "ADD X,Y" }));
-
-		// ...and the same thing for 160...
-		patterns.add(new NativePattern(new String[] { "MOV Y,#160{INTEGER}", "MUL X,Y" },
-				new String[] { "MOV A,#7{INTEGER}", "MOV Y,X", "SHL X,A", "MOV A,#5{INTEGER}", "SHL Y,A", "ADD X,Y" }));
-
-		// ...and the same thing for 10...
-		patterns.add(new NativePattern(new String[] { "MOV Y,#10{INTEGER}", "MUL X,Y" },
-				new String[] { "MOV A,#3{INTEGER}", "MOV Y,X", "SHL X,A", "MOV A,#1{INTEGER}", "SHL Y,A", "ADD X,Y" }));
-
-		// ...and the same thing for 12...
-		patterns.add(new NativePattern(new String[] { "MOV Y,#12{INTEGER}", "MUL X,Y" },
-				new String[] { "MOV A,#3{INTEGER}", "MOV Y,X", "SHL X,A", "MOV A,#2{INTEGER}", "SHL Y,A", "ADD X,Y" }));
-
-		// Some stuff that applies mostly for Arrays like dim k%(16,16), which are
-		// actually 17,17 in size but people keep forgetting...
-		for (int i = 1; i < 9; i++) {
-			int pow = 1 << i;
-			NativePattern p = new NativePattern(new String[] { "MOV X,#" + (pow + 1) + "{INTEGER}", "MUL X,Y" },
-					new String[] { "MOV A,#" + i + "{INTEGER}", "MOV X,Y", "SHL X,A", "ADD X,Y" });
-			// System.out.println(p);
-			patterns.add(p);
-
-			p = new NativePattern(new String[] { "MOV Y,#" + (pow + 1) + "{INTEGER}", "MUL X,Y" },
-					new String[] { "MOV A,#" + i + "{INTEGER}", "MOV Y,X", "SHL Y,A", "ADD X,Y" });
-			// System.out.println(p);
-			patterns.add(p);
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 
@@ -204,6 +180,18 @@ public class NativeOptimizer {
 			}
 		}
 		return code;
+	}
+
+	private static int getNearestPot(List<Integer> pots, int i) {
+		int lastP = -1;
+		for (int p = 0; p < pots.size(); p++) {
+			int potVal = pots.get(p);
+			if (potVal > i) {
+				break;
+			}
+			lastP = p;
+		}
+		return lastP;
 	}
 
 	private static int getChecksum(List<String> code) {
