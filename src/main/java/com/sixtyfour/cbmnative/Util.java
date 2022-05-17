@@ -106,7 +106,7 @@ public class Util {
 								String nextLine = input.get(cnt + 1);
 								nextLine = nextLine.replace("\t", " ").trim();
 								if (nextLine.startsWith(".STRG")) {
-									String val = nextLine.substring(6).replace("\"", "").trim();
+									String val = nextLine.substring(6).trim().replace("\"", "");
 									const2Value.put(name, val);
 									// System.out.println("Extracted "+name+" : "+val);
 								}
