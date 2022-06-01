@@ -848,6 +848,7 @@ public class Basic implements ProgramExecutor {
 				} else {
 					if (cmd instanceof Rem) {
 						// System.out.println("Re, found: "+num+"/"+cnt);
+						cnt++;
 						continue;
 					} else if (cmd instanceof Next) {
 						nextLine = num;
@@ -866,6 +867,7 @@ public class Basic implements ProgramExecutor {
 				if (forLine != -1 && nextLine != -1) {
 					lines.get(forLine).getCommands().set(forPos, new Delay((For) forCmd, loopMode == LoopMode.DELAY));
 					lines.get(nextLine).getCommands().set(nextPos, new Rem());
+					
 					Logger.log("Replaced for-loop at line " + forLine + " with "
 							+ (loopMode == LoopMode.DELAY ? "a delay" : "an empty operation!"));
 					forLine = -1;
@@ -874,7 +876,6 @@ public class Basic implements ProgramExecutor {
 					nextPos = -1;
 					forCmd = null;
 				}
-
 				cnt++;
 			}
 		}
