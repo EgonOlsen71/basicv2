@@ -4795,9 +4795,8 @@ SQRTAB
 
 FASTFSQRT
          	LDA FACEXP
-
          	BNE FSQRT_S0
-         	RTS         
+		    RTS         
 FSQRT_S0         
          	BIT FACSGN
          	BPL FSQRT_S1
@@ -4881,6 +4880,18 @@ FSQRT_S2
          	BNE FSQRT_S2
 
 FSQRT_RET     
-		 	RTS
+		 	; FIX inaccurcy on some results...this fixes the sitation, where the result is just one 1 below of what it should be
+		 	; like SQR(289), which should be 17 but turns out to by 17-7.9e-9
+         	LDA FACMOH
+         	AND FACMO
+         	AND FACLO
+         	CMP #$FF
+         	BNE FSQRTNIA	; Nothing to 'fix'
+         	INC FACHO
+         	LDA #0
+         	STA FACMOH
+         	STA FACMO
+         	STA FACLO
+FSQRTNIA 	RTS
 ;###################################
 
