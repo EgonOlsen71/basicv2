@@ -107,6 +107,12 @@ public class NativeOptimizer {
 		// shr-optimization triggers.
 		patterns.add(new NativePattern(new String[] { "MOV Y,#*", "PUSH Y", "MOV Y,*", "INT X,Y", "POP Y", "MUL X,Y" },
 				new String[] { "{2}", "{3}", "PUSH X", "{0}", "POP X", "{5}" }));
+		
+		// Remove some PUSH/POP to make room for SHL/SHR optimizations
+		String[] ops = {"RND", "SIN", "COS", "SQR", "TAN", "EXP"};
+		for (String op:ops) {
+			patterns.add(new NativePattern(new String[] {"MOV Y,#*", "PUSH Y", "MOV Y,*",op+" X,Y", "POP Y"}, new String[] {"{2}","{3}","{0}"}));
+		}
 
 		// Optimizes special cases of a multiplication by, for example, 40 (and similar muls).
 		// ...this also covers the former special case for arrays like a(16,16), which require a *17...
