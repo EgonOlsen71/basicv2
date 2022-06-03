@@ -70,7 +70,7 @@ public class NativeOptimizer {
 		// ARG. However, removing it
 		// disables some other optimizations at this stage and we don't want that.
 		patterns.add(
-				new NativePattern(new String[] { "MOV X,#-1{INTEGER}", "MUL X,Y" }, new String[] { "{0}", "NEG X,Y" }));
+				new NativePattern(new String[] { "MOV X,#-1{INTEGER}", "MUL X,Y" }, new String[] { "NEG X,Y" }));
 		patterns.add(new NativePattern(new String[] { "MOV Y,#-1{INTEGER}", "MUL X,Y" },
 				new String[] { "MOV Y,X", "NEG X,Y" }));
 		patterns.add(new NativePattern(new String[] { "MOV C,X", "PUSH C" }, new String[] { "PUSH X" }));

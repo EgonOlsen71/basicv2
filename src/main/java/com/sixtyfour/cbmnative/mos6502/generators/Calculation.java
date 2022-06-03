@@ -18,6 +18,7 @@ public abstract class Calculation implements Generator {
 	protected String systemCall = null;
 	protected String mnemonic = null;
 	protected boolean skipArgTransfer = false;
+	protected boolean skipSecondParameter = false;
 
 	protected Calculation(String mnemonic, String comment, String systemCall) {
 		this.mnemonic = mnemonic;
@@ -38,6 +39,10 @@ public abstract class Calculation implements Generator {
 		return mnemonic;
 	}
 
+	public void setSkipSecondParameter(boolean skipSecondParameter) {
+		this.skipSecondParameter = skipSecondParameter;
+	}
+	
 	@Override
 	public void generateCode(GeneratorContext context, String line, List<String> nCode, List<String> subCode,
 			Map<String, String> name2label) {
@@ -59,17 +64,19 @@ public abstract class Calculation implements Generator {
 		nCode.add("; Real in (A/Y) to FAC");
 		nCode.add("JSR REALFAC"); // Real in (A/Y) to FAC
 
-		if (target.isRegister()) {
-			nCode.add("LDA #<" + target.getRegisterName());
-			nCode.add("LDY #>" + target.getRegisterName());
-		} else {
-			nCode.add("LDA #<" + target.getAddress());
-			nCode.add("LDY #>" + target.getAddress());
-		}
-
-		if (!skipArgTransfer) {
-			nCode.add("; Real in (A/Y) to ARG");
-			nCode.add("JSR MEMARG"); // Real in (A/Y) to ARG
+		if (!skipSecondParameter) {
+			if (target.isRegister()) {
+				nCode.add("LDA #<" + target.getRegisterName());
+				nCode.add("LDY #>" + target.getRegisterName());
+			} else {
+				nCode.add("LDA #<" + target.getAddress());
+				nCode.add("LDY #>" + target.getAddress());
+			}
+	
+			if (!skipArgTransfer) {
+				nCode.add("; Real in (A/Y) to ARG");
+				nCode.add("JSR MEMARG"); // Real in (A/Y) to ARG
+			}
 		}
 		nCode.add(comment);
 		nCode.add(systemCall);

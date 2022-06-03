@@ -8,5 +8,6 @@ public class Neg extends Calculation {
 
 	public Neg() {
 		super("NEG", "; FAC = FAC * -1", "JSR NEG");
+		this.setSkipSecondParameter(true);
 	}
 }
