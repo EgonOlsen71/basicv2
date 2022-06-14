@@ -138,6 +138,97 @@ public class IntOptimizer {
 					}
 				}));
 
+		
+		// if 123=l%(xx) etc.
+		intPatterns.add(new IntPattern(true, "Optimized code for Integer(5)",
+				new String[] { "JSR {*}","JSR COPY_XREG2YREG","LDA #<{CONST0}", "LDY #>{CONST0}", "JSR COPY2_XYA_XREG", "JSR YREGFAC", "LDA #<X_REG", "LDY #>X_REG", "JSR CMPFAC" },
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						String jumpy = cleaned.get(0);
+						if (jumpy.endsWith("ARRAYACCESS_INTEGER_S") || jumpy.endsWith("ARRAYACCESS_INTEGER_INT")) {
+							String consty = cleaned.get(2);
+							consty = consty.substring(consty.indexOf("<") + 1).trim();
+							Number num = const2Value.get(consty);
+							double numd = num.doubleValue();
+							if (numd == (int) numd && numd >= -32768 && numd < 32768) {
+								String numHex = getHex(numd);
+								List<String> rep = new ArrayList<>();
+								rep.add(cleaned.get(0));
+								rep.add("LDY TMP2_ZP");
+								rep.add("STY TMP_ZP");
+								rep.add("LDA TMP2_ZP+1");
+								rep.add("STA TMP_ZP+1");
+								rep.add("LDY #$" + numHex.substring(2));
+								rep.add("LDA #$" + numHex.substring(0, 2));
+								rep.add("JSR ICMP");
+								return combine(pattern, rep);
+							}
+						}
+						pattern.reset();
+						return input;
+					}
+				}));
+		
+		// if l%(xx)=1 etc....which is a sepcial case because of some former optimization earlier in the pipeline
+		intPatterns.add(new IntPattern(true, "Optimized code for Integer(6)",
+				new String[] { "JSR {*}","JSR ONETOFAC", "LDA #<X_REG", "LDY #>X_REG", "JSR CMPFAC" },
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						String jumpy = cleaned.get(0);
+						if (jumpy.endsWith("ARRAYACCESS_INTEGER_S") || jumpy.endsWith("ARRAYACCESS_INTEGER_INT")) {
+							List<String> rep = new ArrayList<>();
+							rep.add(cleaned.get(0));
+							rep.add("LDA #$01");
+							rep.add("LDY #$00");
+							rep.add("STA TMP_ZP");
+							rep.add("STY TMP_ZP+1");
+							rep.add("LDY TMP2_ZP");
+							rep.add("LDA TMP2_ZP+1");
+							rep.add("JSR ICMP");
+							return combine(pattern, rep);
+						}
+						pattern.reset();
+						return input;
+					}
+				}));
+		
+		
+		// if l%(xx)=123 etc.
+		intPatterns.add(new IntPattern(true, "Optimized code for Integer(4)",
+				new String[] { "JSR {*}","LDA #<{CONST0}", "LDY #>{CONST0}", "JSR REALFAC", "LDA #<X_REG", "LDY #>X_REG", "JSR CMPFAC" },
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						String jumpy = cleaned.get(0);
+						if (jumpy.endsWith("ARRAYACCESS_INTEGER_S") || jumpy.endsWith("ARRAYACCESS_INTEGER_INT")) {
+							String consty = cleaned.get(1);
+							consty = consty.substring(consty.indexOf("<") + 1).trim();
+							Number num = const2Value.get(consty);
+							double numd = num.doubleValue();
+							if (numd == (int) numd && numd >= -32768 && numd < 32768) {
+								String numHex = getHex(numd);
+								List<String> rep = new ArrayList<>();
+								rep.add(cleaned.get(0));
+								rep.add("LDA #$" + numHex.substring(2));
+								rep.add("LDY #$" + numHex.substring(0, 2));
+								rep.add("STA TMP_ZP");
+								rep.add("STY TMP_ZP+1");
+								rep.add("LDY TMP2_ZP");
+								rep.add("LDA TMP2_ZP+1");
+								rep.add("JSR ICMP");
+								return combine(pattern, rep);
+							}
+						}
+						pattern.reset();
+						return input;
+					}
+				}));
+		
 		// if l%=123 etc.
 		intPatterns.add(new IntPattern(true, "Optimized code for Integer(2)",
 				new String[] { "LDA #<{CONST0}", "LDY #>{CONST0}", "JSR COPY2_XYA_YREG", "LDY {*}", "LDA {*}",
