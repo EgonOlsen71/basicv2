@@ -447,3 +447,7 @@
 #150: Improved READ for bytes
 "Improved READ for bytes"	false	false	false	"JSR READNUMBER|LDY #>Y_REG|LDA #<Y_REG|JSR REALFAC|JSR FACINT"	"JSR READMAYBEBYTE"
 
+#151 Array index is integer (load2)
+"Array index is integer (load2)"	false	false	false	"LDY {MEM0}|LDA {MEM0}|JSR INTFAC|JSR FACXREG|LDA #<{MEM1}|LDY #>{MEM1}|JSR ARRAYACCESS_INTEGER_SNX|"	"{LINE4}|{LINE5}|STA G_REG|STY G_REG+1|{LINE0}|{LINE1}|JSR ARRAYACCESS_INTEGER_INT|"
+
+
