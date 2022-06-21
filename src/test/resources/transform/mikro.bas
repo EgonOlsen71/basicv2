@@ -1,6 +1,6 @@
 10 print "{control-q}{lgrn}micro compiler"
 15 rem  von vic cortes
-20 gosub  1780: goto  590
+20 g=0:gosub  1780: goto  590
 30 rem  .. erste variable
 40 gosub  400: poke  a,169: poke  a+1,l:k=2
 50 if  v then  poke  a,173: poke  a+2,h:k=3
