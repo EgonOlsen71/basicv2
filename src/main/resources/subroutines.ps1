@@ -551,6 +551,10 @@ function CMD {
 	"[CMD not supported for PS, call ignored: "+$global:X_REG+"]"
 }
 
+function REM {
+	"[inline assembly ignored!]"
+}
+
 function STROUTCHANNEL {
 	"[PRINT# not supported for PS, redirected to normal PRINT]"
 	STROUT

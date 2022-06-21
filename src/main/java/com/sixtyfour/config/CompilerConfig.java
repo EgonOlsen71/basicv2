@@ -32,6 +32,7 @@ public class CompilerConfig {
 	private boolean floatOptimizations = false;
 	private boolean boostMode = false;
 	private boolean bigRam = false;
+	private boolean inlineAssembly = false;
 
 	private String symbolTable = null;
 	private int threads = -1;
@@ -277,6 +278,14 @@ public class CompilerConfig {
 
 	public void setRuntimeAddition(RuntimeAddition runtimeAddition) {
 		this.runtimeAddition = runtimeAddition;
+	}
+
+	public boolean isInlineAssembly() {
+		return inlineAssembly;
+	}
+
+	public void setInlineAssembly(boolean inlineAssembly) {
+		this.inlineAssembly = inlineAssembly;
 	}
 
 }

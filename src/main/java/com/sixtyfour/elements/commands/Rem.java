@@ -16,6 +16,8 @@ public class Rem extends AbstractCommand {
 
 	/** The Constant REM_MARKER. */
 	public final static String REM_MARKER = "###";
+	
+	public String asmCode = null;
 
 	/**
 	 * Instantiates a new rem.
@@ -34,6 +36,13 @@ public class Rem extends AbstractCommand {
 	public String parse(CompilerConfig config, String linePart, int lineCnt, int lineNumber, int linePos,
 			boolean lastPos, Machine machine) {
 		super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine);
+		if (config.isInlineAssembly() && linePart.length()>3) {
+			String part = linePart.substring(3);
+			if (part.startsWith("[") && part.endsWith("]")) {
+				asmCode = part.substring(1, part.length()-1);
+			}
+		}
+		
 		return REM_MARKER;
 	}
 
@@ -50,6 +59,10 @@ public class Rem extends AbstractCommand {
 
 	@Override
 	public List<CodeContainer> evalToCode(CompilerConfig config, Machine machine) {
-		return Util.createSingleCommand("NOP");
+		if (asmCode==null) {
+			return Util.createSingleCommand("NOP");
+		} else {
+			return Util.createSingleCommand("REM "+asmCode);
+		}
 	}
 }

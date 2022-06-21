@@ -1,5 +1,7 @@
 package com.sixtyfour.cbmnative;
 
+import com.sixtyfour.config.CompilerConfig;
+
 /**
  * Provides a context for a Generator.
  * 
@@ -8,9 +10,19 @@ package com.sixtyfour.cbmnative;
  */
 public class GeneratorContext {
 
+	private CompilerConfig compilerConfig;
+	
 	private Operand lastMoveTarget;
 	private Operand lastMoveSource;
 
+	/**
+	 * 
+	 * @param config
+	 */
+	public GeneratorContext(CompilerConfig config) {
+		this.compilerConfig=config;
+	}
+	
 	/**
 	 * Returns the last move target
 	 * 
@@ -45,5 +57,21 @@ public class GeneratorContext {
 	 */
 	public void setLastMoveSource(Operand lastMoveSource) {
 		this.lastMoveSource = lastMoveSource;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public CompilerConfig getCompilerConfig() {
+		return compilerConfig;
+	}
+
+	/**
+	 * 
+	 * @param compilerConfig
+	 */
+	public void setCompilerConfig(CompilerConfig compilerConfig) {
+		this.compilerConfig = compilerConfig;
 	}
 }

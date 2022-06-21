@@ -918,6 +918,9 @@ public class PseudoCpu {
 		case "COLOR":
 			// Do nothing...
 			return;
+		case "REM":
+			// Do nothing...
+			return;
 		case "CLS":
 			// Do nothing...
 			return;

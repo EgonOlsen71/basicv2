@@ -787,6 +787,10 @@ this.VERIFY = function() {
 	console.log("[VERIFY not supported for JS in file mode, call ignored]");
 }
 
+this.REM = function() {
+	console.log("[inline assembly ignored]");
+}
+
 this.USR = function() {
 	var addr=this._memory[785] + 256*this._memory[786];
 	this.USR_PARAM=this.X_REG;
