@@ -85,7 +85,7 @@ public class Let extends AbstractCommand implements Assignment {
 		// isn't tracing, it just checks for
 		// occurences before regarding line numbers. So this isn't perfect, but still
 		// better than nothing. It's here
-		// to reduce the chance of over-optimizing when constant folding.
+		// to reduce the chance of over-optimizing when folding constants.
 		boolean varExist = Parser.hasVariableAdded(linePart, machine, true);
 		var = Parser.getVariable(linePart, machine);
 		VariableAndIndex vai = Parser.getIndexTerm(config, var, linePart, machine, true);

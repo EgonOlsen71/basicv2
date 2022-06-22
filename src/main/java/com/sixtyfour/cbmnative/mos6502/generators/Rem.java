@@ -22,7 +22,7 @@ public class Rem extends GeneratorBase {
 			Map<String, String> name2label) {
 		// Logger.log(line);
 		
-		nCode.addAll(InlineAssembler.extract(context.getCompilerConfig(), line, context.getMachine()));
+		nCode.addAll(InlineAssembler.extract(context.getCompilerConfig(), line, context.getMachine(), false).getCode());
 	}
 
 }

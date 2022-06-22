@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.sixtyfour.cbmnative.Util;
 import com.sixtyfour.config.CompilerConfig;
+import com.sixtyfour.parser.assembly.InlineAssembler;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.system.BasicProgramCounter;
 
@@ -40,6 +41,7 @@ public class Rem extends AbstractCommand {
 			String part = linePart.substring(3);
 			if (part.startsWith("[") && part.endsWith("]")) {
 				asmCode = part.substring(1, part.length()-1);
+				InlineAssembler.trackVariables(config, asmCode, machine);
 			}
 		}
 		

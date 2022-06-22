@@ -81,6 +81,8 @@ public class Machine {
 
 	/** The device provider */
 	private DeviceProvider deviceProvider = null;
+	
+	private Set<String> variablesInAsm = new HashSet<>();
 
 	private Cpu cpu = null;
 
@@ -123,7 +125,25 @@ public class Machine {
 		roms.add(loadRom("kernal.$E000.bin", 0xe000));
 		copyRoms();
 	}
+	
+	
+	/**
+	 * Tracks that a variable is in use in inline assembly code to exclude it from dead store elimination.
+	 * @param name
+	 */
+	public void addVariableInAsm(String name) {
+		variablesInAsm.add(name);
+	}
 
+	/**
+	 * Checks, if a variable is in use in inline assembly code to exclude it from dead store elimination.
+	 * @param name
+	 * @return
+	 */
+	public boolean isVariableUsedInAsm(String name) {
+		return variablesInAsm.contains(name);
+	}
+	
 	/**
 	 * Adds additional system variables used in BASIC extensions to this machine.
 	 * 
@@ -359,6 +379,7 @@ public class Machine {
 
 		stack.clear();
 		usageIndicator.clear();
+		variablesInAsm.clear();
 	}
 
 	private void addXSystemVar(Variable var) {

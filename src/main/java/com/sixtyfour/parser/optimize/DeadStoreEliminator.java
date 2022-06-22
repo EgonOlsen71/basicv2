@@ -69,7 +69,7 @@ public class DeadStoreEliminator {
 					}
 					// System.out.println(let.getVar()+"/"+let.getVar().isSupposedToBeArray()+"/"+(let.getVar()
 					// instanceof SystemVariable));
-					if (let.getVar().isSystem() || let.getVar().isSupposedToBeArray()) {
+					if (let.getVar().isSystem() || let.getVar().isSupposedToBeArray() || basic.getMachine().isVariableUsedInAsm(varName)) {
 						continue;
 					}
 					boolean found = findVariableInTerms(varName, terms);

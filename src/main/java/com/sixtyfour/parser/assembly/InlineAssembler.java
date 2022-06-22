@@ -2,10 +2,13 @@ package com.sixtyfour.parser.assembly;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import com.sixtyfour.config.CompilerConfig;
+import com.sixtyfour.elements.Variable;
 import com.sixtyfour.elements.mnemonics.Mnemonic;
 import com.sixtyfour.system.Machine;
 
@@ -16,17 +19,25 @@ import com.sixtyfour.system.Machine;
  */
 public class InlineAssembler {
 
-	public static List<String> extract(CompilerConfig conf, String asmCode, Machine machine) {
-		if (asmCode.startsWith("REM")) {
+	public static void trackVariables(CompilerConfig conf, String asmCode, Machine machine) {
+		extract(conf, asmCode, machine, true);
+	}
+	
+	public static AssemblyLine extract(CompilerConfig conf, String asmCode, Machine machine, boolean parserStage) {
+		if (asmCode.toUpperCase(Locale.ENGLISH).startsWith("REM")) {
 			asmCode = asmCode.substring(3).trim();
 		}
+		AssemblyLine asmLine = new AssemblyLine();
 		String[] lines = asmCode.split(";");
 		List<String> code = new ArrayList<>();
-		Arrays.stream(lines).forEach(p -> add(conf, code, p, machine));
-		return code;
+		Set<String> vars = new HashSet<>();
+		Arrays.stream(lines).forEach(p -> add(conf, code, vars, p, machine, parserStage));
+		asmLine.setCode(code);
+		asmLine.setVarNames(vars);
+		return asmLine;
 	}
 
-	private static void add(CompilerConfig conf, List<String> code, String line, Machine machine) {
+	private static void add(CompilerConfig conf, List<String> code, Set<String> vars, String line, Machine machine, boolean parserStage) {
 		if (line.length()==3) {
 			code.add(line);
 		} else {
@@ -59,8 +70,14 @@ public class InlineAssembler {
 								// ...it might be a label of the runtime as well, but we ignore this for now...
 								String varName = part.replace("!", "").toUpperCase(Locale.ENGLISH);
 								part = "VAR_"+varName;
-								if (machine.getVariableUpperCase(varName)==null) {
+								if (!parserStage && machine.getVariableUpperCase(varName)==null) {
 									throw new RuntimeException(varName+" not found, check variable name or consider disabling constant folding: "+line);
+								}
+								if (parserStage) {
+									// Track usage in parser stage, so that we don't optimize that variable away
+									Variable tmpVar = new Variable(varName, null);
+									machine.trackVariableUsage(tmpVar, false);
+									machine.addVariableInAsm(varName);
 								}
 							}
 						}
