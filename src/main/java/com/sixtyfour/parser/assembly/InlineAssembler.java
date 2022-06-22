@@ -3,10 +3,10 @@ package com.sixtyfour.parser.assembly;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.mnemonics.Mnemonic;
-
 
 /**
  * 
@@ -37,31 +37,75 @@ public class InlineAssembler {
 					part = line.substring(3).trim();
 				}
 				// Some command...
-				if (mnm.isJump() && !part.isBlank()) {
+				String[] parts = split(part);
+				part = parts[1];
+				if (!part.isBlank()) {
 					// There might be a label following...
+					char last = part.charAt(part.length()-1);
 					char first = part.charAt(0);
+					//System.out.println(line+" / "+part+"/"+last+"/"+first);
 					if (Character.isAlphabetic(first)) {
 						// Looks like a label...
-						if (!part.endsWith("!")) {
+						if (last!='!') {
 							// ! at the end means no label translation...
 							part = "inllbl_"+part;
+						} else {
+							if (mnm.isJump()) {
+								// It's a jump, then it's a label...
+								part = part.replace("!", "");
+							} else {
+								// If it's not, we handle it as a BASIC variable
+								// ...it might be a label of the runtime as well, but we ignore this for now...
+								part = "VAR_"+part.replace("!", "").toUpperCase(Locale.ENGLISH);
+							}
 						}
 					} else {
 						// it's something else...
-						if (first == '!') {
+						if (last == '!') {
 							// It's a jump to a BASIC line...
-							part = "LINE_"+part.substring(1);
+							part = "LINE_"+ part.replace("!", "");
 						} else {
 							// No, it's not...nothing to do then
 						}
 					}
-				}
-				code.add(maybeCmd+" "+part);
+				} 
+				code.add(maybeCmd+" "+parts[0]+part+parts[2]);
 			} else {
-				// A label
-				code.add("inllbl_"+line);
+				if (line.startsWith(".")) {
+					// A value in memory
+					code.add(line);
+				} else {
+					// A label
+					code.add("inllbl_"+line);
+				}
 			}
 		}
 	}
 
+	private static String[] split(String line) {
+		String[] res = {"", "", ""};
+		int idx = 0;
+		for (int i=0; i<line.length(); i++) {
+			char c=line.charAt(i);
+			if (idx==0) {
+				if (!Character.isDigit(c) && !Character.isAlphabetic(c) && c!='$') {
+					res[idx]=res[idx]+c;
+				} else {
+					idx++;
+				}
+			}
+			if (idx==1) {
+				if (Character.isDigit(c) || Character.isAlphabetic(c) || c=='$' || c=='_' || c=='!' || c=='%') {
+					res[idx]=res[idx]+c;
+				} else {
+					idx++;
+				}
+			}
+			if (idx==2) {
+				res[idx]=res[idx]+c;
+			}
+		}
+		return res;
+	}
+	
 }
