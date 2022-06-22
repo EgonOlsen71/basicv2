@@ -7,6 +7,7 @@ import java.util.Locale;
 
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.mnemonics.Mnemonic;
+import com.sixtyfour.system.Machine;
 
 /**
  * 
@@ -15,17 +16,17 @@ import com.sixtyfour.elements.mnemonics.Mnemonic;
  */
 public class InlineAssembler {
 
-	public static List<String> extract(CompilerConfig conf, String asmCode) {
+	public static List<String> extract(CompilerConfig conf, String asmCode, Machine machine) {
 		if (asmCode.startsWith("REM")) {
 			asmCode = asmCode.substring(3).trim();
 		}
 		String[] lines = asmCode.split(";");
 		List<String> code = new ArrayList<>();
-		Arrays.stream(lines).forEach(p -> add(conf, code, p));
+		Arrays.stream(lines).forEach(p -> add(conf, code, p, machine));
 		return code;
 	}
 
-	private static void add(CompilerConfig conf, List<String> code, String line) {
+	private static void add(CompilerConfig conf, List<String> code, String line, Machine machine) {
 		if (line.length()==3) {
 			code.add(line);
 		} else {
@@ -56,7 +57,11 @@ public class InlineAssembler {
 							} else {
 								// If it's not, we handle it as a BASIC variable
 								// ...it might be a label of the runtime as well, but we ignore this for now...
-								part = "VAR_"+part.replace("!", "").toUpperCase(Locale.ENGLISH);
+								String varName = part.replace("!", "").toUpperCase(Locale.ENGLISH);
+								part = "VAR_"+varName;
+								if (machine.getVariableUpperCase(varName)==null) {
+									throw new RuntimeException(varName+" not found, check variable name or consider disabling constant folding: "+line);
+								}
 							}
 						}
 					} else {

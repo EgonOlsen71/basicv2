@@ -90,7 +90,7 @@ public class TransformerPs implements Transformer {
 		List<String> strArrayVars = new ArrayList<String>();
 		Map<String, String> name2label = new HashMap<String, String>();
 
-		GeneratorContext context = new GeneratorContext(config);
+		GeneratorContext context = new GeneratorContext(config, machine);
 		for (String line : code) {
 			String cmd = line;
 			String orgLine = line;

@@ -399,7 +399,7 @@ public abstract class AbstractTransformer implements Transformer {
 
 		List<String> strVars = new ArrayList<String>();
 		List<String> strArrayVars = new ArrayList<String>();
-		GeneratorContext context = new GeneratorContext(config);
+		GeneratorContext context = new GeneratorContext(config, machine);
 		for (String line : code) {
 			String cmd = line;
 			line = convertConstantsToReal(line, platform);

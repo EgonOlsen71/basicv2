@@ -1,6 +1,11 @@
 package com.sixtyfour.cbmnative;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import com.sixtyfour.config.CompilerConfig;
+import com.sixtyfour.system.Machine;
 
 /**
  * Provides a context for a Generator.
@@ -11,18 +16,31 @@ import com.sixtyfour.config.CompilerConfig;
 public class GeneratorContext {
 
 	private CompilerConfig compilerConfig;
+	private Machine machine;
 	
 	private Operand lastMoveTarget;
 	private Operand lastMoveSource;
-
+	
 	/**
 	 * 
 	 * @param config
 	 */
-	public GeneratorContext(CompilerConfig config) {
-		this.compilerConfig=config;
+	public GeneratorContext(CompilerConfig config, Machine machine) {
+		this.compilerConfig = config;
+		this.machine = machine;
 	}
 	
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public Machine getMachine() {
+		return machine;
+	}
+
+
+
 	/**
 	 * Returns the last move target
 	 * 
