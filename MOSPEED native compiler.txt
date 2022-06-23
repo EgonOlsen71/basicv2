@@ -145,6 +145,14 @@ for compiled code and variables. If a hole is located after the end of the compi
 - /boost=true|false: if true, a compiled C64 program will use the C128's 2 Mhz mode to increase performance up to 25%. This only works on 
 the C128 in C64 mode, it has no effect when run on a real C64. It might also not be compatible with all programs. Default is false.
 
+- /bigram=true|false: - Experimental - If true, the RAM under the C64's BASIC ROM as well as the higher 4K of RAM will be used for the 
+compiled program as well. This will reduce performance, especially when accessing memory under the ROM. Default is false.
+
+- /compression=true|false: - Experimental - If true, the compiled program will be compressed to achieve a smaller file size. 
+The compressed file will be saved in addition to the normal binary. Compression isn't always possible. 
+In that case, no compressed file will be written.
+
+- /inlineasm=true|false: - *Experimental* - If true, inline assembly code can be used, marked by REM [...;...;...]. Default is false.
 
 Changes compared to BASIC 2.0 
 
@@ -186,4 +194,65 @@ Runtime errors
 
 Runtime errors in the program (for example divisions by zero so similar) will be catched and printed out in most cases, 
 but the Line number will always be 0.
+
+
+Inline assembly support
+
+MOSpeed supports inline assembly code, but it's disabled for compatibility reasons by default. You can enable it by setting /inlineasm=true.
+When enabled, everything behind a REM in square brackets will be processed by the built-in assembler. For example:
+
+10 print "hello asm"
+20 rem [ ldx #$ff ]
+30 rem [ loopy; inc 53280 ]
+40 rem [ dex; bne loopy ]
+50 goto 10
+
+This will print "hello asm" in an endless loop but will also make the border flash by using machine language code. You can define labels
+as well as constants in the assembly code. So something like this will work as well:
+
+10 print "hello asm"
+20 rem [ numby=$ff; ldx #numby ]
+30 rem [ loopy; inc 53280 ]
+40 rem [ dex; bne loopy ]
+50 goto 10
+
+You can access BASIC variables and lines by adding ! as a postfix, like so:
+
+10 print "hello asm": i%=255
+20 rem [ ldx i%! ]
+30 rem [ inc 53280 ]
+40 rem [ dex; bne 30! ]
+50 goto 10
+
+You can also do something like this:
+
+10 print "hello asm": i%=255
+20 rem [ ldx numby ]
+30 rem [ inc 53280 ]
+40 rem [ dex; bne 30!; jmp 50! ]
+45 rem [ numby; .byte 255 ]
+50 goto 10
+
+So, basically, you can do everything that you can do in the actual assembler that comes with this project. That includes screwing up the
+compiled program and/or the runtime by using this option if you don't know, what you are doing.
+
+Even evil hacks like this are possible:
+
+10 print "hello asm"
+20 rem [ldx #$ff]
+30 rem [jmp 40!; *=$2000;]
+40 rem [inc 53280]
+50 rem [dex; bne 40!]
+60 goto 10
+
+With this, you are splitting compiled code into one part starting at $0801 (by default) and everything after line 30 continuing at $2000.
+While this works, I suggest not to do things like this. Use the memhole-option instead...
+
+
+
+
+
+
+
+
 
