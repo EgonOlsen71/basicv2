@@ -199,7 +199,8 @@ but the Line number will always be 0.
 Inline assembly support
 
 MOSpeed supports inline assembly code, but it's disabled for compatibility reasons by default. You can enable it by setting /inlineasm=true.
-When enabled, everything behind a REM in square brackets will be processed by the built-in assembler. For example:
+When enabled, everything behind a REM in square brackets will be processed by the built-in assembler. 
+Multiple commands/labels//assignments can be written in one line separated by a semicolon. For example:
 
 10 print "hello asm"
 20 rem [ ldx #$ff ]
