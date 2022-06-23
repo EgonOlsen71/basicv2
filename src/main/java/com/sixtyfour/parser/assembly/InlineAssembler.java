@@ -13,10 +13,10 @@ import com.sixtyfour.elements.mnemonics.Mnemonic;
 import com.sixtyfour.system.Machine;
 
 /**
- * A simple inline assembler which allows for writing assembly code directly in BASIC.
- * It has access to BASIC variables and can jump to BASIC lines as well.
- * Be aware, that you can really screw things up when interfering with the way in which the compiler
- * and its runtime work with this feature. 
+ * A simple inline assembler which allows for writing assembly code directly in
+ * BASIC. It has access to BASIC variables and can jump to BASIC lines as well.
+ * Be aware, that you can really screw things up when interfering with the way
+ * in which the compiler and its runtime work with this feature.
  * 
  * @author EgonOlsen
  *
@@ -79,7 +79,7 @@ public class InlineAssembler {
 					// There might be a label following...
 					char last = part.charAt(part.length() - 1);
 					char first = part.charAt(0);
-					//System.out.println(line + " / " + part + "/" + last + "/" + first);
+					// System.out.println(line + " / " + part + "/" + last + "/" + first);
 					if (Character.isAlphabetic(first)) {
 						// Looks like a label...
 						if (last != '!') {
@@ -124,19 +124,23 @@ public class InlineAssembler {
 					code.add(line);
 				} else {
 					// A label
-					if (line.contains("=")) {
-						int pos = line.indexOf("=");
-						String left = line.substring(0, pos).trim();
-						String right = line.substring(pos + 1).trim();
-						if (!right.isEmpty()) {
-							char c = right.charAt(0);
-							if (Character.isAlphabetic(c)) {
-								right = INLINE_LABEL_PREFIX + right;
-							}
-						}
-						code.add(INLINE_LABEL_PREFIX + left + "=" + right);
+					if (line.startsWith("*")) {
+						code.add(line);
 					} else {
-						code.add(INLINE_LABEL_PREFIX + line);
+						if (line.contains("=")) {
+							int pos = line.indexOf("=");
+							String left = line.substring(0, pos).trim();
+							String right = line.substring(pos + 1).trim();
+							if (!right.isEmpty()) {
+								char c = right.charAt(0);
+								if (Character.isAlphabetic(c)) {
+									right = INLINE_LABEL_PREFIX + right;
+								}
+							}
+							code.add(INLINE_LABEL_PREFIX + left + "=" + right);
+						} else {
+							code.add(INLINE_LABEL_PREFIX + line);
+						}
 					}
 				}
 			}
