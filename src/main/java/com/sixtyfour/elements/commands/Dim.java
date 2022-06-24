@@ -142,9 +142,16 @@ public class Dim extends AbstractCommand {
 							redimed(var);
 						}
 						for (int ii = 0; ii < edims.length; ii++) {
+							// We can safely do this. It's stupid, but why not do it...!?
+							if (pis[ii]>edims[ii]) {
+								//System.out.println("Redimed from "+edims[ii]+" to "+pis[ii]);
+								edims[ii]=pis[ii];
+							}
+							/*
 							if (edims[ii] != pis[ii]) {
 								redimed(var);
 							}
+							*/
 						}
 					}
 				}
