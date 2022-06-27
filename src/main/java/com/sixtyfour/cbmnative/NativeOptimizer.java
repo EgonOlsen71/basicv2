@@ -108,6 +108,14 @@ public class NativeOptimizer {
 		patterns.add(new NativePattern(new String[] { "MOV Y,#*", "PUSH Y", "MOV Y,*", "INT X,Y", "POP Y", "MUL X,Y" },
 				new String[] { "{2}", "{3}", "PUSH X", "{0}", "POP X", "{5}" }));
 		
+		
+		// Replace MID$(xx$,yy,1) by CHARAT(xx,yy)
+		String[] calls = {"SNEQ", "SEQ", "SGT", "SLT", "SGTEQ", "SLTEQ"};
+		
+		for (String call:calls) {
+			patterns.add(new NativePattern(new String[] {"MOV C,*","MOV D,#1{INTEGER}","CHGCTX #1","MOV B,*","JSR MID","POP B","CHGCTX #0","JSR "+call}, new String[] {"{0}","CHGCTX #1","{3}","JSR CHARAT","{5}","{6}","{7}"}));
+		}
+		
 		// Remove some PUSH/POP to make room for SHL/SHR optimizations
 		String[] ops = {"RND", "SIN", "COS", "SQR", "TAN", "EXP"};
 		for (String op:ops) {

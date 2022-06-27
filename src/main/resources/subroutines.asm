@@ -294,6 +294,41 @@ MIDCLAMP	LDA (TMP_ZP),Y		; Clamp to the string's length, if needed...
 			STY TMP_REG
 			JMP MIDCOPY
 ;###################################
+CHARAT		JSR STRFUNCINT
+			LDA TMP_REG
+			BNE CHARATOK
+			JMP ILLEGALQUANTITY	; start has to be larger than 0
+CHARATOK	LDY #0
+			LDA (TMP_ZP),Y
+			STA TMP_REG+1		; store source length
+			LDX TMP_REG
+			CPX TMP_REG+1
+			BEQ CHARATOK3
+			BCC CHARATOK3
+			JMP CHARATOOR
+CHARATOK3
+			CLC
+			LDA TMP_ZP
+			ADC TMP_REG
+			STA TMP_ZP
+			BCC CHARATOK2        
+			INC TMP_ZP+1
+			
+CHARATOK2	LDY #0
+			LDA (TMP_ZP),Y
+			STA CHARSTORE+1
+			LDA #<CHARSTORE
+			STA A_REG
+			LDA #>CHARSTORE
+			STA A_REG+1
+			RTS
+CHARATOOR	LDA #<EMPTYSTR
+			STA A_REG
+			LDA #>EMPTYSTR
+			STA A_REG+1
+			RTS
+CHARSTORE	.WORD 1
+;###################################
 RIGHTCONSTA	CMP #0
 			BEQ RIGHTCONST
 			LDY #$FF
