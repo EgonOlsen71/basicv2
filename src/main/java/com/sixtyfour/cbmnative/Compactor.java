@@ -153,6 +153,10 @@ public class Compactor {
 			if (clear) {
 				input.set(pos, "");
 				// Logger.log("Removed unused constant: " + consty.txt + "@" + consty.position);
+				if (input.get(pos-1).contains(": $")) {
+					// We've remove a String constants...that requires the next line to be removed as well
+					input.set(pos+1, "");
+				}
 			}
 		}
 
