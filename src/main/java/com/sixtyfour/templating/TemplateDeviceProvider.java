@@ -55,7 +55,7 @@ public class TemplateDeviceProvider extends MemoryDeviceProvider {
 					tmpl.getMachine().addOrSet(entry.getValue());
 				}
 
-				String result = tmpl.processPart(config);
+				String result = tmpl.processPart();
 				oo.print(0, result);
 			} finally {
 				//

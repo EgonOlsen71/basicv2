@@ -7,6 +7,7 @@
 <body>
 	<ul>
 	<?cbm
+		PRINT ".";M$;".",ST%,EN%
 		FORI=ST%TOEN%
 		PRINT I
 		LOAD"include1.cbm",8

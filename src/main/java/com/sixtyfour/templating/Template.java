@@ -46,6 +46,8 @@ public class Template {
 	private String basicCode;
 
 	private String path;
+	
+	private CompilerConfig config;
 
 	/**
 	 * Instantiates a new template.
@@ -57,7 +59,8 @@ public class Template {
 		if (variables != null) {
 			vars.putAll(variables);
 		}
-		parseTemplate(config, template);
+		this.config = config;
+		parseTemplate(template);
 	}
 
 	/**
@@ -137,10 +140,10 @@ public class Template {
 	 * 
 	 * @return the processed template, i.e. the generated output.
 	 */
-	public String process(CompilerConfig config) {
+	public String process() {
 		out.reset();
 		Machine machine = basic.getMachine();
-		machine.resetMemory();
+		machine.resetMemory(true);
 		machine.getCpu().reset();
 		for (Program prg : prgs) {
 			machine.putProgram(prg);
@@ -182,21 +185,12 @@ public class Template {
 	}
 
 	/**
-	 * Injects a new machine instance into the internal Basic instance.
-	 * 
-	 * @param machine the machine
-	 */
-	public void setMachine(Machine machine) {
-		basic.setMachine(machine);
-	}
-
-	/**
 	 * Processes a part of a template.
 	 * 
 	 * @param out
 	 * @return
 	 */
-	String processPart(CompilerConfig config) {
+	String processPart() {
 		out.reset();
 		basic.start(config);
 		return out.getResult();
@@ -207,7 +201,7 @@ public class Template {
 	 * 
 	 * @param template the template
 	 */
-	private void parseTemplate(CompilerConfig config, String template) {
+	private void parseTemplate(String template) {
 		int pl = template.toLowerCase(Locale.ENGLISH).indexOf("<!labels>");
 		boolean labels = pl != -1;
 		if (labels) {

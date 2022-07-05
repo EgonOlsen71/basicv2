@@ -349,10 +349,22 @@ public class Machine {
 	 * ROM data has been restored.
 	 */
 	public void resetMemory() {
+		resetMemory(false);
+	}
+	
+	/**
+	 * Resets the memory. This will clean the 64KB of main memory as well as all
+	 * variables. It will not reset the cpu. It will ensure that previously loaded
+	 * ROM data has been restored.
+	 * @param softClear if true, variables will be set to 0/empty but not cleared
+	 */
+	public void resetMemory(boolean softClear) {
 		for (int i = 0; i < ram.length; i++) {
 			ram[i] = 0;
 		}
-		vars.clear();
+		if (!softClear) {
+			vars.clear();
+		}
 		clearVars();
 		clearCommandList();
 		functions.clear();
@@ -426,7 +438,7 @@ public class Machine {
 		}
 		return ret;
 	}
-
+	
 	/**
 	 * Tracks variable usage at compile time to determine, if a variable can be
 	 * propagated to a constant later.
