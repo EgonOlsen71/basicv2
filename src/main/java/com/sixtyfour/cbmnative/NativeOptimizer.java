@@ -15,7 +15,7 @@ import com.sixtyfour.config.CompilerConfig;
  */
 public class NativeOptimizer {
 
-	private final static int MAX_AHEAD = 19;
+	private final static int MAX_AHEAD = 20;
 	private static List<NativePattern> patterns = new ArrayList<NativePattern>();
 
 	static {
@@ -23,7 +23,7 @@ public class NativeOptimizer {
 		for (int i = 0; i < 12; i++) {
 			pots.add(Integer.valueOf((int) Math.pow(2, i)));
 		}
-
+		
 		patterns.add(new NativePattern(new String[] { "PUSH*", "POP*" }, new String[] { "MOV p1,p0" }));
 		patterns.add(new NativePattern(new String[] { "PUSH X", "MOV C*|*[]*", "POP Y" }, new String[] { "{1}" }));
 		patterns.add(
@@ -100,7 +100,7 @@ public class NativeOptimizer {
 
 		patterns.add(new NativePattern(new String[] { "MOV Y,*", "MOVB X,(Y)", "MOV Y,#%", "OR X,Y" },
 				new String[] { "{0}", "{2:MOV Y>MOV A}", "JSR PEEKBYTEOR" }));
-
+		
 		// This optimizes the array access for multi-dimensional arrays whose dimensions
 		// are a power of 2, like k%(15,15)
 		// It does this by rearranging the operations, so that the resulting
@@ -603,6 +603,53 @@ public class NativeOptimizer {
 					}
 				}
 			}
+			
+			
+			// Loop type 2...actually, this shouldn't be needed. The difference is in line 13/14 only. The generic optimizer rules
+			// should handle this, but the order in which things happen is a problem here. The correct of doing it would be to
+			// run all the generic rules until nothing changes and THEN run the detection for fast fors...but that's not the way
+			// it is. It all happens interleaved...maybe one day...
+			if (lines[19] != null) {
+				if (lines[0].startsWith("MOV Y,") && (lines[0].endsWith("{INTEGER}") || lines[0].endsWith(".0{REAL}"))
+						&& lines[1].startsWith("MOV") && lines[1].endsWith(",Y") && lines[2].equals("NOP")
+						&& lines[3].startsWith("MOV Y,")
+						&& (lines[3].endsWith("{INTEGER}") || lines[3].endsWith(".0{REAL}"))) {
+					if (lines[4].equals("PUSH Y") && lines[5].equals("NOP") && lines[6].startsWith("MOV Y,")
+							&& (lines[6].endsWith("{INTEGER}") || lines[6].endsWith(".0{REAL}"))
+							&& lines[7].equals("PUSH Y")) {
+						if (lines[8].startsWith("MOV A,(") && lines[9].equals("JSR INITFOR") && lines[10].equals("NOP")
+								&& lines[11].startsWith("MOV Y,")) {
+							if (lines[12].equals("PUSH Y") && lines[13].startsWith("MOV Y,") && lines[14].equals("MOV X,Y")
+									&& lines[15].equals("POP Y") && lines[16].equals("MOVB (Y),X")
+									&& lines[17].equals("NOP") && lines[18].startsWith("MOV A,")
+									&& lines[19].equals("JSR NEXT")) {
+								// Make sure that the loop variable is
+								// actually the poke's target...
+								// BY checking if MOV A,(I{REAL}) == MOV
+								// Y,I{REAL} after some replacements.
+								if (lines[8].replace("(", "").replace(")", "").replace("A,", "Y,").equals(lines[11])) {
+									String[] parts = lines[1].split(" |\\{");
+									String var = parts[1];
+									if (lines[18].contains(var + "{}") || lines[18].contains("#0{")) {
+										ret.add(lines[0]);
+										ret.add(lines[1]);
+										ret.add(lines[3]);
+										ret.add(lines[4]);
+										ret.add(lines[6]);
+										ret.add(lines[7]);
+										ret.add(lines[8]);
+										ret.add(lines[13].replace("MOV Y", "MOV X"));
+										ret.add("JSR FASTFOR");
+										i += 19;
+										return i;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			
 		}
 		return i;
 	}
