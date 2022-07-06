@@ -29,7 +29,7 @@ public class TemplateTest {
 		TemplateManager tm = TemplateManager.getInstance();
 		Template templ = tm.getTemplate("src/test/resources/templates/includer.cbm");
 		templ.setVariablesWithType(vars);
-		String res = templ.process(config);
+		String res = templ.process();
 		System.out.println(res);
 	}
 
@@ -42,7 +42,7 @@ public class TemplateTest {
 		TemplateManager tm = TemplateManager.getInstance();
 		Template templ = tm.getTemplate("src/test/resources/templates/html.cbm");
 		templ.setVariables(vars);
-		String res = templ.process(config);
+		String res = templ.process();
 		System.out.println(res);
 	}
 
@@ -62,7 +62,7 @@ public class TemplateTest {
 					vars.put("TT$", "At least better than PHP!");
 
 					templ.setVariables(vars);
-					String res = templ.process(config);
+					String res = templ.process();
 					System.out.println(res);
 				}
 			};

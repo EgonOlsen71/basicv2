@@ -69,10 +69,11 @@ public class DeadStoreEliminator {
 					}
 					// System.out.println(let.getVar()+"/"+let.getVar().isSupposedToBeArray()+"/"+(let.getVar()
 					// instanceof SystemVariable));
-					if (let.getVar().isSystem() || let.getVar().isSupposedToBeArray() || basic.getMachine().isVariableUsedInAsm(varName)) {
+					if (let.getVar().isSystem() || let.getVar().isSupposedToBeArray()
+							|| basic.getMachine().isVariableUsedInAsm(varName)) {
 						continue;
 					}
-					boolean found = findVariableInTerms(varName, terms);
+					boolean found = findVariableInTerms(varName, terms, let.getTerm());
 					if (!found) {
 						toRemove.add(cmd);
 					}
@@ -87,9 +88,14 @@ public class DeadStoreEliminator {
 		}
 	}
 
-	private static boolean findVariableInTerms(String varName, Set<Term> terms) {
+	private static boolean findVariableInTerms(String varName, Set<Term> terms, Term letTerm) {
 		boolean found = false;
 		for (Term term : terms) {
+			if (term == letTerm) {
+				// If the variable it used in it's own assignment, we could remove it anyway...
+				// like g%=g%+1
+				continue;
+			}
 			found |= findVariable(varName, term);
 			if (found) {
 				break;
@@ -104,7 +110,7 @@ public class DeadStoreEliminator {
 		Atom right = term.getRight();
 
 		if (left != null && left instanceof LogicTerm) {
-			found = findVariableInTerms(varName, new HashSet<>(LogicTerm.class.cast(left).getTerms()));
+			found = findVariableInTerms(varName, new HashSet<>(LogicTerm.class.cast(left).getTerms()), null);
 		}
 
 		if (!found && left != null && left.isTerm()) {
@@ -119,7 +125,7 @@ public class DeadStoreEliminator {
 		}
 
 		if (!found && right != null && right instanceof LogicTerm) {
-			found = findVariableInTerms(varName, new HashSet<>(LogicTerm.class.cast(right).getTerms()));
+			found = findVariableInTerms(varName, new HashSet<>(LogicTerm.class.cast(right).getTerms()), null);
 		}
 
 		if (!found && right != null && right instanceof Function) {

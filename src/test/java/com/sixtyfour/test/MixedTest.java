@@ -29,7 +29,7 @@ public class MixedTest {
 	private static void testBeerTemplate() throws Exception {
 		Template templ = TemplateFactory.getTemplate(config, new FileInputStream("src/test/resources/mixed/beer.cbm"),
 				null);
-		String res = templ.process(config);
+		String res = templ.process();
 		System.out.println(res);
 
 	}
@@ -41,7 +41,7 @@ public class MixedTest {
 		vars.put("TT$", "At least better than PHP!");
 		Template templ = TemplateFactory.getTemplate(config,
 				new FileInputStream("src/test/resources/mixed/mixedhtml.cbm"), vars);
-		String res = templ.process(config);
+		String res = templ.process();
 		System.out.println(res);
 	}
 
