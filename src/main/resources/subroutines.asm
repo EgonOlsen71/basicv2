@@ -1721,6 +1721,13 @@ ARRAYACCESS_REAL_INT
 			STA TMP3_ZP+1
 			JMP COPY2_XY_XREG
 ;###################################
+ARRAYACCESS_REAL_INT_PRE
+			LDX G_REG
+			STX TMP3_ZP
+			LDX G_REG+1
+			STX TMP3_ZP+1
+			JMP COPY2_XY_XREG
+;###################################
 ARRAYSTORE_STRING
 			JSR XREGFAC
 			JSR FACINT
