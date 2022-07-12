@@ -42,25 +42,28 @@ public class IntOptimizer {
 		// faster, constant array access...not really an int optimization in itself, but still...somehow it is...
 		intPatterns.add(new IntPattern(true, "Optimized code for constant array access",
 				new String[] { "LDA #<{MEM0}", "LDY #>{MEM0}", "STA G_REG", "STY G_REG+1", "LDY {CONST0}", "LDA {CONST0}",
-						"JSR ARRAYACCESS_REAL_INT" },
+						"JSR {*}" },
 				new AbstractCodeModifier() {
 					@Override
 					public List<String> modify(IntPattern pattern, List<String> input) {
 						input = super.modify(pattern, input);
 						String consty = cleaned.get(4);
-						try {
-							consty = consty.substring(consty.indexOf(" ") + 1).trim();
-							int iNum = const2Value.get(consty).intValue();
-							iNum*=5;
-							List<String> rep = new ArrayList<>();
-							rep.add(cleaned.get(0)+"+"+iNum);
-							rep.add(cleaned.get(1)+"+"+iNum);
-							rep.add(cleaned.get(2));
-							rep.add(cleaned.get(3));
-							rep.add("JSR ARRAYACCESS_REAL_INT_PRE");
-						return combine(pattern, rep);
-						} catch(Exception e) {
-							// Just in case...
+						String jumpy = cleaned.get(6);
+						if (jumpy.endsWith("ARRAYACCESS_REAL_INT") || jumpy.endsWith("ARRAYACCESS_INTEGER_INT")) {
+							try {
+								consty = consty.substring(consty.indexOf(" ") + 1).trim();
+								int iNum = const2Value.get(consty).intValue();
+								iNum*=jumpy.endsWith("ARRAYACCESS_INTEGER_INT")?2:5;
+								List<String> rep = new ArrayList<>();
+								rep.add(cleaned.get(0)+"+"+iNum);
+								rep.add(cleaned.get(1)+"+"+iNum);
+								rep.add(cleaned.get(2));
+								rep.add(cleaned.get(3));
+								rep.add(cleaned.get(6)+"_PRE");
+							return combine(pattern, rep);
+							} catch(Exception e) {
+								// Just in case...
+							}
 						}
 						pattern.reset();
 						return input;

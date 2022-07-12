@@ -1667,7 +1667,7 @@ ARRAYACCESS_INTEGER_INT
 			LDA TMP_ZP+1
 			ADC TMP2_ZP+1
 			STA TMP_ZP+1
-			LDY #1
+AIIDI		LDY #1
 			LDA (TMP_ZP),Y
 			TAX
 			DEY
@@ -1678,6 +1678,13 @@ ARRAYACCESS_INTEGER_INT
 			STA TMP2_ZP+1
 			JSR INTFAC
 			JMP FACXREG	;RTS is implicit
+;###################################
+ARRAYACCESS_INTEGER_INT_PRE
+			LDX G_REG
+			STX TMP_ZP
+			LDX G_REG+1
+			STX TMP_ZP+1
+			JMP AIIDI
 ;###################################
 ARRAYACCESS_REAL_S
 			STA G_REG
