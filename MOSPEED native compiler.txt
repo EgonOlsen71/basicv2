@@ -8,7 +8,7 @@ MOSPeed is controlled on a PC via the command line/shell. It expects a BASIC V2 
 just like C64 Studio or CBM prg Studio are using it. It supports the usual placeholders like {clear}.
 In addition, it can operate directly on prg files and converts them to text format before compiling them. 
 In this case, the file to compile has to end on .prg or the compiler won't recognize it as a prg file.
-MOSpeed is written in Java. It requires a Java runtime environment version 8 or higher.
+MOSpeed is written in Java. It requires a Java runtime environment version 11 or higher.
 
 MOSpeed can be configured via command line parameters. It doesn't make use of compiler directives directly in 
 the source code like some other compilers for the C64 do!
