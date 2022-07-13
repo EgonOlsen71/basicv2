@@ -335,6 +335,19 @@ public class TermOptimizer {
 				right = t.getRight();
 			}
 		}
+		
+		// Remove +0/-0
+		if ((t.getOperator().isPlus()|| t.getOperator().isMinus()) && t.getType(true) != Type.STRING) {
+			if (left.isConstant() && ((Number) left.eval(machine)).doubleValue() == 0d) {
+				t.setLeft(right);
+				t.setRight(left);
+				left = t.getLeft();
+				right = t.getRight();
+				t.setOperator(Operator.NOP);
+			} else  if (right.isConstant() && ((Number) right.eval(machine)).doubleValue() == 0d) {
+				t.setOperator(Operator.NOP);
+			}
+		}
 
 		// Swap (...)*40 to 40*(...) to allow for a special optimization later in...
 		// Actually, it's faster to do this anyway for some combinations...but sadly not
