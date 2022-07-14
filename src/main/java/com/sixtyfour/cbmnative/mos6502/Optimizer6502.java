@@ -391,6 +391,7 @@ public class Optimizer6502 implements Optimizer {
 
 	private List<String> aggregateLoads(List<String> input) {
 		boolean loadMode = false;
+		// For LDA #0...
 		for (Iterator<String> itty = input.iterator(); itty.hasNext();) {
 			String line = itty.next().trim();
 			if (line.startsWith(";") || line.isEmpty() || line.equals("NOP")) {
@@ -408,9 +409,28 @@ public class Optimizer6502 implements Optimizer {
 				}
 			}
 		}
+		
+		// For simple POKES...
+		String loadType = null;
+		for (Iterator<String> itty = input.iterator(); itty.hasNext();) {
+			String line = itty.next().trim();
+			if (line.startsWith(";") || line.isEmpty() || line.equals("NOP")) {
+				continue;
+			}
+			if (loadType!=null) {
+				if (line.equals(loadType)) {
+					itty.remove();
+				} else if (!line.startsWith("STY")) {
+					loadType = null;
+				}
+			} 
+			if (loadType==null && line.startsWith("LDY ")) {
+				loadType = line;
+			} 
+		}
 		return input;
 	}
-
+	
 	private List<String> aggregateAssignments(List<String> input) {
 		List<String> res = new ArrayList<>();
 		List<String> tmp = new ArrayList<>();
