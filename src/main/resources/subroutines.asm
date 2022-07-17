@@ -2275,8 +2275,9 @@ FLOATINTSUB	JSR INTFAC
 			LDY TMP3_ZP
 			LDA TMP3_ZP+1
 			JSR INTFAC
-			JSR FACARG
-			JSR XREGFAC
+			JSR XREGARG
+			LDA #0
+			STA TMP_FLAG	; flag that the value isn't present in TMP2_ZP
 			JMP FASTFSUBARG
 ;###################################			
 FLOATINTADD	JSR INTFAC
@@ -2285,6 +2286,8 @@ FLOATINTADD	JSR INTFAC
 			LDA TMP3_ZP+1
 			JSR INTFAC
 			JSR XREGARG
+			LDA #0
+			STA TMP_FLAG	; flag that the value isn't present in TMP2_ZP
 			JMP FASTFADDARG
 ;###################################
 INTADD		LDX #128		; Do the fast way for negative numbers and everything below 16384
@@ -2296,14 +2299,43 @@ INTADD		LDX #128		; Do the fast way for negative numbers and everything below 16
 			BIT TMP_REG
 			BNE FLOATINTADD
 			
-INTINTADD	PHA
+INTINTADD	LDX #1			; flag that the value is present in TMP2_ZP
+			STX TMP_FLAG
+			PHA
 			TYA
 			CLC
 			ADC TMP3_ZP
 			TAY
 			PLA
 			ADC TMP3_ZP+1
+			STY TMP2_ZP
+			STA TMP2_ZP+1
 			JMP INTFAC
+;###################################
+INTSUB		LDX #128		; Do the fast way for positive numbers
+			STX TMP_REG
+			BIT TMP_REG
+			BNE FLOATINTSUB
+			
+INTINTSUB	LDX #1			; flag that the value is present in TMP2_ZP
+			STX TMP_FLAG
+			PHA
+			TYA
+			SEC
+			SBC TMP3_ZP
+			TAY
+			PLA
+			SBC TMP3_ZP+1
+			STY TMP2_ZP
+			STA TMP2_ZP+1
+			JMP INTFAC
+;###################################
+INTCONV		LDA TMP_FLAG	; The INT value is either already present in TMP2_ZP...or not...
+			BEQ INTFROMFAC
+			LDY TMP2_ZP
+			LDA TMP2_ZP+1
+			RTS
+INTFROMFAC	JMP FACINT
 ;###################################
 READINIT	LDA DATASP
 			STA TMP3_ZP

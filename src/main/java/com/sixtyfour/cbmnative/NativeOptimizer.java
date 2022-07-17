@@ -109,7 +109,8 @@ public class NativeOptimizer {
 				new String[] { "{2}", "{3}", "PUSH X", "{0}", "POP X", "{5}" }));
 		
 		
-		// Replace MID$(xx$,yy,1) by CHARAT(xx,yy)
+		patterns.add(new NativePattern(new String[] {"MOV Y,#*", "PUSH Y", "CHGCTX #1", "MOV B,*", "CHGCTX #0", "JSR *", "POP Y"}, new String[] {"{3}","{5}","{0}"}));
+		
 		String[] calls = {"SNEQ", "SEQ", "SGT", "SLT", "SGTEQ", "SLTEQ"};
 		
 		for (String call:calls) {
