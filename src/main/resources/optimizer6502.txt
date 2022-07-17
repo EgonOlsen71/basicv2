@@ -450,4 +450,7 @@
 #151 Array index is integer (load2)
 "Array index is integer (load2)"	false	false	false	"LDY {MEM0}|LDA {MEM0}|JSR INTFAC|JSR FACXREG|LDA #<{MEM1}|LDY #>{MEM1}|JSR ARRAYACCESS_INTEGER_SNX|"	"{LINE4}|{LINE5}|STA G_REG|STY G_REG+1|{LINE0}|{LINE1}|JSR ARRAYACCESS_INTEGER_INT|"
 
+#152: Remove unneeded INT->WORD conversion
+"Remove unneeded INT->WORD conversion"	false	false	false	"JSR INTFAC|JSR FACWORD"	""
+
 

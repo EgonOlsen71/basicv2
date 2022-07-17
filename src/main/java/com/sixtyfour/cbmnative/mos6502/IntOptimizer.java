@@ -743,7 +743,7 @@ public class IntOptimizer {
 							}
 						}));
 
-		// POKE I,PEEK(J%)
+		// POKE I,PEEK(J%)...
 		intPatterns.add(new IntPattern(true, "Optimized code for PEEK with Integer",
 				new String[] { "LDY {MEM0}", "LDA {MEM0}", "JSR INTFAC", "JSR FACWORD", "STY {*}", "STA {*}" },
 				new AbstractCodeModifier() {
