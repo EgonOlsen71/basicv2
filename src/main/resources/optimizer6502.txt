@@ -453,4 +453,8 @@
 #152: Remove unneeded INT->WORD conversion
 "Remove unneeded INT->WORD conversion"	false	false	false	"JSR INTFAC|JSR FACWORD"	""
 
+#153: Accumulate integer loads
+"Accumulate integer loads"	false	false	false	"LDY {CONST0}|LDA {CONST0}|STY {MEM0}|STA {MEM0}|NOP|LDY {CONST0}|LDA {CONST0}|STY {MEM1}|STA {MEM1}"	"{LINE0}|{LINE1}|{LINE2}|{LINE3}|{LINE7}|{LINE8}"
 
+#154: CHR from XREG
+"CHR from FAC"	false	false	false	"JSR COPY_XREG2YREG|JSR CHR"	"JSR CHRFAC"
