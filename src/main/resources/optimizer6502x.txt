@@ -12,3 +12,4 @@
 
 #5: Reverted comparison
 "Reverted comparison"	true	false	false	"LDA {MEM0}|BEQ {*}|LDA #0|JMP {*}|{LABEL}|LDA #$1|{LABEL}|{LABEL}|BEQ {*}|"	"{LINE0}|{LINE3}~JMP>BEQ|{LINE4}|{LINE8}~BEQ>JMP|{LINE6}|{LINE7}|"
+

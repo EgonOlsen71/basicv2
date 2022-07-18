@@ -711,10 +711,14 @@ LEN			LDA B_REG
 			BEQ ZEROLEN
 			TAY
 			LDA #0
+			STY TMP2_ZP
+			STA TMP2_ZP+1
 			JSR INTFAC
 			JMP FACXREG	;RTS is implicit
-ZEROLEN		JMP ZEROSET
-
+ZEROLEN		LDA #0
+			STA TMP2_ZP
+			STA TMP2_ZP+1
+			JMP ZEROSET
 ;###################################
 ASC			LDA B_REG
 			STA TMP_ZP

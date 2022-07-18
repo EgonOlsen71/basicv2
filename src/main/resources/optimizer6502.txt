@@ -458,3 +458,7 @@
 
 #154: CHR from XREG
 "CHR from FAC"	false	false	false	"JSR COPY_XREG2YREG|JSR CHR"	"JSR CHRFAC"
+
+#155: Improved LEN-1
+"Improved LEN-1"	false	false	false	"JSR LEN|JSR ONETOFAC|LDA #<X_REG|LDY #>X_REG|JSR MEMSUB"	"JSR LEN|LDY TMP2_ZP|LDA TMP2_ZP|JSR FIDEX"
+
