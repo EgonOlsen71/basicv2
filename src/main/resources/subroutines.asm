@@ -3923,6 +3923,13 @@ FIDEXNOV	DEY
 			JSR INTFAC
 			JMP FACXREG
 ;###################################
+FIDEXNXREG	CPY #0
+			BNE FIDEXNOVNX
+			SEC
+			SBC #$1
+FIDEXNOVNX	DEY
+			JMP INTFAC
+;###################################
 FIINX		INY
 			BNE FIINXNOV
 			CLC
