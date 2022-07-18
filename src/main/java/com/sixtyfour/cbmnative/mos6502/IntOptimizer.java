@@ -742,6 +742,28 @@ public class IntOptimizer {
 								return input;
 							}
 						}));
+		
+		// C%=-<CONST> ... these aren't covered by the "normal" optimization for this, because that doesn't trigger for negative values.
+		intPatterns.add(new IntPattern(true, "Optimized code for negative constants)",
+				new String[] { "LDA #<{CONST0}", "LDY #>{CONST0}", "JSR REALFAC", "JSR FACINT", "STY {*}", "STA {*}" },
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						String consty = cleaned.get(0);
+						consty = consty.substring(consty.indexOf("<") + 1).trim();
+						Number num = const2Value.get(consty);
+						int numd = num.intValue();
+
+						List<String> rep = new ArrayList<>();
+						rep.add("LDY #" + (numd & 0xff));
+						rep.add("LDA #" + ((numd & 0xff00) >> 8));
+						rep.add(cleaned.get(4));
+						rep.add(cleaned.get(5));
+						return combine(pattern, rep);
+					}
+				}));
+
 
 		// POKE I,PEEK(J%)...
 		intPatterns.add(new IntPattern(true, "Optimized code for PEEK with Integer",
