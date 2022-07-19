@@ -30,15 +30,31 @@ public class IntOptimizer {
 		int codeStart = ps[0];
 		int codeEnd = ps[1];
 		List<IntPattern> intPatterns = new ArrayList<>();
-/*
-		LDA #<VAR_L1[]
-				LDY #>VAR_L1[]
-				STA G_REG
-				STY G_REG+1
-				LDY #11
-				LDA #0
-				JSR ARRAYACCESS_REAL_INT
-		*/
+		
+		// A very special case for ASC*256...because ASC is save to be >0 and <256
+		intPatterns.add(new IntPattern(true, "Optimized ASC*256",
+				new String[] { "JSR ASC","LDY {CONST0}","STY A_REG","JSR XREGFAC","JSR SHL","JSR {*}" },
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						String consty = cleaned.get(1);
+						consty = consty.substring(consty.indexOf(" ") + 1).trim();
+						Number num = const2Value.get(consty);
+						if (num.doubleValue() == 8d && (cleaned.get(5).endsWith("FACXREG") ||  cleaned.get(5).endsWith("FACYREG"))) {
+							List<String> rep = new ArrayList<>();
+							rep.add(cleaned.get(0)+"NXREG");
+							rep.add("LDY #0");
+							rep.add("LDA TMP2_ZP");
+							rep.add("JSR INTFAC");
+							rep.add(cleaned.get(5));
+							return combine(pattern, rep);
+						}
+						pattern.reset();
+						return input;
+					}
+				}));
+		
 		// faster, constant array access...not really an int optimization in itself, but still...somehow it is...
 		intPatterns.add(new IntPattern(true, "Optimized code for constant array access",
 				new String[] { "LDA #<{MEM0}", "LDY #>{MEM0}", "STA G_REG", "STY G_REG+1", "LDY {CONST0}", "LDA {CONST0}",

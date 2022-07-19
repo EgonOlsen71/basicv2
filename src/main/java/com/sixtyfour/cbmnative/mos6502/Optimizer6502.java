@@ -309,7 +309,7 @@ public class Optimizer6502 implements Optimizer {
 		tmpPat = new Pattern(false, "Remove INT conversions", new String[] { "{LINE2}" }, "JSR INTFAC", "JSR FACWORD",
 				"STY TMP_ZP");
 		others.add(tmpPat);
-
+		
 		OptimizationResult res = optimizeInternalThreaded(conf, others, platform, ret, null, extractConstants(ret),
 				extractStringConstants(ret));
 		printOutResults(res.getType2count());
