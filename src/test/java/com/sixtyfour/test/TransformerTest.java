@@ -67,6 +67,7 @@ public class TransformerTest {
 		// testTransformer23();
 		testTransformerFrog();
 		testTransformerAffine();
+		testTransformerFiller();
 		// testTransformer24();
 		// testTransformer25();
 		// testTransformer26();
@@ -575,6 +576,29 @@ public class TransformerTest {
 		final Assembler assy = initTestEnvironment(vary, false, 26000, true, 5);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++affine.prg", true);
 		Machine machine = executeTest(assy);
+		System.out.println("Ticks: " + machine.getCpu().getClockTicks());
+	}
+	
+	private static void testTransformerFiller() throws Exception {
+		System.out.println("\n\ntestTransformerFiller");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/filler.bas");
+
+		for (String line : vary) {
+			System.out.println(line);
+		}
+		Assembler assy = initTestEnvironment(vary);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++filler.prg", true);
+		Machine machine = executeTest(assy);
+		System.out.println("Ticks: " + machine.getCpu().getClockTicks());
+		
+		vary = Loader.loadProgram("src/test/resources/transform/filler2.bas");
+
+		for (String line : vary) {
+			System.out.println(line);
+		}
+		assy = initTestEnvironment(vary);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++filler2.prg", true);
+		machine = executeTest(assy);
 		System.out.println("Ticks: " + machine.getCpu().getClockTicks());
 	}
 
