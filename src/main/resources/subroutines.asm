@@ -720,6 +720,19 @@ ZEROLEN		LDA #0
 			STA TMP2_ZP+1
 			JMP ZEROSET
 ;###################################
+ASCNXREG	LDA B_REG
+			STA TMP_ZP
+			LDA B_REG+1
+			STA TMP_ZP+1
+			LDY #0
+			LDA (TMP_ZP),Y
+			BNE DOASCNXREG
+			JMP ILLEGALQUANTITY
+DOASCNXREG	INY
+			LDA (TMP_ZP),Y
+			STA TMP2_ZP
+			RTS
+;###################################
 ASC			LDA B_REG
 			STA TMP_ZP
 			LDA B_REG+1
