@@ -1412,6 +1412,150 @@ INTOUT		JMP REALOUT
 ;###################################
 INTOUTBRK  	JMP REALOUTBRK
 ;###################################
+INTOUTFAST	JSR REROUTE
+			JSR INTOUTFASTZ
+			JMP RESETROUTE
+;###################################
+INTOUTBRKFAST	
+			JSR REROUTE
+			JSR INTOUTFASTZ
+			LDA #$0D
+			JSR CHROUT
+			JMP RESETROUTE
+;###################################
+INTOUTFASTZ	LDX #32				; SPACE
+			LDA TMP_ZP+1
+			BPL INTISPOS
+			
+			CLC
+			LDA TMP_ZP
+			EOR #$FF
+			ADC #1
+			STA TMP_ZP
+			LDA TMP_ZP+1
+			EOR #$FF
+			ADC #0
+			STA TMP_ZP+1
+			LDX #45				; MINUS
+	 
+INTISPOS
+			TXA
+			JSR CHROUT
+			JSR CONVPOSINT
+			LDA NUMFLAG
+			BNE ALLINTOUTDONE
+			LDA #48
+			JSR CHROUT
+ALLINTOUTDONE
+			RTS
+;###################################
+NUMBEROUT
+			BEQ NUMZERO
+			ORA #$30
+			STA NUMFLAG
+			JMP CHROUT
+NUMZERO	
+			LDX NUMFLAG
+			BEQ STILLZERO
+			ORA #$30
+			JMP CHROUT
+STILLZERO
+			RTS
+;###################################		
+CONVPOSINT
+			JSR INT2BCD
+			LDX #0
+			STX NUMFLAG
+			AND #$0F
+			JSR NUMBEROUT
+	
+			LDA BCD+1
+			LSR
+			LSR
+			LSR
+			LSR
+			JSR NUMBEROUT
+			LDA BCD+1
+			AND #$0F
+			TAY
+			JSR NUMBEROUT
+	
+			LDA BCD
+			LSR
+			LSR
+			LSR
+			LSR
+			JSR NUMBEROUT
+			LDA BCD
+			AND #$0F
+			JSR NUMBEROUT
+			RTS
+;###################################
+INT2BCD
+			SED
+			LDA #0
+			STA BCD
+			STA BCD+1
+			STA BCD+2
+			ASL TMP_ZP
+			ROL TMP_ZP+1
+			LDA BCD
+			ADC BCD
+			STA BCD
+			ASL TMP_ZP
+			ROL TMP_ZP+1
+			ADC BCD
+			STA BCD
+			ASL TMP_ZP
+			ROL TMP_ZP+1
+			ADC BCD
+			STA BCD
+			ASL TMP_ZP
+			ROL TMP_ZP+1
+			ADC BCD
+			STA BCD
+			ASL TMP_ZP
+			ROL TMP_ZP+1
+			ADC BCD
+			STA BCD
+			ASL TMP_ZP
+			ROL TMP_ZP+1
+			ADC BCD
+			STA BCD
+			LDX #7
+BCDBIT1	
+			ASL TMP_ZP
+			ROL TMP_ZP+1
+			LDA BCD
+			ADC BCD
+			STA BCD
+			LDA BCD+1
+			ADC BCD+1
+			STA BCD+1
+			DEX
+			BNE BCDBIT1
+			LDX #3
+BCDBIT2	
+			ASL TMP_ZP
+			ROL TMP_ZP+1
+			LDA BCD
+			ADC BCD
+			STA BCD
+			LDA BCD+1
+			ADC BCD+1
+			STA BCD+1
+			LDA BCD+2
+			ADC BCD+2
+			STA BCD+2
+			DEX
+			BNE BCDBIT2
+			CLD
+			RTS
+BCD
+			.WORD 0 0
+NUMFLAG
+			.BYTE 0		
+;###################################
 REALOUT		JSR REROUTE
 			LDA X_REG
 			BNE RNOTNULL
@@ -1425,8 +1569,7 @@ STRLOOPRO	JSR CHROUT
 			INY
 			LDA LOFBUF,Y
 			BNE STRLOOPRO
-			JSR RESETROUTE
-			RTS
+			JMP RESETROUTE
 ;###################################
 REALOUTBRK  JSR REROUTE
 			LDA X_REG
@@ -1442,8 +1585,8 @@ STRLOOPROB	JSR CHROUT
 			LDA LOFBUF,Y
 			BNE STRLOOPROB
 			LDA #$0D
-			JSR RESETROUTE
-			JMP CHROUT
+			JSR CHROUT
+			JMP RESETROUTE
 ;###################################
 LINEBREAK	JSR REROUTE
 			LDA #$0D

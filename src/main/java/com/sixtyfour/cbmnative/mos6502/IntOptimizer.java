@@ -1072,6 +1072,24 @@ public class IntOptimizer {
 					}
 				}));
 		
+		// faster integer print
+		intPatterns.add(new IntPattern(true, "Fast integer output",
+				new String[] { "LDY {*}", "LDA {*}", "JSR INTFAC", "JSR FACXREG", "JSR INTOUT{*}"},
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						List<String> rep = new ArrayList<>();
+						rep.add(cleaned.get(0));
+						rep.add("STY TMP_ZP");
+						rep.add(cleaned.get(1));
+						rep.add("STA TMP_ZP+1");
+						rep.add(cleaned.get(4)+"FAST");
+						return combine(pattern, rep);
+						
+					}
+				}));
+		
 		// No need for back and forth conversion of ints...
 		intPatterns.add(new IntPattern(true, "Optimized conversion of ints (1)",
 				new String[] { "JSR INTADD", "JSR FACINT" },
