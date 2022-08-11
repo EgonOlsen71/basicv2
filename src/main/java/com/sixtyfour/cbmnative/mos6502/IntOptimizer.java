@@ -1007,6 +1007,29 @@ public class IntOptimizer {
 						return input;
 					}
 				}));
+		
+		// p% and/or o%
+		intPatterns.add(new IntPattern(true, "Optimized code for AND/OR(2)",
+				new String[] { "LDY {*}", "LDA {*}", "JSR INTFAC", "JSR FACYREG", "LDY {*}", "LDA {*}",
+						"JSR INTFAC", "JSR FACXREG", "JSR YREGFAC", "JSR XREGARG", "JSR FAST{*}", "JSR FACINT" },
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						String op = cleaned.get(10).substring(8).replace("OR", "ORA");
+						List<String> rep = new ArrayList<>();
+						rep.add(cleaned.get(5));
+						rep.add(op + " "+cleaned.get(1).replace("LDA ", ""));
+						rep.add("TAX");
+						rep.add(cleaned.get(4));
+						rep.add("TYA");
+						rep.add(op + " "+cleaned.get(0).replace("LDY ", ""));
+						rep.add("TAY");
+						rep.add("TXA");
+						return combine(pattern, rep);
+						
+					}
+				}));
 
 		// p%+1 and/or <const>0>
 		intPatterns.add(new IntPattern(
