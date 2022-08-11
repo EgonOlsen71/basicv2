@@ -16,6 +16,7 @@ public class FloatTest {
 	private static CompilerConfig config = new CompilerConfig();
 
 	public static void main(String[] args) {
+		/*
 		testFloat();
 		testConversions();
 		testConversions2();
@@ -24,14 +25,14 @@ public class FloatTest {
 		System.out.println("8: " + Arrays.toString(num));
 
 		testExponentHack();
+		*/
 		testNumbers();
 	}
 
 	private static void testNumbers() {
-		for (float i = -10; i < 18; i++) {
+		for (float i = -32767; i < 32769; i+=0.25) {
 			int[] fl = Conversions.convertFloat(i);
 			System.out.println(i + " : " + Arrays.toString(fl));
-			System.out.println(2*((fl[0]-129)+((fl[1]-128)>>4)));
 		}
 	}
 

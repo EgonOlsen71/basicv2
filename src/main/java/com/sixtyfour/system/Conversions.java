@@ -72,10 +72,7 @@ public class Conversions {
 			sign = 0;
 		}
 
-		double a = 1d;
-		for (int i = 0; i < 126; i++) {
-			a = a * 2d;
-		}
+		double a = Math.pow(2, 126);
 
 		beit = 0;
 		flag = 0;
@@ -101,7 +98,7 @@ public class Conversions {
 				}
 				num = num - a * bit;
 			}
-			a = a / 2d;
+			a /= 2d;
 		}
 
 		mem[0] -= 128;
