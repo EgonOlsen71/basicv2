@@ -1073,7 +1073,7 @@ public class IntOptimizer {
 				}));
 		
 		// faster integer print
-		intPatterns.add(new IntPattern(true, "Fast integer output",
+		intPatterns.add(new IntPattern(true, "Fast integer print",
 				new String[] { "LDY {*}", "LDA {*}", "JSR INTFAC", "JSR FACXREG", "JSR INTOUT{*}"},
 				new AbstractCodeModifier() {
 					@Override
@@ -1086,6 +1086,33 @@ public class IntOptimizer {
 						rep.add("STA TMP_ZP+1");
 						rep.add(cleaned.get(4)+"FAST");
 						return combine(pattern, rep);
+						
+					}
+				}));
+		
+		// faster integer print of const
+		intPatterns.add(new IntPattern(true, "Fast integer print (2)",
+				new String[] { "LDA #<{CONST0}", "LDY #>{CONST0}", "JSR COPY2_XYA_XREG", "JSR INTOUT{*}"},
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						String consty = cleaned.get(0);
+						consty = consty.substring(consty.indexOf("<") + 1).trim();
+						Number num = const2Value.get(consty);
+						double numd = num.doubleValue();
+						if (numd >= -32767 && numd < 32768) {
+							List<String> rep = new ArrayList<>();
+							String numHex = getHex(numd);
+							rep.add("LDY #$" + numHex.substring(2));
+							rep.add("STY TMP_ZP");
+							rep.add("LDA #$" + numHex.substring(0, 2));
+							rep.add("STA TMP_ZP+1");
+							rep.add(cleaned.get(3)+"FAST");
+							return combine(pattern, rep);
+						}
+						pattern.reset();
+						return input;
 						
 					}
 				}));
