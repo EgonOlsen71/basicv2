@@ -75,6 +75,7 @@ public class MnemonicList {
 			this.add(new Bvc());
 			this.add(new Bvs());
 			this.add(new Sec());
+			this.add(new Sed());
 			this.add(new Clc());
 			this.add(new Sei());
 			this.add(new Cli());
