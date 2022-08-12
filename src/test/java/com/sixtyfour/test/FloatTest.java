@@ -17,22 +17,40 @@ public class FloatTest {
 
 	public static void main(String[] args) {
 		/*
-		testFloat();
-		testConversions();
-		testConversions2();
-
-		int[] num = Conversions.compactFloat(Conversions.convertDouble(8d));
-		System.out.println("8: " + Arrays.toString(num));
-
-		testExponentHack();
-		*/
+		 * testFloat(); testConversions(); testConversions2();
+		 * 
+		 * int[] num = Conversions.compactFloat(Conversions.convertDouble(8d));
+		 * System.out.println("8: " + Arrays.toString(num));
+		 * 
+		 * testExponentHack();
+		 */
 		testNumbers();
 	}
 
 	private static void testNumbers() {
-		for (float i = -32767; i < 32769; i+=0.25) {
-			int[] fl = Conversions.convertFloat(i);
-			System.out.println(i + " : " + Arrays.toString(fl));
+
+		int[][] lsbs = { { 127, 255 }, { 63, 255 }, { 31, 255 }, { 15, 255 }, { 7, 255 }, { 3, 255 }, { 1, 255 },
+				{ 0, 255 }, { 0, 127 }, { 0, 63 }, { 0, 31 }, { 0, 15 }, { 0, 7 }, { 0, 3 }, { 0, 1 } };
+
+		double lastVal = -999999;
+		for (double i = -32767; i < 32769; i += 0.125) {
+			int[] fl = Conversions.convertDouble(i);
+
+			if (fl[3] != 0 || fl[4] != 0) {
+				continue;
+			}
+			if (fl[0] < 129 || fl[0] > 143) {
+				continue;
+			}
+			int idx = fl[0] - 129;
+			int[] ands = lsbs[idx];
+			if ((fl[1] & ands[0]) == 0 && (fl[2] & ands[1]) == 0) {
+				System.out.println(i + " : " + Arrays.toString(fl));
+				if ((lastVal + 1 != i && lastVal!=-999999) && lastVal!=-1) {
+					throw new RuntimeException("Failure!");
+				}
+				lastVal = i;
+			}
 		}
 	}
 
