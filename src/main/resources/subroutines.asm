@@ -2460,6 +2460,17 @@ FLOATINTSUB	JSR INTFAC
 			LDA #0
 			STA TMP_FLAG	; flag that the value isn't present in TMP2_ZP
 			JMP FASTFSUBARG
+;###################################
+FLOATINTSUBSW
+			JSR INTFAC
+			JSR FACXREG
+			LDY TMP3_ZP
+			LDA TMP3_ZP+1
+			JSR INTFAC
+			JSR XREGARG
+			LDA #0
+			STA TMP_FLAG	; flag that the value isn't present in TMP2_ZP
+			JMP FASTFSUBARG
 ;###################################			
 FLOATINTADD	JSR INTFAC
 			JSR FACXREG
@@ -2496,7 +2507,7 @@ INTINTADD	LDX #1			; flag that the value is present in TMP2_ZP
 INTSUB		LDX #128		; Do the fast way for positive numbers
 			STX TMP_REG
 			BIT TMP_REG
-			BNE FLOATINTSUB
+			BNE FLOATINTSUBSW
 			
 INTINTSUB	LDX #1			; flag that the value is present in TMP2_ZP
 			STX TMP_FLAG
