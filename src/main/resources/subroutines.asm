@@ -2449,7 +2449,8 @@ INTINTADDVAR2
 			PLA
 			ADC TMP3_ZP+1
 			JMP INTFAC
-;###################################			
+;###################################
+;	A=B-C => TMP3_ZP - LDY/LDA		
 FLOATINTSUB	JSR INTFAC
 			JSR FACXREG
 			LDY TMP3_ZP
@@ -2461,6 +2462,7 @@ FLOATINTSUB	JSR INTFAC
 			STA TMP_FLAG	; flag that the value isn't present in TMP2_ZP
 			JMP FASTFSUBARG
 ;###################################
+;	A=B-C => LDY/LDA - TMP3_ZP
 FLOATINTSUBSW
 			JSR INTFAC
 			JSR FACXREG
