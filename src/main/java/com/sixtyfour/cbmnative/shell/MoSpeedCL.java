@@ -55,16 +55,13 @@ public class MoSpeedCL {
 		System.out.println("-------------------------------------------------");
 		Map<String, String> cmds = new HashMap<>();
 		List<MemoryHole> holes = new ArrayList<>();
-		String srcFile = null;
+		String srcFile = args[args.length-1];
+		args = Arrays.copyOf(args, args.length-1);
 		for (String arg : args) {
 			if (arg.startsWith("/") || arg.startsWith("-")) {
 				arg = arg.substring(1);
 				String[] parts = arg.split("=");
 				cmds.put(parts[0].toLowerCase(Locale.ENGLISH), parts.length > 1 ? parts[1] : null);
-			} else {
-				if (srcFile == null) {
-					srcFile = arg;
-				}
 			}
 		}
 
