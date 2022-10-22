@@ -1,108 +1,121 @@
 package com.sixtyfour.cbmnative.crossoptimizer.passes;
 
-import com.sixtyfour.Logger;
-import com.sixtyfour.cbmnative.crossoptimizer.PCodeOptimizer;
 import com.sixtyfour.cbmnative.crossoptimizer.common.OrderedPCode;
-import com.sixtyfour.cbmnative.crossoptimizer.common.PCodeVisitor;
-import com.sixtyfour.elements.commands.Command;
-import com.sixtyfour.elements.commands.Gosub;
-import com.sixtyfour.elements.commands.Goto;
-import com.sixtyfour.elements.commands.Return;
+import com.sixtyfour.elements.commands.*;
 import com.sixtyfour.parser.Line;
 
 import java.util.*;
 
+import static com.sixtyfour.cbmnative.crossoptimizer.common.PCodeUtilities.*;
+
 /**
  * This code transform makes the following transformation if gosub to N is
  * unique:
- *
+ * <p>
  * L: gosub N L+1: ... (...) N: ... return
- *
+ * <p>
  * Code is transformed to:
- *
+ * <p>
  * L: goto N L+1: ... (...) N: (...) goto L+1
- *
- *
  */
 public class InlineOneBlockGosub implements HighLevelOptimizer {
 
-	private void addCount(Map<Integer, Integer> countedGoSubs, int targetLine) {
-		Integer getTargetCount = countedGoSubs.get(targetLine);
-		if (getTargetCount == null) {
-			countedGoSubs.put(targetLine, 1);
-		} else {
-			countedGoSubs.put(targetLine, 1 + getTargetCount);
-		}
-	}
+    public boolean optimize(OrderedPCode orderedPCode) {
+        SortedMap<Integer, Integer> linesEndingWithGoSub = getLinesEndingWithGoSub(orderedPCode);
+        if (linesEndingWithGoSub.isEmpty()) {
+            return false;
+        }
+        boolean result = false;
+        SortedSet<Integer> targetGoSubCandidates = calculateGoSubTargets(orderedPCode);
+        for (int lineIndex : linesEndingWithGoSub.keySet()) {
+            int targetGoSub = linesEndingWithGoSub.get(lineIndex);
+            if (targetGoSubCandidates.contains(targetGoSub)) {
+                replaceGoSubToGotoCall(orderedPCode, lineIndex, targetGoSub);
+                result = true;
+            }
+        }
 
-	public boolean optimize(OrderedPCode orderedPCode) {
-		List<Integer> linesWithSingleGosub = getInlinableGosubs(orderedPCode);
+        return result;
+    }
+    private static void updateCountOfGoSub(Map<Integer, Integer> result, Gosub gosub) {
+        int targetGoSub = gosub.getTargetLineNumber();
+        int alreadyTargeted = result.getOrDefault(targetGoSub, 0);
+        result.put(targetGoSub, alreadyTargeted + 1);
+    }
 
-		for (int lineWithGosub : linesWithSingleGosub) {
-			Line line = orderedPCode.getLine(lineWithGosub);
-			Gosub gosub = line.getFirstCommand();
-			Goto replaceGoto = new Goto();
-			replaceGoto.setTargetLineNumber(gosub.getTargetLineNumber());
-			PCodeOptimizer.replaceLastCommandInLine(line, replaceGoto, "goto " + gosub.getTargetLineNumber());
-			int targetGosubStart = orderedPCode.getLineIndex(gosub.getTargetLineNumber());
-			for (int targetReturn = targetGosubStart;; targetReturn++) {
-				Line candidateReturnLine = orderedPCode.getLineDirect(targetReturn);
-				Return retCommand = candidateReturnLine.getAnyCommand(Return.class);
-				if (retCommand == null)
-					continue;
-				InlineCall(orderedPCode, lineWithGosub, gosub, candidateReturnLine);
+    private static void replaceGoSubToGotoCall(OrderedPCode orderedPCode, int lineIndex, int targetGoSub) {
+        Line sourceLine = orderedPCode.getLine(lineIndex);
+        Line nextSourceLine = nextPcodeLine(orderedPCode, sourceLine);
+        int nextLineNumber = nextSourceLine.getNumber();
 
-				break;
-			}
-		}
-		final int countReplacements = linesWithSingleGosub.size();
-		if (countReplacements > 0) {
-			Logger.log("Inline gosub count: " + countReplacements);
-		}
-		return countReplacements != 0;
-	}
+        Line goSubLine = orderedPCode.getLine(targetGoSub);
 
-	private void InlineCall(OrderedPCode orderedPCode, int lineWithGosub, Gosub gosub, Line returnLine) {
-		int gosubIndex = orderedPCode.getLineIndex(lineWithGosub);
-		Goto gotoNext = new Goto();
-		int nextLineIndex = orderedPCode.getLineDirect(gosubIndex + 1).getNumber();
-		gotoNext.setTargetLineNumber(nextLineIndex);
-		PCodeOptimizer.replaceLastCommandInLine(returnLine, gotoNext, "goto " + nextLineIndex);
+        replaceLastCommandInLine(sourceLine, new Goto(targetGoSub));
+        replaceCommandStringComponent(sourceLine, sourceLine.getCommands().size() - 1, "GOTO " + targetGoSub);
 
-		Logger.log(lineWithGosub + ": GOSUB " + gosub.getTargetLineNumber()
-				+ "' is converted to 'Goto' and method is inlined from range: (" + gosub.getTargetLineNumber() + ".."
-				+ returnLine.getNumber() + ")");
-	}
+        replaceLastCommandInLine(goSubLine, new Goto(nextLineNumber));
+        replaceCommandStringComponent(goSubLine, goSubLine.getCommands().size() - 1, "GOTO " + nextLineNumber);
+    }
 
-	private List<Integer> getInlinableGosubs(OrderedPCode orderedPCode) {
-		Map<Integer, Integer> countedGoSubs = new HashMap<>();
-		Set<Integer> excludedCandidates = new HashSet<>();
-		List<Integer> linesWithSingleGoSub = new ArrayList<>();
-		PCodeVisitor pCodeVisitor = new PCodeVisitor(orderedPCode);
-		PCodeVisitor.IVisitor visitor = (Line l, Command command, int idx) -> {
-			Gosub gosub = (Gosub) command;
-			int target = gosub.getTargetLineNumber();
+    SortedMap<Integer, Integer> getLinesEndingWithGoSub(OrderedPCode orderedPCode) {
+        SortedMap<Integer, Integer> result = new TreeMap<>();
+        for (Line l : orderedPCode.getLines()) {
+            if (containsIf(l)) {
+                continue;
+            }
+            Command c = getLineLastCommand(l);
+            if (!(c instanceof Gosub)) {
+                continue;
+            }
+            if (countOfGosub(l) != 1) {
+                continue;
+            }
 
-			addCount(countedGoSubs, target);
-			if (l.getCommands().size() != 1) {
-				excludedCandidates.add(target);
-			} else {
-				linesWithSingleGoSub.add(l.getNumber());
-			}
-		};
-		pCodeVisitor.accept("gosub", visitor);
-		List<Integer> singleGosubs = new ArrayList<>();
-		for (int lineIndex : linesWithSingleGoSub) {
-			Line line = orderedPCode.getLine(lineIndex);
-			Gosub gosub = line.getFirstCommand();
-			int gosubTarget = gosub.getTargetLineNumber();
-			int gosubCount = countedGoSubs.get(gosubTarget);
-			if (gosubCount != 1)
-				continue;
-			if (excludedCandidates.contains(gosubTarget))
-				continue;
-			singleGosubs.add(lineIndex);
-		}
-		return singleGosubs;
-	}
+            Command previousToLastCommand = getPreviousToLastCommand(l);
+            if (previousToLastCommand instanceof If) {
+                continue;
+            }
+
+            Gosub gosub = (Gosub) c;
+            int goSubTarget = gosub.getTargetLineNumber();
+            Line goSubLine = orderedPCode.getLine(goSubTarget);
+            Command goSubLastCommand = getLineLastCommand(goSubLine);
+            if (!(goSubLastCommand instanceof Return)) {
+                continue;
+            }
+            Command prevToLastGoSubCommand = getPreviousToLastCommand(goSubLine);
+            if (prevToLastGoSubCommand instanceof If) {
+                continue;
+            }
+
+            result.put(l.getNumber(), goSubTarget);
+        }
+        return result;
+    }
+
+    SortedSet<Integer> calculateGoSubTargets(OrderedPCode orderedPCode) {
+        Map<Integer, Integer> result = new TreeMap<>();
+        orderedPCode.getLines()
+                .forEach(l -> {
+                    l.getCommands().forEach(c -> {
+                        if (!(c instanceof Gosub)) {
+                            return;
+                        }
+                        Gosub gosub = (Gosub) c;
+                        updateCountOfGoSub(result, gosub);
+                    });
+                });
+
+        SortedSet<Integer> resultSet = new TreeSet<>();
+        result.keySet()
+                .forEach(goSubTarget -> {
+                    int targets = result.get(goSubTarget);
+                    if (targets == 1) {
+                        resultSet.add(goSubTarget);
+                    }
+                });
+        return resultSet;
+    }
+
+
 }

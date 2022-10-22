@@ -1,13 +1,18 @@
 package com.sixtyfour.cbmnative.crossoptimizer.passes;
 
 import com.sixtyfour.Logger;
+import com.sixtyfour.cbmnative.crossoptimizer.common.CommandsRowSplitter;
 import com.sixtyfour.cbmnative.crossoptimizer.common.OrderedPCode;
 import com.sixtyfour.cbmnative.crossoptimizer.common.PCodeUtilities;
 import com.sixtyfour.elements.commands.Command;
 import com.sixtyfour.elements.commands.Goto;
+import com.sixtyfour.elements.commands.If;
 import com.sixtyfour.parser.Line;
 
 import java.util.List;
+
+import static com.sixtyfour.cbmnative.crossoptimizer.common.PCodeUtilities.getPreviousToLastCommand;
+import static com.sixtyfour.cbmnative.crossoptimizer.common.PCodeUtilities.nextPcodeLine;
 
 /**
  * This transformation will inline a GOTO which returns back to the next line
@@ -22,53 +27,48 @@ import java.util.List;
  */
 public class InlineSimpleOneLineBlock implements HighLevelOptimizer {
 
-	public boolean optimize(OrderedPCode orderedPCode) {
-		boolean result = false;
-		List<Line> lines = orderedPCode.getLines();
-		for (int i = 0, linesSize = lines.size() - 1; i < linesSize; i++) {
-			Line line = lines.get(i);
-			int nextLineIndex = lines.get(i + 1).getNumber();
-			Goto lineGoto = getLastCommandAsGoto(line);
-			if (lineGoto == null)
-				continue;
-			if (lineGoto.getTargetLineNumber() == line.getNumber())
-				continue;
-			Line targetLine = orderedPCode.getLine(lineGoto.getTargetLineNumber());
-			Goto targetGoto = getLastCommandAsGoto(targetLine);
-			if (targetGoto == null)
-				continue;
-			if (targetGoto.getTargetLineNumber() != nextLineIndex)
-				continue;
-			inlineRow(line, targetLine, orderedPCode);
-			result = true;
+    private static Goto getLastCommandAsGoto(Line line) {
+        List<Command> cmds = line.getCommands();
+        Command last = cmds.get(cmds.size() - 1);
+        if (last instanceof Goto)
+            return (Goto) last;
+        return null;
+    }
 
-		}
-		return result;
-	}
+    public boolean optimize(OrderedPCode orderedPCode) {
+        boolean result = false;
+        for (Line sourceLine : orderedPCode.getLines()) {
+            Goto lineGoto = getLastCommandAsGoto(sourceLine);
+            if (lineGoto == null) {
+                continue;
+            }
+            Command previousToLast = getPreviousToLastCommand(sourceLine);
+            if (previousToLast instanceof If) {
+                continue;
+            }
+            Line nextSourceLine = nextPcodeLine(orderedPCode, sourceLine);
+            if (nextSourceLine == null) {
+                continue;
+            }
+            int nextSourceLineNumber = nextSourceLine.getNumber();
+            int currentLineTargetLineNumber = lineGoto.getTargetLineNumber();
+            if (currentLineTargetLineNumber != nextSourceLineNumber) {
+                continue;
+            }
+            inlineRow(sourceLine);
+            result = true;
+        }
+        return result;
+    }
 
-	private void inlineRow(Line line, Line targetLine, OrderedPCode orderedPCode) {
-		Line cloneLine = PCodeUtilities.cloneLine(orderedPCode, targetLine.getNumber());
-		List<Command> clonedCommands = cloneLine.getCommands();
-		PCodeUtilities.removeLastLineCommand(cloneLine);
+    private void inlineRow(Line line) {
+        List<String> components = CommandsRowSplitter.splitCommandIntoComponents(line.getLine());
+        PCodeUtilities.removeLastLineCommand(line);
+        components.remove(components.size() - 1);
+        String updatedLine = String.join(":", components);
+        line.setLine(updatedLine);
 
-		if (!line.getLine().contains(":")) {
-			line.setLine(cloneLine.getLine());
-		} else {
-			PCodeUtilities.removeLastLineCommand(line);
-			String injectedInlinedCode = line.getLine() + ":" + cloneLine.getLine();
-			line.setLine(injectedInlinedCode);
-		}
-
-		line.getCommands().addAll(clonedCommands);
-		Logger.log("Inline final goto of line: " + line.getNumber() + " and the code looks like this now: "
-				+ line.getLine());
-	}
-
-	private Goto getLastCommandAsGoto(Line line) {
-		List<Command> cmds = line.getCommands();
-		Command last = cmds.get(cmds.size() - 1);
-		if (last instanceof Goto)
-			return (Goto) last;
-		return null;
-	}
+        Logger.log("Remove last Goto that is redundant: " + line.getNumber() + " and the code looks like this now: "
+                + line.getLine());
+    }
 }

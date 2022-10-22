@@ -20,23 +20,17 @@ public class PCodeOptimizer {
 
 	private static void setup() {
 		Optimizers.clear();
-		// Optimizers.add(new InlineOneBlockGosub());
 		Optimizers.add(new GenerateBasicBlocks());
+		Optimizers.add(new InlineOneBlockGosub());
 		Optimizers.add(new InlineSimpleOneLineBlock());
 		Optimizers.add(new InlineSimpleGosubBlock());
 	}
-
-	public static void replaceLastCommandInLine(Line line, Command command, String code) {
-		List<Command> originalRowCommands = line.getCommands();
-		int lastIndex = originalRowCommands.size() - 1;
-		originalRowCommands.set(lastIndex, command);
-		line.setLine(code);
-	}
-
 	static boolean DEBUG_PCODE_OPTIMIZER = true;
 
 	public static boolean optimize(PCode pCode) {
 		OrderedPCode orderedPCode = new OrderedPCode(pCode);
+
+		String originalCode = orderedPCode.getCode();
 		boolean result = false;
 		boolean found;
 		do {
@@ -51,6 +45,8 @@ public class PCodeOptimizer {
 			updatePcode(pCode, orderedPCode);
 			if (DEBUG_PCODE_OPTIMIZER) {
 				String fullCode = orderedPCode.getCode();
+				Logger.log("Code before PCode optimizations: \n" + originalCode);
+
 				Logger.log("Code after PCode optimizations: \n" + fullCode);
 			}
 		}

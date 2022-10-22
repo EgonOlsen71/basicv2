@@ -4,29 +4,16 @@ import com.sixtyfour.Logger;
 import com.sixtyfour.cbmnative.crossoptimizer.common.OrderedPCode;
 import com.sixtyfour.elements.commands.Command;
 import com.sixtyfour.elements.commands.Gosub;
-import com.sixtyfour.elements.commands.If;
 import com.sixtyfour.elements.commands.Return;
 import com.sixtyfour.parser.Line;
 
-import java.util.List;
-
-import static com.sixtyfour.cbmnative.crossoptimizer.common.PCodeUtilities.getLineLastCommand;
+import static com.sixtyfour.cbmnative.crossoptimizer.common.PCodeUtilities.*;
 
 /**
  * This transform inlines a Gosub to a line that at the end has a return
  * statement
  */
 public class InlineSimpleGosubBlock implements HighLevelOptimizer {
-
-    static boolean containsIf(Line line) {
-        If anyIfInTarget = line.getAnyCommand(If.class);
-        return (anyIfInTarget != null);
-    }
-
-    static int countOfGosub(Line line) {
-        return line.countAnyCommandMatching(Gosub.class);
-
-    }
 
     private static String removeLastCmd(String fullLine) {
         int lastIndex = fullLine.lastIndexOf(":");
@@ -82,9 +69,8 @@ public class InlineSimpleGosubBlock implements HighLevelOptimizer {
             if (countOfGosub(l) != 1) {
                 continue;
             }
-            List<Command> commands = l.getCommands();
-            int i = commands.size() - 1;
-            Command c = commands.get(i);
+            int i = l.getCommands().size() - 1;
+            Command c = getLineLastCommand(l);
             if (!(c instanceof Gosub)) {
                 continue;
             }
