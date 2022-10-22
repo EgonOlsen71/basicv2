@@ -119,6 +119,15 @@ public class Line {
 		return null;
 	}
 
+	public  <T extends Command> int countAnyCommandMatching(Class<T> clazz) {
+		int result = 0;
+		for (Command command : commands) {
+			if (command.getClass().isAssignableFrom(clazz))
+				result++;
+		}
+		return result;
+	}
+
 	/**
 	 * Get first command
 	 */
