@@ -52,6 +52,7 @@ public class PCode {
 	 * @return
 	 */
 	public boolean optimize() {
+		PCodeOptimizer.setup(true);
 		return PCodeOptimizer.optimize(this);
 	}
 

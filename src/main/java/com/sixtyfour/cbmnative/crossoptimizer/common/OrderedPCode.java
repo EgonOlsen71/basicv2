@@ -65,8 +65,9 @@ public class OrderedPCode {
 		return new OrderedPCode(basic.getPCode());
 	}
 
-	public OrderedPCode cloneInstanceWithLineReplaced(int line, String lineText) {
+	public static OrderedPCode cloneInstanceWithLineReplaced(OrderedPCode pCode, int line, String lineText) {
 		StringBuilder sb = new StringBuilder();
+		List<Line> allLines = pCode.getLines();
 		for (Line l : allLines) {
 			sb.append(l.getNumber()).append(" ");
 			if (line != l.getNumber()) {
@@ -85,7 +86,6 @@ public class OrderedPCode {
 		this.allLines.clear();
 		allLines.addAll(other.allLines);
 		this.rowMapping.clear();
-		;
 		this.rowMapping.putAll(other.rowMapping);
 	}
 
@@ -93,5 +93,10 @@ public class OrderedPCode {
 		final String result = getLines().stream().map(line -> line.getNumber() + " " + line.getLine())
 				.collect(Collectors.joining("\n"));
 		return result;
+	}
+
+	@Override
+	public String toString() {
+		return getCode();
 	}
 }

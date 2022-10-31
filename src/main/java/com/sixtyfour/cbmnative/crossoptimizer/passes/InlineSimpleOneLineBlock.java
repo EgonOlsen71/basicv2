@@ -11,6 +11,8 @@ import com.sixtyfour.parser.Line;
 
 import java.util.List;
 
+import static com.sixtyfour.cbmnative.crossoptimizer.common.CommandsRowSplitter.joinCommands;
+import static com.sixtyfour.cbmnative.crossoptimizer.common.CommandsRowSplitter.splitCommandIntoComponents;
 import static com.sixtyfour.cbmnative.crossoptimizer.common.PCodeUtilities.getPreviousToLastCommand;
 import static com.sixtyfour.cbmnative.crossoptimizer.common.PCodeUtilities.nextPcodeLine;
 
@@ -62,10 +64,10 @@ public class InlineSimpleOneLineBlock implements HighLevelOptimizer {
     }
 
     private void inlineRow(Line line) {
-        List<String> components = CommandsRowSplitter.splitCommandIntoComponents(line.getLine());
+        List<String> components = splitCommandIntoComponents(line.getLine());
         PCodeUtilities.removeLastLineCommand(line);
         components.remove(components.size() - 1);
-        String updatedLine = String.join(":", components);
+        String updatedLine = joinCommands(components);
         line.setLine(updatedLine);
 
         Logger.log("Remove last Goto that is redundant: " + line.getNumber() + " and the code looks like this now: "

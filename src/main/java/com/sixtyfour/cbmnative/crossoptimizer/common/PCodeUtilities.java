@@ -7,6 +7,7 @@ import com.sixtyfour.parser.Line;
 
 import java.util.List;
 
+import static com.sixtyfour.cbmnative.crossoptimizer.common.CommandsRowSplitter.joinCommands;
 import static com.sixtyfour.cbmnative.crossoptimizer.common.CommandsRowSplitter.splitCommandIntoComponents;
 
 public class PCodeUtilities {
@@ -43,7 +44,7 @@ public class PCodeUtilities {
     public static void replaceCommandStringComponent(Line line, int indexCommand, String newString) {
         List<String> sourceLineTextComponents = splitCommandIntoComponents(line.getLine());
         sourceLineTextComponents.set(indexCommand, newString);
-        String updatedLineCommand = String.join(":", sourceLineTextComponents);
+        String updatedLineCommand = joinCommands(sourceLineTextComponents);
         line.setLine(updatedLineCommand);
     }
 
@@ -64,5 +65,4 @@ public class PCodeUtilities {
         }
         return pCode.getLineDirect(currentLineIndex + 1);
     }
-
 }

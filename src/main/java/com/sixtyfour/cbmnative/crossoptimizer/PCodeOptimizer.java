@@ -4,7 +4,8 @@ import com.sixtyfour.Logger;
 import com.sixtyfour.cbmnative.PCode;
 import com.sixtyfour.cbmnative.crossoptimizer.common.OrderedPCode;
 import com.sixtyfour.cbmnative.crossoptimizer.passes.*;
-import com.sixtyfour.elements.commands.Command;
+import com.sixtyfour.cbmnative.crossoptimizer.passes.gosub.InlineOneBlockGosub;
+import com.sixtyfour.cbmnative.crossoptimizer.passes.gosub.InlineSimpleGosubBlock;
 import com.sixtyfour.parser.Line;
 
 import java.util.ArrayList;
@@ -14,16 +15,15 @@ public class PCodeOptimizer {
 
 	private final static List<HighLevelOptimizer> Optimizers = new ArrayList<>();
 
-	static {
-		setup();
-	}
-
-	private static void setup() {
+	public static void setup(boolean goSubOptimizations) {
 		Optimizers.clear();
 		Optimizers.add(new GenerateBasicBlocks());
-		Optimizers.add(new InlineOneBlockGosub());
+		if (goSubOptimizations) {
+			Optimizers.add(new InlineOneBlockGosub());
+			Optimizers.add(new InlineSimpleGosubBlock());
+		}
 		Optimizers.add(new InlineSimpleOneLineBlock());
-		Optimizers.add(new InlineSimpleGosubBlock());
+		Optimizers.add(new InlineSimpleGotoBlock());
 	}
 	static boolean DEBUG_PCODE_OPTIMIZER = true;
 

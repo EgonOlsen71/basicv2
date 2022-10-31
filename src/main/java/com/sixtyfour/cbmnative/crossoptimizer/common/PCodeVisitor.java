@@ -37,4 +37,9 @@ public class PCodeVisitor {
 			}
 		}
 	}
+
+	public static void accept(OrderedPCode pCode, IVisitor onHit){
+		var visitor = new PCodeVisitor(pCode);
+		visitor.accept(onHit);
+	}
 }

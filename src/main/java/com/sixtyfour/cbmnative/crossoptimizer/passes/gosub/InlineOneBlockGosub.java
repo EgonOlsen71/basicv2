@@ -1,6 +1,8 @@
-package com.sixtyfour.cbmnative.crossoptimizer.passes;
+package com.sixtyfour.cbmnative.crossoptimizer.passes.gosub;
 
 import com.sixtyfour.cbmnative.crossoptimizer.common.OrderedPCode;
+import com.sixtyfour.cbmnative.crossoptimizer.common.PCodeVisitor;
+import com.sixtyfour.cbmnative.crossoptimizer.passes.HighLevelOptimizer;
 import com.sixtyfour.elements.commands.*;
 import com.sixtyfour.parser.Line;
 
@@ -19,9 +21,9 @@ import static com.sixtyfour.cbmnative.crossoptimizer.common.PCodeUtilities.*;
  * L: goto N L+1: ... (...) N: (...) goto L+1
  */
 public class InlineOneBlockGosub implements HighLevelOptimizer {
-
     public boolean optimize(OrderedPCode orderedPCode) {
-        SortedMap<Integer, Integer> linesEndingWithGoSub = getLinesEndingWithGoSub(orderedPCode);
+        SortedSet<Integer> gosubTargets = getGosubTargets(orderedPCode);
+        SortedMap<Integer, Integer> linesEndingWithGoSub = getLinesEndingWithGoSub(orderedPCode, gosubTargets);
         if (linesEndingWithGoSub.isEmpty()) {
             return false;
         }
@@ -37,6 +39,20 @@ public class InlineOneBlockGosub implements HighLevelOptimizer {
 
         return result;
     }
+
+    private SortedSet<Integer> getGosubTargets(OrderedPCode orderedPCode) {
+        SortedSet<Integer> result = new TreeSet<>();
+        PCodeVisitor.accept(orderedPCode, (line, cmd, index)->{
+            if (!cmd.getName().equals("GOSUB")){
+                return;
+            }
+            Gosub gosub = (Gosub) cmd;
+            result.add(gosub.getTargetLineNumber());
+        });
+        return result;
+    }
+
+
     private static void updateCountOfGoSub(Map<Integer, Integer> result, Gosub gosub) {
         int targetGoSub = gosub.getTargetLineNumber();
         int alreadyTargeted = result.getOrDefault(targetGoSub, 0);
@@ -56,15 +72,38 @@ public class InlineOneBlockGosub implements HighLevelOptimizer {
         replaceLastCommandInLine(goSubLine, new Goto(nextLineNumber));
         replaceCommandStringComponent(goSubLine, goSubLine.getCommands().size() - 1, "GOTO " + nextLineNumber);
     }
+    boolean targetGoSubLineCanBePassTrough(OrderedPCode pCode, int targetLine) {
+        int lineIndex = pCode.getLineIndex(targetLine);
 
-    SortedMap<Integer, Integer> getLinesEndingWithGoSub(OrderedPCode orderedPCode) {
+        Line prevLine = pCode.getLineDirect(lineIndex-1);
+        if (prevLine.getAnyCommand(If.class) != null){
+            return true;
+        }
+        Command lastCommand = getLineLastCommand(prevLine);
+        switch (lastCommand.getName()){
+            case "GOTO":
+            case "RUN":
+            case "RETURN":
+                return false;
+            case "END":
+                return false;
+
+            default:
+                return true;
+        }
+    }
+    SortedMap<Integer, Integer> getLinesEndingWithGoSub(OrderedPCode orderedPCode, SortedSet<Integer> gosubTargets) {
         SortedMap<Integer, Integer> result = new TreeMap<>();
         for (Line l : orderedPCode.getLines()) {
+
             if (containsIf(l)) {
                 continue;
             }
             Command c = getLineLastCommand(l);
             if (!(c instanceof Gosub)) {
+                continue;
+            }
+            if (gosubTargets.contains(l.getNumber())){
                 continue;
             }
             if (countOfGosub(l) != 1) {
@@ -83,8 +122,13 @@ public class InlineOneBlockGosub implements HighLevelOptimizer {
             if (!(goSubLastCommand instanceof Return)) {
                 continue;
             }
-            Command prevToLastGoSubCommand = getPreviousToLastCommand(goSubLine);
-            if (prevToLastGoSubCommand instanceof If) {
+            if (goSubLine.countAnyCommandMatching(If.class)>0){
+                continue;
+            }
+            if (goSubLine.countAnyCommandMatching(Gosub.class)>0){
+                continue;
+            }
+            if (targetGoSubLineCanBePassTrough(orderedPCode, goSubTarget)){
                 continue;
             }
 
@@ -110,10 +154,16 @@ public class InlineOneBlockGosub implements HighLevelOptimizer {
         result.keySet()
                 .forEach(goSubTarget -> {
                     int targets = result.get(goSubTarget);
+                    Line gosubLine = orderedPCode.getLine(goSubTarget);
+                    if (containsIf(gosubLine)) {
+                        //fixed bug seen in Expresso.bas
+                        return;
+                    }
                     if (targets == 1) {
                         resultSet.add(goSubTarget);
                     }
                 });
+
         return resultSet;
     }
 
