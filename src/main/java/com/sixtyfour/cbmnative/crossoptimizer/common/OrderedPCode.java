@@ -65,22 +65,6 @@ public class OrderedPCode {
 		return new OrderedPCode(basic.getPCode());
 	}
 
-	public static OrderedPCode cloneInstanceWithLineReplaced(OrderedPCode pCode, int line, String lineText) {
-		StringBuilder sb = new StringBuilder();
-		List<Line> allLines = pCode.getLines();
-		for (Line l : allLines) {
-			sb.append(l.getNumber()).append(" ");
-			if (line != l.getNumber()) {
-				sb.append(l.getLine());
-			} else {
-				sb.append(lineText);
-			}
-			sb.append('\n');
-		}
-		Basic basic = new Basic(sb.toString());
-		basic.compile(new CompilerConfig());
-		return new OrderedPCode(basic.getPCode());
-	}
 
 	public void reset(OrderedPCode other) {
 		this.allLines.clear();

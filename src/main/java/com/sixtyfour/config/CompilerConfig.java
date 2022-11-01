@@ -13,7 +13,7 @@ public class CompilerConfig {
 
 	private boolean constantPropagation = true;
 	private boolean constantFolding = true;
-	private boolean pcodeOptimize = false;
+	private String pcodeOptimize = "";
 	private boolean intermediateLanguageOptimizations = true;
 	private boolean nativeLanguageOptimizations = true;
 	private boolean optimizedLinker = true;
@@ -63,11 +63,11 @@ public class CompilerConfig {
 		this.constantFolding = constantFolding;
 	}
 
-	public void setPcodeOptimizations(boolean pcodeOptimize) {
+	public void setPcodeOptimizations(String pcodeOptimize) {
 		this.pcodeOptimize = pcodeOptimize;
 	}
 
-	public boolean isPcodeOptimize() {
+	public String isPcodeOptimize() {
 		return pcodeOptimize;
 	}
 

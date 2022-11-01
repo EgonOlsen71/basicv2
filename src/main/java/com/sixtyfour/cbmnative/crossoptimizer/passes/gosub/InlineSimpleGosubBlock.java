@@ -13,7 +13,6 @@ import java.util.*;
 
 import static com.sixtyfour.cbmnative.crossoptimizer.common.CommandsRowSplitter.joinCommands;
 import static com.sixtyfour.cbmnative.crossoptimizer.common.CommandsRowSplitter.splitCommandIntoComponents;
-import static com.sixtyfour.cbmnative.crossoptimizer.common.OrderedPCode.cloneInstanceWithLineReplaced;
 import static com.sixtyfour.cbmnative.crossoptimizer.common.PCodeUtilities.*;
 
 /**
@@ -114,7 +113,7 @@ public class InlineSimpleGosubBlock implements HighLevelOptimizer {
         lineComponents.remove(indexCommand);
         lineComponents.add(indexCommand, goSubLineCode);
         String finalCode = joinCommands(lineComponents);
-        orderedPCode.reset(cloneInstanceWithLineReplaced(orderedPCode, line.getNumber(), finalCode));
+        orderedPCode.reset(replaceLineInCode(orderedPCode, line.getNumber(), finalCode));
 
         Logger.log("After inline Gosub, code is changed from: \n" + lineNumber + " " + lineCode + "\n to: " + lineNumber + " " + finalCode + ".");
     }

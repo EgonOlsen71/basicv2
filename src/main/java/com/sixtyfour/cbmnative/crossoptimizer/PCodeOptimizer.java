@@ -2,10 +2,12 @@ package com.sixtyfour.cbmnative.crossoptimizer;
 
 import com.sixtyfour.Logger;
 import com.sixtyfour.cbmnative.PCode;
+import com.sixtyfour.cbmnative.crossoptimizer.common.CommandsRowSplitter;
 import com.sixtyfour.cbmnative.crossoptimizer.common.OrderedPCode;
 import com.sixtyfour.cbmnative.crossoptimizer.passes.*;
 import com.sixtyfour.cbmnative.crossoptimizer.passes.gosub.InlineOneBlockGosub;
 import com.sixtyfour.cbmnative.crossoptimizer.passes.gosub.InlineSimpleGosubBlock;
+import com.sixtyfour.cbmnative.crossoptimizer.passes.lineconstantpropagator.PCodeConstantPropagator;
 import com.sixtyfour.parser.Line;
 
 import java.util.ArrayList;
@@ -15,7 +17,13 @@ public class PCodeOptimizer {
 
 	private final static List<HighLevelOptimizer> Optimizers = new ArrayList<>();
 
-	public static void setup(boolean goSubOptimizations) {
+	public static void setup(String optionFlags) {
+		boolean goSubOptimizations = true;
+		List<String> flagList = CommandsRowSplitter.splitCommandIntoComponents(optionFlags);
+		if (flagList.contains("nogosub")){
+			goSubOptimizations = false;
+		}
+		goSubOptimizations = false;
 		Optimizers.clear();
 		Optimizers.add(new GenerateBasicBlocks());
 		if (goSubOptimizations) {
@@ -24,6 +32,7 @@ public class PCodeOptimizer {
 		}
 		Optimizers.add(new InlineSimpleOneLineBlock());
 		Optimizers.add(new InlineSimpleGotoBlock());
+		Optimizers.add(new PCodeConstantPropagator());
 	}
 	static boolean DEBUG_PCODE_OPTIMIZER = true;
 

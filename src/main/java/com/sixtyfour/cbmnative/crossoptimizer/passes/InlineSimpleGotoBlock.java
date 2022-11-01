@@ -13,7 +13,6 @@ import java.util.TreeMap;
 
 import static com.sixtyfour.cbmnative.crossoptimizer.common.CommandsRowSplitter.joinCommands;
 import static com.sixtyfour.cbmnative.crossoptimizer.common.CommandsRowSplitter.splitCommandIntoComponents;
-import static com.sixtyfour.cbmnative.crossoptimizer.common.OrderedPCode.cloneInstanceWithLineReplaced;
 import static com.sixtyfour.cbmnative.crossoptimizer.common.PCodeUtilities.*;
 
 public class InlineSimpleGotoBlock implements HighLevelOptimizer {
@@ -98,7 +97,7 @@ public class InlineSimpleGotoBlock implements HighLevelOptimizer {
         lineComponents.remove(indexCommand);
         lineComponents.add(indexCommand, gotoCodeLine);
         String finalCode = joinCommands(lineComponents);
-        orderedPCode.reset(cloneInstanceWithLineReplaced(orderedPCode, line.getNumber(), finalCode));
+        orderedPCode.reset(replaceLineInCode(orderedPCode, line.getNumber(), finalCode));
 
         Logger.log("After inline GOTO, code is changed from: \n" + lineNumber + " " + lineCode + "\n to: " + lineNumber + " " + finalCode + ".");
     }
