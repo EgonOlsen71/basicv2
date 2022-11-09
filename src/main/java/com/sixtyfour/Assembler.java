@@ -271,8 +271,7 @@ public class Assembler implements ProgramExecutor {
 				raiseError("Missing line number in BASIC program: " + lcon.getFirstDelayedLabel().replace("LINE_", ""),
 						addr, cnt);
 			} else {
-				raiseError("Undefined label (maybe a naming conflict with a BASIC function?): "
-						+ lcon.getFirstDelayedLabel(), addr, cnt);
+				raiseError("Undefined label (maybe a naming conflict with a BASIC function?): " + label, addr, cnt);
 			}
 		}
 

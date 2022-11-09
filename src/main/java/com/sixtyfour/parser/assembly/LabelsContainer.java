@@ -2,6 +2,7 @@ package com.sixtyfour.parser.assembly;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -100,24 +101,32 @@ public class LabelsContainer {
 
 	/**
 	 * Returns true, if the container still has delayed labels that haven't been
-	 * applied yet.
+	 * applied yet and that aren't variable labels.
 	 * 
 	 * @return has it?
 	 */
 	public boolean hasDelayedLabels() {
-		return !delayed.isEmpty();
+		return getFirstDelayedLabel()!=null;
 	}
 
 	/**
-	 * Returns the name of the first delayed label or null if there is none.
+	 * Returns the name of the first delayed label that's not a VAR_-label or null if there is none.
 	 * 
 	 * @return the name or null
 	 */
 	public String getFirstDelayedLabel() {
+		String label = null;
 		if (!delayed.isEmpty()) {
-			return delayed.entrySet().iterator().next().getValue().getLabel();
+			Iterator<Entry<Integer, DelayedLabel>> itty = delayed.entrySet().iterator();
+			String labby = null;
+			do {
+				labby = itty.next().getValue().getLabel();
+			} while(labby.startsWith("VAR_") && itty.hasNext());
+			if (!labby.startsWith("VAR_")) {
+				label = labby;
+			}
 		}
-		return null;
+		return label;
 	}
 
 	/**
