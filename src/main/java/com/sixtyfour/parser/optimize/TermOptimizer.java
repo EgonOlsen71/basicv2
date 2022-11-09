@@ -51,9 +51,10 @@ public class TermOptimizer {
 	};
 	
 	
-	private final static Set<Double> ADDED_POWERS_OF_TWO = new HashSet<Double>() {
+	private final static Set<Double> COMBINED_POWERS_OF_TWO = new HashSet<Double>() {
 		private static final long serialVersionUID = 1L;
 		{
+			// Adds (like *20 = *16 + *4)
 			this.add(3d);
 			this.add(5d);
 			this.add(6d);
@@ -89,6 +90,23 @@ public class TermOptimizer {
 			this.add(272d);
 			this.add(288d);
 			this.add(320d);
+			
+			// Sub (like *30 = *32 - *2)
+			this.add(14d);
+			this.add(28d);
+			this.add(30d);
+			this.add(56d);
+			this.add(60d);
+			this.add(62d);
+			this.add(112d);
+			this.add(120d);
+			this.add(124d);
+			this.add(126d);
+			this.add(224d);
+			this.add(240d);
+			this.add(248d);
+			this.add(252d);
+			this.add(254d);
 		}
 	};
 	
@@ -354,7 +372,7 @@ public class TermOptimizer {
 		// for others, so it's impossible to decide which
 		// variant is generally better...so we leave it untouched...
 		if (t.getOperator().isMultiplication()) {
-			if (right.isConstant() && ADDED_POWERS_OF_TWO.contains(((Number) right.eval(machine)).doubleValue())) {
+			if (right.isConstant() && COMBINED_POWERS_OF_TWO.contains(((Number) right.eval(machine)).doubleValue())) {
 				t.setLeft(right);
 				t.setRight(left);
 				left = t.getLeft();

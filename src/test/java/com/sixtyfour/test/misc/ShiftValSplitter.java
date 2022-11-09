@@ -1,7 +1,9 @@
 package com.sixtyfour.test.misc;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class ShiftValSplitter {
 
@@ -12,6 +14,8 @@ public class ShiftValSplitter {
 			pots.add(Integer.valueOf((int) Math.pow(2, i)));
 		}
 
+		Set<Integer> used = new HashSet<>();
+		
 		for (int i = 0; i <= 320; i++) {
 			int firstShift = getNearestPot(pots, i);
 			if (firstShift >= 0) {
@@ -26,6 +30,34 @@ public class ShiftValSplitter {
 							//System.out.println(firstShift + "+" + secondShift + " - " + firstPart + "+" + secondPart
 							//		+ "=" + total);
 							System.out.println("this.add("+total+");");
+							used.add(total);
+						}
+					}
+				}
+			}
+		}
+		
+		for (int i = 0; i <= 320; i++) {
+			int firstShift = getNearestPot(pots, i);
+			if (firstShift >= 0) {
+				if (firstShift < pots.size()-1) {
+					int oldPart = pots.get(firstShift);
+					if (oldPart==i) {
+						continue;
+					}
+					firstShift++;
+					int firstPart = pots.get(firstShift);
+					int dif = firstPart - i;
+					if (dif != 0) {
+						int secondShift = getNearestPot(pots, dif);
+						if (secondShift > 0 && !used.contains(i)) {
+							int secondPart = pots.get(secondShift);
+							int total = firstPart - secondPart;
+							if (total == i) {
+								//System.out.println(firstShift + "+" + secondShift + " - " + firstPart + "+" + secondPart
+								//		+ "=" + total);
+								System.out.println("this.add("+total+");");
+							}
 						}
 					}
 				}

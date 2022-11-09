@@ -125,6 +125,11 @@ public class NativeOptimizer {
 
 		// Optimizes special cases of a multiplication by, for example, 40 (and similar muls).
 		// ...this also covers the former special case for arrays like a(16,16), which require a *17...
+		createRulesForMulAndAdd(pots);
+		createRulesForMulAndSub(pots);
+	}
+
+	private static void createRulesForMulAndAdd(List<Integer> pots) {
 		for (int i = 0; i <= 320; i++) {
 			int firstShift = getNearestPot(pots, i);
 			if (firstShift >= 0) {
@@ -153,6 +158,41 @@ public class NativeOptimizer {
 										new String[] { "MOV A,#" + firstShift + "{INTEGER}", "MOV Y,X", "SHL Y,A",
 												"ADD X,Y" }));
 
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	private static void createRulesForMulAndSub(List<Integer> pots) {
+		for (int i = 0; i <= 320; i++) {
+			int firstShift = getNearestPot(pots, i);
+			if (firstShift >= 0) {
+				if (firstShift<pots.size()-1) {
+					int oldPart = pots.get(firstShift);
+					if (oldPart==i) {
+						continue;
+					}
+					firstShift++;
+					int firstPart = pots.get(firstShift);
+					int dif = firstPart - i;
+					if (dif != 0) {
+						int secondShift = getNearestPot(pots, dif);
+						if (secondShift >= 0) {
+							int secondPart = pots.get(secondShift);
+							int total = firstPart - secondPart;
+							if (total == i) {
+								if (secondShift > 0) {
+									patterns.add(new NativePattern(new String[] { "MOV X,#" + i + "{INTEGER}", "MUL X,Y" },
+											new String[] { "MOV A,#" + firstShift + "{INTEGER}", "MOV X,Y", "SHL X,A",
+													"MOV A,#" + secondShift + "{INTEGER}", "SHL Y,A", "SUB X,Y" }));
+	
+									patterns.add(new NativePattern(new String[] { "MOV Y,#" + i + "{INTEGER}", "MUL X,Y" },
+											new String[] { "MOV A,#" + firstShift + "{INTEGER}", "MOV Y,X", "SHL X,A",
+													"MOV A,#" + secondShift + "{INTEGER}", "SHL Y,A", "SUB X,Y" }));
+								} 
 							}
 						}
 					}
@@ -208,6 +248,7 @@ public class NativeOptimizer {
 		}
 		return lastP;
 	}
+	
 
 	private static int getChecksum(List<String> code) {
 		// the optimizer has optimization that change order or commands, but not the
