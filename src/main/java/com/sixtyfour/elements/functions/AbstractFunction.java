@@ -92,7 +92,7 @@ public abstract class AbstractFunction implements Function {
 	/**
 	 * Throws a type mismatch error.
 	 * 
-	 * @param line
+	 * @param obj
 	 */
 	protected void typeMismatch(Object obj) {
 		typeMismatch(obj.toString());
@@ -101,7 +101,7 @@ public abstract class AbstractFunction implements Function {
 	/**
 	 * Throws a syntax error.
 	 * 
-	 * @param line
+	 * @param obj
 	 */
 	protected void syntaxError(Object obj) {
 		syntaxError(obj.toString());

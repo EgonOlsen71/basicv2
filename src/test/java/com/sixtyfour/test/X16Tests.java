@@ -30,17 +30,18 @@ public class X16Tests {
 		testColors();
 		testData();
 		testCharfractal();
-		testFrog();
-		testTi();
+		//* testFrog();
+		//* testTi();
 		testBalls();
 		testCards();
-		testDos();
-		testMon();
+		//* testDos();
+		//* testMon();
 		testDivide();
 		testVload();
 		testSave();
 		testLoad();
-		testGeos();
+		//* testGeos();
+
 		testBitmapfill();
 		testLine();
 		testRaytracer();
@@ -50,7 +51,8 @@ public class X16Tests {
 		testAffine();
 		testVloadTest();
 		testPeek();
-		testRamPeek();
+
+		//* testRamPeek();
 		// testBank();
 		testKoala();
 		testTeapots();
@@ -63,13 +65,13 @@ public class X16Tests {
 		testRect();
 		testChar();
 		testMouse();
-		testSignum();
+		//* testSignum();
 		testFractalLand();
 		testXtris();
 		testJoy();
 		testColor();
-		testCls();
-		testReset();
+		//* testCls();
+		//*testReset();
 		testCircles();
 		testEllipse();
 		testHashMap();

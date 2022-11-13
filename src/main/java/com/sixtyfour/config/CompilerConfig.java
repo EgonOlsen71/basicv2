@@ -67,7 +67,7 @@ public class CompilerConfig {
 		this.pcodeOptimize = pcodeOptimize;
 	}
 
-	public String isPcodeOptimize() {
+	public String pcodeOptimizeConfig() {
 		return pcodeOptimize;
 	}
 

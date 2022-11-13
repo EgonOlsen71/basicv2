@@ -17,9 +17,86 @@ public class BinaryExpressionEvaluator {
                 return BitOr(left, rightStr);
             case "INT":
                 return CastToInt(leftStr);
+            case "ABS":
+                return AbsValue(leftStr);
+            case "EQUAL":
+                return equalValue(left, right);
+            case "NOT_EQUAL":
+                return notEqualValue(left, right);
+            case "LARGER":
+                return largerValue(left, right);
+            case "SMALLER":
+                return smallerValue(left, right);
+            case "LARGER_OR_EQUAL":
+                return largerOrEqualValue(left, right);
+            case "SMALLER_OR_EQUAL":
+                return smallerOrEqualValue(left, right);
             default:
                 throw new RuntimeException("It wasn't implemented: " + operator);
         }
+    }
+
+    private static Object notEqualValue(Object left, Object right) {
+        if (left instanceof Integer) {
+            int leftInt = (Integer) left;
+            int rightInt = (Integer) right;
+            return mapBool(leftInt != rightInt);
+        }
+        return null;
+    }
+    private static Object equalValue(Object left, Object right) {
+        if (left instanceof Integer) {
+            int leftInt = (Integer) left;
+            int rightInt = (Integer) right;
+            return mapBool(leftInt == rightInt);
+        }
+        return null;
+    }
+
+    private static Object smallerOrEqualValue(Object left, Object right) {
+        if (left instanceof Integer) {
+            int leftInt = (Integer) left;
+            int rightInt = (Integer) right;
+            return mapBool(leftInt <= rightInt);
+        }
+        return null;
+    }
+
+    private static Object smallerValue(Object left, Object right) {
+        if (left instanceof Integer) {
+            int leftInt = (Integer) left;
+            int rightInt = (Integer) right;
+            return mapBool(leftInt < rightInt);
+        }
+        return null;
+    }
+
+    private static Object largerOrEqualValue(Object left, Object right) {
+        if (left instanceof Integer) {
+            int leftInt = (Integer) left;
+            int rightInt = (Integer) right;
+            return mapBool(leftInt >= rightInt);
+        }
+        return null;
+    }
+
+
+    private static Object largerValue(Object left, Object right) {
+        if (left instanceof Integer) {
+            int leftInt = (Integer) left;
+            int rightInt = (Integer) right;
+            return mapBool(leftInt > rightInt);
+        }
+        return null;
+    }
+
+    static int mapBool(boolean b) {
+        return b ? 1 : 0;
+    }
+
+    private static Object AbsValue(String leftStr) {
+        float value = Float.parseFloat(leftStr);
+        return Math.abs(value);
     }
 
     private static Object Multiply(String leftStr, String rightStr) {
@@ -64,6 +141,6 @@ public class BinaryExpressionEvaluator {
     }
 
     private static Object Divide(String leftStr, String rightStr) {
-        return Float.parseFloat(leftStr) /Float.parseFloat(rightStr);
+        return Float.parseFloat(leftStr) / Float.parseFloat(rightStr);
     }
 }

@@ -5,34 +5,24 @@ import com.sixtyfour.cbmnative.crossoptimizer.common.OrderedPCode;
 import com.sixtyfour.cbmnative.crossoptimizer.common.PCodeUtilities;
 import com.sixtyfour.cbmnative.crossoptimizer.passes.HighLevelOptimizer;
 import com.sixtyfour.elements.Variable;
-import com.sixtyfour.elements.commands.Command;
-import com.sixtyfour.elements.commands.Let;
-import com.sixtyfour.elements.commands.Poke;
+import com.sixtyfour.elements.commands.*;
+import com.sixtyfour.elements.functions.Str;
 import com.sixtyfour.parser.Line;
 import com.sixtyfour.parser.Term;
+import com.sixtyfour.parser.logic.LogicTerm;
 
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import static com.sixtyfour.cbmnative.crossoptimizer.common.CommandsRowSplitter.replaceComponent;
-import static com.sixtyfour.cbmnative.crossoptimizer.common.CommandsRowSplitter.splitCommandIntoComponents;
+import static com.sixtyfour.cbmnative.crossoptimizer.common.CommandsRowSplitter.*;
 import static com.sixtyfour.cbmnative.crossoptimizer.passes.lineconstantpropagator.ConstantEvaluator.simplifyTerm;
 
 public class PCodeConstantPropagator implements HighLevelOptimizer {
     static Object getTermConstant(Term evalTerm, Map<String, Object> lineConstants) {
-
-
         Object constant = simplifyTerm(evalTerm, lineConstants);
-        if (constant != null) {
-            return constant;
-        }
-        Object simplified = simplifyTerm(evalTerm, lineConstants);
-        if (simplified == null) {
-            return null;
-        }
-        return simplified;
+        return constant;
     }
 
     @Override
@@ -52,6 +42,7 @@ public class PCodeConstantPropagator implements HighLevelOptimizer {
         List<String> components = splitCommandIntoComponents(line.getLine());
         for (int i = 0; i < commands.size(); i++) {
             Command c = commands.get(i);
+            String potentiallyFixableCommand = components.get(i);
             switch (c.getName()) {
                 case "LET": {
                     String newLine = updateLetCommand((Let) c, lineConstants, line, i);
@@ -64,11 +55,22 @@ public class PCodeConstantPropagator implements HighLevelOptimizer {
                 }
                 case "REM":
                     continue;
+                case "GOTO":
+                    continue;
                 case "NEXT":
                     return false;
                 case "FOR":
                     return false;
-                case "IF":
+                case "IF": {
+                    String newLine = updateIfCommand((If) c, lineConstants, line, i);
+                    if (newLine == null) {
+                        return false;
+                    }
+                    OrderedPCode newCode = PCodeUtilities.replaceLineInCode(orderedPCode, line.getNumber(), newLine);
+                    orderedPCode.reset(newCode);
+                    return true;
+                }
+                case "GOSUB":
                     return false;
                 case "POKE": {
                     if (lineConstants.isEmpty()) {
@@ -87,21 +89,53 @@ public class PCodeConstantPropagator implements HighLevelOptimizer {
                         continue;
                     }
 
-                    Logger.log("Unhandled command: " + components.get(i));
-                    break;
+                    Logger.log("Unhandled command: " + potentiallyFixableCommand);
+                    return false;
             }
         }
 
         return false;
     }
 
+    private String updateIfCommand(If c, SortedMap<String, Object> lineConstants, Line line, int i) {
+        if (lineConstants.isEmpty()) {
+            return null;
+        }
+        var resultIfExpression = simplifyTerm(c.getLogicTerm(), lineConstants);
+        if (resultIfExpression == null) {
+            return null;
+        }
+        List<String> lineComponents = splitCommandIntoComponents(line.getLine());
+        int boolResult = (Integer) resultIfExpression;
+        Logger.log("Simplified line "+line.getLine());
+        if (boolResult==0){
+            while (lineComponents.size()>i){
+                lineComponents.remove(i);
+            }
+            String newLineFalse = joinCommands(lineComponents);
+            return newLineFalse;
+        } else {
+            //here IF is always true
+
+            //then we check if next line is a GOTO
+            Command nextCommand = line.getCommands().get(i + 1);
+            boolean nextIsGoto = nextCommand.getName().equals("GOTO");
+            if (nextIsGoto){
+                Goto nextGoto = (Goto) nextCommand;
+                lineComponents.set(i, "GOTO "+nextGoto.getTargetLineNumber());
+            }
+            String newLineTrue = joinCommands(lineComponents);
+            return newLineTrue;
+        }
+    }
+
     private String updatePokeCommand(Poke poke, SortedMap<String, Object> lineConstants, Line line, int indexCommand) {
         var oldPoke = splitCommandIntoComponents(line.getLine()).get(indexCommand).trim();
         Term pokeTerm = poke.getTerm();
-        if (!(pokeTerm.getLeft() instanceof Term)){
+        if (!(pokeTerm.getLeft() instanceof Term)) {
             return null;
         }
-        if (!(pokeTerm.getRight() instanceof Term)){
+        if (!(pokeTerm.getRight() instanceof Term)) {
             return null;
         }
         var addr = simplifyTerm((Term) pokeTerm.getLeft(), lineConstants);

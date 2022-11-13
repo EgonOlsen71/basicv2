@@ -18,32 +18,32 @@ public class ProgramTest {
 	 * @param args the arguments
 	 */
 	public static void main(String[] args) {
-//		testArray();
-//		testPrime();
+		testArray();
+		testPrime();
 //		testJavaPrime();
 //		testPrime();
 //		for (int i = 0; i < 10; i++) {
 //			testPrime2();
 //		}
-		// testConditions();
-		// testVarious();
-		// testGosubReturn();
-		// testGosub();
-		// testMenu();
-		// testBeer();
-		// testRun();
-		// testInput();
-		// testData();
-		// testAdventure();
-		// testCalc();
-		// testStuff();
-		// testCalendar();
-		// testOtherPrime();
-		// testBio();
-		// testIf();
-		// testBuggedOn64();
-		// testCharFractal();
-		// testEvalComp();
+		testConditions();
+		testVarious();
+		testGosubReturn();
+		testGosub();
+		testMenu();
+		testBeer();
+		testRun();
+		testInput();
+		testData();
+		testAdventure();
+		testCalc();
+		testStuff();
+		testCalendar();
+		testOtherPrime();
+		testBio();
+		testIf();
+		testBuggedOn64();
+		testCharFractal();
+		testEvalComp();
 		testIfNot();
 		testGo_To();
 		testPrintNot();

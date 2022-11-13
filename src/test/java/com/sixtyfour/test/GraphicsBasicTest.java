@@ -21,7 +21,8 @@ public class GraphicsBasicTest {
 		 
 		  testGget(); testCopy(); testGetShape(); testSprites();
 		 */
-		testFractalLand();
+		testFractal();
+		//testFractalLand();
 	}
 
 	private static void testFractalLand() {

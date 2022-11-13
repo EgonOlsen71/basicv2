@@ -243,9 +243,8 @@ public class NativeCompiler {
 			DeadStoreEliminator.eliminateDeadStores(config, basic);
 
 		}
-		if (config.isPcodeOptimize()) {
-			pCode.optimize();
-		}
+		pCode.optimize(config.pcodeOptimizeConfig());
+
 
 		basic.modifyDelayLoops(config);
 		TermOptimizer.handleConstantConditions(config, machine, basic);

@@ -103,7 +103,7 @@ public class MoSpeedCL {
 		cfg.setConstantFolding(getOption("constfolding", cmds));
 		cfg.setConstantPropagation(getOption("constprop", cmds));
 		cfg.setDeadCodeElimination(getOptionIntDefault("deadcodeopt", cmds, false));
-		cfg.setPcodeOptimizations(false /* getOption("pcodeopt", cmds) */);
+		cfg.setPcodeOptimizations(getOptionStringDefault("pcodeopt", cmds, "off"));
 		cfg.setDeadStoreElimination(getOption("deadstoreopt", cmds));
 		cfg.setDeadStoreEliminationOfStrings(getOption("deadstoreoptstr", cmds));
 		cfg.setIntermediateLanguageOptimizations(getOption("ilangopt", cmds));
@@ -619,6 +619,13 @@ public class MoSpeedCL {
 		return getOptionIntDefault(option, options, true);
 	}
 
+	public static String getOptionStringDefault(String option, Map<String, String> options, String def) {
+		option = option.toLowerCase(Locale.ENGLISH);
+		if (options.containsKey(option)) {
+			return options.get(option);
+		}
+		return def;
+	}
 	private static boolean getOptionIntDefault(String option, Map<String, String> options, boolean def) {
 		option = option.toLowerCase(Locale.ENGLISH);
 		if (options.containsKey(option)) {
