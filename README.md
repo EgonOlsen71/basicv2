@@ -12,6 +12,8 @@ Or you can use the native cross compiler to compile it for the real C64, VIC20 o
 
 The native compiler is documented in this wiki as well: https://www.c64-wiki.com/wiki/MOSpeed
 
+There's also an online version available: https://jpct.de/mospeed
+
 In addition, it offers a symbolic assembler that compiles assembly code into actual 6502 machine code. To execute these programs, it comes with a 6502 cpu emulation.
 
 The sources come in a basic Maven project structure as an Eclipse project. It has no dependencies to any other Java libraries. It's a stand-alone thing.
