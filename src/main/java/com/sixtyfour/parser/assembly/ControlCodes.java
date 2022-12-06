@@ -133,7 +133,7 @@ public class ControlCodes {
 				add(i, "shift-" + c, "sh-" + c);
 			}
 
-			for (int i = 0; i < 255; i++) {
+			for (int i = 0; i < 256; i++) {
 				add(i, Integer.toString(i));
 			}
 
