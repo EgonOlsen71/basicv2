@@ -57,7 +57,7 @@ public class MoSpeedCL {
 		List<MemoryHole> holes = new ArrayList<>();
 		String srcFile = null;
 		for (String arg : args) {
-			if (arg.startsWith("/") || arg.startsWith("-")) {
+			if ((arg.startsWith("/") || arg.startsWith("-")) && !(new File(arg).isFile())) {
 				arg = arg.substring(1);
 				String[] parts = arg.split("=");
 				cmds.put(parts[0].toLowerCase(Locale.ENGLISH), parts.length > 1 ? parts[1] : null);
@@ -67,7 +67,7 @@ public class MoSpeedCL {
 				}
 			}
 		}
-
+		
 		if (cmds.containsKey("?")) {
 			printOutHelp();
 			exit(1);
