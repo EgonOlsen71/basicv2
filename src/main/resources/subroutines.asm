@@ -744,8 +744,11 @@ DOASC		INY
 			JSR INTFAC
 			JMP FACXREG
 ;###################################
+CHRXREG     JSR XREGFAC
+			JMP CHRFAC2
+;###################################
 CHR			JSR YREGFAC
-CHRFAC		JSR FACWORD
+CHRFAC2		JSR FACWORD
 			TYA
 			TAX
 			LDA STRBUFP
