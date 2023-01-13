@@ -861,6 +861,24 @@ public class IntOptimizer {
 						return combine(pattern, rep);
 					}
 				}));
+		
+		// POKE CONST, CONST (calculated)
+		intPatterns.add(new IntPattern(true, "Optimized code for POKE",
+				new String[] { "LDA #<{CONST0}", "LDY #>{CONST0}", "JSR REALFAC", "JSR FACWORD", "STY {*}", "NOP"},
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						String consty = cleaned.get(0);
+						consty = consty.substring(consty.indexOf("<") + 1).trim();
+						Number num = const2Value.get(consty);
+						int numd = num.intValue();
+						List<String> rep = new ArrayList<>();
+						rep.add("LDY #" + (numd & 0xff));
+						rep.add(cleaned.get(4));
+						return combine(pattern, rep);
+					}
+				}));
 
 		// f%(l%)=f%(r%)...still semi-optimal, because the intermediate result is stored
 		// as float, but anyway...
