@@ -665,6 +665,7 @@ public class IntOptimizer {
 							boolean skip = false;
 
 							// Finally replace the performance heavy section with something much simpler...
+							boolean firstLoad = true;
 							for (String line : bet) {
 								cnt++;
 								if (cnt < 3) {
@@ -679,8 +680,13 @@ public class IntOptimizer {
 								}
 								if (line.equals("JSR CMPFAC")) {
 									skip = false;
-									rep.add("LDA #" + block);
-									rep.add("CMP TMP_ZP");
+									if (firstLoad) {
+										rep.add("LDX #" + block);
+										firstLoad=false;
+									} else {
+										rep.add("INX");
+									}
+									rep.add("CPX TMP_ZP");
 								}
 							}
 							return combine(pattern, rep);
