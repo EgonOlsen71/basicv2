@@ -111,6 +111,7 @@ public class MoSpeedCL {
 		cfg.setOptimizeConstants(getOption("constopt", cmds));
 		cfg.setOptimizedLinker(getOption("smartlinker", cmds));
 		cfg.setFloatOptimizations(getOptionIntDefault("floatopt", cmds, false));
+		cfg.setPrintSizeOptimization(getOptionIntDefault("printopt", cmds, false));
 		cfg.setIntOptimizations(getOption("intopt", cmds));
 		cfg.setSymbolTable(cmds.get("symboltable"));
 		cfg.setAggressiveFloatOptimizations(getOption("xfloatopt", cmds));

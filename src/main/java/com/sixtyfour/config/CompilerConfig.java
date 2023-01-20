@@ -30,6 +30,7 @@ public class CompilerConfig {
 	private boolean enhancedInstructionSet = false;
 	private boolean deadCodeElimination = false;
 	private boolean floatOptimizations = false;
+	private boolean printSizeOptimization = false;
 	private boolean boostMode = false;
 	private boolean bigRam = false;
 	private boolean inlineAssembly = false;
@@ -47,6 +48,14 @@ public class CompilerConfig {
 		//
 	}
 
+	public boolean isPrintSizeOptimization() {
+		return printSizeOptimization;
+	}
+
+	public void setPrintSizeOptimization(boolean printSizeOptimization) {
+		this.printSizeOptimization = printSizeOptimization;
+	}
+	
 	public boolean isConstantPropagation() {
 		return constantPropagation;
 	}

@@ -23,6 +23,7 @@ import com.sixtyfour.parser.optimize.ConstantFolder;
 import com.sixtyfour.parser.optimize.ConstantPropagator;
 import com.sixtyfour.parser.optimize.DeadCodeChecker;
 import com.sixtyfour.parser.optimize.DeadStoreEliminator;
+import com.sixtyfour.parser.optimize.StringOptimizer;
 import com.sixtyfour.parser.optimize.TermOptimizer;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.CompilerException;
@@ -239,6 +240,10 @@ public class NativeCompiler {
 			// folding
 			// will take care of the unused expressions later anyway.
 			ConstantPropagator.propagateConstants(config, machine);
+			
+			// test
+			StringOptimizer.optimizeStrings(config, machine);
+			
 			ConstantFolder.foldConstants(config, machine);
 			DeadStoreEliminator.eliminateDeadStores(config, basic);
 

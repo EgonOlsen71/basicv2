@@ -110,6 +110,54 @@ public class Print extends AbstractCommand {
 		return ret;
 	}
 
+	
+	/**
+	 * Modifies the strings in a PRINT
+	 * 
+	 * @param config
+	 * @param machine
+	 * @param old
+	 * @param newy
+	 * @param oldPos
+	 */
+	public int update(CompilerConfig config, Machine machine, String old, String newy, String leftOver, int oldPos) {
+		
+		old = fix(old);
+		newy = fix(newy);
+		leftOver = fix(leftOver);
+		
+		PrintPart part = parts.get(oldPos);
+		char oldDel = part.delimiter;
+		part.part = old;
+		part.delimiter=';';
+		part.term = Parser.getTerm(config, old, machine, false, true, true);
+		
+		int ret = 0;
+		if (newy!=null) {
+			part = new PrintPart(newy, oldDel);
+			part.term = Parser.getTerm(config, newy, machine, false, true, true);
+			if (oldPos+1>parts.size()) {
+				parts.add(part);
+			} else {
+				parts.add(oldPos+1, part);
+			}
+			ret = 1;
+		}
+		
+		if (leftOver!=null && !leftOver.isEmpty()) {
+			part.delimiter = ';';
+			part = new PrintPart(newy, oldDel);
+			part.term = Parser.getTerm(config, leftOver, machine, false, true, true);
+			if (oldPos+2>parts.size()) {
+				parts.add(part);
+			} else {
+				parts.add(oldPos+2, part);
+			}
+			ret=2;
+		}
+		return ret;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -534,4 +582,25 @@ public class Print extends AbstractCommand {
 		return txt.replace("\n", "").replace("\r", "");
 	}
 
+	
+	/**
+	 * Ensures the a string starts and ends with "
+	 * @param txt
+	 * @return
+	 */
+	private String fix(String txt) {
+		if (txt==null) {
+			return null;
+		}
+		if (txt.isBlank()) {
+			return "";
+		}
+		if (!txt.startsWith("\"")) {
+			txt = "\""+txt;
+		}
+		if (!txt.endsWith("\"")) {
+			txt+="\"";
+		}
+		return txt;
+	}
 }
