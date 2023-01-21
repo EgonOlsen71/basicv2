@@ -143,7 +143,7 @@ public class StringOptimizer {
 					for (Term term:terms) {
 						if (term!=null) {
 							String str = term.eval(machine).toString();
-							if (str.contains(match.words)) {
+							if (str.contains(match.words) && !str.equals(match.words)) {
 								int pos = str.indexOf(match.words);
 								String old = str.substring(0, pos);
 								String newy = match.words;
