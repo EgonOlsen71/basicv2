@@ -26,8 +26,8 @@ import com.sixtyfour.system.Machine;
  */
 public class StringOptimizer {
 
-	private final static int MIN_STRING_SIZE = 8;
-	private final static int MIN_SUB_SIZE = 4;
+	private final static int MIN_STRING_SIZE = 12;
+	private final static int MIN_SUB_SIZE = 8;
 	private final static int MIN_SAVING = 5;
 	
 	/**
@@ -69,40 +69,57 @@ public class StringOptimizer {
 			}
 			Map<String, Match> found = new HashMap<>();
 			for (String txt:strings) {
+				boolean addOne = false;
 				String sub = txt;
+				String org = txt;
+				String searchSub = removeFluff(sub);
 				boolean fromRight = true;
 				int pos = sub.length();
 				do {
-					if (fromRight) {
-						pos = sub.lastIndexOf(" ", pos);
-					} else {
-						pos = sub.indexOf(" ", pos);
-					}
-					if (pos!=-1) {
-						sub = fromRight?sub.substring(0, pos):sub.substring(pos+1);
-						if (!found.containsKey(sub)) {
-							for (String str:strings) {
-								if (!str.equals(txt)) {
-									if (str.contains(sub)) {
+					do {
+						if (fromRight) {
+							pos = searchSub.lastIndexOf(" ", pos);
+						} else {
+							pos = searchSub.indexOf(" ", pos);
+						}
+						if (pos!=-1) {
+							sub = fromRight?sub.substring(0, pos):sub.substring(pos+1);
+							searchSub = removeFluff(sub);
+							if (!found.containsKey(sub)) {
+								for (String str:strings) {
+									if (!str.equals(org) && str.contains(sub)) {
 										Match match = found.get(sub);
 										if (match==null) {
-											match = new Match(sub);
+											match = new Match(sub, addOne);
 											found.put(sub, match);
 										}
 										match.inc();
-									}
+									} 
 								}
 							}
-						}
-					} else {
-						if (fromRight) {
-							fromRight=false;
-							sub = txt;
-							pos = 0;
 						} else {
-							sub = null;
+							if (fromRight) {
+								fromRight=false;
+								sub = txt;
+								searchSub = removeFluff(sub);
+								pos = 0;
+							} else {
+								sub = null;
+							}
 						}
+					} while (sub!=null && sub.length()>MIN_SUB_SIZE);
+					pos = txt.indexOf(" ");
+					if (pos==-1) {
+						sub=null;
+					} else {
+						sub = txt.substring(pos+1);
+						txt = sub;
+						searchSub = removeFluff(sub);
+						fromRight=true;
+						pos = sub.length();
+						addOne = true;
 					}
+					
 				} while (sub!=null && sub.length()>MIN_SUB_SIZE);
 			}
 			
@@ -129,15 +146,11 @@ public class StringOptimizer {
 			}
 			matches.removeAll(toRemove);
 			
-			Set<Print> used = new HashSet<>();
 			int opti=0;
 			
 			for (Match match:matches) {
 				//System.out.println("["+match+"]");
 				for (Print print:prints) {
-					if (used.contains(print)) {
-						continue;
-					}
 					List<Term> terms = print.getAllTerms();
 					int idx=0;
 					for (Term term:terms) {
@@ -148,18 +161,17 @@ public class StringOptimizer {
 								String old = str.substring(0, pos);
 								String newy = match.words;
 								String leftOver = null;
-								if ((old + newy).length()<str.length()) {
+								if ((old + newy).length() < str.length()) {
 									leftOver = str.substring(pos + match.words.length());
 								}
 								if (old.isBlank()) {
 									old = newy;
 									newy = leftOver;
-									leftOver=null;
+									leftOver = null;
 								}
 								idx+=print.update(config, machine, old, newy, leftOver, idx);
 								opti++;
-								used.add(print);
-							}
+							} 
 						}
 					}
 				}
@@ -173,13 +185,19 @@ public class StringOptimizer {
 		
 	}
 	
+	private static String removeFluff(String txt) {
+		return txt.replace('.', ' ').replace(',', ' ').replace(';', ' ').replace('!', ' ').replace('?', ' ');
+	}
+	
 	private static class Match {
 		
 		String words;
 		int cnt=0;
+		boolean addOne;
 		
-		public Match(String words) {
+		public Match(String words, boolean addOne) {
 			this.words = words;
+			this.addOne = addOne;
 		}
 		
 		public void inc() {
@@ -187,7 +205,7 @@ public class StringOptimizer {
 		}
 		
 		public int getWeight() {
-			return (words.length()-11)*(cnt-1);
+			return (words.length()-11)*(cnt-1)-(addOne?10:0);
 		}
 		
 		 @Override
