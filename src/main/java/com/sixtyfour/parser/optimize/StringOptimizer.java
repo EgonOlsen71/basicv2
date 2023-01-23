@@ -73,17 +73,12 @@ public class StringOptimizer {
 				String sub = txt;
 				String org = txt;
 				String searchSub = removeFluff(sub);
-				boolean fromRight = true;
 				int pos = sub.length();
 				do {
 					do {
-						if (fromRight) {
-							pos = searchSub.lastIndexOf(" ", pos);
-						} else {
-							pos = searchSub.indexOf(" ", pos);
-						}
+						pos = searchSub.lastIndexOf(" ", pos);
 						if (pos!=-1) {
-							sub = fromRight?sub.substring(0, pos):sub.substring(pos+1);
+							sub = sub.substring(0, pos);
 							searchSub = removeFluff(sub);
 							if (!found.containsKey(sub)) {
 								for (String str:strings) {
@@ -98,16 +93,9 @@ public class StringOptimizer {
 								}
 							}
 						} else {
-							if (fromRight) {
-								fromRight=false;
-								sub = txt;
-								searchSub = removeFluff(sub);
-								pos = 0;
-							} else {
-								sub = null;
-							}
+							sub = null;
 						}
-					} while (sub!=null && sub.length()>MIN_SUB_SIZE);
+					} while (sub != null && sub.length()>MIN_SUB_SIZE);
 					pos = txt.indexOf(" ");
 					if (pos==-1) {
 						sub=null;
@@ -115,12 +103,11 @@ public class StringOptimizer {
 						sub = txt.substring(pos+1);
 						txt = sub;
 						searchSub = removeFluff(sub);
-						fromRight=true;
 						pos = sub.length();
 						addOne = true;
 					}
 					
-				} while (sub!=null && sub.length()>MIN_SUB_SIZE);
+				} while (sub != null && sub.length()>MIN_SUB_SIZE);
 			}
 			
 			List<Match> matches = new ArrayList<>(found.values());
