@@ -419,6 +419,9 @@ function COMPACTMAX {
 function SYSTEMCALLDYN {
 }
 
+function APPENDSYSCHAR {
+}
+
 function SETUPMULTIPARS {
 }
 

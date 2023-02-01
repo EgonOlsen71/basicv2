@@ -571,6 +571,10 @@ this.SYSTEMCALLDYN = function() {
 	// Nothing to do in this context
 }
 
+this.APPENDSYSCHAR = function() {
+	// Nothing to do in this context
+}
+
 this.SETUPMULTIPARS = function() {
 	// Nothing to do in this context
 }

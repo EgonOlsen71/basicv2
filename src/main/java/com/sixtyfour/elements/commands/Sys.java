@@ -23,6 +23,7 @@ public class Sys extends AbstractCommand {
 	private Atom addr;
 	private List<Atom> vals;
 	private boolean noFirstSeparator = false;
+	private Character endChar = null;
 
 	/**
 	 * Instantiates a new sys.
@@ -48,7 +49,15 @@ public class Sys extends AbstractCommand {
 		 * linePart.substring(0, pos) + "," + linePart.substring(pos); noFirstSeparator
 		 * = true; } } }
 		 */
-		// Handle things like SYS 57921"Blah",8,0 or 57921A$,8,0 following...
+		
+		
+		// Handle ; or , at the end of the parameter list indicating a "PRINT" call
+		if (linePart.endsWith(";") || linePart.endsWith(",")) {
+			endChar = linePart.charAt(linePart.length()-1);
+			linePart = linePart.substring(0,  linePart.length()-1);
+		}
+		
+			// Handle things like SYS 57921"Blah",8,0 or 57921A$,8,0...
 		if (linePart.length() > 6) {
 			char c = linePart.charAt(4);
 			if (Character.isDigit(c)) {
@@ -172,6 +181,13 @@ public class Sys extends AbstractCommand {
 			}
 			before.addAll(part);
 		}
+		
+		if (endChar!=null) {
+			int charI=endChar==';'?59:44;
+			before.add("MOV A,#"+charI+"{INTEGER}");
+			before.add("JSR APPENDSYSCHAR");
+		}
+		
 		before.add("JSR ADDCOLON");
 		after.add("JSR PULLDOWNMULTIPARS");
 

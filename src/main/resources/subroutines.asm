@@ -4224,6 +4224,11 @@ SETUPMULTIPARS
 			STA BASICTEXTP
 			RTS
 ;###################################
+APPENDSYSCHAR
+			JSR BASICTEXTINIT
+			LDA A_REG
+			JMP ADDGENERIC
+;###################################
 COPYSTRINGPAR
 			JSR ADDKOMMA
 COPYSTRINGPARNK
