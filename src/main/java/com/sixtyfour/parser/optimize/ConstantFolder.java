@@ -85,7 +85,9 @@ public class ConstantFolder {
 					// it cause things like MID$("hello",i,1) to fail...no idea, why ATM...I'll leave this to future me to figure it out...
 					/*
 					if (functy.isDeterministic() && !functy.isExcluded() && finalTerm.getRight().isConstant()) {
+						System.out.println("1: "+finalTerm+"/"+finalTerm.isConstant()+"/"+finalTerm.getLeft().getClass()+" - "+finalTerm.getRight());
 						setConstant(finalTerm, machine, left);
+						System.out.println("2: "+finalTerm+"/"+finalTerm.isConstant()+"/"+finalTerm.getLeft().getClass()+" - "+finalTerm.getRight());
 					}
 					*/
 				}
