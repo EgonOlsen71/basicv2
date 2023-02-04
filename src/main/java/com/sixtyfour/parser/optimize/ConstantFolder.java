@@ -64,12 +64,12 @@ public class ConstantFolder {
 			Atom right = finalTerm.getRight();
 			Operator op = finalTerm.getOperator();
 
-			// System.out.println("1: "+finalTerm+"/"+finalTerm.isConstant());
+			// System.out.println("1: "+finalTerm+"/"+finalTerm.isConstant()+"/"+finalTerm.getLeft().getClass());
 
 			if (op.isNop()) {
 				if (left.isConstant()) {
 					setConstant(finalTerm, machine, left);
-					// System.out.println("2: "+finalTerm+"/"+finalTerm.isConstant());
+					//System.out.println("2: "+finalTerm+"/"+finalTerm.isConstant());
 				}
 				// Make sure that stuff like PEEK(<Constant>+<Constant>) is handled properly
 				// If there are actual left AND right functions, this will be handled
@@ -78,7 +78,16 @@ public class ConstantFolder {
 				// part
 				// below, but who wants to do that....?
 				if (left instanceof Function) {
-					((Function) left).setTerm(foldConstants(config, ((Function) left).getTerm(), machine));
+					Function functy = ((Function) left);
+					functy.setTerm(foldConstants(config, ((Function) left).getTerm(), machine));
+					
+					// This was supposed to fix the missing propagation of stuff like LEFT$("hello",2) and while it does so,
+					// it cause things like MID$("hello",i,1) to fail...no idea, why ATM...I'll leave this to future me to figure it out...
+					/*
+					if (functy.isDeterministic() && !functy.isExcluded() && finalTerm.getRight().isConstant()) {
+						setConstant(finalTerm, machine, left);
+					}
+					*/
 				}
 				return finalTerm;
 			}
@@ -88,6 +97,8 @@ public class ConstantFolder {
 				// This mustn't trigger for terms that are actually parameter lists...
 				setConstant(finalTerm, machine, left);
 			} else {
+				//System.out.println(left.getClass()+"/"+left+"/"+left.isConstant());
+				
 				if (left.isTerm()) {
 					finalTerm.setLeft(foldConstants(config, (Term) left, machine));
 				}
@@ -131,6 +142,7 @@ public class ConstantFolder {
 	private static void setConstant(Term finalTerm, Machine machine, Atom left) {
 		Object val = finalTerm.eval(machine);
 		Constant<?> conty = createConstant(left, val);
+		//System.out.println("Conty: "+finalTerm+"/"+conty);
 		if (conty != null) {
 			finalTerm.setOperator(Operator.NOP);
 			finalTerm.setLeft(conty);
