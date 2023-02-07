@@ -34,6 +34,7 @@ public class CompilerConfig {
 	private boolean boostMode = false;
 	private boolean bigRam = false;
 	private boolean inlineAssembly = false;
+	private boolean arrayOptimizations = false;
 
 	private String symbolTable = null;
 	private int threads = -1;
@@ -46,6 +47,14 @@ public class CompilerConfig {
 
 	public CompilerConfig() {
 		//
+	}
+	
+	public boolean isArrayOptimizations() {
+		return arrayOptimizations;
+	}
+
+	public void setArrayOptimizations(boolean arrayOptimizations) {
+		this.arrayOptimizations = arrayOptimizations;
 	}
 
 	public boolean isPrintSizeOptimization() {

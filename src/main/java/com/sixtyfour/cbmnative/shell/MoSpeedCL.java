@@ -112,6 +112,7 @@ public class MoSpeedCL {
 		cfg.setOptimizedLinker(getOption("smartlinker", cmds));
 		cfg.setFloatOptimizations(getOptionIntDefault("floatopt", cmds, false));
 		cfg.setPrintSizeOptimization(getOptionIntDefault("printopt", cmds, false));
+		cfg.setArrayOptimizations(getOptionIntDefault("arrayopt", cmds, false));
 		cfg.setIntOptimizations(getOption("intopt", cmds));
 		cfg.setSymbolTable(cmds.get("symboltable"));
 		cfg.setAggressiveFloatOptimizations(getOption("xfloatopt", cmds));
@@ -720,6 +721,10 @@ public class MoSpeedCL {
 				"/compression=true|false - *Experimental* - If true, the compiled program will be compressed to achieve a smaller file size. The compressed file will be saved in addition to the normal binary. Compression isn't always possible. In that case, no compressed file will be written.");
 		System.out.println(
 				"/inlineasm=true|false - *Experimental* - If true, inline assembly code can be used, marked by REM [...;...;...]. Default is false.");
+		System.out.println(
+				"/printopt=true|false - *Experimental* - If true, the compiler tries to rearrange texts in PRINT statements to save memory at the expense of speed. Default is false.");
+		System.out.println(
+				"/inlineasm=true|false - *Experimental* - If true, the compiler tries optimize access speed of multi-dimensional arrays at the expense of memory usage. Default is false.");
 
 		
 		System.out.println();

@@ -19,6 +19,7 @@ import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Line;
 import com.sixtyfour.parser.Term;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
+import com.sixtyfour.parser.optimize.ArrayOptimizer;
 import com.sixtyfour.parser.optimize.ConstantFolder;
 import com.sixtyfour.parser.optimize.ConstantPropagator;
 import com.sixtyfour.parser.optimize.DeadCodeChecker;
@@ -248,6 +249,11 @@ public class NativeCompiler {
 			DeadStoreEliminator.eliminateDeadStores(config, basic);
 
 		}
+		
+		if (config.isArrayOptimizations()) {
+			ArrayOptimizer.optimizeArrays(machine);
+		}
+		
 		if (config.isPcodeOptimize()) {
 			pCode.optimize();
 		}

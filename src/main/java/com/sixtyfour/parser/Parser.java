@@ -17,6 +17,7 @@ import com.sixtyfour.elements.functions.Function;
 import com.sixtyfour.elements.functions.FunctionList;
 import com.sixtyfour.parser.logic.LogicParser;
 import com.sixtyfour.parser.logic.LogicTerm;
+import com.sixtyfour.parser.optimize.ArrayOptimizer;
 import com.sixtyfour.parser.optimize.ConstantFolder;
 import com.sixtyfour.parser.optimize.TermOptimizer;
 import com.sixtyfour.system.Machine;
@@ -551,7 +552,7 @@ public class Parser {
 			m *= dimensions[i] + 1;
 		}
 
-		String newTerm = TermOptimizer.optimizeLinearIndexTerm(sb.toString());
+		String newTerm = ArrayOptimizer.optimizeLinearIndexTerm(sb.toString());
 		Term t = Parser.getTermWithoutChecks(config, newTerm, machine, false, true);
 		t.setSealed(true);
 

@@ -88,6 +88,15 @@ public class Dim extends AbstractCommand {
 		return null;
 	}
 
+	/**
+	 * 
+	 * @param var
+	 * @return
+	 */
+	public List<Atom> getTerms(Variable var) {
+		return terms.get(var.getName());
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
