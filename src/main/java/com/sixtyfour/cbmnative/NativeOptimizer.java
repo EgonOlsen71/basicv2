@@ -2,7 +2,9 @@ package com.sixtyfour.cbmnative;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.sixtyfour.Logger;
 import com.sixtyfour.config.CompilerConfig;
@@ -125,11 +127,11 @@ public class NativeOptimizer {
 
 		// Optimizes special cases of a multiplication by, for example, 40 (and similar muls).
 		// ...this also covers the former special case for arrays like a(16,16), which require a *17...
-		createRulesForMulAndAdd(pots);
-		createRulesForMulAndSub(pots);
+		createRulesForMulAndAddSub(pots);
 	}
 
-	private static void createRulesForMulAndAdd(List<Integer> pots) {
+	private static void createRulesForMulAndAddSub(List<Integer> pots) {
+		Set<Integer> covered = new HashSet<>(); // we have to make sure to cover only one way (like 48=32+16 and 64-16)
 		for (int i = 0; i <= 320; i++) {
 			int firstShift = getNearestPot(pots, i);
 			if (firstShift >= 0) {
@@ -141,14 +143,15 @@ public class NativeOptimizer {
 						int secondPart = pots.get(secondShift);
 						int total = firstPart + secondPart;
 						if (total == i) {
+							covered.add(total);
 							if (secondShift > 0) {
-								patterns.add(new NativePattern(new String[] { "MOV X,#" + i + "{INTEGER}", "MUL X,Y" },
+										patterns.add(new NativePattern(new String[] { "MOV X,#" + i + "{INTEGER}", "MUL X,Y" },
 										new String[] { "MOV A,#" + firstShift + "{INTEGER}", "MOV X,Y", "SHL X,A",
 												"MOV A,#" + secondShift + "{INTEGER}", "SHL Y,A", "ADD X,Y" }));
 
 								patterns.add(new NativePattern(new String[] { "MOV Y,#" + i + "{INTEGER}", "MUL X,Y" },
 										new String[] { "MOV A,#" + firstShift + "{INTEGER}", "MOV Y,X", "SHL X,A",
-												"MOV A,#" + secondShift + "{INTEGER}", "SHL Y,A", "ADD X,Y" }));
+												"MOV A,#" + secondShift + "{INTEGER}", "SHL Y,A", "ADD X,Y" }));	
 							} else {
 								
 								patterns.add(new NativePattern(new String[] { "MOV X,#" + i + "{INTEGER}", "MUL X,Y" },
@@ -164,9 +167,10 @@ public class NativeOptimizer {
 				}
 			}
 		}
+		createRulesForMulAndSub(pots,covered);
 	}
 	
-	private static void createRulesForMulAndSub(List<Integer> pots) {
+	private static void createRulesForMulAndSub(List<Integer> pots, Set<Integer> covered) {
 		for (int i = 0; i <= 320; i++) {
 			int firstShift = getNearestPot(pots, i);
 			if (firstShift >= 0) {
@@ -183,7 +187,7 @@ public class NativeOptimizer {
 						if (secondShift >= 0) {
 							int secondPart = pots.get(secondShift);
 							int total = firstPart - secondPart;
-							if (total == i) {
+							if (total == i && !covered.contains(total)) {
 								if (secondShift > 0) {
 									patterns.add(new NativePattern(new String[] { "MOV X,#" + i + "{INTEGER}", "MUL X,Y" },
 											new String[] { "MOV A,#" + firstShift + "{INTEGER}", "MOV X,Y", "SHL X,A",
