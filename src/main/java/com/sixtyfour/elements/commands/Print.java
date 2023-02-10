@@ -14,7 +14,6 @@ import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.Term;
 import com.sixtyfour.parser.TermEnhancer;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
-import com.sixtyfour.parser.optimize.TermOptimizer;
 import com.sixtyfour.plugins.PrintConsumer;
 import com.sixtyfour.system.BasicProgramCounter;
 import com.sixtyfour.system.Conversions;
@@ -74,7 +73,6 @@ public class Print extends AbstractCommand {
 		super.parse(config, linePart, lineCnt, lineNumber, linePos, lastPos, machine);
 		orgLine = linePart;
 		String aLine = linePart.substring(linePart.startsWith("?") ? 1 : 5);
-		aLine = TermOptimizer.optimizePrintTerm(aLine);
 		List<PrintPart> parts = getParts(aLine, config);
 		if (parts.size() == 0) {
 			PrintPart newLine = new PrintPart("\"\"", ' ');

@@ -182,7 +182,7 @@ public class UnTokenizer {
 								line.append(' ');
 							}
 							line.append(token.toLowerCase(Locale.ENGLISH));
-							if (token.length() > 1 && b < 180) {
+							if (token.length() > 1 && b < 180 && !token.endsWith("#")) {
 								line.append(' ');
 							}
 						}

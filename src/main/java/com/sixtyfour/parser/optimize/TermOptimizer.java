@@ -111,48 +111,6 @@ public class TermOptimizer {
 	
 
 	/**
-	 * Tries to optimize terms used in print by detection cases like a$
-	 * 
-	 * @param line the term
-	 * @return the possibly optimized version
-	 */
-	public static String optimizePrintTerm(String line) {
-		line = TermEnhancer.removeWhiteSpace(line);
-		StringBuilder sb = new StringBuilder();
-		boolean inString = false;
-		int brackets = 0;
-		boolean modify = false;
-		for (int i = 0; i < line.length(); i++) {
-			char c = line.charAt(i);
-			modify = false;
-			if (c == '"') {
-				inString = !inString;
-			}
-			if (!inString) {
-				if (c == '(') {
-					brackets++;
-				}
-				if (c == ')') {
-					brackets--;
-				}
-				if (brackets == 0 && (c == '$' || c == '"' || c == ')') && i < line.length() - 2) {
-					char nc = line.charAt(i + 1);
-					char nnc = line.charAt(i + 2);
-					if (nc == '+' && (nnc == '"' || Character.isAlphabetic(nnc))) {
-						modify = true;
-					}
-				}
-			}
-			sb.append(c);
-			if (modify) {
-				sb.append(';');
-				i++;
-			}
-		}
-		return sb.toString();
-	}
-
-	/**
 	 * Optimizes the term by removing redundant entries that made it into the tree
 	 * during its creation.
 	 * 
