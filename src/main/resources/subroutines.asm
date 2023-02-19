@@ -279,9 +279,8 @@ MIDOK		LDX TMP2_REG
 			STA TMP_REG+1
 			DEC TMP_REG+1		; BASIC starts at 1, we start at 0
 MIDNOV		
-			LDA (TMP_ZP),Y		; check for start > string length..was only done above so far...which was wrong...
-			SEC
-			SBC TMP_REG+1
+			LDA (TMP_ZP),Y		; check for string length >= start..was only done above so far...which was wrong...
+			CMP TMP_REG+1		
 			BCS	MIDNOV2
 			STY TMP_REG			; Set length to 0, if start>string length
 
