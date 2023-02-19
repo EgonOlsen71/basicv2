@@ -1,4 +1,4 @@
-10 print "{control-q}{lgrn}micro compiler"
+10 print chr$(147);"{control-q}{lgrn}micro compiler"
 15 rem  von vic cortes
 20 g=0:gosub  1780: goto  590
 30 rem  .. erste variable
