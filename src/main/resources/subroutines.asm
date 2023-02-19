@@ -265,9 +265,9 @@ MIDOK2		DEC TMP_REG+1		; BASIC starts at 1, we start at 0
 			SEC
 			SBC TMP_REG+1
 			STA TMP_REG			; store the calculated length
-			BCS	MIDNOV
+			BCS	MIDNOV2
 			STY TMP_REG			; Set length to 0, if start>string length
-			JMP MIDNOV
+			JMP MIDNOV2
 MIDLENGTH	JSR FACWORD
 MIDCONST	STY TMP2_REG		; save the length in TMP2_REG
 			JSR STRFUNCINT
@@ -278,7 +278,14 @@ MIDOK		LDX TMP2_REG
 			STX TMP_REG			; store the length saved above in TMP_REG
 			STA TMP_REG+1
 			DEC TMP_REG+1		; BASIC starts at 1, we start at 0
-MIDNOV		LDA TMP_REG+1		; the starting position
+MIDNOV		
+			LDA (TMP_ZP),Y		; check for start > string length..was only done above so far...which was wrong...
+			SEC
+			SBC TMP_REG+1
+			BCS	MIDNOV2
+			STY TMP_REG			; Set length to 0, if start>string length
+
+MIDNOV2		LDA TMP_REG+1		; the starting position
 			CLC
 			ADC TMP_REG			; add the length
 			BCS MIDCLAMP
