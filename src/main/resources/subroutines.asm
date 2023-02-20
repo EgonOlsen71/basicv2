@@ -279,11 +279,6 @@ MIDOK		LDX TMP2_REG
 			STA TMP_REG+1
 			DEC TMP_REG+1		; BASIC starts at 1, we start at 0
 MIDNOV		
-			LDA (TMP_ZP),Y		; check for string length >= start..was only done above so far...which was wrong...
-			CMP TMP_REG+1		
-			BCS	MIDNOV2
-			STY TMP_REG			; Set length to 0, if start>string length
-
 MIDNOV2		LDA TMP_REG+1		; the starting position
 			CLC
 			ADC TMP_REG			; add the length
@@ -411,6 +406,9 @@ STARTATZERO	LDY #0
 			STA A_REG
 			LDA #>EMPTYSTR
 			STA A_REG+1
+			PLA					; if the lenght is 0, it's an indicator that we are outside of the string (or the length is actual 0)
+								; The latter case doesn't matter but in the former one, we must not restore the stacked value in memory
+								; because we are then writting somewhere in other memory that's not the string...which is evil!
 			JMP EXITSTRFUNC
 STRFUNCNZ	STA (TMP_ZP),Y
 			LDA #<A_REG
@@ -419,10 +417,10 @@ STRFUNCNZ	STA (TMP_ZP),Y
 			STY TMP2_ZP+1
 			LDX TMP_REG			; Put length into X for copy
 			JSR COPYONLY
-EXITSTRFUNC	PLA
+			PLA
 			LDY #0
-			STA (TMP_ZP),Y		; restore the first byte of the source string on the stack
-			RTS
+			STA (TMP_ZP),Y		; restore the first byte of the source string from the stack
+EXITSTRFUNC	RTS
 ;###################################
 CONCAT		LDA A_REG
 			STA TMP_ZP
