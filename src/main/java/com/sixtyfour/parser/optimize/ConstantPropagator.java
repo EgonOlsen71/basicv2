@@ -116,7 +116,7 @@ public class ConstantPropagator {
 			Term lt = (Term) left;
 			isConstant[0] &= checkForConstant(config, machine, lt, isConstant);
 		} else {
-			if (!(left.isConstant())) {
+			if (!left.isConstant()) {
 				if (left instanceof Function) {
 					Function func = (Function) left;
 					if (func.isDeterministic() && !func.isExcluded()) {
@@ -136,7 +136,7 @@ public class ConstantPropagator {
 				Term rt = (Term) right;
 				isConstant[0] &= checkForConstant(config, machine, rt, isConstant);
 			} else {
-				if (!(right.isConstant())) {
+				if (!right.isConstant()) {
 					if (right instanceof Function) {
 						Function func = (Function) right;
 						if (func.isDeterministic() && !func.isExcluded()) {
