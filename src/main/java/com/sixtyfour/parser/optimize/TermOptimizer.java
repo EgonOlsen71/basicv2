@@ -21,7 +21,6 @@ import com.sixtyfour.parser.Line;
 import com.sixtyfour.parser.Operator;
 import com.sixtyfour.parser.Term;
 import com.sixtyfour.parser.TermBuilder;
-import com.sixtyfour.parser.TermEnhancer;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.VarUtils;
 
