@@ -1060,6 +1060,39 @@ public class IntOptimizer {
 					}
 				}));
 
+		// p and/or o% => (int)
+		intPatterns.add(new IntPattern(true, "Optimized code for AND/OR(3)",
+				new String[] { "LDA #<{CONST0}", "LDY #>{CONST0}", "JSR MEMARG", "JSR FAST{*}", "JSR FACWORD" },
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						String op = cleaned.get(3).substring(8).replace("OR", "ORA");
+						String consty = cleaned.get(0);
+						consty = consty.substring(consty.indexOf("<") + 1).trim();
+						Number num = const2Value.get(consty);
+						double numd = num.doubleValue();
+						System.out.println(op+"/"+numd);
+						if (numd == (int) numd && numd >= -32767 && numd < 32768) {
+							if (op.contains("ORA") || op.contains("AND")) {
+								String numHex = getHex(numd);
+								List<String> rep = new ArrayList<>();
+								rep.add("JSR FACINT");
+								rep.add(op + " #$" + numHex.substring(0, 2));
+								rep.add("TAX");
+								rep.add("TYA");
+								rep.add(op + " #$" + numHex.substring(2));
+								rep.add("TAY");
+								rep.add("TXA");
+								return combine(pattern, rep);
+							}
+						}
+						pattern.reset();
+						return input;
+					}
+				}));
+		
+		
 		// p%+1 and/or <const>0>
 		intPatterns.add(new IntPattern(
 				true, "Optimized code for +1 AND/OR", new String[] { "LDY {*}", "LDA {*}", "JSR FI{*}",
