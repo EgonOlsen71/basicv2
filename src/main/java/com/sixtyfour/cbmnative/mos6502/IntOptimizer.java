@@ -1072,7 +1072,6 @@ public class IntOptimizer {
 						consty = consty.substring(consty.indexOf("<") + 1).trim();
 						Number num = const2Value.get(consty);
 						double numd = num.doubleValue();
-						System.out.println(op+"/"+numd);
 						if (numd == (int) numd && numd >= -32767 && numd < 32768) {
 							if (op.contains("ORA") || op.contains("AND")) {
 								String numHex = getHex(numd);
