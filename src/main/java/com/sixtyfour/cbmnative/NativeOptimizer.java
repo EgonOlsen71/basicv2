@@ -25,7 +25,7 @@ public class NativeOptimizer {
 		for (int i = 0; i < 12; i++) {
 			pots.add(Integer.valueOf((int) Math.pow(2, i)));
 		}
-		
+		patterns.add(new NativePattern(new String[] { "MOV Y*", "PUSH Y", "MOV Y*", "JSR POS", "POP Y" }, new String[] { "JSR POS", "{0}" }));
 		patterns.add(new NativePattern(new String[] { "MOV Y*", "JSR POS" }, new String[] { "JSR POS" }));
 		patterns.add(new NativePattern(new String[] { "PUSH*", "POP*" }, new String[] { "MOV p1,p0" }));
 		patterns.add(new NativePattern(new String[] { "PUSH X", "MOV C*|*[]*", "POP Y" }, new String[] { "{1}" }));
