@@ -1009,23 +1009,25 @@ public class IntOptimizer {
 						boolean isXreg = cleaned.get(10).contains("FACXREG");
 						if ((isFacInt || isXreg) && numd == (int) numd && numd >= -32767 && numd < 32768) {
 							String op = cleaned.get(9).substring(8).replace("OR", "ORA");
-							String numHex = getHex(numd);
-							List<String> rep = new ArrayList<>();
-							rep.add(cleaned.get(4));
-							rep.add(op + " #$" + numHex.substring(0, 2));
-							rep.add("TAX");
-							rep.add(cleaned.get(3));
-							rep.add("TYA");
-							rep.add(op + " #$" + numHex.substring(2));
-							rep.add("TAY");
-							rep.add("TXA");
-							if (isXreg) {
-								rep.add("JSR INTFAC");
-								rep.add("JSR BASINT"); // Actually, this isn't needed but it triggers the ON
-														// GOTO-Optimization in the second pass
-								rep.add("JSR FACXREG");
+							if (op.contains("ORA") || op.contains("AND")) {
+								String numHex = getHex(numd);
+								List<String> rep = new ArrayList<>();
+								rep.add(cleaned.get(4));
+								rep.add(op + " #$" + numHex.substring(0, 2));
+								rep.add("TAX");
+								rep.add(cleaned.get(3));
+								rep.add("TYA");
+								rep.add(op + " #$" + numHex.substring(2));
+								rep.add("TAY");
+								rep.add("TXA");
+								if (isXreg) {
+									rep.add("JSR INTFAC");
+									rep.add("JSR BASINT"); // Actually, this isn't needed but it triggers the ON
+															// GOTO-Optimization in the second pass
+									rep.add("JSR FACXREG");
+								}
+								return combine(pattern, rep);
 							}
-							return combine(pattern, rep);
 						}
 						pattern.reset();
 						return input;
@@ -1041,17 +1043,20 @@ public class IntOptimizer {
 					public List<String> modify(IntPattern pattern, List<String> input) {
 						input = super.modify(pattern, input);
 						String op = cleaned.get(10).substring(8).replace("OR", "ORA");
-						List<String> rep = new ArrayList<>();
-						rep.add(cleaned.get(5));
-						rep.add(op + " "+cleaned.get(1).replace("LDA ", ""));
-						rep.add("TAX");
-						rep.add(cleaned.get(4));
-						rep.add("TYA");
-						rep.add(op + " "+cleaned.get(0).replace("LDY ", ""));
-						rep.add("TAY");
-						rep.add("TXA");
-						return combine(pattern, rep);
-						
+						if (op.contains("ORA") || op.contains("AND")) {
+							List<String> rep = new ArrayList<>();
+							rep.add(cleaned.get(5));
+							rep.add(op + " "+cleaned.get(1).replace("LDA ", ""));
+							rep.add("TAX");
+							rep.add(cleaned.get(4));
+							rep.add("TYA");
+							rep.add(op + " "+cleaned.get(0).replace("LDY ", ""));
+							rep.add("TAY");
+							rep.add("TXA");
+							return combine(pattern, rep);
+						}
+						pattern.reset();
+						return input;
 					}
 				}));
 
@@ -1072,24 +1077,26 @@ public class IntOptimizer {
 						boolean isXreg = cleaned.get(8).contains("FACXREG");
 						if ((isFacInt || isXreg) && isIncDec && numd == (int) numd && numd >= -32767 && numd < 32768) {
 							String op = cleaned.get(7).substring(8).replace("OR", "ORA");
-							String numHex = getHex(numd);
-							List<String> rep = new ArrayList<>();
-							rep.add(cleaned.get(0));
-							rep.add(cleaned.get(1));
-							rep.add(cleaned.get(2).replace("JSR ", "JSR SUPER"));
-							rep.add(op + " #$" + numHex.substring(0, 2));
-							rep.add("TAX");
-							rep.add("TYA");
-							rep.add(op + " #$" + numHex.substring(2));
-							rep.add("TAY");
-							rep.add("TXA");
-							if (isXreg) {
-								rep.add("JSR INTFAC");
-								rep.add("JSR BASINT"); // Actually, this isn't needed but it triggers the ON
-														// GOTO-Optimization in the second pass
-								rep.add("JSR FACXREG");
+							if (op.contains("ORA") || op.contains("AND")) {
+								String numHex = getHex(numd);
+								List<String> rep = new ArrayList<>();
+								rep.add(cleaned.get(0));
+								rep.add(cleaned.get(1));
+								rep.add(cleaned.get(2).replace("JSR ", "JSR SUPER"));
+								rep.add(op + " #$" + numHex.substring(0, 2));
+								rep.add("TAX");
+								rep.add("TYA");
+								rep.add(op + " #$" + numHex.substring(2));
+								rep.add("TAY");
+								rep.add("TXA");
+								if (isXreg) {
+									rep.add("JSR INTFAC");
+									rep.add("JSR BASINT"); // Actually, this isn't needed but it triggers the ON
+															// GOTO-Optimization in the second pass
+									rep.add("JSR FACXREG");
+								}
+								return combine(pattern, rep);
 							}
-							return combine(pattern, rep);
 						}
 						pattern.reset();
 						return input;
