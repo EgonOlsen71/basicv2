@@ -22,8 +22,8 @@ public class IntOptimizer {
 	public List<String> applyIntOptimizations(CompilerConfig conf, PlatformProvider platform, List<String> input,
 			int[] startAndEnd) {
 
-		// if (true) return input;
-
+		//input.forEach(System.out::println);
+		
 		Map<String, Number> const2Value = extractConstants(input);
 		Map<String, String> strConst2Value = extractStringConstants(input);
 		int[] ps = startAndEnd;
@@ -1258,7 +1258,62 @@ public class IntOptimizer {
 					}
 				}));
 
-
+		// Faster SHL/SHR for ints, like A%=A%/256
+		intPatterns.add(new IntPattern(true, "Fast integer SHL/SHR",
+				new String[] { "LDY {CONST0}", "LDA {CONST0}", "STY A_REG", "STA A_REG+1", "LDY {MEM0}", "LDA {MEM0}", "JSR INTFAC", "JSR {*}", "JSR {*}"},
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						String constL = cleaned.get(0);
+						constL = constL.substring(constL.indexOf(" ") + 1).trim();
+						Number num = const2Value.get(constL);
+						double numL = num.doubleValue();
+						String call = cleaned.get(7);
+						String call2 = cleaned.get(8);
+						if (call2.contains("FACINT") || (call2.startsWith("JSR FAC") && call2.endsWith("REG"))) {
+							if (numL > 0 && (call.endsWith("SHR") || call.endsWith("SHL"))) {
+								if (numL == (int) numL && numL  <= 16) {
+									List<String> rep = new ArrayList<>();
+									rep.add(cleaned.get(4));
+									rep.add(cleaned.get(5));
+									rep.add(cleaned.get(2));
+									rep.add(cleaned.get(3));
+									rep.add(cleaned.get(0));
+									rep.add(call.replace("SHR", "INTSHR").replace("SHL", "INTSHL"));
+									if (!call2.contains("FACINT")) {
+										rep.add("JSR INTFAC");
+										rep.add(cleaned.get(8));
+									}
+									return combine(pattern, rep);
+								}
+							}
+						}
+						pattern.reset();
+						return input;
+						
+					}
+				}));
+		
+		
+		intPatterns.add(new IntPattern(true, "Faster POKE of integers",
+				new String[] { "JSR INTFAC", "JSR PUSHREAL", "JSR POPREAL", "JSR FACWORD", "STY {*}", "STA {*}" },
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						List<String> rep = new ArrayList<>();
+						String poky = cleaned.get(4);
+						if (poky.contains("MOVBSELF")) {
+							rep.add(cleaned.get(4));
+							rep.add(cleaned.get(5));
+							return combine(pattern, rep);
+						}
+						pattern.reset();
+						return input;
+					}
+				}));
+		
 		for (int i = codeStart; i < codeEnd; i++) {
 			String line = input.get(i);
 			if (line.trim().startsWith(";")) {

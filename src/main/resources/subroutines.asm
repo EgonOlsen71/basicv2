@@ -2389,6 +2389,32 @@ CLEARQUEUE	LDA #$0
 			STA INPUTQUEUEP
 			RTS
 ;###################################
+INTSHL		LDA A_REG+1
+			ASL
+			PHP
+			CLC
+			ROL A_REG
+			ROL A_REG+1
+			PLA
+			AND #128
+			ORA A_REG+1
+			STA A_REG+1
+			DEY
+			BNE INTSHL
+			LDA A_REG+1
+			LDY A_REG
+			RTS
+;###################################
+INTSHR		LDA A_REG+1
+			ASL
+			ROR A_REG+1
+			ROR A_REG
+			DEY
+			BNE INTSHR
+			LDA A_REG+1
+			LDY A_REG
+			RTS
+;###################################
 INTSUBVAR	LDX #128		; Do the fast way for positive numbers  below 16384...second var
 			STX TMP_REG
 			BIT TMP_REG
