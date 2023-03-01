@@ -2460,35 +2460,35 @@ INTINTADDVAR2
 ;	A=B-C => TMP3_ZP - LDY/LDA		
 FLOATINTSUB	JSR INTFAC
 			JSR FACXREG
+			LDA #0
+			STA TMP_FLAG	; flag that the value isn't present in TMP2_ZP
 			LDY TMP3_ZP
 			LDA TMP3_ZP+1
 			JSR INTFAC
 			JSR FACARG
 			JSR XREGFAC
-			LDA #0
-			STA TMP_FLAG	; flag that the value isn't present in TMP2_ZP
 			JMP FASTFSUBARG
 ;###################################
 ;	A=B-C => LDY/LDA - TMP3_ZP
 FLOATINTSUBSW
 			JSR INTFAC
 			JSR FACXREG
+			LDA #0
+			STA TMP_FLAG	; flag that the value isn't present in TMP2_ZP
 			LDY TMP3_ZP
 			LDA TMP3_ZP+1
 			JSR INTFAC
 			JSR XREGARG
-			LDA #0
-			STA TMP_FLAG	; flag that the value isn't present in TMP2_ZP
 			JMP FASTFSUBARG
 ;###################################			
 FLOATINTADD	JSR INTFAC
 			JSR FACXREG
+			LDA #0
+			STA TMP_FLAG	; flag that the value isn't present in TMP2_ZP
 			LDY TMP3_ZP
 			LDA TMP3_ZP+1
 			JSR INTFAC
 			JSR XREGARG
-			LDA #0
-			STA TMP_FLAG	; flag that the value isn't present in TMP2_ZP
 			JMP FASTFADDARG
 ;###################################
 INTADD		LDX #128		; Do the fast way for negative numbers and everything below 16384
