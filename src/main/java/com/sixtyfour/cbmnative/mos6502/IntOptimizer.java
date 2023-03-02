@@ -1314,6 +1314,30 @@ public class IntOptimizer {
 					}
 				}));
 		
+		
+		
+		intPatterns.add(new IntPattern(true, "Fast add/sub of integers",
+				new String[] { "JSR INTFAC", "JSR FACXREG", "LDY {MEM0}", "LDA {MEM0}", "JSR INTFAC", "LDA #<X_REG", "LDY #>X_REG", "JSR {*}", "JSR FACINT"  },
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						List<String> rep = new ArrayList<>();
+						String call = cleaned.get(7);
+						if (call.contains("FASTFSUBMEM") || call.contains("FASTFADDMEM")){
+							rep.add(cleaned.get(2).replace("LDY", "LDX"));
+							rep.add("STX TMP3_ZP");
+							rep.add(cleaned.get(3).replace("LDA", "LDX"));
+							rep.add("STX TMP3_ZP+1");
+							rep.add(cleaned.get(7).replace("FASTF", "INT").replace("MEM", ""));
+							rep.add("JSR INTCONV");
+							return combine(pattern, rep);
+						}
+						pattern.reset();
+						return input;
+					}
+				}));
+		
 		for (int i = codeStart; i < codeEnd; i++) {
 			String line = input.get(i);
 			if (line.trim().startsWith(";")) {
