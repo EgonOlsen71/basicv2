@@ -1338,6 +1338,7 @@ public class IntOptimizer {
 					}
 				}));
 		
+		
 		for (int i = codeStart; i < codeEnd; i++) {
 			String line = input.get(i);
 			if (line.trim().startsWith(";")) {
