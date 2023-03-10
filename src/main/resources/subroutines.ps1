@@ -316,10 +316,10 @@ function ASC {
 		return
 	}
 	$cc=[int][char]$global:B_REG[0]
-	$c=[char]$global:B_REG[0]
-	if ($c -ge 'a' -and $c -le 'z') {
-		$cc-=32
-	}
+#	$c=[char]$global:B_REG[0]
+#	if ($c -ge 'a' -and $c -le 'z') {
+#		$cc-=32
+#	}
 	$global:X_REG=$cc
 }
 
@@ -556,6 +556,14 @@ function CMD {
 
 function REM {
 	"[inline assembly ignored!]"
+}
+
+function LOCKCHANNEL {
+	"[ignored]"
+}
+
+function UNLOCKCHANNEL {
+	"[ignored]"
 }
 
 function STROUTCHANNEL {

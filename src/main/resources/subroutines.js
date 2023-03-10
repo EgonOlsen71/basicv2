@@ -465,10 +465,10 @@ this.ASC = function() {
 		return;
 	}
 	var cc=this.B_REG.charCodeAt(0);
-	var c=this.B_REG.charAt(0);
-	if (c>='a' && c<='z') {
-		cc-=32;
-	}
+	//var c=this.B_REG.charAt(0);
+	//if (c>='a' && c<='z') {
+	//	cc-=32;
+	//}
 	this.X_REG=cc;
 }
 
@@ -731,6 +731,14 @@ this.LINEBREAKCHANNEL = function() {
 this.INTOUTCHANNEL = function() {
 	console.log("[PRINT# not supported for JS, redirected to normal PRINT]");
 	this.INTOUT();
+}
+
+this.LOCKCHANNEL = function() {
+	// Nothing to do
+}
+
+this.UNLOCKCHANNEL = function() {
+	// Nothing to do
 }
 
 this.INPUTNUMBERCHANNEL = function() {
