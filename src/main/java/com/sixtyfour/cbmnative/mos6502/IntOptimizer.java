@@ -698,7 +698,7 @@ public class IntOptimizer {
 
 		// PEEK(XXXX) with XXXX being a constant
 		intPatterns.add(new IntPattern(true, "Optimized code for PEEK(<constant>)",
-				new String[] { "LDA #<{CONST0}", "LDY #>{CONST0}", "JSR REALFAC", "JSR FACWORD", "STY {*}", "STA {*}" },
+				new String[] { "LDA #<{CONST0}", "LDY #>{CONST0}", "JSR REALFAC", "JSR FACWORD", "STY {*}", "STA {*}", "{LABEL}", "LDA $FFFF" },
 				new AbstractCodeModifier() {
 					@Override
 					public List<String> modify(IntPattern pattern, List<String> input) {
@@ -709,10 +709,11 @@ public class IntOptimizer {
 						int numd = num.intValue();
 
 						List<String> rep = new ArrayList<>();
-						rep.add("LDY #" + (numd & 0xff));
-						rep.add("LDA #" + ((numd & 0xff00) >> 8));
-						rep.add(cleaned.get(4));
-						rep.add(cleaned.get(5));
+						//rep.add("LDY #" + (numd & 0xff));
+						//rep.add("LDA #" + ((numd & 0xff00) >> 8));
+						//rep.add(cleaned.get(4));
+						//rep.add(cleaned.get(5));
+						rep.add("LDA $"+getHex(numd));
 						return combine(pattern, rep);
 					}
 				}));
