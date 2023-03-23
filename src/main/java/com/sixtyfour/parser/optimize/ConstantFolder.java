@@ -63,7 +63,7 @@ public class ConstantFolder {
 			Atom left = finalTerm.getLeft();
 			Atom right = finalTerm.getRight();
 			Operator op = finalTerm.getOperator();
-
+			
 			// System.out.println("1: "+finalTerm+"/"+finalTerm.isConstant()+"/"+finalTerm.getLeft().getClass());
 
 			if (op.isNop()) {

@@ -445,7 +445,7 @@ public class Parser {
 	 * Returns the term that represents the term in the text. The result will be a
 	 * binary tree build out of terms with the returned term being the root element.
 	 * 
-	 * @param config            teh compiler's config
+	 * @param config            the compiler's config
 	 * @param term              the term as text
 	 * @param machine           the machine
 	 * @param stripAssignment   if true, assignments will be stripped

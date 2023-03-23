@@ -131,7 +131,7 @@ public class Print extends AbstractCommand {
 		part.term = Parser.getTerm(config, old, machine, false, true, true);
 		
 		int ret = 0;
-		if (newy!=null) {
+		if (newy != null) {
 			part = new PrintPart(newy, oldDel);
 			part.term = Parser.getTerm(config, newy, machine, false, true, true);
 			if (oldPos+1>parts.size()) {

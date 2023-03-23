@@ -156,8 +156,13 @@ public class StringOptimizer {
 									newy = leftOver;
 									leftOver = null;
 								}
-								idx+=print.update(config, machine, old, newy, leftOver, idx);
-								opti++;
+								try {
+									idx+=print.update(config, machine, old, newy, leftOver, idx);
+									opti++;
+								} catch(Exception e) {
+									Logger.log("Failed to optimize: "+old);
+								}
+								
 							} 
 						}
 					}
