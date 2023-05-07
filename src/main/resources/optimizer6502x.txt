@@ -12,3 +12,9 @@
 
 #5: Reverted comparison
 "Reverted comparison"	true	false	false	"LDA {MEM0}|BEQ {*}|LDA #0|JMP {*}|{LABEL}|LDA #$1|{LABEL}|{LABEL}|BEQ {*}|"	"{LINE0}|{LINE3}~JMP>BEQ|{LINE4}|{LINE8}~BEQ>JMP|{LINE6}|{LINE7}|"
+
+#6: Direct comparison of INT-Array(1)
+"Direct comparison of INT-Array(1)"	false	false	false	"JSR ARRAYACCESS_INTEGER_S|LDA X_REG|{LABEL}|BEQ {*}"	"JSR ARRAYACCESS_INTEGER_SI|STY TMP_ZP|ORA TMP_ZP|{LINE2}|{LINE3}"
+
+#7: Direct comparison of INT-Array(2)
+"Direct comparison of INT-Array(2)"	false	false	false	"JSR ARRAYACCESS_INTEGER_INT|LDA X_REG|{LABEL}|BEQ {*}"	"JSR ARRAYACCESS_INTEGER_INT_SI|STY TMP_ZP|ORA TMP_ZP|{LINE2}|{LINE3}"
