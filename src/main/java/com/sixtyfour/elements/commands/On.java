@@ -68,7 +68,7 @@ public class On extends AbstractCommand implements Jump {
 		String lines = linePart.substring(pos);
 		for (int i = 0; i < lines.length(); i++) {
 			char c = lines.charAt(i);
-			if (Character.isDigit(c)) {
+			if (Character.isDigit(c) || c==',') {
 				numPos = i;
 				break;
 			}
@@ -79,7 +79,11 @@ public class On extends AbstractCommand implements Jump {
 			lines = "0";
 			numPos = 0;
 		}
-		String[] parts = lines.substring(numPos).split(",");
+		String numPart = lines.substring(numPos).trim();
+		if (numPart.startsWith(",")) {
+			numPart="0"+numPart;
+		}
+		String[] parts = numPart.split(",");
 		for (String part : parts) {
 			try {
 				if (part.length() == 0) {

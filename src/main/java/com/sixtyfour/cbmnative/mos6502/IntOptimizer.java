@@ -1339,6 +1339,28 @@ public class IntOptimizer {
 					}
 				}));
 		
+		intPatterns.add(new IntPattern(true, "Faster ON <int>+1",
+				new String[] { "LDY {MEM0}", "LDA {MEM0}", "JSR FIINX", "JSR XREGFAC", "JSR FACWORD", "STY TMP_ZP", "{LABEL}"  },
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						List<String> rep = new ArrayList<>();
+						String label = cleaned.get(6);
+						if (label.startsWith("ON")){
+							rep.add(cleaned.get(0));
+							rep.add(cleaned.get(1));
+							rep.add("JSR SUPERFIINX");
+							rep.add(cleaned.get(5));
+							rep.add(cleaned.get(6));
+							return combine(pattern, rep);
+						}
+						pattern.reset();
+						return input;
+					}
+				}));
+		
+		
 		
 		for (int i = codeStart; i < codeEnd; i++) {
 			String line = input.get(i);
