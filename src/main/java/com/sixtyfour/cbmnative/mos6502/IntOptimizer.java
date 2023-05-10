@@ -1339,21 +1339,6 @@ public class IntOptimizer {
 					}
 				}));
 		
-		intPatterns.add(new IntPattern(true, "Faster setting to 0",
-				new String[] { "LDA #$00", "LDY #$00", "STA TMP_ZP", "STY TMP_ZP+1" },
-				new AbstractCodeModifier() {
-					@Override
-					public List<String> modify(IntPattern pattern, List<String> input) {
-						input = super.modify(pattern, input);
-						List<String> rep = new ArrayList<>();
-						rep.add(cleaned.get(0));
-						rep.add(cleaned.get(2));
-						rep.add("STA TMP_ZP+1");
-						return combine(pattern, rep);
-					}
-				}));
-		
-		
 		
 		for (int i = codeStart; i < codeEnd; i++) {
 			String line = input.get(i);
