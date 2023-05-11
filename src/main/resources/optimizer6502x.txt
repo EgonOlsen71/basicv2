@@ -18,3 +18,7 @@
 
 #7: Direct comparison of INT-Array(2)
 "Direct comparison of INT-Array(2)"	false	false	false	"JSR ARRAYACCESS_INTEGER_INT|LDA X_REG|{LABEL}|BEQ {*}"	"JSR ARRAYACCESS_INTEGER_INT_SI|STY TMP_ZP|ORA TMP_ZP|{LINE2}|{LINE3}"
+
+#8: Avoid PUSH/POP for INT
+"Avoid PUSH/POP for INT"	false	false	false	"JSR INTFAC|JSR PUSHREAL|NOP|JSR POPREALXREG"	"{LINE0}|JSR FACXREG"
+
