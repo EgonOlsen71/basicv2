@@ -58,7 +58,7 @@ public class NativeOptimizer {
 				new NativePattern(new String[] { "PUSH X", "MOV X,#*", "POP Y" }, new String[] { "MOV Y,X", "{1}" }));
 		patterns.add(new NativePattern(new String[] { "PUSH Y", "MOV X,#*", "POP Y" }, new String[] { "{1}" }));
 		patterns.add(
-				new NativePattern(new String[] { "MOV X,#*", "MOVB (Y),X" }, new String[] { "{0:MOV X,>MOVB (Y),}" }));
+				new NativePattern(new String[] { "MOV X,#*", "MOVB (Y),X" }, new String[] { "{0:MOV X,>MOVB (Y),}" })); // !!!
 		patterns.add(new NativePattern(new String[] { "MOV Y,#*", "MOV G,Y" }, new String[] { "{0:MOV Y,>MOV G,}" }));
 		patterns.add(new NativePattern(new String[] { "MOV X,#*", "MOV G,Y" }, new String[] { "{0:MOV X,>MOV G,}" }));
 		patterns.add(new NativePattern(new String[] { "INT X,Y", "INT X,X" }, new String[] { "{0}" }));
@@ -259,13 +259,12 @@ public class NativeOptimizer {
 		// the optimizer has optimization that change order or commands, but not the
 		// actual length.
 		// So we can't rely on size for change-detection here. This isn't 100% safe
-		// either, but
-		// that shouldn't matter.
+		// either, but that shouldn't matter too much.
 		int val = 0;
 		for (String line : code) {
 			val ^= line.hashCode();
 		}
-		return val;
+		return val+code.size();
 	}
 
 	private static List<String> applyPatterns(CompilerConfig config, List<String> code) {
