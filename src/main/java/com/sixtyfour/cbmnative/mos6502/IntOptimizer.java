@@ -1391,6 +1391,36 @@ public class IntOptimizer {
 					}
 				}));
 		
+		intPatterns.add(new IntPattern(true, "Fast add for POKE(1.1)",
+				new String[] { "LDA #<{CONST0}", "LDY #>{CONST0}", "JSR REALFAC", "LDA #<{MEM0}", "LDY #>{MEM0}", "JSR FASTFADDMEM", "JSR PUSHREAL", "JSR POPREAL", "JSR FACWORD", "STY {*}", "STA {*}"},
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						String consty = cleaned.get(0);
+						consty = consty.substring(consty.indexOf("<") + 1).trim();
+						Number num = const2Value.get(consty);
+						double numd = num.doubleValue();
+						if (numd >= 0 && numd < 65536 && numd==(int) numd && cleaned.get(9).contains("MOVBSELF")) {
+							List<String> rep = new ArrayList<>();
+							String numHex = getHex(numd);
+							rep.add("LDY #$" + numHex.substring(2));
+							rep.add("STY TMP_ZP");
+							rep.add("LDA #$" + numHex.substring(0, 2));
+							rep.add("STA TMP_ZP+1");
+							rep.add(cleaned.get(3));
+							rep.add(cleaned.get(4));
+							rep.add("JSR INTADDPOKE");
+							rep.add(cleaned.get(9));
+							rep.add(cleaned.get(10));
+							return combine(pattern, rep);
+						}
+						pattern.reset();
+						return input;
+						
+					}
+				}));
+		
 		intPatterns.add(new IntPattern(true, "Fast add for POKE(2)",
 				new String[] { "JSR ONETOFAC", "LDA #<{MEM0}", "LDY #>{MEM0}", "JSR FASTFADDMEM", "JSR FACWORD", "STY {*}", "STA {*}"},
 				new AbstractCodeModifier() {
@@ -1408,6 +1438,31 @@ public class IntOptimizer {
 							rep.add("JSR INTADDPOKE");
 							rep.add(cleaned.get(5));
 							rep.add(cleaned.get(6));
+							return combine(pattern, rep);
+						}
+						pattern.reset();
+						return input;
+						
+					}
+				}));
+		
+		intPatterns.add(new IntPattern(true, "Fast add for POKE(2.1)",
+				new String[] { "JSR ONETOFAC", "LDA #<{MEM0}", "LDY #>{MEM0}", "JSR FASTFADDMEM", "JSR PUSHREAL", "JSR POPREAL",  "JSR FACWORD", "STY {*}", "STA {*}"},
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						if (cleaned.get(7).contains("MOVBSELF")) {
+							List<String> rep = new ArrayList<>();
+							rep.add("LDY #$01");
+							rep.add("STY TMP_ZP");
+							rep.add("LDA #$00");
+							rep.add("STA TMP_ZP+1");
+							rep.add(cleaned.get(1));
+							rep.add(cleaned.get(2));
+							rep.add("JSR INTADDPOKE");
+							rep.add(cleaned.get(7));
+							rep.add(cleaned.get(8));
 							return combine(pattern, rep);
 						}
 						pattern.reset();
