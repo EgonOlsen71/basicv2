@@ -724,7 +724,7 @@ public class MoSpeedCL {
 		System.out.println(
 				"/printopt=true|false - *Experimental* - If true, the compiler tries to rearrange texts in PRINT statements to save memory at the expense of speed. Default is false.");
 		System.out.println(
-				"/arrayopt=true|false - *Experimental* - If true, the compiler tries optimize access speed of multi-dimensional arrays at the expense of memory usage. Default is false.");
+				"/arrayopt=true|false - *Experimental* - If true, the compiler tries to optimize access speed of multi-dimensional arrays at the expense of memory usage. Default is false.");
 
 		
 		System.out.println();
