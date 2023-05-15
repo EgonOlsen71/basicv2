@@ -2389,6 +2389,17 @@ CLEARQUEUE	LDA #$0
 			STA INPUTQUEUEP
 			RTS
 ;###################################
+INTADDPOKE	JSR REALFAC
+			JSR FACWORD
+			TAX
+			TYA
+			CLC
+			ADC TMP_ZP
+			TAY
+			TXA
+			ADC TMP_ZP+1
+			RTS
+;###################################
 INTSHL		LDA A_REG+1
 			ASL
 			PHP
