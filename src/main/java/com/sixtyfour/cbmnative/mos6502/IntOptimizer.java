@@ -144,6 +144,34 @@ public class IntOptimizer {
 					}
 				}));
 		
+		// intvar+<const> - Variant 3
+		intPatterns.add(new IntPattern(true, "Optimized code for adding INTs (3)",
+				new String[] { "JSR INTFAC", "JSR FACXREG", "LDA #<{CONST0}", "LDY #>{CONST0}",
+						"JSR REALFAC", "LDA #<X_REG", "LDY #>X_REG", "JSR FASTFADDMEM", "JSR FACINT" },
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						String consty = cleaned.get(2);
+						consty = consty.substring(consty.indexOf("<") + 1).trim();
+						Number num = const2Value.get(consty);
+						double numd = num.doubleValue();
+						if (numd == (int) numd && numd >= 0 && numd <= 16383) {
+							String numHex = getHex(numd);
+							List<String> rep = new ArrayList<>();
+							rep.add("LDX #$" + numHex.substring(0, 2));
+							rep.add("STX TMP3_ZP+1");
+							rep.add("LDX #$" + numHex.substring(2));
+							rep.add("STX TMP3_ZP");
+							rep.add("JSR INTADD");
+							rep.add("JSR INTCONV");
+							return combine(pattern, rep);
+						}
+						pattern.reset();
+						return input;
+					}
+				}));
+		
 		// intvar-<const> - Variant 1
 		intPatterns.add(new IntPattern(true, "Optimized code for subtracting INTs (1)",
 				new String[] { "LDA #<{CONST0}", "LDY #>{CONST0}", "JSR COPY2_XYA_YREG", "LDY {*}", "LDA {*}", "JSR INTFAC", "JSR FACXREG", "JSR YREGFAC", "LDA #<X_REG", "LDY #>X_REG", "JSR FASTFSUBMEM" },
@@ -1272,7 +1300,7 @@ public class IntOptimizer {
 						double numL = num.doubleValue();
 						String call = cleaned.get(7);
 						String call2 = cleaned.get(8);
-						if (call2.contains("FACINT") || (call2.startsWith("JSR FAC") && call2.endsWith("REG"))) {
+						if (call2.contains("FACINT")) {
 							if (numL > 0 && (call.endsWith("SHR") || call.endsWith("SHL"))) {
 								if (numL == (int) numL && numL  <= 16) {
 									List<String> rep = new ArrayList<>();
@@ -1282,10 +1310,6 @@ public class IntOptimizer {
 									rep.add(cleaned.get(3));
 									rep.add(cleaned.get(0));
 									rep.add(call.replace("SHR", "INTSHR").replace("SHL", "INTSHL"));
-									if (!call2.contains("FACINT")) {
-										rep.add("JSR INTFAC");
-										rep.add(cleaned.get(8));
-									}
 									return combine(pattern, rep);
 								}
 							}
