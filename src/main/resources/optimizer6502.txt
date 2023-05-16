@@ -471,3 +471,5 @@
 #157: No push, direct to FAC (LDX #<X_REG in the last line to keep another optimization valid)
 "No push, direct to FAC"	false	false	false	"LDA #<{MEM0}|LDY #>{MEM0}|JSR REALFACPUSH|LDA #<{MEM1}|LDY #>{MEM1}|JSR COPY2_XYA_XREG|JSR POPREAL|JSR FACWORD"	"{LINE3}|{LINE4}|{LINE5}|{LINE0}|{LINE1}|JSR REALFAC|{LINE7}"
 
+#159: Avoid PUSH/POP for B
+"Avoid PUSH/POP for B"	false	false	false	"JSR PUSHREAL|LDA {MEM0}|LDY {MEM0}|STA B_REG|STY B_REG+1|JSR POPREAL"	"{LINE1}|{LINE2}|{LINE3}|{LINE4}"

@@ -123,9 +123,12 @@ public class Optimizer6502 implements Optimizer {
 	}
 
 	private void printOutResults(Map<String, Integer> type2count) {
+		int total=0;
 		for (Map.Entry<String, Integer> cnts : type2count.entrySet()) {
 			Logger.log("Optimization " + cnts.getKey() + " applied " + cnts.getValue() + " times!");
+			total+=cnts.getValue();
 		}
+		Logger.log("Total optimizations applied in this pass: "+total);
 	}
 
 	private OptimizationResult optimizeInternalThreaded(CompilerConfig conf, List<Pattern> patterns,
