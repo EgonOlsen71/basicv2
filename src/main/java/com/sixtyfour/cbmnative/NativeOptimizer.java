@@ -114,6 +114,10 @@ public class NativeOptimizer {
 		
 		patterns.add(new NativePattern(new String[] {"MOV Y,#*", "PUSH Y", "CHGCTX #1", "MOV B,*", "CHGCTX #0", "JSR *", "POP Y"}, new String[] {"{3}","{5}","{0}"}));
 		
+		// MID (F$(I),x,y) simplified
+		patterns.add(new NativePattern(new String[] {"MOV C,*", "PUSH C", "MOV C,*", "PUSH C", "MOV X,Y{REAL}", "CHGCTX #1", "MOV G,*", "JSR ARRAYACCESS", "MOV B,A", "POP D", "POP C", "JSR MID"}, 
+				new String[] {"{4}", "{6}", "{7}", "{8}", "{0}", "{2:MOV C,>MOV D,}", "JSR MID"}));
+		
 		String[] calls = {"SNEQ", "SEQ", "SGT", "SLT", "SGTEQ", "SLTEQ"};
 		
 		for (String call:calls) {

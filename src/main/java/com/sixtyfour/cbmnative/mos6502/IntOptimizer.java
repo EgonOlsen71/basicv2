@@ -536,7 +536,7 @@ public class IntOptimizer {
 				}));
 
 		// mid$(a$,i,<const>)
-		intPatterns.add(new IntPattern(true, "Optimized code for MID",
+		intPatterns.add(new IntPattern(true, "Optimized code for MID(1)",
 				new String[] { "LDA #<{CONST0}", "LDY #>{CONST0}", "STY TMP3_ZP+1", "LDX #<D_REG", "LDY #>D_REG",
 						"JSR COPY2_XYA", "LDA {*}", "LDY {*}", "STA B_REG", "STY B_REG+1", "JSR MID" },
 				new AbstractCodeModifier() {
@@ -571,6 +571,30 @@ public class IntOptimizer {
 					}
 				}));
 
+		// mid$(a$,i,<const>)
+		intPatterns.add(new IntPattern(true, "Optimized code for MID(2)",
+				new String[] { "LDA #<{CONST0}", "LDY #>{CONST0}", "STY TMP3_ZP+1", "LDX #<D_REG", "LDY #>D_REG",
+						"JSR COPY2_XYA", "JSR MID" },
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						String consty = cleaned.get(0);
+						consty = consty.substring(consty.indexOf("<") + 1).trim();
+						Number num = const2Value.get(consty);
+						int numd = num.intValue();
+						List<String> rep = new ArrayList<>();
+						if (numd >= 0) {
+							if (numd > 255) {
+								numd = 255;
+							}
+							rep.add("LDY #" + numd);
+							rep.add("JSR MIDCONST");
+						}
+						return combine(pattern, rep);
+					}
+				}));
+		
 		// mid$(a$,i,<int>)
 		intPatterns
 				.add(new IntPattern(true, "Optimized code for MID (2)",
