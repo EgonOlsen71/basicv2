@@ -60,6 +60,7 @@ public class NativeCompiler {
 			this.add("SGN");
 			this.add("SQR");
 			this.add("RND");
+			this.add("FRE");
 			this.add("CHR");
 			this.add("ASC");
 			this.add("STR");
