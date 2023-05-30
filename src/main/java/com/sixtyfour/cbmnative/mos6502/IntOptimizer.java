@@ -86,6 +86,7 @@ public class IntOptimizer {
 					}
 				}));
 		
+		
 		// intvar+<const> - Variant 1
 		intPatterns.add(new IntPattern(true, "Optimized code for adding INTs (1)",
 				new String[] { "LDA #<{CONST0}", "LDY #>{CONST0}", "JSR COPY2_XYA_YREG", "LDY {*}", "LDA {*}",
@@ -228,7 +229,37 @@ public class IntOptimizer {
 						return input;
 					}
 				}));
-		
+		/*
+		// Actually slower in my test case...!?
+		// intvarArray+-intvar
+		intPatterns.add(new IntPattern(true, "Optimized code for adding/subtracting INT variables from array",
+				new String[] { "JSR ARRAYACCESS_INTEGER_INT", "LDY {MEM0}", "LDA {MEM0}", "JSR INTFAC", "LDA #<X_REG", "LDY #>X_REG", "JSR FAST{*}" },
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						String func = cleaned.get(6);
+						if (func.contains("FASTFADDMEM") || func.contains("FASTFSUBMEM")) {
+							List<String> rep = new ArrayList<>();
+							rep.add(cleaned.get(0));
+							rep.add("LDY TMP2_ZP");
+							rep.add("LDA TMP2_ZP+1");
+							rep.add("STY TMP3_ZP");
+							rep.add("STA TMP3_ZP+1");
+							rep.add(cleaned.get(1));
+							rep.add(cleaned.get(2));
+							if (func.contains("FASTFADDMEM")) {
+								rep.add("JSR INTADDVAR");
+							} else {
+								rep.add("JSR INTSUBVAR");
+							}
+							return combine(pattern, rep);
+						}
+						pattern.reset();
+						return input;
+					}
+				}));
+		*/
 		// if l%=h% etc.
 		intPatterns.add(new IntPattern(true, "Optimized code for Integer(1)",
 				new String[] { "LDY {*}", "LDA {*}", "JSR INTFAC", "JSR FACYREG", "LDY {*}", "LDA {*}", "JSR INTFAC",
