@@ -76,7 +76,7 @@ public class IntOptimizer {
 								rep.add(cleaned.get(2));
 								rep.add(cleaned.get(3));
 								rep.add(cleaned.get(6)+"_PRE");
-							return combine(pattern, rep);
+								return combine(pattern, rep);
 							} catch(Exception e) {
 								// Just in case...
 							}
@@ -982,7 +982,8 @@ public class IntOptimizer {
 					public List<String> modify(IntPattern pattern, List<String> input) {
 						input = super.modify(pattern, input);
 						String vary = cleaned.get(0);
-						if (vary.contains("%")) {
+						// Avoid interference with another optimization that changes the underlying code unnoticed from this one...hacky...
+						if (vary.contains("%") && !cleaned.get(9).contains("_PRE")) {
 							List<String> rep = new ArrayList<>();
 							rep.add(cleaned.get(5));
 							rep.add(cleaned.get(6));
@@ -1018,7 +1019,8 @@ public class IntOptimizer {
 					public List<String> modify(IntPattern pattern, List<String> input) {
 						input = super.modify(pattern, input);
 						String vary = cleaned.get(0);
-						if (vary.contains("%")) {
+						// Avoid interference with another optimization that changes the underlying code unnoticed from this one...hacky...
+						if (vary.contains("%") && !cleaned.get(11).contains("_PRE")) {
 							List<String> rep = new ArrayList<>();
 							rep.add(cleaned.get(7));
 							rep.add(cleaned.get(8));
@@ -1560,7 +1562,11 @@ public class IntOptimizer {
 			for (IntPattern pattern : intPatterns) {
 				boolean matches = pattern.matches(line, i, const2Value, strConst2Value);
 				if (matches) {
-					input = pattern.modify(input);
+					try {
+						input = pattern.modify(input);
+					} catch(Exception e) {
+						Logger.log("Failed to apply: "+pattern.getName());
+					}
 				}
 			}
 		}
