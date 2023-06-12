@@ -111,7 +111,7 @@ public class If extends AbstractCommand {
 		Object res = logicTerm.eval(machine);
 		if (VarUtils.isNumber(res)) {
 			int ret = VarUtils.getInt(res);
-			return ret == -1;
+			return ret != 0;
 		}
 		return false;
 	}
