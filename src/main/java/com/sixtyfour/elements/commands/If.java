@@ -110,7 +110,7 @@ public class If extends AbstractCommand {
 	private boolean evalToBoolean(Machine machine, Term term) {
 		Object res = logicTerm.eval(machine);
 		if (VarUtils.isNumber(res)) {
-			int ret = VarUtils.getInt(res);
+			double ret = VarUtils.getDouble(res);
 			return ret != 0;
 		}
 		return false;
