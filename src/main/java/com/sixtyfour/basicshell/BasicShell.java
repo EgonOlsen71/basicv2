@@ -185,7 +185,7 @@ public class BasicShell {
 					runner.registerKey(e.getKeyChar());
 				}
 				
-				if (e.getKeyCode()==KeyEvent.VK_CONTROL) {
+				if (e.getKeyCode()==KeyEvent.VK_ALT) {
 					ShellConverter.toggleCasing();
 				}
 				
