@@ -7,18 +7,19 @@ import com.sixtyfour.plugins.impl.ConsoleOutputChannel;
  */
 public class ShellOutputChannel extends ConsoleOutputChannel {
 	private BasicShell shellFrame;
-
+	
 	public ShellOutputChannel(BasicShell shellFrame) {
 		this.shellFrame = shellFrame;
 	}
 
 	@Override
 	public void print(int id, String txt) {
-		shellFrame.putString(txt);
+		shellFrame.putString(ShellConverter.translateToFont(txt, shellFrame));
 	}
 
 	@Override
 	public void println(int id, String txt) {
-		shellFrame.putString(txt + '\n');
+		shellFrame.putString(ShellConverter.translateToFont(txt, shellFrame) + '\n');
 	}
+	
 }

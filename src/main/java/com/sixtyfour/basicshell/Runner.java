@@ -6,6 +6,7 @@ import com.sixtyfour.Basic;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.extensions.graphics.GraphicsBasic;
 import com.sixtyfour.extensions.textmode.ConsoleSupport;
+import com.sixtyfour.plugins.MemoryListener;
 
 /**
  * Runs the program that's inside the editor.
@@ -17,6 +18,7 @@ public class Runner implements Runnable {
 	private boolean running;
 	private Basic runningBasic = null;
 	private CompilerConfig config = new CompilerConfig();
+	private MemoryListener memListener;
 
 	public Runner(String[] program, BasicShell shellFrame) {
 		Basic.registerExtension(new GraphicsBasic());
@@ -24,6 +26,7 @@ public class Runner implements Runnable {
 		this.olsenBasic = new Basic(program);
 		olsenBasic.setOutputChannel(new ShellOutputChannel(shellFrame));
 		olsenBasic.setInputProvider(new ShellInputProvider(shellFrame));
+		memListener = new ShellMemoryListener(shellFrame);
 	}
 
 	public void dispose() {
@@ -63,11 +66,11 @@ public class Runner implements Runnable {
 				running = true;
 				Basic imm = new Basic("0" + command, olsenBasic.getMachine());
 				// imm.setLoopMode(LoopMode.REMOVE);
-				runningBasic = imm;
+				setRunningBasic(imm);
 				imm.compile(config, false);
 				imm.start(config);
 				running = false;
-				runningBasic = null;
+				removeRunningBasic();
 			}
 		});
 		try {
@@ -88,7 +91,7 @@ public class Runner implements Runnable {
 	public Basic getRunningBasic() {
 		return runningBasic;
 	}
-
+	
 	/**
 	 * Start BASIC task
 	 * 
@@ -108,9 +111,19 @@ public class Runner implements Runnable {
 	@Override
 	public void run() {
 		running = true;
-		runningBasic = olsenBasic;
+		setRunningBasic(olsenBasic);
 		olsenBasic.run(config);
 		running = false;
+		removeRunningBasic();
+	}
+	
+	private void setRunningBasic(Basic basic) {
+		basic.setMemoryListener(memListener);
+		runningBasic = basic;
+	}
+	
+	private void removeRunningBasic() {
+		runningBasic.setMemoryListener(null);
 		runningBasic = null;
 	}
 }

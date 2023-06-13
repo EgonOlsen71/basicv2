@@ -32,6 +32,7 @@ import com.sixtyfour.Logger;
 import com.sixtyfour.cbmnative.NativeCompiler;
 import com.sixtyfour.cbmnative.PlatformProvider;
 import com.sixtyfour.cbmnative.mos6502.c64.Platform64;
+import com.sixtyfour.cbmnative.mos6502.util.Converter;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.config.MemoryConfig;
 import com.sixtyfour.system.FileWriter;
@@ -85,6 +86,61 @@ public class BasicShell {
 		shellFrame.commandLoop();
 	}
 
+	
+
+	public ProgramStore getStore() {
+		return store;
+	}
+
+	/**
+	 * Get input from text area. Blocks the caller if there is none
+	 * 
+	 * @return
+	 */
+	public String getString() {
+		try {
+			return fromTextArea.take().trim();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public boolean peek() {
+		return fromTextArea.peek() != null;
+	}
+
+	/**
+	 * 
+	 * @param value
+	 */
+	public void setBackgroundColor(int value) {
+		mainTextArea.setBackground(new Color(Colors.COLORS[value & 15]));
+		
+	}
+
+	/**
+	 * 
+	 * @param value
+	 */
+	public void setFontColor(int value) {
+		Color col = new Color(Colors.COLORS[value & 15]);
+		mainTextArea.setForeground(col);
+		mainTextArea.setCaretColor(col);
+	}
+
+	public void clearHome() {
+		cls();
+	}
+
+	public void home() {
+		mainTextArea.setCaretPosition(1);
+	}
+
 	/**
 	 * Returns length of the output string before the last one Needed by some input
 	 * statements
@@ -128,10 +184,14 @@ public class BasicShell {
 				if (runner != null) {
 					runner.registerKey(e.getKeyChar());
 				}
-
+				
+				if (e.getKeyCode()==KeyEvent.VK_CONTROL) {
+					ShellConverter.toggleCasing();
+				}
+				
 				if (e.getKeyChar() == '\n') {
 					String line = getLineAt(rowNum);
-					lineContent = line;
+					lineContent = Converter.convertCase(line, false);
 					int end = mainTextArea.getText().length();
 					try {
 						end = mainTextArea.getLineEndOffset(rowNum);
@@ -179,7 +239,7 @@ public class BasicShell {
 				int cnt = 0;
 				while (true) {
 					try {
-						String s = toTextArea.take();
+						String s = ShellConverter.translateToFont(toTextArea.take(), BasicShell.this);
 						mainTextArea.append(s);
 						mainTextArea.setCaretPosition(mainTextArea.getDocument().getLength());
 						if (runner != null && runner.getRunningBasic() != null
@@ -511,27 +571,5 @@ public class BasicShell {
 		}
 		putString("READY.\n");
 	}
-
-	public ProgramStore getStore() {
-		return store;
-	}
-
-	/**
-	 * Get input from text area. Blocks the caller if there is none
-	 * 
-	 * @return
-	 */
-	public String getString() {
-		try {
-			return fromTextArea.take().trim();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-
-	public boolean peek() {
-		return fromTextArea.peek() != null;
-	}
-
+	
 }

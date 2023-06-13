@@ -26,6 +26,10 @@ class ShellTextComponent extends JTextArea {
 	private static final long serialVersionUID = 1L;
 	private final BasicShell parent;
 
+	/**
+	 * 
+	 * @param sf
+	 */
 	public ShellTextComponent(BasicShell sf) {
 		parent = sf;
 		setBackground(new Color(Colors.COLORS[6]));
@@ -63,12 +67,15 @@ class ShellTextComponent extends JTextArea {
 		});
 	}
 
+	/**
+	 * 
+	 */
 	@Override
 	public void paste() {
 		try {
 			String[] lines = getClipBoardString().split("[\r\n]+");
 			for (String s : lines) {
-				parent.getStore().insert(s.trim());
+				parent.getStore().insert(s.trim().toUpperCase());
 			}
 			parent.putStringUCase("" + lines.length + " lines pasted\n" + ProgramStore.OK);
 		} catch (Exception e) {
@@ -85,6 +92,6 @@ class ShellTextComponent extends JTextArea {
 				return (String) (clipData.getTransferData(stringFlavor));
 			}
 		}
-		throw new Exception("no clpboard data");
+		throw new Exception("no clipboard data");
 	}
 }
