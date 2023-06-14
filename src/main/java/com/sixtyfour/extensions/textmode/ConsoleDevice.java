@@ -12,6 +12,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowStateListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -74,6 +75,7 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 	private int insertPos = -1;
 	private Thread cursorThread = null;
 	private boolean shiftDown = false;
+	private Map<Integer, Integer> char2screenCode=new HashMap<>();
 
 	private Set<Integer> toIgnore = new HashSet<Integer>() {
 		private static final long serialVersionUID = 1L;
@@ -131,7 +133,7 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 		width = x;
 		height = y;
 
-		charset = createCharsetMapping();
+		createCharsetMapping();
 
 		oldSystemCallListener = machine.getSystemCallListener();
 		oldMemoryListener = machine.getMemoryListener();
@@ -318,7 +320,7 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 		frame.setVisible(consoleType > 0);
 	}
 
-	private String createCharsetMapping() {
+	private void createCharsetMapping() {
 		StringBuilder sb = new StringBuilder();
 		// Upper case mappings
 		sb.append("@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_ !\"#$%&'()*+,-./0123456789:;<=>?`abcdefghijklmnopqrstuvwxyz{|}~");
@@ -365,7 +367,12 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 		sb.setCharAt(105 + 128 + 256, 'ŕ');
 		sb.setCharAt(122 + 128 + 256, '');
 		
-		return sb.toString();
+		charset = sb.toString();
+		
+		for (int i = 0; i < 512; i++) {
+			char ct = charset.charAt(i);
+			char2screenCode.put((int) ct, i > 255 ? i - 256 : i);
+		}
 	}
 
 	/**
@@ -717,13 +724,11 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 	private int getValueToPoke(char c) {
 		c = getConvertedChar(c);
 
-		for (int i = 0; i < 512; i++) {
-			char ct = charset.charAt(i);
-			if (ct == c) {
-				return i > 255 ? i - 256 : i;
-			}
+		Integer val = char2screenCode.get((int) c);
+		if (val==null) {
+			return 32;
 		}
-		return 32;
+		return val;
 	}
 
 	private Font loadFont(String name, int width) {
