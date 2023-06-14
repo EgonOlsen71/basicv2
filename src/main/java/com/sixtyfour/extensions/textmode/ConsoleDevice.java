@@ -999,6 +999,7 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 				break;
 			}
 			ram[646] = col;
+			color = col;
 		}
 		if (newLine) {
 			reverseMode = false;
