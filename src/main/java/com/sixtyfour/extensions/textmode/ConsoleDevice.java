@@ -75,7 +75,7 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 	private int insertPos = -1;
 	private Thread cursorThread = null;
 	private boolean shiftDown = false;
-	private Map<Integer, Integer> char2screenCode=new HashMap<>();
+	private Map<Integer, Integer> char2screenCode = new HashMap<>();
 
 	private Set<Integer> toIgnore = new HashSet<Integer>() {
 		private static final long serialVersionUID = 1L;
@@ -366,9 +366,9 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 		sb.setCharAt(95 + 128 + 256, '');
 		sb.setCharAt(105 + 128 + 256, 'ŕ');
 		sb.setCharAt(122 + 128 + 256, '');
-		
+
 		charset = sb.toString();
-		
+
 		for (int i = 0; i < 512; i++) {
 			char ct = charset.charAt(i);
 			char2screenCode.put((int) ct, i > 255 ? i - 256 : i);
@@ -676,10 +676,12 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 		int xc = x * cw;
 		int yc = y * cw;
 		int offset = x + y * 40;
-		if (clear) {
-			clearRect(xc, yc, xc + cw, yc + cw, bgColor);
+		int col = getColor(offset);
+		boolean invert = needsInversion(offset);
+		if (clear || invert) {
+			clearRect(xc, yc, xc + cw, yc + cw, invert ? col : bgColor);
 		}
-		reallyPrintChar(offset, yc, xc);
+		reallyPrintChar(offset, yc, xc, invert ? bgColor : -1);
 	}
 
 	private void printChar(char c) {
@@ -691,13 +693,28 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 		ci += reverseMode ? 128 : 0;
 		ram[TEXT_RAM + offset] = (int) (ci & 0xff);
 		ram[COLOR_RAM + offset] = ram[646] & 15;
-		clearRect(xc, yc, xc + cw, yc + cw, bgColor);
-		reallyPrintChar(offset, yc, xc);
+		int col = getColor(offset);
+		boolean invert = needsInversion(offset);
+		clearRect(xc, yc, xc + cw, yc + cw, invert ? col : bgColor);
+		reallyPrintChar(offset, yc, xc, invert ? bgColor : -1);
 		setCursor(cursorX + 1, cursorY);
 	}
 
-	private void reallyPrintChar(int offset, int yc, int xc) {
-		getContext().setColor(colors[ram[COLOR_RAM + offset] & 15]);
+	private boolean needsInversion(int offset) {
+		int chr = ram[TEXT_RAM + offset];
+		return (chr == 223 || chr == 233) && !this.graphicsFontUsed;
+	}
+
+	private int getColor(int offset) {
+		return ram[COLOR_RAM + offset] & 15;
+	}
+
+	private void reallyPrintChar(int offset, int yc, int xc, int bgColor) {
+		if (bgColor == -1) {
+			getContext().setColor(colors[getColor(offset)]);
+		} else {
+			getContext().setColor(colors[bgColor & 15]);
+		}
 		String ch = null;
 		if (graphicsFontUsed) {
 			ch = Character.toString((charset.charAt(((ram[TEXT_RAM + offset])) & 0xff)));
@@ -714,8 +731,8 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 			c = (char) ((int) c + 32);
 		}
 		// Issue #48
-		if (c>=192 && c<=223) {
-			c=(char)((int) c-96);
+		if (c >= 192 && c <= 223) {
+			c = (char) ((int) c - 96);
 		}
 		return c;
 	}
@@ -724,7 +741,7 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 		c = getConvertedChar(c);
 
 		Integer val = char2screenCode.get((int) c);
-		if (val==null) {
+		if (val == null) {
 			return 32;
 		}
 		return val;
