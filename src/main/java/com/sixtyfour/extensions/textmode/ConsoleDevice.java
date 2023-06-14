@@ -708,7 +708,6 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 	}
 
 	private char getConvertedChar(char c) {
-		System.out.println((int)c+"/"+reverseMode);
 		if (c >= 'a' && c <= 'z') {
 			c = (char) ((int) c - 32);
 		} else if (c >= 'A' && c <= 'Z') {
