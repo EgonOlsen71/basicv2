@@ -711,9 +711,6 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 		if (c>=192 && c<=223) {
 			c=(char)((int) c-96);
 		}
-		if (c>=192 && c<=223) {
-			c=(char)((int) c-96);
-		}
 		return c;
 	}
 
