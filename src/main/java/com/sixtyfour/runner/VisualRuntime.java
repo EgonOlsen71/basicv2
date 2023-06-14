@@ -20,6 +20,7 @@ import com.sixtyfour.extensions.graphics.GraphicsBasic;
 import com.sixtyfour.extensions.textmode.ConsoleSupport;
 import com.sixtyfour.parser.Preprocessor;
 import com.sixtyfour.plugins.CodeEnhancer;
+import com.sixtyfour.plugins.impl.FileDeviceProvider;
 import com.sixtyfour.plugins.impl.RamSystemCallListener;
 
 /**
@@ -39,6 +40,7 @@ public class VisualRuntime {
 	private JButton load;
 	private JButton run;
 	private JButton pause;
+	private boolean diskUsage=false;
 
 	private Basic basic;
 	private String[] code;
@@ -51,14 +53,15 @@ public class VisualRuntime {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		new VisualRuntime();
+		new VisualRuntime(args!=null && args.length>0 && args[0].equals("-disc"));
 	}
 
 	/**
 	 * Creates a new visual runtime.
 	 */
-	public VisualRuntime() {
+	public VisualRuntime(boolean useDiskEmulation) {
 		setup();
+		diskUsage = useDiskEmulation;
 	}
 
 	private void setup() {
@@ -167,6 +170,9 @@ public class VisualRuntime {
 			public void run() {
 				basic = new Basic(code);
 				basic.getMachine().addRoms();
+				if (diskUsage) {
+					basic.getMachine().setDeviceProvider(new FileDeviceProvider(basic.getMachine().getOutputChannel(), lastDir.getAbsolutePath()));
+				}
 				basic.setSystemCallListener(new RamSystemCallListener(basic.getMachine()));
 				basic.setCodeEnhancer(new CodeEnhancer() {
 					@Override
@@ -183,6 +189,7 @@ public class VisualRuntime {
 				try {
 					basic.run(config);
 				} catch (Exception e) {
+					e.printStackTrace();
 					JOptionPane.showMessageDialog(frame, "ERROR: " + e.getMessage());
 				} finally {
 					stopProgram();

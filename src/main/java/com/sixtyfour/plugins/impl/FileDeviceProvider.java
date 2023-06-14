@@ -1,11 +1,16 @@
 package com.sixtyfour.plugins.impl;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import com.sixtyfour.Loader;
+import com.sixtyfour.cbmnative.mos6502.util.Converter;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.plugins.DeviceProvider;
 import com.sixtyfour.plugins.FileMode;
@@ -15,27 +20,28 @@ import com.sixtyfour.plugins.OutputChannel;
 import com.sixtyfour.plugins.PrintConsumer;
 
 /**
- * A simple implementation of a device provider that provides a virtual,
- * volatile disk in memory.
+ * A simple implementation of a device provider that provides access to files in the working directory.
  */
-public class MemoryDeviceProvider implements DeviceProvider {
+public class FileDeviceProvider implements DeviceProvider {
 
 	/** The number 2 file. */
 	private Map<Integer, FileWrapper> number2File = new HashMap<Integer, FileWrapper>();
 
-	/** The closed files. */
-	private List<FileWrapper> closedFiles = new ArrayList<FileWrapper>();
-
 	/** The console output. */
 	private OutputChannel consoleOutput = null;
+	
+	private String workDirectory;
+	
+	private int status = 0;
 
 	/**
 	 * Instantiates a new memory device provider.
 	 * 
 	 * @param consoleOutput the console output
 	 */
-	public MemoryDeviceProvider(OutputChannel consoleOutput) {
+	public FileDeviceProvider(OutputChannel consoleOutput, String workDirectory) {
 		this.consoleOutput = consoleOutput;
+		this.workDirectory = workDirectory;
 	}
 
 	/*
@@ -52,10 +58,10 @@ public class MemoryDeviceProvider implements DeviceProvider {
 		if (file.getDeviceNumber() == 3) {
 			dump(consoleOutput, file, fileNumber);
 		}
-
-		if (!file.getFileMode().equals(FileMode.READ) && !file.getFileMode().equals(FileMode.STATUS)) {
-			closedFiles.add(file);
+		if (file.getFileMode()==FileMode.APPEND || file.getFileMode()==FileMode.WRITE|| file.getFileMode()==FileMode.MODIFY) {
+			writeToDisk(file);
 		}
+		status = 0;
 	}
 
 	/*
@@ -175,12 +181,14 @@ public class MemoryDeviceProvider implements DeviceProvider {
 	 * @see sixtyfour.plugins.DeviceProvider#open(int, int, int, java.lang.String)
 	 */
 	public void open(int fileNumber, int device, int secondaryAddress, String fileName) {
+		//System.out.println("Open: "+fileName+"/"+device+"/"+secondaryAddress);
 		FileWrapper file = new FileWrapper();
 		file.setDeviceNumber(device);
 		file.setFileName(fileName);
 		file.setFileMode(FileMode.WRITE);
 		file.setFileType(FileType.SEQ);
 		file.reset();
+		status = 0;
 
 		if (number2File.size() >= 10) {
 			throw new RuntimeException("Too many files error!");
@@ -240,21 +248,7 @@ public class MemoryDeviceProvider implements DeviceProvider {
 			}
 
 			if (file.getFileMode().equals(FileMode.READ) || file.getFileMode().equals(FileMode.APPEND)) {
-				for (FileWrapper fw : closedFiles) {
-					if (fw.getFileName().equals(file.getFileName())) {
-						file.setContent(fw.getContent());
-						break;
-					}
-				}
-			}
-			if (file.getFileMode().equals(FileMode.WRITE) || file.getFileMode().equals(FileMode.APPEND)) {
-				for (Iterator<FileWrapper> fitty = closedFiles.iterator(); fitty.hasNext();) {
-					FileWrapper fw = fitty.next();
-					if (fw.getFileName().equals(file.getFileName())) {
-						fitty.remove();
-						break;
-					}
-				}
+				readFromDisk(file);
 			}
 		} else {
 			print(fileNumber, fileName);
@@ -342,7 +336,7 @@ public class MemoryDeviceProvider implements DeviceProvider {
 			throw new RuntimeException("File not open error: " + fileNumber);
 		}
 		if (!file.getFileMode().equals(FileMode.READ)) {
-			throw new RuntimeException("File not open for reading: " + fileNumber);
+			throw new RuntimeException("File not open for reading: " + fileNumber+"/"+file.getFileMode());
 		}
 	}
 
@@ -365,13 +359,14 @@ public class MemoryDeviceProvider implements DeviceProvider {
 		StringBuilder part = new StringBuilder();
 		String ret = null;
 		boolean inString = false;
-		for (int i = 0; i < data.length(); i++) {
+		int i;
+		for (i = 0; i < data.length(); i++) {
 			char c = data.charAt(i);
 			if (c == '"') {
 				inString = !inString;
 			}
 			if (!inString) {
-				if (c == '\n' || c == '\r' || c == ',' /*|| c == ';'*/ || c == ':') {
+				if (c == '\n' || c == '\r' || c == ',' || c == ':') {
 					if (cnt == pos) {
 						ret = part.toString();
 						break;
@@ -385,11 +380,35 @@ public class MemoryDeviceProvider implements DeviceProvider {
 			part.append(c);
 		}
 		file.nextPosition();
+		if (i+1 >= data.length()) {
+			status = 64;
+		}
+		if (ret==null) {
+			ret="";
+			status = 64;
+		}
 		return ret;
+	}
+	
+	private void writeToDisk(FileWrapper file) {
+		throw new RuntimeException("not implemented: write to disk!");
+	}
+	
+	private void readFromDisk(FileWrapper file) {
+		try {
+			File fily = new File(workDirectory, file.getFileName());
+			List<String> content = new ArrayList<>(Arrays.asList(Loader.loadProgram(new FileInputStream(fily))));
+			content = content.stream().map(p-> p.isBlank()?p:(p+"\n")).map(p -> Converter.convertCase(p, false)).collect(Collectors.toList());
+			file.setContent(content);
+		} catch(Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException("file not found: "+file.getFileName());
+		}
+		
 	}
 
 	@Override
 	public Integer getStatus() {
-		return 128;
+		return status;
 	}
 }

@@ -8,7 +8,8 @@ import com.sixtyfour.system.Machine;
 
 /**
  * A system variable that represents the current status. The current
- * implementation always returns 128 for this.
+ * implementation always returns 128 for this unless a device provider implementation
+ * decides otherwise.
  */
 public class Status extends Variable {
 
@@ -37,6 +38,9 @@ public class Status extends Variable {
 	 */
 	@Override
 	public Object eval(Machine machine) {
+		if (machine.getDeviceProvider() != null) {
+			return machine.getDeviceProvider().getStatus();
+		}
 		return getValue();
 	}
 

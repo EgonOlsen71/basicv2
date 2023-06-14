@@ -70,7 +70,10 @@ public class Right extends AbstractFunction {
 			} catch (Exception e) {
 				throw new RuntimeException("Illegal quantity error: " + txt + "/" + count);
 			}
+		} catch(RuntimeException r) {
+			throw r;
 		} catch (Throwable t) {
+			t.printStackTrace();
 			throw new RuntimeException("Syntax error: " + term);
 		}
 	}

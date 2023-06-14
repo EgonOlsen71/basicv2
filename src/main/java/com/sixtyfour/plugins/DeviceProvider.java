@@ -116,4 +116,10 @@ public interface DeviceProvider extends PrintConsumer {
 	 */
 	void verify(String fileName, int device, int secondary);
 
+	/**
+	 * 
+	 * @return
+	 */
+	Integer getStatus();
+
 }

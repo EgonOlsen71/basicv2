@@ -76,6 +76,10 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 	private Thread cursorThread = null;
 	private boolean shiftDown = false;
 	private Map<Integer, Integer> char2screenCode = new HashMap<>();
+	@SuppressWarnings("unused")
+	private int aReg=0;
+	private int xReg=0;
+	private int yReg=0;
 
 	private Set<Integer> toIgnore = new HashSet<Integer>() {
 		private static final long serialVersionUID = 1L;
@@ -371,7 +375,9 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 
 		for (int i = 0; i < 512; i++) {
 			char ct = charset.charAt(i);
-			char2screenCode.put((int) ct, i > 255 ? i - 256 : i);
+			if (!char2screenCode.containsKey((int) ct)) {
+				char2screenCode.put((int) ct, i > 255 ? i - 256 : i);
+			}
 		}
 	}
 
@@ -451,6 +457,9 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 
 	@Override
 	public void sys(int addr, Object... params) {
+		if (addr==65520) {
+			setCursor(yReg, xReg);
+		}
 		oldSystemCallListener.sys(addr, params);
 	}
 
@@ -469,7 +478,13 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 			color = value;
 		} else if (addr == 199) {
 			reverseMode = value != 0;
-		} else if (addr == 53281) {
+		} else if (addr == 781) {
+			xReg=value;
+		} else if (addr == 782) {
+			yReg=value;
+		} else if (addr == 780) {
+			aReg=value;
+		}else if (addr == 53281) {
 			bgColor = value;
 			updateScreen();
 		} else if (addr == 53272) {
@@ -491,7 +506,12 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 	public Integer peek(int addr) {
 		if (addr == 198) {
 			return ram[addr];
+		} else if (addr == 211) {
+			return cursorX;
+		} else if (addr == 214) {
+			return cursorY;
 		}
+		
 		return oldMemoryListener.peek(addr);
 	}
 
@@ -739,7 +759,16 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 
 	private int getValueToPoke(char c) {
 		c = getConvertedChar(c);
-
+/*
+		for (int i = 0; i < 512; i++) {
+			char ct = charset.charAt(i);
+			if (ct == c) {
+				return i > 255 ? i - 256 : i;
+			}
+		}
+		return 32;*/
+		
+		
 		Integer val = char2screenCode.get((int) c);
 		if (val == null) {
 			return 32;
