@@ -364,7 +364,7 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 		sb.setCharAt(95 + 128 + 256, '');
 		sb.setCharAt(105 + 128 + 256, 'ŕ');
 		sb.setCharAt(122 + 128 + 256, '');
-
+		
 		return sb.toString();
 	}
 
@@ -460,6 +460,8 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 			pokeColor(addr, value);
 		} else if (addr == 646) {
 			color = value;
+		} else if (addr == 199) {
+			reverseMode = value != 0;
 		} else if (addr == 53281) {
 			bgColor = value;
 			updateScreen();
@@ -699,10 +701,18 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 	}
 
 	private char getConvertedChar(char c) {
+		System.out.println((int)c+"/"+reverseMode);
 		if (c >= 'a' && c <= 'z') {
 			c = (char) ((int) c - 32);
 		} else if (c >= 'A' && c <= 'Z') {
 			c = (char) ((int) c + 32);
+		}
+		// Issue #48
+		if (c>=192 && c<=223) {
+			c=(char)((int) c-96);
+		}
+		if (c>=192 && c<=223) {
+			c=(char)((int) c-96);
 		}
 		return c;
 	}
