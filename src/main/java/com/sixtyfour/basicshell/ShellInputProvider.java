@@ -23,7 +23,12 @@ public class ShellInputProvider implements InputProvider {
 	@Override
 	public String readString() {
 		int l = shellFrame.getPenultimateOutputSize();
-		return shellFrame.getString().substring(l + 1);
+		String ret = "";
+		String str = shellFrame.getString();
+		if (str.length()>1) {
+			ret = str.substring(l + 2);
+		}
+		return ret;
 	}
 
 	public Character getCurrentKey() {
