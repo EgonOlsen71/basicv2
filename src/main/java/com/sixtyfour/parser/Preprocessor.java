@@ -176,6 +176,7 @@ public class Preprocessor {
 		Map<Character, String> replacements = new HashMap<>();
 		replacements.put('£', "{pound}");
 		replacements.put('π', "{pi}");
+		replacements.put('Π', "{pi}");
 
 		StringBuilder sb = new StringBuilder();
 		for (String line : code) {

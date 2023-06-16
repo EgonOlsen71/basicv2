@@ -403,7 +403,7 @@ public class Basic implements ProgramExecutor {
 							}
 							part = command.parse(config, part, lineCnt, cl.getNumber(), pos, (pos == parts.length - 1),
 									machine);
-
+							
 							machine.addCommand(command);
 							cl.addCommand(command);
 

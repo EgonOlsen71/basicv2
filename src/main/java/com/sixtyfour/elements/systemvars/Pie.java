@@ -22,5 +22,10 @@ public class Pie extends Variable {
 	public boolean isReadOnly() {
 		return true;
 	}
+	
+	@Override
+	public boolean isConstant() {
+		return true;
+	}
 
 }
