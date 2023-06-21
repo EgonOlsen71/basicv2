@@ -191,6 +191,30 @@ public class ControlCodes {
 		return null;
 	}
 
+	/**
+	 * Replaces all occurances of a control codes in a string by their PETSCII equivalents.
+	 * @param txt
+	 * @return
+	 */
+	public static String convert2Codes(String txt) {
+		if (txt==null) {
+			return null;
+		}
+		int pos=-1;
+		do {
+			pos = txt.indexOf("{", pos+1);
+			if (pos!=-1) {
+				int pos2 = txt.indexOf("}",pos);
+				if (pos2!=-1) {
+					String part = txt.substring(pos, pos2+1);
+					int chary = ControlCodes.getCode(part);
+					txt = txt.replace(part, String.valueOf((char) chary));
+				}
+			}
+		} while(pos!=-1);
+		return txt;
+	}
+	
 	public static void main(String[] args) {
 		System.out.println(getCode("{control-q}"));
 	}

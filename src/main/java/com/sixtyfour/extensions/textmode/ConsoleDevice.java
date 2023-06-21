@@ -26,6 +26,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
+import com.sixtyfour.parser.assembly.ControlCodes;
 import com.sixtyfour.plugins.InputProvider;
 import com.sixtyfour.plugins.MemoryListener;
 import com.sixtyfour.plugins.OutputChannel;
@@ -890,6 +891,9 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 
 	private void print(String txt, boolean newLine) {
 		int col = ram[646] % 0xff;
+		
+		txt = ControlCodes.convert2Codes(txt);
+		
 		for (int i = 0; i < txt.length(); i++) {
 			char c = txt.charAt(i);
 			switch ((int) c) {
@@ -1007,6 +1011,7 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 		}
 		update();
 	}
+
 
 	private boolean shiftRight() {
 		synchronized (this) {
