@@ -27,6 +27,7 @@ public class ShellConverter {
 		int sc;
 		for (int i=0; i<chars.length(); i++) {
 	        char c = chars.charAt(i);
+	        System.out.println((int)c);
 	        switch (c) {
 		        case 147:
 		        	shell.clearHome();
@@ -34,6 +35,9 @@ public class ShellConverter {
 		        case 19:
 		        	// Doesn't really work!?
 		        	shell.home(); 
+		        	break;
+		        case 9:
+		        	text.append("\t");
 		        	break;
 		        case 18:
 		        	ShellConverter.reverseOn();
