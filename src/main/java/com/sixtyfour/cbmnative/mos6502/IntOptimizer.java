@@ -1396,7 +1396,35 @@ public class IntOptimizer {
 					}
 				}));
 		
-		
+		intPatterns.add(new IntPattern(true, "Faster POKE of float into int",
+				new String[] { "LDY {*}", "LDA {*}", "JSR INTFAC", "JSR PUSHREAL", "LDA #<{*}", "LDY #>{*}", "JSR REALFAC", "JSR FACWORD", "STY {*}", "STA {*}", "JSR POPREAL", "JSR FACWORD", "STY {*}", "STA {*}" },
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						List<String> rep = new ArrayList<>();
+						String poky1 = cleaned.get(8);
+						String poky2 = cleaned.get(12);
+						if (poky1.contains("MOVBSELF") && poky2.contains("MOVBSELF")) {
+							
+							rep.add(cleaned.get(4));
+							rep.add(cleaned.get(5));
+							rep.add(cleaned.get(6));
+							rep.add(cleaned.get(7));
+							rep.add(cleaned.get(8));
+							rep.add(cleaned.get(9));
+							
+							rep.add(cleaned.get(0));
+							rep.add(cleaned.get(1));
+							rep.add(cleaned.get(12));
+							rep.add(cleaned.get(13));
+							return combine(pattern, rep);
+						}
+						pattern.reset();
+						return input;
+					}
+				}));
+
 		
 		intPatterns.add(new IntPattern(true, "Fast add/sub of integers",
 				new String[] { "JSR INTFAC", "JSR FACXREG", "LDY {MEM0}", "LDA {MEM0}", "JSR INTFAC", "LDA #<X_REG", "LDY #>X_REG", "JSR {*}", "JSR FACINT"  },
