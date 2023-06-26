@@ -995,6 +995,11 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 			case 14:
 				setCharset(false);
 				break;
+			case 9:
+				int cur = cursorX/10;
+				cur=10*(cur+1);
+				setCursor(cur, cursorY);
+				break;
 			case 142:
 				setCharset(true);
 				break;
