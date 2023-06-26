@@ -34,6 +34,7 @@ class ShellTextComponent extends JTextArea {
 		parent = sf;
 		setBackground(new Color(Colors.COLORS[6]));
 		setDoubleBuffered(true);
+		setTabSize(10);
 		setForeground(new Color(Colors.COLORS[14]));
 		setCaretColor(new Color(Colors.COLORS[14]));
 		setToolTipText("<html>Type one of:<br>" + "- cls<br>- list<br>- run<br>- new<br>"
