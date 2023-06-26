@@ -274,10 +274,14 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 							}
 							cursorThread.interrupt();
 							break;
+						case KeyEvent.VK_SPACE:
+							if (shiftDown) {
+								inputString.append((char) 160);
+							}
+							break;
 						default:
 							break;
 						}
-
 					}
 				}
 			}
@@ -556,7 +560,7 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 		}
 		stopCursor();
 
-		System.out.println("[" + inputString + "]");
+		//System.out.println("[" + inputString + "]");
 
 		return inputString.toString();
 	}

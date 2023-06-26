@@ -201,6 +201,8 @@ public class Input extends MultiVariableCommand {
 
 			Type varType = var.getType();
 
+			//System.out.println((int) input.charAt(0));
+			
 			if (input != null && !input.isEmpty() && Character.isWhitespace(input.charAt(0))) {
 				input = input.trim();
 			}
