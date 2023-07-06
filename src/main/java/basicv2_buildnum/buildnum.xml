@@ -1,0 +1,25 @@
+<project name="MyProject" default="UpdateBuildnum" basedir="../basicv2_buildnum">
+    <description>
+        increment build variable
+    </description>
+    <!-- set global properties for this build -->
+    <property name="src" location="../src/misc"/>
+
+    <tstamp>
+        <format property="current.time" pattern="MM/dd/yyyy hh:mm:ss aa" />
+    </tstamp>
+    <target name="UpdateBuildnum">
+        <buildnumber/>
+        <replaceregexp file="BuildInfo.java"
+                       match="BUILD_NUMBER\s+=\s+&quot;.*&quot;;"
+                       replace="BUILD_NUMBER = &quot;${build.number}&quot;;"
+                       byline="true"
+        />
+        <replaceregexp file="BuildInfo.java"
+                       match="BUILD_DATE\s+=\s+&quot;.*&quot;;"
+                       replace="BUILD_DATE = &quot;${current.time}&quot;;"
+                       byline="true"
+        />
+
+    </target>
+</project>
