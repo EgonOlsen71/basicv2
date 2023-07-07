@@ -897,7 +897,7 @@ public class IntOptimizer {
 		// that shouldn't matter here, because the block is done after the POKE anyway
 		// and
 		// there should be no further code referencing the value.
-		intPatterns.add(new IntPattern(true, "Optimized code for POKE of Integer values",
+		intPatterns.add(new IntPattern(true, "Optimized code for POKE of Integer values(1)",
 				new String[] { "LDY {MEM0}", "LDA {MEM0}", "JSR INTFAC", "JSR FACXREG", "JSR POPREAL", "JSR FACWORD",
 						"STY {*}", "STA {*}", "JSR XREGFAC", "JSR FACWORD", "{LABEL}", "STY $FFFF" },
 				new AbstractCodeModifier() {
@@ -922,6 +922,30 @@ public class IntOptimizer {
 					}
 				}));
 
+		// POKE a%,b% - happens in the second pass
+		intPatterns.add(new IntPattern(true, "Optimized code for POKE of Integer values(2)",
+				new String[] { "LDY {MEM0}", "LDA {MEM0}", "JSR INTFAC", "JSR FACYREG", "NOP", "LDA #<Y_REG", "LDY #>Y_REG",
+						"JSR REALFACPUSH", "JSR POPREAL", "JSR FACWORD", "STY {*}",  "STA {*}"},
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						String vary = cleaned.get(0);
+						String store = cleaned.get(10);
+						if (vary.contains("%") && store.contains("MOVBSELF")) {
+							List<String> rep = new ArrayList<>();
+							rep.add(cleaned.get(0));
+							rep.add(cleaned.get(1));
+							rep.add(cleaned.get(10));
+							rep.add(cleaned.get(11));
+							return combine(pattern, rep);
+						}
+						pattern.reset();
+						return input;
+					}
+				}));
+		
+		
 		// Integer array storage with contant index value
 		intPatterns.add(new IntPattern(true, "Optimized code for fixed integer index",
 				new String[] { "LDA #<{CONST0}", "LDY #>{CONST0}", "JSR COPY2_XYA_XREG", "LDY {*}", "LDA {*}",
