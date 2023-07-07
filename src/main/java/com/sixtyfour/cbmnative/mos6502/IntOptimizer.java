@@ -945,6 +945,29 @@ public class IntOptimizer {
 					}
 				}));
 		
+		// POKE k%,<*> with k% being calculated before
+		intPatterns.add(new IntPattern(true, "Optimized code for POKE of Integer values(3)",
+				new String[] { "JSR FACXREG", "JSR FACINT", "STY {*}",  "STA {*}", "JSR XREGFAC", "JSR FACWORD" , "STY {*}",  "STA {*}"},
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						String vary = cleaned.get(2);
+						String store = cleaned.get(6);
+						if (vary.contains("%") && store.contains("MOVBSELF")) {
+							List<String> rep = new ArrayList<>();
+							rep.add(cleaned.get(1));
+							rep.add(cleaned.get(2));
+							rep.add(cleaned.get(3));
+							rep.add(cleaned.get(6));
+							rep.add(cleaned.get(7));
+							return combine(pattern, rep);
+						}
+						pattern.reset();
+						return input;
+					}
+				}));
+		
 		
 		// Integer array storage with contant index value
 		intPatterns.add(new IntPattern(true, "Optimized code for fixed integer index",
