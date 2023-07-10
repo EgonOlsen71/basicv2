@@ -240,7 +240,7 @@ public class VisualRuntime {
 				Logger.log("Proceeding as if it was ASCII instead!");
 			}
 		} else {
-			code = Loader.loadProgram(file.toString());
+			code = Loader.loadProgram(srcFile);
 		}
 		
 		lastDir = file.getParentFile();

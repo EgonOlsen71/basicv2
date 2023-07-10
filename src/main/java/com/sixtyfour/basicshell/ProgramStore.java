@@ -4,9 +4,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Comparator;
+import java.util.Locale;
 import java.util.TreeSet;
 
 import com.sixtyfour.Loader;
+import com.sixtyfour.Logger;
+import com.sixtyfour.parser.cbmnative.UnTokenizer;
 
 /**
  * The storage for the edited program.
@@ -92,10 +95,26 @@ public class ProgramStore {
 		store.clear();
 	}
 
-	public String load(String path) {
+	public String load(String srcFile) {
 		store.clear();
 		try {
-			String[] lines = Loader.loadProgram(path);
+			String[] lines = null;
+			if (srcFile.toLowerCase(Locale.ENGLISH).endsWith(".prg")) {
+				try {
+					Logger.log("Looks like a PRG file, trying to convert it...");
+					byte[] data = Loader.loadBlob(srcFile);
+					UnTokenizer unto = new UnTokenizer();
+					lines = unto.getText(data, true).toArray(new String[0]);
+					Logger.log("PRG file converted into ASCII, proceeding!");
+					srcFile = srcFile.replace(".prg", ".bas");
+				} catch (Exception e) {
+					Logger.log("Failed to convert PRG file: " + e.getMessage());
+					Logger.log("Proceeding as if it was ASCII instead!");
+				}
+			} else {
+				lines = Loader.loadProgram(srcFile);
+			}
+			
 			for (String line : lines) {
 				insert(line);
 			}
