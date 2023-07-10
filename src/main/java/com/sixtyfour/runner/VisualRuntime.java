@@ -5,6 +5,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.Locale;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -15,10 +16,12 @@ import javax.swing.UIManager;
 
 import com.sixtyfour.Basic;
 import com.sixtyfour.Loader;
+import com.sixtyfour.Logger;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.extensions.graphics.GraphicsBasic;
 import com.sixtyfour.extensions.textmode.ConsoleSupport;
 import com.sixtyfour.parser.Preprocessor;
+import com.sixtyfour.parser.cbmnative.UnTokenizer;
 import com.sixtyfour.plugins.CodeEnhancer;
 import com.sixtyfour.plugins.impl.FileDeviceProvider;
 import com.sixtyfour.plugins.impl.RamSystemCallListener;
@@ -222,7 +225,24 @@ public class VisualRuntime {
 			return;
 		}
 		File file = fc.getSelectedFile();
-		code = Loader.loadProgram(file.toString());
+		String srcFile = file.getAbsolutePath();
+		
+		if (srcFile.toLowerCase(Locale.ENGLISH).endsWith(".prg")) {
+			try {
+				Logger.log("Looks like a PRG file, trying to convert it...");
+				byte[] data = Loader.loadBlob(srcFile);
+				UnTokenizer unto = new UnTokenizer();
+				code = unto.getText(data, true).toArray(new String[0]);
+				Logger.log("PRG file converted into ASCII, proceeding!");
+				srcFile = srcFile.replace(".prg", ".bas");
+			} catch (Exception e) {
+				Logger.log("Failed to convert PRG file: " + e.getMessage());
+				Logger.log("Proceeding as if it was ASCII instead!");
+			}
+		} else {
+			code = Loader.loadProgram(file.toString());
+		}
+		
 		lastDir = file.getParentFile();
 		for (String line : code) {
 			line = line.trim();
