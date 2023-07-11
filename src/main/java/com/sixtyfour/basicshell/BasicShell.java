@@ -64,24 +64,22 @@ public class BasicShell {
 	 */
 	public static void main(String[] unused) {
 		System.setProperty("sun.java2d.d3d", "false");
-		JFrame frame = new JFrame("Commodore BASIC V2");
-		frame.setIconImage(ResourceLoader.getIcon());
 		BasicShell shellFrame = new BasicShell();
-		frame.setContentPane(shellFrame.panel1);
-		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		frame.pack();
-		frame.setVisible(true);
-		shellFrame.putString("COMMODORE BASIC V2\n" + ProgramStore.OK);
-
-		try // increase GUI responsiveness
-		{
+		try {
 			SwingUtilities.invokeAndWait(new Runnable() {
 				public void run() {
+					JFrame frame = new JFrame("Commodore BASIC V2");
+					frame.setIconImage(ResourceLoader.getIcon());
+					frame.setContentPane(shellFrame.panel1);
+					frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+					frame.pack();
+					frame.setVisible(true);
+					shellFrame.putString("COMMODORE BASIC V2\n" + ProgramStore.OK);
 					Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
 				}
 			});
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 		shellFrame.commandLoop();
 	}
