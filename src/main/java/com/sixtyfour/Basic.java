@@ -486,10 +486,11 @@ public class Basic implements ProgramExecutor {
 	 * at runtime.
 	 * 
 	 * @param cmd the command to execute
+	 * @return the program counter
 	 */
-	public void executeSingleCommand(CompilerConfig config, String cmd) {
+	public BasicProgramCounter executeSingleCommand(CompilerConfig config, String cmd) {
 		if (cmd == null || cmd.isEmpty()) {
-			return;
+			return null;
 		}
 		Command command = Parser.getCommand(cmd.trim());
 		if (command == null) {
@@ -499,7 +500,7 @@ public class Basic implements ProgramExecutor {
 			cmd = TermEnhancer.removeWhiteSpace(cmd);
 		}
 		command.parse(config, cmd, 0, 0, 0, false, machine);
-		command.execute(config, machine);
+		return command.execute(config, machine);
 	}
 
 	/**
@@ -701,11 +702,16 @@ public class Basic implements ProgramExecutor {
 	*/
 	private void runInternal(CompilerConfig config) {
 		long start = System.nanoTime();
+		BasicProgramCounter pc = null;
 		if (codeEnhancer != null) {
 			String cmd = codeEnhancer.getFirstCommand();
-			executeSingleCommand(config, cmd);
+			pc = executeSingleCommand(config, cmd);
 		}
-		execute(config, 0, 0);
+		int lineCnt=0;
+		if (pc!=null && pc.getLineNumber()!=-1) {
+			lineCnt=lines.containsKey(pc.getLineNumber())?lines.get(pc.getLineNumber()).getCount():0;
+		}
+		execute(config, lineCnt, 0);
 		if (codeEnhancer != null) {
 			String cmd = codeEnhancer.getLastCommand();
 			executeSingleCommand(config, cmd);

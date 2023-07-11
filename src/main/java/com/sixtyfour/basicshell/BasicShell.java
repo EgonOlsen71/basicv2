@@ -448,12 +448,17 @@ public class BasicShell {
 				} else {
 					compile(split[1]);
 				}
-			} else if (sl.equals("run")) {
+			} else if (sl.startsWith("run")) {
 				if (runner != null) {
 					runner.dispose();
 				}
-				runner = new Runner(store.toArray(), this);
+				if (sl.trim().length()>3) {
+					runner = new Runner(store.toArray(), this, sl.trim());
+				} else {
+					runner = new Runner(store.toArray(), this);
+				}
 				runner.synchronousStart();
+				
 			} else if (split[0].toLowerCase().equals("save")) {
 				if (split.length != 2) {
 					putString("?MISSING FILE NAME\n");

@@ -6,6 +6,7 @@ import com.sixtyfour.Basic;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.extensions.graphics.GraphicsBasic;
 import com.sixtyfour.extensions.textmode.ConsoleSupport;
+import com.sixtyfour.plugins.CodeEnhancer;
 import com.sixtyfour.plugins.MemoryListener;
 
 /**
@@ -19,14 +20,21 @@ public class Runner implements Runnable {
 	private Basic runningBasic = null;
 	private CompilerConfig config = new CompilerConfig();
 	private MemoryListener memListener;
+	private String initCommand=null;
 
 	public Runner(String[] program, BasicShell shellFrame) {
+		this(program, shellFrame, null);
+	}
+		
+	
+	public Runner(String[] program, BasicShell shellFrame, String initCommand) {
 		Basic.registerExtension(new GraphicsBasic());
 		Basic.registerExtension(new ConsoleSupport());
 		this.olsenBasic = new Basic(program);
 		olsenBasic.setOutputChannel(new ShellOutputChannel(shellFrame));
 		olsenBasic.setInputProvider(new ShellInputProvider(shellFrame));
 		memListener = new ShellMemoryListener(shellFrame);
+		this.initCommand = initCommand;
 	}
 
 	public void dispose() {
@@ -119,11 +127,27 @@ public class Runner implements Runnable {
 	
 	private void setRunningBasic(Basic basic) {
 		basic.setMemoryListener(memListener);
+		if (initCommand!=null) {
+			olsenBasic.setCodeEnhancer(new CodeEnhancer() {
+	
+				@Override
+				public String getFirstCommand() {
+					return initCommand;
+				}
+	
+				@Override
+				public String getLastCommand() {
+					return null;
+				}
+				
+			});
+		}
 		runningBasic = basic;
 	}
 	
 	private void removeRunningBasic() {
 		runningBasic.setMemoryListener(null);
+		olsenBasic.setCodeEnhancer(null);
 		runningBasic = null;
 	}
 }
