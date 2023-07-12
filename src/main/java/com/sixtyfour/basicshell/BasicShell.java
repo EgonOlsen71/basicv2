@@ -72,8 +72,9 @@ public class BasicShell {
 					frame.setIconImage(ResourceLoader.getIcon());
 					frame.setContentPane(shellFrame.panel1);
 					frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-					frame.pack();
+					//
 					frame.setVisible(true);
+					frame.pack();
 					shellFrame.putString("COMMODORE BASIC V2\n" + ProgramStore.OK);
 					Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
 				}

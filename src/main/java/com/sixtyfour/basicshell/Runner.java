@@ -132,7 +132,7 @@ public class Runner implements Runnable {
 	
 				@Override
 				public String getFirstCommand() {
-					return initCommand;
+					return initCommand.replace("run", "goto");
 				}
 	
 				@Override
