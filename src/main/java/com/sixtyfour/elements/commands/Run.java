@@ -8,6 +8,7 @@ import com.sixtyfour.cbmnative.Util;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.system.BasicProgramCounter;
+import com.sixtyfour.system.DataStore;
 
 /**
  * The RUN command.
@@ -62,8 +63,12 @@ public class Run extends AbstractCommand {
 	 */
 	@Override
 	public BasicProgramCounter execute(CompilerConfig config, Machine machine) {
+		// Save datastore in tmp. var to avoid resetting it's content by a RUN in the code.
+		DataStore datas = machine.getDataStore();
+		machine.setDataStore(new DataStore());
 		machine.resetMemory();
-		machine.getDataStore().restore();
+		datas.restore();
+		machine.setDataStore(datas);
 		pc.setLinePos(-1);
 		if (targetLineNumber != -1) {
 			pc.setLineNumber(targetLineNumber);
