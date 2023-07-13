@@ -375,6 +375,7 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 		sb.setCharAt(95 + 128 + 256, '');
 		sb.setCharAt(105 + 128 + 256, 'ŕ');
 		sb.setCharAt(122 + 128 + 256, '');
+		sb.setCharAt(191, sb.charAt(94));	// PI 255 to PI 126...
 
 		charset = sb.toString();
 
@@ -773,8 +774,8 @@ public class ConsoleDevice implements OutputChannel, SystemCallListener, MemoryL
 		}
 		return 32;*/
 		
-		
 		Integer val = char2screenCode.get((int) c);
+		System.out.println(c+"/"+val);
 		if (val == null) {
 			return 32;
 		}

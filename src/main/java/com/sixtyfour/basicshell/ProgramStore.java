@@ -9,6 +9,8 @@ import java.util.TreeSet;
 
 import com.sixtyfour.Loader;
 import com.sixtyfour.Logger;
+import com.sixtyfour.cbmnative.mos6502.util.Converter;
+import com.sixtyfour.parser.assembly.ControlCodes;
 import com.sixtyfour.parser.cbmnative.UnTokenizer;
 
 /**
@@ -105,6 +107,9 @@ public class ProgramStore {
 					byte[] data = Loader.loadBlob(srcFile);
 					UnTokenizer unto = new UnTokenizer();
 					lines = unto.getText(data, true).toArray(new String[0]);
+					for (int i=0;i<lines.length; i++) {
+						lines[i]=ControlCodes.convert2Codes(Converter.convertCase(lines[i], false));
+					}
 					Logger.log("PRG file converted into ASCII, proceeding!");
 					srcFile = srcFile.replace(".prg", ".bas");
 				} catch (Exception e) {

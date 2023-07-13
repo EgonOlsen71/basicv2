@@ -17,10 +17,12 @@ import javax.swing.UIManager;
 import com.sixtyfour.Basic;
 import com.sixtyfour.Loader;
 import com.sixtyfour.Logger;
+import com.sixtyfour.cbmnative.mos6502.util.Converter;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.extensions.graphics.GraphicsBasic;
 import com.sixtyfour.extensions.textmode.ConsoleSupport;
 import com.sixtyfour.parser.Preprocessor;
+import com.sixtyfour.parser.assembly.ControlCodes;
 import com.sixtyfour.parser.cbmnative.UnTokenizer;
 import com.sixtyfour.plugins.CodeEnhancer;
 import com.sixtyfour.plugins.impl.FileDeviceProvider;
@@ -233,6 +235,9 @@ public class VisualRuntime {
 				byte[] data = Loader.loadBlob(srcFile);
 				UnTokenizer unto = new UnTokenizer();
 				code = unto.getText(data, true).toArray(new String[0]);
+				for (int i=0;i<code.length; i++) {
+					code[i]=ControlCodes.convert2Codes(Converter.convertCase(code[i], false));
+				}
 				Logger.log("PRG file converted into ASCII, proceeding!");
 				srcFile = srcFile.replace(".prg", ".bas");
 			} catch (Exception e) {
