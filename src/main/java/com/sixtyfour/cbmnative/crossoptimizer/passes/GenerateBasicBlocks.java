@@ -43,9 +43,7 @@ public class GenerateBasicBlocks implements HighLevelOptimizer {
 		}
 
 		public void addStatement(On onStatement) {
-			for (int jumpTarget : onStatement.getLineNumbers()) {
-				rowsWithGotoTarget.add(jumpTarget);
-			}
+			rowsWithGotoTarget.addAll(onStatement.getLineNumbers());
 		}
 
 		public void addStatement(Gosub gotoStatement) {
@@ -105,7 +103,7 @@ public class GenerateBasicBlocks implements HighLevelOptimizer {
 		}
 	}
 
-	private Analysis analysis = new Analysis();
+	private final Analysis analysis = new Analysis();
 
 	public boolean optimize(OrderedPCode orderedPCode) {
 		analyze(orderedPCode);

@@ -1,5 +1,7 @@
 package com.sixtyfour.cbmnative.crossoptimizer.common;
 
+import com.sixtyfour.Basic;
+import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.commands.Command;
 import com.sixtyfour.elements.commands.Gosub;
 import com.sixtyfour.elements.commands.If;
@@ -7,6 +9,7 @@ import com.sixtyfour.parser.Line;
 
 import java.util.List;
 
+import static com.sixtyfour.cbmnative.crossoptimizer.common.CommandsRowSplitter.joinCommands;
 import static com.sixtyfour.cbmnative.crossoptimizer.common.CommandsRowSplitter.splitCommandIntoComponents;
 
 public class PCodeUtilities {
@@ -43,7 +46,7 @@ public class PCodeUtilities {
     public static void replaceCommandStringComponent(Line line, int indexCommand, String newString) {
         List<String> sourceLineTextComponents = splitCommandIntoComponents(line.getLine());
         sourceLineTextComponents.set(indexCommand, newString);
-        String updatedLineCommand = String.join(":", sourceLineTextComponents);
+        String updatedLineCommand = joinCommands(sourceLineTextComponents);
         line.setLine(updatedLineCommand);
     }
 
@@ -65,4 +68,27 @@ public class PCodeUtilities {
         return pCode.getLineDirect(currentLineIndex + 1);
     }
 
+
+    public static OrderedPCode replaceLineInCode(OrderedPCode pCode, int line, String lineText) {
+        StringBuilder sb = new StringBuilder();
+        List<Line> allLines = pCode.getLines();
+        for (Line l : allLines) {
+            sb.append(l.getNumber()).append(" ");
+            if (line != l.getNumber()) {
+                sb.append(l.getLine());
+            } else {
+                sb.append(lineText);
+            }
+            sb.append('\n');
+        }
+        String code = sb.toString();
+        try {
+            Basic basic = new Basic(code);
+            basic.compile(new CompilerConfig());
+            return new OrderedPCode(basic.getPCode());
+        }
+        catch (Exception ex){
+            throw new RuntimeException("Cannot compile code: \n"+code);
+        }
+    }
 }

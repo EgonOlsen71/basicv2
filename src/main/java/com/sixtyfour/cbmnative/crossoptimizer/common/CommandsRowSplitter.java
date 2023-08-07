@@ -26,4 +26,16 @@ public class CommandsRowSplitter {
         result.add(lastCommandText);
         return result;
     }
+
+    public static String joinCommands(List<String> commandComponents) {
+        return String.join(":", commandComponents);
+    }
+
+    public static String replaceComponent(String line, int componentIndex, String newCode){
+        List<String> components = splitCommandIntoComponents(line);
+        components.remove(componentIndex);
+        components.add(componentIndex, newCode);
+        String result = joinCommands(components);
+        return result;
+    }
 }

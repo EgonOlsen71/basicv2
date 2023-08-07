@@ -103,7 +103,7 @@ public class MoSpeedCL {
 		cfg.setConstantFolding(getOption("constfolding", cmds));
 		cfg.setConstantPropagation(getOption("constprop", cmds));
 		cfg.setDeadCodeElimination(getOptionIntDefault("deadcodeopt", cmds, false));
-		cfg.setPcodeOptimizations(false /* getOption("pcodeopt", cmds) */);
+		cfg.setPcodeOptimizations("" /* getOption("pcodeopt", cmds) */);
 		cfg.setDeadStoreElimination(getOption("deadstoreopt", cmds));
 		cfg.setDeadStoreEliminationOfStrings(getOption("deadstoreoptstr", cmds));
 		cfg.setIntermediateLanguageOptimizations(getOption("ilangopt", cmds));

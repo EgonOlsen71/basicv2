@@ -51,7 +51,8 @@ public class PCode {
 	/**
 	 * @return
 	 */
-	public boolean optimize() {
+	public boolean optimize(String optionFlags) {
+		PCodeOptimizer.setup(optionFlags);
 		return PCodeOptimizer.optimize(this);
 	}
 
