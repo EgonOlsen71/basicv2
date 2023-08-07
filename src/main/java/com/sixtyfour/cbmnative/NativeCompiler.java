@@ -19,13 +19,7 @@ import com.sixtyfour.parser.Atom;
 import com.sixtyfour.parser.Line;
 import com.sixtyfour.parser.Term;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
-import com.sixtyfour.parser.optimize.ArrayOptimizer;
-import com.sixtyfour.parser.optimize.ConstantFolder;
-import com.sixtyfour.parser.optimize.ConstantPropagator;
-import com.sixtyfour.parser.optimize.DeadCodeChecker;
-import com.sixtyfour.parser.optimize.DeadStoreEliminator;
-import com.sixtyfour.parser.optimize.StringOptimizer;
-import com.sixtyfour.parser.optimize.TermOptimizer;
+import com.sixtyfour.parser.optimize.*;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.util.CompilerException;
 
@@ -60,7 +54,6 @@ public class NativeCompiler {
 			this.add("SGN");
 			this.add("SQR");
 			this.add("RND");
-			this.add("FRE");
 			this.add("CHR");
 			this.add("ASC");
 			this.add("STR");
@@ -242,22 +235,21 @@ public class NativeCompiler {
 			// folding
 			// will take care of the unused expressions later anyway.
 			ConstantPropagator.propagateConstants(config, machine);
-			
+
 			// test
 			StringOptimizer.optimizeStrings(config, machine);
-			
+
 			ConstantFolder.foldConstants(config, machine);
 			DeadStoreEliminator.eliminateDeadStores(config, basic);
 
 		}
-		
+
 		if (config.isArrayOptimizations()) {
 			ArrayOptimizer.optimizeArrays(machine);
 		}
-		
-		if (config.isPcodeOptimize()) {
-			pCode.optimize();
-		}
+
+		pCode.optimize(config.pcodeOptimizeConfig());
+
 
 		basic.modifyDelayLoops(config);
 		TermOptimizer.handleConstantConditions(config, machine, basic);
