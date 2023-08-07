@@ -512,6 +512,49 @@ public class NativeOptimizer {
 						}
 					}
 				}
+				
+				// z.B: 1024+(X-1)
+				// MOV Y,#1{INTEGER}
+				// MOV X,X{REAL}
+				// SUB X,Y
+				// MOV Y,#1024{INTEGER}
+				// ADD X,Y
+				if (lines[0].startsWith("MOV Y,#") && lines[0].endsWith("{INTEGER}") && lines[1].startsWith("MOV X,") && lines[2].equals("SUB X,Y")
+						&& lines[3].startsWith("MOV Y,#") && lines[3].endsWith("{INTEGER}") && lines[4].equals("ADD X,Y")) {
+					ret.add(lines[1]);
+					ret.add("MOV Y,#"+(Integer.parseInt(lines[3].substring(7).replace("{INTEGER}", ""))-Integer.parseInt(lines[0].substring(7).replace("{INTEGER}", "")))+"{INTEGER}");
+					ret.add(lines[4]);
+					i+=4;
+					continue;
+				}
+				
+				// MOV Y,#1{INTEGER}
+				// MOV X,X{REAL}
+				// ADD X,Y
+				// MOV Y,#1024{INTEGER}
+				// ADD X,Y
+				if (lines[0].startsWith("MOV Y,#") && lines[0].endsWith("{INTEGER}") && lines[1].startsWith("MOV X,") && lines[2].equals("ADD X,Y")
+						&& lines[3].startsWith("MOV Y,#") && lines[3].endsWith("{INTEGER}") && lines[4].equals("ADD X,Y")) {
+					ret.add(lines[1]);
+					ret.add("MOV Y,#"+(Integer.parseInt(lines[3].substring(7).replace("{INTEGER}", ""))+Integer.parseInt(lines[0].substring(7).replace("{INTEGER}", "")))+"{INTEGER}");
+					ret.add(lines[4]);
+					i+=4;
+					continue;
+				}
+				
+				// MOV Y,I{REAL}
+				// MOV X,#2{INTEGER}
+				// ADD X,Y
+				// MOV Y,#55296{INTEGER}
+				// ADD X,Y
+				if (lines[0].startsWith("MOV Y,") && lines[1].startsWith("MOV X,#") && lines[1].endsWith("{INTEGER}") && lines[2].equals("ADD X,Y")
+						&& lines[3].startsWith("MOV Y,#") && lines[3].endsWith("{INTEGER}") && lines[4].equals("ADD X,Y")) {
+					ret.add(lines[0]);
+					ret.add("MOV X,#"+(Integer.parseInt(lines[3].substring(7).replace("{INTEGER}", ""))+Integer.parseInt(lines[1].substring(7).replace("{INTEGER}", "")))+"{INTEGER}");
+					ret.add(lines[4]);
+					i+=4;
+					continue;
+				}
 
 				// MOV X,#6{INTEGER}
 				// MOVB 53280,X
