@@ -43,6 +43,8 @@ public class StringOptimizer {
 			Logger.log("Optimizing PRINT for size...");
 			Set<String> strings = new HashSet<>();
 			List<Print> prints = new ArrayList<>();
+			Command oldy = machine.getCurrentCommand();
+			machine.setCurrentCommand(new Print());
 			for (Command cmd : machine.getCommandList()) {
 				if (cmd.isCommand("PRINT")) {
 					Print print = (Print) cmd;
@@ -168,7 +170,7 @@ public class StringOptimizer {
 					}
 				}
 			}
-			
+			machine.setCurrentCommand(oldy);
 			Logger.log("Strings optimized: "+opti);
 			
 		} catch(Exception e) {
