@@ -30,6 +30,10 @@ public class Goto extends AbstractCommand implements Jump {
 		super("GOTO");
 	}
 
+	public Goto(int targetLineNumber) {
+		super("GOTO");
+		this.targetLineNumber = targetLineNumber;
+	}
 	/*
 	 * (non-Javadoc)
 	 * 
