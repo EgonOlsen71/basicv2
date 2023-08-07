@@ -251,12 +251,12 @@ public class NativeCompiler {
 
 		}
 		
+		pCode.optimize(config.pcodeOptimizeConfig());
+		
 		if (config.isArrayOptimizations()) {
 			ArrayOptimizer.optimizeArrays(machine);
 		}
 		
-		pCode.optimize(config.pcodeOptimizeConfig());
-
 		basic.modifyDelayLoops(config);
 		TermOptimizer.handleConstantConditions(config, machine, basic);
 
