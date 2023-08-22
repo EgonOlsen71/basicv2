@@ -952,7 +952,6 @@ RGCLOW1		LDA TMP4_REG
 			CMP ENDSTRBUF
 			BCS	GCEXECOMP		; This also triggers if it would fit exactly...but anyway...
 RGCEXIT		RTS					; It fits? Then exit without GC
-;###################################
 GCEXECOMP	LDA STRBUFP
 			STA STORE4
 			LDA STRBUFP+1
