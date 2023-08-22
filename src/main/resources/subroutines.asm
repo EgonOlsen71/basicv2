@@ -2535,7 +2535,8 @@ INTADD		LDX #128		; Do the fast way for negative numbers and everything below 16
 			LDX #64
 			STX TMP_REG
 			BIT TMP_REG
-			BNE FLOATINTADD
+			BEQ INTINTADD
+			JMP FLOATINTADD
 			
 INTINTADD	LDX #1			; flag that the value is present in TMP2_ZP
 			STX TMP_FLAG
@@ -2553,7 +2554,8 @@ INTINTADD	LDX #1			; flag that the value is present in TMP2_ZP
 INTSUB		LDX #128		; Do the fast way for positive numbers
 			STX TMP_REG
 			BIT TMP_REG
-			BNE FLOATINTSUBSW
+			BEQ INTINTSUB
+			JMP FLOATINTSUBSW
 			
 INTINTSUB	LDX #1			; flag that the value is present in TMP2_ZP
 			STX TMP_FLAG
