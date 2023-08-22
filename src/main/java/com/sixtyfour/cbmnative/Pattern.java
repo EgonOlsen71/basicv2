@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import com.sixtyfour.Logger;
+
 /**
  * A pattern definition that can be used in an optimizer.
  * 
@@ -141,77 +143,89 @@ public class Pattern implements java.lang.Cloneable {
 	 * @return the optimized code
 	 */
 	public List<String> apply(List<String> code) {
-		if (pos == pattern.size()) {
-			List<String> first = code.subList(0, index);
-			List<String> last = code.subList(end + 1, code.size());
-			String[] replacement = null;
-			boolean cntInc = false;
-			if (this.replacement != null) {
-				replacement = Arrays.copyOf(this.replacement, this.replacement.length);
-				List<String> sub = new ArrayList<String>();
-				for (String subline : code.subList(index, end + 1)) {
-					if (!subline.startsWith(";")) {
-						sub.add(subline);
-					}
+		try {
+			if (pos == pattern.size()) {
+				if (index>end) {
+					// For some strange reason, there are very rare cases, where index points to the end of the code...
+					// in that case, we simply skip this optimization...it would be better to find the root cause, but
+					// I can't be bothered. Most be some race condition between multiple optimizations interfering...
+					resetPattern();
+					return code;
 				}
-				for (int i = 0; i < replacement.length; i++) {
-					String from = "";
-					String to = "";
-					if (replacement[i].contains("|")) {
-						int pos = replacement[i].indexOf("|");
-						int pos2 = replacement[i].indexOf(">", pos);
-						from = replacement[i].substring(pos + 1, pos2).trim();
-						to = replacement[i].substring(pos2 + 1).trim();
-						replacement[i] = replacement[i].substring(0, pos).trim();
-					}
-					if (replacement[i].startsWith("{LINE")) {
-						String postFix = "";
-						if (!replacement[i].endsWith("}")) {
-							int pos = replacement[i].indexOf("}");
-							postFix = replacement[i].substring(pos + 1);
-							replacement[i] = replacement[i].substring(0, pos + 1);
+				List<String> first = code.subList(0, index);
+				List<String> last = code.subList(end + 1, code.size());
+				String[] replacement = null;
+				boolean cntInc = false;
+				if (this.replacement != null) {
+					replacement = Arrays.copyOf(this.replacement, this.replacement.length);
+					List<String> sub = new ArrayList<String>();
+					for (String subline : code.subList(index, end + 1)) {
+						if (!subline.startsWith(";")) {
+							sub.add(subline);
 						}
-						int num = Integer.parseInt(replacement[i].substring(5, replacement[i].length() - 1));
-						replacement[i] = sub.get(num) + postFix;
-					} else {
-						int pos = replacement[i].indexOf("{REG");
-						if (pos != -1) {
-							replace(replacement, i, pos, 4, regs);
+					}
+					for (int i = 0; i < replacement.length; i++) {
+						String from = "";
+						String to = "";
+						if (replacement[i].contains("|")) {
+							int pos = replacement[i].indexOf("|");
+							int pos2 = replacement[i].indexOf(">", pos);
+							from = replacement[i].substring(pos + 1, pos2).trim();
+							to = replacement[i].substring(pos2 + 1).trim();
+							replacement[i] = replacement[i].substring(0, pos).trim();
+						}
+						if (replacement[i].startsWith("{LINE")) {
+							String postFix = "";
+							if (!replacement[i].endsWith("}")) {
+								int pos = replacement[i].indexOf("}");
+								postFix = replacement[i].substring(pos + 1);
+								replacement[i] = replacement[i].substring(0, pos + 1);
+							}
+							int num = Integer.parseInt(replacement[i].substring(5, replacement[i].length() - 1));
+							replacement[i] = sub.get(num) + postFix;
 						} else {
-							pos = replacement[i].indexOf("{CONST");
+							int pos = replacement[i].indexOf("{REG");
 							if (pos != -1) {
-								replace(replacement, i, pos, 6, consts);
+								replace(replacement, i, pos, 4, regs);
 							} else {
-								pos = replacement[i].indexOf("{MEM");
+								pos = replacement[i].indexOf("{CONST");
 								if (pos != -1) {
-									replace(replacement, i, pos, 4, mems);
+									replace(replacement, i, pos, 6, consts);
 								} else {
-									pos = replacement[i].indexOf("{cnt}");
+									pos = replacement[i].indexOf("{MEM");
 									if (pos != -1) {
-										if (!cntInc) {
-											cntInc = true;
-											loopCnt++;
+										replace(replacement, i, pos, 4, mems);
+									} else {
+										pos = replacement[i].indexOf("{cnt}");
+										if (pos != -1) {
+											if (!cntInc) {
+												cntInc = true;
+												loopCnt++;
+											}
+											replacement[i] = replacement[i].replace("{cnt}", instance + "_" + loopCnt);
 										}
-										replacement[i] = replacement[i].replace("{cnt}", instance + "_" + loopCnt);
 									}
 								}
 							}
 						}
+						replacement[i] = replacement[i].replace(from, to);
 					}
-					replacement[i] = replacement[i].replace(from, to);
 				}
+				List<String> eternity = replacement != null ? new ArrayList<String>(Arrays.asList(replacement))
+						: new ArrayList<String>();
+				eternity.add("; Optimizer rule: " + name + "/" + (replacement == null ? 0 : replacement.length));
+				List<String> res = new ArrayList<>(first);
+				res.addAll(eternity);
+				res.addAll(last);
+				resetPattern();
+				return res;
 			}
-			List<String> eternity = replacement != null ? new ArrayList<String>(Arrays.asList(replacement))
-					: new ArrayList<String>();
-			eternity.add("; Optimizer rule: " + name + "/" + (replacement == null ? 0 : replacement.length));
-			List<String> res = new ArrayList<>(first);
-			res.addAll(eternity);
-			res.addAll(last);
 			resetPattern();
-			return res;
+			return code;
+		} catch(Exception e) {
+			Logger.log("Failed to execute: " +name, e);
+			throw new RuntimeException();
 		}
-		resetPattern();
-		return code;
 	}
 
 	/**
