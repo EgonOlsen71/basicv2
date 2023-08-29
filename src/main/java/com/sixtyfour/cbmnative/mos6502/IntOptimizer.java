@@ -832,17 +832,32 @@ public class IntOptimizer {
 							public List<String> modify(IntPattern pattern, List<String> input) {
 								input = super.modify(pattern, input);
 								String jumpy = cleaned.get(0);
-								if (jumpy.contains("PEEKBYTE")) {
+								if (jumpy.contains("PEEKBYTEAND") || jumpy.contains("PEEKBYTEOR")) {
 									List<String> rep = new ArrayList<>();
-									rep.add(cleaned.get(0));
+									rep.add(cleaned.get(0)+"FAST");
+									rep.add("STY A_REG");
 									rep.add(cleaned.get(1));
 									rep.add(cleaned.get(2));
 									rep.add(cleaned.get(3));
 									rep.add(cleaned.get(4));
-									rep.add("LDY TMP2_ZP");
+									rep.add("LDY A_REG");
 									rep.add(cleaned.get(7));
 									rep.add(cleaned.get(8));
 									return combine(pattern, rep);
+								} else {
+									if (jumpy.contains("PEEKBYTE")) {
+										// Is this triggered?
+										List<String> rep = new ArrayList<>();
+										rep.add(cleaned.get(0));
+										rep.add(cleaned.get(1));
+										rep.add(cleaned.get(2));
+										rep.add(cleaned.get(3));
+										rep.add(cleaned.get(4));
+										rep.add("LDY TMP2_ZP");
+										rep.add(cleaned.get(7));
+										rep.add(cleaned.get(8));
+										return combine(pattern, rep);
+									}
 								}
 								pattern.reset();
 								return input;
