@@ -280,6 +280,26 @@ public class IntOptimizer {
 					}
 				}));
 
+		// if peek(56233)=s% etc.
+		intPatterns.add(new IntPattern(true, "Optimized code for Integer(xx)",
+				new String[] { "LDY {*}", "LDA {*}", "JSR INTFAC", "JSR PUSHREAL", "LDY {*}", "LDA {*}", "JSR INTFAC",
+						"JSR FACXREG", "JSR POPREAL", "JSR FACYREG", "LDA #<X_REG", "LDY #>X_REG", "JSR CMPFAC" },
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						List<String> rep = new ArrayList<>();
+						rep.add(cleaned.get(0));
+						rep.add(cleaned.get(1));
+						rep.add("STY TMP_ZP");
+						rep.add("STA TMP_ZP+1");
+						rep.add(cleaned.get(4));
+						rep.add(cleaned.get(5));
+						rep.add("JSR ICMP");
+						return combine(pattern, rep);
+					}
+				}));
+		
 		
 		// if 123=l%(xx) etc.
 		intPatterns.add(new IntPattern(true, "Optimized code for Integer(5)",
