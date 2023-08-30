@@ -27,3 +27,4 @@
 
 #10: Avoid X->Y copy
 "Avoid X->Y copy"	false	false	false	"JSR COPY_XREG2YREG|NOP|JSR YREGFAC|JSR FACWORD"	"JSR XREGFAC|JSR FACWORD"
+

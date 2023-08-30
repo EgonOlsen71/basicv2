@@ -486,3 +486,4 @@
 #163: Faster INT-1
 "Faster INT-1"	false	false	false	"JSR FIDEX|JSR XREGFAC|JSR FACWORD"	"JSR SUPERFIDEX"
 
+

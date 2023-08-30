@@ -1551,6 +1551,7 @@ public class IntOptimizer {
 					}
 				}));
 		
+		
 		// POKE P+<CONST>,CONST
 		intPatterns.add(new IntPattern(true, "Fast add for POKE(1)",
 				new String[] { "LDA #<{CONST0}", "LDY #>{CONST0}", "JSR REALFAC", "LDA #<{MEM0}", "LDY #>{MEM0}", "JSR FASTFADDMEM", "JSR FACWORD", "STY {*}", "STA {*}"},
