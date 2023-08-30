@@ -482,3 +482,7 @@
 
 #162: Faster INT+1
 "Faster INT+1"	false	false	false	"JSR FIINX|JSR XREGFAC|JSR FACWORD"	"JSR SUPERFIINX"
+
+#163: Faster INT-1
+"Faster INT-1"	false	false	false	"JSR FIDEX|JSR XREGFAC|JSR FACWORD"	"JSR SUPERFIDEX"
+
