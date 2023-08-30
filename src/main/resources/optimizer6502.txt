@@ -479,3 +479,6 @@
 
 #161: FAC already populated
 "FAC already populated"	false	false	false	"JSR FACXREG|LDY {*}|LDA {*}|STY A_REG|STA A_REG+1|JSR COPY_XREG2YREG|JSR XREGFAC"	"{LINE0}|{LINE1}|{LINE2}|{LINE3}|{LINE4}|{LINE5}"
+
+#162: Faster INT+1
+"Faster INT+1"	false	false	false	"JSR FIINX|JSR XREGFAC|JSR FACWORD"	"JSR SUPERFIINX"
