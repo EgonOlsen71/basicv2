@@ -1812,6 +1812,17 @@ ARRAYACCESS_INTEGER_INT_SI
 			TXA
 			RTS
 ;###################################
+INTSUB16X		SEC
+			TAX
+			TYA
+          		SBC TMP4_REG
+          		STA TMP4_REG
+			TXA
+          		SBC TMP4_REG+1
+          		STA TMP4_REG+1
+          		LDY TMP4_REG
+			RTS
+;###################################
 INTADD16 	CLC
 			TAX
 			TYA
@@ -1820,6 +1831,11 @@ INTADD16 	CLC
 			TXA
 			ADC TMP4_REG+1
 			STA TMP4_REG+1
+			RTS
+;###################################
+INTADD16X		JSR INTADD16
+			LDY TMP4_REG
+			LDA TMP4_REG+1
 			RTS
 ;###################################
 ARRAYACCESS_INTEGER_SNX
