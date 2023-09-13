@@ -562,18 +562,21 @@ public class AssemblyParser {
 		number = number.trim();
 		int val = 0;
 		try {
-			if (number.startsWith("$")) {
-				val = Integer.parseInt(number.substring(1), 16);
-			} else {
-				if (number.startsWith("%")) {
-					val = Integer.parseInt(number.substring(1), 2);
+			String[] parts = number.split("\\+");
+			for (String part : parts) {
+				if (part.startsWith("$")) {
+					val+= Integer.parseInt(part.substring(1), 16);
 				} else {
-					val = Integer.parseInt(number);
+					if (part.startsWith("%")) {
+						val+= Integer.parseInt(part.substring(1), 2);
+					} else {
+						val+= Integer.parseInt(part);
+					}
 				}
-			}
 
-			if (val < -32768 || val > 65535) {
-				throw new RuntimeException("Value out of range: " + val);
+				if (val < -32768 || val > 65535) {
+					throw new RuntimeException("Value out of range: " + val);
+				}
 			}
 
 			return val;
