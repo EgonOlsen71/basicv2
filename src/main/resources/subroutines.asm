@@ -2922,6 +2922,7 @@ ISIMPLECOPY	TYA
 			LDY #0
 			STA (TMP_ZP),Y
 			TAX				; Length in X
+			STX INPUTLENGTH 
 			LDA TMP_REG+1	; Check for numeric mode
 			BEQ	INISSTR
 			RTS

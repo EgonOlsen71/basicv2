@@ -28,6 +28,11 @@ public abstract class MultiVariableCommand extends AbstractCommand {
 
 	/** The index terms. */
 	protected List<Term> indexTerms = new ArrayList<Term>();
+	
+	protected boolean checkLength=false;
+	
+	protected static int skipCounter=0;
+	
 
 	/**
 	 * Instantiates a new multi variable command.
@@ -51,6 +56,15 @@ public abstract class MultiVariableCommand extends AbstractCommand {
 		return ret;
 	}
 
+	protected void addLengthCheck(List<String> code) {
+		if (!checkLength) {
+			return;
+		}
+		code.add("MOV B,INPUTLENGTH");
+		code.add("CMP B,#0{INTEGER}");
+		code.add("JE EMPTYINPUTSKIP"+(skipCounter+1));
+	}
+	
 	final protected List<CodeContainer> evalToCode(CompilerConfig config, Machine machine, String strCall,
 			String numberCall) {
 		NativeCompiler compiler = NativeCompiler.getCompiler();
@@ -75,18 +89,24 @@ public abstract class MultiVariableCommand extends AbstractCommand {
 			} else if (var.getType() == Type.INTEGER || var.getType() == Type.REAL) {
 				expr.add("JSR " + numberCall);
 			}
-
+			
 			if (indexTerm != null) {
 				List<Atom> pars = Parser.getParameters(indexTerm);
 				before.addAll(compiler.compileToPseudoCode(config, machine,
 						Parser.createIndexTerm(config, machine, pars, var.getDimensions())));
-
+				
 				after.add("POP X");
 				after.add("MOV G," + getVariableLabel(config, machine, var));
+				addLengthCheck(after);
 				after.add("JSR ARRAYSTORE");
 			} else {
+				addLengthCheck(after);
 				after.add("MOV " + getVariableLabel(config, machine, var) + ","
 						+ (var.getType() == Type.STRING ? "A" : "Y"));
+			}
+			
+			if (checkLength) {
+				after.add("EMPTYINPUTSKIP"+(++skipCounter)+":");
 			}
 
 			CodeContainer cc = new CodeContainer(before, expr, after);
@@ -126,10 +146,16 @@ public abstract class MultiVariableCommand extends AbstractCommand {
 
 				after.add("POP X");
 				after.add("MOV G," + getVariableLabel(config, machine, var));
+				addLengthCheck(after);
 				after.add("JSR ARRAYSTORE");
 			} else {
+				addLengthCheck(after);
 				after.add("MOV " + getVariableLabel(config, machine, var) + ","
 						+ (var.getType() == Type.STRING ? "A" : "Y"));
+			}
+			
+			if (checkLength) {
+				after.add("EMPTYINPUTSKIP"+(++skipCounter)+":");
 			}
 
 			CodeContainer cc = new CodeContainer(before, expr, after);

@@ -32,6 +32,7 @@ public class Input extends MultiVariableCommand {
 	 */
 	public Input() {
 		super("INPUT");
+		checkLength = true;
 	}
 
 	/**
@@ -41,6 +42,7 @@ public class Input extends MultiVariableCommand {
 	 */
 	protected Input(String name) {
 		super(name);
+		checkLength = true;
 	}
 
 	/*
@@ -135,12 +137,18 @@ public class Input extends MultiVariableCommand {
 
 				after.add("POP X");
 				after.add("MOV G," + getVariableLabel(config, machine, var));
+				addLengthCheck(after);
 				after.add("JSR ARRAYSTORE");
 			} else {
+				addLengthCheck(after);
 				after.add("MOV " + getVariableLabel(config, machine, var) + ","
 						+ (var.getType() == Type.STRING ? "A" : "Y"));
 			}
 
+			if (checkLength) {
+				after.add("EMPTYINPUTSKIP"+(++skipCounter)+":");
+			}
+			
 			CodeContainer cc = new CodeContainer(before, expr, after);
 			ccs.add(cc);
 		}

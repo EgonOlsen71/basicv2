@@ -30,6 +30,7 @@ public class InputFile extends Input {
 	 */
 	public InputFile() {
 		super("INPUT#");
+		checkLength = true;
 	}
 
 	/*
