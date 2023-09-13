@@ -60,8 +60,7 @@ public abstract class MultiVariableCommand extends AbstractCommand {
 		if (!checkLength) {
 			return;
 		}
-		code.add("MOV B,INPUTLENGTH");
-		code.add("CMP B,#0{INTEGER}");
+		code.add("JSR INPUTLENGTHCHECK");
 		code.add("JE EMPTYINPUTSKIP"+(skipCounter+1));
 	}
 	
@@ -77,7 +76,7 @@ public abstract class MultiVariableCommand extends AbstractCommand {
 			List<String> after = new ArrayList<String>();
 			List<String> expr = new ArrayList<String>();
 			List<String> before = new ArrayList<String>();
-			;
+			
 
 			if (var.getType() == Type.STRING) {
 				expr.add("JSR " + strCall);
@@ -134,11 +133,11 @@ public abstract class MultiVariableCommand extends AbstractCommand {
 			} else if (var.getType() == Type.INTEGER || var.getType() == Type.REAL) {
 				before.add("JSR " + numberCall);
 			}
-
+			
 			if (i != vars.size() - 1) {
 				before.add("PUSH C");
 			}
-
+			
 			if (indexTerm != null) {
 				List<Atom> pars = Parser.getParameters(indexTerm);
 				expr = compiler.compileToPseudoCode(config, machine,

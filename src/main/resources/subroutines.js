@@ -575,6 +575,10 @@ this.APPENDSYSCHAR = function() {
 	// Nothing to do in this context
 }
 
+this.INPUTLENGTHCHECK = function() {
+	this._zeroflag=1;
+}
+
 this.SETUPMULTIPARS = function() {
 	// Nothing to do in this context
 }

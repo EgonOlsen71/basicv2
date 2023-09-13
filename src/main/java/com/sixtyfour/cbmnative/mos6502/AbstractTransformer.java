@@ -507,7 +507,7 @@ public abstract class AbstractTransformer implements Transformer {
 		res.add("GCSTART\t.WORD 0");
 		res.add("GCLEN\t.WORD 0");
 		res.add("GCWORK\t.WORD 0");
-		res.add("INPUTLENGTH\t.WORD 0");
+		res.add("INPUTLENGTH\t.BYTE 0");
 		res.add("TMP_FREG\t.REAL 0");
 		res.add("TMP2_FREG\t.REAL 0");
 		res.add("TMP_FLAG\t.BYTE 0");

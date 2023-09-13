@@ -422,6 +422,10 @@ function SYSTEMCALLDYN {
 function APPENDSYSCHAR {
 }
 
+function INPUTLENGTHCHECK {
+	$global:$_zeroflag=1
+}
+
 function SETUPMULTIPARS {
 }
 
