@@ -560,7 +560,9 @@ public class NativeOptimizer {
 				// MOVB 53280,X
 				if (lines[0].startsWith("MOV X,#") && lines[1].startsWith("MOVB") && lines[1].endsWith(",X")
 						&& !lines[1].contains("(")) {
-					ret.add(lines[1].replace(",X", lines[0].substring(lines[0].indexOf(","))));
+					String repWith=lines[0].substring(lines[0].indexOf(","));
+					repWith = repWith.replace(".0{REAL}", "{INTEGER}");
+					ret.add(lines[1].replace(",X", repWith));
 					i += 1;
 					continue;
 				}
