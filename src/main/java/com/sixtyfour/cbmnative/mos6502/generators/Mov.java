@@ -29,6 +29,8 @@ public class Mov extends GeneratorBase {
 
 		context.setLastMoveSource(source);
 		context.setLastMoveTarget(target);
+		
+		//System.out.println(source);
 
 		if (!source.isIndexed() && !target.isIndexed()) {
 			if (source.getType() == Type.STRING) {

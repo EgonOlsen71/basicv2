@@ -40,7 +40,7 @@ public class Operands {
 			String left = command.substring(0, pos).trim();
 			String right = command.substring(pos + 1).trim();
 
-			// System.out.println("Command: "+command+"/"+pos+"/"+left+"/"+right);
+			//System.out.println("Command: "+command+"/"+pos+"/"+left+"/"+right);
 
 			target = new Operand();
 			source = new Operand();

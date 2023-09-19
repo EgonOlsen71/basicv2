@@ -281,6 +281,12 @@ public abstract class AbstractTransformer implements Transformer {
 		List<String> tmp = new ArrayList<String>();
 		for (int p = 0; p < parts.length; p++) {
 			String part = parts[p];
+			if (part.contains("{}")) {
+				// handles NEXT variable...no other operand should have these empty type indicators.
+				// This is required, because a NEXT X can occur before any other occurance of X, which is stupid...but possible...
+				// In that case, no name2label association was created...this fixes this...
+				part = part.replace("(", "").replace(")", "");
+			}
 			if (part.contains("{") && part.endsWith("}")) {
 				int pos = part.lastIndexOf("{");
 				String name = part.substring(0, pos);
@@ -330,8 +336,12 @@ public abstract class AbstractTransformer implements Transformer {
 						tmp.add("; VAR: " + name);
 						String label = "VAR_" + name;
 						name2label.put(name, label);
-
-						Type type = Type.valueOf(part.substring(pos + 1, part.length() - 1));
+						String typeString = part.substring(pos + 1, part.length() - 1);
+						Type type = Type.REAL;
+						// If there's no typeString, it's a variable after a NEXT..in that case, it's always REAL
+						if (!typeString.isBlank()) {
+							type = Type.valueOf(typeString);
+						}
 						if (name.contains("[]")) {
 							Variable var = machine.getVariable(name);
 							@SuppressWarnings("unchecked")
@@ -380,7 +390,6 @@ public abstract class AbstractTransformer implements Transformer {
 				}
 			}
 		}
-
 		return cnt;
 	}
 
