@@ -535,11 +535,20 @@ public class Assembler implements ProgramExecutor {
 	}
 
 	private void raiseError(String txt, Throwable t, int addr, int cnt) {
-		throw new RuntimeException("Line " + cnt + "\t." + Integer.toHexString(addr) + "\t" + txt, t);
+		String curLine = getLine(cnt);
+		throw new RuntimeException("Line " + cnt + "\t." + Integer.toHexString(addr) + "\t" + txt + "\t" + curLine, t);
+	}
+
+	private String getLine(int cnt) {
+		if (cnt < 0 || cnt >= code.length) {
+			return "";
+		}
+		return code[cnt];
 	}
 
 	private void raiseError(String txt, int addr, int cnt) {
-		throw new RuntimeException("Line " + cnt + "\t." + Integer.toHexString(addr) + "\t" + txt);
+		String curLine = getLine(cnt);
+		throw new RuntimeException("Line " + cnt + "\t." + Integer.toHexString(addr) + "\t" + txt + "\t" + curLine);
 	}
 
 	private String getHex(int inty) {
