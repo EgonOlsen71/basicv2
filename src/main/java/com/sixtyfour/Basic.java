@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.sixtyfour.cbmnative.PCode;
 import com.sixtyfour.config.CompilerConfig;
@@ -403,7 +404,7 @@ public class Basic implements ProgramExecutor {
 							}
 							part = command.parse(config, part, lineCnt, cl.getNumber(), pos, (pos == parts.length - 1),
 									machine);
-							
+
 							machine.addCommand(command);
 							cl.addCommand(command);
 
@@ -438,6 +439,8 @@ public class Basic implements ProgramExecutor {
 		}
 
 		modifyDelayLoops(config);
+
+		checkForNext(config);
 
 		compiled = true;
 		Logger.log(machine.getCommandList().size() + " commands compiled in: " + (System.nanoTime() - start) / 1000000L
@@ -707,9 +710,9 @@ public class Basic implements ProgramExecutor {
 			String cmd = codeEnhancer.getFirstCommand();
 			pc = executeSingleCommand(config, cmd);
 		}
-		int lineCnt=0;
-		if (pc!=null && pc.getLineNumber()!=-1) {
-			lineCnt=lines.containsKey(pc.getLineNumber())?lines.get(pc.getLineNumber()).getCount():0;
+		int lineCnt = 0;
+		if (pc != null && pc.getLineNumber() != -1) {
+			lineCnt = lines.containsKey(pc.getLineNumber()) ? lines.get(pc.getLineNumber()).getCount() : 0;
 		}
 		execute(config, lineCnt, 0);
 		if (codeEnhancer != null) {
@@ -873,7 +876,7 @@ public class Basic implements ProgramExecutor {
 				if (forLine != -1 && nextLine != -1) {
 					lines.get(forLine).getCommands().set(forPos, new Delay((For) forCmd, loopMode == LoopMode.DELAY));
 					lines.get(nextLine).getCommands().set(nextPos, new Rem());
-					
+
 					Logger.log("Replaced for-loop at line " + forLine + " with "
 							+ (loopMode == LoopMode.DELAY ? "a delay" : "an empty operation!"));
 					forLine = -1;
@@ -937,5 +940,37 @@ public class Basic implements ProgramExecutor {
 			adjusted |= ext.adjustMemoryConfig(machine, config);
 		}
 		return adjusted;
+	}
+
+	/**
+	 * Checks for NEXT XX with XX not being used in the FOR. This will cause an
+	 * error during assembly later, but it's better to catch it here...
+	 * 
+	 * @param config
+	 */
+	private void checkForNext(CompilerConfig config) {
+		Map<String, Command> usedInNext = new HashMap<>();
+		List<Command> nexts = machine.getCommandList().stream().filter(p -> p.getName().equalsIgnoreCase("NEXT"))
+				.collect(Collectors.toList());
+		for (Command next : nexts) {
+			String var = ((Next) next).getVarName();
+			if (var != null && !usedInNext.containsKey(var)) {
+				usedInNext.put(var, next);
+			}
+		}
+
+		List<Command> fors = machine.getCommandList().stream().filter(p -> p.getName().equalsIgnoreCase("FOR"))
+				.collect(Collectors.toList());
+		for (Command fory : fors) {
+			String name = ((For) fory).getVar().getName();
+			if (name != null) {
+				usedInNext.remove(name);
+			}
+		}
+
+		if (usedInNext.size() > 0) {
+			Command cmd = usedInNext.entrySet().iterator().next().getValue();
+			throw new RuntimeException("NEXT without FOR: " + cmd + " [NEXT " + ((Next) cmd).getVarName() + "]");
+		}
 	}
 }
