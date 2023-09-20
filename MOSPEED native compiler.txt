@@ -1,10 +1,10 @@
-MOSPeed is an optimizing BASIC cross compiler. Being a cross compiler, it runs on a PC but generates 
+MOSpeed is an optimizing BASIC cross compiler. Being a cross compiler, it runs on a PC but generates 
 6502-Machine language for the Commodore 64.
 
 
 Description
 
-MOSPeed is controlled on a PC via the command line/shell. It expects a BASIC V2 program in text file format, 
+MOSpeed is controlled on a PC via the command line/shell. It expects a BASIC V2 program in text file format, 
 just like C64 Studio or CBM prg Studio are using it. It supports the usual placeholders like {clear}.
 In addition, it can operate directly on prg files and converts them to text format before compiling them. 
 In this case, the file to compile has to end on .prg or the compiler won't recognize it as a prg file.
@@ -21,7 +21,7 @@ On average, MOSpeed increases the performance of BASIC V2 programs by a factor o
 
 Loading, startup, controls
 
-MOSPeed is a command line application for the PC. Because MOSPeed is written in Java, the compiler is distributed 
+MOSpeed is a command line application for the PC. Because MOSPeed is written in Java, the compiler is distributed 
 as a JAR-file (@ https://github.com/EgonOlsen71/basicv2/tree/master/dist ). This distribution contains two script files,
 one for Windows (mospeed.cmd) and one for Linux (mospeed.sh), which can be used to start the compiler.
 
