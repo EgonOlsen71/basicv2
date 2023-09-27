@@ -549,6 +549,28 @@ public class IntOptimizer {
 					}
 				}));
 
+		
+		// if peek(..)=o% etc...
+		intPatterns.add(new IntPattern(true, "Optimized code for PEEK/CMP(1)", new String[] { "JSR INTFAC", "JSR FACXREG",
+				"LDY {*}", "LDA {*}", "JSR INTFAC", "LDA #<X_REG", "LDY #>X_REG", "JSR CMPFAC" }, new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						List<String> rep = new ArrayList<>();
+						rep.add("STY TMP2_ZP");
+						rep.add("STA TMP2_ZP+1");
+						rep.add(cleaned.get(2));
+						rep.add(cleaned.get(3));
+						rep.add("STY TMP_ZP");
+						rep.add("STA TMP_ZP+1");
+						rep.add("LDY TMP2_ZP");
+						rep.add("LDA TMP2_ZP+1");
+						rep.add("JSR ICMP");
+						return combine(pattern, rep);
+					}
+				}));
+		
+		
 		// if l%(6)=h% etc.
 		intPatterns.add(new IntPattern(true, "Optimized code for Integer(4)", new String[] { "JSR {*}", "LDY {*}",
 				"LDA {*}", "JSR INTFAC", "LDA #<X_REG", "LDY #>X_REG", "JSR CMPFAC" }, new AbstractCodeModifier() {
