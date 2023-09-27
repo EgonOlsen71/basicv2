@@ -224,6 +224,11 @@ public class NativeCompiler {
 			pCode = DeadCodeChecker.removeDeadCode(pCode);
 		}
 
+		// Assignment optimizer...disabled by default for now
+		if (config.isAssignmentOptimizations()) {
+			pCode = AssignmentOptimizer.optimizeAssignments(pCode);
+		}
+		
 		if (!config.isConstantFolding()) {
 			// If no folding is being used, we must not run dead store
 			// elimination after a potential propagation or otherwise, we might

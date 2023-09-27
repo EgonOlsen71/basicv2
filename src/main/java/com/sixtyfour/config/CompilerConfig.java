@@ -35,6 +35,7 @@ public class CompilerConfig {
 	private boolean bigRam = false;
 	private boolean inlineAssembly = false;
 	private boolean arrayOptimizations = false;
+	private boolean assignmentOptimizations = false;
 
 	private String symbolTable = null;
 	private int threads = -1;
@@ -306,4 +307,12 @@ public class CompilerConfig {
 		this.inlineAssembly = inlineAssembly;
 	}
 
+	public boolean isAssignmentOptimizations() {
+		return assignmentOptimizations;
+	}
+
+	public void setAssignmentOptimizations(boolean assignmentOptimizations) {
+		this.assignmentOptimizations = assignmentOptimizations;
+	}
+	
 }

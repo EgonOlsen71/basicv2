@@ -103,6 +103,7 @@ public class MoSpeedCL {
 		cfg.setConstantFolding(getOption("constfolding", cmds));
 		cfg.setConstantPropagation(getOption("constprop", cmds));
 		cfg.setDeadCodeElimination(getOptionIntDefault("deadcodeopt", cmds, false));
+		cfg.setAssignmentOptimizations(getOptionIntDefault("assignmentopt", cmds, false));
 		cfg.setPcodeOptimizations("" /* getOption("pcodeopt", cmds) */);
 		cfg.setDeadStoreElimination(getOption("deadstoreopt", cmds));
 		cfg.setDeadStoreEliminationOfStrings(getOption("deadstoreoptstr", cmds));
@@ -725,6 +726,8 @@ public class MoSpeedCL {
 				"/printopt=true|false - *Experimental* - If true, the compiler tries to rearrange texts in PRINT statements to save memory at the expense of speed. Default is false.");
 		System.out.println(
 				"/arrayopt=true|false - *Experimental* - If true, the compiler tries to optimize access speed of multi-dimensional arrays at the expense of memory usage. Default is false.");
+		System.out.println(
+				"/assignmentopt=true|false - *Experimental* - If true, the compiler tries to optimize assignments. Default is false.");
 
 		
 		System.out.println();
