@@ -9,6 +9,7 @@ import java.util.Set;
 import com.sixtyfour.Logger;
 import com.sixtyfour.cbmnative.PCode;
 import com.sixtyfour.elements.commands.Command;
+import com.sixtyfour.elements.commands.If;
 import com.sixtyfour.elements.commands.Jump;
 import com.sixtyfour.elements.commands.Let;
 import com.sixtyfour.elements.commands.Rem;
@@ -46,6 +47,10 @@ public class AssignmentOptimizer {
 					first = null;
 				}
 				if (com instanceof Rem) {
+					break;
+				}
+				if (com instanceof If) {
+					first = null;
 					break;
 				}
 				if (com instanceof Let) {
