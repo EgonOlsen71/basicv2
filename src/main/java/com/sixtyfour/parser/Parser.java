@@ -1104,15 +1104,22 @@ public class Parser {
 					pos2 = linePart.indexOf('}');
 					if (termMap == null || pos == -1 || pos2 < pos) {
 						if (function.isLimitedToPrint()) {
+							// if TAB or SPC and no brackets, it might be a variable, not a function...
 							fun=null;
 							continue;
 						}
 						throw new RuntimeException("Invalid function call: " + linePart);
 					} else {
+						if (function.isLimitedToPrint() && (linePart.contains("%{") || linePart.contains("${"))) {
+							// if TAB or SPC and brackets but with % or $ in between, it might be an array variable, not a function...
+							fun=null;
+							continue;
+						}
 						setPostfix(linePart, fun, pos);
 						fun.setTerm(Parser.createTerm(config, linePart.substring(pos, pos2 + 1), termMap, machine));
 					}
 				} else {
+					// Do something like the above here...?
 					setPostfix(linePart, fun, pos);
 					fun.parse(config, linePart.substring(pos + 1, pos2), machine);
 				}
