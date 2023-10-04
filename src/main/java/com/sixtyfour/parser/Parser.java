@@ -39,6 +39,8 @@ public class Parser {
 
 	private static boolean optimizeConstantExpressions = true;
 	
+	// if set to true, the parser will reject variable names like ASIN. 
+	// If false, they will be accepted but might not be fully usable, like when used in PRINT. 
 	private static boolean strictVariableNameLimitations = false;
 
 	/**
