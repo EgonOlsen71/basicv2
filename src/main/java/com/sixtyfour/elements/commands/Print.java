@@ -507,11 +507,14 @@ public class Print extends AbstractCommand {
 				if (subSubOk) {
 					for (Function fun : funs) {
 						if (fun.isFunction(sub)) {
-							line = line.substring(0, i) + ";" + line.substring(i);
-							i += fun.getName().length() + 1;
-							splitted = true;
-							hadLetter = false;
-							break;
+							// Separate function, but only if not TAB and SPC followed by something else then "(" (or nothing)
+							if (!fun.isLimitedToPrint() || (sub.length()>fun.getName().length() && sub.charAt(fun.getName().length())=='(')) {
+								line = line.substring(0, i) + ";" + line.substring(i);
+								i += fun.getName().length() + 1;
+								splitted = true;
+								hadLetter = false;
+								break;
+							}
 						}
 					}
 				}
@@ -531,6 +534,9 @@ public class Print extends AbstractCommand {
 				}
 			}
 		}
+		
+		
+		//System.out.println("Line: "+line);
 		return line;
 	}
 

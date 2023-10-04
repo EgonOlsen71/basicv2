@@ -157,5 +157,12 @@ public interface Function extends Atom {
 	 * @return true, if the types match. False otherwise
 	 */
 	boolean typesMatch();
+	
+	/**
+	 * Returns true for functions that can only be used in PRINT like TAB and SPC.
+	 * 
+	 * @return true or false
+	 */
+	boolean isLimitedToPrint();
 
 }

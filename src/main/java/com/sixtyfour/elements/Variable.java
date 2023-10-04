@@ -82,8 +82,11 @@ public class Variable implements Atom {
 		}
 		List<Function> functions = FunctionList.getFunctions();
 		for (Function function : functions) {
+			//System.out.println(un+ " / "+function.getName());
 			if (un.contains(function.getName())) {
-				throw new RuntimeException("Syntax error: " + un);
+				if (!function.isLimitedToPrint() || un.endsWith(function.getName()+"[]")) {
+					throw new RuntimeException("Syntax error: " + un);
+				} 
 			}
 		}
 

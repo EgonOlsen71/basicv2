@@ -135,4 +135,12 @@ public class Spc extends AbstractFunction {
 	public int getParameterCount() {
 		return 1;
 	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public boolean isLimitedToPrint() {
+		return true;
+	}
 }

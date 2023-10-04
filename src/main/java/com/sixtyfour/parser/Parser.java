@@ -38,6 +38,8 @@ public class Parser {
 	};
 
 	private static boolean optimizeConstantExpressions = true;
+	
+	private static boolean strictVariableNameLimitations = false;
 
 	/**
 	 * If set to true, the parser will automatically try to optimize constant
@@ -283,6 +285,17 @@ public class Parser {
 		if (isArray && !ret.endsWith("[]")) {
 			ret += "[]";
 		}
+		
+		if (strictVariableNameLimitations) {
+			for (Function function : FunctionList.getFunctions()) {
+				if (linePart.contains(function.getName())) {
+					if (!function.isLimitedToPrint() || (isArray && (linePart.endsWith(function.getName()+"[]")))) {
+						throw new RuntimeException("Invalid variable name: " + linePart);
+					}
+				}
+			}
+		}
+		
 		return ret;
 	}
 
@@ -1082,7 +1095,6 @@ public class Parser {
 		Function fun = null;
 
 		for (Function function : functions) {
-			// System.out.println(linePart);
 			if (function.isFunction(linePart)) {
 				fun = function.clone();
 				int pos = linePart.indexOf('(');
@@ -1091,6 +1103,10 @@ public class Parser {
 					pos = linePart.indexOf('{');
 					pos2 = linePart.indexOf('}');
 					if (termMap == null || pos == -1 || pos2 < pos) {
+						if (function.isLimitedToPrint()) {
+							fun=null;
+							continue;
+						}
 						throw new RuntimeException("Invalid function call: " + linePart);
 					} else {
 						setPostfix(linePart, fun, pos);

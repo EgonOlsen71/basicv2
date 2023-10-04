@@ -368,5 +368,13 @@ public abstract class AbstractFunction implements Function {
 	public Type getParameterType() {
 		return null;
 	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public boolean isLimitedToPrint() {
+		return false;
+	}
 
 }
