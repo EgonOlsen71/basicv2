@@ -486,4 +486,5 @@
 #163: Faster INT-1
 "Faster INT-1"	false	false	false	"JSR FIDEX|JSR XREGFAC|JSR FACWORD"	"JSR SUPERFIDEX"
 
-
+#164: Avoid YREG usage
+"Avoid YREG usage"	false	false	false	"JSR FACYREG|LDA #<{MEM0}|LDY #>{MEM0}|JSR COPY2_XYA_XREG|JSR YREGFAC"	"LDA #<{MEM0}|LDY #>{MEM0}|JSR COPY2_XYA_XREG"
