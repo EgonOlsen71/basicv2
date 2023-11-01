@@ -434,7 +434,7 @@ public class Basic implements ProgramExecutor {
 				String err = "Error in line " + (cl != null ? cl.getNumber() : "??")
 						+ (msg != null ? (": " + msg) : "");
 				machine.getOutputChannel().systemPrintln(0, err);
-				throw t;
+				throw new RuntimeException(err);
 			}
 		}
 
