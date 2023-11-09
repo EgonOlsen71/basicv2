@@ -13,7 +13,7 @@
 1040 p%(sp)=ha:h=sp
 1050 return 
 2000 if  le>999 then  return 
-2010 le=le+1: for  i=le-1 to  h step  -1
+2010 le=le+1: for  i=le-1 to  h+1 step  -1
 2020 p%(i)=p%(i-1): next 
 2030 sp=h-1: if  sp=-1 then  sp=le-1
 2040 h=h+1: if  h=le then  h=0
