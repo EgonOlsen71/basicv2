@@ -1603,6 +1603,58 @@ public class IntOptimizer {
 					}
 				}));
 		
+		// peek(sm%+i%)
+		intPatterns.add(new IntPattern(true, "Fast add for PEEK",
+				new String[] { "LDY {*}", "LDA {*}", "STA TMP3_ZP", "STY TMP3_ZP+1", "LDY {*}", "LDA {*}", "JSR INTADD", "JSR FACWORD", "STY {*}","STA {*}", "{LABEL}"},
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						if (cleaned.get(8).contains("MOVBSELF")) {
+							List<String> rep = new ArrayList<>();
+							rep.add(cleaned.get(0));
+							rep.add(cleaned.get(1));
+							rep.add(cleaned.get(2).replace("TMP3_ZP", "TMP4_REG"));
+							rep.add(cleaned.get(3).replace("TMP3_ZP", "TMP4_REG"));
+							rep.add(cleaned.get(4));
+							rep.add(cleaned.get(5));
+							rep.add("JSR INTADD16X");
+							rep.add(cleaned.get(8));
+							rep.add(cleaned.get(9));
+							rep.add(cleaned.get(10));
+							return combine(pattern, rep);
+						}
+						pattern.reset();
+						return input;
+						
+					}
+				}));
+		
+		// poke(x%),peek(y%)
+		intPatterns.add(new IntPattern(true, "POKE from PEEK",
+				new String[] { "LDY {*}", "LDA {*}", "JSR INTFAC", "JSR PUSHREAL", "LDY {*}", "LDA {*}", "STY {*}", "STA {*}", "JSR POPREAL", "JSR FACWORD", "STY {*}", "STA {*}", "{LABEL}"},
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						if (cleaned.get(6).contains("MOVBSELF") && cleaned.get(10).contains("MOVBSELF")) {
+							List<String> rep = new ArrayList<>();
+							rep.add(cleaned.get(0));
+							rep.add(cleaned.get(1));
+							rep.add(cleaned.get(10));
+							rep.add(cleaned.get(11));
+							rep.add(cleaned.get(4));
+							rep.add(cleaned.get(5));
+							rep.add(cleaned.get(6));
+							rep.add(cleaned.get(7));
+							rep.add(cleaned.get(12));
+							return combine(pattern, rep);
+						}
+						pattern.reset();
+						return input;
+						
+					}
+				}));
 		
 		// POKE P+<CONST>,CONST
 		intPatterns.add(new IntPattern(true, "Fast add for POKE(1)",
@@ -1714,6 +1766,8 @@ public class IntOptimizer {
 						
 					}
 				}));
+		
+		
 		
 		
 		for (int i = codeStart; i < codeEnd; i++) {
