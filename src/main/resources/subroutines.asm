@@ -1812,15 +1812,16 @@ ARRAYACCESS_INTEGER_INT_SI
 			TXA
 			RTS
 ;###################################
-INTSUB16X		SEC
+INTSUBOPT16X
+INTSUB16X	SEC
 			TAX
 			TYA
-          		SBC TMP4_REG
-          		STA TMP4_REG
+      		SBC TMP4_REG
+      		STA TMP4_REG
 			TXA
-          		SBC TMP4_REG+1
-          		STA TMP4_REG+1
-          		LDY TMP4_REG
+      		SBC TMP4_REG+1
+      		STA TMP4_REG+1
+      		LDY TMP4_REG
 			RTS
 ;###################################
 INTADD16 	CLC
@@ -1833,7 +1834,8 @@ INTADD16 	CLC
 			STA TMP4_REG+1
 			RTS
 ;###################################
-INTADD16X		JSR INTADD16
+INTADDOPT16X
+INTADD16X	JSR INTADD16
 			LDY TMP4_REG
 			LDA TMP4_REG+1
 			RTS
@@ -2441,7 +2443,12 @@ INTSHR		LDA A_REG+1
 			LDY A_REG
 			RTS
 ;###################################
-INTSUBVAR	LDX #128		; Do the fast way for positive numbers  below 16384...second var
+INTSUBVAROPT
+			LDX #0			; Mark as "further int opt possible"
+			BEQ INTSUBSUB
+INTSUBVAR	LDX #1
+INTSUBSUB	STX INT_FLAG
+			LDX #128		; Do the fast way for positive numbers  below 16384...second var
 			STX TMP_REG
 			BIT TMP_REG
 			BEQ INTSUBVARC2
@@ -2462,6 +2469,8 @@ INTSUBVARC3
 			PLA
 			JMP FLOATINTSUB
 INTINTSUBVAR2
+			LDX #1
+			STX TMP_FLAG
 			TYA 
 			STA TMP_REG
 			PLA
@@ -2472,9 +2481,20 @@ INTINTSUBVAR2
 			TAY
 			LDA TMP3_ZP+1
 			SBC TMP_REG+1
+			STY TMP2_ZP
+			STA TMP2_ZP+1
+			LDX INT_FLAG
+			BNE INTSUBVAREND
+			RTS
+INTSUBVAREND
 			JMP INTFAC
 ;###################################
-INTADDVAR	LDX #128		; Do the fast way for negative numbers and everything below 16384...first var
+INTADDVAROPT
+			LDX #0			; Mark as "further int opt possible"
+			BEQ INTADDADD
+INTADDVAR	LDX #1
+INTADDADD	STX INT_FLAG
+			LDX #128		; Do the fast way for negative numbers and everything below 16384...first var
 			STX TMP_REG		; Note to self: What I call first here, is actually the second variable and what I call
 			BIT TMP_REG		; second is the first. Because this is an addition, it doesn't really matter unless people
 			BNE INTADDVARC2	; tend to use smaller values more on the right side, which I simply don't know...
@@ -2501,12 +2521,20 @@ INTADDVARC3
 			PLA
 			JMP FLOATINTADD
 INTINTADDVAR2
+			LDX #1
+			STX TMP_FLAG
 			TYA
 			CLC
 			ADC TMP3_ZP
 			TAY
 			PLA
 			ADC TMP3_ZP+1
+			STY TMP2_ZP
+			STA TMP2_ZP+1
+			LDX INT_FLAG
+			BNE INTADDVAREND
+			RTS
+INTADDVAREND
 			JMP INTFAC
 ;###################################
 ;	A=B-C => TMP3_ZP - LDY/LDA		
@@ -2543,7 +2571,11 @@ FLOATINTADD	JSR INTFAC
 			JSR XREGARG
 			JMP FASTFADDARG
 ;###################################
-INTADD		LDX #128		; Do the fast way for negative numbers and everything below 16384
+INTADDOPT	LDX #0			; Mark as "further int opt possible"
+			BEQ INTADDADD2
+INTADD		LDX #1
+INTADDADD2	STX INT_FLAG
+			LDX #128		; Do the fast way for negative numbers and everything below 16384
 			STX TMP_REG
 			BIT TMP_REG
 			BNE INTINTADD
@@ -2564,9 +2596,17 @@ INTINTADD	LDX #1			; flag that the value is present in TMP2_ZP
 			ADC TMP3_ZP+1
 			STY TMP2_ZP
 			STA TMP2_ZP+1
+			LDX INT_FLAG
+			BNE INTADDEND
+			RTS
+INTADDEND
 			JMP INTFAC
 ;###################################
-INTSUB		LDX #128		; Do the fast way for positive numbers
+INTSUBOPT	LDX #0			; Mark as "further int opt possible"
+			BEQ INTSUBSUB2
+INTSUB		LDX #1
+INTSUBSUB2	STX INT_FLAG
+			LDX #128		; Do the fast way for positive numbers
 			STX TMP_REG
 			BIT TMP_REG
 			BEQ INTINTSUB
@@ -2583,6 +2623,10 @@ INTINTSUB	LDX #1			; flag that the value is present in TMP2_ZP
 			SBC TMP3_ZP+1
 			STY TMP2_ZP
 			STA TMP2_ZP+1
+			LDX INT_FLAG
+			BNE INTSUBEND
+			RTS
+INTSUBEND
 			JMP INTFAC
 ;###################################
 INTCONV		LDA TMP_FLAG	; The INT value is either already present in TMP2_ZP...or not...
@@ -2590,7 +2634,7 @@ INTCONV		LDA TMP_FLAG	; The INT value is either already present in TMP2_ZP...or 
 			LDY TMP2_ZP
 			LDA TMP2_ZP+1
 			RTS
-INTFROMFAC	JMP FACINT
+INTFROMFAC	JMP FACINT	
 ;###################################
 READINIT	LDA DATASP
 			STA TMP3_ZP

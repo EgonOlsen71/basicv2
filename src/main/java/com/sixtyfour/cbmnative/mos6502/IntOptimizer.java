@@ -164,7 +164,7 @@ public class IntOptimizer {
 							rep.add("STX TMP3_ZP+1");
 							rep.add("LDX #$" + numHex.substring(2));
 							rep.add("STX TMP3_ZP");
-							rep.add("JSR INTADD");
+							rep.add("JSR INTADDOPT");
 							rep.add("JSR INTCONV");
 							return combine(pattern, rep);
 						}
@@ -1400,6 +1400,21 @@ public class IntOptimizer {
 					}
 				}));
 		
+		// Value already in Y/A
+		intPatterns.add(new IntPattern(true, "Value already in Y/A",
+				new String[] { "STY {MEM0}","STA {MEM0}", "NOP", "LDY {MEM0}","LDA {MEM0}"},
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						List<String> rep = new ArrayList<>();
+						rep.add(cleaned.get(0));
+						rep.add(cleaned.get(1));
+						return combine(pattern, rep);
+					}
+				}));
+		
+		
 		// No need for back and forth conversion of ints...
 		intPatterns.add(new IntPattern(true, "Optimized conversion of ints (1)",
 				new String[] { "JSR INTADD", "JSR FACINT" },
@@ -1408,7 +1423,7 @@ public class IntOptimizer {
 					public List<String> modify(IntPattern pattern, List<String> input) {
 						input = super.modify(pattern, input);
 						List<String> rep = new ArrayList<>();
-						rep.add(cleaned.get(0));
+						rep.add(cleaned.get(0)+"OPT");
 						rep.add("JSR INTCONV");
 						return combine(pattern, rep);
 					}
@@ -1422,7 +1437,7 @@ public class IntOptimizer {
 					public List<String> modify(IntPattern pattern, List<String> input) {
 						input = super.modify(pattern, input);
 						List<String> rep = new ArrayList<>();
-						rep.add(cleaned.get(0));
+						rep.add(cleaned.get(0)+"OPT");
 						rep.add("JSR INTCONV");
 						return combine(pattern, rep);
 					}
@@ -1573,7 +1588,7 @@ public class IntOptimizer {
 							rep.add("STX TMP3_ZP");
 							rep.add(cleaned.get(3).replace("LDA", "LDX"));
 							rep.add("STX TMP3_ZP+1");
-							rep.add(cleaned.get(7).replace("FASTF", "INT").replace("MEM", ""));
+							rep.add(cleaned.get(7).replace("FASTF", "INT").replace("MEM", "")+"OPT");
 							rep.add("JSR INTCONV");
 							return combine(pattern, rep);
 						}
@@ -1652,6 +1667,36 @@ public class IntOptimizer {
 						}
 						pattern.reset();
 						return input;
+						
+					}
+				}));
+		
+		// ADD VARs + STORE
+		intPatterns.add(new IntPattern(true, "ADD VARs + STORE simplified",
+				new String[] { "JSR INTADDVAR", "JSR FACINT"},
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						List<String> rep = new ArrayList<>();
+						rep.add(cleaned.get(0)+"OPT");
+						rep.add("JSR INTCONV");
+						return combine(pattern, rep);
+						
+					}
+				}));
+		
+		// SUB VARs + STORE
+		intPatterns.add(new IntPattern(true, "SUB VARs + STORE simplified",
+				new String[] { "JSR INTSUBVAR", "JSR FACINT"},
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						List<String> rep = new ArrayList<>();
+						rep.add(cleaned.get(0)+"OPT");
+						rep.add("JSR INTCONV");
+						return combine(pattern, rep);
 						
 					}
 				}));
