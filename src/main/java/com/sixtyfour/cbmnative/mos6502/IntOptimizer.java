@@ -230,6 +230,24 @@ public class IntOptimizer {
 					}
 				}));
 		
+		// Optimized ICMP
+		intPatterns.add(new IntPattern(true, "Optimized ICMP",
+				new String[] { "STY TMP2_ZP", "STA TMP2_ZP+1", "LDY {*}", "LDA {*}",
+						"STY TMP_ZP", "STA TMP_ZP+1", "LDY TMP2_ZP", "LDA TMP2_ZP+1", "JSR ICMP" },
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						List<String> rep = new ArrayList<>();
+						rep.add(cleaned.get(2).replace("LDY", "LDX"));
+						rep.add("STX TMP_ZP");
+						rep.add(cleaned.get(3).replace("LDA", "LDX"));
+						rep.add("STX TMP_ZP+1");
+						rep.add(cleaned.get(8));
+						return combine(pattern, rep);
+					}
+				}));
+		
 		// int+int into int
 		intPatterns.add(new IntPattern(true, "Optimized code for adding/subtracting ints and store in int",
 				new String[] { "LDY {*}", "LDA {*}", "STA TMP3_ZP", "STY TMP3_ZP+1", "LDY {*}", "LDA {*}",
