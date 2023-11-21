@@ -86,5 +86,10 @@ public class PlatformJs implements PlatformProvider {
 	public boolean supportsBigRam() {
 		return false;
 	}
+	
+	@Override
+	public boolean supportsVarRelocation() {
+		return false;
+	}
 
 }

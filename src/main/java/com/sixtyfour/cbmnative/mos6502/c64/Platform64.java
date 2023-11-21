@@ -87,4 +87,9 @@ public class Platform64 implements PlatformProvider {
 	public boolean supportsBigRam() {
 		return true;
 	}
+	
+	@Override
+	public boolean supportsVarRelocation() {
+		return true;
+	}
 }

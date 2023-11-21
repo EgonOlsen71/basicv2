@@ -111,5 +111,11 @@ public interface PlatformProvider {
 	 * @return
 	 */
 	boolean supportsBigRam();
+	
+	/**
+	 * If true, often used variables can be relocated.
+	 * @return
+	 */
+	boolean supportsVarRelocation();
 
 }

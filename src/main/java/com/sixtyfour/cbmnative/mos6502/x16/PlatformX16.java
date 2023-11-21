@@ -105,4 +105,9 @@ public class PlatformX16 implements PlatformProvider {
 	public boolean supportsBigRam() {
 		return false;
 	}
+	
+	@Override
+	public boolean supportsVarRelocation() {
+		return false;
+	}
 }

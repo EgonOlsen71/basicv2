@@ -492,7 +492,7 @@ public class AssemblyParser {
 			if (Character.isLetter(c)) {
 				inName = true;
 			}
-			if (inName && Character.isLetterOrDigit(c) || c == '_') {
+			if (inName && Character.isLetterOrDigit(c) || c == '_' || c=='%' || c=='[' || c==']') {
 				sb.append(c);
 			} else {
 				ended = true;
@@ -540,6 +540,7 @@ public class AssemblyParser {
 
 		Term ressy = null;
 		try {
+			//System.out.println(right);
 			ressy = Parser.getTerm(config, res.toString(), machine, true, true);
 		} catch (Throwable nfe) {
 			if (raiseError) {

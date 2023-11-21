@@ -36,6 +36,7 @@ public class CompilerConfig {
 	private boolean inlineAssembly = false;
 	private boolean arrayOptimizations = false;
 	private boolean assignmentOptimizations = false;
+	private boolean zeropageOptimizations = false;
 
 	private String symbolTable = null;
 	private int threads = -1;
@@ -313,6 +314,14 @@ public class CompilerConfig {
 
 	public void setAssignmentOptimizations(boolean assignmentOptimizations) {
 		this.assignmentOptimizations = assignmentOptimizations;
+	}
+
+	public boolean isZeropageOptimizations() {
+		return zeropageOptimizations;
+	}
+
+	public void setZeropageOptimizations(boolean zeropageOptimizations) {
+		this.zeropageOptimizations = zeropageOptimizations;
 	}
 	
 }

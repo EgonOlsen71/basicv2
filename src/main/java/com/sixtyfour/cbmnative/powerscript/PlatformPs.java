@@ -87,4 +87,10 @@ public class PlatformPs implements PlatformProvider {
 		return false;
 	}
 
+	@Override
+	public boolean supportsVarRelocation() {
+		return false;
+	}
+
+
 }

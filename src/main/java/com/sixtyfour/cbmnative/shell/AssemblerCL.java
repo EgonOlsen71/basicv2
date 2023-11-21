@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.sixtyfour.Assembler;
 import com.sixtyfour.Loader;
+import com.sixtyfour.cbmnative.mos6502.AssemblyOptimizer;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.system.FileWriter;
 
@@ -51,6 +52,12 @@ public class AssemblerCL {
 		CompilerConfig config = new CompilerConfig();
 		System.out.println("Assembling " + srcFile + "...");
 		String[] code = Loader.loadProgram(srcFile);
+		
+		if (getOption("optimize", cmds)) {
+			System.out.println("Optimizing variable allocation...");
+			code = new AssemblyOptimizer().moveVariables(code);
+		}
+		
 		Assembler asm = new Assembler(code);
 		asm.compile(config);
 

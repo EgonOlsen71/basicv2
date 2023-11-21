@@ -19,6 +19,7 @@ import com.sixtyfour.cbmnative.PlatformProvider;
 import com.sixtyfour.cbmnative.ProgressListener;
 import com.sixtyfour.cbmnative.Transformer;
 import com.sixtyfour.cbmnative.javascript.PlatformJs;
+import com.sixtyfour.cbmnative.mos6502.AssemblyOptimizer;
 import com.sixtyfour.cbmnative.mos6502.c64.Platform64;
 import com.sixtyfour.cbmnative.mos6502.util.MemoryHole;
 import com.sixtyfour.cbmnative.mos6502.util.SourcePart;
@@ -124,6 +125,7 @@ public class MoSpeedCL {
 		cfg.setBoostMode(getOptionIntDefault("boost", cmds, false));
 		cfg.setBigRam(getOptionIntDefault("bigram", cmds, false));
 		cfg.setInlineAssembly(getOptionIntDefault("inlineasm", cmds, false));
+		cfg.setZeropageOptimizations(getOptionIntDefault("varopt", cmds, false));
 
 		if (cmds.containsKey("specops")) {
 			System.out.println("reading runtime/optimizer information!");
@@ -360,6 +362,10 @@ public class MoSpeedCL {
 		 * nCode = srcProc.moveRuntime(); }
 		 */
 
+		if (cfg.isZeropageOptimizations() && platform.supportsVarRelocation()) {
+			nCode = new AssemblyOptimizer().moveVariables(nCode);
+		}
+		
 		if (genSrc) {
 			write(nCode, nlTarget);
 		}
@@ -728,6 +734,8 @@ public class MoSpeedCL {
 				"/arrayopt=true|false - *Experimental* - If true, the compiler tries to optimize access speed of multi-dimensional arrays at the expense of memory usage. Default is false.");
 		System.out.println(
 				"/assignmentopt=true|false - *Experimental* - If true, the compiler tries to optimize assignments. Default is false.");
+		System.out.println(
+				"/varopt=true|false - *Experimental* - If true, the compiler tries to move integer variables into the zeropage if possible and applicable. Default is false.");
 
 		
 		System.out.println();

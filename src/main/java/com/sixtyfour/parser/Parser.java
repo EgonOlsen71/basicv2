@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.sixtyfour.Logger;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.elements.Constant;
 import com.sixtyfour.elements.Type;
@@ -1149,6 +1150,7 @@ public class Parser {
 			}
 			if (!inString) {
 				if ("&!|~?'§{}[]°".indexOf(c) != -1) {
+					Logger.log("Syntax error: " + term + "/" + c);
 					new Exception().printStackTrace();
 					throw new RuntimeException("Syntax error: " + term + "/" + c);
 				}
