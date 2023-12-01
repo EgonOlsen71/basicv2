@@ -492,3 +492,6 @@
 #165: Avoid XREG storage
 "Avoid XREG storage"	false	false	false	"JSR REALFAC|JSR BASINT|JSR FACXREG|LDY {*}|STY A_REG|JSR SHL|JSR FACARG"	"{LINE0}|{LINE1}|{LINE3}|{LINE4}|{LINE5}|{LINE6}"
 
+#166: Value in YREG still in FAC
+"Value in YREG still in FAC"	false	false	false	"JSR FACYREG|LDY {*}|LDA {*}|STY A_REG|STA A_REG+1|JSR YREGFAC"	"{LINE0}|{LINE1}|{LINE2}|{LINE3}|{LINE4}"
+
