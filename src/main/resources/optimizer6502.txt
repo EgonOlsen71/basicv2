@@ -488,3 +488,7 @@
 
 #164: Avoid YREG usage
 "Avoid YREG usage"	false	false	false	"JSR FACYREG|LDA #<{MEM0}|LDY #>{MEM0}|JSR COPY2_XYA_XREG|JSR YREGFAC"	"LDA #<{MEM0}|LDY #>{MEM0}|JSR COPY2_XYA_XREG"
+
+#165: Avoid XREG storage
+"Avoid XREG storage"	false	false	false	"JSR REALFAC|JSR BASINT|JSR FACXREG|LDY {*}|STY A_REG|JSR SHL|JSR FACARG"	"{LINE0}|{LINE1}|{LINE3}|{LINE4}|{LINE5}|{LINE6}"
+
