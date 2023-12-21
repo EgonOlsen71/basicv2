@@ -189,6 +189,7 @@ public abstract class AbstractFunction implements Function {
 	 */
 	@Override
 	public void setTerm(Term term) {
+		//new Exception().printStackTrace();
 		this.term = term;
 	}
 
@@ -200,6 +201,7 @@ public abstract class AbstractFunction implements Function {
 	 */
 	@Override
 	public void parse(CompilerConfig config, String linePart, Machine machine) {
+		//@todo Is this ever being called?
 		this.setTerm(Parser.getTerm(config, linePart, machine, false, true));
 		if (getParameterCount() > 0) {
 			if (Parser.getParameters(term).size() > getParameterCount()) {

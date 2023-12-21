@@ -1096,7 +1096,6 @@ public class Parser {
 			Machine machine) {
 		List<Function> functions = FunctionList.getFunctions();
 		Function fun = null;
-
 		for (Function function : functions) {
 			if (function.isFunction(linePart)) {
 				fun = function.clone();

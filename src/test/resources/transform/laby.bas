@@ -12,8 +12,9 @@
 110 j%=rnd(1)*4:x%=j%
 112 ifs%>sm% then sm%=s%:fi%=b%
 120 b%=a%+a(j%)
-125 if peek(b%)=160 then poke b%,j%:k%=a%+a(j%)/2:poke k%,32:a%=b%:s%=s%+1:goto 110
+125 ifpeek(b%)=160thenpoke b%,j%:k%=a%+a(j%)/2:pokek%,32:a%=b%:s%=s%+1:goto110
 130 j%=j%+1 and 3:if j%<>x% then 120
 140 j%=peek(a%):poke a%,32:s%=s%-1:if j%<4 then a%=a%-a(j%):goto 110
 150 poke a%,1:poke fi%,2
 160 goto 160
+

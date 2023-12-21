@@ -1,6 +1,7 @@
 package com.sixtyfour.elements.functions;
 
 import com.sixtyfour.elements.Type;
+import com.sixtyfour.parser.Term;
 import com.sixtyfour.system.Machine;
 
 /**
@@ -29,7 +30,11 @@ public class Val extends AbstractFunction {
 	public Type getParameterType() {
 		return Type.STRING;
 	}
-
+	
+	@Override
+	public void setTerm(Term term) {
+		this.term = term;
+	}
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -52,6 +57,10 @@ public class Val extends AbstractFunction {
 		str = str.trim();
 		for (int i = 0; i < str.length(); i++) {
 			char c = str.charAt(i);
+			if (c==' ') {
+				// VAL ignores SPACE
+				continue;
+			}
 			if (Character.isDigit(c)) {
 				sb.append(c);
 			} else {
