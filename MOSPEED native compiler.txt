@@ -154,6 +154,10 @@ In that case, no compressed file will be written.
 
 - /inlineasm=true|false: - *Experimental* - If true, inline assembly code can be used, marked by REM [...;...;...]. Default is false.
 
+- /printopt=true|false - *Experimental* - If true, the compiler tries to rearrange texts in PRINT statements to save memory at the expense of speed. Default is false.
+
+- /arrayopt=true|false - *Experimental* - If true, the compiler tries to optimize access speed of multi-dimensional arrays at the expense of memory usage. Default is false.
+
 Changes compared to BASIC 2.0 
 
 MOSpeed tries to stay compatible with the BASIC V2 interpreter when possible. However, there are some deviations.
