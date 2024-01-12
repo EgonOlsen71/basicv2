@@ -58,6 +58,7 @@ public class Sys extends AbstractCommand {
 		}
 		
 			// Handle things like SYS 57921"Blah",8,0 or 57921A$,8,0...
+		
 		if (linePart.length() > 6) {
 			char c = linePart.charAt(4);
 			if (Character.isDigit(c)) {
@@ -67,8 +68,8 @@ public class Sys extends AbstractCommand {
 					if (Character.isDigit(c) || (!Character.isAlphabetic(c) && c != ',')) {
 						continue;
 					}
-					if (c == ',') {
-						// out of here...
+					if (c == ',' || c=='-' || c=='+' || c=='*' || c=='/') {
+						// Break out of here, if it's a proper parameter or actually part of a calculation...
 						break;
 					}
 					// Found something that's not a number but not a comma as well...
