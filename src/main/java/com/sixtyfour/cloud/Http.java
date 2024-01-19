@@ -10,11 +10,18 @@ import java.net.http.HttpResponse;
 import com.sixtyfour.Logger;
 
 /**
+ * Some simple http stuff...
  * 
  * @author EgonOlsen
  *
  */
 public class Http {
+	
+	/**
+	 * 
+	 * @param baseUrl
+	 * @param prgIn
+	 */
 	public void run(String baseUrl, InputStream prgIn) {
 		baseUrl=baseUrl.trim();
 		if (baseUrl.endsWith("/")) {
@@ -31,6 +38,11 @@ public class Http {
 		post(url, data);
 	}
 	
+	/**
+	 * 
+	 * @param url
+	 * @param data
+	 */
 	public void post(String url, byte[] data) {
 		try {
 			Logger.log("Starting compiled program on Ultimate64...");
