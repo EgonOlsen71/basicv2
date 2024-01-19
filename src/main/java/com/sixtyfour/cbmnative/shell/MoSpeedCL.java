@@ -1,6 +1,7 @@
 package com.sixtyfour.cbmnative.shell;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ import com.sixtyfour.cbmnative.mos6502.util.SourceProcessor;
 import com.sixtyfour.cbmnative.mos6502.vic20.Platform20;
 import com.sixtyfour.cbmnative.mos6502.x16.PlatformX16;
 import com.sixtyfour.cbmnative.powerscript.PlatformPs;
+import com.sixtyfour.cloud.Http;
 import com.sixtyfour.compression.Compressor;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.config.LoopMode;
@@ -180,6 +182,7 @@ public class MoSpeedCL {
 		String nlTarget = null;
 		String ascTarget = null;
 		String asmTarget = null;
+		String deployUrl = null;
 
 		PlatformProvider platform = new Platform64();
 		String appendix = ".prg";
@@ -245,6 +248,16 @@ public class MoSpeedCL {
 			compress = false;
 		}
 
+		if (cmds.containsKey("deploy")) {
+			deployUrl = cmds.get("deploy");
+			if (!deployUrl.isEmpty() && !deployUrl.toLowerCase().startsWith("http")) {
+				deployUrl = "http://"+deployUrl;
+			}
+			if (deployUrl.isEmpty()) {
+				deployUrl = null;
+			}
+		}
+		
 		String targetFile = "++" + new File(srcFile).getName().replace(".BAS", "").replace(".bas", "")
 				.replace(".prg", "").replace(".PRG", "") + appendix;
 		if (cmds.containsKey("target")) {
@@ -406,6 +419,16 @@ public class MoSpeedCL {
 			runVice(cmds, targetFile);
 		}
 
+		if (deployUrl!=null) {
+			try(InputStream fis = new FileInputStream(targetFile)) {
+				new Http().run(deployUrl, fis);
+			} catch(Exception e) {
+				System.out.println("\n!!! Error starting prg on Ultimate64: " + e.getMessage());
+				printCause(e);
+				exit(64);
+			}
+		}
+		
 		exit(0);
 	}
 
@@ -723,6 +746,8 @@ public class MoSpeedCL {
 		System.out.println(
 				"/boost=true|false - If true, a compiled C64 program will use the C128's 2 Mhz mode to increase performance up to 25%. This only works on the C128 in C64 mode, it has no effect when run on a real C64. It might also not be compatible with all programs. Default is false.");
 		System.out.println(
+				"/deploy=<ip/domain> - If set to an ip or domain on which an Ultimate64 is listening, the program will be transfered and started on that device. Default is empty.");
+		System.out.println(
 				"/bigram=true|false - *Experimental* - If true, the RAM under the C64's BASIC ROM as well as the higher 4K of RAM will be used for the compiled program as well. This will reduce performance, especially when accessing memory under the ROM. Default is false.");
 		System.out.println(
 				"/compression=true|false - *Experimental* - If true, the compiled program will be compressed to achieve a smaller file size. The compressed file will be saved in addition to the normal binary. Compression isn't always possible. In that case, no compressed file will be written.");
@@ -736,6 +761,7 @@ public class MoSpeedCL {
 				"/assignmentopt=true|false - *Experimental* - If true, the compiler tries to optimize assignments. Default is false.");
 		System.out.println(
 				"/varopt=true|false - *Experimental* - If true, the compiler tries to move integer variables into the zeropage if possible and applicable. Default is false.");
+		
 
 		
 		System.out.println();
