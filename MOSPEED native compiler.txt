@@ -145,18 +145,24 @@ for compiled code and variables. If a hole is located after the end of the compi
 - /boost=true|false: if true, a compiled C64 program will use the C128's 2 Mhz mode to increase performance up to 25%. This only works on 
 the C128 in C64 mode, it has no effect when run on a real C64. It might also not be compatible with all programs. Default is false.
 
-- /bigram=true|false: - Experimental - If true, the RAM under the C64's BASIC ROM as well as the higher 4K of RAM will be used for the 
+- /bigram=true|false: - If true, the RAM under the C64's BASIC ROM as well as the higher 4K of RAM will be used for the 
 compiled program as well. This will reduce performance, especially when accessing memory under the ROM. Default is false.
 
-- /compression=true|false: - Experimental - If true, the compiled program will be compressed to achieve a smaller file size. 
+- /compression=true|false: - If true, the compiled program will be compressed to achieve a smaller file size. 
 The compressed file will be saved in addition to the normal binary. Compression isn't always possible. 
 In that case, no compressed file will be written.
 
-- /inlineasm=true|false: - *Experimental* - If true, inline assembly code can be used, marked by REM [...;...;...]. Default is false.
+- /deploy=<ip/domain> - If set to an ip or domain on which an Ultimate64 is listening, the program will be transfered and started on that device. Default is empty.
+
+- /inlineasm=true|false: - If true, inline assembly code can be used, marked by REM [...;...;...]. Default is false.
 
 - /printopt=true|false - *Experimental* - If true, the compiler tries to rearrange texts in PRINT statements to save memory at the expense of speed. Default is false.
 
 - /arrayopt=true|false - *Experimental* - If true, the compiler tries to optimize access speed of multi-dimensional arrays at the expense of memory usage. Default is false.
+
+- /assignmentopt=true|false - *Experimental* - If true, the compiler tries to optimize assignments. Default is false.
+
+- /varopt=true|false - *Experimental* - If true, the compiler tries to move integer variables into the zeropage if possible and applicable. Default is false.
 
 Changes compared to BASIC 2.0 
 

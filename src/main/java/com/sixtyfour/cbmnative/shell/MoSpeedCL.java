@@ -748,11 +748,11 @@ public class MoSpeedCL {
 		System.out.println(
 				"/deploy=<ip/domain> - If set to an ip or domain on which an Ultimate64 is listening, the program will be transfered and started on that device. Default is empty.");
 		System.out.println(
-				"/bigram=true|false - *Experimental* - If true, the RAM under the C64's BASIC ROM as well as the higher 4K of RAM will be used for the compiled program as well. This will reduce performance, especially when accessing memory under the ROM. Default is false.");
+				"/bigram=true|false - If true, the RAM under the C64's BASIC ROM as well as the higher 4K of RAM will be used for the compiled program as well. This will reduce performance, especially when accessing memory under the ROM. Default is false.");
 		System.out.println(
-				"/compression=true|false - *Experimental* - If true, the compiled program will be compressed to achieve a smaller file size. The compressed file will be saved in addition to the normal binary. Compression isn't always possible. In that case, no compressed file will be written.");
+				"/compression=true|false - If true, the compiled program will be compressed to achieve a smaller file size. The compressed file will be saved in addition to the normal binary. Compression isn't always possible. In that case, no compressed file will be written.");
 		System.out.println(
-				"/inlineasm=true|false - *Experimental* - If true, inline assembly code can be used, marked by REM [...;...;...]. Default is false.");
+				"/inlineasm=true|false - If true, inline assembly code can be used, marked by REM [...;...;...]. Default is false.");
 		System.out.println(
 				"/printopt=true|false - *Experimental* - If true, the compiler tries to rearrange texts in PRINT statements to save memory at the expense of speed. Default is false.");
 		System.out.println(
