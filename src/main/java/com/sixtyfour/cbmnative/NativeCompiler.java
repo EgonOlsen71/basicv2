@@ -288,7 +288,7 @@ public class NativeCompiler {
 							List<String> toAdd = compileToPseudoCode(config, machine, cmd);
 							mCode.addAll(i + 1, toAdd);
 							break;
-						}
+						} 
 					}
 					// mCode.addAll(mCode.size()-1, compileToPseudoCode(machine,
 					// cmd));

@@ -139,6 +139,7 @@ public class If extends AbstractCommand {
 			// conditional branch target has to be within +-127/8 bytes
 			after.add("CMP " + expPush + ",#0{REAL}");
 			after.add("JE " + label);
+			after.add("NOP");
 			after.add(label + ":");
 		} else {
 			// ...but this version will work. It's slower though.
@@ -146,6 +147,7 @@ public class If extends AbstractCommand {
 			after.add("JNE N" + label);
 			after.add("JMP " + label);
 			after.add("N" + label + ":");
+			after.add("NOP");
 			after.add(label + ":");
 		}
 		CodeContainer cc = new CodeContainer(before, expr, after);
