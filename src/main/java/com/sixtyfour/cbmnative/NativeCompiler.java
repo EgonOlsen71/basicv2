@@ -285,7 +285,8 @@ public class NativeCompiler {
 						String part = mCode.get(i);
 						if (!part.startsWith("SKIP") && !part.startsWith("NOP")) {
 							// mCode.add(i+1,"; TROET");
-							mCode.addAll(i + 1, compileToPseudoCode(config, machine, cmd));
+							List<String> toAdd = compileToPseudoCode(config, machine, cmd);
+							mCode.addAll(i + 1, toAdd);
 							break;
 						}
 					}
@@ -295,11 +296,12 @@ public class NativeCompiler {
 				if (cmd.isConditional()) {
 					condi = true;
 				}
-				if (mCode.size() > codeStart && !mCode.get(codeStart).equalsIgnoreCase("NOP")) {
+				if (!condi && mCode.size() > codeStart && !mCode.get(codeStart).equalsIgnoreCase("NOP")) {
 					// Flag the end of a command if needed, so that the
-					// optimizer doesn't cross
-					// command borders.
+					// optimizer doesn't cross command borders.
 					// ...but avoid double NOPs...just in case...
+					// ...and not in conditional blocks, because they get 
+					// rearranged that that screws of the position of the NOP
 					mCode.add(codeStart, "NOP");
 				}
 			}

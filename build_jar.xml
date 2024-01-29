@@ -11,7 +11,7 @@
                 <attribute name="Main-Class" value="com.sixtyfour.runner.VisualRuntime"/>
                 <attribute name="Class-Path" value="."/>
             </manifest>
-            <fileset dir="${dir.buildfile}/target/classes"/>
+            <fileset dir="${dir.buildfile}/bin"/>
         </jar>
     </target>
 </project>
