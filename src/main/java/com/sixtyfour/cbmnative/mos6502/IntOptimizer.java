@@ -1020,6 +1020,27 @@ public class IntOptimizer {
 				}));
 
 
+		// POKE <CONST>,VAR%
+		intPatterns.add(new IntPattern(true, "Optimized code for POKE with Integer",
+				new String[] { "LDY {MEM0}", "LDA {MEM0}", "JSR INTFAC", "JSR FACXREG", "JSR FACWORD", "STY {*}" },
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						String vary = cleaned.get(0);
+						String target = cleaned.get(5).substring(cleaned.get(5).indexOf(" ")+1).trim();
+						if (vary.contains("%") && Util.isNumber(target)) {
+							List<String> rep = new ArrayList<>();
+							rep.add(cleaned.get(0));
+							rep.add(cleaned.get(5));
+							return combine(pattern, rep);
+						}
+						pattern.reset();
+						return input;
+					}
+				}));
+
+		
 		// POKE I,PEEK(J%)...
 		intPatterns.add(new IntPattern(true, "Optimized code for PEEK with Integer",
 				new String[] { "LDY {MEM0}", "LDA {MEM0}", "JSR INTFAC", "JSR FACWORD", "STY {*}", "STA {*}" },

@@ -121,4 +121,14 @@ public class Util {
 		}
 		return const2Value;
 	}
+	
+	public static boolean isNumber(String txt) {
+		try {
+			Long.parseLong(txt);
+			return true;
+		} catch(Exception e) {
+			return false;
+		}
+	}
+	
 }
