@@ -3774,7 +3774,7 @@ ONETOFAC    LDX #129
 			STX FAC+3
 			STX FAC+4
 			STX FAC+5
-			STX FAC+6
+			STX FAC+15
 			RTS
 ;###################################
 FASTAND		LDA ARGEXP			; Check ARG for 0
