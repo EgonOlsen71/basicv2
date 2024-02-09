@@ -300,6 +300,14 @@ public class Optimizer6502 implements Optimizer {
 		tmpPat = new Pattern(false, "Single character output with calculation", new String[] { "JSR SINGLECHRCALCOUT" },
 				"JSR CHRINTCALC", "JSR STROUT");
 		others.add(tmpPat);
+		
+		// This should actually been done by the IntOptimizer, bbut for some reason that I can't remember, it can't do it. So we are doing it here.
+		tmpPat = new Pattern(false, "Faster INT-Array-copy", new String[] { "JSR ARRAYACCESS_INTEGER_INT_SI","STY AS_TMP","STA AS_TMP+1","{LINE2}","{LINE3}",
+				"{LINE4}","{LINE5}","{LINE6}","{LINE7}","JSR ARRAYSTORE_INT_INTEGER_AC" },
+				"JSR ARRAYACCESS_INTEGER_INT","JSR COPY_XREG2YREG","LDA #<{MEM0}","LDY #>{MEM0}",
+				"STA G_REG","STY G_REG+1","LDY {MEM1}","LDA {MEM1}","JSR ARRAYSTORE_INTEGER_INT");
+		others.add(tmpPat);
+		
 
 		// This is actually done in the normal optimizer run, but this sequence might be
 		// reintroduced by the int-optimizer for...reasons...so we remove it here
