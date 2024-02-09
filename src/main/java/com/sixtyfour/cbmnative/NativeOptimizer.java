@@ -104,6 +104,11 @@ public class NativeOptimizer {
 		patterns.add(new NativePattern(new String[] { "MOV Y,*", "MOVB X,(Y)", "MOV Y,#%", "OR X,Y" },
 				new String[] { "{0}", "{2:MOV Y>MOV A}", "JSR PEEKBYTEOR" }));
 		
+		// For some bizarre reason, multiplying with a constant sometimes results in one order and something in the other.
+		// This "fixes" this, to let the shift optimization do it's magic afterwards.
+		patterns.add(new NativePattern(new String[] {"MOV Y,#*", "MOV X,*","MUL X,Y"}, new String[] {
+			"{1}","{0}","{2}"}));
+		
 		// This optimizes the array access for multi-dimensional arrays whose dimensions
 		// are a power of 2, like k%(15,15)
 		// It does this by rearranging the operations, so that the resulting
