@@ -1140,7 +1140,7 @@ public class IntOptimizer {
 		
 		
 		// Integer array storage with contant index value
-		intPatterns.add(new IntPattern(true, "Optimized code for fixed integer index",
+		intPatterns.add(new IntPattern(true, "Optimized code for fixed integer index(1)",
 				new String[] { "LDA #<{CONST0}", "LDY #>{CONST0}", "JSR COPY2_XYA_XREG", "LDY {*}", "LDA {*}",
 						"STY AS_TMP", "STA AS_TMP+1", "LDA #<{MEM0}", "LDY #>{MEM0}", "STA G_REG", "STY G_REG+1",
 						"JSR ARRAYSTORE_INT_INTEGER" },
@@ -1162,6 +1162,36 @@ public class IntOptimizer {
 						rep.add(cleaned.get(8));
 						rep.add(cleaned.get(9));
 						rep.add(cleaned.get(10));
+						rep.add("LDY #" + (numd & 0xff));
+						rep.add("LDA #" + ((numd & 0xff00) >> 8));
+						rep.add("JSR ARRAYSTORE_INT_INTEGER_AC");
+						return combine(pattern, rep);
+					}
+				}));
+		
+		
+		intPatterns.add(new IntPattern(true, "Optimized code for copying from int array with fixed index into fixed integer index array(2)",
+				new String[] { "JSR ARRAYACCESS_INTEGER_INT_PRE", "JSR COPY_XREG2YREG", "LDA #<{CONST0}", "LDY #>{CONST0}", "JSR COPY2_XYA_XREG",
+						"LDA #<{MEM0}", "LDY #>{MEM0}", "STA G_REG", "STY G_REG+1",
+						"JSR ARRAYSTORE_INTEGER" },
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						String consty = cleaned.get(2);
+						consty = consty.substring(consty.indexOf("<") + 1).trim();
+						Number num = const2Value.get(consty);
+						int numd = num.intValue();
+						List<String> rep = new ArrayList<>();
+						rep.add("JSR ARRAYACCESS_INTEGER_INT_PRE_SKIP_FP");
+						rep.add(cleaned.get(5));
+						rep.add(cleaned.get(6));
+						rep.add(cleaned.get(7));
+						rep.add(cleaned.get(8));
+						rep.add("LDA TMP2_ZP");
+						rep.add("STA AS_TMP");
+						rep.add("LDA TMP2_ZP+1");
+						rep.add("STA AS_TMP+1");
 						rep.add("LDY #" + (numd & 0xff));
 						rep.add("LDA #" + ((numd & 0xff00) >> 8));
 						rep.add("JSR ARRAYSTORE_INT_INTEGER_AC");

@@ -123,6 +123,11 @@ public class NativeOptimizer {
 		patterns.add(new NativePattern(new String[] {"MOV C,*", "PUSH C", "MOV C,*", "PUSH C", "MOV X,Y{REAL}", "CHGCTX #1", "MOV G,*", "JSR ARRAYACCESS", "MOV B,A", "POP D", "POP C", "JSR MID"}, 
 				new String[] {"{4}", "{6}", "{7}", "{8}", "{0}", "{2:MOV C,>MOV D,}", "JSR MID"}));
 		
+		
+		
+		patterns.add(new NativePattern(new String[] {"MOV Y,#*", "PUSH Y", "NOP", "MOV X,#*", "MOV G,*", "CHGCTX #0", "JSR ARRAYACCESS", "MOV Y,X", "POP X", "MOV G,*", "JSR ARRAYSTORE"}, 
+				new String[] {"{2}","{3}","{4}","{5}","{6}","{7}","{0:MOV Y>MOV X}","{9}","{10}"}));
+		
 		String[] calls = {"SNEQ", "SEQ", "SGT", "SLT", "SGTEQ", "SLTEQ"};
 		
 		for (String call:calls) {

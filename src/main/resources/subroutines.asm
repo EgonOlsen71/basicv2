@@ -1879,6 +1879,22 @@ AIIDI		LDY #1
 			JSR INTFAC
 			JMP FACXREG	;RTS is implicit
 ;###################################
+ARRAYACCESS_INTEGER_INT_PRE_SKIP_FP
+			LDX G_REG
+			STX TMP_ZP
+			LDX G_REG+1
+			STX TMP_ZP+1
+			LDY #1
+			LDA (TMP_ZP),Y
+			TAX
+			DEY
+			LDA (TMP_ZP),Y
+			TAY
+			TXA
+			STY TMP2_ZP		; Store for integer optimization later on
+			STA TMP2_ZP+1
+			RTS
+;###################################
 ARRAYACCESS_INTEGER_INT_PRE
 			LDX G_REG
 			STX TMP_ZP
