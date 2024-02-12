@@ -18,6 +18,9 @@ public abstract class AbstractCodeModifier implements CodeModifier {
 	public List<String> modify(IntPattern pattern, List<String> input) {
 		parts = pattern.split(input);
 		cleaned = parts.get(1).stream().filter(p -> !p.startsWith(";")).collect(Collectors.toList());
+		if (cleaned==null) {
+			throw new RuntimeException("No input code extracted!");
+		}
 		return input;
 	}
 

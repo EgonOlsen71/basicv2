@@ -21,14 +21,50 @@ public class IntOptimizer {
 
 	public List<String> applyIntOptimizations(CompilerConfig conf, PlatformProvider platform, List<String> input,
 			int[] startAndEnd) {
+		Map<String, Number> const2Value = extractConstants(input);
+		input = applyIntOptimizations(conf, platform, input, startAndEnd, setUpRules(const2Value), const2Value);
+		return input;
+	}
+	
+	private List<String> applyIntOptimizations(CompilerConfig conf, PlatformProvider platform, List<String> input,
+			int[] startAndEnd, List<IntPattern> intPatterns, Map<String, Number> const2Value) {
 
 		//input.forEach(System.out::println);
 		
-		Map<String, Number> const2Value = extractConstants(input);
 		Map<String, String> strConst2Value = extractStringConstants(input);
 		int[] ps = startAndEnd;
 		int codeStart = ps[0];
 		int codeEnd = ps[1];
+		
+		for (int i = codeStart; i < codeEnd; i++) {
+			String line = input.get(i);
+			if (line.trim().startsWith(";")) {
+				continue;
+			}
+
+			for (IntPattern pattern : intPatterns) {
+				boolean matches = pattern.matches(line, i, const2Value, strConst2Value);
+				if (matches) {
+					try {
+						input = pattern.modify(input);
+					} catch(Throwable e) {
+						Logger.log("Failed to apply: "+pattern.getName());
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+
+		int cnt = intPatterns.stream().map(p -> p.getUsage()).reduce(0, Integer::sum);
+		if (cnt > 0) {
+			Logger.log("Optimization Optimized code for Integer applied " + cnt + " times!");
+		}
+
+		return input;
+	}
+
+	
+	private List<IntPattern> setUpRules(Map<String, Number> const2Value) {
 		List<IntPattern> intPatterns = new ArrayList<>();
 		
 		// A very special case for ASC*256...because ASC is save to be >0 and <256
@@ -914,7 +950,7 @@ public class IntOptimizer {
 				}));
 
 		// PEEK(XXXX) with XXXX being a constant
-		intPatterns.add(new IntPattern(true, "Optimized code for PEEK(<constant>)",
+		intPatterns.add(new IntPattern(true, "Optimized code for PEEK(<constant>)(1)",
 				new String[] { "LDA #<{CONST0}", "LDY #>{CONST0}", "JSR REALFAC", "JSR FACWORD", "STY {*}", "STA {*}", "{LABEL}", "LDA $FFFF" },
 				new AbstractCodeModifier() {
 					@Override
@@ -926,12 +962,29 @@ public class IntOptimizer {
 						int numd = num.intValue();
 
 						List<String> rep = new ArrayList<>();
-						//rep.add("LDY #" + (numd & 0xff));
-						//rep.add("LDA #" + ((numd & 0xff00) >> 8));
-						//rep.add(cleaned.get(4));
-						//rep.add(cleaned.get(5));
 						rep.add("LDA $"+getHex(numd));
 						return combine(pattern, rep);
+					}
+				}));
+		
+		intPatterns.add(new IntPattern(true, "Optimized code for PEEK(<constant>)(2)",
+				new String[] { "LDA #<{CONST0}", "LDY #>{CONST0}", "JSR REALFAC", "JSR FACWORD", "STY {*}", "STA {*}", "{LABEL}", "LDY {*}", "LDA #0"},
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						if (cleaned.get(4).contains("MOVBSELF")) {
+							String consty = cleaned.get(0);
+							consty = consty.substring(consty.indexOf("<") + 1).trim();
+							Number num = const2Value.get(consty);
+							int numd = num.intValue();
+							List<String> rep = new ArrayList<>();
+							rep.add("LDY $"+getHex(numd));
+							rep.add("LDA #0");
+							return combine(pattern, rep);
+						}
+						pattern.reset();
+						return input;
 					}
 				}));
 
@@ -1924,34 +1977,7 @@ public class IntOptimizer {
 						
 					}
 				}));
-		
-		
-		
-		
-		for (int i = codeStart; i < codeEnd; i++) {
-			String line = input.get(i);
-			if (line.trim().startsWith(";")) {
-				continue;
-			}
-
-			for (IntPattern pattern : intPatterns) {
-				boolean matches = pattern.matches(line, i, const2Value, strConst2Value);
-				if (matches) {
-					try {
-						input = pattern.modify(input);
-					} catch(Exception e) {
-						Logger.log("Failed to apply: "+pattern.getName());
-					}
-				}
-			}
-		}
-
-		int cnt = intPatterns.stream().map(p -> p.getUsage()).reduce(0, Integer::sum);
-		if (cnt > 0) {
-			Logger.log("Optimization Optimized code for Integer applied " + cnt + " times!");
-		}
-
-		return input;
+		return intPatterns;
 	}
 
 	private String getHex(double value) {

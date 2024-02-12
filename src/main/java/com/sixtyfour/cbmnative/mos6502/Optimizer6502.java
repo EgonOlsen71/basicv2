@@ -315,6 +315,15 @@ public class Optimizer6502 implements Optimizer {
 		tmpPat = new Pattern(false, "Substitute double INT()", new String[] { "JSR INTFAC" }, "JSR INTFAC",
 				"JSR BASINT");
 		others.add(tmpPat);
+		
+		// Remove unneeded LDA calls
+		tmpPat = new Pattern(false, "Remove unneeded LDA calls(1)", new String[] { "{LINE0}", "{LINE2}" }, "LDY {MEM0}",
+				"LDA {MEM0}", "STY {MEM1}", "NOP");
+		others.add(tmpPat);
+		tmpPat = new Pattern(false, "Remove unneeded LDA calls(2)", new String[] { "{LINE0}", "{LINE2}", "{LINE3}" }, "LDY {MEM0}",
+				"LDA {MEM0}", "STY {MEM1}", "{LABEL}");
+		others.add(tmpPat);
+		
 
 		// This can be introduced by the int-optimizer as well...we handle it here.
 		tmpPat = new Pattern(false, "Remove INT conversions", new String[] { "{LINE2}" }, "JSR INTFAC", "JSR FACWORD",

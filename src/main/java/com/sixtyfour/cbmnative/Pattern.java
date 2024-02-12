@@ -240,6 +240,9 @@ public class Pattern implements java.lang.Cloneable {
 		if (line.startsWith(";")) {
 			return false;
 		}
+		if (pos>=pattern.size()) {
+			return false;
+		}
 		String part = pattern.get(pos);
 
 		int p0 = spacePos.get(pos);
