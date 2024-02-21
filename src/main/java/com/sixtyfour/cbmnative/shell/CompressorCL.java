@@ -96,6 +96,9 @@ public class CompressorCL {
 					binStart = start;
 					data = newData;
 				}
+				if (start>=binStart && end<=data.length) {
+					System.arraycopy(dat.getData(), 0, data, start, dat.getLength());
+				}
 			}
 		}
 
