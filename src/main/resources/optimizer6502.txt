@@ -495,3 +495,7 @@
 #166: Value in YREG still in FAC
 "Value in YREG still in FAC"	false	false	false	"JSR FACYREG|LDY {*}|LDA {*}|STY A_REG|STA A_REG+1|JSR YREGFAC"	"{LINE0}|{LINE1}|{LINE2}|{LINE3}|{LINE4}"
 
+#167: Double conversion avoided
+"Double conversion avoided"	false	false	false	"LDY {MEM0}|LDA {MEM0}|JSR INTFAC|JSR PUSHREAL|LDY {MEM0}|LDA {MEM0}|JSR INTFAC|JSR FACYREG"	"{LINE0}|{LINE1}|{LINE2}|{LINE3}|{LINE7}"
+
+

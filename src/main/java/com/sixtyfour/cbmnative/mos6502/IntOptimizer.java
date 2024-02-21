@@ -1009,6 +1009,62 @@ public class IntOptimizer {
 							}
 						}));
 
+		// PEEK(o%) and 128
+		intPatterns
+				.add(new IntPattern(
+						true, "Optimized code for PEEK/AND/OR(1)", new String[] { "LDY {*}", "LDA {*}", "JSR INTFAC",
+								"JSR FACYREG", "LDY {*}", "LDA {*}", "STY A_REG",  "STA A_REG+1", "JSR {*}" },
+						new AbstractCodeModifier() {
+							@Override
+							public List<String> modify(IntPattern pattern, List<String> input) {
+								input = super.modify(pattern, input);
+								String jumpy = cleaned.get(8);
+								if (jumpy.contains("PEEKBYTEAND") || jumpy.contains("PEEKBYTEOR")) {
+									List<String> rep = new ArrayList<>();
+									rep.add(cleaned.get(4));
+									rep.add(cleaned.get(5));
+									rep.add(cleaned.get(6));
+									rep.add(cleaned.get(7));
+									rep.add(cleaned.get(0));
+									rep.add(cleaned.get(1));
+									rep.add(cleaned.get(8)+"INT");
+									return combine(pattern, rep);
+								} 
+								pattern.reset();
+								return input;
+							}
+						}));
+		
+		// POKE o%,PEEK(o%) and 128
+		intPatterns
+				.add(new IntPattern(
+						true, "Optimized code for PEEK/AND/OR(2)", new String[] { "LDY {*}", "LDA {*}", "JSR INTFAC", "JSR PUSHREAL",
+								"JSR FACYREG", "LDY {*}", "LDA {*}", "STY A_REG",  "STA A_REG+1", "JSR {*}" },
+						new AbstractCodeModifier() {
+							@Override
+							public List<String> modify(IntPattern pattern, List<String> input) {
+								input = super.modify(pattern, input);
+								String jumpy = cleaned.get(9);
+								if (jumpy.contains("PEEKBYTEAND") || jumpy.contains("PEEKBYTEOR")) {
+									List<String> rep = new ArrayList<>();
+									rep.add(cleaned.get(0));
+									rep.add(cleaned.get(1));
+									rep.add(cleaned.get(2));
+									rep.add(cleaned.get(3));
+									rep.add(cleaned.get(5));
+									rep.add(cleaned.get(6));
+									rep.add(cleaned.get(7));
+									rep.add(cleaned.get(8));
+									rep.add(cleaned.get(0));
+									rep.add(cleaned.get(1));
+									rep.add(cleaned.get(9)+"INT");
+									return combine(pattern, rep);
+								} 
+								pattern.reset();
+								return input;
+							}
+						}));
+		
 		// POKE I,PEEK(I) AND 234
 		intPatterns
 				.add(new IntPattern(
