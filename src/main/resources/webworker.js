@@ -40,6 +40,7 @@ function CbmConsole() {
 	this.height=25;
 	this.vidMem=new Array(1000);
 	this.colMem=new Array(1000);
+	this.memory=null;
 	this.bgColor=6;
 	this.fontColor=14;
 	this.map = {};
@@ -58,30 +59,35 @@ function CbmConsole() {
 	}
 	
 	this.clearScreen = function() {
-		for (var i=0; i<_selfy.width*_selfy.height; i++) {
-			_selfy.vidMem[i]=32;
-			_selfy.colMem[i]=_selfy.fontColor;
-			_selfy.x=0;
-			_selfy.y=0;
+		if (_selfy.compiledCode) {
+			_selfy.memory = _selfy.compiledCode.getMemory();
+			for (var i=0; i<_selfy.width*_selfy.height; i++) {
+				_selfy.memory[1024+i]=32;
+				_selfy.memory[55296+i]=_selfy.fontColor;
+				_selfy.x=0;
+				_selfy.y=0;
+			}
 		}
 	}
 	
 	this.shiftRight = function(pos) {
 		var offset = pos;
 		var end = _selfy.y * _selfy.width + (((_selfy.y & 1) == 1) ? (_selfy.width-1) : (2*_selfy.width-1));
-		if (_selfy.vidMem[end] != 32) {
+		_selfy.memory = _selfy.compiledCode.getMemory();
+		if (_selfy.memory[1024+end] != 32) {
 			return;
 		}
 		for (var i = end; i > offset; i--) {
-			_selfy.vidMem[i] = _selfy.vidMem[i - 1];
-			_selfy.colMem[i] = _selfy.colMem[i - 1];
+			_selfy.memory[1024+i] = _selfy.memory[1024+i - 1];
+			_selfy.memory[55296+i] = _selfy.memory[55296+i - 1];
 		}
-		_selfy.vidMem[offset]=_selfy.getPokeValue(32);
-		_selfy.colMem[offset]=_selfy.fontColor;
+		_selfy.memory[1024+offset]=_selfy.getPokeValue(32);
+		_selfy.memory[55296+offset]=_selfy.fontColor;
 	}
 	
 	this.processControlCode = function(code, pos, withSpc) {
-		var col=_selfy.compiledCode.getMemory()[646];
+		_selfy.memory = _selfy.compiledCode.getMemory();
+		var col=_selfy.memory[646];
 		
 		if (withSpc && code==32) {
 			if (_selfy.reverseMode) {
@@ -187,8 +193,8 @@ function CbmConsole() {
 					_selfy.graphicsMode=true;
 					break;
 				default:
-					_selfy.vidMem[pos]=_selfy.getPokeValue(String.fromCharCode(code));
-					_selfy.colMem[pos]=_selfy.fontColor;
+					_selfy.memory[1024+pos]=_selfy.getPokeValue(String.fromCharCode(code));
+					_selfy.memory[55296+pos]=_selfy.fontColor;
 					_selfy.x++;
 					break;
 				}
@@ -201,20 +207,24 @@ function CbmConsole() {
 	}
 	
 	this.clearAtCursor = function(pos) {
-		_selfy.vidMem[pos]=_selfy.getPokeValue(32);
-		_selfy.colMem[pos]=_selfy.fontColor;
+		_selfy.memory = _selfy.compiledCode.getMemory();
+		_selfy.memory[1024+pos]=_selfy.getPokeValue(32);
+		_selfy.memory[55296+pos]=_selfy.fontColor;
 		_selfy.x++;
 	}
 	
 	this.setAtCursor = function(pos) {
-		_selfy.vidMem[pos]=_selfy.getPokeValue(160);
-		_selfy.colMem[pos]=_selfy.fontColor;
+		_selfy.memory = _selfy.compiledCode.getMemory();
+		_selfy.memory[1024+pos]=_selfy.getPokeValue(160);
+		_selfy.memory[55296+pos]=_selfy.fontColor;
 		_selfy.x++;
 	}
 	
 	this.inject = function(compiledCode, conElem) {
+		_selfy.memory = compiledCode.getMemory();
 		compiledCode.superOut=compiledCode.out;
 		_selfy.con=conElem;
+		_selfy.memory = compiledCode._memory;
 		
 		_selfy.fillMap();
 		_selfy.charset=_selfy.createCharsetMapping();
@@ -230,6 +240,7 @@ function CbmConsole() {
 		}
 		
 		compiledCode.out = function(val) {
+			_selfy.memory = compiledCode.getMemory();
 			if (val==null) {
 				return;
 			}
@@ -270,16 +281,21 @@ function CbmConsole() {
 				if (_selfy.y>=_selfy.height) {
 					_selfy.y=_selfy.height-1;
 					for (var p=_selfy.width;p<_selfy.width*_selfy.height;p++) {
-						_selfy.vidMem[p-_selfy.width]=_selfy.vidMem[p];
-						_selfy.colMem[p-_selfy.width]=_selfy.colMem[p];
+						_selfy.memory[1024+p-_selfy.width]=_selfy.memory[1024+p];
+						_selfy.memory[55296+p-_selfy.width]=_selfy.memory[55296+p];
 					}
 					for (var p=_selfy.width*(_selfy.height-1);p<_selfy.width*_selfy.height;p++) {
-						_selfy.vidMem[p]=32;
-						_selfy.colMem[p]=_selfy.fontColor;
+						_selfy.memory[1024+p]=32;
+						_selfy.memory[55296+p]=_selfy.fontColor;
 					}
 				} 
 			}
 			
+			if (_selfy.memory) {
+				_selfy.vidMem = _selfy.memory.slice(1024, 2024);
+				_selfy.colMem = _selfy.memory.slice(55296, 56296);
+				_selfy.bgColor = _selfy.memory[53281];
+			}
 			_self.postMessage([_selfy.vidMem, _selfy.colMem, _selfy.bgColor]);
 		};
 		

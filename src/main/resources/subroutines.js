@@ -211,18 +211,20 @@ this.execute = function(threaded) {
 this.executeThreaded = function() {
 	var cnt=0;
 	do {
-		if (this.restart) {
-			this.reinit();
+		do {
+			if (this.restart) {
+				this.reinit();
+			}
+			this.executeLine(true);
+		} while(this.running && cnt++<this.batchSize);
+		if (this.running) {
+			var ctx=this;
+			self.setTimeout(function() {
+				ctx.executeThreaded();
+			}, this.timeOut);
+			this.timeOut=0;
 		}
-		this.executeLine(true);
-	} while(this.running && cnt++<this.batchSize);
-	if (this.running) {
-		var ctx=this;
-		self.setTimeout(function() {
-			ctx.executeThreaded();
-		}, this.timeOut);
-		this.timeOut=0;
-	}
+	} while(this.restart);
 }
 
 this.reinit = function() {
