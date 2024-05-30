@@ -297,7 +297,12 @@ this.INPUTNUMBER = function() {
 		this.Y_REG=parseFloat(inp);
 		this.X_REG=0;
 	} else {
-		this.X_REG=-1;
+		if (inp.length==0) {
+			this.Y_REG=0;
+			this.X_REG=0;
+		} else {
+			this.X_REG=-1;
+		}
 	}
 }
 
@@ -825,14 +830,19 @@ this.input = function() {
 	if (this._inputQueue.length>0) {
 		return this._inputQueue.pop();
 	}
-	var inp=prompt(this._line);
-	this._line="";
-	if (inp) {
-		var parts=inp.split(",");
-		parts.reverse();
-		this._inputQueue.push.apply(this._inputQueue, parts);
-		return this._inputQueue.pop();
+	if (typeof prompt === 'function') {
+		var inp=prompt(this._line);
+		this._line="";
+		if (inp) {
+			var parts=inp.split(",");
+			parts.reverse();
+			this._inputQueue.push.apply(this._inputQueue, parts);
+			return this._inputQueue.pop();
+		} else {
+			return "";
+		}
 	} else {
+		console.log("INPUT skipped, no prompt function in this context...");
 		return "";
 	}
 }
