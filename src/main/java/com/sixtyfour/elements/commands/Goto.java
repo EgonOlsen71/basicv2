@@ -51,7 +51,8 @@ public class Goto extends AbstractCommand implements Jump {
 		try {
 			this.targetLineNumber = Integer.parseInt(linePart);
 		} catch (Exception e) {
-			throw new RuntimeException("Undef'd statement error: " + this);
+			//throw new RuntimeException("Undef'd statement error: " + this);
+			this.targetLineNumber = 0;
 		}
 		return null;
 	}
