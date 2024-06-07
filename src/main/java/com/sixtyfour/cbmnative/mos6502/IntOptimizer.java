@@ -1224,6 +1224,74 @@ public class IntOptimizer {
 					}
 				}));
 		
+		// POKE/PEEK of (VAR+INT-array-value)
+		intPatterns.add(new IntPattern(true, "Optimized code for POKE/PEEK with addition(1)",
+				new String[] { "JSR ARRAYACCESS_INTEGER_INT", "LDA #<{MEM0}", "LDY #>{MEM0}", "JSR REALFAC", "LDA #<X_REG", "LDY #>X_REG",
+						"JSR FASTFADDMEM", "JSR PUSHREAL", "JSR POPREAL", "JSR FACWORD", "STY {*}",  "STA {*}"},
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						String store = cleaned.get(10);
+						if (store.contains("MOVBSELF")) {
+							List<String> rep = new ArrayList<>();
+							rep.add(cleaned.get(0));
+							rep.add(cleaned.get(1));
+							rep.add(cleaned.get(2));
+							rep.add(cleaned.get(3));
+							rep.add("JSR FACWORD");
+							
+							rep.add("CLC");
+							rep.add("TAX");
+							rep.add("TYA");
+							rep.add("ADC TMP2_ZP");
+							rep.add("TAY");
+							rep.add("TXA");
+							rep.add("ADC TMP2_ZP+1");
+							
+							rep.add(cleaned.get(10));
+							rep.add(cleaned.get(11));
+							return combine(pattern, rep);
+						}
+						pattern.reset();
+						return input;
+					}
+				}));
+		
+		// POKE/PEEK of (VAR+INT-array-value)
+		intPatterns.add(new IntPattern(true, "Optimized code for POKE/PEEK with addition(2)",
+				new String[] { "JSR ARRAYACCESS_INTEGER_INT", "LDA #<{MEM0}", "LDY #>{MEM0}", "JSR REALFAC", "LDA #<X_REG", "LDY #>X_REG",
+						"JSR FASTFADDMEM", "JSR FACWORD", "STY {*}",  "STA {*}"},
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						String store = cleaned.get(8);
+						if (store.contains("MOVBSELF")) {
+							List<String> rep = new ArrayList<>();
+							rep.add(cleaned.get(0));
+							rep.add(cleaned.get(1));
+							rep.add(cleaned.get(2));
+							rep.add(cleaned.get(3));
+							rep.add("JSR FACWORD");
+							
+							rep.add("CLC");
+							rep.add("TAX");
+							rep.add("TYA");
+							rep.add("ADC TMP2_ZP");
+							rep.add("TAY");
+							rep.add("TXA");
+							rep.add("ADC TMP2_ZP+1");
+							
+							rep.add(cleaned.get(8));
+							rep.add(cleaned.get(9));
+							return combine(pattern, rep);
+						}
+						pattern.reset();
+						return input;
+					}
+				}));
+		
 		// POKE k%,<*> with k% being calculated before
 		intPatterns.add(new IntPattern(true, "Optimized code for POKE of Integer values(3)",
 				new String[] { "JSR FACXREG", "JSR FACINT", "STY {*}",  "STA {*}", "JSR XREGFAC", "JSR FACWORD" , "STY {*}",  "STA {*}"},
