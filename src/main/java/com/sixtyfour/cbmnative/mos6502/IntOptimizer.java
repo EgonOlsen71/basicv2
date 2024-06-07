@@ -1241,13 +1241,7 @@ public class IntOptimizer {
 							rep.add(cleaned.get(3));
 							rep.add("JSR FACWORD");
 							
-							rep.add("CLC");
-							rep.add("TAX");
-							rep.add("TYA");
-							rep.add("ADC TMP2_ZP");
-							rep.add("TAY");
-							rep.add("TXA");
-							rep.add("ADC TMP2_ZP+1");
+							rep.add("JSR OPT_POKE_ADD");
 							
 							rep.add(cleaned.get(10));
 							rep.add(cleaned.get(11));
@@ -1275,13 +1269,7 @@ public class IntOptimizer {
 							rep.add(cleaned.get(3));
 							rep.add("JSR FACWORD");
 							
-							rep.add("CLC");
-							rep.add("TAX");
-							rep.add("TYA");
-							rep.add("ADC TMP2_ZP");
-							rep.add("TAY");
-							rep.add("TXA");
-							rep.add("ADC TMP2_ZP+1");
+							rep.add("JSR OPT_POKE_ADD");
 							
 							rep.add(cleaned.get(8));
 							rep.add(cleaned.get(9));

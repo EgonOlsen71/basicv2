@@ -3501,6 +3501,16 @@ NOPVPRXR	LDA FPSTACKP
 			STY FACOV
 			RTS
 ;###################################
+OPT_POKE_ADD
+			CLC
+			TAX
+			TYA
+			ADC TMP2_ZP
+			TAY
+			TXA
+			ADC TMP2_ZP+1
+			RTS
+;###################################
 SHR			LDA FACEXP
 			BEQ SHROK
 			SEC
