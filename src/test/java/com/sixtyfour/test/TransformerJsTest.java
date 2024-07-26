@@ -179,7 +179,6 @@ public class TransformerJsTest {
 		// conf.setCompactThreshold(3);
 
 		Basic basic = new Basic(vary);
-		Basic.registerExtension(new X16Extensions());
 		basic.compile(conf);
 
 		List<String> mCode = NativeCompiler.getCompiler().compileToPseudoCode(conf, basic);

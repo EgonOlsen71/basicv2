@@ -78,12 +78,28 @@ public class Loader {
 	 * @return the string[] the program splitted into it's lines
 	 */
 	public static String[] loadProgram(InputStream prg) {
+		return loadProgram(prg, false);
+	}
+
+	/**
+	 * Load a program from a text file into a String[] array. It assumes that the
+	 * text is UTF-8 encoded. Line separator is \n.
+	 * 
+	 * @param prg the program's input stream
+	 * @param noTrim don't trim input
+	 * @return the string[] the program splitted into it's lines
+	 */
+	public static String[] loadProgram(InputStream prg, boolean noTrim) {
 		List<String> lines = new ArrayList<String>();
 		try (BufferedReader br = new BufferedReader(new InputStreamReader(prg, "UTF-8"))) {
 			while (br.ready()) {
 				String line = br.readLine();
-				if (line != null && line.trim().length() > 0) {
-					lines.add(line.trim());
+				if (noTrim) {
+					lines.add(line);
+				} else {
+					if (line != null && line.trim().length() > 0) {
+						lines.add(line.trim());
+					}
 				}
 			}
 		} catch (Exception e) {
@@ -91,7 +107,7 @@ public class Loader {
 		}
 		return lines.toArray(new String[lines.size()]);
 	}
-
+	
 	/**
 	 * Load a program from a text file into a String[] array. It assumes that the
 	 * text is UTF-8 encoded. Line separator is \n.

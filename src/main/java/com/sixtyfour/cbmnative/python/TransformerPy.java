@@ -1,4 +1,4 @@
-package com.sixtyfour.cbmnative.powerscript;
+package com.sixtyfour.cbmnative.python;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.stream.Collectors;
 
 import com.sixtyfour.Loader;
 import com.sixtyfour.Logger;
@@ -15,7 +14,7 @@ import com.sixtyfour.cbmnative.GeneratorContext;
 import com.sixtyfour.cbmnative.PlatformProvider;
 import com.sixtyfour.cbmnative.Transformer;
 import com.sixtyfour.cbmnative.mos6502.AbstractTransformer;
-import com.sixtyfour.cbmnative.powerscript.generators.GeneratorListPs;
+import com.sixtyfour.cbmnative.python.generators.GeneratorListPy;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.config.MemoryConfig;
 import com.sixtyfour.elements.Type;
@@ -26,19 +25,19 @@ import com.sixtyfour.util.ConstantExtractor;
 import com.sixtyfour.util.VarUtils;
 
 /**
- * The transformer for the Powerscript/-shell target platform. It generates
- * Powerscript code linked together with a Powerscript runtime. The result can
- * be run in a Powershell.
+ * The transformer for the Python target platform. It generates Python
+ * code linked together with a Python runtime. The result can be run
+ * using Python 3
  * 
  * @author EgonOlsen
  *
  */
-public class TransformerPs implements Transformer {
+public class TransformerPy implements Transformer {
 
 	@Override
 	public List<String> transform(CompilerConfig config, MemoryConfig memConfig, Machine machine,
 			PlatformProvider platform, List<String> code) {
-		Logger.log("Compiling into powerscript code...");
+		Logger.log("Compiling into python code...");
 
 		addContinues(code);
 
@@ -49,40 +48,48 @@ public class TransformerPs implements Transformer {
 		List<String> subs = new ArrayList<String>();
 		List<String> datas = new ArrayList<String>();
 
-		subs.addAll(Arrays.asList(Loader.loadProgram(this.getClass().getResourceAsStream("/subroutines.ps1"))));
-		AbstractTransformer.addExtensionSubroutines(subs, "ps1");
+		subs.add("# *** SUBROUTINES ***");
+		
+		List<String> subys = Arrays.asList(Loader.loadProgram(this.getClass().getResourceAsStream("/subroutines.py"), true));
+		subys = platform.getOptimizer().optimize(config, platform, subys, config.getProgressListener());
+		subs.addAll(subys);
+		AbstractTransformer.addExtensionSubroutines(subs, "py");
 
-		res.add("#  TO RUN THIS, YOU MIGHT HAVE TO CHANGE POWERSHELL'S EXECUTION POLICY LIKE SO:");
-		res.add("#  Set-ExecutionPolicy RemoteSigned -scope CurrentUser");
-		res.add("#  or, restricted to the current process");
-		res.add("#  Set-ExecutionPolicy RemoteSigned -scope Process");
-		res.add("#");
-		res.add("function INIT {");
-		res.add("$global:X_REG=0.0");
-		res.add("$global:Y_REG=0.0");
-		res.add("$global:C_REG=0.0");
-		res.add("$global:D_REG=0.0");
-		res.add("$global:E_REG=0.0");
-		res.add("$global:F_REG=0.0");
-		res.add("$global:A_REG=0");
-		res.add("$global:B_REG=0");
-		res.add("$global:G_REG=0");
-		res.add("$global:CMD_NUM=0");
-		res.add("$global:CHANNEL=0");
-		res.add("$global:JUMP_TARGET=\"\"");
-		res.add("$global:USR_PARAM=0");
-		res.add("$global:_line=\"\"");
-		res.add("$global:_stack=@()");
-		res.add("$global:_forstack=@()");
-		res.add("$global:_memory= foreach($i in 0..65535) { ,0 }");
-		res.add("$global:_zeroflag=0");
-		res.add("$global:_timeOffset=0");
-		res.add("$global:_time=0");
-		res.add("$global:_inputQueue=@()");
+		
+		Pythonizer py = new Pythonizer();
+		Pythonizer pyInd = new Pythonizer(1);
+
+		res.add("import math");
+		res.add("import random");
+		res.add("import time");
+		res.add("import keyboard");
+		res.add("def INIT():");
+		py.indent();
+		res.add(py.processGlobal("X_REG=0.0"));
+		res.add(py.processGlobal("Y_REG=0.0"));
+		res.add(py.processGlobal("C_REG=0.0"));
+		res.add(py.processGlobal("D_REG=0.0"));
+		res.add(py.processGlobal("E_REG=0.0"));
+		res.add(py.processGlobal("F_REG=0.0"));
+		res.add(py.processGlobal("A_REG=0"));
+		res.add(py.processGlobal("B_REG=0"));
+		res.add(py.processGlobal("G_REG=0"));
+		res.add(py.processGlobal("CMD_NUM=0"));
+		res.add(py.processGlobal("CHANNEL=0"));
+		res.add(py.processGlobal("JUMP_TARGET=\"\""));
+		res.add(py.processGlobal("USR_PARAM=0"));
+		res.add(py.processGlobal("_line=\"\""));
+		res.add(py.processGlobal("_stack=[]"));
+		res.add(py.processGlobal("_forstack=[]"));
+		res.add(py.processGlobal("_memory=[0] * 65535"));
+		res.add(py.processGlobal("_zeroflag=0"));
+		res.add(py.processGlobal("_timeOffset=0"));
+		res.add(py.processGlobal("_time=0"));
+		res.add(py.processGlobal("_inputQueue=[]"));
 
 		Map<String, Integer> map = ConstantExtractor.getAllConstantMaps();
 		for (Entry<String, Integer> entry : map.entrySet()) {
-			res.add("$global:" + entry.getKey() + "=" + entry.getValue());
+			res.add(py.processGlobal(entry.getKey() + "=" + entry.getValue()));
 		}
 
 		int cnt = 0;
@@ -102,7 +109,7 @@ public class TransformerPs implements Transformer {
 
 			cnt = extractData(platform, machine, consts, vars, strVars, strArrayVars, name2label, cnt, line);
 
-			Generator pm = GeneratorListPs.getGenerator(orgLine);
+			Generator pm = GeneratorListPy.getGenerator(orgLine);
 			if (pm != null) {
 				pm.generateCode(context, orgLine, mnems, subs, name2label);
 			} else {
@@ -114,55 +121,43 @@ public class TransformerPs implements Transformer {
 			}
 		}
 
-		datas = createDatas(machine);
-
-		consts = replaceBrackets(consts);
-		vars = replaceBrackets(vars);
-		datas = replaceBrackets(datas);
+		datas = createDatas(py, machine);
 
 		// close the last function body
-		mnems.add("}");
-		res.addAll(consts);
+		res.addAll(globalize(py, consts));
 		res.addAll(datas);
 		vars.addAll(strVars);
 		vars.addAll(strArrayVars);
-		res.addAll(vars);
-		res.add("}");
-		res.addAll(mnems);
+		res.addAll(globalize(py, vars));
+		py.outdent();
+		res.addAll(globalize(pyInd, mnems));
 		res.addAll(subs);
-
+		res = py.unifyIndentions(res);
+		
 		return res;
 	}
 	
-	private List<String> replaceBrackets(List<String> lines) {
-		return lines.stream().map(p -> replaceInternal(p)).collect(Collectors.toList());
-	}
 
-	private String replaceInternal(String txt) {
-		StringBuilder sb = new StringBuilder();
-		boolean inString = false;
-		for (int i = 0; i < txt.length(); i++) {
-			char c = txt.charAt(i);
-			if (c == '\"') {
-				inString = !inString;
+	private List<String> globalize(Pythonizer py, List<String> lines) {
+		List<String> res = new ArrayList<>();
+		for (String line:lines) {
+			String sub = py.processGlobal(line);
+			String[] subs = sub.split("\n");
+			if (subs.length>1) {
+				res.addAll(Arrays.asList(subs));
+			} else {
+				res.add(sub);
 			}
-			if (inString && c == '{') {
-				c = '[';
-			}
-			if (inString && c == '}') {
-				c = ']';
-			}
-			sb.append(c);
 		}
-		return sb.toString();
+		return res;
 	}
 
-	private List<String> createDatas(Machine machine) {
+	private List<String> createDatas(Pythonizer py, Machine machine) {
 		DataStore datas = machine.getDataStore();
 		List<String> ret = new ArrayList<String>();
 		if (datas.size() > 0) {
-			String strDat = "$global:_datas=@(";
-			ret.add("$global:_dataPtr=0;");
+			String strDat = py.processGlobal("_datas=[");
+			ret.add(py.processGlobal("_dataPtr=0"));
 
 			datas.restore();
 			Object obj = null;
@@ -173,7 +168,6 @@ public class TransformerPs implements Transformer {
 				} else if (VarUtils.isFloat(obj) || VarUtils.isDouble(obj)) {
 					type = Type.REAL;
 				}
-
 				if (obj.toString().equals("\\0")) {
 					obj = "";
 				}
@@ -186,7 +180,7 @@ public class TransformerPs implements Transformer {
 					strDat += "\"" + obj.toString() + "\"" + ",";
 				}
 			}
-			strDat = strDat.substring(0, strDat.length() - 1) + ")";
+			strDat = strDat.substring(0, strDat.length() - 1) + "]";
 			ret.add(strDat);
 		}
 		return ret;
@@ -238,6 +232,9 @@ public class TransformerPs implements Transformer {
 			if (part.contains("{") && part.endsWith("}")) {
 				int pos = part.lastIndexOf("{");
 				String name = part.substring(0, pos);
+				
+				Variable vary = machine.getVariable(name);
+				
 				name = name.replace("%", "_int");
 				name = name.replace("[]", "_array");
 				if (name.startsWith("#")) {
@@ -254,11 +251,11 @@ public class TransformerPs implements Transformer {
 						name = name.substring(1);
 
 						if (type == Type.INTEGER) {
-							consts.add("$global:" + conv(label) + "=" + name);
+							consts.add(label + "=" + name + "");
 						} else if (type == Type.REAL) {
-							consts.add("$global:" + conv(label) + "=" + name);
+							consts.add(label + "=" + name + "");
 						} else if (type == Type.STRING) {
-							consts.add("$global:" + conv(label) + "=\"" + name + "\"");
+							consts.add(label + "=\"" + name + "\"");
 						}
 					}
 				} else {
@@ -269,19 +266,18 @@ public class TransformerPs implements Transformer {
 
 						Type type = Type.valueOf(part.substring(pos + 1, part.length() - 1));
 						if (name.endsWith("_array")) {
-							Variable var = machine.getVariable(name.replace("_int", "%").replace("_array", "[]"));
-							@SuppressWarnings("unchecked")
-							List<Object> vals = (List<Object>) var.getInternalValue();
-
-							tmp.add("$global:" + conv(label) + "=foreach($i in 0.." + (vals.size() - 1) + ") { ,"
-									+ (type == Type.STRING ? "\"\"" : "0") + " }");
+							String init="[0]";
+							if (type == Type.STRING) {
+								init="[\"\"]";
+							}
+							tmp.add(label + "="+init+"*"+vary.elements());
 						} else {
 							if (type == Type.INTEGER) {
-								tmp.add("$global:" + conv(label) + "=0");
+								tmp.add(label + "=0");
 							} else if (type == Type.REAL) {
-								tmp.add("$global:" + conv(label) + "=0.0");
+								tmp.add(label + "=0.0");
 							} else if (type == Type.STRING) {
-								tmp.add("$global:" + conv(label) + "=\"\"");
+								tmp.add(label + "=\"\"");
 							}
 						}
 						if (name.contains("$")) {
@@ -318,7 +314,6 @@ public class TransformerPs implements Transformer {
 
 	@Override
 	public int getVariableStart() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
@@ -353,22 +348,17 @@ public class TransformerPs implements Transformer {
 	}
 
 	@Override
-	public List<String> createCaller(String calleeName) {
+	public List<String> createCaller(final String calleeName) {
 		return null;
 	}
 
-	private String conv(String varName) {
-		varName = varName.replace("$", "_STR_");
-		return varName;
-	}
-
-	@Override
 	public boolean isOptimizedStringPointers() {
 		return false;
 	}
 
 	@Override
 	public void setOptimizedStringPointers(boolean optimized) {
-
+		//
 	}
+
 }

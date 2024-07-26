@@ -79,13 +79,12 @@ public class TransformerPsTest {
 		conf.setOptimizedLinker(opt);
 		conf.setLoopMode(LoopMode.REMOVE);
 
-		// Disable these for JS-Target
+		// Disable these for PS-Target
 		conf.setLoopOptimizations(false);
 		conf.setIntOptimizations(false);
 		conf.setShiftOptimizations(false);
 
 		final Basic basic = new Basic(vary);
-		Basic.registerExtension(new X16Extensions());
 		basic.compile(conf);
 
 		List<String> mCode = NativeCompiler.getCompiler().compileToPseudoCode(conf, basic);
