@@ -14,7 +14,6 @@ import com.sixtyfour.config.CompilerConfig;
 
 /**
  * An optimizer implementation for the Python target platform.
- * Nothing in here for now...
  * 
  * @author EgonOlsen
  *
