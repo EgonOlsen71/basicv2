@@ -506,6 +506,11 @@ this.CONCAT = function() {
 	this.A_REG=this.A_REG+this.B_REG;
 }
 
+this.CHARAT = function() {
+	this.D_REG=1;
+	return this.MID();
+}
+
 this.MID = function() {
 	if (this.C_REG>this.B_REG.length) {
 		this.A_REG="";

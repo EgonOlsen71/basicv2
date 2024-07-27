@@ -57,41 +57,46 @@ public class Pythonizer {
 				sb.append("    ");
 			}
 		}
-		if (!cmd.contains("=") || cmd.contains("==")) {
-			sb.append(cmd);
-		} else {
-			String[] parts = cmd.split("=");
-			String add = sb.toString();
-			String p1 = extractVarName(parts[1]);
-			if (!isNumber(p1) && !p1.startsWith("\"") && !p1.isEmpty()) {
-				sb.append("global ").append(p1).append("\n").append(add);
-			} 
-			sb.append("global ").append(parts[0]).append("\n").append(add).append(cmd);
+		String add = sb.toString();
+		sb.setLength(0);
+		List<String> usedVars = extractUseVariables(cmd);
+		for (String usedVar:usedVars) {
+			sb.append(add).append("global "+usedVar).append("\n");
 		}
+		sb.append(add).append(cmd);
 		return sb.toString();
 	}
 	
-	private String extractVarName(String cmd) {
-		int pos = cmd.indexOf(".");
-		int pos2 = cmd.indexOf("[");
-		if (pos2==-1 && pos==-1) {
-			return cmd;
+	private List<String> extractUseVariables(String cmd) {
+		List<String> vars = new ArrayList<>();
+		if (!cmd.contains("=")) {
+			return vars;
 		}
-		if (pos2==-1) {
-			return cmd.substring(0, pos);
+		StringBuilder varName = new StringBuilder();
+		boolean inStr = false;
+		for (int i=0; i<cmd.length(); i++) {
+			char c = cmd.charAt(i);
+			if (c=='"') {
+				inStr=!inStr;
+			}
+			if (inStr) {
+				continue;
+			}
+			char cl = Character.toLowerCase(c);
+			if ("abcdefghijklmnopqrstuvwxyz1234567890_".contains(Character.toString(cl))) {
+				varName.append(c);
+			} else {
+				addVar(vars, varName);
+				varName.setLength(0);
+			}
 		}
-		if (pos!=-1) {
-			return cmd.substring(0, Math.min(pos, pos2));
-		}
-		return cmd.substring(0, pos2); 
+		addVar(vars, varName);
+		return vars;
 	}
-	
-	private boolean isNumber(String line) {
-		try {
-			Float.parseFloat(line.trim());
-			return true;
-		} catch (Exception e) {
-			return false;
+
+	private void addVar(List<String> vars, StringBuilder varName) {
+		if (varName.length()>0 && varName.toString().contains("_")) {
+			vars.add(varName.toString());
 		}
 	}
 	

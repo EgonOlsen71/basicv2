@@ -6,7 +6,7 @@
 50 for j=1tol1-1
 60 nc(0)=j
 70 for i=1tol0-1
-80 ma=1: if mid$(a$,i,1)=mid$(b$,j,1) then ma=0
+80 ma=1:if mid$(a$,i,1)=mid$(b$,j,1) then ma=0
 90 cr=co(i-1)+ma
 100 ci=co(i)+1
 110 cd=nc(i-1)+1

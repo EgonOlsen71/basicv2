@@ -350,6 +350,11 @@ function CONCAT {
 	$global:A_REG=$global:A_REG+$global:B_REG
 }
 
+function CHARAT {
+	$global:D_REG=1
+	MID
+}
+
 function MID {
 	if ($global:C_REG -gt $global:B_REG.length) {
 		$global:A_REG=""

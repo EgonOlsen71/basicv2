@@ -10,7 +10,6 @@ import com.sixtyfour.cbmnative.python.PlatformPy;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.config.LoopMode;
 import com.sixtyfour.config.MemoryConfig;
-import com.sixtyfour.extensions.x16.X16Extensions;
 
 public class TransformerPyTest {
 
@@ -18,12 +17,68 @@ public class TransformerPyTest {
 
 	public static void main(String[] args) throws Exception {
 		testData();
+		testLyrix();
+		testBenchmark2();
+		testCharFractal();
+		testLevenshtein();
+		testPrime();
+		testBeer();
+		testTest32();
+		testTest33();
 	}
 
+	private static void testTest33() throws Exception {
+		String[] vary = Loader.loadProgram("src/test/resources/transform/test33.bas");
+		List<String> js = initTestEnvironment(vary);
+		write(js, path + "++test33.py");
+	}
+	
+	private static void testTest32() throws Exception {
+		String[] vary = Loader.loadProgram("src/test/resources/transform/test32.bas");
+		List<String> js = initTestEnvironment(vary);
+		write(js, path + "++test32.py");
+	}
+	
 	private static void testData() throws Exception {
 		String[] vary = Loader.loadProgram("src/test/resources/transform/test23.bas");
 		List<String> js = initTestEnvironment(vary);
 		write(js, path + "++testdata.py");
+	}
+	
+	private static void testLyrix() throws Exception {
+		String[] vary = Loader.loadProgram("src/test/resources/basic/lyrix_raw.bas");
+		List<String> js = initTestEnvironment(vary);
+		write(js, path + "++lyrix.py");
+	}
+
+	private static void testBenchmark2() throws Exception {
+		String[] vary = Loader.loadProgram("src/test/resources/transform/benchmark2.bas");
+		List<String> js = initTestEnvironment(vary);
+		write(js, path + "++benchmark2.py");
+	}
+
+	private static void testCharFractal() throws Exception {
+		String[] vary = Loader.loadProgram("src/test/resources/transform/charfractal2.bas");
+		List<String> js = initTestEnvironment(vary);
+		write(js, path + "++charfractal.py");
+	}
+
+	private static void testLevenshtein() throws Exception {
+		String[] vary = Loader.loadProgram("src/test/resources/transform/levenshtein.bas");
+		List<String> js = initTestEnvironment(vary);
+		write(js, path + "++levenshtein.py");
+	}
+
+	private static void testPrime() throws Exception {
+		String[] vary = Loader.loadProgram("src/test/resources/transform/prime_transform.bas");
+		List<String> js = initTestEnvironment(vary);
+		write(js, path + "++prime.py");
+	}
+
+	private static void testBeer() throws Exception {
+		String[] vary = Loader.loadProgram("src/test/resources/transform/beer_transform.bas");
+		List<String> js = initTestEnvironment(vary);
+		write(js, path + "++beer.py");
 	}
 
 

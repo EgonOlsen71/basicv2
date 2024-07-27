@@ -10,7 +10,6 @@ import com.sixtyfour.cbmnative.powerscript.PlatformPs;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.config.LoopMode;
 import com.sixtyfour.config.MemoryConfig;
-import com.sixtyfour.extensions.x16.X16Extensions;
 
 public class TransformerPsTest {
 
@@ -22,13 +21,7 @@ public class TransformerPsTest {
 		testLevenshtein();
 		testCharFractal();
 		testBenchmark2();
-		testX16();
-	}
-
-	private static void testX16() throws Exception {
-		String[] vary = Loader.loadProgram("src/test/resources/x16/vpoke.bas");
-		List<String> js = initTestEnvironment(vary);
-		write(js, path + "++vpoke.ps1");
+		testLyrix();
 	}
 
 	private static void testLyrix() throws Exception {

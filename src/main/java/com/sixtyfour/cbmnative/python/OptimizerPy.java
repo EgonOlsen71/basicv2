@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.sixtyfour.Logger;
 import com.sixtyfour.cbmnative.Optimizer;
 import com.sixtyfour.cbmnative.PlatformProvider;
 import com.sixtyfour.cbmnative.ProgressListener;
@@ -24,6 +25,10 @@ public class OptimizerPy implements Optimizer {
 	@Override
 	public List<String> optimize(CompilerConfig config, PlatformProvider platform, List<String> code,
 			ProgressListener pg) {
+		
+		Logger.log("Optimizing python code...");
+		long s = System.currentTimeMillis();
+		
 		List<String> res = new ArrayList<>();
 		Set<String> globals = new HashSet<>();
 		boolean inDef = false;
@@ -41,6 +46,12 @@ public class OptimizerPy implements Optimizer {
 		res = new ArrayList<>();
 		
 		for (String line:code) {
+			if (!line.contains("def") && (line.contains("COMPACT()") || line.contains("COMPACTMAX()"))) {
+				continue;
+			}
+			if (line.startsWith("    #")) {
+				continue;
+			}
 			if (line.startsWith("def ") || line.isEmpty()) {
 				if (inDef) {
 					if (insertAt!=-1) {
@@ -67,6 +78,7 @@ public class OptimizerPy implements Optimizer {
 				res.add(line);
 			}
 		}
+		Logger.log("Python code optimized in " + (System.currentTimeMillis() - s) + "ms");
 		return res;
 	}
 

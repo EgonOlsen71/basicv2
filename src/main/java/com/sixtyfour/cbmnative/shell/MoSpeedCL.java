@@ -28,6 +28,7 @@ import com.sixtyfour.cbmnative.mos6502.util.SourceProcessor;
 import com.sixtyfour.cbmnative.mos6502.vic20.Platform20;
 import com.sixtyfour.cbmnative.mos6502.x16.PlatformX16;
 import com.sixtyfour.cbmnative.powerscript.PlatformPs;
+import com.sixtyfour.cbmnative.python.PlatformPy;
 import com.sixtyfour.cloud.Http;
 import com.sixtyfour.compression.Compressor;
 import com.sixtyfour.config.CompilerConfig;
@@ -203,6 +204,10 @@ public class MoSpeedCL {
 				cfg.setAggressiveFloatOptimizations(false);
 				multiByteTokens = true;
 				appendix = ".prg";
+			} else if (pl.equalsIgnoreCase("py")) {
+				platform = new PlatformPy();
+				appendix = ".py";
+				cfg.setInlineAssembly(false);
 			} else if (pl.equalsIgnoreCase("ps")) {
 				platform = new PlatformPs();
 				appendix = ".ps1";
@@ -488,14 +493,16 @@ public class MoSpeedCL {
 		} else if (platform instanceof PlatformJs) {
 			writeJavascript(targetFile, ncode);
 		} else if (platform instanceof PlatformPs) {
-			writePowershell(targetFile, ncode);
+			writeGeneric(targetFile, ncode);
+		} else if (platform instanceof PlatformPy) {
+			writeGeneric(targetFile, ncode);
 		} else {
 			System.out.println("\n!!! Unsupported platform: " + platform);
 			exit(19);
 		}
 	}
 
-	private static void writePowershell(String targetFile, List<String> ncode) {
+	private static void writeGeneric(String targetFile, List<String> ncode) {
 		try (PrintWriter pw = new PrintWriter(targetFile)) {
 			System.out.println("Writing target file: " + targetFile);
 			for (String line : ncode) {
@@ -506,7 +513,7 @@ public class MoSpeedCL {
 			exit(9);
 		}
 	}
-
+	
 	private static void writeJavascript(String targetFile, List<String> ncode) {
 		Transformer trsn = new PlatformJs().getTransformer();
 		try (PrintWriter pw = new PrintWriter(targetFile);
@@ -695,7 +702,7 @@ public class MoSpeedCL {
 		System.out.println("Optional parameters (either with / or - as prefix):\n");
 		System.out.println("/target=<target file> -  the target file name");
 		System.out.println(
-				"/platform=xxxx - the target platform. Options are c64 (for c64 compatible machine code), vic20 or vc20, x16 (for the Commander (NOT Commodore) X16), js (for Javascript) and ps (for Powershell/-script), default is c64");
+				"/platform=xxxx - the target platform. Options are c64 (for c64 compatible machine code), vic20 or vc20, x16 (for the Commander (NOT Commodore) X16), js (for Javascript), ps (for Powershell/-script) and py (for Python), default is c64");
 		System.out.println(
 				"/generatesrc=true|false -  writes the generated intermediate and assembly language programs to disk as well");
 		System.out.println("/constprop=true|false - enables/disables constant propagation optimizations");

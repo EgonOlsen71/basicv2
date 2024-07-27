@@ -91,7 +91,9 @@ def RESTARTPRG():
 	restart=True
 
 def END():
-	pass
+	global _line
+	if len(_line)>0:
+		print(_line)
 
 def CLEARQUEUE():
 	global _inputQueue
@@ -144,7 +146,7 @@ def parseFloat(number):
 def GOSUB(gosubCont):
 	global _forstack
 	_forstack.append(gosubCont)
-	_forstart.append(0)
+	_forstack.append(0)
 
 def pop(arr):
 	return arr.pop()
@@ -204,7 +206,7 @@ def NEXT(variable):
 		if len(_forstack)==0:
 			throw("NEXT without FOR error!")
 		type=_forstack.pop()
-		if type ==0:
+		if type==0:
 			throw("NEXT without FOR error!")
 		stvar=_forstack.pop()
 		addr=_forstack.pop()
@@ -215,7 +217,7 @@ def NEXT(variable):
 			break
 	globals()[stvar]+=step
 	vv = globals()[stvar]	
-	if (step >= 0 and vv <= end) or (step >= 0 and vv <= end):
+	if (step >= 0 and vv <= end) or (step < 0 and vv >= end):
 		_forstack.append(step)
 		_forstack.append(end)
 		_forstack.append(addr)
@@ -246,7 +248,7 @@ def ARRAYACCESS_STRING():
 	global G_REG
 	global A_REG
 	global X_REG
-	A_REG = G_REG[int(X_REG)]
+	A_REG = str(G_REG[int(X_REG)])
 	if A_REG == None:
 		A_REG = ""
 
@@ -272,6 +274,8 @@ def STR():
 	global A_REG
 	global Y_REG
 	A_REG=str(Y_REG)
+	if A_REG.endswith(".0"):
+		A_REG=A_REG.replace(".0", "")
 
 def VAL():
 	global B_REG
@@ -281,6 +285,9 @@ def VAL():
 def LEN():
 	global B_REG
 	global X_REG
+	if B_REG == None:
+		X_REG = 0
+		return
 	X_REG=len(B_REG)
 
 def CHR():
@@ -292,7 +299,7 @@ def CHR():
 def ASC():
 	global B_REG
 	global X_REG
-	if len(B_REG)==0:
+	if B_REG == None or len(B_REG)==0:
 		X_REG=0
 		return
 	X_REG=ord(B_REG[0])
@@ -326,12 +333,17 @@ def CONCAT():
 	global A_REG
 	A_REG=A_REG+B_REG
 
+def CHARAT():
+	global D_REG
+	D_REG=1
+	MID()
+
 def MID():
 	global D_REG
 	global C_REG
 	global B_REG
 	global A_REG
-	if C_REG > len(B_REG):
+	if B_REG == None or C_REG > len(B_REG):
 		A_REG=""
 		return
 	end=C_REG-1 + D_REG
@@ -511,7 +523,7 @@ def READTID():
 
 def fill(num):
 	num=str(num)
-	if len(num.length)==1:
+	if len(num)==1:
 		num="0"+num
 	return num
 
@@ -645,13 +657,27 @@ def input():
 	if len(_inputQueue)>0:
 		return _inputQueue.pop()
 		
-	inp=input(_line)
+	inp=__builtins__.input(_line+" ")
 	_line=""
+	if inp == None or len(inp)==0:
+		return ""
 	parts=inp.split(",")
-	_inputQueue.append(parts)
+	
+	# of course, it's not append...why would it...!?
+	_inputQueue.extend(parts)
+	ret = _inputQueue.pop()
+	# print(ret)
+	return ret
 
 def get():
+	flushOut()
 	return keyboard.read_key()
+
+def flushOut():
+	global _line
+	if len(_line)>0:
+		print(_line)
+		_line = ""
 
 def out(txt):
 	global _line
@@ -660,6 +686,9 @@ def out(txt):
 		print(_line)
 		_line = ""
 	else:
-		_line += str(txt)
+		txt = str(txt)
+		if txt.endswith(".0"):
+			txt=txt.replace(".0", "")
+		_line += txt
 
 execute()

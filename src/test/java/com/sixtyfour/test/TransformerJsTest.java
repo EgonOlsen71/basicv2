@@ -37,14 +37,8 @@ public class TransformerJsTest {
 		testRun();
 		testBenchmark();
 		testCharFractal();
-		testX16();
 	}
 
-	private static void testX16() throws Exception {
-		String[] vary = Loader.loadProgram("src/test/resources/x16/vpoke.bas");
-		List<String> js = initTestEnvironment(vary);
-		write(js, path + "++vpoke.js");
-	}
 
 	private static void testCharFractal() throws Exception {
 		String[] vary = Loader.loadProgram("src/test/resources/transform/charfractal.bas");

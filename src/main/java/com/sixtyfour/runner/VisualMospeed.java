@@ -40,6 +40,7 @@ import com.sixtyfour.cbmnative.mos6502.c64.Platform64;
 import com.sixtyfour.cbmnative.mos6502.vic20.Platform20;
 import com.sixtyfour.cbmnative.mos6502.x16.PlatformX16;
 import com.sixtyfour.cbmnative.powerscript.PlatformPs;
+import com.sixtyfour.cbmnative.python.PlatformPy;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.config.MemoryConfig;
 import com.sixtyfour.extensions.x16.X16Extensions;
@@ -127,7 +128,7 @@ public class VisualMospeed {
 			}
 		});
 
-		target = new JComboBox<String>(new String[] { "C64", "VIC20", "X16", "Javascript", "Powershell" });
+		target = new JComboBox<String>(new String[] { "C64", "VIC20", "X16", "Javascript", "Powershell", "Python" });
 		target.setToolTipText("Select target platform!");
 		target.addActionListener((e) -> {
 			selectedTarget = target.getSelectedIndex();
@@ -310,14 +311,16 @@ public class VisualMospeed {
 		} else if (platform instanceof PlatformJs) {
 			writeJavascript(targetFile, ncode);
 		} else if (platform instanceof PlatformPs) {
-			writePowershell(targetFile, ncode);
+			writeGeneric(targetFile, ncode);
+		} else if (platform instanceof PlatformPy) {
+			writeGeneric(targetFile, ncode);
 		} else {
 			Logger.log("\n!!! Unsupported platform: " + platform);
 			return;
 		}
 	}
 
-	private void writePowershell(File targetFile, List<String> ncode) {
+	private void writeGeneric(File targetFile, List<String> ncode) {
 		try (PrintWriter pw = new PrintWriter(targetFile)) {
 			Logger.log("Writing target file: " + targetFile);
 			for (String line : ncode) {
@@ -384,6 +387,9 @@ public class VisualMospeed {
 		case 4:
 			platform = new PlatformPs();
 			appendix = ".ps1";
+		case 5:
+			platform = new PlatformPy();
+			appendix = ".py";
 		}
 	}
 
