@@ -25,8 +25,15 @@ public class TransformerPyTest {
 		testBeer();
 		testTest32();
 		testTest33();
+		testFiles();
 	}
 
+	private static void testFiles() throws Exception {
+		String[] vary = Loader.loadProgram("src/test/resources/transform/filetest.bas");
+		List<String> js = initTestEnvironment(vary);
+		write(js, path + "++filetest.py");
+	}
+	
 	private static void testTest33() throws Exception {
 		String[] vary = Loader.loadProgram("src/test/resources/transform/test33.bas");
 		List<String> js = initTestEnvironment(vary);

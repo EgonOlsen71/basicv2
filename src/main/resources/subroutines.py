@@ -5,6 +5,7 @@ lineNumber = 0
 timeOut=0
 funcName = "PROGRAMSTART"
 tymp=0
+_files = dict()
 
 def getMemory():
     global _memory
@@ -563,34 +564,91 @@ def FASTFOR():
 	throw("Fast for optimization not supported for target PY!")
 
 def OPEN():
-	out("[OPEN not supported for PY, call ignored!]")
+	global _files
+	global G_REG
+	global D_REG
+	global C_REG
+	global X_REG
+	global Y_REG
+	parts = G_REG.split(",")
+	mode = "r"
+	fileName = parts[0]
+	# we ignore flags for now, just r+ as a mode
+	secAddr = int(D_REG)
+	device = int(C_REG)
+	number = int(X_REG)
+	count = int(Y_REG)
+	if "r" in parts:
+		mode = "r"
+	else:
+		if "w" in parts:
+			mode = "w"
+	if count>2:
+		if secAddr==0:
+			mode = "r"
+		else:
+			if secAddr==1:
+				mode = "w"
+		
+	if secAddr==15:
+		diskOperation(fileName)
+		return
+	key = "file"+str(number)
+	fileHandle = _files.get(key)
+	if fileHandle != None:
+		throw("File already open error!")
+	fileHandle = open(fileName, mode, encoding="ascii")
+	_files[key]=fileHandle
 
 def CLOSE():
-	out("[CLOSE not supported for PY, call ignored!]")
+	global _files
+	global X_REG
+	key = "file"+str(int(X_REG))
+	fileHandle = _files.get(key)
+	if fileHandle == None:
+		throw("File not open error!")
+	fileHandle.close()
+	_files.pop(key)
 
 def CMD():
 	out("[CMD not supported for PY, call ignored!]")
+
+def diskOperation(fileName):
+	out("[Disc operation ignored!]")
+
+def readChar(fileHandle):
+	char = fileHandle.read(1)
+	if char=="":
+		return ""
+	# convert...
+	if ord(char)==10:
+		char = chr(13)
+	return char
 
 def REM():
 	out("[inline assembly ignored!]")
 
 def LOCKCHANNEL():
-	out("[ignored]")
+	pass
 
 def UNLOCKCHANNEL():
-	out("[ignored]")
+	pass
 
 def STROUTCHANNEL():
-	out("[PRINT# not supported for PY, redirected to normal PRINT]")
-	STROUT()
+	global _files
+	global C_REG
+	global A_REG
+	fileHandle = openFile(C_REG)
+	fileHandle.write(A_REG)
 
 def REALOUTCHANNEL():
 	out("[PRINT# not supported for PY, redirected to normal PRINT]")
 	REALOUT()
 
 def LINEBREAKCHANNEL():
-	out("[PRINT# not supported for PY, redirected to normal PRINT]")
-	LINEBREAK()
+	global A_REG
+	A_REG="\n"
+	STROUTCHANNEL()
 
 def INTOUTCHANNEL():
 	out("[PRINT# not supported for PY, redirected to normal PRINT]")
@@ -601,15 +659,32 @@ def INPUTNUMBERCHANNEL():
 	out("[INPUT# not supported for PY, call ignored]")
 	X_REG=0
 
+def openFile(number):
+	key = "file"+str(int(number))
+	fileHandle = _files.get(key)
+	if fileHandle == None:
+		throw("File not open error!")
+	return fileHandle
+
 def INPUTSTRCHANNEL():
-	global A_REG 
-	out("[INPUT# not supported for PY, call ignored]")
+	global A_REG
+	global C_REG
+	global _files
+	fileHandle = openFile(C_REG)
 	A_REG=""
+	stops = "\n\r:;,"
+	while True:
+		char = readChar(fileHandle)
+		if char=="" or char in stops:
+			return
+		A_REG+=char
 
 def GETSTRCHANNEL():
 	global A_REG
-	out("[GET# not supported for PY, call ignored]")
-	A_REG=""
+	global C_REG
+	global _files
+	fileHandle = openFile(C_REG)
+	A_REG = readChar(fileHandle)
 
 def GETNUMBERCHANNEL():
 	global X_REG
