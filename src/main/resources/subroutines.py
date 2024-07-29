@@ -164,10 +164,10 @@ def RETURN():
 	while True:
 		val = _forstack.pop()
 		if val == 1:
-			forstack.pop()
-			forstack.pop()
-			forstack.pop()
-			forstack.pop()
+			_forstack.pop()
+			_forstack.pop()
+			_forstack.pop()
+			_forstack.pop()
 		if val==0:
 			break
 	val = _forstack.pop()
@@ -613,7 +613,10 @@ def OPEN():
 	fileHandle = _files.get(key)
 	if fileHandle != None:
 		throw("File already open error!")
-	fileHandle = open(fileName, mode, encoding="ascii")
+	if mode=="r":
+		fileHandle = open(fileName, mode+"b")
+	else:
+		fileHandle = open(fileName, mode, encoding="ascii")
 	_files[key]=fileHandle
 
 def CLOSE():
@@ -636,15 +639,17 @@ def readChar(fileHandle):
 	global status
 	status = 0
 	char = fileHandle.read(1)
-	if char=="":
+	if not char:
 		status = 64
 		return ""
-	# determine, if we reached the end...whichm, or course, doesn't work ... because ... python ...
-	#chs = fileHandle.read(1)
-	#if chs=="":
-	#	status = 64
-	#fileHandle.seek(-1, 1)
+	# determine, if we reached the end...
+	chs = fileHandle.read(1)
+	#print(":",chs,":")
+	if not chs:
+		status = 64
+	fileHandle.seek(-1, 1)
 	# convert...
+	char = char.decode("ascii")
 	if ord(char)==10:
 		char = chr(13)
 	return char
@@ -680,8 +685,11 @@ def INTOUTCHANNEL():
 
 def INPUTNUMBERCHANNEL():
 	global X_REG
-	out("[INPUT# not supported for PY, call ignored]")
+	global A_REG
+	INPUTSTRCHANNEL()
 	X_REG=0
+	if A_REG!="":
+		X_REG=float(A_REG)
 
 def openFile(number):
 	key = "file"+str(int(number))
@@ -694,12 +702,13 @@ def INPUTSTRCHANNEL():
 	global A_REG
 	global C_REG
 	global _files
+	global status
 	fileHandle = openFile(C_REG)
 	A_REG=""
 	stops = "\n\r:,"
 	while True:
 		char = readChar(fileHandle)
-		if char=="" or char in stops:
+		if char=="" or char in stops or status==64:
 			return
 		A_REG+=char
 

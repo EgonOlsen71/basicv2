@@ -62,13 +62,13 @@ public class MovbPy extends MovPy {
 	private void indexedTargetWithConstant(List<String> nCode, Operand source, Operand target) {
 		String from = getOpName(source);
 		String to = getOpName(target);
-		nCode.add("_memory[int(" + to + ")]=int(" + from + ") and 255");
+		nCode.add("_memory[int(" + to + ")]=int(" + from + ") & 255");
 	}
 
 	private void indexedSource(List<String> nCode, Operand source, Operand target) {
 		String from = getOpName(source);
 		String to = getOpName(target);
-		nCode.add(to + "=_memory[int(" + from + ") and 65535];");
+		nCode.add(to + "=_memory[int(" + from + ") & 65535];");
 	}
 
 	private void indexedTarget(List<String> nCode, Operand source, Operand target) {
@@ -101,6 +101,6 @@ public class MovbPy extends MovPy {
 		if (isNumber(to)) {
 			to = "_memory[" + to + "]";
 		}
-		nCode.add(to + "=int(" + from + ") and 255;");
+		nCode.add(to + "=int(" + from + ") & 255;");
 	}
 }

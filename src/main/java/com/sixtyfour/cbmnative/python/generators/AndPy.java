@@ -7,7 +7,7 @@ package com.sixtyfour.cbmnative.python.generators;
 public class AndPy extends CalculationPy {
 
 	public AndPy() {
-		super("AND", "int({to}) and int({from})");
+		super("AND", "int({to}) & int({from})");
 	}
 
 }
