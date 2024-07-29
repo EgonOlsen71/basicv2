@@ -652,6 +652,7 @@ def readChar(fileHandle):
 	char = char.decode("ascii")
 	if ord(char)==10:
 		char = chr(13)
+		# return convertChar(char)
 	return char
 
 def REM():
@@ -798,5 +799,19 @@ def out(txt):
 		if txt.endswith(".0"):
 			txt=txt.replace(".0", "")
 		_line += txt
+
+def convertChar(char):
+		# converts ASCII <-> PETSCII ... not used for now
+        code = ord(char)
+        if 65 <= code <= 90:
+            return chr(code)
+        elif 97 <= code <= 122:
+            return chr(code - 32)
+        elif 193 <= code <= 218:
+            return chr(code - 128)
+        elif 225 <= code <= 250:
+            return chr(code - 128 - 32)
+        else:
+            return char
 
 execute()
