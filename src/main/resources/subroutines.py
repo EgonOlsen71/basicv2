@@ -672,7 +672,7 @@ def INPUTSTRCHANNEL():
 	global _files
 	fileHandle = openFile(C_REG)
 	A_REG=""
-	stops = "\n\r:;,"
+	stops = "\n\r:,"
 	while True:
 		char = readChar(fileHandle)
 		if char=="" or char in stops:
