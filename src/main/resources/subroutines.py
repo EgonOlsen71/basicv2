@@ -287,8 +287,7 @@ def VAL():
 		return
 	nums = B_REG.replace(" ","")
 	num = ""
-	for i in range(0,len(nums)):
-		char = nums[i]
+	for char in nums:
 		if char not in "0123456789.":
 			break
 		num+=char
@@ -652,8 +651,7 @@ def readChar(fileHandle):
 	char = char.decode("ascii")
 	if ord(char)==10:
 		char = chr(13)
-		# return convertChar(char)
-	return char
+	return convertChar(char)
 
 def REM():
 	out("[inline assembly ignored!]")
@@ -669,7 +667,7 @@ def STROUTCHANNEL():
 	global C_REG
 	global A_REG
 	fileHandle = openFile(C_REG)
-	fileHandle.write(A_REG)
+	fileHandle.write(convertString(A_REG))
 
 def REALOUTCHANNEL():
 	out("[PRINT# not supported for PY, redirected to normal PRINT]")
@@ -800,17 +798,23 @@ def out(txt):
 			txt=txt.replace(".0", "")
 		_line += txt
 
+def convertString(txt):
+	return txt
+	# disabled for now...
+	res = []
+    for char in text:
+    	res.append(convertChar(char))
+    return "".join(res)
+
 def convertChar(char):
-		# converts ASCII <-> PETSCII ... not used for now
-        code = ord(char)
-        if 65 <= code <= 90:
-            return chr(code)
-        elif 97 <= code <= 122:
-            return chr(code - 32)
-        elif 193 <= code <= 218:
-            return chr(code - 128)
-        elif 225 <= code <= 250:
-            return chr(code - 128 - 32)
+		return char
+		# disabled for now...
+        charlow = char.lower()
+        if charlow in "abcdefghijklmnopqrstuvwxyz":
+            if char.islower():
+                return char.upper()
+            else:
+                return char.lower()
         else:
             return char
 
