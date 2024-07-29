@@ -5,6 +5,7 @@ lineNumber = 0
 timeOut=0
 funcName = "PROGRAMSTART"
 tymp=0
+status=0
 _files = dict()
 
 def getMemory():
@@ -281,7 +282,20 @@ def STR():
 def VAL():
 	global B_REG
 	global X_REG
-	X_REG=float(B_REG.replace(" ",""))
+	if B_REG==None:
+		X_REG=0
+		return
+	nums = B_REG.replace(" ","")
+	num = ""
+	for i in range(0,len(nums)):
+		char = nums[i]
+		if char not in "0123456789.":
+			break
+		num+=char
+	try:
+		X_REG=float(num)
+	except:
+		X_REG=0
 
 def LEN():
 	global B_REG
@@ -530,7 +544,9 @@ def fill(num):
 
 def READSTATUS():
 	global tmpy
-	tmpy=0
+	global status
+	tmpy=status
+	status=0
 
 def RESTORE():
 	global _dataPtr
@@ -617,9 +633,17 @@ def diskOperation(fileName):
 	out("[Disc operation ignored!]")
 
 def readChar(fileHandle):
+	global status
+	status = 0
 	char = fileHandle.read(1)
 	if char=="":
+		status = 64
 		return ""
+	# determine, if we reached the end...whichm, or course, doesn't work ... because ... python ...
+	#chs = fileHandle.read(1)
+	#if chs=="":
+	#	status = 64
+	#fileHandle.seek(-1, 1)
 	# convert...
 	if ord(char)==10:
 		char = chr(13)
