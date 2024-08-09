@@ -729,6 +729,10 @@ this.CMD = function() {
 	console.log("[CMD not supported for JS, call ignored: "+this.X_REG+"]");
 }
 
+this.SYSCALL = function(addr) {
+	console.log("[SYS not supported for JS, call ignored: "+addr+"]");
+}
+
 this.STROUTCHANNEL = function() {
 	console.log("[PRINT# not supported for JS, redirected to normal PRINT]");
 	this.STROUT();

@@ -170,6 +170,7 @@ public class TransformerJsTest {
 		conf.setLoopOptimizations(false);
 		conf.setIntOptimizations(false);
 		conf.setShiftOptimizations(false);
+		conf.setAllIntermediateOptimizations(false);
 		// conf.setCompactThreshold(3);
 
 		Basic basic = new Basic(vary);

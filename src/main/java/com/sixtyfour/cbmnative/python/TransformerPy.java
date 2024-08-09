@@ -63,6 +63,7 @@ public class TransformerPy implements Transformer {
 		res.add("import random");
 		res.add("import time");
 		res.add("import keyboard");
+		res.add("import re");
 		res.add("def INIT():");
 		py.indent();
 		res.add(py.processGlobal("X_REG=0.0"));

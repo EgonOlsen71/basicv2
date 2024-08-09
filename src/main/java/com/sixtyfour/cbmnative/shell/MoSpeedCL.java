@@ -197,6 +197,7 @@ public class MoSpeedCL {
 				platform = new PlatformJs();
 				appendix = ".js";
 				cfg.setInlineAssembly(false);
+				cfg.setAllIntermediateOptimizations(false);
 			} else if (pl.equalsIgnoreCase("x16")) {
 				platform = new PlatformX16();
 				Basic.registerExtension(new X16Extensions());
@@ -208,10 +209,12 @@ public class MoSpeedCL {
 				platform = new PlatformPy();
 				appendix = ".py";
 				cfg.setInlineAssembly(false);
+				cfg.setAllIntermediateOptimizations(false);
 			} else if (pl.equalsIgnoreCase("ps")) {
 				platform = new PlatformPs();
 				appendix = ".ps1";
 				cfg.setInlineAssembly(false);
+				cfg.setAllIntermediateOptimizations(false);
 			} else if (pl.equalsIgnoreCase("vic20") || pl.equalsIgnoreCase("vc20")) {
 				platform = new Platform20();
 				String vicConf = cmds.get("memconfig");

@@ -37,13 +37,15 @@ public abstract class JumpBasePy extends GeneratorBasePy {
 				nCode.add(("return " + parts[1].trim()).trim());
 			} else {
 				String pre = "";
+				String post="";
 				if (p1.equals("RETURN")) {
 					pre = "return ";
 				}
 				if (p1.startsWith("$")) {
-					pre = "# ";
+					pre = "SYSCALL(\"";
+					post="\")";
 				}
-				nCode.add(pre + (cmd + " " + p1 + ((cmd.isEmpty() && !p1.endsWith(")")) ? "()" : "")).trim());
+				nCode.add(pre + (cmd + " " + p1 + ((cmd.isEmpty() && !p1.endsWith(")")) ? "()" : "")).trim()+post);
 			}
 		}
 	}

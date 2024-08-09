@@ -37,6 +37,7 @@ public class CompilerConfig {
 	private boolean arrayOptimizations = false;
 	private boolean assignmentOptimizations = false;
 	private boolean zeropageOptimizations = false;
+	private boolean allIntermediateOptimizations= true;
 
 	private String symbolTable = null;
 	private int threads = -1;
@@ -51,6 +52,19 @@ public class CompilerConfig {
 		//
 	}
 	
+	
+	public boolean isAllIntermediateOptimizations() {
+		return allIntermediateOptimizations;
+	}
+
+
+
+	public void setAllIntermediateOptimizations(boolean allIntermediateOptimizations) {
+		this.allIntermediateOptimizations = allIntermediateOptimizations;
+	}
+
+
+
 	public boolean isArrayOptimizations() {
 		return arrayOptimizations;
 	}

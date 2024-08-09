@@ -76,6 +76,7 @@ public class TransformerPsTest {
 		conf.setLoopOptimizations(false);
 		conf.setIntOptimizations(false);
 		conf.setShiftOptimizations(false);
+		conf.setAllIntermediateOptimizations(false);
 
 		final Basic basic = new Basic(vary);
 		basic.compile(conf);

@@ -383,13 +383,16 @@ public class VisualMospeed {
 		case 3:
 			platform = new PlatformJs();
 			appendix = ".js";
+			conf.setAllIntermediateOptimizations(false);
 			break;
 		case 4:
 			platform = new PlatformPs();
 			appendix = ".ps1";
+			conf.setAllIntermediateOptimizations(false);
 		case 5:
 			platform = new PlatformPy();
 			appendix = ".py";
+			conf.setAllIntermediateOptimizations(false);
 		}
 	}
 

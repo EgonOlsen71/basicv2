@@ -7,6 +7,7 @@ funcName = "PROGRAMSTART"
 tymp=0
 status=0
 _files = dict()
+_fileTypes = dict()
 
 def getMemory():
     global _memory
@@ -457,7 +458,11 @@ def APPENDSYSCHAR():
 
 def INPUTLENGTHCHECK():
 	global _zeroflag
-	_zeroflag = 1
+	global A_REG
+	if A_REG==None or len(A_REG)==0:
+		_zeroflag=0
+	else:
+		_zeroflag = 1
 
 def SETUPMULTIPARS():
 	pass
@@ -580,19 +585,20 @@ def FASTFOR():
 
 def OPEN():
 	global _files
+	global _fileTypes
 	global G_REG
 	global D_REG
 	global C_REG
 	global X_REG
 	global Y_REG
-	parts = G_REG.split(",")
+	count = int(Y_REG)
+	parts = G_REG.split(",") if count>3 else []
 	mode = "r"
-	fileName = parts[0]
+	fileName = parts[0] if len(parts)>0 else ""
 	# we ignore flags for now, just r+ as a mode
 	secAddr = int(D_REG)
 	device = int(C_REG)
 	number = int(X_REG)
-	count = int(Y_REG)
 	if "r" in parts:
 		mode = "r"
 	else:
@@ -605,10 +611,22 @@ def OPEN():
 			if secAddr==1:
 				mode = "w"
 		
+	fileName = fileName.split(":")[-1]
+		
+	key = getFileKey(number)
+	_fileTypes[key]="s"
+	if mode=="r":
+		_fileTypes[key]="p"
+	if "s" in parts:
+		_fileTypes[key]="s"
+	if "p" in parts:
+		_fileTypes[key]="p"
+		
 	if secAddr==15:
 		diskOperation(fileName)
+		_files[key]="command channel"
 		return
-	key = "file"+str(number)
+	
 	fileHandle = _files.get(key)
 	if fileHandle != None:
 		throw("File already open error!")
@@ -621,20 +639,22 @@ def OPEN():
 def CLOSE():
 	global _files
 	global X_REG
-	key = "file"+str(int(X_REG))
+	key = getFileKey(X_REG)
 	fileHandle = _files.get(key)
 	if fileHandle == None:
-		throw("File not open error!")
-	fileHandle.close()
+		throw("File not open error: "+key)
+	if fileHandle!="command channel":
+		fileHandle.close()
 	_files.pop(key)
 
 def CMD():
 	out("[CMD not supported for PY, call ignored!]")
 
 def diskOperation(fileName):
-	out("[Disc operation ignored!]")
+	# out("[Disc operation ignored!]")
+	pass
 
-def readChar(fileHandle):
+def readChar(fileHandle, mode="s"):
 	global status
 	status = 0
 	char = fileHandle.read(1)
@@ -648,10 +668,12 @@ def readChar(fileHandle):
 		status = 64
 	fileHandle.seek(-1, 1)
 	# convert...
-	char = char.decode("ascii")
-	if ord(char)==10:
-		char = chr(13)
-	return convertChar(char)
+	if mode=="s":
+		char = char.decode("ascii")
+		if ord(char)==10:
+			char = chr(13)
+		return convertChar(char)
+	return char[0].to_bytes(1, byteorder='big').decode('latin-1')
 
 def REM():
 	out("[inline assembly ignored!]")
@@ -684,29 +706,47 @@ def INTOUTCHANNEL():
 
 def INPUTNUMBERCHANNEL():
 	global X_REG
+	global Y_REG
 	global A_REG
 	INPUTSTRCHANNEL()
 	X_REG=0
+	Y_REG=0
+	if A_REG=="ok":
+		X_REG=0
+		Y_REG=0
+		return
+	if not isNumeric(A_REG):
+		X_REG=-1
+		return
 	if A_REG!="":
-		X_REG=float(A_REG)
+		Y_REG=float(A_REG)
+		X_REG=0
 
 def openFile(number):
-	key = "file"+str(int(number))
+	key = getFileKey(number)
 	fileHandle = _files.get(key)
 	if fileHandle == None:
-		throw("File not open error!")
+		throw("File not open error: "+key)
 	return fileHandle
+
+def getFileKey(number):
+	return "file"+str(int(number))
 
 def INPUTSTRCHANNEL():
 	global A_REG
 	global C_REG
 	global _files
+	global _fileTypes
 	global status
 	fileHandle = openFile(C_REG)
+	key = getFileKey(C_REG)
+	if fileHandle=="command channel":
+		A_REG="ok"
+		return
 	A_REG=""
 	stops = "\n\r:,"
 	while True:
-		char = readChar(fileHandle)
+		char = readChar(fileHandle, _fileTypes.get(key))
 		if char=="" or char in stops or status==64:
 			return
 		A_REG+=char
@@ -715,8 +755,10 @@ def GETSTRCHANNEL():
 	global A_REG
 	global C_REG
 	global _files
+	global _fileTypes
 	fileHandle = openFile(C_REG)
-	A_REG = readChar(fileHandle)
+	key = getFileKey(C_REG)
+	A_REG = readChar(fileHandle, _fileTypes.get(key))
 
 def GETNUMBERCHANNEL():
 	global X_REG
@@ -758,6 +800,9 @@ def USR():
 	out("[Calling user function named "+callStr+"]")
 	globals()[callStr]()
 
+def SYSCALL(addr):
+	print("called ",addr)
+
 def input():
 	global _inputQueue
 	global _line
@@ -777,8 +822,12 @@ def input():
 	return ret
 
 def get():
-	flushOut()
-	return keyboard.read_key()
+    flushOut()
+    key = ""
+    event = keyboard.read_event(True)
+    if event.event_type == keyboard.KEY_UP:
+        key = event.name
+    return key
 
 def flushOut():
 	global _line
@@ -786,17 +835,24 @@ def flushOut():
 		print(_line)
 		_line = ""
 
+def cleanBrackets(txt):
+	pattern = r'\{.*?\}'
+    return re.sub(pattern, '', txt)
+
 def out(txt):
 	global _line
 	if isinstance(txt, str) and  "\n" in txt:
 		_line += txt[0:len(txt)-1]
-		print(_line)
+		print(cleanBrackets(_line))
 		_line = ""
 	else:
+		org=txt
 		txt = str(txt)
+		if isinstance(org, (float, int)) and org>=0:
+			txt=" "+txt
 		if txt.endswith(".0"):
 			txt=txt.replace(".0", "")
-		_line += txt
+		_line += cleanBrackets(txt)
 
 def convertString(txt):
 	return txt

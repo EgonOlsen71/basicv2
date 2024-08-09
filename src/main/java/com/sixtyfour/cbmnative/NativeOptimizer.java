@@ -89,19 +89,19 @@ public class NativeOptimizer {
 		// Some microoptimizations to speed up
 		// https://www.lemon64.com/forum/privmsg.php?folder=inbox&mode=read&p=348822
 
-		patterns.add(new NativePattern(new String[] { "MOV Y*", "MOVB X,(Y)", "MOV Y,#%", "ADD X,Y" },
+		patterns.add(new NativePattern(true, new String[] { "MOV Y*", "MOVB X,(Y)", "MOV Y,#%", "ADD X,Y" },
 				new String[] { "{0}", "{2:MOV Y>MOV A}", "JSR PEEKBYTEADD" }));
 
-		patterns.add(new NativePattern(new String[] { "JSR PEEKBYTEADD", "MOV Y,#%", "AND X,Y" },
+		patterns.add(new NativePattern(true, new String[] { "JSR PEEKBYTEADD", "MOV Y,#%", "AND X,Y" },
 				new String[] { "{1:MOV Y>MOV B}", "JSR PEEKBYTEADDAND" }));
 
-		patterns.add(new NativePattern(new String[] { "JSR PEEKBYTEADD", "MOV Y,#%", "OR X,Y" },
+		patterns.add(new NativePattern(true, new String[] { "JSR PEEKBYTEADD", "MOV Y,#%", "OR X,Y" },
 				new String[] { "{1:MOV Y>MOV B}", "JSR PEEKBYTEADDOR" }));
 
-		patterns.add(new NativePattern(new String[] { "MOV Y,*", "MOVB X,(Y)", "MOV Y,#%", "AND X,Y" },
+		patterns.add(new NativePattern(true, new String[] { "MOV Y,*", "MOVB X,(Y)", "MOV Y,#%", "AND X,Y" },
 				new String[] { "{0}", "{2:MOV Y>MOV A}", "JSR PEEKBYTEAND" }));
 
-		patterns.add(new NativePattern(new String[] { "MOV Y,*", "MOVB X,(Y)", "MOV Y,#%", "OR X,Y" },
+		patterns.add(new NativePattern(true, new String[] { "MOV Y,*", "MOVB X,(Y)", "MOV Y,#%", "OR X,Y" },
 				new String[] { "{0}", "{2:MOV Y>MOV A}", "JSR PEEKBYTEOR" }));
 		
 		// For some bizarre reason, multiplying with a constant sometimes results in one order and something in the other.
@@ -302,6 +302,9 @@ public class NativeOptimizer {
 				}
 
 				for (NativePattern pattern : patterns) {
+					if (!config.isAllIntermediateOptimizations() && pattern.isRestricted()) {
+						continue;
+					}
 					String[] toReplace = pattern.getToReplace();
 					String[] replaceWith = pattern.getReplaceWith();
 
@@ -764,10 +767,18 @@ public class NativeOptimizer {
 		private String[] toReplace;
 
 		private String[] replaceWith;
+		
+		private boolean restricted = false;
 
 		public NativePattern(String[] toReplace, String[] replaceWith) {
 			this.toReplace = toReplace;
 			this.replaceWith = replaceWith;
+		}
+		
+		public NativePattern(boolean restricted, String[] toReplace, String[] replaceWith) {
+			this.toReplace = toReplace;
+			this.replaceWith = replaceWith;
+			this.restricted = restricted;
 		}
 
 		public String[] getToReplace() {
@@ -778,6 +789,10 @@ public class NativeOptimizer {
 			return replaceWith;
 		}
 
+		public boolean isRestricted() {
+			return restricted;
+		}
+		
 		public String toString() {
 			return Arrays.toString(toReplace) + " -> " + Arrays.toString(replaceWith);
 		}
