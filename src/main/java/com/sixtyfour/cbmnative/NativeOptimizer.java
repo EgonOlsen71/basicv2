@@ -25,14 +25,19 @@ public class NativeOptimizer {
 		for (int i = 0; i < 12; i++) {
 			pots.add(Integer.valueOf((int) Math.pow(2, i)));
 		}
+		
 		patterns.add(new NativePattern(new String[] { "MOV Y*", "PUSH Y", "MOV Y*", "JSR POS", "POP Y" }, new String[] { "JSR POS", "{0}" }));
 		patterns.add(new NativePattern(new String[] { "MOV Y*", "JSR POS" }, new String[] { "JSR POS" }));
 		patterns.add(new NativePattern(new String[] { "PUSH*", "POP*" }, new String[] { "MOV p1,p0" }));
 		patterns.add(new NativePattern(new String[] { "PUSH X", "MOV C*|*[]*", "POP Y" }, new String[] { "{1}" }));
+		
 		patterns.add(
 				new NativePattern(new String[] { "PUSH Y", "MOV Y,*", "POP X" }, new String[] { "MOV X,Y", "{1}" }));
+		
+		// If this pattern matches, we break and start from the beginning to avoid mixing of patterns.
 		patterns.add(new NativePattern(new String[] { "MOV Y,#*", "MOV X,#-1{INTEGER}", "MUL X,Y" },
-				new String[] { "{0:MOV Y,#>MOV X,#-}" }));
+				new String[] { "{0:MOV Y,#>MOV X,#-}" }, true));
+				
 		patterns.add(new NativePattern(new String[] { "MOV Y,*", "MOV X,Y" }, new String[] { "{0:MOV Y,>MOV X,}" }));
 		patterns.add(new NativePattern(new String[] { "MOV B,*", "MOV A,B" }, new String[] { "{0:MOV B,>MOV A,}" }));
 		patterns.add(new NativePattern(new String[] { "MOV Y*", "PUSH Y", "JSR COMPACT", "MOV A*", "POP X" },
@@ -52,6 +57,7 @@ public class NativeOptimizer {
 				new String[] { "{1:MOV X,>MOV Y,}", "{2}" }));
 		patterns.add(new NativePattern(new String[] { "PUSH C", "CHGCTX #1", "MOV B*", "POP C" },
 				new String[] { "{1}", "{2}" }));
+				
 		patterns.add(new NativePattern(new String[] { "MOV X,X" }, new String[] {}));
 		patterns.add(new NativePattern(new String[] { "MOV Y,Y" }, new String[] {}));
 		patterns.add(
@@ -139,7 +145,7 @@ public class NativeOptimizer {
 		for (String op:ops) {
 			patterns.add(new NativePattern(new String[] {"MOV Y,#*", "PUSH Y", "MOV Y,*",op+" X,Y", "POP Y"}, new String[] {"{2}","{3}","{0}"}));
 		}
-
+		
 		// Optimizes special cases of a multiplication by, for example, 40 (and similar muls).
 		// ...this also covers the former special case for arrays like a(16,16), which require a *17...
 		createRulesForMulAndAddSub(pots);
@@ -291,6 +297,7 @@ public class NativeOptimizer {
 				boolean cont = false;
 				int p = 0;
 				String line0 = code.get(i);
+				//System.out.println(line0);
 				for (; p < MAX_AHEAD && p + i < code.size(); p++) {
 					String line = code.get(p + i);
 					lines[p] = line;
@@ -413,9 +420,13 @@ public class NativeOptimizer {
 							ret.add(rs);
 						}
 						cont = true;
-						i += toReplace.length - 1;
-						// System.out.println("Applied: " +
+						i += toReplace.length-1;
+						// System.out.println("Applied ("+i+"): " +
 						// Arrays.toString(pattern.toReplace));
+						if (pattern.isBreakHere()) {
+							// For some pattern, we have to start from the beginning to avoid mixing of patterns...
+							break;
+						}
 					}
 
 				}
@@ -768,11 +779,18 @@ public class NativeOptimizer {
 
 		private String[] replaceWith;
 		
+		private boolean breakHere = false;
 		private boolean restricted = false;
 
 		public NativePattern(String[] toReplace, String[] replaceWith) {
+			this(toReplace, replaceWith, false);
+		}
+
+		
+		public NativePattern(String[] toReplace, String[] replaceWith, boolean breakHere) {
 			this.toReplace = toReplace;
 			this.replaceWith = replaceWith;
+			this.breakHere = breakHere;
 		}
 		
 		public NativePattern(boolean restricted, String[] toReplace, String[] replaceWith) {
@@ -789,10 +807,12 @@ public class NativeOptimizer {
 			return replaceWith;
 		}
 
+		public boolean isBreakHere() {
+			return breakHere;
+		}
 		public boolean isRestricted() {
 			return restricted;
 		}
-		
 		public String toString() {
 			return Arrays.toString(toReplace) + " -> " + Arrays.toString(replaceWith);
 		}

@@ -2423,6 +2423,9 @@ public class PseudoCpu {
 
 	private void pop(String[] parts) {
 		try {
+			if (stack.isEmpty()) {
+				throw new RuntimeException("Stack underflow!");
+			}
 			String target = parts[1];
 			int ti = getIndex(target);
 			regs[ti] = stack.pop();
