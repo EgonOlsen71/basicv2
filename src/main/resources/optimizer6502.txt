@@ -499,3 +499,4 @@
 "Double conversion avoided"	false	false	false	"LDY {MEM0}|LDA {MEM0}|JSR INTFAC|JSR PUSHREAL|LDY {MEM0}|LDA {MEM0}|JSR INTFAC|JSR FACYREG"	"{LINE0}|{LINE1}|{LINE2}|{LINE3}|{LINE7}"
 
 
+

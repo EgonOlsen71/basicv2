@@ -330,12 +330,17 @@ public class Optimizer6502 implements Optimizer {
 				"STY TMP_ZP");
 		others.add(tmpPat);
 		
-		// This relies on earlier stuff being done...so we do it here
+		// This relies on stuff being done earlier...so we do it here
 		tmpPat = new Pattern(false, "Faster INT+1 for POKE", new String[] { "JSR SUPERFIINX" }, "JSR FIINX", "LDA #<X_REG",
 				"LDY #>X_REG", "JSR REALFAC", "JSR FACWORD");
 		others.add(tmpPat);
 		tmpPat = new Pattern(false, "Faster INT-1 for POKE", new String[] { "JSR SUPERFIDEX" }, "JSR FIDEX", "LDA #<X_REG",
 				"LDY #>X_REG", "JSR REALFAC", "JSR FACWORD");
+		others.add(tmpPat);
+		
+		tmpPat = new Pattern(false, "Index is already integer", 
+				new String[] {"PHA","TYA","PHA","{LINE2}","{LINE3}","STA G_REG","STY G_REG+1","PLA","TAY","PLA","JSR ARRAYACCESS_INTEGER_INT"}, 
+				"JSR INTFAC","JSR FACXREG","LDA #<{MEM0}","LDY #>{MEM0}","JSR ARRAYACCESS_INTEGER_SNX");
 		others.add(tmpPat);
 		
 		OptimizationResult res = optimizeInternalThreaded(conf, others, platform, ret, null, extractConstants(ret),
