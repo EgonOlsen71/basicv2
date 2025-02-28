@@ -853,29 +853,36 @@ public class IntOptimizer {
 					}
 				}));
 
-		// left$(a$,<int>)/right$(a$, <int>)
+		// s(y and 7)
 		intPatterns
-				.add(new IntPattern(true, "Optimized code for LEFT/RIGHT (2)",
-						new String[] { "LDY {MEM0}", "LDA {MEM0}", "JSR INTFAC", "LDX #<C_REG", "LDY #>C_REG",
-								"JSR FACMEM", "LDA {*}", "LDY {*}", "STA B_REG", "STY B_REG+1", "JSR {*}" },
+				.add(new IntPattern(true, "Optimized code for array access with INT",
+						new String[] { "LDA #<{CONST0}", "LDY #>{CONST0}", "JSR REALFAC", "LDA #<{MEM0}", "LDY #>{MEM0}",
+								"JSR MEMARG", "JSR FASTAND", "JSR FACXREG",  "LDA #<{MEM1}", "LDY #>{MEM1}", "JSR ARRAYACCESS_REAL_S" },
 						new AbstractCodeModifier() {
 							@Override
 							public List<String> modify(IntPattern pattern, List<String> input) {
 								input = super.modify(pattern, input);
 								List<String> rep = new ArrayList<>();
-								String func = cleaned.get(10).replace("JSR", "").trim();
-								if (!func.equals("LEFT") && !func.equals("RIGHT")) {
-									pattern.reset();
-									return input;
-								} else {
-									rep.add(cleaned.get(6));
-									rep.add(cleaned.get(7));
-									rep.add(cleaned.get(8));
-									rep.add(cleaned.get(9));
-									rep.add(cleaned.get(0));
-									rep.add(cleaned.get(1));
-									rep.add("JSR " + func + "CONSTA");
-								}
+								String consty = cleaned.get(0);
+								consty = consty.substring(consty.indexOf("<") + 1).trim();
+								Number num = const2Value.get(consty);
+								int numd = num.intValue();
+								String numHex = getHex(numd);
+								rep.add(cleaned.get(3));
+								rep.add(cleaned.get(4));
+								rep.add("JSR REALFAC");
+								rep.add("JSR FACINT");
+								rep.add("AND #$"+numHex.substring(0,2));
+								rep.add("TAX");
+								rep.add("TYA");
+								rep.add("AND #$"+numHex.substring(2));
+								rep.add("TAY");
+								rep.add("TXA");
+								rep.add(cleaned.get(8).replace("LDA", "LDX"));
+								rep.add("STX G_REG");
+								rep.add(cleaned.get(9).replace("LDA", "LDX"));
+								rep.add("STX G_REG+1");
+								rep.add("JSR ARRAYACCESS_REAL_INT");
 								return combine(pattern, rep);
 							}
 						}));
