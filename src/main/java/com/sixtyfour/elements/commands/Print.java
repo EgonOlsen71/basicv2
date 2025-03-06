@@ -83,6 +83,7 @@ public class Print extends AbstractCommand {
 			// If possible, replace printing of a single char string with a PRINT
 			// CHR$(<value>) instead...
 			String txt = part.part;
+			//System.out.println(txt); // @todo comment out for production release
 			if (optimizeChars && txt != null && txt.length() == 3 && txt.startsWith("\"") && txt.endsWith("\"")) {
 				// Disabled for PRINT#x, until I'm sure it's safe to do this...
 				part.part = "chr$(" + (int) (Conversions.convertAscii2Petscii(txt.charAt(1))) + ")";
@@ -431,10 +432,13 @@ public class Print extends AbstractCommand {
 
 				boolean end = i == line.length() - 1;
 
+				
 				if (end || (brackets == 0
 						&& (c == '"' || (c == ')' && nc != '=' && nc != '<' && nc != '>' && !booleanFollows) || c == ','
 								|| c == ';' || (c == '$' && nc != '(') || (c == '%' && nc != '(')))) {
-					if (end || !Operator.isRealOperator(nc) || c == ';' || c == ',') {
+					String part = sb.toString();
+					String upart = VarUtils.toUpper(part);
+					if (end || !Operator.isRealOperator(nc) || c == ';' || c == ',' || (containsTabLike(upart) && (nc=='+' || nc=='-'))) {
 						if (end || c == '"' || c == ')' || c == '%' || c == '$') {
 							if (end) {
 								nc = ' ';
@@ -448,15 +452,15 @@ public class Print extends AbstractCommand {
 						} else {
 							nc = c;
 						}
-						String part = sb.toString();
+						part = sb.toString();
+						upart = VarUtils.toUpper(part);
 						sb.setLength(0);
 						if (part.length() == 0) {
 							part = "\"\"";
 						}
 						PrintPart pp = new PrintPart(part, nc);
 						res.add(pp);
-						String upart = VarUtils.toUpper(part);
-						if (end && (upart.contains("SPC(") || upart.contains("TAB(")) && part.endsWith(")")) {
+						if (end && containsTabLike(upart) && part.endsWith(")")) {
 							// Special case: SPC(...) and TAB(...) at the end of
 							// the line
 							// act like a ;
@@ -469,10 +473,14 @@ public class Print extends AbstractCommand {
 					}
 				}
 			}
-			// System.out.print(c);
+			//System.out.print(c);
 			sb.append(c);
 		}
 		return res;
+	}
+
+	private boolean containsTabLike(String upart) {
+		return upart.contains("SPC(") || upart.contains("TAB(");
 	}
 
 	private String fixKludges(String line) {
@@ -536,7 +544,6 @@ public class Print extends AbstractCommand {
 		}
 		
 		
-		//System.out.println("Line: "+line);
 		return line;
 	}
 

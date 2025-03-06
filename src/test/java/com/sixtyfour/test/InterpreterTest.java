@@ -2,6 +2,9 @@ package com.sixtyfour.test;
 
 import com.sixtyfour.Basic;
 import com.sixtyfour.config.CompilerConfig;
+import com.sixtyfour.parser.Parser;
+import com.sixtyfour.parser.Term;
+import com.sixtyfour.parser.TermEnhancer;
 import com.sixtyfour.system.Machine;
 
 /**
@@ -40,9 +43,33 @@ public class InterpreterTest {
 		testIfNot();
 		testAndString();
 		testIfComplex();
+		testTabMinus();
 	}
 
-	 
+	private static void testTabMinus() {
+		System.out.println("testTabMinus");
+		System.out.println("10 print tab(12)(-2)");
+		String code = "10 print tab(12)(-2)";
+		Basic inter = new Basic(code);
+		inter.run(config);
+		
+		System.out.println("10 print tab(12)2");
+		code = "10 print tab(12)2";
+		inter = new Basic(code);
+		inter.run(config);
+		
+		System.out.println("10 print \"hallo\"2");
+		code = "10 print \"hallo\"2";
+		inter = new Basic(code);
+		inter.run(config);
+		
+		System.out.println("10 print tab(12)-2");
+		code = "10 print tab(12)-2";
+		inter = new Basic(code);
+		inter.run(config);
+		
+	} 
+	
 	
 	private static void testIfComplex() {
 		System.out.println("testIfComplex");
