@@ -144,28 +144,31 @@ public class StringOptimizer {
 					int idx=0;
 					for (Term term:terms) {
 						if (term!=null) {
-							String str = term.eval(machine).toString();
-							if (str.contains(match.words) && !str.equals(match.words)) {
-								int pos = str.indexOf(match.words);
-								String old = str.substring(0, pos);
-								String newy = match.words;
-								String leftOver = null;
-								if ((old + newy).length() < str.length()) {
-									leftOver = str.substring(pos + match.words.length());
+							try {
+								String str = term.eval(machine).toString();
+								if (str.contains(match.words) && !str.equals(match.words)) {
+									int pos = str.indexOf(match.words);
+									String old = str.substring(0, pos);
+									String newy = match.words;
+									String leftOver = null;
+									if ((old + newy).length() < str.length()) {
+										leftOver = str.substring(pos + match.words.length());
+									}
+									if (old.isBlank()) {
+										old = newy;
+										newy = leftOver;
+										leftOver = null;
+									}
+									try {
+										idx+=print.update(config, machine, old, newy, leftOver, idx);
+										opti++;
+									} catch(Exception e) {
+										Logger.log("Failed to optimize(1): "+old);
+									}
 								}
-								if (old.isBlank()) {
-									old = newy;
-									newy = leftOver;
-									leftOver = null;
-								}
-								try {
-									idx+=print.update(config, machine, old, newy, leftOver, idx);
-									opti++;
-								} catch(Exception e) {
-									Logger.log("Failed to optimize: "+old);
-								}
-								
-							} 
+							} catch(Exception e) {
+								Logger.log("Failed to optimize: "+term.getInitial());
+							}
 						}
 					}
 				}
