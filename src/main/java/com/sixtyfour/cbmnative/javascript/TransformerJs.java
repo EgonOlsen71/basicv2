@@ -15,6 +15,7 @@ import com.sixtyfour.cbmnative.PlatformProvider;
 import com.sixtyfour.cbmnative.Transformer;
 import com.sixtyfour.cbmnative.javascript.generators.GeneratorListJs;
 import com.sixtyfour.cbmnative.mos6502.AbstractTransformer;
+import com.sixtyfour.cbmnative.mos6502.util.Converter;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.config.MemoryConfig;
 import com.sixtyfour.elements.Type;
@@ -101,7 +102,7 @@ public class TransformerJs implements Transformer {
 				line = line.substring(sp).trim();
 			}
 
-			cnt = extractData(platform, machine, consts, vars, strVars, strArrayVars, name2label, cnt, line);
+			cnt = extractData(config, platform, machine, consts, vars, strVars, strArrayVars, name2label, cnt, line);
 
 			Generator pm = GeneratorListJs.getGenerator(orgLine);
 			if (pm != null) {
@@ -115,7 +116,7 @@ public class TransformerJs implements Transformer {
 			}
 		}
 
-		datas = createDatas(machine);
+		datas = createDatas(config, machine);
 
 		// close the last function body
 		mnems.add("}");
@@ -132,7 +133,7 @@ public class TransformerJs implements Transformer {
 		return res;
 	}
 
-	private List<String> createDatas(Machine machine) {
+	private List<String> createDatas(CompilerConfig config, Machine machine) {
 		DataStore datas = machine.getDataStore();
 		List<String> ret = new ArrayList<String>();
 		if (datas.size() > 0) {
@@ -157,7 +158,11 @@ public class TransformerJs implements Transformer {
 				} else if (type == Type.REAL) {
 					strDat += obj.toString() + ",";
 				} else {
-					strDat += "\"" + obj.toString() + "\"" + ",";
+					String name = obj.toString();
+					if (config.isConvertStringToLower() || config.isFlipCasing()) {
+						name = Converter.convertCase(name, !config.isFlipCasing());
+					}
+					strDat += "\"" + name + "\"" + ",";
 				}
 			}
 			strDat = strDat.substring(0, strDat.length() - 1) + "];";
@@ -203,7 +208,7 @@ public class TransformerJs implements Transformer {
 
 	}
 
-	private int extractData(PlatformProvider platform, Machine machine, List<String> consts, List<String> vars,
+	private int extractData(CompilerConfig config, PlatformProvider platform, Machine machine, List<String> consts, List<String> vars,
 			List<String> strVars, List<String> strArrayVars, Map<String, String> name2label, int cnt, String line) {
 		String[] parts = line.split(",", 2);
 		List<String> tmp = new ArrayList<String>();
@@ -232,6 +237,9 @@ public class TransformerJs implements Transformer {
 						} else if (type == Type.REAL) {
 							consts.add("this." + label + "=" + name + ";");
 						} else if (type == Type.STRING) {
+							if (config.isConvertStringToLower() || config.isFlipCasing()) {
+								name = Converter.convertCase(name, !config.isFlipCasing());
+							}
 							consts.add("this." + label + "=\"" + name + "\";");
 						}
 					}

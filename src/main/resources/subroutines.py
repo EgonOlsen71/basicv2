@@ -6,8 +6,19 @@ timeOut=0
 funcName = "PROGRAMSTART"
 tymp=0
 status=0
+maxRowLength=120
 _files = dict()
 _fileTypes = dict()
+
+def screenout(txt):
+	global maxRowLength
+	lines = txt.split("\n")
+    for line in lines:
+    	if len(line)>maxRowLength+1:
+    		for i in range(0, len(line), maxRowLength):
+        		print(convertStringForOutput(cleanBrackets(line[i:i+maxRowLength])))
+    	else:
+        	print(convertStringForOutput(cleanBrackets(line)))
 
 def getMemory():
     global _memory
@@ -65,6 +76,7 @@ def executeLine():
 	global JUMP_TARGET
 	global running
 	nextLine = globals()[funcName]()
+	#print(nextLine)
 	if nextLine != None:
 		lineNumber = nextLine
 		if lineNumber == "($JUMP)":
@@ -96,7 +108,7 @@ def RESTARTPRG():
 def END():
 	global _line
 	if len(_line)>0:
-		print(_line)
+		screenout(_line)
 
 def CLEARQUEUE():
 	global _inputQueue
@@ -279,6 +291,8 @@ def STR():
 	A_REG=str(Y_REG)
 	if A_REG.endswith(".0"):
 		A_REG=A_REG.replace(".0", "")
+	if Y_REG>=0:
+		A_REG=" "+A_REG
 
 def VAL():
 	global B_REG
@@ -289,7 +303,7 @@ def VAL():
 	nums = B_REG.replace(" ","")
 	num = ""
 	for char in nums:
-		if char not in "0123456789.":
+		if char not in "0123456789.-+":
 			break
 		num+=char
 	try:
@@ -484,7 +498,9 @@ def STROUT():
 	out(A_REG)
 
 def QMARKOUT1():
-	out("?")
+	global _memory
+	if _memory[19]!=1:
+		out("?")
 
 def CRSRRIGHT():
 	out(" ")
@@ -550,7 +566,7 @@ def READSTATUS():
 	global tmpy
 	global status
 	tmpy=status
-	status=0
+	#status=0
 
 def RESTORE():
 	global _dataPtr
@@ -592,17 +608,18 @@ def OPEN():
 	global X_REG
 	global Y_REG
 	count = int(Y_REG)
-	parts = G_REG.split(",") if count>3 else []
+	parts = G_REG.split(",") if (count>3 or G_REG.endsWith("r") or G_REG.endsWith("w")) else []
 	mode = "r"
 	fileName = parts[0] if len(parts)>0 else ""
 	# we ignore flags for now, just r+ as a mode
 	secAddr = int(D_REG)
 	device = int(C_REG)
 	number = int(X_REG)
-	if "r" in parts:
+	#print(parts)
+	if any(p.lower() == "r" for p in parts):
 		mode = "r"
 	else:
-		if "w" in parts:
+		if any(p.lower() == "w" for p in parts):
 			mode = "w"
 	if count>2:
 		if secAddr==0:
@@ -631,9 +648,9 @@ def OPEN():
 	if fileHandle != None:
 		throw("File already open error!")
 	if mode=="r":
-		fileHandle = open(fileName, mode+"b")
-	else:
-		fileHandle = open(fileName, mode, encoding="ascii")
+		if not os.path.exists(fileName):
+			fileName = convertStringForOutput(fileName) # try flipped
+	fileHandle = open(fileName, mode+"b")
 	_files[key]=fileHandle
 
 def CLOSE():
@@ -658,13 +675,14 @@ def readChar(fileHandle, mode="s"):
 	global status
 	status = 0
 	char = fileHandle.read(1)
+	#print(":1",char,":",(not char))
 	if not char:
 		status = 64
 		return ""
 	# determine, if we reached the end...
 	chs = fileHandle.read(1)
-	#print(":",chs,":")
-	if not chs:
+	#print(":2",chs,":",(not chs))
+	if not chs or len(chs) == 0:
 		status = 64
 	fileHandle.seek(-1, 1)
 	# convert...
@@ -684,16 +702,22 @@ def LOCKCHANNEL():
 def UNLOCKCHANNEL():
 	pass
 
+def writeStringIntoFile(fileHandle, txt):
+	fileHandle.write(txt.replace("\n","\r").encode('ascii'))
+
 def STROUTCHANNEL():
 	global _files
 	global C_REG
 	global A_REG
 	fileHandle = openFile(C_REG)
-	fileHandle.write(convertString(A_REG))
+	writeStringIntoFile(fileHandle, convertString(A_REG)) 
 
 def REALOUTCHANNEL():
-	out("[PRINT# not supported for PY, redirected to normal PRINT]")
-	REALOUT()
+	global _files
+	global C_REG
+	global X_REG
+	fileHandle = openFile(C_REG)
+	writeStringIntoFile(fileHandle, str(X_REG)) 
 
 def LINEBREAKCHANNEL():
 	global A_REG
@@ -701,8 +725,11 @@ def LINEBREAKCHANNEL():
 	STROUTCHANNEL()
 
 def INTOUTCHANNEL():
-	out("[PRINT# not supported for PY, redirected to normal PRINT]")
-	INTOUT()
+	global _files
+	global C_REG
+	global X_REG
+	fileHandle = openFile(C_REG)
+	writeStringIntoFile(fileHandle, str(X_REG)) 
 
 def INPUTNUMBERCHANNEL():
 	global X_REG
@@ -747,9 +774,11 @@ def INPUTSTRCHANNEL():
 	stops = "\n\r:,"
 	while True:
 		char = readChar(fileHandle, _fileTypes.get(key))
-		if char=="" or char in stops or status==64:
+		if char=="" or char in stops:
 			return
 		A_REG+=char
+		if status==64:
+			return
 
 def GETSTRCHANNEL():
 	global A_REG
@@ -801,7 +830,8 @@ def USR():
 	globals()[callStr]()
 
 def SYSCALL(addr):
-	print("called ",addr)
+	#print("called ",addr)
+	pass
 
 def input():
 	global _inputQueue
@@ -827,12 +857,12 @@ def get():
     event = keyboard.read_event(True)
     if event.event_type == keyboard.KEY_UP:
         key = event.name
-    return key
+    return convertCharForOutput(key) if key else key
 
 def flushOut():
 	global _line
 	if len(_line)>0:
-		print(_line)
+		screenout(_line)
 		_line = ""
 
 def cleanBrackets(txt):
@@ -841,10 +871,13 @@ def cleanBrackets(txt):
 
 def out(txt):
 	global _line
-	if isinstance(txt, str) and  "\n" in txt:
-		_line += txt[0:len(txt)-1]
-		print(cleanBrackets(_line))
-		_line = ""
+	if isinstance(txt, str):
+		txt = txt.replace(chr(13), "\n")
+	if isinstance(txt, str) and (txt.endswith("\n")):
+	    _line += txt[0:len(txt)-1]
+	    screenout(_line)
+	    _line = ""
+
 	else:
 		org=txt
 		txt = str(txt)
@@ -853,12 +886,13 @@ def out(txt):
 		if txt.endswith(".0"):
 			txt=txt.replace(".0", "")
 		_line += cleanBrackets(txt)
+		#print(_line)
 
 def convertString(txt):
 	return txt
 	# disabled for now...
 	res = []
-    for char in text:
+    for char in txt:
     	res.append(convertChar(char))
     return "".join(res)
 
@@ -873,5 +907,26 @@ def convertChar(char):
                 return char.lower()
         else:
             return char
+            
+def convertStringForOutput(txt):
+    if not _flipcasing:
+		return txt
+	res = []
+    for char in txt:
+    	res.append(convertCharForOutput(char))
+    return "".join(res)
+
+def convertCharForOutput(char):
+    	if not _flipcasing:
+			return char
+        charlow = char.lower()
+        if charlow in "abcdefghijklmnopqrstuvwxyz":
+            if char.islower():
+                return char.upper()
+            else:
+                return char.lower()
+        else:
+            return char
+
 
 execute()
