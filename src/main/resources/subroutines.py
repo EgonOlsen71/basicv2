@@ -9,6 +9,24 @@ status=0
 maxRowLength=120
 _files = dict()
 _fileTypes = dict()
+_colormap={
+	0: 30,   
+    1: 37,   
+    2: 31,   
+    3: 36,   
+    4: 35,   
+    5: 32,   
+    6: 34,   
+    7: 33,  
+    8: 33,  
+    9: 33,   
+    10: 95, 
+    11: 90, 
+    12: 90, 
+    13: 92, 
+    14: 94,  
+    15: 37
+}
 
 def screenout(txt):
 	global maxRowLength
@@ -16,9 +34,9 @@ def screenout(txt):
     for line in lines:
     	if len(line)>maxRowLength+1:
     		for i in range(0, len(line), maxRowLength):
-        		print(convertStringForOutput(cleanBrackets(line[i:i+maxRowLength])))
+        		print(convertStringForOutput(cleanBrackets(line[i:i+maxRowLength]), True))
     	else:
-        	print(convertStringForOutput(cleanBrackets(line)))
+        	print(convertStringForOutput(cleanBrackets(line), True))
 
 def getMemory():
     global _memory
@@ -908,13 +926,18 @@ def convertChar(char):
         else:
             return char
             
-def convertStringForOutput(txt):
+def convertStringForOutput(txt, addColor=False):
+	global _memory
     if not _flipcasing:
 		return txt
 	res = []
     for char in txt:
     	res.append(convertCharForOutput(char))
-    return "".join(res)
+    txt = "".join(res)
+    if addColor:
+    	pass
+    	txt = f"\033[{_colormap[_memory[646] & 15]}m{txt}\033[0m"
+    return txt
 
 def convertCharForOutput(char):
     	if not _flipcasing:
