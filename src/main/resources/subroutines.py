@@ -793,9 +793,11 @@ def INPUTSTRCHANNEL():
 	while True:
 		char = readChar(fileHandle, _fileTypes.get(key))
 		if char=="" or char in stops:
+			A_REG = A_REG.lstrip()
 			return
 		A_REG+=char
 		if status==64:
+			A_REG = A_REG.lstrip()
 			return
 
 def GETSTRCHANNEL():
