@@ -1512,7 +1512,8 @@ public class IntOptimizer {
 						double numd = num.doubleValue();
 						boolean isFacInt = cleaned.get(10).contains("FACINT");
 						boolean isXreg = cleaned.get(10).contains("FACXREG");
-						if ((isFacInt || isXreg) && numd == (int) numd && numd >= -32767 && numd < 32768) {
+						boolean isPush = cleaned.get(10).contains("PUSHREAL");
+						if ((isFacInt || isXreg || isPush) && numd == (int) numd && numd >= -32767 && numd < 32768) {
 							String op = cleaned.get(9).substring(8).replace("OR", "ORA");
 							if (op.contains("ORA") || op.contains("AND")) {
 								String numHex = getHex(numd);
@@ -1530,6 +1531,10 @@ public class IntOptimizer {
 									rep.add("JSR BASINT"); // Actually, this isn't needed but it triggers the ON
 															// GOTO-Optimization in the second pass
 									rep.add("JSR FACXREG");
+								}
+								if (isPush) {
+									rep.add("JSR INTFAC");
+									rep.add("JSR PUSHREAL");
 								}
 								return combine(pattern, rep);
 							}
