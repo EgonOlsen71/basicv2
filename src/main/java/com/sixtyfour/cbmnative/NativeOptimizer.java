@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.sixtyfour.Logger;
 import com.sixtyfour.config.CompilerConfig;
@@ -239,7 +240,17 @@ public class NativeOptimizer {
 		if (config.isIntermediateLanguageOptimizations()) {
 			Logger.log("Running intermediate code optimizer...");
 			code = optimizeNativeInternal(config, code, pg);
+			code = optimizeCmdUsage(config, code, pg);
 		}
+		return code;
+	}
+
+	private static List<String> optimizeCmdUsage(CompilerConfig config, List<String> code, ProgressListener pg) {
+		boolean noCmd = code.stream().noneMatch(p -> p.contains("JSR CMD"));
+		if (noCmd) {
+			code = code.stream().filter(p -> !p.contains("JSR CHECKCMD")).collect(Collectors.toList());
+		}
+		pg.nextStep();
 		return code;
 	}
 
