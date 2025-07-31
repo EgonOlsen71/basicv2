@@ -250,7 +250,9 @@ public class NativeOptimizer {
 		if (noCmd) {
 			code = code.stream().filter(p -> !p.contains("JSR CHECKCMD")).collect(Collectors.toList());
 		}
-		pg.nextStep();
+		if (pg!=null) {
+			pg.nextStep();
+		}
 		return code;
 	}
 

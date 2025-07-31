@@ -1895,6 +1895,24 @@ ARRAYACCESS_INTEGER_INT_PRE_SKIP_FP
 			STA TMP2_ZP+1
 			RTS
 ;###################################
+ARRAYACCESS_REAL_S_STORE
+			JSR ARRAYACCESS_REAL_S
+			LDA TMP3_ZP
+			STA ADDR_STORE
+			LDA TMP3_ZP+1
+			STA ADDR_STORE+1
+			RTS
+			ADDR_STORE
+			.BYTE 0
+			.BYTE 0
+;###################################
+ARRAYSTORE_REAL_ADDR
+			LDA ADDR_STORE
+			STA TMP_ZP
+			LDA ADDR_STORE+1
+			STA TMP_ZP+1
+			JMP COPY2_YREG_XYA
+;###################################
 ARRAYACCESS_INTEGER_INT_PRE
 			LDX G_REG
 			STX TMP_ZP
@@ -3431,6 +3449,35 @@ REALFACPUSH	STA TMP_ZP
 			INC FPSTACKP+1
 NOPVRFPXX	RTS
 ;###################################
+REALFACPUSHXREG
+			LDX FPSTACKP
+			LDY FPSTACKP+1
+			STX TMP2_ZP
+			STY TMP2_ZP+1
+			LDY #0
+			LDA X_REG
+			STA (TMP2_ZP),Y
+			INY
+			LDA X_REG+1
+			STA (TMP2_ZP),Y
+			INY
+			LDA X_REG+2
+			STA (TMP2_ZP),Y
+			INY
+			LDA X_REG+3
+			STA (TMP2_ZP),Y
+			INY
+			LDA X_REG+4
+			STA (TMP2_ZP),Y
+			TXA				;LDA FPSTACKP
+			CLC
+			ADC #5
+			STA FPSTACKP
+			BCC NOPVRFPXXXREG
+			INC FPSTACKP+1
+NOPVRFPXXXREG
+			RTS
+;###################################
 PUSHREAL	LDX FPSTACKP
 			LDY FPSTACKP+1
 			JSR FACMEM
@@ -4554,6 +4601,26 @@ XXBASINT	LDA ARGLO		;BASINT breaks the content of ARG, so we save and restore it
 			LDA F_REG
 			STA ARGEXP
 			LDA FACEXP
+			RTS
+;###################################
+XREG2VAR
+			STX TMP_ZP
+			STY TMP_ZP+1
+			LDY #0
+			LDA X_REG
+			STA (TMP_ZP),Y
+			INY
+			LDA X_REG+1
+			STA (TMP_ZP),Y
+			INY
+			LDA X_REG+2
+			STA (TMP_ZP),Y
+			INY
+			LDA X_REG+3
+			STA (TMP_ZP),Y
+			INY
+			LDA X_REG+4
+			STA (TMP_ZP),Y
 			RTS
 ;###################################
 XREGFAC		LDA X_REG+4

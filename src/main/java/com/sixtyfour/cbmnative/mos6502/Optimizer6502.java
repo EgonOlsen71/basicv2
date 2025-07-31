@@ -289,6 +289,7 @@ public class Optimizer6502 implements Optimizer {
 	 * @return
 	 */
 	private List<String> doLastCleanups(CompilerConfig conf, PlatformProvider platform, List<String> ret) {
+		Logger.log("Running last cleanups...");
 		List<Pattern> others = new ArrayList<>();
 		Pattern tmpPat = new Pattern(false, "Remove PUSH/POP", new String[] { "" }, "JSR PUSHREAL", "JSR POPREAL");
 		others.add(tmpPat);
@@ -341,6 +342,12 @@ public class Optimizer6502 implements Optimizer {
 		tmpPat = new Pattern(false, "Index is already integer", 
 				new String[] {"PHA","TYA","PHA","{LINE2}","{LINE3}","STA G_REG","STY G_REG+1","PLA","TAY","PLA","JSR ARRAYACCESS_INTEGER_INT"}, 
 				"JSR INTFAC","JSR FACXREG","LDA #<{MEM0}","LDY #>{MEM0}","JSR ARRAYACCESS_INTEGER_SNX");
+		others.add(tmpPat);
+		
+		tmpPat = new Pattern(false, "Faster stack pushes", new String[] {"JSR REALFACPUSHXREG"}, "LDA #<X_REG","LDY #>X_REG","JSR REALFACPUSH");
+		others.add(tmpPat);
+		
+		tmpPat = new Pattern(false, "Avoid Y_REG copy", new String[] {"JSR XREGFAC","{LINE1}","{LINE2}","{LINE3}"}, "JSR COPY_XREG2YREG", "LDA #<{MEM0}", "LDY #>{MEM0}", "JSR COPY2_XYA_XREG", "JSR YREGFAC");
 		others.add(tmpPat);
 		
 		OptimizationResult res = optimizeInternalThreaded(conf, others, platform, ret, null, extractConstants(ret),
