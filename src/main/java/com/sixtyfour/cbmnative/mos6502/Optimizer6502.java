@@ -2,11 +2,13 @@ package com.sixtyfour.cbmnative.mos6502;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -45,6 +47,10 @@ public class Optimizer6502 implements Optimizer {
 		input = removeNops(input);
 		Logger.log("Assembly code optimized in " + (System.currentTimeMillis() - s) + "ms");
 		return input;
+	}
+	
+	public List<Pattern> getPatterns() {
+		return new PatternProcessor().getPatterns("optimizer6502.txt");
 	}
 
 	private List<String> optimizeInternal(CompilerConfig conf, PlatformProvider platform, List<String> input,
@@ -353,7 +359,9 @@ public class Optimizer6502 implements Optimizer {
 		OptimizationResult res = optimizeInternalThreaded(conf, others, platform, ret, null, extractConstants(ret),
 				extractStringConstants(ret));
 		printOutResults(res.getType2count());
-		return res.getCode();
+		List<String> code = res.getCode();
+		optimizeStackPushes(code);
+		return code;
 	}
 
 	/**
@@ -731,8 +739,54 @@ public class Optimizer6502 implements Optimizer {
 		}
 		return "; *** SUBROUTINES ***";
 	}
-
-	public List<Pattern> getPatterns() {
-		return new PatternProcessor().getPatterns("optimizer6502.txt");
+	
+	private void optimizeStackPushes(List<String> input) {
+		// Replaces the most common stack pushes with a slightly optimized one. This saves more space then time and 
+		// actually some quite hacky stuff for this special case that's not really worth it. But we'll leave it for now...
+		Map<String, List<Integer>> finds = new HashMap<>();
+		for (int i=0; i<input.size(); i++) {
+			String line = input.get(i);
+			if (line.contains("JSR REALFACPUSH")) {
+				String line0=input.get(i-2);
+				String line1=input.get(i-1);
+				if (line0.contains("LDA #<") && line1.contains("LDY #>")) {
+					String varName = line0.replace("LDA #<", "").trim();
+					List<Integer> lineNumbers = finds.get(varName);
+					if (lineNumbers==null) {
+						lineNumbers = new ArrayList<>();
+						finds.put(varName, lineNumbers);
+					}
+					lineNumbers.add(i-2);
+				}
+			}
+		}
+		//System.out.println("Finds: "+finds.size());
+		Optional<Map.Entry<String, List<Integer>>> maxCount = finds.entrySet().stream().max(Comparator.comparingInt(e -> e.getValue().size()));
+		if (maxCount.isPresent()) {
+			Map.Entry<String, List<Integer>> entry = maxCount.get();
+			String varName = entry.getKey();
+			List<Integer> toModify = entry.getValue();
+			if (toModify.size()>9) {
+				//System.out.println(varName+"/"+toModify.size());
+				for (Integer line:toModify) {
+					input.set(line, ";"+input.get(line));
+					input.set(line+1, ";"+input.get(line+1));
+					input.set(line+2, "JSR REALFACPUSHMC");
+				}
+				for (int i=0; i<input.size(); i++) {
+					String line = input.get(i);
+					//System.out.println(line);
+					if (line.startsWith(varName+"\t")) {
+						input.add(i, "MOSTCOMMON");
+						break;
+					}
+				}
+				Logger.log("Optimized most common var access: "+toModify.size());
+			} else {
+				Logger.log("No optimization for var access needed!");
+			}
+		}
+		
 	}
+
 }
