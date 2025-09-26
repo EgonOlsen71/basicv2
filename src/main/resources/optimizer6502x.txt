@@ -61,3 +61,6 @@
 
 #21: Faster array access setup(3)
 "Faster array access setup(3)"	false	false	false	"LDA #<{MEM0}|LDY #>{MEM0}|JSR REALFACPUSH|NOP|LDA #<{MEM1}|LDY #>{MEM1}|JSR COPY2_XYA_XREG|LDA #<{MEM2}|LDY #>{MEM2}|STA G_REG|STY G_REG+1|JSR ARRAYACCESS_STRING|JSR POPREALXREG"	"{LINE4}|{LINE5}|{LINE6}|{LINE7}|{LINE8}|{LINE9}|{LINE10}|{LINE11}|{LINE0}|{LINE1}|JSR COPY2_XYA_XREG"
+
+#22: Simplified boolean comparison
+"Simplified boolean comparison"	false	false	false	"LDA #<{MEM0}|LDY #>{MEM0}|JSR COPY2_XYA_YREG|LDA Y_REG|{LABEL}|BEQ {*}"	"LDA {MEM0}|{LINE4}|{LINE5}"

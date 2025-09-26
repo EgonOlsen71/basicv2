@@ -94,6 +94,9 @@ public class NativeOptimizer {
 
 		patterns.add(new NativePattern(new String[] { "PUSH C", "MOV *", "POP C" }, new String[] { "{1}" }));
 
+		// Simplify IF A<>0 THEN to IF A THEN
+		patterns.add(new NativePattern(new String[] {"MOV Y,#0{INTEGER}", "MOV X*", "NEQ X,Y", "CMP X,#0{REAL}", "JNE*", "JMP*"}, new String[] {"{1:MOV X,>MOV Y,}", "CMP Y,#0{REAL}", "{4}", "{5}"}));
+		
 		// Some microoptimizations to speed up
 		// https://www.lemon64.com/forum/privmsg.php?folder=inbox&mode=read&p=348822
 
