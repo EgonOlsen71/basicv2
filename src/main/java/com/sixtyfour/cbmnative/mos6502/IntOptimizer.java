@@ -1752,6 +1752,39 @@ public class IntOptimizer {
 					}
 				}));
 		
+		// Simplified POKE Y,PEEK(X) OR/AND c
+		intPatterns.add(new IntPattern(true, "Simplified POKE Y,PEEK(X) OR/AND c",
+				new String[] { "LDA #<{CONST0}", "LDY #>{CONST0}", "JSR COPY2_XYA_YREG", "LDY {CONST1}", "LDA {CONST1}", "STY A_REG",
+						"STA A_REG+1", "JSR {*}", "STY {*}"},
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						String consty = cleaned.get(0);
+						consty = consty.substring(consty.indexOf("<") + 1).trim();
+						Number num = const2Value.get(consty);
+						int numd = num.intValue();
+						
+						consty = cleaned.get(3);
+						consty = consty.substring(consty.indexOf("LDY ") + 4).trim();
+						num = const2Value.get(consty);
+						int numd3 = num.intValue();
+						if (numd3<256 && (cleaned.get(7).contains("PEEKBYTEORFAST") || cleaned.get(7).contains("PEEKBYTEANDFAST"))) {
+							List<String> rep = new ArrayList<>();
+							rep.add("LDA "+numd);
+							if (cleaned.get(7).contains("PEEKBYTEORFAST")) {
+								rep.add("ORA #"+numd3);
+							} else {
+								rep.add("AND #"+numd3);
+							}
+							rep.add(cleaned.get(8).replace("STY", "STA"));
+							return combine(pattern, rep);
+						}
+						pattern.reset();
+						return input;
+					}
+				}));
+		
 		// Simplified POKE(X),PEEK(X)+1...a very special case, but fun to do anyway...
 		intPatterns.add(new IntPattern(true, "Simplified POKE(X),PEEK(X)+1",
 				new String[] { "LDA #<{CONST0}", "LDY #>{CONST0}", "JSR COPY2_XYA_YREG", "LDY {CONST1}", "LDA {CONST1}", "STY A_REG",
