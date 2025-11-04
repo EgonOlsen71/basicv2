@@ -311,6 +311,11 @@ public class NativeCompiler {
 			addEndCode(mCode);
 		}
 
+        String label = machine.hasEarlyFunctions();
+        if (label != null) {
+            throw new RuntimeException("Undef'd function error: " + label);
+        }
+
 		int os = mCode.size();
 		mCode = optimize(config, mCode);
 

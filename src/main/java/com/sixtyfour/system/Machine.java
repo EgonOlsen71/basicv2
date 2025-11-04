@@ -96,6 +96,8 @@ public class Machine {
 
 	private List<Variable> extendedSystemVars = new ArrayList<>();
 
+    private Set<String> earlyFunctions = new HashSet<>();
+
 	/**
 	 * Instantiates a new machine.
 	 */
@@ -125,7 +127,34 @@ public class Machine {
 		roms.add(loadRom("kernal.$E000.bin", 0xe000));
 		copyRoms();
 	}
-	
+
+    /**
+     *
+     * @param label
+     */
+    public void addEarlyFunction(String label) {
+        earlyFunctions.add(label);
+    }
+
+    /**
+     *
+     * @param label
+     */
+    public void removeEarlyFunction(String label) {
+        earlyFunctions.remove(label);
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String hasEarlyFunctions() {
+        if (earlyFunctions.isEmpty()) {
+            return null;
+        }
+        return earlyFunctions.iterator().next();
+    }
+
 	
 	/**
 	 * Tracks that a variable is in use in inline assembly code to exclude it from dead store elimination.

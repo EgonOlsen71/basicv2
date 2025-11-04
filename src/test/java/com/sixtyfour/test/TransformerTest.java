@@ -39,6 +39,7 @@ public class TransformerTest {
 	private static String path = "compiled/";
 
 	public static void main(String[] args) throws Exception {
+        testDeffn();
 		// testTransformer3();
 		// testTransformer1();
 		// testTransformer2();
@@ -152,6 +153,13 @@ public class TransformerTest {
 		Assembler assy = initTestEnvironment(vary, false, -1, true);
 		FileWriter.writeAsPrg(assy.getProgram(), path + "++colors2.prg", true);
 	}
+
+    private static void testDeffn() throws Exception {
+        System.out.println("\n\ntestDeffn");
+        String[] vary = Loader.loadProgram("src/test/resources/transform/deffn.bas");
+        Assembler assy = initTestEnvironment(vary, false, -1, true);
+        FileWriter.writeAsPrg(assy.getProgram(), path + "++deffn.prg", true);
+    }
 	
 	private static void testJumpOutOfFor() throws Exception {
 		System.out.println("\n\ntestJumpOutOfFor");

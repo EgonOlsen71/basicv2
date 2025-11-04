@@ -12,6 +12,7 @@ import com.sixtyfour.parser.TermEnhancer;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.system.Machine;
 import com.sixtyfour.system.BasicProgramCounter;
+import com.sixtyfour.util.Md5;
 import com.sixtyfour.util.VarUtils;
 
 /**
@@ -19,14 +20,13 @@ import com.sixtyfour.util.VarUtils;
  */
 public class Def extends AbstractCommand {
 
-	private static int DEF_COUNT = 0;
 	/** The var name. */
 	private String varName = null;
 
 	/** The fn name. */
 	private String fnName = null;
 
-	private int count = 0;
+	private String count = "";
 
 	/**
 	 * Instantiates a new def.
@@ -128,6 +128,7 @@ public class Def extends AbstractCommand {
 		if (cmd != null && !cmd.getTerm().toString().equals(this.getTerm().toString())) {
 			throw new RuntimeException("Redef'd function error: " + fnName + "/" + cmd.getTerm());
 		}
+        machine.removeEarlyFunction(fnName);
 		machine.setFunction(fnName, this);
 		term.setSealed(true);
 		NativeCompiler compiler = NativeCompiler.getCompiler();
@@ -135,7 +136,7 @@ public class Def extends AbstractCommand {
 		List<String> expr = compiler.compileToPseudoCode(config, machine, term);
 		List<String> before = new ArrayList<String>();
 
-		count = DEF_COUNT++;
+		count = Md5.md5(fnName);
 
 		String label = "DEF" + count;
 		after.add("RTS");
@@ -172,11 +173,11 @@ public class Def extends AbstractCommand {
 		return null;
 	}
 
-	public int getCount() {
+	public String getCount() {
 		return count;
 	}
 
-	public void setCount(int count) {
+	public void setCount(String count) {
 		this.count = count;
 	}
 }
