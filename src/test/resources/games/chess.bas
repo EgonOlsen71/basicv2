@@ -49,7 +49,8 @@
 650 read f(a):next a
 660 data 5,3,4,7,8,4,3,5
 670 data -5,-3,-4,-7,-8,-4,-3,-5
-680 rem 
+680 rem
+685 rem gosub 8000: rem setup test board
 690 rem *** druckzeichen figur
 695 for a=0 to 18:read df:f$(a)=chr$(df)
 696 if df>128 then f$(a)=chr$(5)+f$(a)
@@ -417,11 +418,11 @@
 4610 if f(s)=-3 then 5320
 4620 next a
 4630 if b=-1 then b=1 : goto 4370
-4640 if f(pk-9)=-1 or f(pk+11)=-1 then 5320
-4650 if f(pk-9)=-2 or f(pk+11)=-2 then 5320
+4640 if f(pk+9)=-1 or f(pk-11)=-1 then 5320
+4650 if f(pk+9)=-2 or f(pk-11)=-2 then 5320
 4660 print tab(14) "1"; chr$(145)
 4670 if pa=1 then 5300
-4680 if ma=1 then ma=0 : goto 5260
+4680 if ma=1 then ma=0: goto 5260
 4690 if f(zk)=7 then 4710
 4700 if fw(f(zk))<=fw(-fz) then 5260
 4705 rem **** deckung von figuren ****
@@ -751,4 +752,11 @@
 7930 for a=1 to 5:print tab(12)"                ":next
 7950 for a=1 to 5:print chr$(145);:next
 7960 return
-
+8000 rem setup board
+8010 rem for a=11 to 88:f(a)=0:next
+8020 rem f(43)=8:f(51)=-8
+8030 rem f(12)=-1:f(63)=-1:f(83)=-1
+8040 rem f(65)=-1
+8050 rem f(35)=-7:f(11)=-5:f(81)=-5
+8060 rem f(74)=-4:f(75)=-4
+8900 rem return
