@@ -893,7 +893,7 @@ def out(txt):
 	global _line
 	if isinstance(txt, str):
 		txt = txt.replace(chr(13), "\n")
-	if isinstance(txt, str) and (txt.endswith("\n")):
+	if isinstance(txt, str) and (txt.endswith("\n") or len(txt)==maxRowLength):
 	    _line += txt[0:len(txt)-1]
 	    screenout(_line)
 	    _line = ""
@@ -937,7 +937,6 @@ def convertStringForOutput(txt, addColor=False):
     	res.append(convertCharForOutput(char))
     txt = "".join(res)
     if addColor:
-    	pass
     	txt = f"\033[{_colormap[_memory[646] & 15]}m{txt}\033[0m"
     return txt
 
