@@ -894,6 +894,8 @@ def out(txt):
 	if isinstance(txt, str):
 		txt = txt.replace(chr(13), "\n")
 	if isinstance(txt, str) and (txt.endswith("\n") or len(txt)==maxRowLength):
+	    if len(txt)==maxRowLength and not txt.endswith("\n"):
+            _line = txt
 	    _line += txt[0:len(txt)-1]
 	    screenout(_line)
 	    _line = ""
