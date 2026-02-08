@@ -131,8 +131,16 @@ public class TransformerTest {
 		testJumpOutOfFor();
 		testMandelbrot();
 		testSysParameters();
+		testArraySwap();
 	}
 
+	private static void testArraySwap() throws Exception {
+		System.out.println("\n\ntestArraySwap");
+		String[] vary = Loader.loadProgram("src/test/resources/transform/arrayswap.bas");
+		Assembler assy = initTestEnvironment(vary, false, -1, true);
+		FileWriter.writeAsPrg(assy.getProgram(), path + "++arrayswap.prg", true);
+	}
+	
 	private static void testSysParameters() throws Exception {
 		System.out.println("\n\ntestSysParameters");
 		String[] vary = Loader.loadProgram("src/test/resources/transform/systest.bas");
