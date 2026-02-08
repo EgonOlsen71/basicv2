@@ -3689,6 +3689,36 @@ COPY2_YREG_XYA
 			STA (TMP_ZP),Y
 			RTS
 ;###################################
+COPY2_XYA_XREGFAC
+			STA TMP3_ZP
+			STY TMP3_ZP+1
+COPY2_XY_XREGFAC
+			LDX #<X_REG		; the pointer to X_REG has to be in X, because the "value already in X"-optimization might expect it to be there! YIKES!
+			LDY #0
+			LDA (TMP3_ZP),Y
+			STA X_REG
+			STA FACEXP
+			STY FACOV
+			INY
+			LDA (TMP3_ZP),Y
+			STA X_REG+1
+			STA FACSGN
+			ORA #$80
+			STA FACHO
+			INY
+			LDA (TMP3_ZP),Y
+			STA X_REG+2
+			STA FACMOH
+			INY
+			LDA (TMP3_ZP),Y
+			STA X_REG+3
+			STA FACMO
+			INY
+			LDA (TMP3_ZP),Y
+			STA X_REG+4
+			STA FACLO
+			RTS
+;###################################
 COPY2_XYA_XREG
 			STA TMP3_ZP
 			STY TMP3_ZP+1
