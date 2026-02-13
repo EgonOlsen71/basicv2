@@ -1,0 +1,834 @@
+REALFAC = $BBA2
+MEMARG = $BA8C
+MEMMUL = $BA28
+MEMSUB = $B850
+FACMEM = $BBD7
+PRINTSTRS = $AB25
+VALS = $B7B5
+CMPFAC = $BC5B
+FACADD = $B867
+SGNFAC = $BC2B
+ARGADD = $B86A
+ARGAND = $AFE9
+ARGDIV = $BB14
+FACMUL = $BA30
+FACLOG = $B9EA
+FACSQR = $BF71
+FACEXPCALL = $BFED
+FACABS = $BC58
+FACSIN = $E26B
+FACCOS = $E264
+FACTAN = $E2B4
+FACATN = $E30E
+FACSIG = $BC39
+FACNOT = $AED4
+FACRND = $E097
+XFACWORD = $B7F7
+FACDIV = $BB0F
+BASINT = $BCCC
+FACPOW = $BF7B
+FACSUB = $B853
+FACOR = $AFE6
+ARGFAC = $BBFC
+FACARG = $BC0C
+FACSTR = $BDDF
+FACINT = $B1AA
+RNDFAC = $BC1B
+INTFAC = $B391
+WRITETIS = $A9E7
+GETTI = $BE68
+GETTIME = $AF7E
+COPYTIME = $AF87
+TI2FAC = $AF84
+BYTEFAC = $B3A2
+CRSRRIGHT = $AB3B
+ERRALL = $A437
+ERRIQ = $B248
+ERREI = $ACF4
+ERRSYN = $AF08
+INPUT = $A560
+CRSRPOS = $FFF0
+CHROUT = $FFD2
+GETIN = $FFE4
+OPENCH = $FFC0
+CLOSECH = $FFC3
+CHKIN = $FFC6
+CHKOUT = $FFC9
+CLRCH = $FFCC
+LOADXX = $FFD5
+SAVEXX = $FFD8
+TWAIT = $FFE1
+ERRFNF = $F12F
+ARGSGN=$6E
+ARGLO=$6D
+ARGMO=$6C
+ARGMOH=$6B
+ARGHO=$6A
+ARGEXP=$69
+FACSGN=$66
+FACLO=$65
+FACMO=$64
+FACMOH=$63
+FACHO=$62
+FACEXP=$61
+FACOV=$70
+OLDOV=$56
+ARISGN=$6F
+FAC=$61
+RESLO=$29
+RESMO=$28
+RESMOH=$27
+RESHO=$26
+RESOV=$2A
+RESHOP=$6F
+FACHOP=$56
+ITERCNT=$67
+IOCHANNEL=$13
+BASICSTART=$2B
+BASICEND=$37
+STATUS=$90
+VERCHK=$93
+SECADDR=$B9
+DEVICENUM=$BA
+FILELEN=$B7
+LOGICADDR=$B8
+FILEADDR=$BB
+LOADEND=$C3
+KEYNDX=$C6
+INDEX1=$22
+VALTYPE=$0D
+LOWDS=$5D
+TIMEADDR=$A0
+BASICPOINTER=$7A
+LOADOK_STATUS=64
+LOFBUF=$FF
+LOFBUFH=$100
+INPUTBUF=$200
+BASICBUFFER=820
+TMP_ZP = 105
+TMP2_ZP = 107
+TMP3_ZP = 34
+;make sure that JUMP_TARGET's low can't be $ff
+JUMP_TARGET = 69
+TMP_REG=71
+G_REG=73
+X_REG=61
+*=2072
+TSX
+STX SP_SAVE
+; *** CODE ***
+PROGRAMSTART:
+JSR START
+;
+LINE_0:
+;
+;
+LINE_10:
+;
+LDA #147
+JSR SINGLECHROUTBRKMAX
+; Optimizer rule: Memory saving single char out(2)/2
+; Optimizer rule: Single character output and break/2
+; Optimizer rule: STROUT + LINEBRK/1
+;
+LINE_20:
+;
+LDA #<CONST_1
+LDY #>CONST_1
+JSR STROUTBRKWL
+; Optimizer rule: Memory saving STROUTBRK/1
+; Optimizer rule: STROUT + LINEBRK/1
+;
+LINE_30:
+;
+LDA #<CONST_2
+LDY #>CONST_2
+JSR STROUTBRKWL
+; Optimizer rule: Memory saving STROUTBRK/1
+; Optimizer rule: STROUT + LINEBRK/1
+JSR END
+RTS
+; *** SUBROUTINES ***
+;###################################
+END			LDX SP_SAVE
+TXS
+<IF BIGRAM>
+JSR ENABLEROM
+</IF>
+<IF BOOST>
+JSR BOOSTDIASBLE
+</IF>
+RTS
+;###################################
+;###################################
+START		LDA ENDSTRBUF+1
+BNE ENDGIVEN
+LDA BASICEND
+STA ENDSTRBUF
+LDA BASICEND+1
+STA ENDSTRBUF+1
+ENDGIVEN	LDA #<FPSTACK
+LDY #>FPSTACK
+STA FPSTACKP
+STY FPSTACKP+1
+LDA #<FORSTACK
+LDY #>FORSTACK
+STA FORSTACKP
+STY FORSTACKP+1
+LDA #<STRBUF
+LDY #>STRBUF
+STA STRBUFP
+STY STRBUFP+1
+STA HIGHP
+STY HIGHP+1
+LDA #0
+STA CHLOCKFLAG
+STA LASTVAR
+STA LASTVAR+1
+JSR INITVARS
+LDA #0
+STA CMD_NUM
+STA CHANNEL
+TAY
+TAX
+<IF X16>
+JSR VARBANKON
+</IF>
+STA KEYNDX
+<IF X16>
+JSR VARBANKOFF
+LDA #DEFAULT_BANK
+STA RAMSELECT
+</IF>
+JSR RESTORE
+CLC
+<IF BOOST>
+JSR BOOSTENABLE
+</IF>
+RTS
+;###################################
+;###################################
+INITNARRAY
+STA TMP_ZP
+STY TMP_ZP+1
+LDY #0
+TYA
+NINITLOOP	STA (TMP_ZP),Y
+INC TMP_ZP
+BNE NLOOPNOV
+INC TMP_ZP+1
+NLOOPNOV	LDX TMP2_ZP
+BNE NLOOPNOV2
+DEC TMP2_ZP+1
+NLOOPNOV2	DEC TMP2_ZP
+BNE NINITLOOP
+LDX TMP2_ZP+1
+BNE NINITLOOP
+RTS
+;###################################
+;###################################
+INITSTRARRAY
+STA TMP_ZP
+STY TMP_ZP+1
+SINITLOOP	LDY #0
+LDA #<EMPTYSTR
+STA (TMP_ZP),Y
+LDA #>EMPTYSTR
+INY
+STA (TMP_ZP),Y
+CLC
+LDA TMP_ZP
+ADC #2
+STA TMP_ZP
+BCC SLOOPNOV1
+INC TMP_ZP+1
+SLOOPNOV1	SEC
+LDA TMP2_ZP
+SBC #2
+STA TMP2_ZP
+BCS SLOOPNOV2
+DEC TMP2_ZP+1
+SLOOPNOV2	LDA TMP2_ZP
+BNE SINITLOOP
+LDA TMP2_ZP+1
+BNE SINITLOOP
+RTS
+;###################################
+;###################################
+INITSPARAMS	STA TMP3_ZP
+STY TMP3_ZP+1
+SEC
+SBC #2
+STA TMP_ZP
+TYA
+SBC #0
+STA TMP_ZP+1
+LDY #0
+LDA (TMP_ZP),Y
+STA TMP2_ZP
+INY
+LDA (TMP_ZP),Y
+STA TMP2_ZP+1
+LDA TMP3_ZP
+LDY TMP3_ZP+1
+RTS
+;##################################
+;##################################
+INITSTRVARS	LDA #<STRINGVARS_START		; Reset all string variables...
+LDY #>STRINGVARS_START
+CMP #<STRINGVARS_END
+BNE INITIT1
+CPY #>STRINGVARS_END
+BNE INITIT1
+JMP INITSA2					; No string variables at all
+INITIT1		STA TMP_ZP
+STY TMP_ZP+1
+LDY #0
+INITSTRLOOP	LDA #<EMPTYSTR
+STA (TMP_ZP),Y
+INY
+LDA #>EMPTYSTR
+STA (TMP_ZP),Y
+DEY
+LDA TMP_ZP
+CLC
+ADC #2
+STA TMP_ZP
+LDA TMP_ZP+1
+ADC #0
+STA TMP_ZP+1
+CMP #>STRINGVARS_END
+BNE INITSTRLOOP
+LDA TMP_ZP
+CMP #<STRINGVARS_END
+BNE INITSTRLOOP
+INITSA2		LDA #<STRINGARRAYS_START	; ...and all string arrays
+LDY #>STRINGARRAYS_START
+CMP #<STRINGARRAYS_END
+BNE ARRAYLOOP
+CPY #>STRINGARRAYS_END
+BNE ARRAYLOOP
+RTS							;...no string array at all
+ARRAYLOOP	CLC
+ADC #3
+BCC ARRAYSKIP1
+INY
+ARRAYSKIP1	CPY #>STRINGARRAYS_END
+BEQ ARRAYSC
+BCC ARRAYSKIP2
+JMP ARRAYQUIT
+ARRAYSC		CMP #<STRINGARRAYS_END
+BCS ARRAYQUIT
+ARRAYSKIP2	STA TMP_REG
+STY TMP_REG+1
+JSR INITSPARAMS
+LDA TMP_REG
+LDY TMP_REG+1
+JSR INITSTRARRAY
+LDA TMP_ZP
+LDY TMP_ZP+1
+JMP ARRAYLOOP
+ARRAYQUIT	RTS
+;###################################
+;###################################
+RESTORE		LDA #<DATAS
+LDY #>DATAS
+STA DATASP
+STY DATASP+1
+RTS
+;###################################
+;###################################
+SAVEPOINTERS
+LDA TMP_ZP			; ...save the pointers
+STA STORE1
+LDA TMP_ZP+1
+STA STORE1+1
+LDA TMP2_ZP
+STA STORE2
+LDA TMP2_ZP+1
+STA STORE2+1
+LDA TMP3_ZP
+STA STORE3
+LDA TMP3_ZP+1
+STA STORE3+1
+RTS
+;###################################
+;###################################
+RESTOREPOINTERS
+LDA STORE3+1		; ...restore the pointers
+STA TMP3_ZP+1
+LDA STORE3
+STA TMP3_ZP
+LDA STORE2+1
+STA TMP2_ZP+1
+LDA STORE2
+STA TMP2_ZP
+LDA STORE1+1
+STA TMP_ZP+1
+LDA STORE1
+STA TMP_ZP
+RTS
+;###################################
+;###################################
+; This check is called in places, where the actual source's length is unknown.
+; So we compact assuming the maximum string length of 255. It's not ideal this way
+; but it's better than what we did before: Read some random length out of whatever
+; memory location TMP_ZP/TMP_ZP+1 was pointing to...
+COMPACTMAX
+LDA #$FF
+LDY #$0
+JMP COMPACTF
+;###################################
+;###################################
+COMPACT
+LDY #0
+GCBUFNE		LDA (TMP_ZP),Y		; Get the source's length
+COMPACTF	STA TMP4_REG		; ...and store it
+LDY STRBUFP+1		; First, check if the new string would fit into memory...
+STY TMP4_REG+1		; For that, we have to calculate the new strbufp after adding the string
+INY					; add 1 to the high byte to check, if at least 256 bytes are free (fast path)
+BEQ ENDMEM			; actually, if this happens, all went wrong anyway...whatever...
+CPY ENDSTRBUF+1		; check, if there are at least 256 bytes free. If there are, no detailed check is needed...
+BCC RGCEXIT			; there are? We are out then.
+ENDMEM		LDA STRBUFP
+CLC
+ADC TMP4_REG
+STA TMP4_REG
+BCC	RGCNOOV1
+INC TMP4_REG+1
+RGCNOOV1	CLC
+LDA TMP4_REG
+ADC #3
+STA TMP4_REG
+BCC	RGCNOOV2
+INC TMP4_REG+1
+RGCNOOV2	LDA TMP4_REG+1		; Now do the actual check
+CMP ENDSTRBUF+1
+BEQ RGCLOW1
+BCS GCEXECOMP		; Doesn't fit, run GC!
+JMP RGCEXIT
+RGCLOW1		LDA TMP4_REG
+CMP ENDSTRBUF
+BCS	GCEXECOMP		; This also triggers if it would fit exactly...but anyway...
+RGCEXIT		RTS					; It fits? Then exit without GC
+GCEXECOMP	LDA STRBUFP
+STA STORE4
+LDA STRBUFP+1
+STA STORE4+1
+JSR GCEXE
+JMP CHECKMEMORY
+;###################################
+;###################################
+GCEXE		JSR SAVEPOINTERS
+LDA #0
+STA LASTVAR
+STA LASTVAR+1		; reset the last variable pointer to 0
+LDA #<STRBUF
+STA TMP_ZP
+STA GCSTART
+LDA #>STRBUF
+STA TMP_ZP+1		; Pointer into the string memory, initialized to point at the start...
+STA GCSTART+1
+GCLOOP		LDY #0
+LDA TMP_ZP
+STA GCWORK
+LDA TMP_ZP+1
+STA GCWORK+1		; store the pointer for later use...
+LDA (TMP_ZP),Y
+STA GCLEN			; store the length
+INC TMP_ZP
+BNE GCLOOPNOOV
+INC TMP_ZP+1
+GCLOOPNOOV	LDA TMP_ZP
+CLC
+ADC GCLEN
+STA TMP_ZP
+BCC GCLOOPNOOV2
+INC TMP_ZP+1		; TMP_ZP now points to the reference to the string variable that used this chunk once
+GCLOOPNOOV2 LDY #0
+LDA (TMP_ZP),Y
+STA TMP2_ZP
+INY
+LDA (TMP_ZP),Y
+STA TMP2_ZP+1		; Store the variable reference in TMP2_ZP
+LDA TMP_ZP
+CLC
+ADC #2
+STA TMP_ZP
+BCC GCLOOPNOOV3
+INC TMP_ZP+1		; adjust the pointer to point to the next entry
+GCLOOPNOOV3 LDY #0
+LDA (TMP2_ZP),Y
+CMP GCWORK
+BNE GCKLOOP
+INY
+LDA (TMP2_ZP),Y
+CMP GCWORK+1
+BEQ MEMFREE
+GCKLOOP		LDA TMP_ZP+1		; Check if we have processed all of the string memory...
+CMP HIGHP+1
+BEQ GCHECKLOW
+BCC GCLOOP
+JMP GCDONE
+GCHECKLOW	LDA TMP_ZP
+CMP HIGHP
+BCS GCDONE
+JMP GCLOOP
+MEMFREE		LDA GCSTART			; found a variable that points to this chunk...
+CMP GCWORK			; ...then check if the can be copied down. This is the case if GCSTART!=GCWORK
+BNE COPYDOWN
+LDA GCSTART+1
+CMP GCWORK+1
+BNE COPYDOWN
+LDA TMP_ZP			; GCSTART==GCWORK...adjust GCSTART and continue
+STA GCSTART
+LDA TMP_ZP+1
+STA GCSTART+1
+JMP	GCKLOOP			; continue if needed...
+COPYDOWN	LDA GCSTART			; There's a gap in memory, so copy the found variable down to GCSTART and adjust GCSTART accordingly
+STA TMP_REG
+LDA GCSTART+1
+STA TMP_REG+1		; set the target location...
+LDA GCWORK
+STA TMP2_REG
+LDA GCWORK+1
+STA TMP2_REG+1		; set the source location...
+LDA TMP_ZP
+SEC
+SBC GCWORK
+STA TMP3_REG
+LDA TMP_ZP+1
+SBC GCWORK+1
+STA TMP3_REG+1		; set the length
+LDA GCSTART
+CLC
+ADC TMP3_REG
+STA GCSTART
+LDA GCSTART+1
+ADC TMP3_REG+1
+STA GCSTART+1		; update GCSTART to point to the next free chunk
+JSR QUICKCOPY		; copy the chunk down to (former, now stored in TMP_REG) GCSTART
+LDY #0
+LDA TMP_REG
+STA (TMP2_ZP),Y
+INY
+LDA TMP_REG+1
+STA (TMP2_ZP),Y		; ...and adjust the pointer to the memory in the variable to that new location
+JMP GCKLOOP
+GCDONE		LDA GCSTART
+STA HIGHP
+STA STRBUFP
+LDA GCSTART+1
+STA HIGHP+1
+STA STRBUFP+1		; Update the string pointers to the new, hopefully lower position
+GCSKIP		JSR RESTOREPOINTERS
+RTS					; Remember: GC has to adjust highp as well!
+;###################################
+;###################################
+CHECKMEMORY
+LDA STRBUFP+1		; Check if we are out of memory even after a garbage collection.
+CMP STORE4+1		; This is indicated by the string pointer being still equal or higher
+BCC STILLFITSCM		; than before the GC. We are not checking against the actual memory limit,
+; because the GC stops before reaching it, leaving all unhandled variables
+; untouched. That's because we can't free anything more if we've already reached
+; the limit. But there's no direct indicator of this, so we use this indirect one.
+BEQ CHECKMEMLOWCM
+JMP OUTOFMEMORY		; STRBUFP>last value? OOM!
+CHECKMEMLOWCM
+LDA STRBUFP			; High bytes are equal? Check low bytes
+CMP STORE4
+BCC	STILLFITSCM
+JMP OUTOFMEMORY		; No? OOM
+STILLFITSCM RTS
+;###################################
+;###################################
+QUICKCOPY	LDA TMP_REG		; a self modifying copy routine
+STA TMEM+1
+LDA TMP_REG+1
+STA TMEM+2
+LDA TMP2_REG
+STA SMEM+1
+LDA TMP2_REG+1
+STA SMEM+2
+LDY #$0
+LDX TMP3_REG
+BNE QCLOOP
+LDA TMP3_REG+1
+BEQ QCEXIT		; length is null, nothing to copy
+QCLOOP
+SMEM		LDA $0000,Y
+TMEM		STA $0000,Y
+INY
+BNE YNOOV
+INC TMEM+2
+INC SMEM+2
+YNOOV		DEX
+BNE QCLOOP
+LDA TMP3_REG+1
+BEQ QCEXIT
+DEC TMP3_REG+1
+JMP QCLOOP
+QCEXIT		RTS
+;###################################
+;###################################
+REROUTE		LDA CMD_NUM		; if CMD mode, enable channel output
+BEQ REROUTECMD
+TAX
+STA CHANNEL
+JMP CHKOUT
+REROUTECMD	RTS
+;###################################
+;###################################
+RESETROUTE	LDA CMD_NUM		; if CMD mode, disable channel output
+BEQ RESETROUTECMD
+JMP CLRCHNEW
+RESETROUTECMD
+RTS
+;###################################
+;###################################
+SINGLECHROUTBRKMAX
+JSR SINGLECHROUTBRK
+JMP COMPACTMAX
+;###################################
+;###################################
+SINGLECHROUTBRK
+STA TMP_ZP
+JSR REROUTE
+LDA TMP_ZP
+JSR CHROUT
+LDA #$0D
+JSR CHROUT
+JMP RESETROUTE
+;###################################
+;###################################
+STROUTBRKWL	STA A_REG
+STY A_REG+1
+STROUTBRK	JSR REROUTE
+LDA A_REG
+STA INDEX1
+LDA A_REG+1
+STA INDEX1+1
+LDY #0
+LDA (INDEX1),Y
+TAX
+INC INDEX1
+BNE PRINTSTR2
+INC INDEX1+1
+PRINTSTR2	JSR PRINTSTRS
+LDA HIGHP			; Update the memory pointer to the last actually assigned one
+STA STRBUFP
+LDA HIGHP+1
+STA STRBUFP+1
+LDA #$0D
+JSR CHROUT
+JMP RESETROUTE 	;RTS is implicit
+;###################################
+;###################################
+CLRCHNEW
+LDA CHLOCKFLAG
+BNE SKIPCLRCH
+JMP CLRCH
+SKIPCLRCH
+RTS
+;###################################
+;###################################
+OUTOFMEMORY
+<IF BOOST>
+JSR BOOSTDIASBLE
+</IF>
+LDX #$10
+JMP ERRALL
+;###################################
+;###################################
+<IF BOOST>
+BOOSTENABLE
+LDA $D030
+CMP #$FF
+BNE C128
+RTS
+C128
+LDA #1
+STA BOOSTFLAG
+LDA #0
+STA BOOSTCNT
+LDA $0314
+STA IRQROUT
+LDA $0315
+STA IRQROUT+1
+SEI
+LDA #<MYRASTER
+STA $0314
+LDA #>MYRASTER
+STA $0315
+LDA #46
+STA $D012
+LDA $D011
+AND #127
+STA $D011
+LDA $D01A
+ORA #1
+STA $D01A
+CLI
+RTS
+MYRASTER
+LDA $D019
+BMI RASTER
+LDA $DC0D
+CLI
+JMP $EA31
+RASTER
+STA $D019
+LDA $D012
+CMP #254
+BCS SETSTART
+LDA #0
+STA $D030
+LDA #254
+STA $D012
+JMP EXIT
+SETSTART
+LDA #1
+STA $D030
+LDA #46
+STA $D012
+EXIT
+PLA
+TAY
+PLA
+TAX
+PLA
+RTI
+BOOSTFLAG
+.BYTE 0
+BOOSTCNT
+.BYTE 0
+IRQROUT
+.WORD 0
+NOBOOST
+RTS
+BOOSTOFF
+LDA BOOSTFLAG
+BEQ NOBOOST
+SEI
+LDA $D01A
+AND #14
+STA $D01A
+LDA #0
+STA $D030
+INC BOOSTCNT
+CLI
+RTS
+BOOSTON
+LDA BOOSTFLAG
+BEQ NOBOOST
+LDA BOOSTCNT
+BEQ BOOSTZERO	; Zero? Then just enable boost
+BPL BOOSTNOV
+LDA #0			; Counter >128, then reset it anyway (should not occur)
+STA BOOSTCNT
+JMP BOOSTZERO
+BOOSTNOV
+DEC BOOSTCNT
+BNE NOBOOST
+BOOSTZERO
+SEI
+LDA $D01A
+ORA #1
+STA $D01A
+CLI
+RTS
+BOOSTDIASBLE
+LDA BOOSTFLAG
+BEQ NOBOOST
+JSR BOOSTOFF
+SEI
+LDA IRQROUT
+STA $0314
+LDA IRQROUT+1
+STA $0315
+CLI
+RTS
+</IF>
+;###################################
+;###############################
+INITVARS
+JSR INITSTRVARS
+LDA #0
+RTS
+;###############################
+; *** SUBROUTINES END ***
+; *** CONSTANTS ***
+CONSTANTS
+; CONST: #147
+
+
+; CONST: ${10*down}yeah
+CONST_1	.BYTE 13
+.STRG "{10*down}yeah"
+; CONST: ${5down}no
+CONST_2	.BYTE 9
+.STRG "{5down}no"
+;###############################
+; ******** DATA ********
+DATAS
+.BYTE $FF
+; ******** DATA END ********
+CONSTANTS_END
+;###################################
+; *** VARIABLES ***
+VARIABLES
+STRINGVARS_START
+; VAR: TI$
+VAR_TI$ .WORD EMPTYSTR
+STRINGVARS_END
+STRINGARRAYS_START
+STRINGARRAYS_END
+VARIABLES_END
+; *** INTERNAL ***
+Y_REG	.REAL 0.0
+C_REG	.REAL 0.0
+D_REG	.REAL 0.0
+E_REG	.REAL 0.0
+F_REG	.REAL 0.0
+A_REG	.WORD 0
+B_REG	.WORD 0
+CMD_NUM	.BYTE 0
+CHANNEL	.BYTE 0
+SP_SAVE	.BYTE 0
+TMP2_REG	.WORD 0
+TMP3_REG	.WORD 0
+TMP4_REG	.WORD 0
+AS_TMP	.WORD 0
+BPOINTER_TMP	.WORD 0
+BASICTEXTP	.BYTE 0
+STORE1	.WORD 0
+STORE2	.WORD 0
+STORE3	.WORD 0
+STORE4	.WORD 0
+GCSTART	.WORD 0
+GCLEN	.WORD 0
+GCWORK	.WORD 0
+INPUTLENGTH	.BYTE 0
+TMP_FREG	.REAL 0
+TMP2_FREG	.REAL 0
+TMP_FLAG	.BYTE 0
+INT_FLAG	.BYTE 0
+REAL_CONST_ONE	.REAL 1.0
+REAL_CONST_ZERO	.REAL 0.0
+REAL_CONST_MINUS_ONE	.REAL -1.0
+CHLOCKFLAG	.BYTE 0
+EMPTYSTR	.BYTE 0
+FPSTACKP	.WORD FPSTACK
+FORSTACKP	.WORD FORSTACK
+DATASP	.WORD DATAS
+LASTVAR	.WORD 0
+LASTVARP	.WORD 0
+HIGHP	.WORD STRBUF
+STRBUFP	.WORD STRBUF
+ENDSTRBUF	.WORD 0
+INPUTQUEUEP	.BYTE 0
+PROGRAMEND
+INPUTQUEUE	.ARRAY $0F
+FPSTACK .ARRAY 100
+FORSTACK .ARRAY 340
+STRBUF	.BYTE 0

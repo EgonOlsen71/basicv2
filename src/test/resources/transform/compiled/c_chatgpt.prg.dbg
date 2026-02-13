@@ -1,0 +1,516 @@
+117	.$818	TSX
+118	.$819	STX SP_SAVE
+120	.$81c	PROGRAMSTART:
+121	.$81c	JSR START
+123	.$81f	LINE_0:
+126	.$81f	LINE_100:
+128	.$81f	LDA #<CONST_0
+129	.$821	LDY #>CONST_0
+130	.$823	JSR STROUTBRKWL
+134	.$826	LINE_110:
+136	.$826	LDA #<CONST_1
+137	.$828	LDY #>CONST_1
+138	.$82a	JSR STROUTBRKWL
+142	.$82d	LINE_120:
+144	.$82d	LDA #<CONST_2
+145	.$82f	LDY #>CONST_2
+146	.$831	JSR STROUTBRKWL
+150	.$834	LINE_130:
+152	.$834	LDA #<CONST_3
+153	.$836	LDY #>CONST_3
+154	.$838	JSR STROUTBRKWL
+158	.$83b	LINE_140:
+160	.$83b	LDA #<CONST_4
+161	.$83d	LDY #>CONST_4
+162	.$83f	JSR STROUTBRKWL
+166	.$842	LINE_150:
+168	.$842	LDA #<CONST_5
+169	.$844	LDY #>CONST_5
+170	.$846	JSR STROUTBRKWL
+174	.$849	LINE_160:
+176	.$849	LDA #<CONST_6
+177	.$84b	LDY #>CONST_6
+178	.$84d	JSR STROUTBRKWL
+182	.$850	LINE_170:
+184	.$850	LDA #<CONST_7
+185	.$852	LDY #>CONST_7
+186	.$854	JSR STROUTBRKWL
+190	.$857	LINE_180:
+192	.$857	LDA #<CONST_8
+193	.$859	LDY #>CONST_8
+194	.$85b	JSR STROUTBRKWL
+198	.$85e	LINE_190:
+200	.$85e	LDA #<CONST_9
+201	.$860	LDY #>CONST_9
+202	.$862	JSR STROUTBRKWL
+206	.$865	LINE_200:
+208	.$865	LDA #<CONST_10
+209	.$867	LDY #>CONST_10
+210	.$869	JSR STROUTBRKWL
+214	.$86c	LINE_210:
+216	.$86c	LDA #<CONST_11
+217	.$86e	LDY #>CONST_11
+218	.$870	JSR STROUTBRKWL
+222	.$873	LINE_220:
+224	.$873	LDA #<CONST_12
+225	.$875	LDY #>CONST_12
+226	.$877	JSR STROUTBRKWL
+230	.$87a	LINE_230:
+232	.$87a	LDA #<CONST_13
+233	.$87c	LDY #>CONST_13
+234	.$87e	JSR STROUTBRKWL
+238	.$881	LINE_240:
+240	.$881	LDA #<CONST_14
+241	.$883	LDY #>CONST_14
+242	.$885	JSR STROUTBRKWL
+246	.$888	LINE_250:
+248	.$888	LDA #<CONST_15
+249	.$88a	LDY #>CONST_15
+250	.$88c	JSR STROUTBRKWL
+254	.$88f	LINE_260:
+256	.$88f	LDA #<CONST_16
+257	.$891	LDY #>CONST_16
+258	.$893	JSR STROUTBRKWL
+262	.$896	LINE_270:
+264	.$896	LDA #<CONST_17
+265	.$898	LDY #>CONST_17
+266	.$89a	JSR STROUTBRKWL
+270	.$89d	LINE_280:
+272	.$89d	LDA #<CONST_18
+273	.$89f	LDY #>CONST_18
+274	.$8a1	JSR STROUTBRKWL
+278	.$8a4	LINE_290:
+280	.$8a4	LDA #<CONST_19
+281	.$8a6	LDY #>CONST_19
+282	.$8a8	JSR STROUTBRKWL
+286	.$8ab	LINE_300:
+288	.$8ab	LDA #<CONST_20
+289	.$8ad	LDY #>CONST_20
+290	.$8af	JSR STROUTBRKWL
+294	.$8b2	LINE_310:
+296	.$8b2	LDA #<CONST_21
+297	.$8b4	LDY #>CONST_21
+298	.$8b6	JSR STROUTBRKWL
+302	.$8b9	LINE_320:
+304	.$8b9	LDA #<CONST_22
+305	.$8bb	LDY #>CONST_22
+306	.$8bd	JSR STROUTBRKWL
+310	.$8c0	LINE_330:
+312	.$8c0	LDA #<CONST_23
+313	.$8c2	LDY #>CONST_23
+314	.$8c4	JSR STROUTBRKWL
+318	.$8c7	LINE_340:
+320	.$8c7	LDA #<CONST_24
+321	.$8c9	LDY #>CONST_24
+322	.$8cb	JSR STROUTBRKWL
+326	.$8ce	LINE_350:
+328	.$8ce	LDA #<CONST_25
+329	.$8d0	LDY #>CONST_25
+330	.$8d2	JSR STROUTBRKWL
+334	.$8d5	LINE_360:
+336	.$8d5	LDA #<CONST_26
+337	.$8d7	LDY #>CONST_26
+338	.$8d9	JSR STROUTBRKWL
+342	.$8dc	LINE_370:
+344	.$8dc	LDA #<CONST_27
+345	.$8de	LDY #>CONST_27
+346	.$8e0	JSR STROUTBRKWL
+350	.$8e3	LINE_380:
+352	.$8e3	LDA #<CONST_28
+353	.$8e5	LDY #>CONST_28
+354	.$8e7	JSR STROUTBRKWL
+358	.$8ea	LINE_390:
+360	.$8ea	LDA #<CONST_29
+361	.$8ec	LDY #>CONST_29
+362	.$8ee	JSR STROUTBRKWL
+366	.$8f1	LINE_400:
+368	.$8f1	LDA #<CONST_30
+369	.$8f3	LDY #>CONST_30
+370	.$8f5	JSR STROUTBRKWL
+374	.$8f8	LINE_410:
+376	.$8f8	LDA #<CONST_31
+377	.$8fa	LDY #>CONST_31
+378	.$8fc	JSR STROUTBRKWL
+382	.$8ff	LINE_420:
+384	.$8ff	LDA #<CONST_32
+385	.$901	LDY #>CONST_32
+386	.$903	JSR STROUTBRKWL
+390	.$906	LINE_430:
+392	.$906	LDA #<CONST_33
+393	.$908	LDY #>CONST_33
+394	.$90a	JSR STROUTBRKWL
+398	.$90d	LINE_440:
+400	.$90d	LDA #<CONST_34
+401	.$90f	LDY #>CONST_34
+402	.$911	JSR STROUTBRKWL
+406	.$914	LINE_450:
+408	.$914	LDA #<CONST_35
+409	.$916	LDY #>CONST_35
+410	.$918	JSR STROUTBRKWL
+414	.$91b	LINE_460:
+416	.$91b	LDA #<CONST_36
+417	.$91d	LDY #>CONST_36
+418	.$91f	JSR STROUTBRKWL
+422	.$922	LINE_470:
+424	.$922	LDA #<CONST_37
+425	.$924	LDY #>CONST_37
+426	.$926	JSR STROUTBRKWL
+430	.$929	LINE_480:
+432	.$929	LDA #<CONST_38
+433	.$92b	LDY #>CONST_38
+434	.$92d	JSR STROUTBRKWL
+438	.$930	LINE_490:
+440	.$930	LDA #<CONST_39
+441	.$932	LDY #>CONST_39
+442	.$934	JSR STROUTBRKWL
+446	.$937	LINE_500:
+448	.$937	LDA #<CONST_40
+449	.$939	LDY #>CONST_40
+450	.$93b	JSR STROUTBRKWL
+454	.$93e	LINE_510:
+456	.$93e	LDA #<CONST_41
+457	.$940	LDY #>CONST_41
+458	.$942	JSR STROUTBRKWL
+461	.$945	JSR END
+462	.$948	RTS
+465	.$949	END   LDX SP_SAVE
+466	.$94c	TXS
+473	.$94d	RTS
+476	.$94e	START  LDA ENDSTRBUF+1
+477	.$951	BNE ENDGIVEN
+478	.$953	LDA BASICEND
+479	.$955	STA ENDSTRBUF
+480	.$958	LDA BASICEND+1
+481	.$95a	STA ENDSTRBUF+1
+482	.$95d	ENDGIVEN LDA #<FPSTACK
+483	.$95f	LDY #>FPSTACK
+484	.$961	STA FPSTACKP
+485	.$964	STY FPSTACKP+1
+486	.$967	LDA #<FORSTACK
+487	.$969	LDY #>FORSTACK
+488	.$96b	STA FORSTACKP
+489	.$96e	STY FORSTACKP+1
+490	.$971	LDA #<STRBUF
+491	.$973	LDY #>STRBUF
+492	.$975	STA STRBUFP
+493	.$978	STY STRBUFP+1
+494	.$97b	STA HIGHP
+495	.$97e	STY HIGHP+1
+496	.$981	LDA #0
+497	.$983	STA CHLOCKFLAG
+498	.$986	STA LASTVAR
+499	.$989	STA LASTVAR+1
+500	.$98c	JSR INITVARS
+501	.$98f	LDA #0
+502	.$991	STA CMD_NUM
+503	.$994	STA CHANNEL
+504	.$997	TAY
+505	.$998	TAX
+509	.$999	STA KEYNDX
+515	.$99b	JSR RESTORE
+516	.$99e	CLC
+520	.$99f	RTS
+523	.$9a0	INITNARRAY
+524	.$9a0	STA TMP_ZP
+525	.$9a2	STY TMP_ZP+1
+526	.$9a4	LDY #0
+527	.$9a6	TYA
+528	.$9a7	NINITLOOP STA (TMP_ZP),Y
+529	.$9a9	INC TMP_ZP
+530	.$9ab	BNE NLOOPNOV
+531	.$9ad	INC TMP_ZP+1
+532	.$9af	NLOOPNOV LDX TMP2_ZP
+533	.$9b1	BNE NLOOPNOV2
+534	.$9b3	DEC TMP2_ZP+1
+535	.$9b5	NLOOPNOV2 DEC TMP2_ZP
+536	.$9b7	BNE NINITLOOP
+537	.$9b9	LDX TMP2_ZP+1
+538	.$9bb	BNE NINITLOOP
+539	.$9bd	RTS
+542	.$9be	INITSTRARRAY
+543	.$9be	STA TMP_ZP
+544	.$9c0	STY TMP_ZP+1
+545	.$9c2	SINITLOOP LDY #0
+546	.$9c4	LDA #<EMPTYSTR
+547	.$9c6	STA (TMP_ZP),Y
+548	.$9c8	LDA #>EMPTYSTR
+549	.$9ca	INY
+550	.$9cb	STA (TMP_ZP),Y
+551	.$9cd	CLC
+552	.$9ce	LDA TMP_ZP
+553	.$9d0	ADC #2
+554	.$9d2	STA TMP_ZP
+555	.$9d4	BCC SLOOPNOV1
+556	.$9d6	INC TMP_ZP+1
+557	.$9d8	SLOOPNOV1 SEC
+558	.$9d9	LDA TMP2_ZP
+559	.$9db	SBC #2
+560	.$9dd	STA TMP2_ZP
+561	.$9df	BCS SLOOPNOV2
+562	.$9e1	DEC TMP2_ZP+1
+563	.$9e3	SLOOPNOV2 LDA TMP2_ZP
+564	.$9e5	BNE SINITLOOP
+565	.$9e7	LDA TMP2_ZP+1
+566	.$9e9	BNE SINITLOOP
+567	.$9eb	RTS
+570	.$9ec	INITSPARAMS STA TMP3_ZP
+571	.$9ee	STY TMP3_ZP+1
+572	.$9f0	SEC
+573	.$9f1	SBC #2
+574	.$9f3	STA TMP_ZP
+575	.$9f5	TYA
+576	.$9f6	SBC #0
+577	.$9f8	STA TMP_ZP+1
+578	.$9fa	LDY #0
+579	.$9fc	LDA (TMP_ZP),Y
+580	.$9fe	STA TMP2_ZP
+581	.$a00	INY
+582	.$a01	LDA (TMP_ZP),Y
+583	.$a03	STA TMP2_ZP+1
+584	.$a05	LDA TMP3_ZP
+585	.$a07	LDY TMP3_ZP+1
+586	.$a09	RTS
+589	.$a0a	INITSTRVARS LDA #<STRINGVARS_START  
+590	.$a0c	LDY #>STRINGVARS_START
+591	.$a0e	CMP #<STRINGVARS_END
+592	.$a10	BNE INITIT1
+593	.$a12	CPY #>STRINGVARS_END
+594	.$a14	BNE INITIT1
+595	.$a16	JMP INITSA2     
+596	.$a19	INITIT1  STA TMP_ZP
+597	.$a1b	STY TMP_ZP+1
+598	.$a1d	LDY #0
+599	.$a1f	INITSTRLOOP LDA #<EMPTYSTR
+600	.$a21	STA (TMP_ZP),Y
+601	.$a23	INY
+602	.$a24	LDA #>EMPTYSTR
+603	.$a26	STA (TMP_ZP),Y
+604	.$a28	DEY
+605	.$a29	LDA TMP_ZP
+606	.$a2b	CLC
+607	.$a2c	ADC #2
+608	.$a2e	STA TMP_ZP
+609	.$a30	LDA TMP_ZP+1
+610	.$a32	ADC #0
+611	.$a34	STA TMP_ZP+1
+612	.$a36	CMP #>STRINGVARS_END
+613	.$a38	BNE INITSTRLOOP
+614	.$a3a	LDA TMP_ZP
+615	.$a3c	CMP #<STRINGVARS_END
+616	.$a3e	BNE INITSTRLOOP
+617	.$a40	INITSA2  LDA #<STRINGARRAYS_START 
+618	.$a42	LDY #>STRINGARRAYS_START
+619	.$a44	CMP #<STRINGARRAYS_END
+620	.$a46	BNE ARRAYLOOP
+621	.$a48	CPY #>STRINGARRAYS_END
+622	.$a4a	BNE ARRAYLOOP
+623	.$a4c	RTS       
+624	.$a4d	ARRAYLOOP CLC
+625	.$a4e	ADC #3
+626	.$a50	BCC ARRAYSKIP1
+627	.$a52	INY
+628	.$a53	ARRAYSKIP1 CPY #>STRINGARRAYS_END
+629	.$a55	BEQ ARRAYSC
+630	.$a57	BCC ARRAYSKIP2
+631	.$a59	JMP ARRAYQUIT
+632	.$a5c	ARRAYSC  CMP #<STRINGARRAYS_END
+633	.$a5e	BCS ARRAYQUIT
+634	.$a60	ARRAYSKIP2 STA TMP_REG
+635	.$a62	STY TMP_REG+1
+636	.$a64	JSR INITSPARAMS
+637	.$a67	LDA TMP_REG
+638	.$a69	LDY TMP_REG+1
+639	.$a6b	JSR INITSTRARRAY
+640	.$a6e	LDA TMP_ZP
+641	.$a70	LDY TMP_ZP+1
+642	.$a72	JMP ARRAYLOOP
+643	.$a75	ARRAYQUIT RTS
+646	.$a76	RESTORE  LDA #<DATAS
+647	.$a78	LDY #>DATAS
+648	.$a7a	STA DATASP
+649	.$a7d	STY DATASP+1
+650	.$a80	RTS
+653	.$a81	REROUTE  LDA CMD_NUM  
+654	.$a84	BEQ REROUTECMD
+655	.$a86	TAX
+656	.$a87	STA CHANNEL
+657	.$a8a	JMP CHKOUT
+658	.$a8d	REROUTECMD RTS
+661	.$a8e	RESETROUTE LDA CMD_NUM  
+662	.$a91	BEQ RESETROUTECMD
+663	.$a93	JMP CLRCHNEW
+664	.$a96	RESETROUTECMD
+665	.$a96	RTS
+668	.$a97	STROUTBRKWL STA A_REG
+669	.$a9a	STY A_REG+1
+670	.$a9d	STROUTBRK JSR REROUTE
+671	.$aa0	LDA A_REG
+672	.$aa3	STA INDEX1
+673	.$aa5	LDA A_REG+1
+674	.$aa8	STA INDEX1+1
+675	.$aaa	LDY #0
+676	.$aac	LDA (INDEX1),Y
+677	.$aae	TAX
+678	.$aaf	INC INDEX1
+679	.$ab1	BNE PRINTSTR2
+680	.$ab3	INC INDEX1+1
+681	.$ab5	PRINTSTR2 JSR PRINTSTRS
+682	.$ab8	LDA HIGHP   
+683	.$abb	STA STRBUFP
+684	.$abe	LDA HIGHP+1
+685	.$ac1	STA STRBUFP+1
+686	.$ac4	LDA #$0D
+687	.$ac6	JSR CHROUT
+688	.$ac9	JMP RESETROUTE  
+691	.$acc	CLRCHNEW
+692	.$acc	LDA CHLOCKFLAG
+693	.$acf	BNE SKIPCLRCH
+694	.$ad1	JMP CLRCH
+695	.$ad4	SKIPCLRCH
+696	.$ad4	RTS
+810	.$ad5	INITVARS
+811	.$ad5	JSR INITSTRVARS
+812	.$ad8	LDA #0
+813	.$ada	RTS
+817	.$adb	CONSTANTS
+819	.$adb	CONST_0 .BYTE 68
+820	.$adc	.STRG "dies ist ein text und ihm geht's gut. hier ist noch etwas mehr text."
+822	.$b20	CONST_1 .BYTE 101
+823	.$b21	.STRG "ich habe gehoert, dass es diesem text gut geht. ja, das stimmt, dies ist ein text und ihm geht's gut."
+825	.$b86	CONST_2 .BYTE 65
+826	.$b87	.STRG "in diesem text geht es gut, dies ist ein text und ihm geht's gut."
+828	.$bc8	CONST_3 .BYTE 84
+829	.$bc9	.STRG "ich bin mir sicher, dass dieser text gut geht, dies ist ein text und ihm geht's gut."
+831	.$c1d	CONST_4 .BYTE 104
+832	.$c1e	.STRG "ein text zu haben und dass es ihm gut geht, ist etwas wunderbares. dies ist ein text und ihm geht's gut."
+834	.$c86	CONST_5 .BYTE 88
+835	.$c87	.STRG "einige texte gehen es nicht gut, aber dieser hier, dies ist ein text und ihm geht's gut."
+837	.$cdf	CONST_6 .BYTE 70
+838	.$ce0	.STRG "dies ist ein text und ihm geht's gut. lass uns mehr darueber erfahren."
+840	.$d26	CONST_7 .BYTE 98
+841	.$d27	.STRG "ich denke, es ist wichtig zu wissen, dass ein text gut geht. dies ist ein text und ihm geht's gut."
+843	.$d89	CONST_8 .BYTE 84
+844	.$d8a	.STRG "ein text, der gut geht, ist ein gutes zeichen. dies ist ein text und ihm geht's gut."
+846	.$dde	CONST_9 .BYTE 89
+847	.$ddf	.STRG "wenn ein text gut geht, geht es auch dem autor gut. dies ist ein text und ihm geht's gut."
+849	.$e38	CONST_10 .BYTE 85
+850	.$e39	.STRG "es ist schoen zu sehen, wenn ein text gut geht. dies ist ein text und ihm geht's gut."
+852	.$e8e	CONST_11 .BYTE 103
+853	.$e8f	.STRG "ein text, der gut geht, ist wie eine sonnenblume in einem garten. dies ist ein text und ihm geht's gut."
+855	.$ef6	CONST_12 .BYTE 101
+856	.$ef7	.STRG "ein text der gut geht, ist wie ein lied, das gut gesungen wird. dies ist ein text und ihm geht's gut."
+858	.$f5c	CONST_13 .BYTE 110
+859	.$f5d	.STRG "ein text, der gut geht, ist wie ein puzzle, das gut zusammengesetzt ist. dies ist ein text und ihm geht's gut."
+861	.$fcb	CONST_14 .BYTE 85
+862	.$fcc	.STRG "ein text, der gut geht, ist wie ein gutes buch. dies ist ein text und ihm geht's gut."
+864	.$1021	CONST_15 .BYTE 86
+865	.$1022	.STRG "ein text, der gut geht, ist wie ein gutes essen. dies ist ein text und ihm geht's gut."
+867	.$1078	CONST_16 .BYTE 85
+868	.$1079	.STRG "ein text, der gut geht, ist wie ein guter film. dies ist ein text und ihm geht's gut."
+870	.$10ce	CONST_17 .BYTE 86
+871	.$10cf	.STRG "ein text, der gut geht, ist wie ein gutes spiel. dies ist ein text und ihm geht's gut."
+873	.$1125	CONST_18 .BYTE 86
+874	.$1126	.STRG "ein text, der gut geht, ist wie ein guter sport. dies ist ein text und ihm geht's gut."
+876	.$117c	CONST_19 .BYTE 86
+877	.$117d	.STRG "ein text, der gut geht, ist wie ein gutes hobby. dies ist ein text und ihm geht's gut."
+879	.$11d3	CONST_20 .BYTE 87
+880	.$11d4	.STRG "ein text, der gut geht, ist wie ein guter freund. dies ist ein text und ihm geht's gut."
+882	.$122b	CONST_21 .BYTE 88
+883	.$122c	.STRG "ein text, der gut geht, ist wie ein gutes zuhause. dies ist ein text und ihm geht's gut."
+885	.$1284	CONST_22 .BYTE 87
+886	.$1285	.STRG "ein text, der gut geht, ist wie ein guter urlaub. dies ist ein text und ihm geht's gut."
+888	.$12dc	CONST_23 .BYTE 84
+889	.$12dd	.STRG "ein text, der gut geht, ist wie ein guter job. dies ist ein text und ihm geht's gut."
+891	.$1331	CONST_24 .BYTE 86
+892	.$1332	.STRG "ein text, der gut geht, ist wie ein gutes leben. dies ist ein text und ihm geht's gut."
+894	.$1388	CONST_25 .BYTE 114
+895	.$1389	.STRG "ein gut gehender text ist wie ein puzzle mit allen teilen an ort und stelle. dies ist ein text und ihm geht's gut."
+897	.$13fb	CONST_26 .BYTE 108
+898	.$13fc	.STRG "ein gut gehender text erzaehlt eine geschichte, die das herz beruehrt. dies ist ein text und ihm geht's gut."
+900	.$1468	CONST_27 .BYTE 81
+901	.$1469	.STRG "ein gut gehender text spricht die seele an. dies ist ein text und ihm geht's gut."
+903	.$14ba	CONST_28 .BYTE 91
+904	.$14bb	.STRG "ein gut gehender text bringt licht in die dunkelheit. dies ist ein text und ihm geht's gut."
+906	.$1516	CONST_29 .BYTE 91
+907	.$1517	.STRG "ein gut gehender text schenkt freude und inspiration. dies ist ein text und ihm geht's gut."
+909	.$1572	CONST_30 .BYTE 92
+910	.$1573	.STRG "ein gut gehender text ist wie eine oase in der wueste. dies ist ein text und ihm geht's gut."
+912	.$15cf	CONST_31 .BYTE 96
+913	.$15d0	.STRG "ein gut gehender text ist wie ein sonnenaufgang am morgen. dies ist ein text und ihm geht's gut."
+915	.$1630	CONST_32 .BYTE 103
+916	.$1631	.STRG "ein gut gehender text ist wie ein lied, das im herzen nachklingt. dies ist ein text und ihm geht's gut."
+918	.$1698	CONST_33 .BYTE 110
+919	.$1699	.STRG "ein gut gehender text ist wie ein schatz, den man immer wieder entdeckt. dies ist ein text und ihm geht's gut."
+921	.$1707	CONST_34 .BYTE 103
+922	.$1708	.STRG "ein gut gehender text ist wie eine tasse tee an einem kalten tag. dies ist ein text und ihm geht's gut."
+924	.$176f	CONST_35 .BYTE 111
+925	.$1770	.STRG "ein gut gehender text ist wie eine umarmung von einem geliebten menschen. dies ist ein text und ihm geht's gut."
+927	.$17df	CONST_36 .BYTE 94
+928	.$17e0	.STRG "ein gut gehender text ist wie ein atemzug frischer luft. dies ist ein text und ihm geht's gut."
+930	.$183e	CONST_37 .BYTE 104
+931	.$183f	.STRG "ein gut gehender text ist wie eine brise, die die seele erfrischt. dies ist ein text und ihm geht's gut."
+933	.$18a7	CONST_38 .BYTE 122
+934	.$18a8	.STRG "ein gut gehender text ist wie ein geschenk, das man immer wieder aufs neue entdeckt. dies ist ein text und ihm geht's gut."
+936	.$1922	CONST_39 .BYTE 94
+937	.$1923	.STRG "ein gut gehender text ist wie eine reise, die nie endet. dies ist ein text und ihm geht's gut."
+939	.$1981	CONST_40 .BYTE 108
+940	.$1982	.STRG "ein gut gehender text ist wie ein laecheln, das die welt heller macht. dies ist ein text und ihm geht's gut."
+942	.$19ee	CONST_41 .BYTE 114
+943	.$19ef	.STRG "ein gut gehender text ist wie eine tuer, die zu neuen moeglichkeiten fuehrt. dies ist ein text und ihm geht's gut."
+946	.$1a61	DATAS
+947	.$1a61	.BYTE $FF
+949	.$1a62	CONSTANTS_END
+952	.$1a62	VARIABLES
+953	.$1a62	STRINGVARS_START
+955	.$1a62	VAR_TI$ .WORD EMPTYSTR
+956	.$1a64	STRINGVARS_END
+957	.$1a64	STRINGARRAYS_START
+958	.$1a64	STRINGARRAYS_END
+959	.$1a64	VARIABLES_END
+961	.$1a64	Y_REG .REAL 0.0
+962	.$1a69	C_REG .REAL 0.0
+963	.$1a6e	D_REG .REAL 0.0
+964	.$1a73	E_REG .REAL 0.0
+965	.$1a78	F_REG .REAL 0.0
+966	.$1a7d	A_REG .WORD 0
+967	.$1a7f	B_REG .WORD 0
+968	.$1a81	CMD_NUM .BYTE 0
+969	.$1a82	CHANNEL .BYTE 0
+970	.$1a83	SP_SAVE .BYTE 0
+971	.$1a84	TMP2_REG .WORD 0
+972	.$1a86	TMP3_REG .WORD 0
+973	.$1a88	TMP4_REG .WORD 0
+974	.$1a8a	AS_TMP .WORD 0
+975	.$1a8c	BPOINTER_TMP .WORD 0
+976	.$1a8e	BASICTEXTP .BYTE 0
+977	.$1a8f	STORE1 .WORD 0
+978	.$1a91	STORE2 .WORD 0
+979	.$1a93	STORE3 .WORD 0
+980	.$1a95	STORE4 .WORD 0
+981	.$1a97	GCSTART .WORD 0
+982	.$1a99	GCLEN .WORD 0
+983	.$1a9b	GCWORK .WORD 0
+984	.$1a9d	INPUTLENGTH .BYTE 0
+985	.$1a9e	TMP_FREG .REAL 0
+986	.$1aa3	TMP2_FREG .REAL 0
+987	.$1aa8	TMP_FLAG .BYTE 0
+988	.$1aa9	INT_FLAG .BYTE 0
+989	.$1aaa	REAL_CONST_ONE .REAL 1.0
+990	.$1aaf	REAL_CONST_ZERO .REAL 0.0
+991	.$1ab4	REAL_CONST_MINUS_ONE .REAL -1.0
+992	.$1ab9	CHLOCKFLAG .BYTE 0
+993	.$1aba	EMPTYSTR .BYTE 0
+994	.$1abb	FPSTACKP .WORD FPSTACK
+995	.$1abd	FORSTACKP .WORD FORSTACK
+996	.$1abf	DATASP .WORD DATAS
+997	.$1ac1	LASTVAR .WORD 0
+998	.$1ac3	LASTVARP .WORD 0
+999	.$1ac5	HIGHP .WORD STRBUF
+1000	.$1ac7	STRBUFP .WORD STRBUF
+1001	.$1ac9	ENDSTRBUF .WORD 0
+1002	.$1acb	INPUTQUEUEP .BYTE 0
+1003	.$1acc	PROGRAMEND
+1004	.$1acc	INPUTQUEUE .ARRAY $0F
+1005	.$1adb	FPSTACK .ARRAY 100
+1006	.$1b3f	FORSTACK .ARRAY 340
+1007	.$1c93	STRBUF .BYTE 0
