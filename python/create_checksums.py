@@ -13,7 +13,7 @@ def generate_md5(file_path):
     return hash_md5.hexdigest()
 
 def create_checksum_file():
-    compiled_dir = Path('compiled')
+    compiled_dir = Path('../src/test/resources/transform/compiled')
     output_file = Path('checksums.txt')
 
     # Get all .prg files

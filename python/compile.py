@@ -4,7 +4,7 @@ from concurrent.futures import ProcessPoolExecutor
 
 def compile_single_file(file_path):
     """Worker function to compile one file."""
-    target_dir = Path('compiled')
+    target_dir = Path('../src/test/resources/transform/compiled')
     target_name = f"c_{file_path.stem}.prg"
     target_path = target_dir / target_name
 

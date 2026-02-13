@@ -14,7 +14,7 @@ def calculate_md5(file_path):
 
 def verify_checksums():
     checksum_file = Path('checksums.txt')
-    compiled_dir = Path('compiled')
+    compiled_dir = Path('../src/test/resources/transform/compiled')
 
     if not checksum_file.exists():
         print(f"Error: {checksum_file} not found. Run the generator script first.")
