@@ -23,11 +23,12 @@ def compile_single_file(file_path):
         return f"Failed: {file_path.name} - Error: {e.stderr}"
 
 def main():
-    source_dir = Path('.')
-    target_dir = Path('compiled')
+    source_dir = Path('../src/test/resources/transform')
+    target_dir = Path('../src/test/resources/transform/compiled')
     target_dir.mkdir(exist_ok=True)
 
     bas_files = list(source_dir.glob('*.bas'))
+    print(f"Found {len(bas_files)} files to compile...")
     
     # Set the number of parallel threads/processes
     # You can set this to a fixed number (e.g., 4) or None to use all cores

@@ -11,6 +11,7 @@ import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.system.BasicProgramCounter;
 import com.sixtyfour.system.Machine;
+import com.sixtyfour.util.NumberUtils;
 
 /**
  * The GOTO command.
@@ -48,12 +49,7 @@ public class Goto extends AbstractCommand implements Jump {
 		if (linePart.isEmpty()) {
 			linePart = "0";
 		}
-		try {
-			this.targetLineNumber = Integer.parseInt(linePart);
-		} catch (Exception e) {
-			//throw new RuntimeException("Undef'd statement error: " + this);
-			this.targetLineNumber = 0;
-		}
+		this.targetLineNumber = NumberUtils.parseLineNumber(linePart);
 		return null;
 	}
 
