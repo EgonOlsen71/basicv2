@@ -11,6 +11,7 @@ import com.sixtyfour.parser.TermEnhancer;
 import com.sixtyfour.parser.cbmnative.CodeContainer;
 import com.sixtyfour.system.BasicProgramCounter;
 import com.sixtyfour.system.Machine;
+import com.sixtyfour.util.NumberUtils;
 import com.sixtyfour.util.VarUtils;
 
 /**
@@ -73,6 +74,12 @@ public class If extends AbstractCommand {
 		String restTerm = linePart.substring(termEnd + 4);
 		if (Parser.isInteger(restTerm)) {
 			return "GOTO" + restTerm;
+		} else {
+			if (restTerm.length()>0 && Character.isDigit(restTerm.charAt(0))) {
+				int num = NumberUtils.parseLineNumber(restTerm);
+				return "GOTO"+num;
+			}
+			
 		}
 
 		return restTerm;
