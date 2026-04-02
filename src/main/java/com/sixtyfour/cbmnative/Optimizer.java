@@ -22,5 +22,14 @@ public interface Optimizer {
 	 * @return the optimized code
 	 */
 	List<String> optimize(CompilerConfig config, PlatformProvider platform, List<String> input, ProgressListener pg);
+	
+	/**
+	 * Does things that have to be done, in case no optimization is being applied.
+	 * @param config
+	 * @param platform
+	 * @param input
+	 * @return
+	 */
+	List<String> dontOptimize(CompilerConfig config, PlatformProvider platform, List<String> input);
 
 }

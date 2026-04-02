@@ -1815,6 +1815,7 @@ BCC NOPV3
 INC TMP_REG+1
 NOPV3		LDY TMP_REG+1
 JSR CMPFAC 	;CMPFAC
+TAX					;save the result of the comparison for later use
 BEQ LOOPING
 PHA
 LDY #14
@@ -1824,12 +1825,18 @@ ROL
 BCC STEPPOS
 STEPNEG		PLA
 ROL
-BCC LOOPING
+BCC LOOPING2
 BCS EXITLOOP
 STEPPOS		PLA
 ROL
 BCC EXITLOOP
-LOOPING		LDA TMP3_REG
+JMP LOOPING2
+LOOPING		LDY #14			; handle the special case of making the code set the loop variable to an exit condition in a step 0 loop
+LDA (TMP_ZP),Y
+BNE LOOPING2	; Not step 0 => normal handling
+TXA				; step 0 and equals (checked above and saved in X) => exit
+BEQ EXITLOOP
+LOOPING2	LDA TMP3_REG
 STA FORSTACKP
 LDA TMP3_REG+1
 STA FORSTACKP+1
@@ -1850,8 +1857,8 @@ INY
 LDA (TMP_ZP),Y
 STA JUMP_TARGET+1
 RTS
-STEPZERO	PLA
-JMP LOOPING
+STEPZERO	PLA				; step 0
+JMP LOOPING2
 EXITLOOP	LDA TMP2_REG
 STA FORSTACKP
 LDA TMP2_REG+1

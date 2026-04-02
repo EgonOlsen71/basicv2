@@ -80,5 +80,10 @@ public class OptimizerPy implements Optimizer {
 		Logger.log("Python code optimized in " + (System.currentTimeMillis() - s) + "ms");
 		return res;
 	}
+	
+	@Override
+	public List<String> dontOptimize(CompilerConfig config, PlatformProvider platform, List<String> input) {
+		return input;
+	}
 
 }

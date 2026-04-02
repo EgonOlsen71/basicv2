@@ -49,6 +49,12 @@ public class Optimizer6502 implements Optimizer {
 		return input;
 	}
 	
+	@Override
+	public List<String> dontOptimize(CompilerConfig config, PlatformProvider platform, List<String> input) {
+		input.add("MOSTCOMMON:");
+		return input;
+	}
+	
 	public List<Pattern> getPatterns() {
 		return new PatternProcessor().getPatterns("optimizer6502.txt");
 	}

@@ -110,5 +110,10 @@ public class OptimizerJs implements Optimizer {
 
 		return code;
 	}
+	
+	@Override
+	public List<String> dontOptimize(CompilerConfig config, PlatformProvider platform, List<String> input) {
+		return input;
+	}
 
 }

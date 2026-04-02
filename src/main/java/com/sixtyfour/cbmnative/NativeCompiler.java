@@ -183,6 +183,8 @@ public class NativeCompiler {
 		List<String> nCode = tf.transform(conf, memConfig, basic.getMachine(), platform, mCode);
 		if (platform.getOptimizer() != null && conf.isNativeLanguageOptimizations()) {
 			nCode = platform.getOptimizer().optimize(conf, platform, nCode, conf.getProgressListener());
+		} else {
+			nCode = platform.getOptimizer().dontOptimize(conf, platform, nCode);
 		}
 		if (platform.getUnlinker() != null && conf.isOptimizedLinker()) {
 			nCode = platform.getUnlinker().unlink(nCode);
