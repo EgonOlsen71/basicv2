@@ -594,13 +594,14 @@ RTS
 ;###################################
 ;###################################
 INT2BCD
-SED
 LDA #0
 STA BCD
 STA BCD+1
 STA BCD+2
 ASL TMP_ZP
 ROL TMP_ZP+1
+SEI
+SED
 LDA BCD
 ADC BCD
 STA BCD
@@ -652,6 +653,7 @@ STA BCD+2
 DEX
 BNE BCDBIT2
 CLD
+CLI
 RTS
 BCD
 .WORD 0 0
