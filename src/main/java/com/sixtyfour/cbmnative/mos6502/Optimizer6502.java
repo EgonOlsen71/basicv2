@@ -664,6 +664,8 @@ public class Optimizer6502 implements Optimizer {
 		// additional rules. Unlike the "big" run, this one happens in a single
 		// thread, because it's quite cheap to do anyway.
 
+		//ret.forEach(p->System.out.println(p));
+		
 		List<Pattern> others = new PatternProcessor().getPatterns("optimizer6502x.txt");
 		OptimizationResult res = optimizeInternalThreaded(conf, others, platform, ret, null, extractConstants(ret),
 				extractStringConstants(ret));

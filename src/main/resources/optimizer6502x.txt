@@ -64,3 +64,9 @@
 
 #22: Simplified boolean comparison
 "Simplified boolean comparison"	false	false	false	"LDA #<{MEM0}|LDY #>{MEM0}|JSR COPY2_XYA_YREG|LDA Y_REG|{LABEL}|BEQ {*}"	"LDA {MEM0}|{LINE4}|{LINE5}"
+
+#23: Remove A_REG+1 access
+"Remove A_REG+1 access"	false	false	false	"LDY {CONST0}|LDA {CONST0}|STY A_REG|STA A_REG+1|JSR {*}|JSR SHL"	"{LINE0}|{LINE2}|{LINE4}|{LINE5}"
+
+
+
