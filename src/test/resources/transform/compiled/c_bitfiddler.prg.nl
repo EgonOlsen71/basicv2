@@ -1192,24 +1192,17 @@ GT_SKIP8:
 JSR REALFAC
 JSR FACXREG
 LDY #2
-LDA #0
 STY A_REG
-STA A_REG+1
 JSR COPY_XREG2YREG
-; Optimizer rule: FAC already populated/6
-; Optimizer rule: X_REG 2 FAC(1)/1
-; FAC = FAC<<A
 JSR SHL
+; Optimizer rule: Remove A_REG+1 access/4
 JSR FACXREG
 ; Optimizer rule: FAC 2 X_REG(2)/1
 LDY #1
-LDA #0
 STY A_REG
-STA A_REG+1
 JSR YREGFAC
-; Optimizer rule: Y_REG 2 FAC(1)/1
-; FAC = FAC<<A
 JSR SHL
+; Optimizer rule: Remove A_REG+1 access/4
 ; Optimizer rule: FAC into REG?, REG? into FAC/0
 LDA #<X_REG
 LDY #>X_REG
@@ -1231,24 +1224,17 @@ JSR FASTFSUBMEM
 ; Optimizer rule: Combine load and sub/1
 JSR FACXREG
 LDY #5
-LDA #0
 STY A_REG
-STA A_REG+1
 JSR COPY_XREG2YREG
-; Optimizer rule: FAC already populated/6
-; Optimizer rule: X_REG 2 FAC(1)/1
-; FAC = FAC<<A
 JSR SHL
+; Optimizer rule: Remove A_REG+1 access/4
 JSR FACXREG
 ; Optimizer rule: FAC 2 X_REG(2)/1
 LDY #3
-LDA #0
 STY A_REG
-STA A_REG+1
 JSR YREGFAC
-; Optimizer rule: Y_REG 2 FAC(1)/1
-; FAC = FAC<<A
 JSR SHL
+; Optimizer rule: Remove A_REG+1 access/4
 ; Optimizer rule: FAC into REG?, REG? into FAC/0
 LDA #<X_REG
 LDY #>X_REG

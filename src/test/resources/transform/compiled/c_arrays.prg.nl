@@ -125,220 +125,52 @@ LINE_0:
 ;
 LINE_10:
 ;
-LDY 53281
-STY 53280
-; Optimizer rule: Faster POKE,PEEK/2
-LDA #<CONST_0
-LDY #>CONST_0
-JSR STROUTBRKWL
-; Optimizer rule: Memory saving STROUTBRK/1
-; Optimizer rule: STROUT + LINEBRK/1
 ;
 LINE_20:
 ;
-LDA #<CONST_1R
-LDY #>CONST_1R
-JSR COPY2_XYA_XREG
-; Optimizer rule: MEM 2 X_REG/3
-; Optimizer rule: Memory saving copy/4
-; Optimizer rule: Quick copy into REG/7
-LDA #<CONST_2
-LDY #>CONST_2
-JSR COPY2_XYA_YREG
-; Optimizer rule: MEM 2 Y_REG/3
-; Optimizer rule: Memory saving copy/4
-; Optimizer rule: Quick copy into REG/7
-LDA #<VAR_A[]
-LDY #>VAR_A[]
-STA G_REG
-STY G_REG+1
-JSR ARRAYSTORE_REAL
-LDA #<CONST_3R
-LDY #>CONST_3R
-JSR COPY2_XYA_XREG
-; Optimizer rule: MEM 2 X_REG/3
-; Optimizer rule: Memory saving copy/4
-; Optimizer rule: Quick copy into REG/7
-LDA #<CONST_4
-LDY #>CONST_4
-JSR COPY2_XYA_YREG
-; Optimizer rule: MEM 2 Y_REG/3
-; Optimizer rule: Memory saving copy/4
-; Optimizer rule: Quick copy into REG/7
-LDA #<VAR_A[]
-LDY #>VAR_A[]
-STA G_REG
-STY G_REG+1
-JSR ARRAYSTORE_REAL
-LDA #<CONST_5R
-LDY #>CONST_5R
-JSR COPY2_XYA_XREG
-; Optimizer rule: MEM 2 X_REG/3
-; Optimizer rule: Memory saving copy/4
-; Optimizer rule: Quick copy into REG/7
-LDA #<CONST_5R
-LDY #>CONST_5R
-JSR COPY2_XYA_YREG
-; Optimizer rule: MEM 2 Y_REG/3
-; Optimizer rule: Memory saving copy/4
-; Optimizer rule: Quick copy into REG/7
-LDA #<VAR_A[]
-LDY #>VAR_A[]
-STA G_REG
-STY G_REG+1
-JSR ARRAYSTORE_REAL
-LDA #<CONST_6R
-LDY #>CONST_6R
-JSR COPY2_XYA_XREG
-; Optimizer rule: MEM 2 X_REG/3
-; Optimizer rule: Memory saving copy/4
-; Optimizer rule: Quick copy into REG/7
-LDA #<CONST_7R
-LDY #>CONST_7R
-JSR COPY2_XYA_YREG
-; Optimizer rule: MEM 2 Y_REG/3
-; Optimizer rule: Memory saving copy/4
-; Optimizer rule: Quick copy into REG/7
-LDA #<VAR_A[]
-LDY #>VAR_A[]
-STA G_REG
-STY G_REG+1
-JSR ARRAYSTORE_REAL
 ;
 LINE_30:
 ;
-JSR ONETOFAC
-; Optimizer rule: Faster setting to 1/1
-; Optimizer rule: Avoid INTEGER->REAL conversion/3
-; Optimizer rule: FAC into REG?, REG? into FAC/0
-; FAC = RND(FAC)
-JSR FACRND
-JSR FACXREG
-LDY #3
-STY A_REG
-JSR COPY_XREG2YREG
-JSR SHL
-; Optimizer rule: Remove A_REG+1 access/4
-JSR FACXREG
-; Optimizer rule: FAC 2 X_REG(2)/1
-LDY #1
-STY A_REG
-JSR YREGFAC
-JSR SHL
-; Optimizer rule: Remove A_REG+1 access/4
-; Optimizer rule: FAC into REG?, REG? into FAC/0
-LDA #<X_REG
-LDY #>X_REG
-; Real in (A/Y) to ARG
-JSR FASTFADDMEM
-; Optimizer rule: Fast FADD (MEM)/1
-; Optimizer rule: Combine load and add/1
-; Optimizer rule: FAC into REG?, REG? into FAC/0
-; Optimizer rule: FAC into REG?, REG? into FAC/0
-; FAC = INT(FAC)
-JSR BASINT
-JSR FACXREG
-LDY #1
-STY A_REG
-; Optimizer rule: Omit XREG->FAC/3
-JSR SHL
-; Optimizer rule: Shorter SHL/4
-; Optimizer rule: FAC into REG?, REG? into FAC/0
-JSR PUSHREAL
-JSR ONETOFAC
-; Optimizer rule: Faster setting to 1/1
-; Optimizer rule: Avoid INTEGER->REAL conversion/3
-; Optimizer rule: FAC into REG?, REG? into FAC/0
-; FAC = RND(FAC)
-JSR FACRND
-JSR FACXREG
-LDY #3
-STY A_REG
-JSR COPY_XREG2YREG
-JSR SHL
-; Optimizer rule: Remove A_REG+1 access/4
-JSR FACXREG
-; Optimizer rule: FAC 2 X_REG(2)/1
-LDY #1
-STY A_REG
-JSR YREGFAC
-JSR SHL
-; Optimizer rule: Remove A_REG+1 access/4
-; Optimizer rule: FAC into REG?, REG? into FAC/0
-LDA #<X_REG
-LDY #>X_REG
-; Real in (A/Y) to ARG
-JSR FASTFADDMEM
-; Optimizer rule: Fast FADD (MEM)/1
-; Optimizer rule: Combine load and add/1
-; Optimizer rule: FAC into REG?, REG? into FAC/0
-; Optimizer rule: FAC into REG?, REG? into FAC/0
-; FAC = INT(FAC)
-JSR BASINT
-JSR FACXREG
-LDY #6
-STY A_REG
-JSR COPY_XREG2YREG
-JSR SHL
-; Optimizer rule: Remove A_REG+1 access/4
-JSR FACXREG
-; Optimizer rule: FAC 2 X_REG(2)/1
-LDY #4
-STY A_REG
-JSR YREGFAC
-JSR SHL
-; Optimizer rule: Remove A_REG+1 access/4
-; Optimizer rule: FAC into REG?, REG? into FAC/0
-LDA #<X_REG
-LDY #>X_REG
-; Real in (A/Y) to ARG
-JSR FASTFADDMEM
-; Optimizer rule: Fast FADD (MEM)/1
-; Optimizer rule: Combine load and add/1
-JSR FACXREG
-; Optimizer rule: FAC 2 X_REG(2)/1
-LDA #<CONST_10
-LDY #>CONST_10
-JSR REALFAC
-; Optimizer rule: Direct loading of values into FAC/3
-LDA #<X_REG
-LDY #>X_REG
-; Real in (A/Y) to ARG
-JSR FASTFADDMEM
-; Optimizer rule: Fast FADD (MEM)/1
-; Optimizer rule: Combine load and add/1
-JSR FACXREG
-; Optimizer rule: FAC 2 X_REG(2)/1
-JSR POPREAL2X
-; Optimizer rule: POPREAL and load X/1
-JSR FASTFADDARG
-; Optimizer rule: Fast FADD (ARG)/1
-; Optimizer rule: POP, REG0, VAR0 -> direct calc/5
-; Optimizer rule: FAC into REG?, REG? into FAC/0
-LDX #<VAR_A
-LDY #>VAR_A
-; FAC to (X/Y)
+<IF !X16>
+SEI
+LDY TIMEADDR
+LDX TIMEADDR+1
+LDA TIMEADDR+2
+CLI
+</IF>
+SEC
+JSR COPYTIME
+JSR GETTIME
+LDX #<VAR_TI
+LDY #>VAR_TI
 JSR FACMEM
+LDX #4
+dcloop235_1:
+LDA VAR_TI,X
+STA VAR_T0,X
+DEX
+BPL dcloop235_1
+; Optimizer rule: Direct copy of floats into mem/6
 ;
 LINE_40:
 ;
-LDX #4
-dcloop567_1:
-LDA CONST_3R,X
-STA VAR_J,X
-DEX
-BPL dcloop567_1
-; Optimizer rule: Direct copy of floats into mem/6
-LDA #<CONST_11R
-LDY #>CONST_11R
+LDA #0
+STA VAR_X
+STA VAR_X+1
+STA VAR_X+2
+STA VAR_X+3
+STA VAR_X+4
+; Optimizer rule: Simplified setting to 0/6
+LDA #<CONST_1R
+LDY #>CONST_1R
 JSR REALFACPUSH
 ; Optimizer rule: Load and PUSH combined/1
-LDA #<CONST_3R
-LDY #>CONST_3R
+LDA #<CONST_2R
+LDY #>CONST_2R
 JSR REALFACPUSH
 ; Optimizer rule: Load and PUSH combined/1
-LDA #<VAR_J
-LDY #>VAR_J
+LDA #<VAR_X
+LDY #>VAR_X
 STA A_REG
 STY A_REG+1
 LDA #<FORLOOP0
@@ -347,11 +179,69 @@ LDA #>FORLOOP0
 STA JUMP_TARGET+1
 JSR INITFOR
 FORLOOP0:
-LDA #<CONST_12
-LDY #>CONST_12
-JSR STROUTBRKWL
-; Optimizer rule: Memory saving STROUTBRK/1
-; Optimizer rule: STROUT + LINEBRK/1
+;
+LINE_50:
+;
+LDA #0
+STA VAR_Y
+STA VAR_Y+1
+STA VAR_Y+2
+STA VAR_Y+3
+STA VAR_Y+4
+; Optimizer rule: Simplified setting to 0/6
+LDA #<CONST_1R
+LDY #>CONST_1R
+JSR REALFACPUSH
+; Optimizer rule: Load and PUSH combined/1
+LDA #<CONST_2R
+LDY #>CONST_2R
+JSR REALFACPUSH
+; Optimizer rule: Load and PUSH combined/1
+LDA #<VAR_Y
+LDY #>VAR_Y
+STA A_REG
+STY A_REG+1
+LDA #<FORLOOP1
+STA JUMP_TARGET
+LDA #>FORLOOP1
+STA JUMP_TARGET+1
+JSR INITFOR
+FORLOOP1:
+;
+LINE_60:
+;
+LDA #<VAR_Y
+LDY #>VAR_Y
+JSR REALFAC
+; Optimizer rule: Direct loading of values into FAC/3
+; FAC = INT(FAC)
+JSR BASINT
+LDA #<CONST_3R
+LDY #>CONST_3R
+JSR FASTFMULMEM
+; Optimizer rule: Fast FMUL (MEM)/1
+JSR FACINT
+STY TMP4_REG
+STA TMP4_REG+1
+LDA #<VAR_X
+LDY #>VAR_X
+JSR REALFAC
+JSR FACINT
+JSR INTADD16
+LDA #<CONST_4R
+LDY #>CONST_4R
+JSR COPY2_XYA_YREG
+LDA #<VAR_A[]
+LDY #>VAR_A[]
+STA G_REG
+STY G_REG+1
+LDY TMP4_REG
+LDA TMP4_REG+1
+JSR ARRAYSTORE_REAL_INT
+; Optimizer rule: Improved real array store/22
+;
+LINE_70:
+;
 LDA #0
 STA A_REG
 STA A_REG+1
@@ -362,261 +252,187 @@ BNE RBEQ_0
 JMP (JUMP_TARGET)
 ; Optimizer rule: NEXT check simplified/4
 RBEQ_0:
+LDA #0
+STA A_REG
+STA A_REG+1
+JSR NEXT
+; Optimizer rule: NEXT with no variable name simplified/4
+LDA A_REG
+BNE RBEQ_1
+JMP (JUMP_TARGET)
+; Optimizer rule: NEXT check simplified/4
+RBEQ_1:
 ;
-LINE_100:
+LINE_80:
 ;
-LDA #<VAR_A
-LDY #>VAR_A
+LDA #<CONST_5
+LDY #>CONST_5
+JSR STROUTWL
+; Optimizer rule: Memory saving STROUT/1
+LDA #<VAR_T0
+LDY #>VAR_T0
+JSR COPY2_XYA_YREG
+; Optimizer rule: MEM 2 Y_REG/3
+; Optimizer rule: Memory saving copy/4
+; Optimizer rule: Quick copy into REG/7
+<IF !X16>
+SEI
+LDY TIMEADDR
+LDX TIMEADDR+1
+LDA TIMEADDR+2
+CLI
+</IF>
+SEC
+JSR COPYTIME
+JSR GETTIME
+LDX #<VAR_TI
+LDY #>VAR_TI
+JSR FACMEM
+LDA #<VAR_TI
+LDY #>VAR_TI
+JSR COPY2_XYA_XREG
+; Optimizer rule: MEM 2 X_REG/3
+; Optimizer rule: Memory saving copy/4
+; Optimizer rule: Quick copy into REG/7
+JSR YREGFAC
+; Optimizer rule: Y_REG 2 FAC(1)/1
+LDA #<X_REG
+LDY #>X_REG
+; Real in (A/Y) to ARG
+JSR FASTFSUBMEM
+; Optimizer rule: Fast FSUB (MEM)/1
+; Optimizer rule: Combine load and sub/1
+JSR FACXREG
+; Optimizer rule: FAC 2 X_REG(2)/1
+LDA #<CONST_6
+LDY #>CONST_6
 JSR REALFAC
 ; Optimizer rule: Direct loading of values into FAC/3
-; FAC to integer in Y/A
-JSR FACWORD
-STY MOVBSELF3+1
-STA MOVBSELF3+2
-LDA #$4
-MOVBSELF3:
-STA $FFFF
-;
-LINE_110:
-;
-JSR ONETOFAC
-; Optimizer rule: Faster setting to 1/1
-; Optimizer rule: Avoid INTEGER->REAL conversion/3
-; Optimizer rule: FAC into REG?, REG? into FAC/0
-; FAC = RND(FAC)
-JSR FACRND
+LDA #<X_REG
+LDY #>X_REG
+; Real in (A/Y) to ARG
+JSR FACDIV
+; Optimizer rule: Combine load and div/1
 JSR FACXREG
-LDY #2
-STY A_REG
-; Optimizer rule: Omit XREG->FAC/3
-JSR SHL
-; Optimizer rule: Shorter SHL/4
-; Optimizer rule: FAC into REG?, REG? into FAC/0
-; Optimizer rule: FAC into REG?, REG? into FAC/0
-; FAC = INT(FAC)
-JSR BASINT
-; Optimizer rule: FAC into REG?, REG? into FAC/0
-LDX #<VAR_J
-LDY #>VAR_J
-; FAC to (X/Y)
+; Optimizer rule: FAC 2 X_REG(2)/1
+JSR REALOUTBRK
+; Optimizer rule: REALOUT + LINEBRK/1
+;
+LINE_90:
+;
+<IF !X16>
+SEI
+LDY TIMEADDR
+LDX TIMEADDR+1
+LDA TIMEADDR+2
+CLI
+</IF>
+SEC
+JSR COPYTIME
+JSR GETTIME
+LDX #<VAR_TI
+LDY #>VAR_TI
 JSR FACMEM
 LDX #4
 dcloop733_1:
-LDA VAR_J,X
-STA VAR_X,X
+LDA VAR_TI,X
+STA VAR_T0,X
 DEX
 BPL dcloop733_1
 ; Optimizer rule: Direct copy of floats into mem/6
 ;
-LINE_112:
+LINE_100:
 ;
-LDA #<VAR_SM
-LDY #>VAR_SM
-JSR REALFAC
-LDA #<VAR_S
-LDY #>VAR_S
-JSR CMPFAC
-; Optimizer rule: Highly simplified loading for CMP/6
-ROL
-BCS GT_GT0
-LDA #0
-JMP GT_SKIP0
-GT_GT0:
-LDA #$1
-GT_SKIP0:
-COMP_SKP1:
-BEQ LINE_SKIP4
-; Simplified conditional branch
+LDY #0
+TYA
+; Optimizer rule: INT to FAC, FAC to INT/2
+STY VAR_X%
+STA VAR_X%+1
 ;
-LINE_NSKIP4:
-LDX #4
-dcloop1065_1:
-LDA VAR_S,X
-STA VAR_SM,X
-LDA VAR_B,X
-STA VAR_FI,X
-DEX
-BPL dcloop1065_1
-; Special rule: Aggregation of assignments (2)
-; Optimizer rule: Direct copy of floats into mem/6
+LINE_110:
 ;
-LINE_SKIP4:
-;
+LDY #0
+TYA
+; Optimizer rule: INT to FAC, FAC to INT/2
+STY VAR_Y%
+STA VAR_Y%+1
 ;
 LINE_120:
 ;
-LDA #<VAR_J
-LDY #>VAR_J
-JSR COPY2_XYA_XREG
-; Optimizer rule: MEM 2 X_REG/3
-; Optimizer rule: Memory saving copy/4
-; Optimizer rule: Quick copy into REG/7
-LDA #<VAR_A[]
-LDY #>VAR_A[]
-JSR ARRAYACCESS_REAL_S
-; Optimizer rule: Memory saving array access (real)/3
-LDA #<VAR_A
-LDY #>VAR_A
-JSR REALFAC
-; Optimizer rule: Direct loading of values into FAC/3
-LDA #<X_REG
-LDY #>X_REG
-; Real in (A/Y) to ARG
-JSR FASTFADDMEM
-; Optimizer rule: Fast FADD (MEM)/1
-; Optimizer rule: Combine load and add/1
+LDY VAR_Y%
+LDA VAR_Y%+1
+; integer in Y/A to FAC
+JSR INTFAC
+; Optimizer rule: Substitute double INT()/1
+LDA #<CONST_3R
+LDY #>CONST_3R
+JSR FASTFMULMEM
+; Optimizer rule: Fast FMUL (MEM)/1
+; Optimizer rule: Improved index calculation (1)/4
 ; Optimizer rule: FAC into REG?, REG? into FAC/0
-LDX #<VAR_B
-LDY #>VAR_B
-JSR FACMEM
-; Optimizer rule: Omit FAC load/4
-; Optimizer rule: Direct loading of values into FAC/3
-; FAC to integer in Y/A
-JSR FACWORD
-STY MOVBSELF4+1
-STA MOVBSELF4+2
-MOVBSELF4:
-LDA $FFFF
-CMP #160
-BCC PEEKLT0
-BEQ PEEKEQ0
-LDA #$FF
-JMP PEEKDONE0
-PEEKLT0:
-LDA #$01
-JMP PEEKDONE0
-PEEKEQ0:
-LDA #0
-PEEKDONE0:
-; Optimized comparison for PEEK
-;
-;
-BEQ EQ_EQ1
-LDA #0
-JMP EQ_SKIP1
-EQ_EQ1:
-LDA #$1
-EQ_SKIP1:
-COMP_SKP2:
-BNE LINE_NSKIP5
-; Optimizer rule: Simplified CMP redux/7
-JMP LINE_SKIP5
-;
-LINE_NSKIP5:
-;
-LDA #<VAR_J
-LDY #>VAR_J
-JSR COPY2_XYA_XREG
-LDA #<VAR_B
-LDY #>VAR_B
-JSR REALFAC
-JSR FACWORD
-; Optimizer rule: No push, direct to FAC/7
-; Optimizer rule: POP, REG0, VAR0 -> to WORD/2
-STY MOVBSELF5+1
-STA MOVBSELF5+2
-JSR XREGFAC
-; Optimizer rule: X_REG 2 FAC(1)/1
-; FAC to integer in Y/A
-JSR FACWORD
-MOVBSELF5:
-STY $FFFF
-LDA #<VAR_J
-LDY #>VAR_J
-JSR COPY2_XYA_XREG
-; Optimizer rule: MEM 2 X_REG/3
-; Optimizer rule: Memory saving copy/4
-; Optimizer rule: Quick copy into REG/7
-LDA #<VAR_A[]
-LDY #>VAR_A[]
-JSR ARRAYACCESS_REAL_S
-; Optimizer rule: Memory saving array access (real)/3
-LDY #1
-STY A_REG
-JSR XREGFAC
-JSR SHR
-; Optimizer rule: Shorter SHR/4
+JSR FACXREG
+LDY VAR_X%
+LDA VAR_X%+1
+JSR INTFAC
+JSR XREGARG
+JSR FASTFADDARG
+; Optimizer rule: Fast FADD (ARG)/1
+; Optimizer rule: Improved index calculation (3)/6
+; Optimizer rule: POP, REG0, VAR0 -> direct calc/5
 JSR FACXREG
 ; Optimizer rule: FAC 2 X_REG(2)/1
-LDA #<VAR_A
-LDY #>VAR_A
-JSR REALFAC
-; Optimizer rule: Direct loading of values into FAC/3
-LDA #<X_REG
-LDY #>X_REG
-; Real in (A/Y) to ARG
-JSR FASTFADDMEM
-; Optimizer rule: Fast FADD (MEM)/1
-; Optimizer rule: Combine load and add/1
-; Optimizer rule: FAC into REG?, REG? into FAC/0
-; Optimizer rule: FAC into REG?, REG? into FAC/0
-; FAC to integer in Y/A
-JSR FACWORD
-STY MOVBSELF6+1
-STA MOVBSELF6+2
-LDA #$20
-MOVBSELF6:
-STA $FFFF
-LDX #4
-dcloop1231_1:
-LDA VAR_B,X
-STA VAR_A,X
-DEX
-BPL dcloop1231_1
-; Optimizer rule: Direct copy of floats into mem/6
-JSR ONETOFAC
-; Optimizer rule: Faster setting to 1/1
-LDA #<VAR_S
-LDY #>VAR_S
-JSR FASTFADDMEM
-; Optimizer rule: Fast FADD (MEM)/1
-; Optimizer rule: Combine load and add/1
-; Optimizer rule: Highly simplified loading for calculations/7
-; Optimizer rule: FAC into REG?, REG? into FAC/0
-LDX #<VAR_S
-LDY #>VAR_S
-; FAC to (X/Y)
-JSR FACMEM
-JMP LINE_110
-;
-LINE_SKIP5:
-;
+LDY #13
+LDA #0
+STY AS_TMP
+STA AS_TMP+1
+LDA #<VAR_A%[]
+LDY #>VAR_A%[]
+STA G_REG
+STY G_REG+1
+JSR ARRAYSTORE_INT_INTEGER
+; Optimizer rule: Array content is integer (store)/9
 ;
 LINE_130:
 ;
-JSR ONETOFAC
-; Optimizer rule: Faster setting to 1/1
-LDA #<VAR_J
-LDY #>VAR_J
-JSR FASTFADDMEM
-; Optimizer rule: Fast FADD (MEM)/1
-; Optimizer rule: Combine load and add/1
-; Optimizer rule: Highly simplified loading for calculations/7
-JSR FACXREG
-; Optimizer rule: FAC 2 X_REG(2)/1
-LDA #<CONST_6R
-LDY #>CONST_6R
-JSR MEMARG
-JSR FASTAND
-; Optimizer rule: Swap AND order/7
-; Optimizer rule: Faster logic AND/1
-; Optimizer rule: FAC into REG?, REG? into FAC/0
-LDX #<VAR_J
-LDY #>VAR_J
-; FAC to (X/Y)
-JSR FACMEM
-LDX #4
-dcneloop2161_1:
-LDA VAR_X,X
-CMP VAR_J,X
-BNE LINE_NSKIP6
-DEX
-BPL dcneloop2161_1
-JMP LINE_SKIP6
-; Optimizer rule: Direct compare(<>) of floats/8
-LINE_NSKIP6:
-; Optimizer rule: Simplified not equal comparison/6
+LDA #$12
+LDY #$00
+STA TMP_ZP
+STY TMP_ZP+1
+LDY VAR_Y%
+LDA VAR_Y%+1
+JSR ICMP
+; Optimized code for Integer(2)
 ;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+BEQ LT_LT_EQ0
+ROL
+BCC LT_LT0
+LT_LT_EQ0:
+LDA #0
+JMP LT_SKIP0
+LT_LT0:
+LDA #$1
+LT_SKIP0:
+COMP_SKP2:
+BEQ LINE_SKIP6
+; Simplified conditional branch
+;
+LINE_NSKIP6:
+;
+LDY VAR_Y%
+LDA VAR_Y%+1
+JSR SUPERFIINX
+; Optimizer rule: Even faster INTEGER INC/1
+STY VAR_Y%
+STA VAR_Y%+1
 JMP LINE_120
 ;
 LINE_SKIP6:
@@ -624,55 +440,338 @@ LINE_SKIP6:
 ;
 LINE_140:
 ;
-LDA #<VAR_A
-LDY #>VAR_A
-JSR REALFAC
-; Optimizer rule: Direct loading of values into FAC/3
-; FAC to integer in Y/A
-JSR FACWORD
-STY MOVBSELF7+1
-STA MOVBSELF7+2
-MOVBSELF7:
-LDY $FFFF
+LDA #$12
+LDY #$00
+STA TMP_ZP
+STY TMP_ZP+1
+LDY VAR_X%
+LDA VAR_X%+1
+JSR ICMP
+; Optimized code for Integer(2)
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+BEQ LT_LT_EQ1
+ROL
+BCC LT_LT1
+LT_LT_EQ1:
 LDA #0
-; integer in Y/A to FAC
-JSR INTFAC
-; Optimizer rule: FAC into REG?, REG? into FAC/0
-LDX #<VAR_J
-LDY #>VAR_J
-; FAC to (X/Y)
+JMP LT_SKIP1
+LT_LT1:
+LDA #$1
+LT_SKIP1:
+COMP_SKP3:
+BEQ LINE_SKIP7
+; Simplified conditional branch
+;
+LINE_NSKIP7:
+;
+LDY VAR_X%
+LDA VAR_X%+1
+JSR SUPERFIINX
+; Optimizer rule: Even faster INTEGER INC/1
+STY VAR_X%
+STA VAR_X%+1
+JMP LINE_110
+;
+LINE_SKIP7:
+;
+;
+LINE_150:
+;
+LDA #<CONST_8
+LDY #>CONST_8
+JSR STROUTWL
+; Optimizer rule: Memory saving STROUT/1
+LDA #<VAR_T0
+LDY #>VAR_T0
+JSR COPY2_XYA_YREG
+; Optimizer rule: MEM 2 Y_REG/3
+; Optimizer rule: Memory saving copy/4
+; Optimizer rule: Quick copy into REG/7
+<IF !X16>
+SEI
+LDY TIMEADDR
+LDX TIMEADDR+1
+LDA TIMEADDR+2
+CLI
+</IF>
+SEC
+JSR COPYTIME
+JSR GETTIME
+LDX #<VAR_TI
+LDY #>VAR_TI
 JSR FACMEM
-LDA #<VAR_A
-LDY #>VAR_A
-JSR REALFAC
-; Optimizer rule: Direct loading of values into FAC/3
-; FAC to integer in Y/A
-JSR FACWORD
-STY MOVBSELF8+1
-STA MOVBSELF8+2
-LDA #$20
-MOVBSELF8:
-STA $FFFF
-JSR ONETOFAC
-; Optimizer rule: Faster setting to 1/1
-LDA #<VAR_S
-LDY #>VAR_S
+LDA #<VAR_TI
+LDY #>VAR_TI
+JSR COPY2_XYA_XREG
+; Optimizer rule: MEM 2 X_REG/3
+; Optimizer rule: Memory saving copy/4
+; Optimizer rule: Quick copy into REG/7
+JSR YREGFAC
+; Optimizer rule: Y_REG 2 FAC(1)/1
+LDA #<X_REG
+LDY #>X_REG
+; Real in (A/Y) to ARG
 JSR FASTFSUBMEM
 ; Optimizer rule: Fast FSUB (MEM)/1
 ; Optimizer rule: Combine load and sub/1
-; Optimizer rule: Highly simplified loading for calculations/7
-; Optimizer rule: FAC into REG?, REG? into FAC/0
-LDX #<VAR_S
-LDY #>VAR_S
-; FAC to (X/Y)
-JSR FACMEM
-LDA #<CONST_9R
-LDY #>CONST_9R
+JSR FACXREG
+; Optimizer rule: FAC 2 X_REG(2)/1
+LDA #<CONST_6
+LDY #>CONST_6
 JSR REALFAC
-LDA #<VAR_J
-LDY #>VAR_J
-JSR CMPFAC
-; Optimizer rule: Highly simplified loading for CMP/6
+; Optimizer rule: Direct loading of values into FAC/3
+LDA #<X_REG
+LDY #>X_REG
+; Real in (A/Y) to ARG
+JSR FACDIV
+; Optimizer rule: Combine load and div/1
+JSR FACXREG
+; Optimizer rule: FAC 2 X_REG(2)/1
+JSR REALOUTBRK
+; Optimizer rule: REALOUT + LINEBRK/1
+;
+LINE_155:
+;
+;
+LINE_160:
+;
+;
+LINE_170:
+;
+;
+LINE_180:
+;
+LDA #0
+STA VAR_I
+STA VAR_I+1
+STA VAR_I+2
+STA VAR_I+3
+STA VAR_I+4
+; Optimizer rule: Simplified setting to 0/6
+LDA #<CONST_1R
+LDY #>CONST_1R
+JSR REALFACPUSH
+; Optimizer rule: Load and PUSH combined/1
+LDA #<CONST_2R
+LDY #>CONST_2R
+JSR REALFACPUSH
+; Optimizer rule: Load and PUSH combined/1
+LDA #<VAR_I
+LDY #>VAR_I
+STA A_REG
+STY A_REG+1
+LDA #<FORLOOP2
+STA JUMP_TARGET
+LDA #>FORLOOP2
+STA JUMP_TARGET+1
+JSR INITFOR
+FORLOOP2:
+LDA #<VAR_I
+LDY #>VAR_I
+JSR REALFACPUSH
+; Optimizer rule: Load and PUSH combined/1
+LDA #<VAR_I
+LDY #>VAR_I
+; Real in (A/Y) to FAC
+JSR REALFAC
+JSR FACYREG
+LDY #4
+LDA #0
+STY A_REG
+STA A_REG+1
+; Optimizer rule: Value in YREG still in FAC/5
+; Optimizer rule: Y_REG 2 FAC(1)/1
+; Optimizer rule: FAC into REG?, REG? into FAC/0
+; FAC = FAC<<A
+JSR SHL
+JSR FACXREG
+; Optimizer rule: FAC 2 X_REG(2)/1
+LDY #2
+STY A_REG
+JSR YREGFAC
+JSR SHL
+; Optimizer rule: Remove A_REG+1 access/4
+; Optimizer rule: FAC into REG?, REG? into FAC/0
+LDA #<X_REG
+LDY #>X_REG
+; Real in (A/Y) to ARG
+JSR FASTFADDMEM
+; Optimizer rule: Fast FADD (MEM)/1
+; Optimizer rule: Combine load and add/1
+; Optimizer rule: FAC into REG?, REG? into FAC/0
+JSR FACYREG
+; Optimizer rule: FAC 2 Y_REG(2)/1
+JSR POPREALXREG
+; Optimizer rule: POP and XREG combined/1
+LDA #<VAR_AI%[]
+LDY #>VAR_AI%[]
+STA G_REG
+STY G_REG+1
+JSR ARRAYSTORE_INTEGER_NX
+; Optimizer rule: Value already in FAC(1)/6
+LDA #0
+STA A_REG
+STA A_REG+1
+JSR NEXT
+; Optimizer rule: NEXT with no variable name simplified/4
+LDA A_REG
+BNE RBEQ_2
+JMP (JUMP_TARGET)
+; Optimizer rule: NEXT check simplified/4
+RBEQ_2:
+;
+LINE_190:
+;
+<IF !X16>
+SEI
+LDY TIMEADDR
+LDX TIMEADDR+1
+LDA TIMEADDR+2
+CLI
+</IF>
+SEC
+JSR COPYTIME
+JSR GETTIME
+LDX #<VAR_TI
+LDY #>VAR_TI
+JSR FACMEM
+LDX #4
+dcloop1729_1:
+LDA VAR_TI,X
+STA VAR_T0,X
+DEX
+BPL dcloop1729_1
+; Optimizer rule: Direct copy of floats into mem/6
+;
+LINE_200:
+;
+LDY #0
+TYA
+; Optimizer rule: INT to FAC, FAC to INT/2
+STY VAR_X%
+STA VAR_X%+1
+;
+LINE_210:
+;
+LDY #0
+TYA
+; Optimizer rule: INT to FAC, FAC to INT/2
+STY VAR_Y%
+STA VAR_Y%+1
+;
+LINE_215:
+;
+;
+LINE_220:
+;
+LDA #<VAR_AI%[]
+LDY #>VAR_AI%[]
+STA G_REG
+STY G_REG+1
+LDY VAR_Y%
+LDA VAR_Y%+1
+JSR ARRAYACCESS_INTEGER_INT
+LDY VAR_X%
+LDA VAR_X%+1
+JSR INTADDARRAY
+LDX #13
+STX AS_TMP
+LDX #0
+STX AS_TMP+1
+LDX #<VAR_FA%[]
+STX G_REG
+LDX #>VAR_FA%[]
+STX G_REG+1
+JSR ARRAYSTORE_INT_INTEGER_AC
+; Direct store of integer in array
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+; Optimizer rule: Array content is integer (store)/9
+;
+LINE_230:
+;
+LDA #$12
+LDY #$00
+STA TMP_ZP
+STY TMP_ZP+1
+LDY VAR_Y%
+LDA VAR_Y%+1
+JSR ICMP
+; Optimized code for Integer(2)
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+BEQ LT_LT_EQ2
+ROL
+BCC LT_LT2
+LT_LT_EQ2:
+LDA #0
+JMP LT_SKIP2
+LT_LT2:
+LDA #$1
+LT_SKIP2:
+COMP_SKP5:
+BEQ LINE_SKIP8
+; Simplified conditional branch
+;
+LINE_NSKIP8:
+;
+LDY VAR_Y%
+LDA VAR_Y%+1
+JSR SUPERFIINX
+; Optimizer rule: Even faster INTEGER INC/1
+STY VAR_Y%
+STA VAR_Y%+1
+JMP LINE_215
+;
+LINE_SKIP8:
+;
+;
+LINE_240:
+;
+LDA #$12
+LDY #$00
+STA TMP_ZP
+STY TMP_ZP+1
+LDY VAR_X%
+LDA VAR_X%+1
+JSR ICMP
+; Optimized code for Integer(2)
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
 BEQ LT_LT_EQ3
 ROL
 BCC LT_LT3
@@ -682,28 +781,55 @@ JMP LT_SKIP3
 LT_LT3:
 LDA #$1
 LT_SKIP3:
-COMP_SKP4:
-BNE LINE_NSKIP7
-; Optimizer rule: Simplified CMP redux/7
-JMP LINE_SKIP7
+COMP_SKP6:
+BEQ LINE_SKIP9
+; Simplified conditional branch
 ;
-LINE_NSKIP7:
+LINE_NSKIP9:
 ;
-LDA #<VAR_J
-LDY #>VAR_J
+LDY VAR_X%
+LDA VAR_X%+1
+JSR SUPERFIINX
+; Optimizer rule: Even faster INTEGER INC/1
+STY VAR_X%
+STA VAR_X%+1
+JMP LINE_210
+;
+LINE_SKIP9:
+;
+;
+LINE_250:
+;
+LDA #<CONST_11
+LDY #>CONST_11
+JSR STROUTWL
+; Optimizer rule: Memory saving STROUT/1
+LDA #<VAR_T0
+LDY #>VAR_T0
+JSR COPY2_XYA_YREG
+; Optimizer rule: MEM 2 Y_REG/3
+; Optimizer rule: Memory saving copy/4
+; Optimizer rule: Quick copy into REG/7
+<IF !X16>
+SEI
+LDY TIMEADDR
+LDX TIMEADDR+1
+LDA TIMEADDR+2
+CLI
+</IF>
+SEC
+JSR COPYTIME
+JSR GETTIME
+LDX #<VAR_TI
+LDY #>VAR_TI
+JSR FACMEM
+LDA #<VAR_TI
+LDY #>VAR_TI
 JSR COPY2_XYA_XREG
 ; Optimizer rule: MEM 2 X_REG/3
 ; Optimizer rule: Memory saving copy/4
 ; Optimizer rule: Quick copy into REG/7
-LDA #<VAR_A[]
-LDY #>VAR_A[]
-JSR ARRAYACCESS_REAL_S
-; Optimizer rule: Memory saving array access (real)/3
-JSR XREGFAC
-LDA #<VAR_A
-LDY #>VAR_A
-JSR COPY2_XYA_XREG
-; Optimizer rule: Avoid Y_REG copy/4
+JSR YREGFAC
 ; Optimizer rule: Y_REG 2 FAC(1)/1
 LDA #<X_REG
 LDY #>X_REG
@@ -711,44 +837,332 @@ LDY #>X_REG
 JSR FASTFSUBMEM
 ; Optimizer rule: Fast FSUB (MEM)/1
 ; Optimizer rule: Combine load and sub/1
+JSR FACXREG
+; Optimizer rule: FAC 2 X_REG(2)/1
+LDA #<CONST_6
+LDY #>CONST_6
+JSR REALFAC
+; Optimizer rule: Direct loading of values into FAC/3
+LDA #<X_REG
+LDY #>X_REG
+; Real in (A/Y) to ARG
+JSR FACDIV
+; Optimizer rule: Combine load and div/1
+JSR FACXREG
+; Optimizer rule: FAC 2 X_REG(2)/1
+JSR REALOUTBRK
+; Optimizer rule: REALOUT + LINEBRK/1
+;
+LINE_400:
+;
+LDA #0
+STA VAR_I
+STA VAR_I+1
+STA VAR_I+2
+STA VAR_I+3
+STA VAR_I+4
+; Optimizer rule: Simplified setting to 0/6
+LDA #<CONST_1R
+LDY #>CONST_1R
+JSR REALFACPUSH
+; Optimizer rule: Load and PUSH combined/1
+LDA #<CONST_2R
+LDY #>CONST_2R
+JSR REALFACPUSH
+; Optimizer rule: Load and PUSH combined/1
+LDA #<VAR_I
+LDY #>VAR_I
+STA A_REG
+STY A_REG+1
+LDA #<FORLOOP3
+STA JUMP_TARGET
+LDA #>FORLOOP3
+STA JUMP_TARGET+1
+JSR INITFOR
+FORLOOP3:
+LDA #<VAR_I
+LDY #>VAR_I
+JSR REALFACPUSH
+; Optimizer rule: Load and PUSH combined/1
+LDA #<VAR_I
+LDY #>VAR_I
+; Real in (A/Y) to FAC
+JSR REALFAC
+JSR FACYREG
+LDY #4
+LDA #0
+STY A_REG
+STA A_REG+1
+; Optimizer rule: Value in YREG still in FAC/5
+; Optimizer rule: Y_REG 2 FAC(1)/1
 ; Optimizer rule: FAC into REG?, REG? into FAC/0
-LDX #<VAR_A
-LDY #>VAR_A
-; FAC to (X/Y)
+; FAC = FAC<<A
+JSR SHL
+JSR FACXREG
+; Optimizer rule: FAC 2 X_REG(2)/1
+LDY #2
+STY A_REG
+JSR YREGFAC
+JSR SHL
+; Optimizer rule: Remove A_REG+1 access/4
+; Optimizer rule: FAC into REG?, REG? into FAC/0
+LDA #<X_REG
+LDY #>X_REG
+; Real in (A/Y) to ARG
+JSR FASTFADDMEM
+; Optimizer rule: Fast FADD (MEM)/1
+; Optimizer rule: Combine load and add/1
+JSR FACXREG
+; Optimizer rule: FAC 2 X_REG(2)/1
+LDA #<CONST_12R
+LDY #>CONST_12R
+JSR REALFAC
+; Optimizer rule: Avoid INTEGER->REAL conversion/3
+; Optimizer rule: FAC into REG?, REG? into FAC/0
+LDA #<X_REG
+LDY #>X_REG
+; Real in (A/Y) to ARG
+JSR FASTFADDMEM
+; Optimizer rule: Fast FADD (MEM)/1
+; Optimizer rule: Combine load and add/1
+; Optimizer rule: FAC into REG?, REG? into FAC/0
+JSR FACYREG
+; Optimizer rule: FAC 2 Y_REG(2)/1
+JSR POPREALXREG
+; Optimizer rule: POP and XREG combined/1
+LDA #<VAR_AI%[]
+LDY #>VAR_AI%[]
+STA G_REG
+STY G_REG+1
+JSR ARRAYSTORE_INTEGER_NX
+; Optimizer rule: Value already in FAC(1)/6
+LDA #0
+STA A_REG
+STA A_REG+1
+JSR NEXT
+; Optimizer rule: NEXT with no variable name simplified/4
+LDA A_REG
+BNE RBEQ_3
+JMP (JUMP_TARGET)
+; Optimizer rule: NEXT check simplified/4
+RBEQ_3:
+;
+LINE_410:
+;
+<IF !X16>
+SEI
+LDY TIMEADDR
+LDX TIMEADDR+1
+LDA TIMEADDR+2
+CLI
+</IF>
+SEC
+JSR COPYTIME
+JSR GETTIME
+LDX #<VAR_TI
+LDY #>VAR_TI
 JSR FACMEM
-JMP LINE_110
+LDX #4
+dcloop2559_1:
+LDA VAR_TI,X
+STA VAR_T0,X
+DEX
+BPL dcloop2559_1
+; Optimizer rule: Direct copy of floats into mem/6
 ;
-LINE_SKIP7:
+LINE_420:
+;
+LDY #0
+TYA
+; Optimizer rule: INT to FAC, FAC to INT/2
+STY VAR_X%
+STA VAR_X%+1
+;
+LINE_430:
+;
+LDY #0
+TYA
+; Optimizer rule: INT to FAC, FAC to INT/2
+STY VAR_Y%
+STA VAR_Y%+1
+;
+LINE_440:
+;
+LDA #<VAR_AI%[]
+LDY #>VAR_AI%[]
+STA G_REG
+STY G_REG+1
+LDY VAR_Y%
+LDA VAR_Y%+1
+JSR ARRAYACCESS_INTEGER_INT
+LDY VAR_X%
+LDA VAR_X%+1
+JSR INTADDARRAY
+; Faster ADD in int array index
 ;
 ;
-LINE_150:
 ;
-LDA #<VAR_A
-LDY #>VAR_A
-JSR REALFAC
-; Optimizer rule: Direct loading of values into FAC/3
-; FAC to integer in Y/A
-JSR FACWORD
-STY MOVBSELF9+1
-STA MOVBSELF9+2
+;
+;
+;
+;
+;
+;
+;
+;
+;
+STY MOVBSELF1+1
+STA MOVBSELF1+2
+LDA #$D
+MOVBSELF1:
+STA $FFFF
+;
+LINE_450:
+;
+LDA #$12
+LDY #$00
+STA TMP_ZP
+STY TMP_ZP+1
+LDY VAR_Y%
+LDA VAR_Y%+1
+JSR ICMP
+; Optimized code for Integer(2)
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+BEQ LT_LT_EQ4
+ROL
+BCC LT_LT4
+LT_LT_EQ4:
+LDA #0
+JMP LT_SKIP4
+LT_LT4:
 LDA #$1
-MOVBSELF9:
-STA $FFFF
-LDA #<VAR_FI
-LDY #>VAR_FI
+LT_SKIP4:
+COMP_SKP8:
+BEQ LINE_SKIP10
+; Simplified conditional branch
+;
+LINE_NSKIP10:
+;
+LDY VAR_Y%
+LDA VAR_Y%+1
+JSR SUPERFIINX
+; Optimizer rule: Even faster INTEGER INC/1
+STY VAR_Y%
+STA VAR_Y%+1
+JMP LINE_440
+;
+LINE_SKIP10:
+;
+;
+LINE_460:
+;
+LDA #$12
+LDY #$00
+STA TMP_ZP
+STY TMP_ZP+1
+LDY VAR_X%
+LDA VAR_X%+1
+JSR ICMP
+; Optimized code for Integer(2)
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+BEQ LT_LT_EQ5
+ROL
+BCC LT_LT5
+LT_LT_EQ5:
+LDA #0
+JMP LT_SKIP5
+LT_LT5:
+LDA #$1
+LT_SKIP5:
+COMP_SKP9:
+BEQ LINE_SKIP11
+; Simplified conditional branch
+;
+LINE_NSKIP11:
+;
+LDY VAR_X%
+LDA VAR_X%+1
+JSR SUPERFIINX
+; Optimizer rule: Even faster INTEGER INC/1
+STY VAR_X%
+STA VAR_X%+1
+JMP LINE_430
+;
+LINE_SKIP11:
+;
+;
+LINE_470:
+;
+LDA #<CONST_13
+LDY #>CONST_13
+JSR STROUTWL
+; Optimizer rule: Memory saving STROUT/1
+LDA #<VAR_T0
+LDY #>VAR_T0
+JSR COPY2_XYA_YREG
+; Optimizer rule: MEM 2 Y_REG/3
+; Optimizer rule: Memory saving copy/4
+; Optimizer rule: Quick copy into REG/7
+<IF !X16>
+SEI
+LDY TIMEADDR
+LDX TIMEADDR+1
+LDA TIMEADDR+2
+CLI
+</IF>
+SEC
+JSR COPYTIME
+JSR GETTIME
+LDX #<VAR_TI
+LDY #>VAR_TI
+JSR FACMEM
+LDA #<VAR_TI
+LDY #>VAR_TI
+JSR COPY2_XYA_XREG
+; Optimizer rule: MEM 2 X_REG/3
+; Optimizer rule: Memory saving copy/4
+; Optimizer rule: Quick copy into REG/7
+JSR YREGFAC
+; Optimizer rule: Y_REG 2 FAC(1)/1
+LDA #<X_REG
+LDY #>X_REG
+; Real in (A/Y) to ARG
+JSR FASTFSUBMEM
+; Optimizer rule: Fast FSUB (MEM)/1
+; Optimizer rule: Combine load and sub/1
+JSR FACXREG
+; Optimizer rule: FAC 2 X_REG(2)/1
+LDA #<CONST_6
+LDY #>CONST_6
 JSR REALFAC
 ; Optimizer rule: Direct loading of values into FAC/3
-; FAC to integer in Y/A
-JSR FACWORD
-STY MOVBSELF10+1
-STA MOVBSELF10+2
-LDA #$2
-MOVBSELF10:
-STA $FFFF
-;
-LINE_160:
-;
-JMP LINE_160
+LDA #<X_REG
+LDY #>X_REG
+; Real in (A/Y) to ARG
+JSR FACDIV
+; Optimizer rule: Combine load and div/1
+JSR FACXREG
+; Optimizer rule: FAC 2 X_REG(2)/1
+JSR REALOUTBRK
+; Optimizer rule: REALOUT + LINEBRK/1
 JSR END
 RTS
 ; *** SUBROUTINES ***
@@ -956,9 +1370,209 @@ RESETROUTECMD
 RTS
 ;###################################
 ;###################################
-STROUTBRKWL	STA A_REG
+INTOUTFASTZ	LDX #32				; SPACE
+LDA TMP_ZP+1
+BPL INTISPOS
+CLC
+LDA TMP_ZP
+EOR #$FF
+ADC #1
+STA TMP_ZP
+LDA TMP_ZP+1
+EOR #$FF
+ADC #0
+STA TMP_ZP+1
+LDX #45				; MINUS
+INTISPOS
+TXA
+JSR CHROUT
+JSR CONVPOSINT
+LDA NUMFLAG
+BNE ALLINTOUTDONE
+LDA #48
+JSR CHROUT
+ALLINTOUTDONE
+RTS
+;###################################
+;###################################
+NUMBEROUT
+BEQ NUMZERO
+ORA #$30
+STA NUMFLAG
+JMP CHROUT
+NUMZERO
+LDX NUMFLAG
+BEQ STILLZERO
+ORA #$30
+JMP CHROUT
+STILLZERO
+RTS
+;###################################
+;###################################
+CONVPOSINT
+JSR INT2BCD
+LDX #0
+STX NUMFLAG
+AND #$0F
+JSR NUMBEROUT
+LDA BCD+1
+LSR
+LSR
+LSR
+LSR
+JSR NUMBEROUT
+LDA BCD+1
+AND #$0F
+TAY
+JSR NUMBEROUT
+LDA BCD
+LSR
+LSR
+LSR
+LSR
+JSR NUMBEROUT
+LDA BCD
+AND #$0F
+JSR NUMBEROUT
+RTS
+;###################################
+;###################################
+INT2BCD
+LDA #0
+STA BCD
+STA BCD+1
+STA BCD+2
+ASL TMP_ZP
+ROL TMP_ZP+1
+SEI
+SED
+LDA BCD
+ADC BCD
+STA BCD
+ASL TMP_ZP
+ROL TMP_ZP+1
+ADC BCD
+STA BCD
+ASL TMP_ZP
+ROL TMP_ZP+1
+ADC BCD
+STA BCD
+ASL TMP_ZP
+ROL TMP_ZP+1
+ADC BCD
+STA BCD
+ASL TMP_ZP
+ROL TMP_ZP+1
+ADC BCD
+STA BCD
+ASL TMP_ZP
+ROL TMP_ZP+1
+ADC BCD
+STA BCD
+LDX #7
+BCDBIT1
+ASL TMP_ZP
+ROL TMP_ZP+1
+LDA BCD
+ADC BCD
+STA BCD
+LDA BCD+1
+ADC BCD+1
+STA BCD+1
+DEX
+BNE BCDBIT1
+LDX #3
+BCDBIT2
+ASL TMP_ZP
+ROL TMP_ZP+1
+LDA BCD
+ADC BCD
+STA BCD
+LDA BCD+1
+ADC BCD+1
+STA BCD+1
+LDA BCD+2
+ADC BCD+2
+STA BCD+2
+DEX
+BNE BCDBIT2
+CLD
+CLI
+RTS
+BCD
+.WORD 0 0
+NUMFLAG
+.BYTE 0
+;###################################
+;###################################
+REALOUTFAST	JSR FACINT
+STA TMP_ZP+1
+STY TMP_ZP
+JMP INTOUTFASTZ
+;###################################
+;###################################
+CHECKFORFASTOUT
+JSR REROUTE
+JSR XREGFAC
+LDA FACEXP
+CMP #$90
+BCS REALOUTINT
+CMP #$81
+BCC REALOUTINT
+MAYBEREALOUTFAST
+LDA FACEXP+3
+BNE REALOUTINT
+LDA FACEXP+4
+BNE REALOUTINT
+LDA FACEXP
+SEC
+SBC #129
+ASL
+TAX
+LDA FACEXP+1
+AND MANTMASK,X
+BNE	REALOUTINT
+INX
+LDA FACEXP+2
+AND MANTMASK,X
+BNE	REALOUTINT
+JMP REALOUTFAST
+REALOUTINT	LDY #0
+JSR FACSTR
+LDY #0
+LDA LOFBUF,Y
+STRLOOPRO	JSR CHROUT
+INY
+LDA LOFBUF,Y
+BNE STRLOOPRO
+RTS
+MANTMASK
+.BYTE 127 255 63 255 31 255 15 255 7 255 3 255 1 255 0 255 0 127 0 63 0 31 0 15 0 7 0 3 0 1
+;###################################
+;###################################
+REALOUTBRK  LDA X_REG
+BNE RNOTNULLBRK
+JMP PRINTNULLBRK
+RNOTNULLBRK	JSR CHECKFORFASTOUT
+LDA #$0D
+JSR CHROUT
+JMP RESETROUTE
+;###################################
+;###################################
+PRINTNULLBRK
+JSR REROUTE
+LDA #$20
+JSR CHROUT
+LDA #$30
+JSR CHROUT
+LDA #$0D
+JSR CHROUT
+JMP RESETROUTE
+;###################################
+;###################################
+STROUTWL	STA A_REG
 STY A_REG+1
-STROUTBRK	JSR REROUTE
+STROUT		JSR REROUTE
 LDA A_REG
 STA INDEX1
 LDA A_REG+1
@@ -967,37 +1581,40 @@ LDY #0
 LDA (INDEX1),Y
 TAX
 INC INDEX1
-BNE PRINTSTR2
+BNE PRINTSTR
 INC INDEX1+1
-PRINTSTR2	JSR PRINTSTRS
+PRINTSTR	JSR PRINTSTRS
 LDA HIGHP			; Update the memory pointer to the last actually assigned one
 STA STRBUFP
 LDA HIGHP+1
 STA STRBUFP+1
-LDA #$0D
-JSR CHROUT
-JMP RESETROUTE 	;RTS is implicit
+JSR RESETROUTE
+RTS
 ;###################################
 ;###################################
-ARRAYACCESS_REAL_S
+INTADD16 	CLC
+TAX
+TYA
+ADC TMP4_REG
+STA TMP4_REG
+TXA
+ADC TMP4_REG+1
+STA TMP4_REG+1
+RTS
+;###################################
+;###################################
+ARRAYACCESS_INTEGER_S
 STA G_REG
 STY G_REG+1
-ARRAYACCESS_REAL
+ARRAYACCESS_INTEGER
 JSR XREGFAC
+ARRAYACCESS_INTEGER_NX
 JSR FACINT
-ARRAYACCESS_REAL_INT
+ARRAYACCESS_INTEGER_INT
 LDX G_REG
 STX TMP_ZP
 LDX G_REG+1
 STX TMP_ZP+1
-STY TMP3_ZP
-STA TMP3_ZP+1
-TAX
-TYA
-ASL
-TAY
-TXA
-ROL
 TAX
 TYA
 ASL
@@ -1007,19 +1624,87 @@ ROL
 STA TMP2_ZP+1
 LDA TMP_ZP
 CLC
-ADC TMP3_ZP
+ADC TMP2_ZP
 STA TMP_ZP
 LDA TMP_ZP+1
-ADC TMP3_ZP+1
+ADC TMP2_ZP+1
 STA TMP_ZP+1
+AIIDI		LDY #1
+LDA (TMP_ZP),Y
+TAX
+DEY
+LDA (TMP_ZP),Y
+TAY
+TXA
+STY TMP2_ZP		; Store for integer optimization later on
+STA TMP2_ZP+1
+JSR INTFAC
+JMP FACXREG	;RTS is implicit
+;###################################
+;###################################
+ARRAYSTORE_INT_INTEGER
+JSR XREGFAC
+JSR FACINT
+ARRAYSTORE_INT_INTEGER_AC
+LDX G_REG
+STX TMP_ZP
+LDX G_REG+1
+STX TMP_ZP+1
+TAX
+TYA
+ASL
+STA TMP2_ZP
+TXA
+ROL
+STA TMP2_ZP+1
 LDA TMP_ZP
 CLC
 ADC TMP2_ZP
-STA TMP3_ZP
+STA TMP_ZP
 LDA TMP_ZP+1
 ADC TMP2_ZP+1
-STA TMP3_ZP+1
-JMP COPY2_XY_XREG
+STA TMP_ZP+1
+LDY #1
+LDA AS_TMP+1
+STA (TMP_ZP),Y
+DEY
+LDA AS_TMP
+STA (TMP_ZP),Y
+RTS
+;###################################
+;###################################
+ARRAYSTORE_INTEGER
+JSR XREGFAC
+ARRAYSTORE_INTEGER_NX
+JSR FACINT
+ARRAYSTORE_INTEGER_INT
+LDX G_REG
+STX TMP_ZP
+LDX G_REG+1
+STX TMP_ZP+1
+TAX
+TYA
+ASL
+STA TMP2_ZP
+TXA
+ROL
+STA TMP2_ZP+1
+LDA TMP_ZP
+CLC
+ADC TMP2_ZP
+STA TMP_ZP
+LDA TMP_ZP+1
+ADC TMP2_ZP+1
+STA TMP_ZP+1
+JSR YREGFAC
+JSR FACINT
+STY TMP3_ZP
+LDY #1
+STA (TMP_ZP),Y
+DEY
+LDA TMP3_ZP
+STA (TMP_ZP),Y
+RTS
 ;###################################
 ;###################################
 ARRAYSTORE_REAL
@@ -1304,6 +1989,17 @@ LDA #1
 STA A_REG
 RTS
 ;###################################
+;###################################
+INTADDARRAY
+TAX
+TYA
+CLC
+ADC TMP2_ZP
+TAY
+TXA
+ADC TMP2_ZP+1
+RTS
+;###################################
 ;##################################
 REALFACPUSH	STA TMP_ZP
 STY	TMP_ZP+1
@@ -1335,31 +2031,6 @@ INC FPSTACKP+1
 NOPVRFPXX	RTS
 ;###################################
 ;###################################
-PUSHREAL	LDX FPSTACKP
-LDY FPSTACKP+1
-JSR FACMEM
-LDA FPSTACKP
-CLC
-ADC #5
-STA FPSTACKP
-BCC NOPVPUR
-INC FPSTACKP+1
-NOPVPUR		RTS
-;###################################
-;###################################
-POPREAL2X	LDA FPSTACKP
-SEC
-SBC #5
-STA FPSTACKP
-BCS NOPVPR2X
-DEC FPSTACKP+1
-NOPVPR2X	LDA FPSTACKP
-LDY FPSTACKP+1
-JSR REALFAC
-JSR XREGARG
-RTS
-;###################################
-;###################################
 POPREAL		LDA FPSTACKP
 SEC
 SBC #5
@@ -1371,18 +2042,39 @@ LDY FPSTACKP+1
 JMP REALFAC
 ;###################################
 ;###################################
-SHR			LDA FACEXP
-BEQ SHROK
+POPREALXREG LDA FPSTACKP
 SEC
-SBC A_REG
-BCS SHROK
-LDA #0
-STA FACSGN
+SBC #5
+STA FPSTACKP
+BCS NOPVPRXR
+DEC FPSTACKP+1
+NOPVPRXR	LDA FPSTACKP
+LDY FPSTACKP+1
+STA TMP_ZP
+STY TMP_ZP+1
+LDY #$4
+LDA (TMP_ZP),Y
+STA X_REG+4
 STA FACLO
+DEY
+LDA (TMP_ZP),Y
+STA X_REG+3
 STA FACMO
+DEY
+LDA (TMP_ZP),Y
+STA X_REG+2
 STA FACMOH
+DEY
+LDA (TMP_ZP),Y
+STA X_REG+1
+STA FACSGN
+ORA #$80
 STA FACHO
-SHROK		STA FACEXP
+DEY
+LDA (TMP_ZP),Y
+STA X_REG
+STA FACEXP
+STY FACOV
 RTS
 ;###################################
 ;###################################
@@ -1409,6 +2101,28 @@ STA TMP_ZP
 BCC NOPV2
 INC TMP_ZP+1
 NOPV2		RTS
+;###################################
+;###################################
+ICMP		STY TMP3_ZP
+STA TMP3_ZP+1
+LDA TMP_ZP+1
+CMP TMP3_ZP+1
+BNE ICMPNE2
+LDA TMP_ZP
+CMP TMP3_ZP
+ICMPNE		BEQ ICMPEQ
+BCS ICMPHIGHER
+JMP ICMPLOWER
+ICMPNE2		BPL ICMPHIGHER
+JMP ICMPLOWER
+ICMPEQ		LDA #0
+RTS
+ICMPLOWER	LDA #$FF
+SEC
+RTS
+ICMPHIGHER	LDA #$01
+CLC
+RTS
 ;###################################
 ;###################################
 COPY2_YREG_XYA
@@ -1476,95 +2190,22 @@ STA Y_REG+4
 RTS
 ;###################################
 ;###################################
-COPY_XREG2YREG
-LDA X_REG
-STA Y_REG
-LDA X_REG+1
-STA Y_REG+1
-LDA X_REG+2
-STA Y_REG+2
-LDA X_REG+3
-STA Y_REG+3
-LDA X_REG+4
-STA Y_REG+4
-RTS
-;###################################
-;###################################
-<IF !BIGRAM>
-FACWORD
-LDA FACEXP			; Check if there's a -0 in FAC1
-BNE DOFACWORD
-STA FACSGN			; make sure that it's not -0
-DOFACWORD:
-JMP XFACWORD
-</IF>
-;###################################
-;###################################
-ONETOFAC    LDX #129
-STX FAC
-DEX
-STX FAC+1
-LDX #0
-STX FAC+2
-STX FAC+3
-STX FAC+4
-STX FAC+5
-STX FAC+15
-RTS
-;###################################
-;###################################
-FASTAND		LDA ARGEXP			; Check ARG for 0
-BNE CHECKFAC
-STA FACSGN			; if so, set FAC to 0 and exit
-STA FACLO
-STA FACMO
-STA FACMOH
-STA FACHO
-STA FACEXP
-RTS
-CHECKFAC	LDA FACEXP			; Check if there's a -1 in FAC1
-BNE FACNOTNULL
-STA FACSGN			; make sure that it's not -0
-RTS				; FAC is 0, then exit
-FACNOTNULL	CMP #$81
-BNE NORMALAND
-LDA FACHO
-CMP #$80
-BNE NORMALAND
-LDA FACMOH
-BNE NORMALAND
-LDA FACMO
-BNE NORMALAND
-LDA FACLO
-BNE NORMALAND
-LDA FACSGN
-ROL
-BCC NORMALAND
-LDA ARGEXP			; Check if there's a -1 in ARG
-CMP #$81
-BNE NORMALAND
-LDA ARGHO
-CMP #$80
-BNE NORMALAND
-LDA ARGMOH
-BNE NORMALAND
-LDA ARGMO
-BNE NORMALAND
-LDA ARGLO
-BNE NORMALAND
-LDA ARGSGN
-ROL
-BCC NORMALAND
-RTS				; both, FAC1 and ARG contain -1...then we leave FAC1 untouched and return
-NORMALAND	JMP ARGAND
-;###################################
-;###################################
 CLRCHNEW
 LDA CHLOCKFLAG
 BNE SKIPCLRCH
 JMP CLRCH
 SKIPCLRCH
 RTS
+;###################################
+;###################################
+SUPERFIINX	INY
+BNE SFIINXNOV
+CLC
+ADC #$1
+CMP #$80
+BNE SFIINXNOV
+JMP ILLEGALQUANTITY
+SFIINXNOV	RTS
 ;###################################
 ;###################################
 NEXTWOFOR
@@ -1594,6 +2235,23 @@ AND FACHO
 STA X_REG+1
 LDA FACEXP
 STA X_REG
+LDA #0			; Why? Don't know...the ROM does this as well...
+STA FACOV
+RTS
+;###################################
+;###################################
+FACYREG		LDA FACLO
+STA Y_REG+4
+LDA FACMO
+STA Y_REG+3
+LDA FACMOH
+STA Y_REG+2
+LDA FACSGN
+ORA #$7F
+AND FACHO
+STA Y_REG+1
+LDA FACEXP
+STA Y_REG
 LDA #0			; Why? Don't know...the ROM does this as well...
 STA FACOV
 RTS
@@ -2005,19 +2663,188 @@ STX FACEXP
 STX FACSGN
 RTS
 ;###################################
+;###################################
+FASTFMULMEM
+JSR MEMARG
+FASTFMULARG
+BEQ FFMUL_MULTRT    ; JUMP IF FAC IS ZERO.
+LDA ARGEXP
+BEQ FFMUL_ZEREMV    ; JUMP IF ARG IS ZERO.
+CLC
+ADC FACEXP
+BCC FFMUL_TRYOFF
+CLC
+BPL FFMUL_ADJUST
+JMP ILLEGALQUANTITY
+FFMUL_ZEREMV
+LDY #0
+STY FACEXP     		; RESULT IS ZERO.
+STY FACSGN
+FFMUL_MULTRT
+RTS
+FFMUL_TRYOFF
+BPL FFMUL_ZEREMV    ; JUMP IF UNDERFLOW.
+FFMUL_ADJUST
+ADC #$80       		; CARRY IS ALWAYS CLEAR HERE.
+BEQ FFMUL_ZEREMV    ; JUMP IF UNDERFLOW.
+STA FACEXP
+LDA ARISGN
+STA FACSGN
+LDY #0
+STY RESHOP
+STY RESHO
+STY RESMOH
+STY RESMO
+STY RESLO
+STY RESOV
+STY FACHOP
+FFMUL_B0
+LSR ARGLO      		; B0
+BCC FFMUL_B1
+LDA RESOV
+CLC
+ADC FACMOH     		; A2
+STA RESOV
+LDA RESLO
+ADC FACHO      		; A3
+STA RESLO
+LDA RESMO
+ADC FACHOP     		; A4
+STA RESMO
+BCC FFMUL_B1
+INC RESMOH
+BNE FFMUL_B1
+INC RESHO
+BNE FFMUL_B1
+INC RESHOP
+FFMUL_B1
+LSR ARGMO      		; B1
+BCC FFMUL_B2
+LDA RESOV
+CLC
+ADC FACMO      		; A1
+STA RESOV
+LDA RESLO
+ADC FACMOH     		; A2
+STA RESLO
+LDA RESMO
+ADC FACHO      		; A3
+STA RESMO
+LDA RESMOH
+ADC FACHOP     		; A4
+STA RESMOH
+BCC FFMUL_B2
+INC RESHO
+BNE FFMUL_B2
+INC RESHOP
+FFMUL_B2
+LSR ARGMOH     		; B2
+BCC FFMUL_B3
+LDA RESOV
+CLC
+ADC FACLO      		; A0
+STA RESOV
+LDA RESLO
+ADC FACMO      		; A1
+STA RESLO
+LDA RESMO
+ADC FACMOH     		; A2
+STA RESMO
+LDA RESMOH
+ADC FACHO      		; A3
+STA RESMOH
+LDA RESHO
+ADC FACHOP     		; A4
+STA RESHO
+BCC FFMUL_B3
+INC RESHOP
+FFMUL_B3
+LSR ARGHO      		; B3
+BCC FFMUL_ROTA
+LDA RESOV
+CLC
+ADC FACOV      		; AV
+STA RESOV
+LDA RESLO
+ADC FACLO      		; A0
+STA RESLO
+LDA RESMO
+ADC FACMO      		; A1
+STA RESMO
+LDA RESMOH
+ADC FACMOH     		; A2
+STA RESMOH
+LDA RESHO
+ADC FACHO      		; A3
+STA RESHO
+LDA RESHOP
+ADC FACHOP     		; A4
+STA RESHOP
+FFMUL_ROTA
+ASL FACOV
+ROL FACLO
+ROL FACMO
+ROL FACMOH
+ROL FACHO
+ROL FACHOP
+BMI FFMUL_FIN
+JMP FFMUL_B0
+FFMUL_FIN
+LDA RESHOP
+STA FACHO
+LDA RESHO
+STA FACMOH
+LDA RESMOH
+STA FACMO
+LDA RESMO
+STA FACLO
+LDA RESLO
+STA FACOV
+JMP FCNORMAL    		; IN BASIC/XADD.S
+MUL10
+JSR ARGFAC      	; ARG = FAC; LEAVES EXPONENT IN A REGISTER.
+TAX            		; EXPONENT
+BEQ FFMUL_MUL101    ; RETURN IF ZERO.
+CLC
+ADC #2
+BCS FFMUL_MUL102    ; JUMP IF OVERFLOW
+STA FACEXP     		; STORE NEW EXPONENT.
+LDY #0
+STY ARISGN
+JSR FASTFADDARG      ; THE Z FLAG IS CLEAR HERE.
+INC FACEXP
+BEQ FFMUL_MUL102     ; JUMP IF OVERFLOW
+FFMUL_MUL101
+RTS
+FFMUL_MUL102
+JMP ILLEGALQUANTITY
+MUL6
+JSR ARGFAC      	; ARG = FAC
+TAX            		; EXPONENT
+BEQ FFMUL_MUL61     ; RETURN IF ZERO.
+INC FACEXP
+BEQ FFMUL_MUL62     ; JUMP IF OVERFLOW
+LDY #0
+STY ARISGN
+JSR FASTFADDARG      ; THE Z FLAG IS CLEAR HERE.
+INC FACEXP
+BEQ FFMUL_MUL62     ; OVERFLOW
+FFMUL_MUL61
+RTS
+FFMUL_MUL62
+JMP ILLEGALQUANTITY
+;###################################
 ;###############################
 INITVARS
 JSR INITSTRVARS
 LDA #0
 LDY #4
 REALINITLOOP0:
-STA VAR_A,Y
-STA VAR_J,Y
+STA VAR_TI,Y
+STA VAR_T0,Y
 STA VAR_X,Y
-STA VAR_SM,Y
-STA VAR_S,Y
-STA VAR_B,Y
-STA VAR_FI,Y
+STA VAR_Y,Y
+STA VAR_I,Y
 DEY
 BMI REALLOOPEXIT0
 JMP REALINITLOOP0
@@ -2027,56 +2854,70 @@ LDY #>VAR_A[]
 JSR INITSPARAMS
 JSR INITNARRAY
 LDA #0
+STA VAR_X%
+STA VAR_X%+1
+STA VAR_Y%
+STA VAR_Y%+1
+LDA #<VAR_A%[]
+LDY #>VAR_A%[]
+JSR INITSPARAMS
+JSR INITNARRAY
+LDA #<VAR_AI%[]
+LDY #>VAR_AI%[]
+JSR INITSPARAMS
+JSR INITNARRAY
+LDA #<VAR_FA%[]
+LDY #>VAR_FA%[]
+JSR INITSPARAMS
+JSR INITNARRAY
+LDA #0
 RTS
 ;###############################
 ; *** SUBROUTINES END ***
 ; *** CONSTANTS ***
 CONSTANTS
-; CONST: ${clear}
-CONST_0	.BYTE 7
-.STRG "{clear}"
 ; CONST: #0
 
-CONST_1R	.REAL 0.0
-; CONST: #-2.0
 
-CONST_2	.REAL -2.0
+; CONST: #19
+
+CONST_1R	.REAL 19.0
 ; CONST: #1
 
-CONST_3R	.REAL 1.0
-; CONST: #-80.0
+CONST_2R	.REAL 1.0
+; CONST: #21
 
-CONST_4	.REAL -80.0
-; CONST: #2
+CONST_3R	.REAL 21.0
+; CONST: #13
 
-CONST_5R	.REAL 2.0
-; CONST: #3
+CONST_4R	.REAL 13.0
+; CONST: $for a(x,y):
+CONST_5	.BYTE 12
+.STRG "for a(x,y): "
+; CONST: #60.0
 
-CONST_6R	.REAL 3.0
-; CONST: #80
-
-CONST_7R	.REAL 80.0
-; CONST: #6
+CONST_6	.REAL 60.0
+; CONST: #18
 
 
+; CONST: $goto a%(x%,y%):
+CONST_8	.BYTE 16
+.STRG "goto a%(x%,y%): "
 ; CONST: #4
 
-CONST_9R	.REAL 4.0
-; CONST: #1105.0
 
-CONST_10	.REAL 1105.0
-; CONST: #23
-
-CONST_11R	.REAL 23.0
-; CONST: ${reverse on}{space*39}
-CONST_12	.BYTE 22
-.STRG "{reverse on}{space*39}"
-; CONST: #160
+; CONST: #2
 
 
-; CONST: #32
+; CONST: $goto fa%(a%(y%)+x%):
+CONST_11	.BYTE 21
+.STRG "goto fa%(a%(y%)+x%): "
+; CONST: #20480
 
-
+CONST_12R	.REAL 20480.0
+; CONST: $poke a%(y%)+x%:
+CONST_13	.BYTE 16
+.STRG "poke a%(y%)+x%: "
 ;###############################
 ; ******** DATA ********
 DATAS
@@ -2086,24 +2927,36 @@ CONSTANTS_END
 ;###################################
 ; *** VARIABLES ***
 VARIABLES
-; VAR: A[]
-.BYTE 1
-.WORD 55
-VAR_A[]	.ARRAY 55
-; VAR: A
-VAR_A	.REAL 0.0
-; VAR: J
-VAR_J	.REAL 0.0
+; VAR: TI
+VAR_TI	.REAL 0.0
+; VAR: T0
+VAR_T0	.REAL 0.0
 ; VAR: X
 VAR_X	.REAL 0.0
-; VAR: SM
-VAR_SM	.REAL 0.0
-; VAR: S
-VAR_S	.REAL 0.0
-; VAR: B
-VAR_B	.REAL 0.0
-; VAR: FI
-VAR_FI	.REAL 0.0
+; VAR: Y
+VAR_Y	.REAL 0.0
+; VAR: A[]
+.BYTE 1
+.WORD 2205
+VAR_A[]	.ARRAY 2205
+; VAR: X%
+VAR_X%	.WORD 0
+; VAR: Y%
+VAR_Y%	.WORD 0
+; VAR: A%[]
+.BYTE 0
+.WORD 882
+VAR_A%[]	.ARRAY 882
+; VAR: I
+VAR_I	.REAL 0.0
+; VAR: AI%[]
+.BYTE 0
+.WORD 42
+VAR_AI%[]	.ARRAY 42
+; VAR: FA%[]
+.BYTE 0
+.WORD 802
+VAR_FA%[]	.ARRAY 802
 STRINGVARS_START
 ; VAR: TI$
 VAR_TI$ .WORD EMPTYSTR

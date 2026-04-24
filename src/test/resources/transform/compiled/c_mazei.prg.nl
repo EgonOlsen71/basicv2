@@ -238,13 +238,10 @@ JSR SHL
 JSR FACXREG
 ; Optimizer rule: FAC 2 X_REG(2)/1
 LDY #3
-LDA #0
 STY A_REG
-STA A_REG+1
 JSR YREGFAC
-; Optimizer rule: Y_REG 2 FAC(1)/1
-; FAC = FAC<<A
 JSR SHL
+; Optimizer rule: Remove A_REG+1 access/4
 ; Optimizer rule: FAC into REG?, REG? into FAC/0
 LDA #<X_REG
 LDY #>X_REG
@@ -388,13 +385,10 @@ JSR SHL
 JSR FACXREG
 ; Optimizer rule: FAC 2 X_REG(2)/1
 LDY #3
-LDA #0
 STY A_REG
-STA A_REG+1
 JSR YREGFAC
-; Optimizer rule: Y_REG 2 FAC(1)/1
-; FAC = FAC<<A
 JSR SHL
+; Optimizer rule: Remove A_REG+1 access/4
 ; Optimizer rule: FAC into REG?, REG? into FAC/0
 LDA #<X_REG
 LDY #>X_REG
@@ -535,13 +529,10 @@ JSR SHL
 JSR FACXREG
 ; Optimizer rule: FAC 2 X_REG(2)/1
 LDY #3
-LDA #0
 STY A_REG
-STA A_REG+1
 JSR YREGFAC
-; Optimizer rule: Y_REG 2 FAC(1)/1
-; FAC = FAC<<A
 JSR SHL
+; Optimizer rule: Remove A_REG+1 access/4
 ; Optimizer rule: FAC into REG?, REG? into FAC/0
 LDA #<X_REG
 LDY #>X_REG
@@ -2355,13 +2346,10 @@ JSR SHL
 JSR FACXREG
 ; Optimizer rule: FAC 2 X_REG(2)/1
 LDY #3
-LDA #0
 STY A_REG
-STA A_REG+1
 JSR YREGFAC
-; Optimizer rule: Y_REG 2 FAC(1)/1
-; FAC = FAC<<A
 JSR SHL
+; Optimizer rule: Remove A_REG+1 access/4
 ; Optimizer rule: FAC into REG?, REG? into FAC/0
 LDA #<X_REG
 LDY #>X_REG
@@ -2572,13 +2560,10 @@ JSR SHL
 JSR FACXREG
 ; Optimizer rule: FAC 2 X_REG(2)/1
 LDY #3
-LDA #0
 STY A_REG
-STA A_REG+1
 JSR YREGFAC
-; Optimizer rule: Y_REG 2 FAC(1)/1
-; FAC = FAC<<A
 JSR SHL
+; Optimizer rule: Remove A_REG+1 access/4
 ; Optimizer rule: FAC into REG?, REG? into FAC/0
 LDA #<X_REG
 LDY #>X_REG
@@ -2663,13 +2648,10 @@ JSR SHL
 JSR FACXREG
 ; Optimizer rule: FAC 2 X_REG(2)/1
 LDY #3
-LDA #0
 STY A_REG
-STA A_REG+1
 JSR YREGFAC
-; Optimizer rule: Y_REG 2 FAC(1)/1
-; FAC = FAC<<A
 JSR SHL
+; Optimizer rule: Remove A_REG+1 access/4
 ; Optimizer rule: FAC into REG?, REG? into FAC/0
 LDA #<X_REG
 LDY #>X_REG
@@ -2759,13 +2741,10 @@ JSR SHL
 JSR FACXREG
 ; Optimizer rule: FAC 2 X_REG(2)/1
 LDY #3
-LDA #0
 STY A_REG
-STA A_REG+1
 JSR YREGFAC
-; Optimizer rule: Y_REG 2 FAC(1)/1
-; FAC = FAC<<A
 JSR SHL
+; Optimizer rule: Remove A_REG+1 access/4
 ; Optimizer rule: FAC into REG?, REG? into FAC/0
 LDA #<X_REG
 LDY #>X_REG
@@ -3226,13 +3205,10 @@ JSR SHL
 JSR FACXREG
 ; Optimizer rule: FAC 2 X_REG(2)/1
 LDY #3
-LDA #0
 STY A_REG
-STA A_REG+1
 JSR YREGFAC
-; Optimizer rule: Y_REG 2 FAC(1)/1
-; FAC = FAC<<A
 JSR SHL
+; Optimizer rule: Remove A_REG+1 access/4
 ; Optimizer rule: FAC into REG?, REG? into FAC/0
 LDA #<X_REG
 LDY #>X_REG
@@ -3305,13 +3281,10 @@ JSR SHL
 JSR FACXREG
 ; Optimizer rule: FAC 2 X_REG(2)/1
 LDY #3
-LDA #0
 STY A_REG
-STA A_REG+1
 JSR YREGFAC
-; Optimizer rule: Y_REG 2 FAC(1)/1
-; FAC = FAC<<A
 JSR SHL
+; Optimizer rule: Remove A_REG+1 access/4
 ; Optimizer rule: FAC into REG?, REG? into FAC/0
 LDA #<X_REG
 LDY #>X_REG
@@ -3436,13 +3409,10 @@ JSR SHL
 JSR FACXREG
 ; Optimizer rule: FAC 2 X_REG(2)/1
 LDY #3
-LDA #0
 STY A_REG
-STA A_REG+1
 JSR YREGFAC
-; Optimizer rule: Y_REG 2 FAC(1)/1
-; FAC = FAC<<A
 JSR SHL
+; Optimizer rule: Remove A_REG+1 access/4
 ; Optimizer rule: FAC into REG?, REG? into FAC/0
 LDA #<X_REG
 LDY #>X_REG
@@ -3515,13 +3485,10 @@ JSR SHL
 JSR FACXREG
 ; Optimizer rule: FAC 2 X_REG(2)/1
 LDY #3
-LDA #0
 STY A_REG
-STA A_REG+1
 JSR YREGFAC
-; Optimizer rule: Y_REG 2 FAC(1)/1
-; FAC = FAC<<A
 JSR SHL
+; Optimizer rule: Remove A_REG+1 access/4
 ; Optimizer rule: FAC into REG?, REG? into FAC/0
 LDA #<X_REG
 LDY #>X_REG
@@ -3675,13 +3642,10 @@ JSR SHL
 JSR FACXREG
 ; Optimizer rule: FAC 2 X_REG(2)/1
 LDY #3
-LDA #0
 STY A_REG
-STA A_REG+1
 JSR YREGFAC
-; Optimizer rule: Y_REG 2 FAC(1)/1
-; FAC = FAC<<A
 JSR SHL
+; Optimizer rule: Remove A_REG+1 access/4
 ; Optimizer rule: FAC into REG?, REG? into FAC/0
 LDA #<X_REG
 LDY #>X_REG
@@ -3754,13 +3718,10 @@ JSR SHL
 JSR FACXREG
 ; Optimizer rule: FAC 2 X_REG(2)/1
 LDY #3
-LDA #0
 STY A_REG
-STA A_REG+1
 JSR YREGFAC
-; Optimizer rule: Y_REG 2 FAC(1)/1
-; FAC = FAC<<A
 JSR SHL
+; Optimizer rule: Remove A_REG+1 access/4
 ; Optimizer rule: FAC into REG?, REG? into FAC/0
 LDA #<X_REG
 LDY #>X_REG
@@ -3885,13 +3846,10 @@ JSR SHL
 JSR FACXREG
 ; Optimizer rule: FAC 2 X_REG(2)/1
 LDY #3
-LDA #0
 STY A_REG
-STA A_REG+1
 JSR YREGFAC
-; Optimizer rule: Y_REG 2 FAC(1)/1
-; FAC = FAC<<A
 JSR SHL
+; Optimizer rule: Remove A_REG+1 access/4
 ; Optimizer rule: FAC into REG?, REG? into FAC/0
 LDA #<X_REG
 LDY #>X_REG
@@ -3964,13 +3922,10 @@ JSR SHL
 JSR FACXREG
 ; Optimizer rule: FAC 2 X_REG(2)/1
 LDY #3
-LDA #0
 STY A_REG
-STA A_REG+1
 JSR YREGFAC
-; Optimizer rule: Y_REG 2 FAC(1)/1
-; FAC = FAC<<A
 JSR SHL
+; Optimizer rule: Remove A_REG+1 access/4
 ; Optimizer rule: FAC into REG?, REG? into FAC/0
 LDA #<X_REG
 LDY #>X_REG
@@ -4094,13 +4049,10 @@ JSR SHL
 JSR FACXREG
 ; Optimizer rule: FAC 2 X_REG(2)/1
 LDY #3
-LDA #0
 STY A_REG
-STA A_REG+1
 JSR YREGFAC
-; Optimizer rule: Y_REG 2 FAC(1)/1
-; FAC = FAC<<A
 JSR SHL
+; Optimizer rule: Remove A_REG+1 access/4
 ; Optimizer rule: FAC into REG?, REG? into FAC/0
 LDA #<X_REG
 LDY #>X_REG
@@ -4486,13 +4438,10 @@ JSR SHL
 JSR FACXREG
 ; Optimizer rule: FAC 2 X_REG(2)/1
 LDY #3
-LDA #0
 STY A_REG
-STA A_REG+1
 JSR YREGFAC
-; Optimizer rule: Y_REG 2 FAC(1)/1
-; FAC = FAC<<A
 JSR SHL
+; Optimizer rule: Remove A_REG+1 access/4
 ; Optimizer rule: FAC into REG?, REG? into FAC/0
 LDA #<X_REG
 LDY #>X_REG
@@ -4720,13 +4669,10 @@ JSR SHL
 JSR FACXREG
 ; Optimizer rule: FAC 2 X_REG(2)/1
 LDY #3
-LDA #0
 STY A_REG
-STA A_REG+1
 JSR YREGFAC
-; Optimizer rule: Y_REG 2 FAC(1)/1
-; FAC = FAC<<A
 JSR SHL
+; Optimizer rule: Remove A_REG+1 access/4
 ; Optimizer rule: FAC into REG?, REG? into FAC/0
 LDA #<X_REG
 LDY #>X_REG

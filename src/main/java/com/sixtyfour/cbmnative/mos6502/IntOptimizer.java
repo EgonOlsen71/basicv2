@@ -2134,6 +2134,53 @@ public class IntOptimizer {
 						
 					}
 				}));
+		
+		// issues/76
+		intPatterns.add(new IntPattern(true, "Faster ADD in int array index",
+				new String[] {"JSR ARRAYACCESS_INTEGER_INT", "LDY {MEM0}", "LDA {MEM0}", "JSR INTFAC", "LDA #<X_REG", "LDY #>X_REG", "JSR FASTFADDMEM", "JSR {*}"},
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						String jumpy = cleaned.get(7);
+						if (jumpy.contains("FACXREG") || jumpy.contains("FACWORD")) {
+							List<String> rep = new ArrayList<>();
+							rep.add(cleaned.get(0));
+							rep.add(cleaned.get(1));
+							rep.add(cleaned.get(2));
+							rep.add("JSR INTADDARRAY");
+							if (jumpy.contains("FACXREG")) {
+								rep.add("JSR INTFAC");
+								rep.add("JSR FACXREG");
+							}
+							return combine(pattern, rep);
+						}
+						pattern.reset();
+						return input;
+				}
+				}));
+		
+		// issues/76 + Part 2
+		intPatterns.add(new IntPattern(true, "Direct store of integer in array",
+				new String[] {"JSR INTFAC", "JSR FACXREG", "NOP", "LDY {*}", "LDA {*}", "STY AS_TMP", "STA AS_TMP+1", "LDA #<{MEM0}", "LDY #>{MEM0}", "STA G_REG", "STY G_REG+1", "JSR ARRAYSTORE_INT_INTEGER"},
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						List<String> rep = new ArrayList<>();
+						rep.add(cleaned.get(3).replace("LDY", "LDX"));
+						rep.add("STX AS_TMP");
+						rep.add(cleaned.get(4).replace("LDA", "LDX"));
+						rep.add("STX AS_TMP+1");
+						rep.add(cleaned.get(7).replace("LDA", "LDX"));
+						rep.add("STX G_REG");
+						rep.add(cleaned.get(8).replace("LDY", "LDX"));
+						rep.add("STX G_REG+1");
+						rep.add("JSR ARRAYSTORE_INT_INTEGER_AC");
+						return combine(pattern, rep);
+				}
+				}));
+		
 		return intPatterns;
 	}
 

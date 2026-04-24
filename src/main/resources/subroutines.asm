@@ -2528,6 +2528,16 @@ INTINTSUBVAR2
 INTSUBVAREND
 			JMP INTFAC
 ;###################################
+INTADDARRAY
+			TAX
+			TYA
+			CLC
+			ADC TMP2_ZP
+			TAY
+			TXA
+			ADC TMP2_ZP+1
+			RTS
+;###################################
 INTADDVAROPT
 			LDX #0			; Mark as "further int opt possible"
 			BEQ INTADDADD
