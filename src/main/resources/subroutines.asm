@@ -2148,26 +2148,75 @@ ADFOUNDFOR	LDA TMP_ZP		; Adjust the stack so that it points onto the last entry 
 			LDA TMP_ZP+1
 			STA FORSTACKP+1
 			RTS
+,###################################
+SHAREDINITFOR
+            JSR ADJUSTSTACK
+            LDA FORSTACKP
+            STA TMP_ZP
+            LDA FORSTACKP+1
+            STA TMP_ZP+1
+            LDY #0
+            LDA A_REG
+            STA (TMP_ZP),Y
+            INY
+            LDA A_REG+1
+            STA (TMP_ZP),Y
+            INY
+            LDA JUMP_TARGET
+            STA (TMP_ZP),Y
+            INY
+            LDA JUMP_TARGET+1
+            STA (TMP_ZP),Y
+            INY
+            STY TMP3_ZP
+            RTS
 ;###################################
-INITFOR		JSR ADJUSTSTACK
-			LDA FORSTACKP
-			STA TMP_ZP
-			LDA FORSTACKP+1
-			STA TMP_ZP+1
-			LDY #0
-			LDA A_REG
-			STA (TMP_ZP),Y
-			INY
-			LDA A_REG+1
-			STA (TMP_ZP),Y
-			INY
-			LDA JUMP_TARGET
-			STA (TMP_ZP),Y
-			INY
-			LDA JUMP_TARGET+1
-			STA (TMP_ZP),Y
-			INY
-			STY TMP3_ZP
+STORE_INTVAL
+            JSR SGNFAC
+            STA TMP_FLAG
+            JSR FACINT
+            PHA
+            TYA
+            TAX
+            LDY #1
+            PLA
+            STA (TMP_ZP),Y
+            TXA
+            DEY
+            STA (TMP_ZP),Y
+            RTS
+;###################################
+INITFORINT  JSR SHAREDINITFOR
+            JSR INCTMPZP
+            JSR POPREAL
+            JSR STORE_INTVAL
+            LDY #5
+            STY TMP3_ZP
+            JSR INCTMPZP
+            JSR POPREAL
+            JSR STORE_INTVAL
+            LDY #5
+            STY TMP3_ZP
+            JSR INCTMPZP
+            LDY #0
+            LDA TMP_FLAG
+            STA (TMP_ZP),Y
+            INY
+            LDA #2          ; #2 flags integer loop, #1 flags real (default)
+            STA (TMP_ZP),Y
+            INY
+            LDA #15
+            STA (TMP_ZP),Y
+            LDY #3
+            STY TMP3_ZP
+            JSR INCTMPZP
+            LDA TMP_ZP
+            STA FORSTACKP
+            LDA TMP_ZP+1
+            STA FORSTACKP+1
+            RTS
+;###################################
+INITFOR		JSR SHAREDINITFOR
 			JSR INCTMPZP
 			JSR POPREAL
 			LDX TMP_ZP
@@ -2204,7 +2253,165 @@ INITFOR		JSR ADJUSTSTACK
 			LDA TMP_ZP+1
 			STA FORSTACKP+1
 			RTS
+;###################################
+COMPARE_PTRS_INT
+            TAX
+            LDA TMP_ZP
+            PHA
+            LDA TMP_ZP+1
+            PHA
+            TXA
+            STA TMP_ZP
+            STY TMP_ZP+1
 
+            LDY #1              ; Index for High Byte
+            LDA (TMP_ZP),Y      ; Get High Byte of first value
+            CMP (TMP2_ZP),Y     ; Compare with High Byte of second value
+            BCC IS_LT_INT       ; If High < High, then TMP_ZP is strictly less than
+            BNE IS_GT_INT       ; If High > High, then TMP_ZP is strictly greater than
+
+            DEY                 ; High bytes were equal, check Low Byte (Y=0)
+            LDA (TMP_ZP),Y
+            CMP (TMP2_ZP),Y
+            BCC IS_LT_INT       ; If Low < Low, then TMP_ZP is less than
+            BNE IS_GT_INT       ; If Low > Low, then TMP_ZP is greater than
+
+            LDX #0              ; They are perfectly equal
+            JMP RESTORE_AND_EXIT
+IS_LT_INT   LDX #1              ; TMP_ZP < TMP2_ZP
+            JMP RESTORE_AND_EXIT
+IS_GT_INT   LDX #255            ; TMP_ZP > TMP2_ZP
+RESTORE_AND_EXIT
+            PLA
+            STA TMP_ZP+1
+            PLA
+            STA TMP_ZP
+            TXA
+            RTS
+;###################################
+NEXT_INT_IMPL
+FOUNDFOR_INT
+           LDA TMP_ZP
+           STA TMP2_REG
+           LDA TMP_ZP+1
+           STA TMP2_REG+1
+VARREAL_INT
+           LDY #0
+           STY A_REG+1 ; Has to be done anyway...so we can do it here as well
+           LDA (TMP_ZP),Y
+           STA TMP2_ZP
+           INY
+           LDA (TMP_ZP),Y
+           STA TMP2_ZP+1
+CALCNEXT_INT
+           LDA TMP_ZP
+           CLC
+           ADC #4
+           STA TMP_ZP
+           BCC NOPV2IN_INT
+           INC TMP_ZP+1
+NOPV2IN_INT
+           STA TMP_REG
+           LDY TMP_ZP+1
+           STY TMP_REG+1
+           LDY #0
+           LDA (TMP2_ZP),Y
+           CLC
+           ADC (TMP_ZP),Y
+           PHA
+           INY
+           LDA (TMP2_ZP),Y
+           ADC (TMP_ZP),Y
+           PHA
+           LDA TMP2_REG
+           STA TMP_ZP
+           LDA TMP2_REG+1
+           STA TMP_ZP+1
+STOREREAL_INT
+           LDY #1
+           PLA
+           STA (TMP2_ZP),Y
+           DEY
+           PLA
+           STA (TMP2_ZP),Y
+CMPFORXX_INT
+           LDA #5
+           STA TMP3_ZP
+           LDA TMP_REG
+           CLC
+           ADC #5
+           STA TMP_REG
+           BCC NOPV3_INT
+           INC TMP_REG+1
+NOPV3_INT
+           LDY TMP_REG+1
+           JSR COMPARE_PTRS_INT   ;CMPFAC (INT)
+           TAX                    ;save the result of the comparison for later use
+           BEQ LOOPING_INT
+
+           PHA
+           LDY #14
+           LDA (TMP_ZP),Y
+           BEQ STEPZERO_INT
+           ROL
+           BCC STEPPOS_INT
+STEPNEG_INT
+           PLA
+           ROL
+           BCC LOOPING2_INT
+           BCS EXITLOOP_INT
+STEPPOS_INT
+           PLA
+           ROL
+           BCC EXITLOOP_INT
+           JMP LOOPING2_INT
+LOOPING_INT
+           LDY #14          ; handle the special case of making the code set the loop variable to an exit condition in a step 0 loop
+           LDA (TMP_ZP),Y
+           BNE LOOPING2_INT ; Not step 0 => normal handling
+           INY
+           LDA (TMP_ZP),Y
+           BNE LOOPING2_INT
+           TXA              ; step 0 and equals (checked above and saved in X) => exit
+           BEQ EXITLOOP_INT
+LOOPING2_INT
+           LDA TMP3_REG
+           STA FORSTACKP
+           LDA TMP3_REG+1
+           STA FORSTACKP+1
+           LDA TMP2_REG
+           CLC
+           ADC #2
+           STA TMP2_REG
+           BCC NOPV4IN_INT
+           INC TMP2_REG+1
+NOPV4IN_INT
+           LDY #0
+           STY A_REG
+           STA TMP_ZP
+           LDA TMP2_REG+1
+           STA TMP_ZP+1
+           LDA (TMP_ZP),Y
+           STA JUMP_TARGET
+           INY
+           LDA (TMP_ZP),Y
+           STA JUMP_TARGET+1
+           RTS
+
+STEPZERO_INT
+           PLA             ; step 0
+           JMP LOOPING2_INT
+
+EXITLOOP_INT
+           LDA TMP2_REG
+           STA FORSTACKP
+           LDA TMP2_REG+1
+           STA FORSTACKP+1
+           LDA #1
+           STA A_REG
+           RTS
+;###################################
+NEXT_INT    JMP NEXT_INT_IMPL
 ;###################################
 NEXT		LDA FORSTACKP
 			STA TMP_ZP
@@ -2223,8 +2430,8 @@ NOPV1N1		LDY #0
 			LDA (TMP_ZP),Y
 			BNE NOGOSUB
 			JMP NEXTWOFOR
-NOGOSUB
-			INY
+NOGOSUB     STA TMP_REG             ; save for later
+            INY
 			LDA TMP_ZP
 			SEC
 			SBC (TMP_ZP),Y
@@ -2244,7 +2451,10 @@ CMPFOR		CMP (TMP_ZP),Y
 LOW0		LDX A_REG+1
 			BEQ FOUNDFOR
 			BNE CMPFOR
-FOUNDFOR	LDA TMP_ZP
+FOUNDFOR	LDA TMP_REG
+            CMP #2
+            BEQ NEXT_INT        ;# FOR loop with int variable
+            LDA TMP_ZP
 			STA TMP2_REG
 			LDA TMP_ZP+1
 			STA TMP2_REG+1
@@ -2349,7 +2559,6 @@ EXITLOOP	LDA TMP2_REG
 			LDA #1
 			STA A_REG
 			RTS
-
 ;###################################
 RETURN		LDA FORSTACKP
 			STA TMP_ZP
@@ -3872,6 +4081,14 @@ PEEKBYTEORSUBINT
 			TAY
 			LDA #0
 			JMP PEEKBYTESTORE
+;###################################
+PEEKBYTEADDINT
+            JSR PEEKBYTESUBINT
+            TYA
+            CLC
+            ADC A_REG
+            STA TMP2_ZP
+            RTS
 ;###################################
 PEEKBYTEADD
 			JSR PEEKBYTEADDSUB

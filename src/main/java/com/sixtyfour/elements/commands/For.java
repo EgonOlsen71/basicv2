@@ -38,6 +38,8 @@ public class For extends AbstractCommand {
 	/** The running. */
 	private boolean running = false;
 
+	private boolean isInteger = false;
+
 	/**
 	 * Instantiates a new for.
 	 */
@@ -112,7 +114,11 @@ public class For extends AbstractCommand {
 		term = Parser.getTerm(config, assignment, machine, true, true);
 
 		if (var.getType() == Type.INTEGER) {
-			syntaxError(linePart);
+			if (!config.isAllowForIntsInLoops()) {
+				syntaxError(linePart);
+			} else {
+				isInteger = true;
+			}
 		}
 
 		if (!var.getType().equals(term.getType())
@@ -183,7 +189,7 @@ public class For extends AbstractCommand {
 		after.addAll(compiler.compileToPseudoCode(config, machine, endTerm));
 		after.addAll(compiler.compileToPseudoCode(config, machine, stepTerm));
 		after.add("MOV A,(" + varLabel + ")");
-		after.add("JSR INITFOR");
+		after.add(isInteger?"JSR INITFORINT":"JSR INITFOR");
 
 		CodeContainer cc = new CodeContainer(before, expr, after);
 		List<CodeContainer> ccs = new ArrayList<CodeContainer>();

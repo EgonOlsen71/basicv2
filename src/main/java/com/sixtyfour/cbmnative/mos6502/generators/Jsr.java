@@ -31,7 +31,7 @@ public class Jsr extends JumpBase {
 	@Override
 	public void generateCode(GeneratorContext context, String line, List<String> nCode, List<String> subCode,
 			Map<String, String> name2label) {
-		if (line.equals("JSR INITFOR")) {
+		if (line.startsWith("JSR INITFOR")) {
 			String name = "FORLOOP" + (forCnt++);
 			nCode.add("LDA #<" + name);
 			nCode.add("STA JUMP_TARGET");

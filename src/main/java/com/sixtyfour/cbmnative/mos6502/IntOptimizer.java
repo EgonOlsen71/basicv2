@@ -1041,7 +1041,35 @@ public class IntOptimizer {
 								return input;
 							}
 						}));
-		
+
+		// POKE o%, PEEK(O%)+x%
+		intPatterns
+				.add(new IntPattern(
+						true, "Optimized code for PEEK%+X%(2)", new String[] { "LDY {*}", "LDA {*}", "JSR INTFAC", "JSR PUSHREAL",
+						"JSR FACYREG", "LDY {*}", "LDA {*}", "STY A_REG",  "STA A_REG+1", "JSR PEEKBYTEADD", "JSR POPREAL",
+						"JSR FACWORD", "STY {*}", "STA {*}", "LDY TMP2_ZP" },
+						new AbstractCodeModifier() {
+							@Override
+							public List<String> modify(IntPattern pattern, List<String> input) {
+								input = super.modify(pattern, input);
+								String jumpy = cleaned.get(12);
+								if (jumpy.contains("MOVBSELF")) {
+									List<String> rep = new ArrayList<>();
+									rep.add(cleaned.get(5));
+									rep.add(cleaned.get(7));
+									rep.add(cleaned.get(0));
+									rep.add(cleaned.get(1));
+									rep.add(cleaned.get(12));
+									rep.add(cleaned.get(13));
+									rep.add("JSR PEEKBYTEADDINT");
+									rep.add(cleaned.get(14));
+									return combine(pattern, rep);
+								}
+								pattern.reset();
+								return input;
+							}
+						}));
+
 		// POKE o%,PEEK(o%) and 128
 		intPatterns
 				.add(new IntPattern(

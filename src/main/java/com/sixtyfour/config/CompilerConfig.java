@@ -38,6 +38,7 @@ public class CompilerConfig {
 	private boolean assignmentOptimizations = false;
 	private boolean zeropageOptimizations = false;
 	private boolean allIntermediateOptimizations= true;
+	private boolean allowForIntsInLoops = true;
 
 	private String symbolTable = null;
 	private int threads = -1;
@@ -240,6 +241,14 @@ public class CompilerConfig {
 
 	public void setNonDecimalNumbersAware(boolean nonDecimalNumbersAware) {
 		this.nonDecimalNumbersAware = nonDecimalNumbersAware;
+	}
+
+	public boolean isAllowForIntsInLoops() {
+		return allowForIntsInLoops;
+	}
+
+	public void setAllowForIntsInLoops(boolean allowForIntsInLoops) {
+		this.allowForIntsInLoops = allowForIntsInLoops;
 	}
 
 	public String getSymbolTable() {
