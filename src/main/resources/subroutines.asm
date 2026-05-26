@@ -2172,8 +2172,6 @@ SHAREDINITFOR
             RTS
 ;###################################
 STORE_INTVAL
-            JSR SGNFAC
-            STA TMP_FLAG
             JSR FACINT
             PHA
             TYA
@@ -2189,6 +2187,8 @@ STORE_INTVAL
 INITFORINT  JSR SHAREDINITFOR
             JSR INCTMPZP
             JSR POPREAL
+			JSR SGNFAC
+            STA TMP_FLAG
             JSR STORE_INTVAL
             LDY #5
             STY TMP3_ZP
@@ -2264,42 +2264,27 @@ COMPARE_PTRS_INT
             STA TMP_ZP
             STY TMP_ZP+1
 
-            LDY #0
-            LDA (TMP_ZP),Y
-            CMP (TMP2_ZP),Y
-            BNE DO_SUB_INT      ; Low bytes differ -> perform signed comparison
-            INY                 ; Check high byte (Y=1)
-            LDA (TMP_ZP),Y
-            CMP (TMP2_ZP),Y
-            BNE DO_SUB_INT      ; High bytes differ -> perform signed comparison
-
-            LDX #0              ; Perfect match! Both bytes are equal.
-            JMP RESTORE_AND_EXIT
-DO_SUB_INT  LDY #0
-            LDA (TMP_ZP),Y
-            SEC
-            SBC (TMP2_ZP),Y     ; Subtract low bytes (we don't care about V yet)
-
-            INY                 ; Move to high bytes (Y=1)
-            LDA (TMP_ZP),Y
-            SBC (TMP2_ZP),Y     ; Subtract high bytes (sets N and V for the 16-bit result)
-
-            ; 3. Evaluate N eXclusive-OR V
-            BVC NO_OVERFLOW_INT ; If V=0, sign flag (N) tells the true story
-
-            ; If V=1, the sign flag is inverted
-            BMI IS_GT_INT       ; V=1 and N=1 means: Greater Than
-            BPL IS_LT_INT       ; V=1 and N=0 means: Less Than
-
-NO_OVERFLOW_INT
-            BMI IS_LT_INT       ; V=0 and N=1 means: Less Than
-            ; Fall through to IS_GT_INT because equality was already ruled out
-
-IS_GT_INT   LDX #255            ; TMP_ZP > TMP2_ZP
-            JMP RESTORE_AND_EXIT
-
-IS_LT_INT   LDX #1              ; TMP_ZP < TMP2_ZP
-            		          ; TMP_ZP > TMP2_ZP
+            LDY #1
+            LDA (TMP2_ZP),Y
+            CMP (TMP_ZP),Y
+            BNE ICMPNE2_INT
+            DEY
+			LDA (TMP2_ZP),Y
+            CMP (TMP_ZP),Y
+			BEQ ICMPEQ_INT
+			BCS ICMPHIGHER_INT
+			JMP ICMPLOWER_INT
+ICMPNE2_INT BPL ICMPHIGHER_INT
+			JMP ICMPLOWER_INT
+ICMPEQ_INT	LDX #0
+			JMP RESTORE_AND_EXIT
+ICMPLOWER_INT
+			LDX #$FF
+			SEC
+			JMP RESTORE_AND_EXIT
+ICMPHIGHER_INT
+			LDX #$01
+			CLC
 RESTORE_AND_EXIT
             PLA
             STA TMP_ZP+1
