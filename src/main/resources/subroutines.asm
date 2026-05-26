@@ -2264,27 +2264,34 @@ COMPARE_PTRS_INT
             STA TMP_ZP
             STY TMP_ZP+1
 
-            LDY #1
-            LDA (TMP2_ZP),Y
-            CMP (TMP_ZP),Y
-            BNE ICMPNE2_INT
-            DEY
-			LDA (TMP2_ZP),Y
-            CMP (TMP_ZP),Y
-			BEQ ICMPEQ_INT
-			BCS ICMPHIGHER_INT
-			JMP ICMPLOWER_INT
-ICMPNE2_INT BPL ICMPHIGHER_INT
-			JMP ICMPLOWER_INT
-ICMPEQ_INT	LDX #0
-			JMP RESTORE_AND_EXIT
-ICMPLOWER_INT
-			LDX #$FF
-			SEC
-			JMP RESTORE_AND_EXIT
-ICMPHIGHER_INT
-			LDX #$01
-			CLC
+            LDY #0
+            LDA (TMP_ZP),Y
+            CMP (TMP2_ZP),Y
+            BNE DO_SUB_INT
+            INY                 ; Move to high bytes (Y=1)
+            LDA (TMP_ZP),Y
+            CMP (TMP2_ZP),Y
+            BNE DO_SUB_INT      ; High bytes differ -> proceed to signed math
+
+            LDX #0              ; Values are perfectly identical
+            JMP RESTORE_AND_EXIT
+
+DO_SUB_INT  LDY #0
+            LDA (TMP_ZP),Y
+            SEC
+            SBC (TMP2_ZP),Y     ; Subtract low bytes (sets carry/borrow status)
+            INY                 ; Y = 1
+            LDA (TMP_ZP),Y
+            SBC (TMP2_ZP),Y     ; Subtract high bytes (sets final N and V flags)
+
+            BVC NO_OVF_INT      ; If Overflow (V=0), the Negative (N) flag is accurate
+            EOR #$80            ; If Overflow (V=1), invert Bit 7 to correct the true sign
+NO_OVF_INT  BMI IS_LT_INT       ; If the resulting sign is negative, TMP_ZP < TMP2_ZP
+
+IS_GT_INT   LDX #$FF            ; Otherwise, TMP_ZP > TMP2_ZP
+            JMP RESTORE_AND_EXIT
+
+IS_LT_INT   LDX #$1              ; Return 1
 RESTORE_AND_EXIT
             PLA
             STA TMP_ZP+1
@@ -3801,24 +3808,33 @@ NOPV2		RTS
 ;###################################
 ICMP		STY TMP3_ZP
 			STA TMP3_ZP+1
-			LDA TMP_ZP+1
-			CMP TMP3_ZP+1
-			BNE ICMPNE2
-			LDA TMP_ZP
-			CMP TMP3_ZP
-ICMPNE		BEQ ICMPEQ
-			BCS ICMPHIGHER
-			JMP ICMPLOWER
-ICMPNE2		BPL ICMPHIGHER
-			JMP ICMPLOWER
-ICMPEQ		LDA #0
-			RTS
-ICMPLOWER	LDA #$FF
-			SEC
-			RTS
-ICMPHIGHER	LDA #$01
-			CLC
-			RTS	
+            LDA TMP_ZP
+            CMP TMP3_ZP
+            BNE DO_SUB_INT2      ; Low bytes differ -> proceed to signed math
+            LDA TMP_ZP+1
+            CMP TMP3_ZP+1
+            BNE DO_SUB_INT2      ; High bytes differ -> proceed to signed math
+
+            LDA #0              ; Values are perfectly identical
+            RTS
+
+DO_SUB_INT2  ; 2. Perform standard 16-bit subtraction (TMP_ZP - TMP2_ZP)
+            LDA TMP_ZP
+            SEC
+            SBC TMP3_ZP     ; Subtract low bytes (sets carry/borrow status)
+            LDA TMP_ZP+1
+            SBC TMP3_ZP+1    ; Subtract high bytes (sets final N and V flags)
+
+            ; 3. The Classic 6502 Signed Overflow Correction
+            BVC NO_OVF_INT2      ; If Overflow (V=0), the Negative (N) flag is accurate
+            EOR #$80            ; If Overflow (V=1), invert Bit 7 to correct the true sign
+NO_OVF_INT2  BMI IS_LT_INT2       ; If the resulting sign is negative, TMP_ZP < TMP2_ZP
+
+IS_GT_INT2  LDA #$1             ; Otherwise, TMP_ZP > TMP2_ZP
+            RTS
+
+IS_LT_INT2  LDA #$FF              ; Return 1
+            RTS
 ;###################################
 COPY2_XYA	STA TMP3_ZP
 COPY2_XY	STX TMP_ZP
