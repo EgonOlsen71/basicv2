@@ -2264,23 +2264,42 @@ COMPARE_PTRS_INT
             STA TMP_ZP
             STY TMP_ZP+1
 
-            LDY #1              ; Index for High Byte
-            LDA (TMP_ZP),Y      ; Get High Byte of first value
-            CMP (TMP2_ZP),Y     ; Compare with High Byte of second value
-            BCC IS_LT_INT       ; If High < High, then TMP_ZP is strictly less than
-            BNE IS_GT_INT       ; If High > High, then TMP_ZP is strictly greater than
-
-            DEY                 ; High bytes were equal, check Low Byte (Y=0)
+            LDY #0
             LDA (TMP_ZP),Y
             CMP (TMP2_ZP),Y
-            BCC IS_LT_INT       ; If Low < Low, then TMP_ZP is less than
-            BNE IS_GT_INT       ; If Low > Low, then TMP_ZP is greater than
+            BNE DO_SUB_INT      ; Low bytes differ -> perform signed comparison
+            INY                 ; Check high byte (Y=1)
+            LDA (TMP_ZP),Y
+            CMP (TMP2_ZP),Y
+            BNE DO_SUB_INT      ; High bytes differ -> perform signed comparison
 
-            LDX #0              ; They are perfectly equal
+            LDX #0              ; Perfect match! Both bytes are equal.
             JMP RESTORE_AND_EXIT
-IS_LT_INT   LDX #1              ; TMP_ZP < TMP2_ZP
-            JMP RESTORE_AND_EXIT
+DO_SUB_INT  LDY #0
+            LDA (TMP_ZP),Y
+            SEC
+            SBC (TMP2_ZP),Y     ; Subtract low bytes (we don't care about V yet)
+
+            INY                 ; Move to high bytes (Y=1)
+            LDA (TMP_ZP),Y
+            SBC (TMP2_ZP),Y     ; Subtract high bytes (sets N and V for the 16-bit result)
+
+            ; 3. Evaluate N eXclusive-OR V
+            BVC NO_OVERFLOW_INT ; If V=0, sign flag (N) tells the true story
+
+            ; If V=1, the sign flag is inverted
+            BMI IS_GT_INT       ; V=1 and N=1 means: Greater Than
+            BPL IS_LT_INT       ; V=1 and N=0 means: Less Than
+
+NO_OVERFLOW_INT
+            BMI IS_LT_INT       ; V=0 and N=1 means: Less Than
+            ; Fall through to IS_GT_INT because equality was already ruled out
+
 IS_GT_INT   LDX #255            ; TMP_ZP > TMP2_ZP
+            JMP RESTORE_AND_EXIT
+
+IS_LT_INT   LDX #1              ; TMP_ZP < TMP2_ZP
+            		          ; TMP_ZP > TMP2_ZP
 RESTORE_AND_EXIT
             PLA
             STA TMP_ZP+1
@@ -2346,70 +2365,7 @@ CMPFORXX_INT
 NOPV3_INT
            LDY TMP_REG+1
            JSR COMPARE_PTRS_INT   ;CMPFAC (INT)
-           TAX                    ;save the result of the comparison for later use
-           BEQ LOOPING_INT
-
-           PHA
-           LDY #14
-           LDA (TMP_ZP),Y
-           BEQ STEPZERO_INT
-           ROL
-           BCC STEPPOS_INT
-STEPNEG_INT
-           PLA
-           ROL
-           BCC LOOPING2_INT
-           BCS EXITLOOP_INT
-STEPPOS_INT
-           PLA
-           ROL
-           BCC EXITLOOP_INT
-           JMP LOOPING2_INT
-LOOPING_INT
-           LDY #14          ; handle the special case of making the code set the loop variable to an exit condition in a step 0 loop
-           LDA (TMP_ZP),Y
-           BNE LOOPING2_INT ; Not step 0 => normal handling
-           INY
-           LDA (TMP_ZP),Y
-           BNE LOOPING2_INT
-           TXA              ; step 0 and equals (checked above and saved in X) => exit
-           BEQ EXITLOOP_INT
-LOOPING2_INT
-           LDA TMP3_REG
-           STA FORSTACKP
-           LDA TMP3_REG+1
-           STA FORSTACKP+1
-           LDA TMP2_REG
-           CLC
-           ADC #2
-           STA TMP2_REG
-           BCC NOPV4IN_INT
-           INC TMP2_REG+1
-NOPV4IN_INT
-           LDY #0
-           STY A_REG
-           STA TMP_ZP
-           LDA TMP2_REG+1
-           STA TMP_ZP+1
-           LDA (TMP_ZP),Y
-           STA JUMP_TARGET
-           INY
-           LDA (TMP_ZP),Y
-           STA JUMP_TARGET+1
-           RTS
-
-STEPZERO_INT
-           PLA             ; step 0
-           JMP LOOPING2_INT
-
-EXITLOOP_INT
-           LDA TMP2_REG
-           STA FORSTACKP
-           LDA TMP2_REG+1
-           STA FORSTACKP+1
-           LDA #1
-           STA A_REG
-           RTS
+           JMP AFTERCMP
 ;###################################
 NEXT_INT    JMP NEXT_INT_IMPL
 ;###################################
@@ -2503,7 +2459,7 @@ CMPFORXX	LDA #5
 			INC TMP_REG+1
 NOPV3		LDY TMP_REG+1
 			JSR CMPFAC 	;CMPFAC
-			TAX					;save the result of the comparison for later use
+AFTERCMP	TAX					;save the result of the comparison for later use
 			BEQ LOOPING
 
 			PHA
