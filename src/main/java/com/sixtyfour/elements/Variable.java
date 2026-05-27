@@ -50,6 +50,7 @@ public class Variable implements Atom {
 	/**
 	 * Instantiates a new array variable.
 	 * 
+	 * @param machine    the machine. Can be null, in which case no translation of the name will be performed.
 	 * @param name       the name of the variable
 	 * @param values     the values in form of a list.
 	 * @param dimensions the dimensions. If this variable is a multi-dimensional
@@ -66,10 +67,11 @@ public class Variable implements Atom {
 	/**
 	 * Instantiates a new variable with a simple value.
 	 * 
-	 * @param name  the name of the variable
-	 * @param value the value. Depending on the type (determined by the name), this
-	 *              value will be parsed into the actual instance type. If value is
-	 *              null, a default value will be created instead.
+	 * @param machine the machine. Can be null, in which case no translation of the name will be performed.
+	 * @param name    the name of the variable
+	 * @param value   the value. Depending on the type (determined by the name), this
+	 *                value will be parsed into the actual instance type. If value is
+	 *                null, a default value will be created instead.
 	 */
 	public Variable(Machine machine, String name, Object value) {
 		if (machine!=null) {
