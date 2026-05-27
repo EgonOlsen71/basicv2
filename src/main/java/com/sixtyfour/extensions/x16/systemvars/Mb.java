@@ -15,7 +15,7 @@ public class Mb extends Variable {
 	 * Instantiates a new status.
 	 */
 	public Mb() {
-		super("MB", 0);
+		super(null, "MB", 0);
 		setSystem(true);
 	}
 

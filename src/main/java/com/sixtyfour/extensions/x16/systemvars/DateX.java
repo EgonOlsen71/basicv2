@@ -26,7 +26,7 @@ public class DateX extends Variable {
 	 * Instantiates a new time and date.
 	 */
 	public DateX() {
-		super("DA$", "20200101");
+		super(null, "DA$", "20200101");
 		setSystem(true);
 	}
 

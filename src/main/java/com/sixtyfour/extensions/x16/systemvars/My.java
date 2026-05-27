@@ -15,7 +15,7 @@ public class My extends Variable {
 	 * Instantiates a new status.
 	 */
 	public My() {
-		super("MY", 0);
+		super(null, "MY", 0);
 		setSystem(true);
 	}
 

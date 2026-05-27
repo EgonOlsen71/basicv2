@@ -227,14 +227,14 @@ public abstract class MultiVariableCommand extends AbstractCommand {
 
 			if (brackets == 0 && (c == ',' || i == linePart.length() - 1)) {
 				String pa = sb.toString();
-				varNames.add(Parser.getVariableName(pa));
+				varNames.add(Parser.getVariableName(pa, machine));
 				parts.add(pa);
 				sb.setLength(0);
 			}
 		}
 		int cnt = 0;
 		for (String part : parts) {
-			Variable var = new Variable(VarUtils.toUpper(varNames.get(cnt++).trim()), null);
+			Variable var = new Variable(machine, VarUtils.toUpper(varNames.get(cnt++).trim()), null);
 			VariableAndIndex vai = Parser.getIndexTerm(config, var, part, machine, false);
 			var = vai.getVariable();
 			indexTerms.add(vai.getIndexTerm());

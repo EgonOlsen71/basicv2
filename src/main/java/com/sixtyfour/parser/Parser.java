@@ -161,17 +161,17 @@ public class Parser {
 	 * @return the variable or null, if there is none
 	 */
 	public static Variable getVariable(String linePart, Machine machine, boolean includingAssignment) {
-		String ret = extractName(linePart, includingAssignment);
+		String ret = extractName(linePart, includingAssignment, machine);
 
 		if (!ret.endsWith("[]")) {
-			Variable var = new Variable(ret, null);
+			Variable var = new Variable(machine, ret, null);
 			// System.out.println(var.getUpperCaseName()+"/"+machine.isSystemVariable(var.getUpperCaseName()));
 			if (machine.isSystemVariable(var.getUpperCaseName())) {
 				var.setSystem(true);
 			}
 			return machine.add(var);
 		} else {
-			return new Variable(ret, null);
+			return new Variable(machine, ret, null);
 		}
 	}
 
@@ -187,7 +187,7 @@ public class Parser {
 	 * @return is this variable already known?
 	 */
 	public static boolean hasVariableAdded(String linePart, Machine machine, boolean includingAssignment) {
-		String ret = extractName(linePart, includingAssignment);
+		String ret = extractName(linePart, includingAssignment, machine);
 		return machine.getVariable(ret) != null;
 	}
 
@@ -253,7 +253,7 @@ public class Parser {
 	 * @param linePart the line part
 	 * @return the variable name or an empty string if there is none
 	 */
-	public static String getVariableName(String linePart) {
+	public static String getVariableName(String linePart, Machine machine) {
 		linePart = VarUtils.toUpper(linePart.trim());
 		int pos = linePart.indexOf('(');
 		boolean isArray = false;
@@ -298,6 +298,7 @@ public class Parser {
 				}
 			}
 		}
+		ret = machine.translate(ret);
 		
 		return ret;
 	}
@@ -362,7 +363,7 @@ public class Parser {
 					for (int i = 0; i < pis.length; i++) {
 						pis[i] = 10;
 					}
-					var = new Variable(var.getName(), null, pis);
+					var = new Variable(machine, var.getName(), null, pis);
 					var.clear();
 				}
 				return new VariableAndIndex(var, params);
@@ -1018,7 +1019,7 @@ public class Parser {
 				throw new RuntimeException("Invalid array index: " + part);
 			}
 			String pvar = var.substring(0, pos) + "[]";
-			Variable vary = new Variable(pvar, null); // Placeholder
+			Variable vary = new Variable(machine, pvar, null); // Placeholder
 			return Parser.getArrayAccessFunction(config, part, vary, termMap, machine);
 		}
 
@@ -1026,7 +1027,7 @@ public class Parser {
 		String var = VarUtils.toUpper(part);
 		Variable vary = machine.getVariable(var);
 		if (vary == null) {
-			vary = new Variable(var, (Term) null);
+			vary = new Variable(machine, var, (Term) null);
 			vary = machine.add(vary);
 		}
 		return vary;
@@ -1157,7 +1158,7 @@ public class Parser {
 		}
 	}
 
-	private static String extractName(String linePart, boolean includingAssignment) {
+	private static String extractName(String linePart, boolean includingAssignment, Machine machine) {
 		if (includingAssignment) {
 			int pos = linePart.indexOf('=');
 			if (pos == -1) {
@@ -1165,7 +1166,7 @@ public class Parser {
 			}
 			linePart = linePart.substring(0, pos);
 		}
-		return getVariableName(linePart);
+		return getVariableName(linePart, machine);
 	}
 
 }

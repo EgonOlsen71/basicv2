@@ -27,11 +27,11 @@ public class LogicTest {
 	public static void testLogicSimilarity() {
 		System.out.println("testLogicSimilarity");
 		Machine machine = new Machine();
-		machine.add(new Variable("A", 1));
-		machine.add(new Variable("B", 2));
-		machine.add(new Variable("C", 3));
-		machine.add(new Variable("D", 4));
-		machine.add(new Variable("E", 5));
+		machine.add(new Variable(machine, "A", 1));
+		machine.add(new Variable(machine, "B", 2));
+		machine.add(new Variable(machine, "C", 3));
+		machine.add(new Variable(machine, "D", 4));
+		machine.add(new Variable(machine, "E", 5));
 
 		Term res = Parser.getTerm(config, "A/B>=C*E+4 AND D=12", machine, false, true);
 		Term res1 = Parser.getTerm(config, "A/B>=C*E+4 AND D=12", machine, false, true);
@@ -50,11 +50,11 @@ public class LogicTest {
 	public static void testLogicParser() {
 		System.out.println("testLogicParser");
 		Machine machine = new Machine();
-		machine.add(new Variable("A", 1));
-		machine.add(new Variable("B", 2));
-		machine.add(new Variable("C", 3));
-		machine.add(new Variable("D", 4));
-		machine.add(new Variable("E", 5));
+		machine.add(new Variable(machine, "A", 1));
+		machine.add(new Variable(machine, "B", 2));
+		machine.add(new Variable(machine, "C", 3));
+		machine.add(new Variable(machine, "D", 4));
+		machine.add(new Variable(machine, "E", 5));
 		// LogicTerm res = LogicParser.getTerm("A<B AND (NOT(C+D <> (D+E)/A))",
 		// machine);
 

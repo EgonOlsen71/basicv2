@@ -535,7 +535,7 @@ public class AssemblyParser {
 			if (cv == null) {
 				return new ConstantDynamic(left, right, config, ccon);
 			}
-			machine.add(new Variable(names2vars.get(name), ccon.get(name).getValue()));
+			machine.add(new Variable(machine, names2vars.get(name), ccon.get(name).getValue()));
 		}
 
 		Term ressy = null;

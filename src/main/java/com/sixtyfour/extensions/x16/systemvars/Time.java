@@ -19,7 +19,7 @@ public class Time extends Variable {
 	 * Instantiates a new time.
 	 */
 	public Time() {
-		super("TI", 0);
+		super(null, "TI", 0);
 		setSystem(true);
 	}
 

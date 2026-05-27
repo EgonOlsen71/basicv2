@@ -56,8 +56,8 @@ public class Variable implements Atom {
 	 *                   array, the list of values will be mapped according to these
 	 *                   dimensions.
 	 */
-	public Variable(String name, List<Object> values, int... dimensions) {
-		this(name, values == null ? createEmptyArray(dimensions) : (Object) values);
+	public Variable(Machine machine, String name, List<Object> values, int... dimensions) {
+		this(machine, name, values == null ? createEmptyArray(dimensions) : (Object) values);
 		this.dimensions = dimensions;
 		array = true;
 		this.setName(name.endsWith("[]") ? name : (name + "[]"));
@@ -71,9 +71,13 @@ public class Variable implements Atom {
 	 *              value will be parsed into the actual instance type. If value is
 	 *              null, a default value will be created instead.
 	 */
-	public Variable(String name, Object value) {
+	public Variable(Machine machine, String name, Object value) {
+		if (machine!=null) {
+			name = machine.translate(name);
+		}
 		// Check name for validity
 		String un = VarUtils.toUpper(name);
+
 		List<Command> commands = CommandList.getCommands();
 		for (Command command : commands) {
 			if (un.contains(command.getName())) {

@@ -15,7 +15,7 @@ public class Mx extends Variable {
 	 * Instantiates a new status.
 	 */
 	public Mx() {
-		super("MX", 0);
+		super(null, "MX", 0);
 		setSystem(true);
 	}
 

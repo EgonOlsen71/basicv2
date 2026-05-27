@@ -284,8 +284,8 @@ public class ParserTest {
 	private static void testAnd() {
 		System.out.println("testAnd");
 		Machine machine = new Machine();
-		machine.add(new Variable("A", 23));
-		machine.add(new Variable("B", 41));
+		machine.add(new Variable(machine, "A", 23));
+		machine.add(new Variable(machine, "B", 41));
 		String term = "(a>68andb)";
 		String wbres = TermEnhancer.addBrackets(term);
 		System.out.println(wbres);
@@ -298,8 +298,8 @@ public class ParserTest {
 	private static void testAnd2() {
 		System.out.println("testAnd2");
 		Machine machine = new Machine();
-		machine.add(new Variable("A", 124));
-		machine.add(new Variable("B", 3));
+		machine.add(new Variable(machine, "A", 124));
+		machine.add(new Variable(machine, "B", 3));
 		String term = "(aand255-bor255+2*b)";
 		String wbres = TermEnhancer.addBrackets(term);
 		System.out.println("Added brackets: " + wbres);
@@ -312,18 +312,18 @@ public class ParserTest {
 	private static void testStuff() {
 		System.out.println("testStuff");
 		Machine machine = new Machine();
-		machine.add(new Variable("A", 23));
-		machine.add(new Variable("B", 41));
-		machine.add(new Variable("D", 123));
-		machine.add(new Variable("F", 141));
-		machine.add(new Variable("G", 3));
-		machine.add(new Variable("Z", 1));
-		machine.add(new Variable("T", 11));
-		machine.add(new Variable("R", 21));
-		machine.add(new Variable("P", 55));
-		machine.add(new Variable("U", 22));
-		machine.add(new Variable("O", 45));
-		machine.add(new Variable("I", 67));
+		machine.add(new Variable(machine, "A", 23));
+		machine.add(new Variable(machine, "B", 41));
+		machine.add(new Variable(machine, "D", 123));
+		machine.add(new Variable(machine, "F", 141));
+		machine.add(new Variable(machine, "G", 3));
+		machine.add(new Variable(machine, "Z", 1));
+		machine.add(new Variable(machine, "T", 11));
+		machine.add(new Variable(machine, "R", 21));
+		machine.add(new Variable(machine, "P", 55));
+		machine.add(new Variable(machine, "U", 22));
+		machine.add(new Variable(machine, "O", 45));
+		machine.add(new Variable(machine, "I", 67));
 		String term = "a * b * (-c*f+(t*r+-f*(g-z)-f*g/z^4)) + abs(-(d*u))*(p+(o*i*z))*z+u";
 		String wbres = TermEnhancer.addBrackets(term);
 		System.out.println(wbres);
@@ -357,8 +357,8 @@ public class ParserTest {
 	private static void testAbs() {
 		System.out.println("testAbs");
 		Machine machine = new Machine();
-		machine.add(new Variable("Z", 23));
-		machine.add(new Variable("P", 41));
+		machine.add(new Variable(machine, "Z", 23));
+		machine.add(new Variable(machine, "P", 41));
 		String term = "(ABS(Z-P)-2)*(ABS(Z-P)-18)";
 
 		String wbres = TermEnhancer.addBrackets(term);
@@ -377,12 +377,12 @@ public class ParserTest {
 
 		System.out.println("testPowerOf");
 		Machine machine = new Machine();
-		machine.add(new Variable("X1", 122));
-		machine.add(new Variable("X", 100));
-		machine.add(new Variable("Y", 113));
-		machine.add(new Variable("X1", 110));
-		machine.add(new Variable("Y", 214));
-		machine.add(new Variable("Y1", 210));
+		machine.add(new Variable(machine, "X1", 122));
+		machine.add(new Variable(machine, "X", 100));
+		machine.add(new Variable(machine, "Y", 113));
+		machine.add(new Variable(machine, "X1", 110));
+		machine.add(new Variable(machine, "Y", 214));
+		machine.add(new Variable(machine, "Y1", 210));
 		// String term="((x1-x)^2+(y1-y)^2+(z1-z)^2)";
 		String term = "((x1-x)^2+(y1-y)^2+(z1-z)^2)^(1/2)";
 
@@ -400,8 +400,8 @@ public class ParserTest {
 	private static void testLogic() {
 		System.out.println("testLogic");
 		Machine machine = new Machine();
-		machine.add(new Variable("A%", 5));
-		machine.add(new Variable("B%", 32));
+		machine.add(new Variable(machine, "A%", 5));
+		machine.add(new Variable(machine, "B%", 32));
 		String term = "NOT 1 OR NOT (110+10)";
 		String wbres = TermEnhancer.addBrackets(term);
 		System.out.println(wbres);
@@ -417,9 +417,9 @@ public class ParserTest {
 	private static void testComplexFunctions() {
 		System.out.println("testComplexFunctions");
 		Machine machine = new Machine();
-		machine.add(new Variable("A$", "abcdefghijklmnopqrstuvwxyz"));
-		machine.add(new Variable("B$", "test"));
-		machine.add(new Variable("A", 1));
+		machine.add(new Variable(machine, "A$", "abcdefghijklmnopqrstuvwxyz"));
+		machine.add(new Variable(machine, "B$", "test"));
+		machine.add(new Variable(machine, "A", 1));
 		String term = "\"hallo\"+\" \"+mid$(A$+a$,1*5+3*5,13)+\" \"+mid$(\"1234567\", 3)+\" \"+mid$(B$+\"hallo\", 1+1+(1*1), 5)+\" \"+mid$(B$+\"hallo\", 1+2+(1*1)-a)";
 
 		String wbres = TermEnhancer.addBrackets(term);
@@ -436,14 +436,14 @@ public class ParserTest {
 	private static void testTermCreation() {
 		System.out.println("testTermCreation");
 		Machine machine = new Machine();
-		machine.add(new Variable("A", 5));
-		machine.add(new Variable("B", 5.6f));
-		machine.add(new Variable("C", 14));
-		machine.add(new Variable("Z", 12));
-		machine.add(new Variable("U", 1.4));
-		machine.add(new Variable("K", -2));
-		machine.add(new Variable("D", 3));
-		machine.add(new Variable("I", 4.1234));
+		machine.add(new Variable(machine, "A", 5));
+		machine.add(new Variable(machine, "B", 5.6f));
+		machine.add(new Variable(machine, "C", 14));
+		machine.add(new Variable(machine, "Z", 12));
+		machine.add(new Variable(machine, "U", 1.4));
+		machine.add(new Variable(machine, "K", -2));
+		machine.add(new Variable(machine, "D", 3));
+		machine.add(new Variable(machine, "I", 4.1234));
 		String term = "(a^z * (b + c / (z+-sin(u+z*k))) * d)/cos(i) + cos(-88)";
 		// String term="sin(-1)";
 		Term res = Parser.getTerm(config, term, machine, false, true);

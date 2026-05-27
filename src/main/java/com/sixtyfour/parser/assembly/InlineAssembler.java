@@ -101,7 +101,7 @@ public class InlineAssembler {
 								}
 								if (parserStage) {
 									// Track usage in parser stage, so that we don't optimize that variable away
-									Variable tmpVar = new Variable(varName, null);
+									Variable tmpVar = new Variable(machine, varName, null);
 									machine.trackVariableUsage(tmpVar, false);
 									machine.addVariableInAsm(varName);
 								}

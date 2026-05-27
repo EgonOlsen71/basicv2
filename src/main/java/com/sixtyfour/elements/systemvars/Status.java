@@ -17,7 +17,7 @@ public class Status extends Variable {
 	 * Instantiates a new status.
 	 */
 	public Status() {
-		super("ST", 0);
+		super(null, "ST", 0);
 		setSystem(true);
 	}
 
