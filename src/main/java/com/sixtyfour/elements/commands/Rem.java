@@ -55,7 +55,7 @@ public class Rem extends AbstractCommand {
 				for (String part : parts) {
 					part = part.trim().toUpperCase(Locale.ENGLISH);
 					machine.addForcedInteger(part);
-					Logger.log("Treating "+part+ " as integer!");
+					Logger.log(part+ " forced to integer via REM...");
 				}
 			} else {
 				Logger.log("Ignoring unknown directive: "+directive);

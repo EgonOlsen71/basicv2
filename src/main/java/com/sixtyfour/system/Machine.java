@@ -131,13 +131,25 @@ public class Machine {
 		copyRoms();
 	}
 
+	/**
+	 * Adds a forced integer to the collection
+	 *
+	 * @param name the name of the integer to be added
+	 */
 	public void addForcedInteger(String name) {
 		forcedIntegers.add(VarUtils.toUpper(name).trim());
 	}
 
+	/**
+	 * Translates a variable name if required.
+	 *
+	 * @param name the input string to be translated
+	 * @return the translated string if specific conditions are met; otherwise,
+	 *         returns the original string
+	 */
 	public String translate(String name) {
 		String nname = VarUtils.toUpper(name).trim();
-		if (!name.contains("%") && forcedIntegers.contains(nname) && !nname.contains("_FI_")) {
+		if (!nname.contains("%") && forcedIntegers.contains(nname) && !nname.contains("_FI_")) {
 			String ret = "_FI_"+nname;
 			if (ret.contains("[]")) {
 				ret = ret.replace("[]","%[]");
