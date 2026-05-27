@@ -360,6 +360,10 @@ public class Basic implements ProgramExecutor {
 			machine.addSystemVariables(ext.getSystemVariables());
 		}
 
+		if (config.getForcedToIntegers()!=null) {
+			config.getForcedToIntegers().forEach(p -> machine.addForcedInteger(p));
+		}
+
 		Line cl = null;
 		int lastLineNumber = -1;
 		lines.clear();

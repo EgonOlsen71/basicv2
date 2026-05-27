@@ -4,12 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 import com.sixtyfour.Assembler;
 import com.sixtyfour.Basic;
@@ -129,6 +124,12 @@ public class MoSpeedCL {
 		cfg.setBigRam(getOptionIntDefault("bigram", cmds, false));
 		cfg.setInlineAssembly(getOptionIntDefault("inlineasm", cmds, false));
 		cfg.setZeropageOptimizations(getOptionIntDefault("varopt", cmds, false));
+
+		String intVars = cmds.get("forcedints");
+		if (intVars != null && !intVars.isEmpty()) {
+			cfg.setForcedToIntegers(new HashSet<>(Arrays.asList(intVars.split(","))));
+		}
+
 
 		if (cmds.containsKey("specops")) {
 			System.out.println("reading runtime/optimizer information!");
@@ -764,16 +765,18 @@ public class MoSpeedCL {
 		System.out.println(
 				"/inlineasm=true|false - If true, inline assembly code can be used, marked by REM [...;...;...]. Default is false.");
 		System.out.println(
-				"/printopt=true|false - *Experimental* - If true, the compiler tries to rearrange texts in PRINT statements to save memory at the expense of speed. Default is false.");
+				"/printopt=true|false - If true, the compiler tries to rearrange texts in PRINT statements to save memory at the expense of speed. Default is false.");
 		System.out.println(
-				"/arrayopt=true|false - *Experimental* - If true, the compiler tries to optimize access speed of multi-dimensional arrays at the expense of memory usage. Default is false.");
+				"/arrayopt=true|false - If true, the compiler tries to optimize access speed of multi-dimensional arrays at the expense of memory usage. Default is false.");
 		System.out.println(
-				"/assignmentopt=true|false - *Experimental* - If true, the compiler tries to optimize assignments. Default is false.");
+				"/assignmentopt=true|false - If true, the compiler tries to optimize assignments. Default is false.");
 		System.out.println(
-				"/varopt=true|false - *Experimental* - If true, the compiler tries to move integer variables into the zeropage if possible and applicable. Default is false.");
-		
+				"/varopt=true|false - If true, the compiler tries to move integer variables into the zeropage if possible and applicable. Default is false.");
+		System.out.println(
+				"/forcedints=<a,b,i,...> - If set, variables of these names will be forced to be integers. This will also work on variables used as loop counters.");
 
-		
+
+
 		System.out.println();
 	}
 

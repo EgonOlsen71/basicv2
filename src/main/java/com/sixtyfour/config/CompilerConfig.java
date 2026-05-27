@@ -2,6 +2,9 @@ package com.sixtyfour.config;
 
 import com.sixtyfour.cbmnative.ProgressListener;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Contains the configuration for the compiler. Some (most) of these options
  * apply to the native compiler only.
@@ -44,6 +47,7 @@ public class CompilerConfig {
 	private int threads = -1;
 	private LoopMode loopMode = LoopMode.EXECUTE;
 	private ProgressListener progressListener;
+	private Set<String> forcedToIntegers = new HashSet<>();
 
 	private RuntimeAddition runtimeAddition = null;
 
@@ -64,6 +68,14 @@ public class CompilerConfig {
 		this.allIntermediateOptimizations = allIntermediateOptimizations;
 	}
 
+
+	public Set<String> getForcedToIntegers() {
+		return forcedToIntegers;
+	}
+
+	public void setForcedToIntegers(Set<String> forcedToIntegers) {
+		this.forcedToIntegers = forcedToIntegers;
+	}
 
 
 	public boolean isArrayOptimizations() {

@@ -137,7 +137,7 @@ public class Machine {
 
 	public String translate(String name) {
 		String nname = VarUtils.toUpper(name).trim();
-		if (forcedIntegers.contains(nname) && !nname.contains("_FI_")) {
+		if (!name.contains("%") && forcedIntegers.contains(nname) && !nname.contains("_FI_")) {
 			String ret = "_FI_"+nname;
 			if (ret.contains("[]")) {
 				ret = ret.replace("[]","%[]");
@@ -402,6 +402,7 @@ public class Machine {
 	 */
 	public void resetMemory() {
 		resetMemory(false);
+		forcedIntegers.clear();
 	}
 	
 	/**
