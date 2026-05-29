@@ -149,7 +149,9 @@ public class Machine {
 	 */
 	public String translate(String name) {
 		String nname = VarUtils.toUpper(name).trim();
-		if (!nname.contains("%") && forcedIntegers.contains(nname) && !nname.contains("_FI_")) {
+		if (!isSystemVariable(nname) && !nname.contains("%") && !nname.contains("$")
+				&& (forcedIntegers.contains(nname) || forcedIntegers.contains("ALL!"))
+				&& !nname.contains("_FI_")) {
 			String ret = "_FI_"+nname;
 			if (ret.contains("[]")) {
 				ret = ret.replace("[]","%[]");
