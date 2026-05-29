@@ -1368,7 +1368,38 @@ public class IntOptimizer {
 						return combine(pattern, rep);
 					}
 				}));
-		
+
+		// This is a VERY special case, but anyway...
+		intPatterns.add(new IntPattern(true, "Optimized code for shifting and storing into an int array",
+				new String[] { "LDY {MEM0}", "LDA {MEM0}" , "JSR INTFAC", "JSR PUSHREAL", "NOP", "LDY {MEM1}", "LDA {MEM1}","JSR INTFAC",
+						"JSR FACXREG", "LDY {*}", "STY A_REG", "JSR {*}", "JSR FACYREG", "JSR POPREALXREG", "LDA #<{MEM2}",
+						"LDY #>{MEM2}", "STA G_REG", "STY G_REG+1", "JSR ARRAYSTORE_INTEGER_NX"},
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						String consty = cleaned.get(9);
+						consty = consty.substring(consty.indexOf(" ") + 1).trim();
+						Number num = const2Value.get(consty);
+						List<String> rep = new ArrayList<>();
+						rep.add(cleaned.get(5));
+						rep.add(cleaned.get(6));
+						rep.add("STY A_REG");
+						rep.add("STA A_REG+1");
+						rep.add(cleaned.get(9));
+						rep.add(cleaned.get(11).replace("SHL", "INTSHL").replace("SHR", "INTSHR"));
+						rep.add("STY AS_TMP");
+						rep.add("STA AS_TMP+1");
+						rep.add(cleaned.get(14));
+						rep.add(cleaned.get(15));
+						rep.add(cleaned.get(16));
+						rep.add(cleaned.get(17));
+						rep.add(cleaned.get(0));
+						rep.add(cleaned.get(1));
+						rep.add("JSR ARRAYSTORE_INT_INTEGER_AC");
+						return combine(pattern, rep);
+					}
+				}));
 		
 		intPatterns.add(new IntPattern(true, "Optimized code for copying from int array with fixed index into fixed integer index array(2)",
 				new String[] { "JSR ARRAYACCESS_INTEGER_INT_PRE", "JSR COPY_XREG2YREG", "LDA #<{CONST0}", "LDY #>{CONST0}", "JSR COPY2_XYA_XREG",
