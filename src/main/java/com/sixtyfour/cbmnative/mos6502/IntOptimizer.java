@@ -20,9 +20,9 @@ import com.sixtyfour.config.CompilerConfig;
 public class IntOptimizer {
 
 	public List<String> applyIntOptimizations(CompilerConfig conf, PlatformProvider platform, List<String> input,
-			int[] startAndEnd) {
+			int[] startAndEnd, int pass) {
 		Map<String, Number> const2Value = extractConstants(input);
-		input = applyIntOptimizations(conf, platform, input, startAndEnd, setUpRules(const2Value), const2Value);
+		input = applyIntOptimizations(conf, platform, input, startAndEnd, setUpRules(const2Value, pass), const2Value);
 		return input;
 	}
 	
@@ -64,7 +64,7 @@ public class IntOptimizer {
 	}
 
 	
-	private List<IntPattern> setUpRules(Map<String, Number> const2Value) {
+	private List<IntPattern> setUpRules(Map<String, Number> const2Value, int pass) {
 		List<IntPattern> intPatterns = new ArrayList<>();
 		
 		// A very special case for ASC*256...because ASC is save to be >0 and <256
@@ -1672,22 +1672,48 @@ public class IntOptimizer {
 						return input;
 					}
 				}));
-		
+
+		if (pass==2) {
+			// faster integer print, only applicable on pass 2, because it interferes with some other optimization in pass 1
+			intPatterns.add(new IntPattern(true, "Fast integer print(1)",
+					new String[]{"STY {MEM0}", "STA {MEM0}", "NOP", "JSR INTFAC", "JSR FACXREG", "JSR INTOUT{*}"},
+					new AbstractCodeModifier() {
+						@Override
+						public List<String> modify(IntPattern pattern, List<String> input) {
+							input = super.modify(pattern, input);
+							if (!cleaned.get(5).contains("FAST")) {
+								List<String> rep = new ArrayList<>();
+								rep.add(cleaned.get(0));
+								rep.add(cleaned.get(1));
+								rep.add("STY TMP_ZP");
+								rep.add("STA TMP_ZP+1");
+								rep.add(cleaned.get(5) + "FAST");
+								return combine(pattern, rep);
+							}
+							pattern.reset();
+							return input;
+						}
+					}));
+		}
+
 		// faster integer print
-		intPatterns.add(new IntPattern(true, "Fast integer print",
+		intPatterns.add(new IntPattern(true, "Fast integer print(2)",
 				new String[] { "LDY {*}", "LDA {*}", "JSR INTFAC", "JSR FACXREG", "JSR INTOUT{*}"},
 				new AbstractCodeModifier() {
 					@Override
 					public List<String> modify(IntPattern pattern, List<String> input) {
 						input = super.modify(pattern, input);
-						List<String> rep = new ArrayList<>();
-						rep.add(cleaned.get(0));
-						rep.add("STY TMP_ZP");
-						rep.add(cleaned.get(1));
-						rep.add("STA TMP_ZP+1");
-						rep.add(cleaned.get(4)+"FAST");
-						return combine(pattern, rep);
-						
+						if (!cleaned.get(4).contains("FAST")) {
+							List<String> rep = new ArrayList<>();
+							rep.add(cleaned.get(0));
+							rep.add("STY TMP_ZP");
+							rep.add(cleaned.get(1));
+							rep.add("STA TMP_ZP+1");
+							rep.add(cleaned.get(4) + "FAST");
+							return combine(pattern, rep);
+						}
+						pattern.reset();
+						return input;
 					}
 				}));
 		
@@ -1874,6 +1900,37 @@ public class IntOptimizer {
 						pattern.reset();
 						return input;
 						
+					}
+				}));
+
+		// Faster SHL/SHR for ints(2), like O%=A%/256
+		intPatterns.add(new IntPattern(true, "Fast integer SHL/SHR(2)",
+				new String[] { "LDY {MEM0}", "LDA {MEM0}", "JSR INTFAC", "JSR FACXREG", "LDY {*}", "STY A_REG", "JSR {*}", "JSR FACINT", "STY {MEM1}", "STA {MEM1}"},
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						String valL = cleaned.get(4);
+						String call = cleaned.get(6);
+						valL = valL.substring(valL.indexOf(" ") + 1).trim();
+						int numL = const2Value.get(valL).intValue();
+						if (numL > 0 && (call.endsWith("SHR") || call.endsWith("SHL"))) {
+							if (numL  <= 16) {
+								List<String> rep = new ArrayList<>();
+								rep.add(cleaned.get(0));
+								rep.add(cleaned.get(1));
+								rep.add("STY A_REG");
+								rep.add("STA A_REG+1");
+								rep.add(cleaned.get(4));
+								rep.add(call.replace("SHR", "INTSHR").replace("SHL", "INTSHL"));
+								rep.add(cleaned.get(8));
+								rep.add(cleaned.get(9));
+								return combine(pattern, rep);
+							}
+						}
+						pattern.reset();
+						return input;
+
 					}
 				}));
 		
@@ -2208,7 +2265,7 @@ public class IntOptimizer {
 						return combine(pattern, rep);
 				}
 				}));
-		
+
 		return intPatterns;
 	}
 
