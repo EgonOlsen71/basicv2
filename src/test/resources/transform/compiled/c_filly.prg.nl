@@ -232,20 +232,20 @@ LINE_10440:
 ;
 LDY VAR_H%
 LDA VAR_H%+1
-; integer in Y/A to FAC
-JSR INTFAC
-JSR FACXREG
-LDY #8
 STY A_REG
-; Optimizer rule: Omit XREG->FAC/3
-JSR SHL
-; Optimizer rule: Shorter SHL/4
-; Optimizer rule: FAC into REG?, REG? into FAC/0
-; FAC to integer in Y/A
-JSR FACINT
+STA A_REG+1
+LDY #8
+JSR INTSHL
 STY VAR_AD%
 STA VAR_AD%+1
 ; Value already in Y/A
+;
+;
+;
+;
+;
+;
+;
 ;
 ;
 STY TMP3_ZP
@@ -2093,9 +2093,9 @@ STA FORSTACKP
 LDA TMP_ZP+1
 STA FORSTACKP+1
 RTS
-;###################################
-;###################################
-INITFOR		JSR ADJUSTSTACK
+,###################################
+SHAREDINITFOR
+JSR ADJUSTSTACK
 LDA FORSTACKP
 STA TMP_ZP
 LDA FORSTACKP+1
@@ -2114,6 +2114,10 @@ LDA JUMP_TARGET+1
 STA (TMP_ZP),Y
 INY
 STY TMP3_ZP
+RTS
+;###################################
+;###################################
+INITFOR		JSR SHAREDINITFOR
 JSR INCTMPZP
 JSR POPREAL
 LDX TMP_ZP
@@ -2152,6 +2156,110 @@ STA FORSTACKP+1
 RTS
 ;###################################
 ;###################################
+COMPARE_PTRS_INT
+TAX
+LDA TMP_ZP
+PHA
+LDA TMP_ZP+1
+PHA
+TXA
+STA TMP_ZP
+STY TMP_ZP+1
+LDY #0
+LDA (TMP_ZP),Y
+CMP (TMP2_ZP),Y
+BNE DO_SUB_INT
+INY                 ; Move to high bytes (Y=1)
+LDA (TMP_ZP),Y
+CMP (TMP2_ZP),Y
+BNE DO_SUB_INT      ; High bytes differ -> proceed to signed math
+LDX #0              ; Values are perfectly identical
+JMP RESTORE_AND_EXIT
+DO_SUB_INT  LDY #0
+LDA (TMP_ZP),Y
+SEC
+SBC (TMP2_ZP),Y     ; Subtract low bytes (sets carry/borrow status)
+INY                 ; Y = 1
+LDA (TMP_ZP),Y
+SBC (TMP2_ZP),Y     ; Subtract high bytes (sets final N and V flags)
+BVC NO_OVF_INT      ; If Overflow (V=0), the Negative (N) flag is accurate
+EOR #$80            ; If Overflow (V=1), invert Bit 7 to correct the true sign
+NO_OVF_INT  BMI IS_LT_INT       ; If the resulting sign is negative, TMP_ZP < TMP2_ZP
+IS_GT_INT   LDX #$FF            ; Otherwise, TMP_ZP > TMP2_ZP
+JMP RESTORE_AND_EXIT
+IS_LT_INT   LDX #$1              ; Return 1
+RESTORE_AND_EXIT
+PLA
+STA TMP_ZP+1
+PLA
+STA TMP_ZP
+TXA
+RTS
+;###################################
+;###################################
+NEXT_INT_IMPL
+FOUNDFOR_INT
+LDA TMP_ZP
+STA TMP2_REG
+LDA TMP_ZP+1
+STA TMP2_REG+1
+VARREAL_INT
+LDY #0
+STY A_REG+1 ; Has to be done anyway...so we can do it here as well
+LDA (TMP_ZP),Y
+STA TMP2_ZP
+INY
+LDA (TMP_ZP),Y
+STA TMP2_ZP+1
+CALCNEXT_INT
+LDA TMP_ZP
+CLC
+ADC #4
+STA TMP_ZP
+BCC NOPV2IN_INT
+INC TMP_ZP+1
+NOPV2IN_INT
+STA TMP_REG
+LDY TMP_ZP+1
+STY TMP_REG+1
+LDY #0
+LDA (TMP2_ZP),Y
+CLC
+ADC (TMP_ZP),Y
+PHA
+INY
+LDA (TMP2_ZP),Y
+ADC (TMP_ZP),Y
+PHA
+LDA TMP2_REG
+STA TMP_ZP
+LDA TMP2_REG+1
+STA TMP_ZP+1
+STOREREAL_INT
+LDY #1
+PLA
+STA (TMP2_ZP),Y
+DEY
+PLA
+STA (TMP2_ZP),Y
+CMPFORXX_INT
+LDA #5
+STA TMP3_ZP
+LDA TMP_REG
+CLC
+ADC #5
+STA TMP_REG
+BCC NOPV3_INT
+INC TMP_REG+1
+NOPV3_INT
+LDY TMP_REG+1
+JSR COMPARE_PTRS_INT   ;CMPFAC (INT)
+JMP AFTERCMP
+;###################################
+;###################################
+NEXT_INT    JMP NEXT_INT_IMPL
+;###################################
+;###################################
 NEXT		LDA FORSTACKP
 STA TMP_ZP
 LDA FORSTACKP+1
@@ -2169,7 +2277,7 @@ NOPV1N1		LDY #0
 LDA (TMP_ZP),Y
 BNE NOGOSUB
 JMP NEXTWOFOR
-NOGOSUB
+NOGOSUB     STA TMP_REG             ; save for later
 INY
 LDA TMP_ZP
 SEC
@@ -2190,7 +2298,10 @@ JMP SEARCHFOR
 LOW0		LDX A_REG+1
 BEQ FOUNDFOR
 BNE CMPFOR
-FOUNDFOR	LDA TMP_ZP
+FOUNDFOR	LDA TMP_REG
+CMP #2
+BEQ NEXT_INT        ;# FOR loop with int variable
+LDA TMP_ZP
 STA TMP2_REG
 LDA TMP_ZP+1
 STA TMP2_REG+1
@@ -2237,7 +2348,7 @@ BCC NOPV3
 INC TMP_REG+1
 NOPV3		LDY TMP_REG+1
 JSR CMPFAC 	;CMPFAC
-TAX					;save the result of the comparison for later use
+AFTERCMP	TAX					;save the result of the comparison for later use
 BEQ LOOPING
 PHA
 LDY #14
@@ -2338,6 +2449,23 @@ STA FORSTACKP
 BCC GOSUBNOOV
 INC FORSTACKP+1
 GOSUBNOOV	RTS
+;###################################
+;###################################
+INTSHL		LDA A_REG+1
+ASL
+PHP
+CLC
+ROL A_REG
+ROL A_REG+1
+PLA
+AND #128
+ORA A_REG+1
+STA A_REG+1
+DEY
+BNE INTSHL
+LDA A_REG+1
+LDY A_REG
+RTS
 ;###################################
 ;###################################
 INTSHR		LDA A_REG+1
@@ -2471,22 +2599,6 @@ LDY FPSTACKP+1
 JMP REALFAC
 ;###################################
 ;###################################
-SHL			LDA FACEXP
-BEQ SHLOK
-CLC
-ADC A_REG
-BCC SHLOK
-LDA #0
-STA FACSGN
-STA FACLO
-STA FACMO
-STA FACMOH
-STA FACHO
-LDA #$FF
-SHLOK		STA FACEXP
-RTS
-;###################################
-;###################################
 INCTMPZP	LDA TMP_ZP
 CLC
 ADC TMP3_ZP
@@ -2498,23 +2610,27 @@ NOPV2		RTS
 ;###################################
 ICMP		STY TMP3_ZP
 STA TMP3_ZP+1
-LDA TMP_ZP+1
-CMP TMP3_ZP+1
-BNE ICMPNE2
 LDA TMP_ZP
 CMP TMP3_ZP
-ICMPNE		BEQ ICMPEQ
-BCS ICMPHIGHER
-JMP ICMPLOWER
-ICMPNE2		BPL ICMPHIGHER
-JMP ICMPLOWER
-ICMPEQ		LDA #0
+BNE DO_SUB_INT2      ; Low bytes differ -> proceed to signed math
+LDA TMP_ZP+1
+CMP TMP3_ZP+1
+BNE DO_SUB_INT2      ; High bytes differ -> proceed to signed math
+LDA #0              ; Values are perfectly identical
 RTS
-ICMPLOWER	LDA #$FF
+DO_SUB_INT2  ; 2. Perform standard 16-bit subtraction (TMP_ZP - TMP2_ZP)
+LDA TMP_ZP
 SEC
+SBC TMP3_ZP     ; Subtract low bytes (sets carry/borrow status)
+LDA TMP_ZP+1
+SBC TMP3_ZP+1    ; Subtract high bytes (sets final N and V flags)
+; 3. The Classic 6502 Signed Overflow Correction
+BVC NO_OVF_INT2      ; If Overflow (V=0), the Negative (N) flag is accurate
+EOR #$80            ; If Overflow (V=1), invert Bit 7 to correct the true sign
+NO_OVF_INT2  BMI IS_LT_INT2       ; If the resulting sign is negative, TMP_ZP < TMP2_ZP
+IS_GT_INT2  LDA #$1             ; Otherwise, TMP_ZP > TMP2_ZP
 RTS
-ICMPHIGHER	LDA #$01
-CLC
+IS_LT_INT2  LDA #$FF              ; Return 1
 RTS
 ;###################################
 ;###################################

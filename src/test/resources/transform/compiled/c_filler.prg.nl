@@ -2322,23 +2322,27 @@ RTS
 ;###################################
 ICMP		STY TMP3_ZP
 STA TMP3_ZP+1
-LDA TMP_ZP+1
-CMP TMP3_ZP+1
-BNE ICMPNE2
 LDA TMP_ZP
 CMP TMP3_ZP
-ICMPNE		BEQ ICMPEQ
-BCS ICMPHIGHER
-JMP ICMPLOWER
-ICMPNE2		BPL ICMPHIGHER
-JMP ICMPLOWER
-ICMPEQ		LDA #0
+BNE DO_SUB_INT2      ; Low bytes differ -> proceed to signed math
+LDA TMP_ZP+1
+CMP TMP3_ZP+1
+BNE DO_SUB_INT2      ; High bytes differ -> proceed to signed math
+LDA #0              ; Values are perfectly identical
 RTS
-ICMPLOWER	LDA #$FF
+DO_SUB_INT2  ; 2. Perform standard 16-bit subtraction (TMP_ZP - TMP2_ZP)
+LDA TMP_ZP
 SEC
+SBC TMP3_ZP     ; Subtract low bytes (sets carry/borrow status)
+LDA TMP_ZP+1
+SBC TMP3_ZP+1    ; Subtract high bytes (sets final N and V flags)
+; 3. The Classic 6502 Signed Overflow Correction
+BVC NO_OVF_INT2      ; If Overflow (V=0), the Negative (N) flag is accurate
+EOR #$80            ; If Overflow (V=1), invert Bit 7 to correct the true sign
+NO_OVF_INT2  BMI IS_LT_INT2       ; If the resulting sign is negative, TMP_ZP < TMP2_ZP
+IS_GT_INT2  LDA #$1             ; Otherwise, TMP_ZP > TMP2_ZP
 RTS
-ICMPHIGHER	LDA #$01
-CLC
+IS_LT_INT2  LDA #$FF              ; Return 1
 RTS
 ;###################################
 ;###################################

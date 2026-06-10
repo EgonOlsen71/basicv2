@@ -137,7 +137,7 @@ public class Machine {
 	 * @param name the name of the integer to be added
 	 */
 	public void addForcedInteger(String name) {
-		forcedIntegers.add(VarUtils.toUpper(name).trim());
+		forcedIntegers.add(VarUtils.toUpper(name).replace("()", "[]").trim());
 	}
 
 	/**
