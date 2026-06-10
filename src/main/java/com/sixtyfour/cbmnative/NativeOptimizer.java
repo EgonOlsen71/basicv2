@@ -751,7 +751,7 @@ public class NativeOptimizer {
 			
 			
 			// Loop type 2...actually, this shouldn't be needed. The difference is in line 13/14 only. The generic optimizer rules
-			// should handle this, but the order in which things happen is a problem here. The correct of doing it would be to
+			// should handle this, but the order in which things happen is a problem here. The correct way of doing it would be to
 			// run all the generic rules until nothing changes and THEN run the detection for fast fors...but that's not the way
 			// it is. It all happens interleaved...maybe one day...
 			if (lines[19] != null) {

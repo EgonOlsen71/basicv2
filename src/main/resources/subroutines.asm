@@ -2203,18 +2203,7 @@ INITFORINT  JSR SHAREDINITFOR
             STA (TMP_ZP),Y
             INY
             LDA #2          ; #2 flags integer loop, #1 flags real (default)
-            STA (TMP_ZP),Y
-            INY
-            LDA #15
-            STA (TMP_ZP),Y
-            LDY #3
-            STY TMP3_ZP
-            JSR INCTMPZP
-            LDA TMP_ZP
-            STA FORSTACKP
-            LDA TMP_ZP+1
-            STA FORSTACKP+1
-            RTS
+            JMP INITFOREND
 ;###################################
 INITFOR		JSR SHAREDINITFOR
 			JSR INCTMPZP
@@ -2241,7 +2230,7 @@ INITFOR		JSR SHAREDINITFOR
 			STA (TMP_ZP),Y
 			INY
 			LDA #1
-			STA (TMP_ZP),Y
+INITFOREND	STA (TMP_ZP),Y
 			INY
 			LDA #15
 			STA (TMP_ZP),Y
@@ -2325,26 +2314,22 @@ NOPV2IN_INT
            STA TMP_REG
            LDY TMP_ZP+1
            STY TMP_REG+1
+
            LDY #0
            LDA (TMP2_ZP),Y
            CLC
            ADC (TMP_ZP),Y
-           PHA
+           STA (TMP2_ZP),Y
+
            INY
            LDA (TMP2_ZP),Y
            ADC (TMP_ZP),Y
-           PHA
+           STA (TMP2_ZP),Y
+
            LDA TMP2_REG
            STA TMP_ZP
            LDA TMP2_REG+1
            STA TMP_ZP+1
-STOREREAL_INT
-           LDY #1
-           PLA
-           STA (TMP2_ZP),Y
-           DEY
-           PLA
-           STA (TMP2_ZP),Y
 CMPFORXX_INT
            LDA #5
            STA TMP3_ZP
