@@ -149,7 +149,7 @@ public class Template {
 			machine.putProgram(prg);
 		}
 		for (Map.Entry<String, Object> var : vars.entrySet()) {
-			Variable vary = new Variable(VarUtils.toUpper(var.getKey()), var.getValue());
+			Variable vary = new Variable(machine, VarUtils.toUpper(var.getKey()), var.getValue());
 			machine.addOrSet(vary);
 		}
 		basic.start(config);

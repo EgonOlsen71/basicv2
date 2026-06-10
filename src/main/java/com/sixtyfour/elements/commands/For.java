@@ -122,7 +122,7 @@ public class For extends AbstractCommand {
 		}
 
 		if (!var.getType().equals(term.getType())
-				&& !(var.getType().equals(Type.REAL) && term.getType().equals(Type.INTEGER))) {
+				&& !(var.getType().equals(Type.REAL) && term.getType().equals(Type.INTEGER)) && !config.isAllowForIntsInLoops()) {
 			typeMismatch(linePart);
 		}
 

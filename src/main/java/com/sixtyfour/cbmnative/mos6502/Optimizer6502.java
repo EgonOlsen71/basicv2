@@ -277,10 +277,10 @@ public class Optimizer6502 implements Optimizer {
 			if (config.isIntOptimizations()) {
 				Logger.log("Integer pass 1...");
 				input = new IntOptimizer().applyIntOptimizations(config, platform, input,
-						getStartAndEnd(config, input));
+						getStartAndEnd(config, input), 1);
 				Logger.log("Integer pass 2...");
 				input = new IntOptimizer().applyIntOptimizations(config, platform, input,
-						getStartAndEnd(config, input));
+						getStartAndEnd(config, input), 2);
 			}
 		} catch (Exception e) {
 			Logger.log("!!! Failed to apply integer optimizations: " + e.getMessage());

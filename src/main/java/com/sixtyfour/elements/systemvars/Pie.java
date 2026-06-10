@@ -14,7 +14,7 @@ public class Pie extends Variable {
 	 * Instantiates a new pie.
 	 */
 	public Pie() {
-		super("Π", (float) Math.PI);
+		super(null, "Π", (float) Math.PI);
 		setSystem(true);
 	}
 

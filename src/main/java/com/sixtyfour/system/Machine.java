@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.sixtyfour.Basic;
+import com.sixtyfour.Logger;
 import com.sixtyfour.elements.Variable;
 import com.sixtyfour.elements.commands.Command;
 import com.sixtyfour.elements.commands.For;
@@ -98,6 +99,8 @@ public class Machine {
 
     private Set<String> earlyFunctions = new HashSet<>();
 
+	private Set<String> forcedIntegers = new HashSet<>();
+
 	/**
 	 * Instantiates a new machine.
 	 */
@@ -112,7 +115,7 @@ public class Machine {
 	}
 
 	/**
-	 * Loads and adds a C64's KERNAL- and BASIC-ROMs to the machines memory. This
+	 * Loads and adds a C64's KERNAL- and BASIC-ROMs to the machine's memory. This
 	 * might help to execute some assembler programs that call these functions.
 	 * However, because no actual C64 is simulated here, not all of them might do
 	 * something reasonable. Consider this to be an experimental feature for
@@ -126,6 +129,39 @@ public class Machine {
 		roms.add(loadRom("basic.$A000.bin", 0xa000));
 		roms.add(loadRom("kernal.$E000.bin", 0xe000));
 		copyRoms();
+	}
+
+	/**
+	 * Adds a forced integer to the collection
+	 *
+	 * @param name the name of the integer to be added
+	 */
+	public void addForcedInteger(String name) {
+		forcedIntegers.add(VarUtils.toUpper(name).replace("()", "[]").trim());
+	}
+
+	/**
+	 * Translates a variable name if required.
+	 *
+	 * @param name the input string to be translated
+	 * @return the translated string if specific conditions are met; otherwise,
+	 *         returns the original string
+	 */
+	public String translate(String name) {
+		String nname = VarUtils.toUpper(name).trim();
+		if (!isSystemVariable(nname) && !nname.contains("%") && !nname.contains("$")
+				&& (forcedIntegers.contains(nname) || forcedIntegers.contains("ALL!"))
+				&& !nname.contains("_FI_")) {
+			String ret = "_FI_"+nname;
+			if (ret.contains("[]")) {
+				ret = ret.replace("[]","%[]");
+			} else {
+				ret = ret+"%";
+			}
+			//Logger.log(name+" => "+ret);
+			return ret;
+		}
+		return name;
 	}
 
     /**
@@ -319,6 +355,7 @@ public class Machine {
 	 * @return the corresponding FOR
 	 */
 	public For peekFor(String varName) {
+		varName = translate(varName);
 		for (int i = stack.size() - 1; i >= 0; i--) {
 			StackEntry entry = stack.get(i);
 			if (entry.isFor()
@@ -379,6 +416,7 @@ public class Machine {
 	 */
 	public void resetMemory() {
 		resetMemory(false);
+		forcedIntegers.clear();
 	}
 	
 	/**
@@ -469,11 +507,11 @@ public class Machine {
 	}
 	
 	/**
-	 * Tracks variable usage at compile time to determine, if a variable can be
+	 * Tracks variable usage at compile time to determine if a variable can be
 	 * propagated to a constant later.
 	 * 
 	 * @param var       the variable
-	 * @param assigment track an assignment (true)/something else (false)
+	 * @param assignment track an assignment (true)/something else (false)
 	 */
 	public void trackVariableUsage(Variable var, boolean assignment) {
 		if (var.isSupposedToBeArray()) {
@@ -729,7 +767,7 @@ public class Machine {
 	 * Sets the system call listener. The system call listener listens for SYS calls
 	 * of the program. The default implementation just ignores these calls.
 	 * 
-	 * @param scl the new system call listener
+	 * @param systemCallListener the new system call listener
 	 */
 	public void setSystemCallListener(SystemCallListener systemCallListener) {
 		this.systemCallListener = systemCallListener;

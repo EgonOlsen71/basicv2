@@ -107,7 +107,7 @@ public class Def extends AbstractCommand {
 		// System.out.println("New DEF-Term: " + term + " - " + fnName + " - " +
 		// varName);
 		this.term = Parser.getTerm(config, term, machine, false, true, null);
-		machine.add(new Variable(varName, 0f));
+		machine.add(new Variable(machine, varName, 0f));
 		return null;
 	}
 

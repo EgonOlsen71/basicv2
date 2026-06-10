@@ -454,9 +454,9 @@ public class NativeCompilerTest {
 	private static void testLogicExpression0() {
 		System.out.println("\n\ntestLogicExpression0");
 		Machine machine = new Machine();
-		machine.add(new Variable("A", 1));
-		machine.add(new Variable("B", 0));
-		machine.add(new Variable("C", 1));
+		machine.add(new Variable(machine, "A", 1));
+		machine.add(new Variable(machine, "B", 0));
+		machine.add(new Variable(machine, "C", 1));
 		String term = "(A OR B) AND (C AND NOT(B))";
 		testExpr(machine, term);
 	}
@@ -464,8 +464,8 @@ public class NativeCompilerTest {
 	private static void testLogicExpression1() {
 		System.out.println("\n\ntestLogicExpression1");
 		Machine machine = new Machine();
-		machine.add(new Variable("A", 1));
-		machine.add(new Variable("B", 0));
+		machine.add(new Variable(machine, "A", 1));
+		machine.add(new Variable(machine, "B", 0));
 		String term = "NOT(NOT(A>B+2 AND A<>B) OR A<=(B*10))";
 		// String term="A>B";
 		// String term = "A<B AND F(A)*F(A)>5";
@@ -475,8 +475,8 @@ public class NativeCompilerTest {
 	private static void testLogicExpression2() {
 		System.out.println("\n\ntestLogicExpression2");
 		Machine machine = new Machine();
-		machine.add(new Variable("A$", "hello"));
-		machine.add(new Variable("B$", "world"));
+		machine.add(new Variable(machine, "A$", "hello"));
+		machine.add(new Variable(machine, "B$", "world"));
 		// String term = "A$<>B$ AND \"hello world\"<>a$+\" \"+b$";
 		String term = "A$<>B$ AND \"hello world\"=a$+\" \"+b$ and \"b\"=>\"a\" or 1=2";
 		testExpr(machine, term);
@@ -485,14 +485,14 @@ public class NativeCompilerTest {
 	private static void testLogicExpression3() {
 		System.out.println("\n\ntestLogicExpression3");
 		Machine machine = new Machine();
-		machine.add(new Variable("A$", "a"));
-		machine.add(new Variable("B$", "0"));
+		machine.add(new Variable(machine, "A$", "a"));
+		machine.add(new Variable(machine, "B$", "0"));
 		String term = "(A$>B$)+1.2";
 		testExpr(machine, term);
 
 		machine = new Machine();
-		machine.add(new Variable("A", 2));
-		machine.add(new Variable("B", 1));
+		machine.add(new Variable(machine, "A", 2));
+		machine.add(new Variable(machine, "B", 1));
 		term = "(A>B)+1.2";
 		testExpr(machine, term);
 	}
@@ -502,14 +502,14 @@ public class NativeCompilerTest {
 		Machine machine = new Machine();
 		List<Object> objs = new ArrayList<Object>(Arrays.asList(new Float[] { 93f, 2.3f, 4.5f, 4.1f, 1.1f, .21f, 1.1f,
 				2.3f, 4.5f, 6.6f, 2.2f, 1.3f, 4.5f, 4.5f, 1f, 2.2f, 3.1f, 2.3f, 5.5f, 6.6f }));
-		machine.add(new Variable("A[]", objs, 1, 9));
-		machine.add(new Variable("B[]", objs, 19));
-		machine.add(new Variable("C", 0));
-		machine.add(new Variable("D%", 2));
+		machine.add(new Variable(machine, "A[]", objs, 1, 9));
+		machine.add(new Variable(machine, "B[]", objs, 19));
+		machine.add(new Variable(machine, "C", 0));
+		machine.add(new Variable(machine, "D%", 2));
 		List<Object> objs2 = new ArrayList<Object>(Arrays.asList(new String[] { "AAA", "BBB", "CCC", "DDD", "EEE",
 				"FFF", "GGG", "HHH", "JJJ", "KKK", "LLL", "MMM", "NNN", "OOO" }));
-		machine.add(new Variable("AA$[]", objs2, 1, 7));
-		machine.add(new Variable("B$[]", objs2, 13));
+		machine.add(new Variable(machine, "AA$[]", objs2, 1, 7));
+		machine.add(new Variable(machine, "B$[]", objs2, 13));
 		String term = "B(4)+6+B(1)+ASC(B$(ASC(\"A\")-A(0,C))+\" \")";
 		// String term="B(4 AND 4)+6+B(1)+ASC(\"A\")";
 		testExpr(machine, term, false);
@@ -520,10 +520,10 @@ public class NativeCompilerTest {
 		Machine machine = new Machine();
 		List<Object> objs = new ArrayList<Object>(Arrays.asList(new Float[] { 1.2f, 2.3f, 4.5f, 4.1f, 1.1f, .21f, 1.1f,
 				2.3f, 4.5f, 6.6f, 2.2f, 1.3f, 4.5f, 4.5f, 1f, 2.2f, 3.1f, 2.3f, 5.5f, 6.6f }));
-		machine.add(new Variable("A[]", objs, 1, 9));
-		machine.add(new Variable("B[]", objs, 19));
-		machine.add(new Variable("C", 4.2f));
-		machine.add(new Variable("D%", 2));
+		machine.add(new Variable(machine, "A[]", objs, 1, 9));
+		machine.add(new Variable(machine, "B[]", objs, 19));
+		machine.add(new Variable(machine, "C", 4.2f));
+		machine.add(new Variable(machine, "D%", 2));
 		String term = "B(5)+6+B(1)";
 		testExpr(machine, term, false);
 	}
@@ -533,9 +533,9 @@ public class NativeCompilerTest {
 		Machine machine = new Machine();
 		List<Object> objs = new ArrayList<Object>(Arrays.asList(new String[] { "AAA", "BBB", "CCC", "DDD", "EEE", "FFF",
 				"GGG", "HHH", "JJJ", "KKK", "LLL", "MMM", "NNN", "OOO" }));
-		machine.add(new Variable("AA$[]", objs, 1, 7));
-		machine.add(new Variable("B$[]", objs, 13));
-		machine.add(new Variable("A$", "Hello"));
+		machine.add(new Variable(machine, "AA$[]", objs, 1, 7));
+		machine.add(new Variable(machine, "B$[]", objs, 13));
+		machine.add(new Variable(machine, "A$", "Hello"));
 		String term = "B$(1)+\"K\"+B$(4)";
 		testExpr(machine, term, true);
 	}
@@ -545,9 +545,9 @@ public class NativeCompilerTest {
 		Machine machine = new Machine();
 		List<Object> objs = new ArrayList<Object>(Arrays.asList(new String[] { "AAA", "BBB", "CCC", "DDD", "EEE", "FFF",
 				"GGG", "HHH", "JJJ", "KKK", "LLL", "MMM", "NNN", "OOO" }));
-		machine.add(new Variable("AA$[]", objs, 1, 7));
-		machine.add(new Variable("B$[]", objs, 13));
-		machine.add(new Variable("A$", "Hello"));
+		machine.add(new Variable(machine, "AA$[]", objs, 1, 7));
+		machine.add(new Variable(machine, "B$[]", objs, 13));
+		machine.add(new Variable(machine, "A$", "Hello"));
 		String term = "AA$(0,1)+\" \"+A$+B$(4)+B$(5)+\"hello\"+AA$(1,3)";
 		testExpr(machine, term, true);
 	}
@@ -557,8 +557,8 @@ public class NativeCompilerTest {
 		Tab.setLimitedToPrint(false);
 		Spc.setLimitedToPrint(false);
 		Machine machine = new Machine();
-		machine.add(new Variable("A$", "hello world"));
-		machine.add(new Variable("B$", "52"));
+		machine.add(new Variable(machine, "A$", "hello world"));
+		machine.add(new Variable(machine, "B$", "52"));
 		String term = "LEFT$(MID$(MID$(A$,2,5),1,2),1)+MID$(A$,2,VAL(LEFT$(B$,1)))";
 		testExpr(machine, term, true);
 	}
@@ -568,8 +568,8 @@ public class NativeCompilerTest {
 		Tab.setLimitedToPrint(false);
 		Spc.setLimitedToPrint(false);
 		Machine machine = new Machine();
-		machine.add(new Variable("A$", "hello"));
-		machine.add(new Variable("B$", "world"));
+		machine.add(new Variable(machine, "A$", "hello"));
+		machine.add(new Variable(machine, "B$", "world"));
 		String term = "RIGHT$(LEFT$(A$,4),2)";
 		testExpr(machine, term, true);
 	}
@@ -584,9 +584,9 @@ public class NativeCompilerTest {
 	private static void testStringExpression8() {
 		System.out.println("\n\ntestStringExpression8");
 		Machine machine = new Machine();
-		machine.add(new Variable("A$", "I hate you!"));
-		machine.add(new Variable("B$", "I love me!"));
-		machine.add(new Variable("A", 2));
+		machine.add(new Variable(machine, "A$", "I hate you!"));
+		machine.add(new Variable(machine, "B$", "I love me!"));
+		machine.add(new Variable(machine, "A", 2));
 		String term = "LEFT$(B$,A*3)+\" \"+RIGHT$(A$, A^A/COS(0))";
 		testExpr(machine, term, true);
 	}
@@ -594,8 +594,8 @@ public class NativeCompilerTest {
 	private static void testStringExpression9() {
 		System.out.println("\n\ntestStringExpression9");
 		Machine machine = new Machine();
-		machine.add(new Variable("A$", "Hello World"));
-		machine.add(new Variable("BB$", "YEAH!!!"));
+		machine.add(new Variable(machine, "A$", "Hello World"));
+		machine.add(new Variable(machine, "BB$", "YEAH!!!"));
 		String term = "LEFT$(A$,4)+\" \"+LEFT$(BB$, 5)";
 		testExpr(machine, term, true);
 	}
@@ -603,8 +603,8 @@ public class NativeCompilerTest {
 	private static void testStringExpression7() {
 		System.out.println("\n\ntestStringExpression7");
 		Machine machine = new Machine();
-		machine.add(new Variable("A$", "Hello World"));
-		machine.add(new Variable("BB$", "YEAH!!!"));
+		machine.add(new Variable(machine, "A$", "Hello World"));
+		machine.add(new Variable(machine, "BB$", "YEAH!!!"));
 		String term = "LEFT$(A$,4)+\" \"+LEFT$(BB$, 5)";
 		testExpr(machine, term, true);
 	}
@@ -614,10 +614,10 @@ public class NativeCompilerTest {
 		Machine machine = new Machine();
 		List<Object> objs = new ArrayList<Object>(Arrays.asList(new Float[] { 1.2f, 2.3f, 4.5f, 4.1f, 1.1f, .21f, 1.1f,
 				2.3f, 4.5f, 6.6f, 2.2f, 1.3f, 4.5f, 4.5f, 1f, 2.2f, 3.1f, 2.3f, 5.5f, 6.6f }));
-		machine.add(new Variable("A[]", objs, 1, 9));
-		machine.add(new Variable("B[]", objs, 19));
-		machine.add(new Variable("C", 4.2f));
-		machine.add(new Variable("D%", 2));
+		machine.add(new Variable(machine, "A[]", objs, 1, 9));
+		machine.add(new Variable(machine, "B[]", objs, 19));
+		machine.add(new Variable(machine, "C", 4.2f));
+		machine.add(new Variable(machine, "D%", 2));
 		String term = "A((1/183)*(B+ASC(A$+\"hello\")*2+-ASC((MID$(\"32222\",2)+A$)+A$)/2),D%)*A(0,D%+D%+COS(A(0,0)-1.2))+A(1,C*2)*B(B(ASC(\"A\")-96)*4)";
 		// term="B(5)+B(1)";
 		testExpr(machine, term, false);
@@ -628,8 +628,8 @@ public class NativeCompilerTest {
 		Machine machine = new Machine();
 		List<Object> objs = new ArrayList<Object>(Arrays.asList(new Float[] { 1.2f, 2.3f, 4.5f, 4.1f, 1.1f, .21f, 1.1f,
 				2.3f, 4.5f, 6.6f, 2.2f, 1.3f, 4.5f, 4.5f, 1f, 2.2f, 3.1f, 2.3f, 5.5f, 6.6f }));
-		machine.add(new Variable("A[]", objs, 3, 3));
-		machine.add(new Variable("C", 1.8f));
+		machine.add(new Variable(machine, "A[]", objs, 3, 3));
+		machine.add(new Variable(machine, "C", 1.8f));
 		String term = "A(C,C)";
 		// term="B(5)+B(1)";
 		testExpr(machine, term, false);
@@ -638,7 +638,7 @@ public class NativeCompilerTest {
 	private static void testStringExpression6() {
 		System.out.println("\n\ntestStringExpression6");
 		Machine machine = new Machine();
-		machine.add(new Variable("P$", "hello world"));
+		machine.add(new Variable(machine, "P$", "hello world"));
 		String term = "\"test: \"+MID$(P$,4,ASC(\"A\")-92)+MID$(\"YEAH!\",4+1)";
 		// String term="MID$(\"hello\",1,2)";
 		testExpr(machine, term, true);
@@ -650,8 +650,8 @@ public class NativeCompilerTest {
 	private static void testStringExpression5() {
 		System.out.println("\n\ntestStringExpression5");
 		Machine machine = new Machine();
-		machine.add(new Variable("P$", "1.2345"));
-		machine.add(new Variable("H$", "67890"));
+		machine.add(new Variable(machine, "P$", "1.2345"));
+		machine.add(new Variable(machine, "H$", "67890"));
 		String term = "10/VAL(P$+H$)*3+LEN(P$)";
 		testExpr(machine, term);
 	}
@@ -659,9 +659,9 @@ public class NativeCompilerTest {
 	private static void testStringExpression4() {
 		System.out.println("\n\ntestStringExpression4");
 		Machine machine = new Machine();
-		machine.add(new Variable("P", 1.234567890f));
-		machine.add(new Variable("B%", 65));
-		machine.add(new Variable("A$", "65"));
+		machine.add(new Variable(machine, "P", 1.234567890f));
+		machine.add(new Variable(machine, "B%", 65));
+		machine.add(new Variable(machine, "A$", "65"));
 		String term = "\"vars: \"+STR$(P)";
 		testExpr(machine, term, true);
 	}
@@ -675,8 +675,8 @@ public class NativeCompilerTest {
 	private static void testStringExpression2() {
 		System.out.println("\n\ntestStringExpression2");
 		Machine machine = new Machine();
-		machine.add(new Variable("A$", "h"));
-		machine.add(new Variable("B", 65));
+		machine.add(new Variable(machine, "A$", "h"));
+		machine.add(new Variable(machine, "B", 65));
 		// String term =
 		// "B+ASC(A$+\"hello\")*2+-ASC((MID$(\"32222\",2)+A$)+A$)/2";
 		String term = "MID$(\"32222\",2+1)+A$";
@@ -686,8 +686,8 @@ public class NativeCompilerTest {
 	private static void testStringExpression3() {
 		System.out.println("\n\ntestStringExpression3");
 		Machine machine = new Machine();
-		machine.add(new Variable("P", 3));
-		machine.add(new Variable("I%", 65));
+		machine.add(new Variable(machine, "P", 3));
+		machine.add(new Variable(machine, "I%", 65));
 		String term = "INT(10000*SIN(ASC(CHR$(ASC(CHR$(I%)+\"U\")))))";
 		testExpr(machine, term);
 	}
@@ -695,8 +695,8 @@ public class NativeCompilerTest {
 	private static void testStringExpression1() {
 		System.out.println("\n\ntestStringExpression1");
 		Machine machine = new Machine();
-		machine.add(new Variable("A$", "hello"));
-		machine.add(new Variable("B", 65));
+		machine.add(new Variable(machine, "A$", "hello"));
+		machine.add(new Variable(machine, "B", 65));
 		String term = "(A$+\" \")+(\"world\"+\", \"+A$)+\" (\"+CHR$(B+(66-B))+CHR$(B)+CHR$(124*SIN(B/2))+\"!\"+\") universe!\"+\" -- \"+A$";
 		testExpr(machine, term, true);
 	}
@@ -704,7 +704,7 @@ public class NativeCompilerTest {
 	private static void testStringExpression0() {
 		System.out.println("\n\ntestStringExpression0");
 		Machine machine = new Machine();
-		machine.add(new Variable("A$", "hello"));
+		machine.add(new Variable(machine, "A$", "hello"));
 		String term = "(A$+\" \")+(\"world\"+\", \"+A$)+\" universe!\"";
 		testExpr(machine, term, true);
 
@@ -718,7 +718,7 @@ public class NativeCompilerTest {
 	private static void testExpression6() {
 		System.out.println("\n\ntestExpression6");
 		Machine machine = new Machine();
-		machine.add(new Variable("A", 3.5f));
+		machine.add(new Variable(machine, "A", 3.5f));
 		String term = "A*A*A";
 		testExpr(machine, term);
 	}
@@ -746,20 +746,20 @@ public class NativeCompilerTest {
 
 		System.out.println("\n\ntestExpression4.1");
 		Machine machine = new Machine();
-		machine.add(new Variable("A", 35f));
-		machine.add(new Variable("B", 1.2f));
+		machine.add(new Variable(machine, "A", 35f));
+		machine.add(new Variable(machine, "B", 1.2f));
 		String term = "SIN(((A-X)^4+(B-Y)^3+(C-Z)^2)^SIN(1/2))^2";
 		// String term="2.3/(A+B)";
 		testExpr(machine, term);
 
 		System.out.println("\n\ntestExpression4.2");
 		machine = new Machine();
-		machine.add(new Variable("A", 3.5f));
-		machine.add(new Variable("B", 1.2f));
-		machine.add(new Variable("X", 1));
-		machine.add(new Variable("Y", 1.1));
-		machine.add(new Variable("Z", 1.1));
-		machine.add(new Variable("C", 2.1));
+		machine.add(new Variable(machine, "A", 3.5f));
+		machine.add(new Variable(machine, "B", 1.2f));
+		machine.add(new Variable(machine, "X", 1));
+		machine.add(new Variable(machine, "Y", 1.1));
+		machine.add(new Variable(machine, "Z", 1.1));
+		machine.add(new Variable(machine, "C", 2.1));
 		term = "10/((-2/((2+-(32-A)^2-1+(2*A)/(8*B))/100000))^-(2*SIN(((A-X)^4+(B-Y)^3+(1+(A/4)+6*2/6-2^1+C-Z)^2)^SIN(1/2)/20)))*(12345+INT(32.67/COS(A*B)*111.2)/-ABS(A)*(1/LOG(2)*3))+SIN(34)*23/7+2/(COS(A)*132)";
 		// String term="2.3/(A+B)";
 		testExpr(machine, term);
@@ -768,8 +768,8 @@ public class NativeCompilerTest {
 	private static void testExpression3() {
 		System.out.println("\n\ntestExpression3");
 		Machine machine = new Machine();
-		machine.add(new Variable("A", 1));
-		machine.add(new Variable("B", 0));
+		machine.add(new Variable(machine, "A", 1));
+		machine.add(new Variable(machine, "B", 0));
 		String term = "1 OR (A AND B OR (B AND NOT(NOT(A))) OR 1)";
 		// String term = "B AND NOT(A)";
 		testExpr(machine, term);
@@ -778,12 +778,12 @@ public class NativeCompilerTest {
 	private static void testExpression1() {
 		System.out.println("\n\ntestExpression1");
 		Machine machine = new Machine();
-		machine.add(new Variable("A", 122));
-		machine.add(new Variable("X", 100));
-		machine.add(new Variable("Y", 113));
-		machine.add(new Variable("Z", 11));
-		machine.add(new Variable("B", 110));
-		machine.add(new Variable("C", 210));
+		machine.add(new Variable(machine, "A", 122));
+		machine.add(new Variable(machine, "X", 100));
+		machine.add(new Variable(machine, "Y", 113));
+		machine.add(new Variable(machine, "Z", 11));
+		machine.add(new Variable(machine, "B", 110));
+		machine.add(new Variable(machine, "C", 210));
 		String term = "((A-X)^4+(B-Y)^3+(C-Z)^2)^(1/2)";
 
 		testExpr(machine, term);
@@ -792,8 +792,8 @@ public class NativeCompilerTest {
 	private static void testExpression2() {
 		System.out.println("\n\ntestExpression2");
 		Machine machine = new Machine();
-		machine.add(new Variable("A", 35f));
-		machine.add(new Variable("B", 1.2f));
+		machine.add(new Variable(machine, "A", 35f));
+		machine.add(new Variable(machine, "B", 1.2f));
 		String term = "2+-(32-A)^10-1+(2*A)/(8*B)";
 		testExpr(machine, term);
 	}

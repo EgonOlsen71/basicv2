@@ -96,7 +96,7 @@ public class ArrayAccess extends AbstractFunction {
 			for (int i = 0; i < dims.length; i++) {
 				dims[i] = 10;
 			}
-			Variable tmpVar = new Variable(variableName, null, dims);
+			Variable tmpVar = new Variable(machine, variableName, null, dims);
 			machine.add(tmpVar);
 			Logger.log("Array not defined: " + variableName + ", defaulting to a depth of 10 with " + pars.size()
 					+ " dimensions!");

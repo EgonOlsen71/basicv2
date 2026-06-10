@@ -26,7 +26,7 @@ public class TimeDate extends Variable {
 	 * Instantiates a new time and date.
 	 */
 	public TimeDate() {
-		super("TI$", "000000");
+		super(null, "TI$", "000000");
 		setSystem(true);
 	}
 

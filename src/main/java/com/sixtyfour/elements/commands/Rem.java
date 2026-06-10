@@ -1,8 +1,10 @@
 package com.sixtyfour.elements.commands;
 
+import com.sixtyfour.Logger;
 import com.sixtyfour.system.Machine;
 
 import java.util.List;
+import java.util.Locale;
 
 import com.sixtyfour.cbmnative.Util;
 import com.sixtyfour.config.CompilerConfig;
@@ -42,6 +44,21 @@ public class Rem extends AbstractCommand {
 			if (part.startsWith("[") && part.endsWith("]")) {
 				asmCode = part.substring(1, part.length()-1);
 				InlineAssembler.trackVariables(config, asmCode, machine);
+			}
+		}
+
+		if (linePart.length()>3 && linePart.contains("@")) {
+			String directive = linePart.substring(3).replace("@","").trim().toUpperCase(Locale.ENGLISH);
+			if (directive.contains("INTEGER")) {
+				directive = directive.substring(directive.indexOf("INTEGER")+7).trim();
+				String[] parts = directive.split(",");
+				for (String part : parts) {
+					part = part.trim().toUpperCase(Locale.ENGLISH);
+					machine.addForcedInteger(part);
+					Logger.log(part+ " forced to integer via REM...");
+				}
+			} else {
+				Logger.log("Ignoring unknown directive: "+directive);
 			}
 		}
 		

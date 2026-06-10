@@ -77,7 +77,7 @@ public class Next extends AbstractCommand {
 				ret += vars[i];
 			}
 		}
-		varName = Parser.getVariableName(linePart);
+		varName = Parser.getVariableName(linePart, machine);
 		if (varName != null && varName.length() == 0) {
 			varName = null;
 		}

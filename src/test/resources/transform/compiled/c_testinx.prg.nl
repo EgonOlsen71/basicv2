@@ -150,7 +150,7 @@ STY TMP_ZP
 LDA VAR_P%+1
 STA TMP_ZP+1
 JSR INTOUTBRKFAST
-; Fast integer print
+; Fast integer print(2)
 ;
 ; Optimizer rule: INTOUT + LINEBRK/1
 ;

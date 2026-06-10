@@ -80,7 +80,7 @@ public class Dim extends AbstractCommand {
 		if (vars != null) {
 			for (VariableAndTerms var : vars) {
 				// Some placeholder vars...
-				Variable vary = new Variable(var.getVarName(), null);
+				Variable vary = new Variable(machine, var.getVarName(), null);
 				this.vars.add(vary);
 				terms.put(vary.getName(), var.getTerms());
 			}
@@ -140,7 +140,7 @@ public class Dim extends AbstractCommand {
 				for (Atom par : pars) {
 					pis[cnt++] = VarUtils.getInt(par.eval(machine));
 				}
-				Variable vary = new Variable(var.getName(), null, pis);
+				Variable vary = new Variable(machine, var.getName(), null, pis);
 				if (machine.getVariable(vary.getName()) != null) {
 					Variable av = machine.getVariable(vary.getName());
 					if (!av.isArray()) {

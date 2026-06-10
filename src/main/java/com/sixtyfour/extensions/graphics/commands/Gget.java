@@ -59,7 +59,7 @@ public class Gget extends AbstractGraphicsCommand {
 
 			if (brackets == 0 && (i == linePart.length() - 1)) {
 				String pa = sb.toString();
-				varName = Parser.getVariableName(pa);
+				varName = Parser.getVariableName(pa, machine);
 				part = pa;
 				sb.setLength(0);
 				break;
@@ -68,7 +68,7 @@ public class Gget extends AbstractGraphicsCommand {
 		if (varName == null) {
 			throw new RuntimeException("Missing variable name in " + linePart);
 		}
-		Variable var = new Variable(VarUtils.toUpper(varName.trim()), null);
+		Variable var = new Variable(machine, VarUtils.toUpper(varName.trim()), null);
 		VariableAndIndex vai = Parser.getIndexTerm(config, var, part, machine, false);
 		var = vai.getVariable();
 		indexTerm = vai.getIndexTerm();

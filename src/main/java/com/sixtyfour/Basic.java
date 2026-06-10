@@ -360,6 +360,13 @@ public class Basic implements ProgramExecutor {
 			machine.addSystemVariables(ext.getSystemVariables());
 		}
 
+		if (config.getForcedToIntegers()!=null && !config.getForcedToIntegers().isEmpty()) {
+			config.getForcedToIntegers().forEach(p -> {machine.addForcedInteger(p);
+				Logger.log(VarUtils.toUpper(p)+ " forced to integer via configuration...");});
+		} else {
+			Logger.log("No forced integers specified in configuration");
+		}
+
 		Line cl = null;
 		int lastLineNumber = -1;
 		lines.clear();
