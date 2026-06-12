@@ -49,11 +49,15 @@ public class Rem extends AbstractCommand {
 
 		if (linePart.length()>3 && linePart.contains("@")) {
 			String directive = linePart.substring(3).replace("@","").trim().toUpperCase(Locale.ENGLISH);
+			directive=directive.replace("BYTE", "INTEGER");
 			if (directive.contains("INTEGER")) {
 				directive = directive.substring(directive.indexOf("INTEGER")+7).trim();
 				String[] parts = directive.split(",");
 				for (String part : parts) {
 					part = part.trim().toUpperCase(Locale.ENGLISH);
+					if (part.endsWith("(")) {
+						part+=")";
+					}
 					machine.addForcedInteger(part);
 					Logger.log(part+ " forced to integer via REM...");
 				}
