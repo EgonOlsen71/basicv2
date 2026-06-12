@@ -359,6 +359,7 @@ LDA #<VAR_AC
 LDY #>VAR_AC
 JSR CMPFAC
 ; Optimizer rule: Highly simplified loading for CMP/6
+ROL
 BCC LTEQ_LTEQ1
 BEQ LTEQ_LTEQ1
 LDA #0
@@ -705,6 +706,7 @@ LDA #<VAR_AC
 LDY #>VAR_AC
 JSR CMPFAC
 ; Optimizer rule: Highly simplified loading for CMP/6
+ROL
 BCC LTEQ_LTEQ5
 BEQ LTEQ_LTEQ5
 LDA #0
@@ -1050,6 +1052,7 @@ LDA #<VAR_AC
 LDY #>VAR_AC
 JSR CMPFAC
 ; Optimizer rule: Highly simplified loading for CMP/6
+ROL
 BCC LTEQ_LTEQ9
 BEQ LTEQ_LTEQ9
 LDA #0
@@ -1383,6 +1386,7 @@ LDA #<VAR_AC
 LDY #>VAR_AC
 JSR CMPFAC
 ; Optimizer rule: Highly simplified loading for CMP/6
+ROL
 BCC LTEQ_LTEQ13
 BEQ LTEQ_LTEQ13
 LDA #0
@@ -1729,6 +1733,7 @@ LDA #<VAR_AC
 LDY #>VAR_AC
 JSR CMPFAC
 ; Optimizer rule: Highly simplified loading for CMP/6
+ROL
 BCC LTEQ_LTEQ17
 BEQ LTEQ_LTEQ17
 LDA #0
@@ -2062,6 +2067,7 @@ LDA #<VAR_AC
 LDY #>VAR_AC
 JSR CMPFAC
 ; Optimizer rule: Highly simplified loading for CMP/6
+ROL
 BCC LTEQ_LTEQ21
 BEQ LTEQ_LTEQ21
 LDA #0
@@ -2395,6 +2401,7 @@ LDA #<VAR_AC
 LDY #>VAR_AC
 JSR CMPFAC
 ; Optimizer rule: Highly simplified loading for CMP/6
+ROL
 BCC LTEQ_LTEQ25
 BEQ LTEQ_LTEQ25
 LDA #0
@@ -2741,6 +2748,7 @@ LDA #<VAR_AC
 LDY #>VAR_AC
 JSR CMPFAC
 ; Optimizer rule: Highly simplified loading for CMP/6
+ROL
 BCC LTEQ_LTEQ29
 BEQ LTEQ_LTEQ29
 LDA #0
@@ -3074,6 +3082,7 @@ LDA #<VAR_AC
 LDY #>VAR_AC
 JSR CMPFAC
 ; Optimizer rule: Highly simplified loading for CMP/6
+ROL
 BCC LTEQ_LTEQ33
 BEQ LTEQ_LTEQ33
 LDA #0
@@ -3407,6 +3416,7 @@ LDA #<VAR_AC
 LDY #>VAR_AC
 JSR CMPFAC
 ; Optimizer rule: Highly simplified loading for CMP/6
+ROL
 BCC LTEQ_LTEQ37
 BEQ LTEQ_LTEQ37
 LDA #0
@@ -3753,6 +3763,7 @@ LDA #<VAR_AC
 LDY #>VAR_AC
 JSR CMPFAC
 ; Optimizer rule: Highly simplified loading for CMP/6
+ROL
 BCC LTEQ_LTEQ41
 BEQ LTEQ_LTEQ41
 LDA #0
@@ -4086,6 +4097,7 @@ LDA #<VAR_AC
 LDY #>VAR_AC
 JSR CMPFAC
 ; Optimizer rule: Highly simplified loading for CMP/6
+ROL
 BCC LTEQ_LTEQ45
 BEQ LTEQ_LTEQ45
 LDA #0
@@ -4432,6 +4444,7 @@ LDA #<VAR_AC
 LDY #>VAR_AC
 JSR CMPFAC
 ; Optimizer rule: Highly simplified loading for CMP/6
+ROL
 BCC LTEQ_LTEQ49
 BEQ LTEQ_LTEQ49
 LDA #0
@@ -4777,6 +4790,7 @@ LDA #<VAR_AC
 LDY #>VAR_AC
 JSR CMPFAC
 ; Optimizer rule: Highly simplified loading for CMP/6
+ROL
 BCC LTEQ_LTEQ53
 BEQ LTEQ_LTEQ53
 LDA #0
@@ -5122,6 +5136,7 @@ LDA #<VAR_AC
 LDY #>VAR_AC
 JSR CMPFAC
 ; Optimizer rule: Highly simplified loading for CMP/6
+ROL
 BCC LTEQ_LTEQ57
 BEQ LTEQ_LTEQ57
 LDA #0
@@ -5455,6 +5470,7 @@ LDA #<VAR_AC
 LDY #>VAR_AC
 JSR CMPFAC
 ; Optimizer rule: Highly simplified loading for CMP/6
+ROL
 BCC LTEQ_LTEQ61
 BEQ LTEQ_LTEQ61
 LDA #0
@@ -6552,6 +6568,7 @@ LDA #<VAR_AC
 LDY #>VAR_AC
 JSR CMPFAC
 ; Optimizer rule: Highly simplified loading for CMP/6
+ROL
 BCC LTEQ_LTEQ65
 BEQ LTEQ_LTEQ65
 LDA #0
@@ -7668,6 +7685,7 @@ LDA #<VAR_AC
 LDY #>VAR_AC
 JSR CMPFAC
 ; Optimizer rule: Highly simplified loading for CMP/6
+ROL
 BCC LTEQ_LTEQ69
 BEQ LTEQ_LTEQ69
 LDA #0
@@ -8778,6 +8796,7 @@ LDA #<VAR_AC
 LDY #>VAR_AC
 JSR CMPFAC
 ; Optimizer rule: Highly simplified loading for CMP/6
+ROL
 BCC LTEQ_LTEQ73
 BEQ LTEQ_LTEQ73
 LDA #0
@@ -9894,6 +9913,7 @@ LDA #<VAR_AC
 LDY #>VAR_AC
 JSR CMPFAC
 ; Optimizer rule: Highly simplified loading for CMP/6
+ROL
 BCC LTEQ_LTEQ77
 BEQ LTEQ_LTEQ77
 LDA #0
@@ -11015,6 +11035,7 @@ LDA #<VAR_AC
 LDY #>VAR_AC
 JSR CMPFAC
 ; Optimizer rule: Highly simplified loading for CMP/6
+ROL
 BCC LTEQ_LTEQ81
 BEQ LTEQ_LTEQ81
 LDA #0
@@ -12123,6 +12144,7 @@ LDA #<VAR_AC
 LDY #>VAR_AC
 JSR CMPFAC
 ; Optimizer rule: Highly simplified loading for CMP/6
+ROL
 BCC LTEQ_LTEQ85
 BEQ LTEQ_LTEQ85
 LDA #0
@@ -13228,6 +13250,7 @@ LDA #<VAR_AC
 LDY #>VAR_AC
 JSR CMPFAC
 ; Optimizer rule: Highly simplified loading for CMP/6
+ROL
 BCC LTEQ_LTEQ89
 BEQ LTEQ_LTEQ89
 LDA #0
@@ -14344,6 +14367,7 @@ LDA #<VAR_AC
 LDY #>VAR_AC
 JSR CMPFAC
 ; Optimizer rule: Highly simplified loading for CMP/6
+ROL
 BCC LTEQ_LTEQ93
 BEQ LTEQ_LTEQ93
 LDA #0
@@ -15465,6 +15489,7 @@ LDA #<VAR_AC
 LDY #>VAR_AC
 JSR CMPFAC
 ; Optimizer rule: Highly simplified loading for CMP/6
+ROL
 BCC LTEQ_LTEQ97
 BEQ LTEQ_LTEQ97
 LDA #0
@@ -16576,6 +16601,7 @@ LDA #<VAR_AC
 LDY #>VAR_AC
 JSR CMPFAC
 ; Optimizer rule: Highly simplified loading for CMP/6
+ROL
 BCC LTEQ_LTEQ101
 BEQ LTEQ_LTEQ101
 LDA #0
@@ -17681,6 +17707,7 @@ LDA #<VAR_AC
 LDY #>VAR_AC
 JSR CMPFAC
 ; Optimizer rule: Highly simplified loading for CMP/6
+ROL
 BCC LTEQ_LTEQ105
 BEQ LTEQ_LTEQ105
 LDA #0
@@ -18802,6 +18829,7 @@ LDA #<VAR_AC
 LDY #>VAR_AC
 JSR CMPFAC
 ; Optimizer rule: Highly simplified loading for CMP/6
+ROL
 BCC LTEQ_LTEQ109
 BEQ LTEQ_LTEQ109
 LDA #0
@@ -19910,6 +19938,7 @@ LDA #<VAR_AC
 LDY #>VAR_AC
 JSR CMPFAC
 ; Optimizer rule: Highly simplified loading for CMP/6
+ROL
 BCC LTEQ_LTEQ113
 BEQ LTEQ_LTEQ113
 LDA #0
@@ -21031,6 +21060,7 @@ LDA #<VAR_AC
 LDY #>VAR_AC
 JSR CMPFAC
 ; Optimizer rule: Highly simplified loading for CMP/6
+ROL
 BCC LTEQ_LTEQ117
 BEQ LTEQ_LTEQ117
 LDA #0
@@ -22152,6 +22182,7 @@ LDA #<VAR_AC
 LDY #>VAR_AC
 JSR CMPFAC
 ; Optimizer rule: Highly simplified loading for CMP/6
+ROL
 BCC LTEQ_LTEQ121
 BEQ LTEQ_LTEQ121
 LDA #0
@@ -23273,6 +23304,7 @@ LDA #<VAR_AC
 LDY #>VAR_AC
 JSR CMPFAC
 ; Optimizer rule: Highly simplified loading for CMP/6
+ROL
 BCC LTEQ_LTEQ125
 BEQ LTEQ_LTEQ125
 LDA #0
@@ -24394,6 +24426,7 @@ LDA #<VAR_AC
 LDY #>VAR_AC
 JSR CMPFAC
 ; Optimizer rule: Highly simplified loading for CMP/6
+ROL
 BCC LTEQ_LTEQ129
 BEQ LTEQ_LTEQ129
 LDA #0

@@ -10771,6 +10771,7 @@ LDA #<VAR_I
 LDY #>VAR_I
 JSR CMPFAC
 ; Optimizer rule: Highly simplified loading for CMP/6
+ROL
 BCC LTEQ_LTEQ147
 BEQ LTEQ_LTEQ147
 LDA #<REAL_CONST_ZERO
@@ -14649,21 +14650,16 @@ RTS
 ;###################################
 ;###################################
 COMPARE_PTRS_INT
-TAX                 ; Save incoming low byte (A) into X
-LDA TMP_ZP          ; Save old ZP pointer to stack
-PHA
-LDA TMP_ZP+1
-PHA
-STX TMP_ZP
-STY TMP_ZP+1
+STA TMP3_ZP
+STY TMP3_ZP+1
 LDY #0
-LDA (TMP_ZP),Y
+LDA (TMP3_ZP),Y
 SEC                 ; Prepare for subtraction
 SBC (TMP2_ZP),Y     ; Subtract low bytes (Sets Carry/Borrow flag)
 BNE LOW_DIFF        ; Hot Path: Low bytes differ, skip straight to high byte
 ; Path A: Low bytes are equal
 INY
-LDA (TMP_ZP),Y
+LDA (TMP3_ZP),Y
 SBC (TMP2_ZP),Y     ; Subtract high bytes
 BNE EVAL_SIGNED     ; High bytes differ -> proceed to signed math
 ; Values are identical
@@ -14671,7 +14667,7 @@ LDX #0
 BEQ RESTORE_AND_EXIT ; Unconditional branch
 ; Path B: Low bytes are DIFFERENT (The Loop's Hot Path)
 LOW_DIFF    INY                 ; Move to high bytes (Y=1)
-LDA (TMP_ZP),Y
+LDA (TMP3_ZP),Y
 SBC (TMP2_ZP),Y     ; Subtract high bytes using the borrow from the low bytes above
 ; Shared Signed Flag Evaluation
 EVAL_SIGNED BVC NO_OVF_INT      ; If Overflow is clear, Negative flag is accurate
@@ -14681,10 +14677,6 @@ IS_GT_INT   LDX #$FF            ; Otherwise, TMP_ZP > TMP2_ZP
 BNE RESTORE_AND_EXIT ; Compact unconditional branch
 IS_LT_INT   LDX #$01
 RESTORE_AND_EXIT
-PLA
-STA TMP_ZP+1
-PLA
-STA TMP_ZP
 TXA                 ; Sync return token back to accumulator
 RTS
 ;###################################
@@ -14768,7 +14760,7 @@ BNE SEARCHFOR           ; Low bytes don't match, check next stack frame
 INY                     ; Y = 1
 LDA A_REG+1
 CMP (TMP_ZP),Y
-BNE SEARCHFOR           ; High bytes don't match. Safe relative branch (Z=0).
+BNE SEARCHFOR           ; High bytes don't match.  check next stack frame
 FOUNDFOR	LDA TMP_REG
 CMP #2
 BEQ NEXT_INT        ;# FOR loop with int variable

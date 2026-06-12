@@ -174,6 +174,7 @@ LDA #<CONST_1
 LDY #>CONST_1
 JSR CMPFAC
 ; Optimizer rule: Highly simplified loading for CMP/6
+ROL
 BCC LTEQ_LTEQ1
 BEQ LTEQ_LTEQ1
 LDA #<REAL_CONST_ZERO
@@ -220,6 +221,7 @@ LDY #>CONST_1
 JSR CMPFAC
 ; Optimizer rule: Highly simplified loading for CMP/6
 BEQ GTEQ_GTEQ3
+ROL
 BCS GTEQ_GTEQ3
 LDA #<REAL_CONST_ZERO
 LDY #>REAL_CONST_ZERO

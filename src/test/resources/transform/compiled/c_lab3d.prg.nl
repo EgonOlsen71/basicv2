@@ -3301,6 +3301,7 @@ JSR ICMP
 ;
 ;
 BEQ GTEQ_GTEQ22
+ROL
 BCS GTEQ_GTEQ22
 LDA #0
 JMP GTEQ_SKIP22
@@ -3614,6 +3615,7 @@ JSR ICMP
 ;
 ;
 BEQ GTEQ_GTEQ28
+ROL
 BCS GTEQ_GTEQ28
 LDA #<REAL_CONST_ZERO
 LDY #>REAL_CONST_ZERO
@@ -3814,6 +3816,7 @@ JSR ICMP
 ;
 ;
 BEQ GTEQ_GTEQ31
+ROL
 BCS GTEQ_GTEQ31
 LDA #0
 JMP GTEQ_SKIP31
@@ -4671,6 +4674,7 @@ JSR ICMP
 ;
 ;
 ;
+ROL
 BCC LTEQ_LTEQ36
 BEQ LTEQ_LTEQ36
 LDA #0
@@ -5126,6 +5130,7 @@ JSR ICMP
 ;
 ;
 ;
+ROL
 BCC LTEQ_LTEQ40
 BEQ LTEQ_LTEQ40
 LDA #0
@@ -6290,21 +6295,16 @@ RTS
 ;###################################
 ;###################################
 COMPARE_PTRS_INT
-TAX                 ; Save incoming low byte (A) into X
-LDA TMP_ZP          ; Save old ZP pointer to stack
-PHA
-LDA TMP_ZP+1
-PHA
-STX TMP_ZP
-STY TMP_ZP+1
+STA TMP3_ZP
+STY TMP3_ZP+1
 LDY #0
-LDA (TMP_ZP),Y
+LDA (TMP3_ZP),Y
 SEC                 ; Prepare for subtraction
 SBC (TMP2_ZP),Y     ; Subtract low bytes (Sets Carry/Borrow flag)
 BNE LOW_DIFF        ; Hot Path: Low bytes differ, skip straight to high byte
 ; Path A: Low bytes are equal
 INY
-LDA (TMP_ZP),Y
+LDA (TMP3_ZP),Y
 SBC (TMP2_ZP),Y     ; Subtract high bytes
 BNE EVAL_SIGNED     ; High bytes differ -> proceed to signed math
 ; Values are identical
@@ -6312,7 +6312,7 @@ LDX #0
 BEQ RESTORE_AND_EXIT ; Unconditional branch
 ; Path B: Low bytes are DIFFERENT (The Loop's Hot Path)
 LOW_DIFF    INY                 ; Move to high bytes (Y=1)
-LDA (TMP_ZP),Y
+LDA (TMP3_ZP),Y
 SBC (TMP2_ZP),Y     ; Subtract high bytes using the borrow from the low bytes above
 ; Shared Signed Flag Evaluation
 EVAL_SIGNED BVC NO_OVF_INT      ; If Overflow is clear, Negative flag is accurate
@@ -6322,10 +6322,6 @@ IS_GT_INT   LDX #$FF            ; Otherwise, TMP_ZP > TMP2_ZP
 BNE RESTORE_AND_EXIT ; Compact unconditional branch
 IS_LT_INT   LDX #$01
 RESTORE_AND_EXIT
-PLA
-STA TMP_ZP+1
-PLA
-STA TMP_ZP
 TXA                 ; Sync return token back to accumulator
 RTS
 ;###################################
@@ -6409,7 +6405,7 @@ BNE SEARCHFOR           ; Low bytes don't match, check next stack frame
 INY                     ; Y = 1
 LDA A_REG+1
 CMP (TMP_ZP),Y
-BNE SEARCHFOR           ; High bytes don't match. Safe relative branch (Z=0).
+BNE SEARCHFOR           ; High bytes don't match.  check next stack frame
 FOUNDFOR	LDA TMP_REG
 CMP #2
 BEQ NEXT_INT        ;# FOR loop with int variable
@@ -6970,9 +6966,10 @@ BNE DO_SUB_INT2      ; Low bytes differ -> proceed to signed math
 LDA TMP_ZP+1
 CMP TMP3_ZP+1
 BNE DO_SUB_INT2      ; High bytes differ -> proceed to signed math
+CLC
 LDA #0              ; Values are perfectly identical
 RTS
-DO_SUB_INT2  ; 2. Perform standard 16-bit subtraction (TMP_ZP - TMP2_ZP)
+DO_SUB_INT2  ; 2. Perform standard 16-bit subtraction (TMP_ZP - TMP3_ZP)
 LDA TMP_ZP
 SEC
 SBC TMP3_ZP     ; Subtract low bytes (sets carry/borrow status)
@@ -6980,11 +6977,13 @@ LDA TMP_ZP+1
 SBC TMP3_ZP+1    ; Subtract high bytes (sets final N and V flags)
 ; 3. The Classic 6502 Signed Overflow Correction
 BVC NO_OVF_INT2      ; If Overflow (V=0), the Negative (N) flag is accurate
-EOR #$80            ; If Overflow (V=1), invert Bit 7 to correct the true sign
+EOR #$80             ; If Overflow (V=1), invert Bit 7 to correct the true sign
 NO_OVF_INT2  BMI IS_LT_INT2       ; If the resulting sign is negative, TMP_ZP < TMP2_ZP
-IS_GT_INT2  LDA #$1             ; Otherwise, TMP_ZP > TMP2_ZP
+IS_GT_INT2  CLC
+LDA #$1             ; Otherwise, TMP_ZP > TMP2_ZP
 RTS
-IS_LT_INT2  LDA #$FF              ; Return 1
+IS_LT_INT2  CLC
+LDA #$FF              ; Return 1
 RTS
 ;###################################
 ;###################################

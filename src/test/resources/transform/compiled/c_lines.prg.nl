@@ -753,6 +753,7 @@ LDY #>VAR_DX
 JSR CMPFAC
 ; Optimizer rule: Highly simplified loading for CMP/6
 BEQ GTEQ_GTEQ4
+ROL
 BCS GTEQ_GTEQ4
 LDA #0
 JMP GTEQ_SKIP4
@@ -834,6 +835,7 @@ LDY #>VAR_DY
 JSR CMPFAC
 ; Optimizer rule: Highly simplified loading for CMP/6
 BEQ GTEQ_GTEQ5
+ROL
 BCS GTEQ_GTEQ5
 LDA #0
 JMP GTEQ_SKIP5
@@ -1032,6 +1034,7 @@ LDY #>VAR_E
 JSR CMPFAC
 ; Optimizer rule: Highly simplified loading for CMP/6
 BEQ GTEQ_GTEQ8
+ROL
 BCS GTEQ_GTEQ8
 LDA #0
 JMP GTEQ_SKIP8
@@ -1191,6 +1194,7 @@ LDY #>VAR_E
 JSR CMPFAC
 ; Optimizer rule: Highly simplified loading for CMP/6
 BEQ GTEQ_GTEQ10
+ROL
 BCS GTEQ_GTEQ10
 LDA #0
 JMP GTEQ_SKIP10

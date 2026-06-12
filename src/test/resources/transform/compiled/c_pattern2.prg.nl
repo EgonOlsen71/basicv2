@@ -429,6 +429,7 @@ JSR ICMP
 ;
 ;
 ;
+ROL
 BCC LTEQ_LTEQ2
 BEQ LTEQ_LTEQ2
 LDA #0
@@ -870,9 +871,10 @@ BNE DO_SUB_INT2      ; Low bytes differ -> proceed to signed math
 LDA TMP_ZP+1
 CMP TMP3_ZP+1
 BNE DO_SUB_INT2      ; High bytes differ -> proceed to signed math
+CLC
 LDA #0              ; Values are perfectly identical
 RTS
-DO_SUB_INT2  ; 2. Perform standard 16-bit subtraction (TMP_ZP - TMP2_ZP)
+DO_SUB_INT2  ; 2. Perform standard 16-bit subtraction (TMP_ZP - TMP3_ZP)
 LDA TMP_ZP
 SEC
 SBC TMP3_ZP     ; Subtract low bytes (sets carry/borrow status)
@@ -880,11 +882,13 @@ LDA TMP_ZP+1
 SBC TMP3_ZP+1    ; Subtract high bytes (sets final N and V flags)
 ; 3. The Classic 6502 Signed Overflow Correction
 BVC NO_OVF_INT2      ; If Overflow (V=0), the Negative (N) flag is accurate
-EOR #$80            ; If Overflow (V=1), invert Bit 7 to correct the true sign
+EOR #$80             ; If Overflow (V=1), invert Bit 7 to correct the true sign
 NO_OVF_INT2  BMI IS_LT_INT2       ; If the resulting sign is negative, TMP_ZP < TMP2_ZP
-IS_GT_INT2  LDA #$1             ; Otherwise, TMP_ZP > TMP2_ZP
+IS_GT_INT2  CLC
+LDA #$1             ; Otherwise, TMP_ZP > TMP2_ZP
 RTS
-IS_LT_INT2  LDA #$FF              ; Return 1
+IS_LT_INT2  CLC
+LDA #$FF              ; Return 1
 RTS
 ;###################################
 ;###################################
