@@ -3824,7 +3824,6 @@ ICMP		STY TMP3_ZP
             CMP TMP3_ZP+1
             BNE DO_SUB_INT2      ; High bytes differ -> proceed to signed math
 
-            CLC
             LDA #0              ; Values are perfectly identical
             RTS
 
@@ -3840,12 +3839,10 @@ DO_SUB_INT2  ; 2. Perform standard 16-bit subtraction (TMP_ZP - TMP3_ZP)
             EOR #$80             ; If Overflow (V=1), invert Bit 7 to correct the true sign
 NO_OVF_INT2  BMI IS_LT_INT2       ; If the resulting sign is negative, TMP_ZP < TMP2_ZP
 
-IS_GT_INT2  CLC
-            LDA #$1             ; Otherwise, TMP_ZP > TMP2_ZP
+IS_GT_INT2  LDA #$1             ; Otherwise, TMP_ZP > TMP2_ZP
             RTS
 
-IS_LT_INT2  CLC
-            LDA #$FF              ; Return 1
+IS_LT_INT2  LDA #$FF              ; Return 1
             RTS
 ;###################################
 COPY2_XYA	STA TMP3_ZP
