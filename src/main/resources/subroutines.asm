@@ -2336,8 +2336,10 @@ RESTORE_AND_EXIT
 NEXT_INT_IMPL
 FOUNDFOR_INT
            LDA TMP_ZP
+           STA TMP_REG
            STA TMP2_REG
            LDA TMP_ZP+1
+           STA TMP_REG+1
            STA TMP2_REG+1
 VARREAL_INT
            LDY #0
@@ -2347,39 +2349,26 @@ VARREAL_INT
            INY
            LDA (TMP_ZP),Y
            STA TMP2_ZP+1
-CALCNEXT_INT
-           LDA TMP_ZP
-           CLC
-           ADC #4
-           STA TMP_ZP
-           BCC NOPV2IN_INT
-           INC TMP_ZP+1
-NOPV2IN_INT
-           STA TMP_REG
-           LDY TMP_ZP+1
-           STY TMP_REG+1
 
+           LDY #4
+           LDA (TMP_ZP),Y
+           CLC
            LDY #0
-           LDA (TMP2_ZP),Y
-           CLC
-           ADC (TMP_ZP),Y
+           ADC (TMP2_ZP),Y
            STA (TMP2_ZP),Y
 
-           INY
-           LDA (TMP2_ZP),Y
-           ADC (TMP_ZP),Y
+           LDY #5
+           LDA (TMP_ZP),Y
+           LDY #1
+           ADC (TMP2_ZP),Y
            STA (TMP2_ZP),Y
 
-           LDA TMP2_REG
-           STA TMP_ZP
-           LDA TMP2_REG+1
-           STA TMP_ZP+1
 CMPFORXX_INT
            LDA #5
            STA TMP3_ZP
            LDA TMP_REG
            CLC
-           ADC #5
+           ADC #9
            STA TMP_REG
            BCC NOPV3_INT
            INC TMP_REG+1

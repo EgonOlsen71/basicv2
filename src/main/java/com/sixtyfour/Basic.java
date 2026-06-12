@@ -363,7 +363,7 @@ public class Basic implements ProgramExecutor {
 
 		if (config.getForcedToIntegers()!=null && !config.getForcedToIntegers().isEmpty()) {
 			boolean auto = false;
-			if (config.getForcedToIntegers().contains("AUTO!")) {
+			if (config.getForcedToIntegers().stream().map(p -> p.toUpperCase()).collect(Collectors.toSet()).contains("AUTO!")) {
 				try {
 					IntPromotionAnalyzer.AnalysisResult res = IntPromotionAnalyzer.analyzeProgram(Arrays.asList(code));
 					Set<String> vars = res.getAllSafeVariables();
