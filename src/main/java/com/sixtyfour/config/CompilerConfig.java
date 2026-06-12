@@ -4,6 +4,7 @@ import com.sixtyfour.cbmnative.ProgressListener;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Contains the configuration for the compiler. Some (most) of these options
@@ -74,7 +75,7 @@ public class CompilerConfig {
 	}
 
 	public void setForcedToIntegers(Set<String> forcedToIntegers) {
-		this.forcedToIntegers = forcedToIntegers;
+		this.forcedToIntegers = forcedToIntegers.stream().map(p -> p.toUpperCase()).collect(Collectors.toSet());
 	}
 
 

@@ -164,7 +164,7 @@ In that case, no compressed file will be written.
 
 - /varopt=true|false - If true, the compiler tries to move integer variables into the zeropage if possible and applicable. Default is false.
 
-- /forcedints=<a,b,i,...> - If set, variables of these names will be forced to be integers. This will also work on variables used as loop counters.
+- /forcedints=<a,b,i,p()...> - If set, variables of these names will be forced to be integers. This will also work on variables used as loop counters. Use ALL! to convert all variables to  and AUTO! to do it based on a static code anaylsis (this might fail and produce wrong results!)
 
 Changes compared to BASIC 2.0 
 

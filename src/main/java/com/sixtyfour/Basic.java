@@ -26,6 +26,7 @@ import com.sixtyfour.extensions.BasicExtension;
 import com.sixtyfour.parser.Line;
 import com.sixtyfour.parser.Parser;
 import com.sixtyfour.parser.TermEnhancer;
+import com.sixtyfour.parser.preprocess.IntPromotionAnalyzer;
 import com.sixtyfour.plugins.CodeEnhancer;
 import com.sixtyfour.plugins.InputProvider;
 import com.sixtyfour.plugins.MemoryListener;
@@ -361,8 +362,23 @@ public class Basic implements ProgramExecutor {
 		}
 
 		if (config.getForcedToIntegers()!=null && !config.getForcedToIntegers().isEmpty()) {
-			config.getForcedToIntegers().forEach(p -> {machine.addForcedInteger(p);
-				Logger.log(VarUtils.toUpper(p)+ " forced to integer via configuration...");});
+			boolean auto = false;
+			if (config.getForcedToIntegers().contains("AUTO!")) {
+				try {
+					IntPromotionAnalyzer.AnalysisResult res = IntPromotionAnalyzer.analyzeProgram(Arrays.asList(code));
+					Set<String> vars = res.getAllSafeVariables();
+					vars = vars.stream().filter(p -> !p.endsWith("%")).collect(Collectors.toSet());
+					config.setForcedToIntegers(vars);
+					auto=true;
+				} catch(Exception e) {
+					Logger.log("Failed to analyze program for int promotion: "+e.getMessage());
+				}
+			}
+			final boolean autof = auto;
+			config.getForcedToIntegers().forEach(p -> {
+				machine.addForcedInteger(p);
+				Logger.log(VarUtils.toUpper(p) + " forced to integer via "+(autof?"auto detection":"configuration")+"...");
+			});
 		} else {
 			Logger.log("No forced integers specified in configuration");
 		}
