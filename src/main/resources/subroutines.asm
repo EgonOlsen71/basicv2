@@ -2288,53 +2288,53 @@ INITFOREND	STA (TMP_ZP),Y
 			RTS
 ;###################################
 COMPARE_PTRS_INT
-            TAX
-            LDA TMP_ZP
+            TAX                 ; Save incoming low byte (A) into X
+            LDA TMP_ZP          ; Save old ZP pointer to stack
             PHA
             LDA TMP_ZP+1
             PHA
-            TXA
-            STA TMP_ZP
+            STX TMP_ZP
             STY TMP_ZP+1
 
             LDY #0
             LDA (TMP_ZP),Y
-            CMP (TMP2_ZP),Y
-            BNE DO_SUB_INT
-            INY                 ; Move to high bytes (Y=1)
-            LDA (TMP_ZP),Y
-            CMP (TMP2_ZP),Y
-            BNE DO_SUB_INT      ; High bytes differ -> proceed to signed math
+            SEC                 ; Prepare for subtraction
+            SBC (TMP2_ZP),Y     ; Subtract low bytes (Sets Carry/Borrow flag)
+            BNE LOW_DIFF        ; Hot Path: Low bytes differ, skip straight to high byte
 
-            LDX #0              ; Values are perfectly identical
-            JMP RESTORE_AND_EXIT
-
-DO_SUB_INT  LDY #0
+            ; Path A: Low bytes are equal
+            INY
             LDA (TMP_ZP),Y
-            SEC
-            SBC (TMP2_ZP),Y     ; Subtract low bytes (sets carry/borrow status)
-            INY                 ; Y = 1
-            LDA (TMP_ZP),Y
-            SBC (TMP2_ZP),Y     ; Subtract high bytes (sets final N and V flags)
+            SBC (TMP2_ZP),Y     ; Subtract high bytes
+            BNE EVAL_SIGNED     ; High bytes differ -> proceed to signed math
 
-            BVC NO_OVF_INT      ; If Overflow (V=0), the Negative (N) flag is accurate
-            EOR #$80            ; If Overflow (V=1), invert Bit 7 to correct the true sign
-NO_OVF_INT  BMI IS_LT_INT       ; If the resulting sign is negative, TMP_ZP < TMP2_ZP
+            ; Values are identical
+            LDX #0
+            BEQ RESTORE_AND_EXIT ; Unconditional branch
+
+            ; Path B: Low bytes are DIFFERENT (The Loop's Hot Path)
+LOW_DIFF    INY                 ; Move to high bytes (Y=1)
+            LDA (TMP_ZP),Y
+            SBC (TMP2_ZP),Y     ; Subtract high bytes using the borrow from the low bytes above
+
+            ; Shared Signed Flag Evaluation
+EVAL_SIGNED BVC NO_OVF_INT      ; If Overflow is clear, Negative flag is accurate
+            EOR #$80            ; If Overflow is set, invert Bit 7 to correct true sign
+NO_OVF_INT  BMI IS_LT_INT       ; If result is negative, TMP_ZP < TMP2_ZP
 
 IS_GT_INT   LDX #$FF            ; Otherwise, TMP_ZP > TMP2_ZP
-            JMP RESTORE_AND_EXIT
+            BNE RESTORE_AND_EXIT ; Compact unconditional branch
 
-IS_LT_INT   LDX #$1              ; Return 1
+IS_LT_INT   LDX #$01
 RESTORE_AND_EXIT
             PLA
             STA TMP_ZP+1
             PLA
             STA TMP_ZP
-            TXA
+            TXA                 ; Sync return token back to accumulator
             RTS
 ;###################################
 NEXT_INT_IMPL
-FOUNDFOR_INT
            LDA TMP_ZP
            STA TMP_REG
            STA TMP2_REG
