@@ -2404,19 +2404,18 @@ NOGOSUB     STA TMP_REG             ; save for later
 			STA TMP_ZP
 			BCS NOPV1N2
 			DEC TMP_ZP+1
-NOPV1N2		DEY
-			LDA A_REG
-			BEQ LOW0
-CMPFOR		CMP (TMP_ZP),Y
-			BNE SEARCHFOR
-			LDA A_REG+1
-			INY
-			CMP (TMP_ZP),Y
-			BEQ FOUNDFOR
-			JMP SEARCHFOR
-LOW0		LDX A_REG+1
-			BEQ FOUNDFOR
-			BNE CMPFOR
+NOPV1N2     DEY                     ; Y = 0
+            LDA A_REG
+            ORA A_REG+1             ; Bitwise OR low and high bytes of target variable
+            BEQ FOUNDFOR            ; If both are 0, it's a naked NEXT! Instantly matches.
+
+            LDA A_REG               ; Named NEXT: Reload low byte for explicit compare
+            CMP (TMP_ZP),Y
+            BNE SEARCHFOR           ; Low bytes don't match, check next stack frame
+            INY                     ; Y = 1
+            LDA A_REG+1
+            CMP (TMP_ZP),Y
+            BNE SEARCHFOR           ; High bytes don't match.  check next stack frame
 FOUNDFOR	LDA TMP_REG
             CMP #2
             BEQ NEXT_INT        ;# FOR loop with int variable
