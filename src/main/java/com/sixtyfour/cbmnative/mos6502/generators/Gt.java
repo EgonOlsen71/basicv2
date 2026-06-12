@@ -12,7 +12,7 @@ public class Gt extends Compare {
 	protected void doCompare(List<String> nCode) {
 		// Vergleich Konstante (A/Y) mit FAC: A=0 wenn gleich, A=1 wenn FAC
 		// größer, A=$FF wenn FAC kleiner
-		nCode.add("ROL");
+		nCode.add("ASL");
 		super.doCompare(nCode);
 	}
 

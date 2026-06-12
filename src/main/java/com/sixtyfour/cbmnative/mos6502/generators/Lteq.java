@@ -10,7 +10,7 @@ public class Lteq extends Compare {
 
 	@Override
 	protected void doCompare(List<String> nCode) {
-		nCode.add("ROL");
+		nCode.add("ASL");
 		int p = nCode.size();
 		super.doCompare(nCode);
 		nCode.add(p + 1, "BEQ " + mnemonic + "_" + mnemonic + CNT);

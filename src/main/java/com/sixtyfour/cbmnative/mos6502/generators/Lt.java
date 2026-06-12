@@ -11,7 +11,7 @@ public class Lt extends Compare {
 	@Override
 	protected void doCompare(List<String> nCode) {
 		nCode.add("BEQ " + mnemonic + "_" + mnemonic + "_EQ" + CNT);
-		nCode.add("ROL");
+		nCode.add("ASL");
 		nCode.add(command + " " + mnemonic + "_" + mnemonic + CNT);
 		nCode.add(mnemonic + "_" + mnemonic + "_EQ" + CNT + ":");
 		nCode.add("LDA #<REAL_CONST_ZERO");

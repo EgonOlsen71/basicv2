@@ -11,7 +11,7 @@ public class Gteq extends Compare {
 	@Override
 	protected void doCompare(List<String> nCode) {
 		nCode.add("BEQ " + mnemonic + "_" + mnemonic + CNT);
-		nCode.add("ROL");
+		nCode.add("ASL");
 		super.doCompare(nCode);
 
 	}
