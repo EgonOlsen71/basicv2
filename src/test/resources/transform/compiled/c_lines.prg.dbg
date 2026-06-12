@@ -1000,7 +1000,7 @@
 1587	.$fa8	INY
 1588	.$fa9	LDA (TMP_ZP),Y
 1589	.$fab	STA (TMP2_ZP),Y
-1590	.$fad	TXA    
+1590	.$fad	RFP_END  TXA    
 1591	.$fae	CLC
 1592	.$faf	ADC #5
 1593	.$fb1	STA FPSTACKP

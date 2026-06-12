@@ -341,7 +341,7 @@
 506	.$ac3	INY
 507	.$ac4	LDA (TMP_ZP),Y
 508	.$ac6	STA (TMP2_ZP),Y
-509	.$ac8	TXA    
+509	.$ac8	RFP_END  TXA    
 510	.$ac9	CLC
 511	.$aca	ADC #5
 512	.$acc	STA FPSTACKP

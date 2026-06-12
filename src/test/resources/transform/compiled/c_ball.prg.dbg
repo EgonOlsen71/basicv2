@@ -467,7 +467,7 @@
 772	.$bea	INY
 773	.$beb	LDA (TMP_ZP),Y
 774	.$bed	STA (TMP2_ZP),Y
-775	.$bef	TXA    
+775	.$bef	RFP_END  TXA    
 776	.$bf0	CLC
 777	.$bf1	ADC #5
 778	.$bf3	STA FPSTACKP

@@ -828,7 +828,7 @@
 1167	.$eb4	INY
 1168	.$eb5	LDA (TMP_ZP),Y
 1169	.$eb7	STA (TMP2_ZP),Y
-1170	.$eb9	TXA    
+1170	.$eb9	RFP_END  TXA    
 1171	.$eba	CLC
 1172	.$ebb	ADC #5
 1173	.$ebd	STA FPSTACKP

@@ -576,7 +576,7 @@
 819	.$cf3	INY
 820	.$cf4	LDA (TMP_ZP),Y
 821	.$cf6	STA (TMP2_ZP),Y
-822	.$cf8	TXA    
+822	.$cf8	RFP_END  TXA    
 823	.$cf9	CLC
 824	.$cfa	ADC #5
 825	.$cfc	STA FPSTACKP

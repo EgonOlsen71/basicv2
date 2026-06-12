@@ -715,7 +715,7 @@
 964	.$dea	INY
 965	.$deb	LDA (TMP_ZP),Y
 966	.$ded	STA (TMP2_ZP),Y
-967	.$def	TXA    
+967	.$def	RFP_END  TXA    
 968	.$df0	CLC
 969	.$df1	ADC #5
 970	.$df3	STA FPSTACKP

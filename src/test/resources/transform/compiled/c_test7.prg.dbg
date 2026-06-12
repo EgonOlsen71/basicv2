@@ -482,7 +482,7 @@
 750	.$bcc	INY
 751	.$bcd	LDA (TMP_ZP),Y
 752	.$bcf	STA (TMP2_ZP),Y
-753	.$bd1	TXA    
+753	.$bd1	RFP_END  TXA    
 754	.$bd2	CLC
 755	.$bd3	ADC #5
 756	.$bd5	STA FPSTACKP

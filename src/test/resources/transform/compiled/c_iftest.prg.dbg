@@ -385,7 +385,7 @@
 621	.$afc	INY
 622	.$afd	LDA (TMP_ZP),Y
 623	.$aff	STA (TMP2_ZP),Y
-624	.$b01	TXA    
+624	.$b01	RFP_END  TXA    
 625	.$b02	CLC
 626	.$b03	ADC #5
 627	.$b05	STA FPSTACKP

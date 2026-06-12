@@ -539,7 +539,7 @@
 771	.$c85	INY
 772	.$c86	LDA (TMP_ZP),Y
 773	.$c88	STA (TMP2_ZP),Y
-774	.$c8a	TXA    
+774	.$c8a	RFP_END  TXA    
 775	.$c8b	CLC
 776	.$c8c	ADC #5
 777	.$c8e	STA FPSTACKP
