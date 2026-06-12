@@ -2173,6 +2173,7 @@ SHAREDINITFOR
 ;###################################
 STORE_INTVAL
             JSR FACINT
+STORE_INTVAL_I
             PHA
             TYA
             TAX
@@ -2183,6 +2184,49 @@ STORE_INTVAL
             DEY
             STA (TMP_ZP),Y
             RTS
+;###################################
+INITFORINT_I
+            JSR SHAREDINITFOR
+            JSR INCTMPZP
+            JSR POPINT2B
+            LDY B_REG
+            LDA B_REG+1
+
+            CMP #$00
+            BMI IFI_IsNegative
+            BNE IFI_IsPositive
+            CPY #$00
+            BNE IFI_IsPositive
+            LDA #$00
+            BEQ ISGN_DONE
+
+IFI_IsPositive
+            LDA #$01
+            BNE ISGN_DONE
+
+IFI_IsNegative
+            LDA #$FF
+ISGN_DONE
+            STA TMP_FLAG
+            LDY B_REG
+            LDA B_REG+1
+            JSR STORE_INTVAL_I
+            LDY #5
+            STY TMP3_ZP
+            JSR INCTMPZP
+            JSR POPINT2B
+            LDY B_REG
+            LDA B_REG+1
+            JSR STORE_INTVAL_I
+            LDY #5
+            STY TMP3_ZP
+            JSR INCTMPZP
+            LDY #0
+            LDA TMP_FLAG
+            STA (TMP_ZP),Y
+            INY
+            LDA #2          ; #2 flags integer loop, #1 flags real (default)
+            JMP INITFOREND
 ;###################################
 INITFORINT  JSR SHAREDINITFOR
             JSR INCTMPZP
@@ -3602,7 +3646,7 @@ REALFACPUSH	STA TMP_ZP
 			INY
 			LDA (TMP_ZP),Y
 			STA (TMP2_ZP),Y
-			TXA				;LDA FPSTACKP
+RFP_END		TXA				;LDA FPSTACKP
 			CLC
 			ADC #5
 			STA FPSTACKP

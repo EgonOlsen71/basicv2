@@ -1338,7 +1338,50 @@ public class IntOptimizer {
 					}
 				}));
 		
-		
+
+		// for setup for int-loops simplified
+		intPatterns.add(new IntPattern(true, "FOR setup for INT-loops simplified",
+				new String[] { "LDA #<{CONST0}", "LDY #>{CONST0}", "JSR REALFACPUSH", "NOP", "LDA #<{CONST1}", "LDY #>{CONST1}", "JSR REALFACPUSH",
+						"LDA #<{MEM0}", "LDY #>{MEM0}", "STA A_REG", "STY A_REG+1" ,
+						"LDA {*}",  "STA JUMP_TARGET", "LDA {*}",  "STA JUMP_TARGET+1", "JSR INITFORINT"},
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						String consty1 = cleaned.get(0);
+						consty1 = consty1.substring(consty1.indexOf("<") + 1).trim();
+						Number num1 = const2Value.get(consty1);
+						int numd1 = num1.intValue();
+						String consty2 = cleaned.get(4);
+						consty2 = consty2.substring(consty2.indexOf("<") + 1).trim();
+						Number num2 = const2Value.get(consty2);
+						int numd2 = num2.intValue();
+						List<String> rep = new ArrayList<>();
+
+						rep.add("LDA #" + (numd1 & 0xff));
+						rep.add("STA TMP_ZP");
+						rep.add("LDA #" + ((numd1 & 0xff00) >> 8));
+						rep.add("STA TMP_ZP+1");
+						rep.add("JSR PUSHINT");
+						rep.add("LDA #" + (numd2 & 0xff));
+						rep.add("STA TMP_ZP");
+						rep.add("LDA #" + ((numd2 & 0xff00) >> 8));
+						rep.add("STA TMP_ZP+1");
+						rep.add("JSR PUSHINT");
+						rep.add(cleaned.get(7));
+						rep.add(cleaned.get(8));
+						rep.add(cleaned.get(9));
+						rep.add(cleaned.get(10));
+						rep.add(cleaned.get(11));
+						rep.add(cleaned.get(12));
+						rep.add(cleaned.get(13));
+						rep.add(cleaned.get(14));
+						rep.add("JSR INITFORINT_I");
+						return combine(pattern, rep);
+					}
+				}));
+
+
 		// Integer array storage with contant index value
 		intPatterns.add(new IntPattern(true, "Optimized code for fixed integer index(1)",
 				new String[] { "LDA #<{CONST0}", "LDY #>{CONST0}", "JSR COPY2_XYA_XREG", "LDY {*}", "LDA {*}",
