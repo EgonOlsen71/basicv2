@@ -379,14 +379,14 @@ public class IntPromotionAnalyzer {
 
     // --- Lexer implementation ---
     private static final String[] KEYWORDS = {
-        "RESTORE",
-        "INPUT#", "PRINT#", "RETURN", "VERIFY", "RIGHT$", "LEFT$",
-        "GOSUB", "INPUT", "PRINT", "CLOSE",
-        "GOTO", "NEXT", "STEP", "THEN", "OPEN", "READ", "PEEK", "POKE", "WAIT", "LOAD", "SAVE", "LIST", "STOP", "CONT", "DATA", "MID$", "CHR$", "STR$",
-        "SGN", "INT", "ABS", "USR", "FRE", "POS", "SQR", "RND", "LOG", "EXP", "COS", "SIN", "TAN", "ATN", "LEN", "VAL", "ASC", "SYS", "CMD", "GET", "LET", "FOR", "DIM", "RUN", "END", "CLR", "NEW", "AND", "NOT",
-        "TO", "FN", "OR", "IF", "ON",
-        "<>", "<=", ">=", "=", "<", ">",
-        "+", "-", "*", "/", "^", "(", ")", ",", ":", ";"
+            "RESTORE",
+            "INPUT#", "PRINT#", "RETURN", "VERIFY", "RIGHT$", "LEFT$",
+            "GOSUB", "INPUT", "PRINT", "CLOSE",
+            "GOTO", "NEXT", "STEP", "THEN", "OPEN", "READ", "PEEK", "POKE", "WAIT", "LOAD", "SAVE", "LIST", "STOP", "CONT", "DATA", "MID$", "CHR$", "STR$",
+            "SGN", "INT", "ABS", "USR", "FRE", "POS", "SQR", "RND", "LOG", "EXP", "COS", "SIN", "TAN", "ATN", "LEN", "VAL", "ASC", "SYS", "CMD", "GET", "LET", "FOR", "DIM", "RUN", "END", "CLR", "NEW", "AND", "NOT",
+            "TO", "FN", "OR", "IF", "ON",
+            "<>", "<=", ">=", "=", "<", ">",
+            "+", "-", "*", "/", "^", "(", ")", ",", ":", ";"
     };
 
     private static boolean startsWithIgnoreCase(String text, int start, String prefix) {
@@ -659,8 +659,8 @@ public class IntPromotionAnalyzer {
             while (true) {
                 Token op = peek();
                 if (op != null && (op.type == TokenType.EQUAL || op.type == TokenType.NOT_EQUAL ||
-                                   op.type == TokenType.LESS_THAN || op.type == TokenType.LESS_EQUAL ||
-                                   op.type == TokenType.GREATER_THAN || op.type == TokenType.GREATER_EQUAL)) {
+                        op.type == TokenType.LESS_THAN || op.type == TokenType.LESS_EQUAL ||
+                        op.type == TokenType.GREATER_THAN || op.type == TokenType.GREATER_EQUAL)) {
                     consume();
                     Expression right = parseAdditive();
                     expr = new BinaryOpExpr(op.value, expr, right);
@@ -1022,8 +1022,8 @@ public class IntPromotionAnalyzer {
             if (lineTokens.get(end).type == TokenType.COLON) {
                 Statement stmt = parseStatement(lineTokens, start, end);
                 if (stmt != null) {
-                    stmt.lineNum = lineTokens.get(0).type == TokenType.NUMBER ? 
-                        Integer.parseInt(lineTokens.get(0).value) : 0;
+                    stmt.lineNum = lineTokens.get(0).type == TokenType.NUMBER ?
+                            Integer.parseInt(lineTokens.get(0).value) : 0;
                     statements.add(stmt);
                 }
                 start = end + 1;
@@ -1033,8 +1033,8 @@ public class IntPromotionAnalyzer {
         if (start < end) {
             Statement stmt = parseStatement(lineTokens, start, end);
             if (stmt != null) {
-                stmt.lineNum = lineTokens.get(0).type == TokenType.NUMBER ? 
-                    Integer.parseInt(lineTokens.get(0).value) : 0;
+                stmt.lineNum = lineTokens.get(0).type == TokenType.NUMBER ?
+                        Integer.parseInt(lineTokens.get(0).value) : 0;
                 statements.add(stmt);
             }
         }
@@ -1090,11 +1090,167 @@ public class IntPromotionAnalyzer {
         }
     }
 
+    // --- Out-of-Range Comparison Safety Helpers ---
+    private static Double getConstantValue(Expression expr) {
+        if (expr instanceof NumberConstantExpr) {
+            try {
+                return Double.parseDouble(((NumberConstantExpr) expr).value);
+            } catch (NumberFormatException e) {
+                return null;
+            }
+        } else if (expr instanceof UnaryOpExpr) {
+            UnaryOpExpr u = (UnaryOpExpr) expr;
+            Double val = getConstantValue(u.operand);
+            if (val != null) {
+                if ("-".equals(u.op)) {
+                    return -val;
+                } else if ("+".equals(u.op)) {
+                    return val;
+                }
+            }
+        }
+        return null;
+    }
+
+    private static boolean exprHasComparisonOutOfRange(Expression expr, String var) {
+        if (expr == null) return false;
+
+        if (expr instanceof BinaryOpExpr) {
+            BinaryOpExpr b = (BinaryOpExpr) expr;
+            String op = b.op;
+            if ("=".equals(op) || "<>".equals(op) || "<".equals(op) || "<=".equals(op) || ">".equals(op) || ">=".equals(op)) {
+                // Check left as var, right as out-of-range constant
+                if (b.left instanceof VariableExpr && ((VariableExpr) b.left).name.equals(var)) {
+                    Double val = getConstantValue(b.right);
+                    if (val != null && (val <= -32768.0 || val >= 32767.0)) {
+                        return true;
+                    }
+                }
+                // Check right as var, left as out-of-range constant
+                if (b.right instanceof VariableExpr && ((VariableExpr) b.right).name.equals(var)) {
+                    Double val = getConstantValue(b.left);
+                    if (val != null && (val <= -32768.0 || val >= 32767.0)) {
+                        return true;
+                    }
+                }
+            }
+            // Recurse on left and right operands
+            return exprHasComparisonOutOfRange(b.left, var) || exprHasComparisonOutOfRange(b.right, var);
+        } else if (expr instanceof UnaryOpExpr) {
+            return exprHasComparisonOutOfRange(((UnaryOpExpr) expr).operand, var);
+        } else if (expr instanceof FunctionCallExpr) {
+            for (Expression arg : ((FunctionCallExpr) expr).args) {
+                if (exprHasComparisonOutOfRange(arg, var)) {
+                    return true;
+                }
+            }
+        } else if (expr instanceof ArrayAccessExpr) {
+            for (Expression arg : ((ArrayAccessExpr) expr).args) {
+                if (exprHasComparisonOutOfRange(arg, var)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private static boolean stmtHasComparisonOutOfRange(Statement stmt, String var) {
+        if (stmt instanceof ForStatement) {
+            ForStatement fs = (ForStatement) stmt;
+            return exprHasComparisonOutOfRange(fs.start, var) ||
+                    exprHasComparisonOutOfRange(fs.end, var) ||
+                    exprHasComparisonOutOfRange(fs.step, var);
+        } else if (stmt instanceof AssignmentStatement) {
+            AssignmentStatement as = (AssignmentStatement) stmt;
+            return exprHasComparisonOutOfRange(as.expression, var);
+        } else if (stmt instanceof IfStatement) {
+            IfStatement is = (IfStatement) stmt;
+            return exprHasComparisonOutOfRange(is.condition, var);
+        }
+        return false;
+    }
+
+    private static boolean isComparisonOp(Token t) {
+        return t.type == TokenType.EQUAL || t.type == TokenType.NOT_EQUAL ||
+                t.type == TokenType.LESS_THAN || t.type == TokenType.LESS_EQUAL ||
+                t.type == TokenType.GREATER_THAN || t.type == TokenType.GREATER_EQUAL;
+    }
+
+    private static Double getConstantFromTokens(List<Token> tokens, int startIdx) {
+        if (startIdx >= tokens.size()) return null;
+        Token t = tokens.get(startIdx);
+        if (t.type == TokenType.NUMBER) {
+            try {
+                return Double.parseDouble(t.value);
+            } catch (NumberFormatException e) {
+                return null;
+            }
+        }
+        if ((t.type == TokenType.PLUS || t.type == TokenType.MINUS) && startIdx + 1 < tokens.size()) {
+            Token next = tokens.get(startIdx + 1);
+            if (next.type == TokenType.NUMBER) {
+                try {
+                    double val = Double.parseDouble(next.value);
+                    return t.type == TokenType.MINUS ? -val : val;
+                } catch (NumberFormatException e) {
+                    return null;
+                }
+            }
+        }
+        return null;
+    }
+
+    private static Double getConstantFromTokensBackwards(List<Token> tokens, int endIdx) {
+        if (endIdx < 0) return null;
+        Token t = tokens.get(endIdx);
+        if (t.type == TokenType.NUMBER) {
+            if (endIdx - 1 >= 0) {
+                Token prev = tokens.get(endIdx - 1);
+                if (prev.type == TokenType.PLUS || prev.type == TokenType.MINUS) {
+                    try {
+                        double val = Double.parseDouble(t.value);
+                        return prev.type == TokenType.MINUS ? -val : val;
+                    } catch (NumberFormatException e) {
+                        return null;
+                    }
+                }
+            }
+            try {
+                return Double.parseDouble(t.value);
+            } catch (NumberFormatException e) {
+                return null;
+            }
+        }
+        return null;
+    }
+
+    private static boolean tokensHaveComparisonOutOfRange(List<Token> tokens, String var) {
+        for (int i = 0; i < tokens.size(); i++) {
+            Token t = tokens.get(i);
+            if (t.type == TokenType.IDENTIFIER && normalizeVariableName(t.value).equals(var)) {
+                if (i + 1 < tokens.size() && isComparisonOp(tokens.get(i + 1))) {
+                    Double val = getConstantFromTokens(tokens, i + 2);
+                    if (val != null && (val < -32768.0 || val > 32767.0)) {
+                        return true;
+                    }
+                }
+                if (i - 1 >= 0 && isComparisonOp(tokens.get(i - 1))) {
+                    Double val = getConstantFromTokensBackwards(tokens, i - 2);
+                    if (val != null && (val < -32768.0 || val > 32767.0)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
     // --- Main Analyzer Logic ---
     public static AnalysisResult analyzeProgram(List<String> lines) {
         List<Statement> allStatements = new ArrayList<>();
         Set<String> allVariables = new HashSet<>();
         Set<String> loopVariables = new HashSet<>();
+        List<List<Token>> allProgramTokens = new ArrayList<>();
         boolean hasFloatData = false;
 
         // 1. Tokenize and parse all statements
@@ -1103,6 +1259,7 @@ public class IntPromotionAnalyzer {
             if (line.trim().isEmpty()) continue;
 
             List<Token> tokens = tokenizeLine(line, lineIdx + 1);
+            allProgramTokens.add(tokens);
             for (Token t : tokens) {
                 if (t.type == TokenType.IDENTIFIER) {
                     allVariables.add(normalizeVariableName(t.value));
@@ -1221,6 +1378,22 @@ public class IntPromotionAnalyzer {
                             }
                         }
                     }
+
+                    // Check if var is compared to an out-of-range value via AST expression
+                    if (stmtHasComparisonOutOfRange(stmt, var)) {
+                        isSafe = false;
+                        break;
+                    }
+                }
+
+                // Check if var is compared to an out-of-range value via token scanning
+                if (isSafe) {
+                    for (List<Token> toks : allProgramTokens) {
+                        if (tokensHaveComparisonOutOfRange(toks, var)) {
+                            isSafe = false;
+                            break;
+                        }
+                    }
                 }
 
                 if (!isSafe) {
@@ -1281,151 +1454,183 @@ public class IntPromotionAnalyzer {
 
         // Test Case 1: Simple Safe Loop
         List<String> tc1 = Arrays.asList(
-            "10 FOR I = 1 TO 10",
-            "20 PRINT I",
-            "30 NEXT I"
+                "10 FOR I = 1 TO 10",
+                "20 PRINT I",
+                "30 NEXT I"
         );
         if (verifyTestCase("Simple Safe Loop", tc1, Collections.singleton("I"))) passed++; else failed++;
 
         // Test Case 2: Unsafe Float Bound
         List<String> tc2 = Arrays.asList(
-            "10 FOR I = 1 TO 10.5",
-            "20 PRINT I",
-            "30 NEXT I"
+                "10 FOR I = 1 TO 10.5",
+                "20 PRINT I",
+                "30 NEXT I"
         );
         if (verifyTestCase("Unsafe Float Bound", tc2, Collections.emptySet())) passed++; else failed++;
 
         // Test Case 3: Unsafe Float Step
         List<String> tc3 = Arrays.asList(
-            "10 FOR I = 1 TO 10 STEP 0.5",
-            "20 PRINT I",
-            "30 NEXT I"
+                "10 FOR I = 1 TO 10 STEP 0.5",
+                "20 PRINT I",
+                "30 NEXT I"
         );
         if (verifyTestCase("Unsafe Float Step", tc3, Collections.emptySet())) passed++; else failed++;
 
         // Test Case 4: Unsafe Float Assignment inside loop
         List<String> tc4 = Arrays.asList(
-            "10 FOR I = 1 TO 10",
-            "20 I = 3.5",
-            "30 NEXT I"
+                "10 FOR I = 1 TO 10",
+                "20 I = 3.5",
+                "30 NEXT I"
         );
         if (verifyTestCase("Unsafe Float Assignment", tc4, Collections.emptySet())) passed++; else failed++;
 
         // Test Case 5: Large Constant Bound (outside 16-bit signed range)
         List<String> tc5 = Arrays.asList(
-            "10 FOR I = 1 TO 40000",
-            "20 PRINT I",
-            "30 NEXT I"
+                "10 FOR I = 1 TO 40000",
+                "20 PRINT I",
+                "30 NEXT I"
         );
         if (verifyTestCase("Large Constant Bound", tc5, Collections.emptySet())) passed++; else failed++;
 
         // Test Case 6: division assignment (always unsafe)
         List<String> tc6 = Arrays.asList(
-            "10 FOR I = 1 TO 10",
-            "20 I = I / 2",
-            "30 NEXT I"
+                "10 FOR I = 1 TO 10",
+                "20 I = I / 2",
+                "30 NEXT I"
         );
         if (verifyTestCase("Division Assignment", tc6, Collections.emptySet())) passed++; else failed++;
 
         // Test Case 7: Unsafe Input statement targeting loop variable
         List<String> tc7 = Arrays.asList(
-            "10 FOR I = 1 TO 10",
-            "20 INPUT I",
-            "30 NEXT I"
+                "10 FOR I = 1 TO 10",
+                "20 INPUT I",
+                "30 NEXT I"
         );
         if (verifyTestCase("Unsafe INPUT Statement", tc7, Collections.emptySet())) passed++; else failed++;
 
         // Test Case 8: Safe and Unsafe loops mixed
         List<String> tc8 = Arrays.asList(
-            "10 FOR I = 1 TO 10",
-            "20 FOR J = 1 TO 5 STEP 2",
-            "30 FOR K = 1 TO 5 STEP 1.5",
-            "40 NEXT K, J, I"
+                "10 FOR I = 1 TO 10",
+                "20 FOR J = 1 TO 5 STEP 2",
+                "30 FOR K = 1 TO 5 STEP 1.5",
+                "40 NEXT K, J, I"
         );
         Set<String> expectedTc8 = new HashSet<>(Arrays.asList("I", "J"));
         if (verifyTestCase("Mixed Loops", tc8, expectedTc8)) passed++; else failed++;
 
         // Test Case 9: Dynamic MATCHING loops and subroutine modification
         List<String> tc9 = Arrays.asList(
-            "10 FOR I = 1 TO 10",
-            "20 GOSUB 100",
-            "30 NEXT I",
-            "40 END",
-            "100 I = I + 2",
-            "110 RETURN"
+                "10 FOR I = 1 TO 10",
+                "20 GOSUB 100",
+                "30 NEXT I",
+                "40 END",
+                "100 I = I + 2",
+                "110 RETURN"
         );
         if (verifyTestCase("Dynamic NEXT & GOSUB Modification", tc9, Collections.singleton("I"))) passed++; else failed++;
 
         // Test Case 10: Array index and variables normalization
         List<String> tc10 = Arrays.asList(
-            "10 FOR LOOPVAR = 1 TO 10",
-            "20 A%(LO) = LO + 1",
-            "30 NEXT LO"
+                "10 FOR LOOPVAR = 1 TO 10",
+                "20 A%(LO) = LO + 1",
+                "30 NEXT LO"
         );
         // Normalized name for LOOPVAR and LO is LO. They should be detected as safe.
         if (verifyTestCase("Variable Name Normalization", tc10, Collections.singleton("LO"))) passed++; else failed++;
 
         // Test Case 11: Dependency propagation
         List<String> tc11 = Arrays.asList(
-            "10 N = 10",
-            "20 FOR I = 1 TO N",
-            "30 NEXT I"
+                "10 N = 10",
+                "20 FOR I = 1 TO N",
+                "30 NEXT I"
         );
         if (verifyTestCase("Dependency Propagation (Safe)", tc11, Collections.singleton("I"))) passed++; else failed++;
 
         // Test Case 12: Dependency propagation (Unsafe)
         List<String> tc12 = Arrays.asList(
-            "10 N = 10.5",
-            "20 FOR I = 1 TO N",
-            "30 NEXT I"
+                "10 N = 10.5",
+                "20 FOR I = 1 TO N",
+                "30 NEXT I"
         );
         if (verifyTestCase("Dependency Propagation (Unsafe)", tc12, Collections.emptySet())) passed++; else failed++;
 
         // Test Case 13: READ statement with integer data vs float data
         List<String> tc13a = Arrays.asList(
-            "10 FOR I = 1 TO 5",
-            "20 READ I",
-            "30 NEXT I",
-            "40 DATA 1, 2, 3, 4, 5"
+                "10 FOR I = 1 TO 5",
+                "20 READ I",
+                "30 NEXT I",
+                "40 DATA 1, 2, 3, 4, 5"
         );
         if (verifyTestCase("READ Safe DATA", tc13a, Collections.singleton("I"))) passed++; else failed++;
 
         List<String> tc13b = Arrays.asList(
-            "10 FOR I = 1 TO 5",
-            "20 READ I",
-            "30 NEXT I",
-            "40 DATA 1, 2, 3.5, 4, 5"
+                "10 FOR I = 1 TO 5",
+                "20 READ I",
+                "30 NEXT I",
+                "40 DATA 1, 2, 3.5, 4, 5"
         );
         if (verifyTestCase("READ Unsafe DATA", tc13b, Collections.emptySet())) passed++; else failed++;
 
         // Test Case 14: Unspaced code (spaces are ignored outside strings/comments in BASIC V2)
         List<String> tc14 = Arrays.asList(
-            "10FORI=1TO10STEP2",
-            "20PRINTI",
-            "30NEXTI"
+                "10FORI=1TO10STEP2",
+                "20PRINTI",
+                "30NEXTI"
         );
         if (verifyTestCase("Unspaced Code", tc14, Collections.singleton("I"))) passed++; else failed++;
 
         // Test Case 15: General non-loop safe variable detection
         List<String> tc15 = Arrays.asList(
-            "10 A = 5",
-            "20 B = 10.5",
-            "30 FOR I = 1 TO A",
-            "40 NEXT I"
+                "10 A = 5",
+                "20 B = 10.5",
+                "30 FOR I = 1 TO A",
+                "40 NEXT I"
         );
         // I is safe loop variable. A is safe non-loop variable. B is unsafe non-loop variable.
         if (verifyTestCaseAll("Non-Loop Safe Variable Detection", tc15, Collections.singleton("I"), new HashSet<>(Arrays.asList("I", "A")))) passed++; else failed++;
 
         // Test Case 16: System-reserved variables exclusion (TI, ST) and getAllSafeVariables verification
         List<String> tc16 = Arrays.asList(
-            "10 A = 5",
-            "20 PRINT TI",
-            "30 PRINT ST",
-            "40 FOR I = 1 TO A",
-            "50 NEXT I"
+                "10 A = 5",
+                "20 PRINT TI",
+                "30 PRINT ST",
+                "40 FOR I = 1 TO A",
+                "50 NEXT I"
         );
         // TI and ST must be excluded. Safe variables union should be [I, A].
         if (verifyTestCaseUnion("System Variables Exclusion & Union Set", tc16, new HashSet<>(Arrays.asList("I", "A")))) passed++; else failed++;
+
+        // Test Case 17: Variable compared to out-of-range positive constant in IF statement
+        List<String> tc17 = Arrays.asList(
+                "10 FOR I = 1 TO 10",
+                "20 IF I > 40000 THEN PRINT I",
+                "30 NEXT I"
+        );
+        if (verifyTestCase("Compare to Positive Out-Of-Range", tc17, Collections.emptySet())) passed++; else failed++;
+
+        // Test Case 18: Variable compared to out-of-range negative constant in IF statement
+        List<String> tc18 = Arrays.asList(
+                "10 FOR I = 1 TO 10",
+                "20 IF I < -32769 THEN PRINT I",
+                "30 NEXT I"
+        );
+        if (verifyTestCase("Compare to Negative Out-Of-Range", tc18, Collections.emptySet())) passed++; else failed++;
+
+        // Test Case 19: Variable compared to out-of-range constant in assignment
+        List<String> tc19 = Arrays.asList(
+                "10 FOR I = 1 TO 10",
+                "20 A = I > 50000",
+                "30 NEXT I"
+        );
+        if (verifyTestCase("Compare in Assignment", tc19, Collections.emptySet())) passed++; else failed++;
+
+        // Test Case 20: Variable compared to out-of-range constant in print (token level scan test)
+        List<String> tc20 = Arrays.asList(
+                "10 FOR I = 1 TO 10",
+                "20 PRINT I < -40000",
+                "30 NEXT I"
+        );
+        if (verifyTestCase("Compare in Print Statement", tc20, Collections.emptySet())) passed++; else failed++;
 
         System.out.println(String.format("\nTest Run Complete. Passed: %d, Failed: %d", passed, failed));
     }
