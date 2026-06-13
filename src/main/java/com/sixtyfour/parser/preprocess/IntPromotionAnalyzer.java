@@ -31,11 +31,19 @@ public class IntPromotionAnalyzer {
         public final TokenType type;
         public final String value;
         public final int lineNum;
+        public boolean array = false;
 
         public Token(TokenType type, String value, int lineNum) {
             this.type = type;
             this.value = value;
             this.lineNum = lineNum;
+        }
+
+        public Token(TokenType type, String value, int lineNum, boolean array) {
+            this.type = type;
+            this.value = value;
+            this.lineNum = lineNum;
+            this.array = array;
         }
 
         @Override
@@ -407,40 +415,74 @@ public class IntPromotionAnalyzer {
     private static TokenType getKeywordTokenType(String kw) {
         kw = kw.toUpperCase();
         switch (kw) {
-            case "FOR": return TokenType.FOR;
-            case "TO": return TokenType.TO;
-            case "STEP": return TokenType.STEP;
-            case "NEXT": return TokenType.NEXT;
-            case "LET": return TokenType.LET;
-            case "IF": return TokenType.IF;
-            case "THEN": return TokenType.THEN;
-            case "GOTO": return TokenType.GOTO;
-            case "GOSUB": return TokenType.GOSUB;
-            case "RETURN": return TokenType.RETURN;
-            case "INPUT": return TokenType.INPUT;
-            case "GET": return TokenType.GET;
-            case "READ": return TokenType.READ;
-            case "DATA": return TokenType.DATA;
-            case "AND": return TokenType.AND;
-            case "OR": return TokenType.OR;
-            case "NOT": return TokenType.NOT;
-            case "FN": return TokenType.FN;
-            case "=": return TokenType.EQUAL;
-            case "<>": return TokenType.NOT_EQUAL;
-            case "<": return TokenType.LESS_THAN;
-            case "<=": return TokenType.LESS_EQUAL;
-            case ">": return TokenType.GREATER_THAN;
-            case ">=": return TokenType.GREATER_EQUAL;
-            case "+": return TokenType.PLUS;
-            case "-": return TokenType.MINUS;
-            case "*": return TokenType.MULTIPLY;
-            case "/": return TokenType.DIVIDE;
-            case "^": return TokenType.EXPONENT;
-            case "(": return TokenType.PAREN_OPEN;
-            case ")": return TokenType.PAREN_CLOSE;
-            case ",": return TokenType.COMMA;
-            case ":": return TokenType.COLON;
-            case ";": return TokenType.SEMICOLON;
+            case "FOR":
+                return TokenType.FOR;
+            case "TO":
+                return TokenType.TO;
+            case "STEP":
+                return TokenType.STEP;
+            case "NEXT":
+                return TokenType.NEXT;
+            case "LET":
+                return TokenType.LET;
+            case "IF":
+                return TokenType.IF;
+            case "THEN":
+                return TokenType.THEN;
+            case "GOTO":
+                return TokenType.GOTO;
+            case "GOSUB":
+                return TokenType.GOSUB;
+            case "RETURN":
+                return TokenType.RETURN;
+            case "INPUT":
+                return TokenType.INPUT;
+            case "GET":
+                return TokenType.GET;
+            case "READ":
+                return TokenType.READ;
+            case "DATA":
+                return TokenType.DATA;
+            case "AND":
+                return TokenType.AND;
+            case "OR":
+                return TokenType.OR;
+            case "NOT":
+                return TokenType.NOT;
+            case "FN":
+                return TokenType.FN;
+            case "=":
+                return TokenType.EQUAL;
+            case "<>":
+                return TokenType.NOT_EQUAL;
+            case "<":
+                return TokenType.LESS_THAN;
+            case "<=":
+                return TokenType.LESS_EQUAL;
+            case ">":
+                return TokenType.GREATER_THAN;
+            case ">=":
+                return TokenType.GREATER_EQUAL;
+            case "+":
+                return TokenType.PLUS;
+            case "-":
+                return TokenType.MINUS;
+            case "*":
+                return TokenType.MULTIPLY;
+            case "/":
+                return TokenType.DIVIDE;
+            case "^":
+                return TokenType.EXPONENT;
+            case "(":
+                return TokenType.PAREN_OPEN;
+            case ")":
+                return TokenType.PAREN_CLOSE;
+            case ",":
+                return TokenType.COMMA;
+            case ":":
+                return TokenType.COLON;
+            case ";":
+                return TokenType.SEMICOLON;
 
             // Functions
             case "SGN":
@@ -570,13 +612,17 @@ public class IntPromotionAnalyzer {
             if (Character.isLetter(c)) {
                 int start = i;
                 i++;
+                boolean array = false;
                 while (i < lineText.length() && Character.isLetterOrDigit(lineText.charAt(i))) {
                     i++;
                 }
                 if (i < lineText.length() && (lineText.charAt(i) == '%' || lineText.charAt(i) == '$')) {
                     i++;
                 }
-                tokens.add(new Token(TokenType.IDENTIFIER, lineText.substring(start, i), lineNum));
+                if (i < lineText.length() && (lineText.charAt(i) == '(')) {
+                    array = true;
+                }
+                tokens.add(new Token(TokenType.IDENTIFIER, lineText.substring(start, i), lineNum, array));
                 continue;
             }
 
@@ -588,7 +634,8 @@ public class IntPromotionAnalyzer {
     }
 
     // --- Name Normalization ---
-    public static String normalizeVariableName(String name) {
+    public static String normalizeVariableName(Token token) {
+        String name = token.value;
         if (name == null || name.isEmpty()) return "";
         name = name.toUpperCase();
         char last = name.charAt(name.length() - 1);
@@ -597,7 +644,7 @@ public class IntPromotionAnalyzer {
         if (base.length() > 2) {
             base = base.substring(0, 2);
         }
-        return base + (hasSuffix ? String.valueOf(last) : "");
+        return base + (hasSuffix ? String.valueOf(last) : "") + (token.array ? "()" : "");
     }
 
     // --- Parser Class ---
@@ -734,7 +781,7 @@ public class IntPromotionAnalyzer {
             }
             if (t.type == TokenType.IDENTIFIER) {
                 consume();
-                String varName = normalizeVariableName(t.value);
+                String varName = normalizeVariableName(t);
                 Token next = peek();
                 if (next != null && next.type == TokenType.PAREN_OPEN) {
                     consume(); // consume '('
@@ -819,7 +866,7 @@ public class IntPromotionAnalyzer {
 
             Token varToken = tokens.get(start + 1);
             if (varToken.type != TokenType.IDENTIFIER) return null;
-            String varName = normalizeVariableName(varToken.value);
+            String varName = normalizeVariableName(varToken);
 
             int toPos = -1;
             for (int i = eqPos + 1; i < end; i++) {
@@ -854,7 +901,7 @@ public class IntPromotionAnalyzer {
             for (int i = start + 1; i < end; i++) {
                 Token vt = tokens.get(i);
                 if (vt.type == TokenType.IDENTIFIER) {
-                    vars.add(normalizeVariableName(vt.value));
+                    vars.add(normalizeVariableName(vt));
                 }
             }
             return new NextStatement(vars);
@@ -878,7 +925,7 @@ public class IntPromotionAnalyzer {
                     }
                 }
                 if (!isArray && eqPos == start + 2) {
-                    String varName = normalizeVariableName(tokens.get(start + 1).value);
+                    String varName = normalizeVariableName(tokens.get(start + 1));
                     Expression expr = parseExpr(tokens.subList(eqPos + 1, end));
                     return new AssignmentStatement(varName, expr);
                 }
@@ -908,7 +955,7 @@ public class IntPromotionAnalyzer {
                     }
                 }
                 if (!isArray && eqPos == start + 1) {
-                    String varName = normalizeVariableName(first.value);
+                    String varName = normalizeVariableName(first);
                     Expression expr = parseExpr(tokens.subList(eqPos + 1, end));
                     return new AssignmentStatement(varName, expr);
                 }
@@ -928,7 +975,7 @@ public class IntPromotionAnalyzer {
             for (; i < end; i++) {
                 Token vt = tokens.get(i);
                 if (vt.type == TokenType.IDENTIFIER) {
-                    vars.add(normalizeVariableName(vt.value));
+                    vars.add(normalizeVariableName(vt));
                 }
             }
             return new InputStatement(vars);
@@ -940,7 +987,7 @@ public class IntPromotionAnalyzer {
             for (int i = start + 1; i < end; i++) {
                 Token vt = tokens.get(i);
                 if (vt.type == TokenType.IDENTIFIER) {
-                    vars.add(normalizeVariableName(vt.value));
+                    vars.add(normalizeVariableName(vt));
                 }
             }
             return new GetStatement(vars);
@@ -952,7 +999,7 @@ public class IntPromotionAnalyzer {
             for (int i = start + 1; i < end; i++) {
                 Token vt = tokens.get(i);
                 if (vt.type == TokenType.IDENTIFIER) {
-                    vars.add(normalizeVariableName(vt.value));
+                    vars.add(normalizeVariableName(vt));
                 }
             }
             return new ReadStatement(vars);
@@ -1227,7 +1274,7 @@ public class IntPromotionAnalyzer {
     private static boolean tokensHaveComparisonOutOfRange(List<Token> tokens, String var) {
         for (int i = 0; i < tokens.size(); i++) {
             Token t = tokens.get(i);
-            if (t.type == TokenType.IDENTIFIER && normalizeVariableName(t.value).equals(var)) {
+            if (t.type == TokenType.IDENTIFIER && normalizeVariableName(t).equals(var)) {
                 if (i + 1 < tokens.size() && isComparisonOp(tokens.get(i + 1))) {
                     Double val = getConstantFromTokens(tokens, i + 2);
                     if (val != null && (val < -32768.0 || val > 32767.0)) {
@@ -1262,7 +1309,7 @@ public class IntPromotionAnalyzer {
             allProgramTokens.add(tokens);
             for (Token t : tokens) {
                 if (t.type == TokenType.IDENTIFIER) {
-                    allVariables.add(normalizeVariableName(t.value));
+                    allVariables.add(normalizeVariableName(t));
                 }
             }
 
@@ -1291,7 +1338,7 @@ public class IntPromotionAnalyzer {
         // Only float variables (no %, no $) that are not system-reserved (TI, ST) are candidates for optimization
         Set<String> candidates = new HashSet<>();
         for (String var : allVariables) {
-            if (!var.endsWith("%") && !var.endsWith("$") && !var.equals("TI") && !var.equals("ST")) {
+            if (!var.contains("%") && !var.contains("$") && !var.equals("TI") && !var.equals("ST")) {
                 candidates.add(var);
             }
         }
@@ -1312,6 +1359,7 @@ public class IntPromotionAnalyzer {
                     // Check assignments to var
                     if (stmt instanceof AssignmentStatement) {
                         AssignmentStatement as = (AssignmentStatement) stmt;
+                        //System.out.println(stmt+"!"+as.variable+"!"+var);
                         if (as.variable.equals(var)) {
                             if (as.expression == null || !as.expression.isIntegerValued(safeSet)) {
                                 isSafe = false;
@@ -1458,7 +1506,8 @@ public class IntPromotionAnalyzer {
                 "20 PRINT I",
                 "30 NEXT I"
         );
-        if (verifyTestCase("Simple Safe Loop", tc1, Collections.singleton("I"))) passed++; else failed++;
+        if (verifyTestCase("Simple Safe Loop", tc1, Collections.singleton("I"))) passed++;
+        else failed++;
 
         // Test Case 2: Unsafe Float Bound
         List<String> tc2 = Arrays.asList(
@@ -1466,7 +1515,8 @@ public class IntPromotionAnalyzer {
                 "20 PRINT I",
                 "30 NEXT I"
         );
-        if (verifyTestCase("Unsafe Float Bound", tc2, Collections.emptySet())) passed++; else failed++;
+        if (verifyTestCase("Unsafe Float Bound", tc2, Collections.emptySet())) passed++;
+        else failed++;
 
         // Test Case 3: Unsafe Float Step
         List<String> tc3 = Arrays.asList(
@@ -1474,7 +1524,8 @@ public class IntPromotionAnalyzer {
                 "20 PRINT I",
                 "30 NEXT I"
         );
-        if (verifyTestCase("Unsafe Float Step", tc3, Collections.emptySet())) passed++; else failed++;
+        if (verifyTestCase("Unsafe Float Step", tc3, Collections.emptySet())) passed++;
+        else failed++;
 
         // Test Case 4: Unsafe Float Assignment inside loop
         List<String> tc4 = Arrays.asList(
@@ -1482,7 +1533,8 @@ public class IntPromotionAnalyzer {
                 "20 I = 3.5",
                 "30 NEXT I"
         );
-        if (verifyTestCase("Unsafe Float Assignment", tc4, Collections.emptySet())) passed++; else failed++;
+        if (verifyTestCase("Unsafe Float Assignment", tc4, Collections.emptySet())) passed++;
+        else failed++;
 
         // Test Case 5: Large Constant Bound (outside 16-bit signed range)
         List<String> tc5 = Arrays.asList(
@@ -1490,7 +1542,8 @@ public class IntPromotionAnalyzer {
                 "20 PRINT I",
                 "30 NEXT I"
         );
-        if (verifyTestCase("Large Constant Bound", tc5, Collections.emptySet())) passed++; else failed++;
+        if (verifyTestCase("Large Constant Bound", tc5, Collections.emptySet())) passed++;
+        else failed++;
 
         // Test Case 6: division assignment (always unsafe)
         List<String> tc6 = Arrays.asList(
@@ -1498,7 +1551,8 @@ public class IntPromotionAnalyzer {
                 "20 I = I / 2",
                 "30 NEXT I"
         );
-        if (verifyTestCase("Division Assignment", tc6, Collections.emptySet())) passed++; else failed++;
+        if (verifyTestCase("Division Assignment", tc6, Collections.emptySet())) passed++;
+        else failed++;
 
         // Test Case 7: Unsafe Input statement targeting loop variable
         List<String> tc7 = Arrays.asList(
@@ -1506,7 +1560,8 @@ public class IntPromotionAnalyzer {
                 "20 INPUT I",
                 "30 NEXT I"
         );
-        if (verifyTestCase("Unsafe INPUT Statement", tc7, Collections.emptySet())) passed++; else failed++;
+        if (verifyTestCase("Unsafe INPUT Statement", tc7, Collections.emptySet())) passed++;
+        else failed++;
 
         // Test Case 8: Safe and Unsafe loops mixed
         List<String> tc8 = Arrays.asList(
@@ -1516,7 +1571,8 @@ public class IntPromotionAnalyzer {
                 "40 NEXT K, J, I"
         );
         Set<String> expectedTc8 = new HashSet<>(Arrays.asList("I", "J"));
-        if (verifyTestCase("Mixed Loops", tc8, expectedTc8)) passed++; else failed++;
+        if (verifyTestCase("Mixed Loops", tc8, expectedTc8)) passed++;
+        else failed++;
 
         // Test Case 9: Dynamic MATCHING loops and subroutine modification
         List<String> tc9 = Arrays.asList(
@@ -1527,7 +1583,8 @@ public class IntPromotionAnalyzer {
                 "100 I = I + 2",
                 "110 RETURN"
         );
-        if (verifyTestCase("Dynamic NEXT & GOSUB Modification", tc9, Collections.singleton("I"))) passed++; else failed++;
+        if (verifyTestCase("Dynamic NEXT & GOSUB Modification", tc9, Collections.singleton("I"))) passed++;
+        else failed++;
 
         // Test Case 10: Array index and variables normalization
         List<String> tc10 = Arrays.asList(
@@ -1536,7 +1593,8 @@ public class IntPromotionAnalyzer {
                 "30 NEXT LO"
         );
         // Normalized name for LOOPVAR and LO is LO. They should be detected as safe.
-        if (verifyTestCase("Variable Name Normalization", tc10, Collections.singleton("LO"))) passed++; else failed++;
+        if (verifyTestCase("Variable Name Normalization", tc10, Collections.singleton("LO"))) passed++;
+        else failed++;
 
         // Test Case 11: Dependency propagation
         List<String> tc11 = Arrays.asList(
@@ -1544,7 +1602,8 @@ public class IntPromotionAnalyzer {
                 "20 FOR I = 1 TO N",
                 "30 NEXT I"
         );
-        if (verifyTestCase("Dependency Propagation (Safe)", tc11, Collections.singleton("I"))) passed++; else failed++;
+        if (verifyTestCase("Dependency Propagation (Safe)", tc11, Collections.singleton("I"))) passed++;
+        else failed++;
 
         // Test Case 12: Dependency propagation (Unsafe)
         List<String> tc12 = Arrays.asList(
@@ -1552,7 +1611,8 @@ public class IntPromotionAnalyzer {
                 "20 FOR I = 1 TO N",
                 "30 NEXT I"
         );
-        if (verifyTestCase("Dependency Propagation (Unsafe)", tc12, Collections.emptySet())) passed++; else failed++;
+        if (verifyTestCase("Dependency Propagation (Unsafe)", tc12, Collections.emptySet())) passed++;
+        else failed++;
 
         // Test Case 13: READ statement with integer data vs float data
         List<String> tc13a = Arrays.asList(
@@ -1561,7 +1621,8 @@ public class IntPromotionAnalyzer {
                 "30 NEXT I",
                 "40 DATA 1, 2, 3, 4, 5"
         );
-        if (verifyTestCase("READ Safe DATA", tc13a, Collections.singleton("I"))) passed++; else failed++;
+        if (verifyTestCase("READ Safe DATA", tc13a, Collections.singleton("I"))) passed++;
+        else failed++;
 
         List<String> tc13b = Arrays.asList(
                 "10 FOR I = 1 TO 5",
@@ -1569,7 +1630,8 @@ public class IntPromotionAnalyzer {
                 "30 NEXT I",
                 "40 DATA 1, 2, 3.5, 4, 5"
         );
-        if (verifyTestCase("READ Unsafe DATA", tc13b, Collections.emptySet())) passed++; else failed++;
+        if (verifyTestCase("READ Unsafe DATA", tc13b, Collections.emptySet())) passed++;
+        else failed++;
 
         // Test Case 14: Unspaced code (spaces are ignored outside strings/comments in BASIC V2)
         List<String> tc14 = Arrays.asList(
@@ -1577,7 +1639,8 @@ public class IntPromotionAnalyzer {
                 "20PRINTI",
                 "30NEXTI"
         );
-        if (verifyTestCase("Unspaced Code", tc14, Collections.singleton("I"))) passed++; else failed++;
+        if (verifyTestCase("Unspaced Code", tc14, Collections.singleton("I"))) passed++;
+        else failed++;
 
         // Test Case 15: General non-loop safe variable detection
         List<String> tc15 = Arrays.asList(
@@ -1587,7 +1650,9 @@ public class IntPromotionAnalyzer {
                 "40 NEXT I"
         );
         // I is safe loop variable. A is safe non-loop variable. B is unsafe non-loop variable.
-        if (verifyTestCaseAll("Non-Loop Safe Variable Detection", tc15, Collections.singleton("I"), new HashSet<>(Arrays.asList("I", "A")))) passed++; else failed++;
+        if (verifyTestCaseAll("Non-Loop Safe Variable Detection", tc15, Collections.singleton("I"), new HashSet<>(Arrays.asList("I", "A"))))
+            passed++;
+        else failed++;
 
         // Test Case 16: System-reserved variables exclusion (TI, ST) and getAllSafeVariables verification
         List<String> tc16 = Arrays.asList(
@@ -1598,7 +1663,9 @@ public class IntPromotionAnalyzer {
                 "50 NEXT I"
         );
         // TI and ST must be excluded. Safe variables union should be [I, A].
-        if (verifyTestCaseUnion("System Variables Exclusion & Union Set", tc16, new HashSet<>(Arrays.asList("I", "A")))) passed++; else failed++;
+        if (verifyTestCaseUnion("System Variables Exclusion & Union Set", tc16, new HashSet<>(Arrays.asList("I", "A"))))
+            passed++;
+        else failed++;
 
         // Test Case 17: Variable compared to out-of-range positive constant in IF statement
         List<String> tc17 = Arrays.asList(
@@ -1606,7 +1673,8 @@ public class IntPromotionAnalyzer {
                 "20 IF I > 40000 THEN PRINT I",
                 "30 NEXT I"
         );
-        if (verifyTestCase("Compare to Positive Out-Of-Range", tc17, Collections.emptySet())) passed++; else failed++;
+        if (verifyTestCase("Compare to Positive Out-Of-Range", tc17, Collections.emptySet())) passed++;
+        else failed++;
 
         // Test Case 18: Variable compared to out-of-range negative constant in IF statement
         List<String> tc18 = Arrays.asList(
@@ -1614,7 +1682,8 @@ public class IntPromotionAnalyzer {
                 "20 IF I < -32769 THEN PRINT I",
                 "30 NEXT I"
         );
-        if (verifyTestCase("Compare to Negative Out-Of-Range", tc18, Collections.emptySet())) passed++; else failed++;
+        if (verifyTestCase("Compare to Negative Out-Of-Range", tc18, Collections.emptySet())) passed++;
+        else failed++;
 
         // Test Case 19: Variable compared to out-of-range constant in assignment
         List<String> tc19 = Arrays.asList(
@@ -1622,7 +1691,8 @@ public class IntPromotionAnalyzer {
                 "20 A = I > 50000",
                 "30 NEXT I"
         );
-        if (verifyTestCase("Compare in Assignment", tc19, Collections.emptySet())) passed++; else failed++;
+        if (verifyTestCase("Compare in Assignment", tc19, Collections.emptySet())) passed++;
+        else failed++;
 
         // Test Case 20: Variable compared to out-of-range constant in print (token level scan test)
         List<String> tc20 = Arrays.asList(
@@ -1630,20 +1700,21 @@ public class IntPromotionAnalyzer {
                 "20 PRINT I < -40000",
                 "30 NEXT I"
         );
-        if (verifyTestCase("Compare in Print Statement", tc20, Collections.emptySet())) passed++; else failed++;
+        if (verifyTestCase("Compare in Print Statement", tc20, Collections.emptySet())) passed++;
+        else failed++;
 
-        System.out.println(String.format("\nTest Run Complete. Passed: %d, Failed: %d", passed, failed));
+        System.out.printf("\nTest Run Complete. Passed: %d, Failed: %d%n", passed, failed);
     }
 
     private static boolean verifyTestCase(String name, List<String> lines, Set<String> expected) {
         Set<String> actual = analyzeProgram(lines).safeLoopVariables;
         boolean matches = actual.equals(expected);
         if (matches) {
-            System.out.println(String.format("  [ PASS ] %s", name));
+            System.out.printf("  [ PASS ] %s%n", name);
         } else {
-            System.out.println(String.format("  [ FAIL ] %s", name));
-            System.out.println(String.format("           Expected: %s", expected));
-            System.out.println(String.format("           Actual:   %s", actual));
+            System.out.printf("  [ FAIL ] %s%n", name);
+            System.out.printf("           Expected: %s%n", expected);
+            System.out.printf("           Actual:   %s%n", actual);
         }
         return matches;
     }
@@ -1654,16 +1725,16 @@ public class IntPromotionAnalyzer {
         boolean allMatch = result.safeIntegerVariables.equals(expectedAll);
         boolean matches = loopsMatch && allMatch;
         if (matches) {
-            System.out.println(String.format("  [ PASS ] %s", name));
+            System.out.printf("  [ PASS ] %s%n", name);
         } else {
-            System.out.println(String.format("  [ FAIL ] %s", name));
+            System.out.printf("  [ FAIL ] %s%n", name);
             if (!loopsMatch) {
-                System.out.println(String.format("           Expected Loop: %s", expectedLoops));
-                System.out.println(String.format("           Actual Loop:   %s", result.safeLoopVariables));
+                System.out.printf("           Expected Loop: %s%n", expectedLoops);
+                System.out.printf("           Actual Loop:   %s%n", result.safeLoopVariables);
             }
             if (!allMatch) {
-                System.out.println(String.format("           Expected All:  %s", expectedAll));
-                System.out.println(String.format("           Actual All:    %s", result.safeIntegerVariables));
+                System.out.printf("           Expected All:  %s%n", expectedAll);
+                System.out.printf("           Actual All:    %s%n", result.safeIntegerVariables);
             }
         }
         return matches;
@@ -1674,11 +1745,11 @@ public class IntPromotionAnalyzer {
         Set<String> actualUnion = result.getAllSafeVariables();
         boolean matches = actualUnion.equals(expectedUnion);
         if (matches) {
-            System.out.println(String.format("  [ PASS ] %s", name));
+            System.out.printf("  [ PASS ] %s%n", name);
         } else {
-            System.out.println(String.format("  [ FAIL ] %s", name));
-            System.out.println(String.format("           Expected Union: %s", expectedUnion));
-            System.out.println(String.format("           Actual Union:   %s", actualUnion));
+            System.out.printf("  [ FAIL ] %s%n", name);
+            System.out.printf("           Expected Union: %s%n", expectedUnion);
+            System.out.printf("           Actual Union:   %s%n", actualUnion);
         }
         return matches;
     }
