@@ -193,7 +193,9 @@ public class IntPromotionAnalyzer {
 
         @Override
         public boolean isIntegerValued(Set<String> safeVariables) {
-            if (left == null || right == null) return false;
+            if (left == null || right == null) {
+                return false;
+            }
 
             switch (op) {
                 case "+":
@@ -610,21 +612,21 @@ public class IntPromotionAnalyzer {
 
             // Identifiers
             if (Character.isLetter(c)) {
-                int start = i;
+            int start = i;
+            i++;
+            boolean array = false;
+            while (i < lineText.length() && Character.isLetterOrDigit(lineText.charAt(i))) {
                 i++;
-                boolean array = false;
-                while (i < lineText.length() && Character.isLetterOrDigit(lineText.charAt(i))) {
-                    i++;
-                }
-                if (i < lineText.length() && (lineText.charAt(i) == '%' || lineText.charAt(i) == '$')) {
-                    i++;
-                }
-                if (i < lineText.length() && (lineText.charAt(i) == '(')) {
-                    array = true;
-                }
-                tokens.add(new Token(TokenType.IDENTIFIER, lineText.substring(start, i), lineNum, array));
-                continue;
             }
+            if (i < lineText.length() && (lineText.charAt(i) == '%' || lineText.charAt(i) == '$')) {
+                i++;
+            }
+            if (i < lineText.length() && (lineText.charAt(i) == '(')) {
+                array = true;
+            }
+            tokens.add(new Token(TokenType.IDENTIFIER, lineText.substring(start, i), lineNum, array));
+            continue;
+        }
 
             // Unknown fallback
             tokens.add(new Token(TokenType.UNKNOWN, String.valueOf(c), lineNum));
@@ -636,7 +638,9 @@ public class IntPromotionAnalyzer {
     // --- Name Normalization ---
     public static String normalizeVariableName(Token token) {
         String name = token.value;
-        if (name == null || name.isEmpty()) return "";
+        if (name == null || name.isEmpty()) {
+            return "";
+        }
         name = name.toUpperCase();
         char last = name.charAt(name.length() - 1);
         boolean hasSuffix = (last == '%' || last == '$');
@@ -658,18 +662,24 @@ public class IntPromotionAnalyzer {
         }
 
         private Token peek() {
-            if (pos >= tokens.size()) return null;
+            if (pos >= tokens.size()) {
+                return null;
+            }
             return tokens.get(pos);
         }
 
         private Token consume() {
-            if (pos >= tokens.size()) return null;
+            if (pos >= tokens.size()) {
+                return null;
+            }
             return tokens.get(pos++);
         }
 
         private boolean match(TokenType... types) {
             Token t = peek();
-            if (t == null) return false;
+            if (t == null) {
+                return false;
+            }
             for (TokenType type : types) {
                 if (t.type == type) {
                     consume();
@@ -769,7 +779,9 @@ public class IntPromotionAnalyzer {
 
         private Expression parsePrimary() {
             Token t = peek();
-            if (t == null) return null;
+            if (t == null) {
+                return null;
+            }
 
             if (t.type == TokenType.NUMBER) {
                 consume();
@@ -849,9 +861,30 @@ public class IntPromotionAnalyzer {
     }
 
     public static Statement parseStatement(List<Token> tokens, int start, int end) {
-        if (start >= end) return null;
+        if (start >= end) {
+            return null;
+        }
 
         Token t = tokens.get(start);
+
+        // Helper to parse assignment targets (scalar or array)
+        // Returns normalized variable name or null if not a valid target
+        class AssignmentTargetParser {
+            String parse(int targetStart, int targetEnd) {
+                if (targetStart >= targetEnd) {
+                    return null;
+                }
+                Expression targetExpr = parseExpr(tokens.subList(targetStart, targetEnd));
+                if (targetExpr instanceof VariableExpr) {
+                    return ((VariableExpr) targetExpr).name;
+                }
+                if (targetExpr instanceof ArrayAccessExpr) {
+                    return ((ArrayAccessExpr) targetExpr).name;
+                }
+                return null;
+            }
+        }
+        AssignmentTargetParser atp = new AssignmentTargetParser();
 
         // FOR Statement
         if (t.type == TokenType.FOR) {
@@ -862,10 +895,14 @@ public class IntPromotionAnalyzer {
                     break;
                 }
             }
-            if (eqPos == -1) return null;
+            if (eqPos == -1) {
+                return null;
+            }
 
             Token varToken = tokens.get(start + 1);
-            if (varToken.type != TokenType.IDENTIFIER) return null;
+            if (varToken.type != TokenType.IDENTIFIER) {
+                return null;
+            }
             String varName = normalizeVariableName(varToken);
 
             int toPos = -1;
@@ -875,7 +912,9 @@ public class IntPromotionAnalyzer {
                     break;
                 }
             }
-            if (toPos == -1) return null;
+            if (toPos == -1) {
+                return null;
+            }
 
             int stepPos = -1;
             for (int i = toPos + 1; i < end; i++) {
@@ -917,15 +956,8 @@ public class IntPromotionAnalyzer {
                 }
             }
             if (eqPos != -1) {
-                boolean isArray = false;
-                for (int i = start + 1; i < eqPos; i++) {
-                    if (tokens.get(i).type == TokenType.PAREN_OPEN) {
-                        isArray = true;
-                        break;
-                    }
-                }
-                if (!isArray && eqPos == start + 2) {
-                    String varName = normalizeVariableName(tokens.get(start + 1));
+                String varName = atp.parse(start + 1, eqPos);
+                if (varName != null) {
                     Expression expr = parseExpr(tokens.subList(eqPos + 1, end));
                     return new AssignmentStatement(varName, expr);
                 }
@@ -937,28 +969,20 @@ public class IntPromotionAnalyzer {
         int parenDepth = 0;
         for (int i = start; i < end; i++) {
             Token tok = tokens.get(i);
-            if (tok.type == TokenType.PAREN_OPEN) parenDepth++;
-            else if (tok.type == TokenType.PAREN_CLOSE) parenDepth--;
-            else if (tok.type == TokenType.EQUAL && parenDepth == 0) {
+            if (tok.type == TokenType.PAREN_OPEN) {
+                parenDepth++;
+            } else if (tok.type == TokenType.PAREN_CLOSE) {
+                parenDepth--;
+            } else if (tok.type == TokenType.EQUAL && parenDepth == 0) {
                 eqPos = i;
                 break;
             }
         }
         if (eqPos != -1) {
-            Token first = tokens.get(start);
-            if (first.type == TokenType.IDENTIFIER) {
-                boolean isArray = false;
-                for (int i = start; i < eqPos; i++) {
-                    if (tokens.get(i).type == TokenType.PAREN_OPEN) {
-                        isArray = true;
-                        break;
-                    }
-                }
-                if (!isArray && eqPos == start + 1) {
-                    String varName = normalizeVariableName(first);
-                    Expression expr = parseExpr(tokens.subList(eqPos + 1, end));
-                    return new AssignmentStatement(varName, expr);
-                }
+            String varName = atp.parse(start, eqPos);
+            if (varName != null) {
+                Expression expr = parseExpr(tokens.subList(eqPos + 1, end));
+                return new AssignmentStatement(varName, expr);
             }
         }
 
@@ -1160,7 +1184,9 @@ public class IntPromotionAnalyzer {
     }
 
     private static boolean exprHasComparisonOutOfRange(Expression expr, String var) {
-        if (expr == null) return false;
+        if (expr == null) {
+            return false;
+        }
 
         if (expr instanceof BinaryOpExpr) {
             BinaryOpExpr b = (BinaryOpExpr) expr;
@@ -1224,7 +1250,9 @@ public class IntPromotionAnalyzer {
     }
 
     private static Double getConstantFromTokens(List<Token> tokens, int startIdx) {
-        if (startIdx >= tokens.size()) return null;
+        if (startIdx >= tokens.size()) {
+            return null;
+        }
         Token t = tokens.get(startIdx);
         if (t.type == TokenType.NUMBER) {
             try {
@@ -1248,7 +1276,9 @@ public class IntPromotionAnalyzer {
     }
 
     private static Double getConstantFromTokensBackwards(List<Token> tokens, int endIdx) {
-        if (endIdx < 0) return null;
+        if (endIdx < 0) {
+            return null;
+        }
         Token t = tokens.get(endIdx);
         if (t.type == TokenType.NUMBER) {
             if (endIdx - 1 >= 0) {
