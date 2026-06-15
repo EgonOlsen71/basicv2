@@ -45,7 +45,8 @@ public class AssemblyOptimizer {
 		for (String line:code) {
 			String lline = line.toLowerCase();
 			// Count usage of integer variables...
-			if (lline.startsWith("ld") && lline.contains("var_") && lline.endsWith("%") && !lline.contains("[]")) {
+			if (lline.startsWith("ld") && lline.contains("var_") && lline.endsWith("%") && !lline.contains("[]")
+					&& (!lline.contains("#<") && !lline.contains("#>"))) {
 				String varName = lline.substring(lline.indexOf(" ")+1).trim();
 				Integer cnt = varCount.get(varName);
 				if (cnt==null) {
