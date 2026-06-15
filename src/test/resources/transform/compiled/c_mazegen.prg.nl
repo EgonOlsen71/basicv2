@@ -417,7 +417,7 @@ LDA #<VAR_S
 LDY #>VAR_S
 JSR CMPFAC
 ; Optimizer rule: Highly simplified loading for CMP/6
-ROL
+ASL
 BCS GT_GT0
 LDA #0
 JMP GT_SKIP0
@@ -674,7 +674,7 @@ LDY #>VAR_J
 JSR CMPFAC
 ; Optimizer rule: Highly simplified loading for CMP/6
 BEQ LT_LT_EQ3
-ROL
+ASL
 BCC LT_LT3
 LT_LT_EQ3:
 LDA #0
@@ -1172,16 +1172,14 @@ RTS
 ;###################################
 ;###################################
 COMPARE_PTRS_INT
-STA TMP3_ZP
-STY TMP3_ZP+1
 LDY #0
-LDA (TMP3_ZP),Y
+LDA (TMP_REG),Y
 SEC                 ; Prepare for subtraction
 SBC (TMP2_ZP),Y     ; Subtract low bytes (Sets Carry/Borrow flag)
 BNE LOW_DIFF        ; Hot Path: Low bytes differ, skip straight to high byte
 ; Path A: Low bytes are equal
 INY
-LDA (TMP3_ZP),Y
+LDA (TMP_REG),Y
 SBC (TMP2_ZP),Y     ; Subtract high bytes
 BNE EVAL_SIGNED     ; High bytes differ -> proceed to signed math
 ; Values are identical
@@ -1189,7 +1187,7 @@ LDX #0
 BEQ RESTORE_AND_EXIT ; Unconditional branch
 ; Path B: Low bytes are DIFFERENT (The Loop's Hot Path)
 LOW_DIFF    INY                 ; Move to high bytes (Y=1)
-LDA (TMP3_ZP),Y
+LDA (TMP_REG),Y
 SBC (TMP2_ZP),Y     ; Subtract high bytes using the borrow from the low bytes above
 ; Shared Signed Flag Evaluation
 EVAL_SIGNED BVC NO_OVF_INT      ; If Overflow is clear, Negative flag is accurate
@@ -1230,8 +1228,6 @@ LDY #1
 ADC (TMP2_ZP),Y
 STA (TMP2_ZP),Y
 CMPFORXX_INT
-LDA #5
-STA TMP3_ZP
 LDA TMP_REG
 CLC
 ADC #9
@@ -1239,7 +1235,6 @@ STA TMP_REG
 BCC NOPV3_INT
 INC TMP_REG+1
 NOPV3_INT
-LDY TMP_REG+1
 JSR COMPARE_PTRS_INT   ;CMPFAC (INT)
 JMP AFTERCMP
 ;###################################

@@ -191,7 +191,7 @@ LDA #<VAR_P
 LDY #>VAR_P
 JSR CMPFAC
 ; Optimizer rule: Highly simplified loading for CMP/6
-ROL
+ASL
 BCS GT_GT0
 LDA #0
 JMP GT_SKIP0
@@ -363,7 +363,7 @@ LDA #<X_REG
 LDY #>X_REG
 ; CMPFAC with (A/Y)
 JSR CMPFAC
-ROL
+ASL
 BCC LTEQ_LTEQ2
 BEQ LTEQ_LTEQ2
 LDA #<REAL_CONST_ZERO
@@ -384,7 +384,7 @@ LDY #>VAR_X
 JSR CMPFAC
 ; Optimizer rule: Highly simplified loading for CMP/6
 BEQ LT_LT_EQ3
-ROL
+ASL
 BCC LT_LT3
 LT_LT_EQ3:
 LDA #<REAL_CONST_ZERO

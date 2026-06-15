@@ -297,7 +297,7 @@ LDA #<CONST_14R
 LDY #>CONST_14R
 JSR CMPFAC
 ; Optimizer rule: Highly simplified loading for CMP/6
-ROL
+ASL
 BCS GT_GT4
 LDA #<REAL_CONST_ZERO
 LDY #>REAL_CONST_ZERO
@@ -316,7 +316,7 @@ LDA #<CONST_8R
 LDY #>CONST_8R
 JSR CMPFAC
 ; Optimizer rule: Highly simplified loading for CMP/6
-ROL
+ASL
 BCS GT_GT5
 LDA #<REAL_CONST_ZERO
 LDY #>REAL_CONST_ZERO
@@ -362,7 +362,7 @@ LDY #>CONST_7R
 JSR CMPFAC
 ; Optimizer rule: Highly simplified loading for CMP/6
 BEQ LT_LT_EQ6
-ROL
+ASL
 BCC LT_LT6
 LT_LT_EQ6:
 LDA #<REAL_CONST_ZERO
@@ -383,7 +383,7 @@ LDY #>CONST_7R
 JSR CMPFAC
 ; Optimizer rule: Highly simplified loading for CMP/6
 BEQ LT_LT_EQ7
-ROL
+ASL
 BCC LT_LT7
 LT_LT_EQ7:
 LDA #<REAL_CONST_ZERO
@@ -450,7 +450,7 @@ LDA #<CONST_18
 LDY #>CONST_18
 JSR CMPFAC
 ; Optimizer rule: Highly simplified loading for CMP/6
-ROL
+ASL
 BCS GT_GT8
 LDA #<REAL_CONST_ZERO
 LDY #>REAL_CONST_ZERO
@@ -496,7 +496,7 @@ LDA #<CONST_18
 LDY #>CONST_18
 JSR CMPFAC
 ; Optimizer rule: Highly simplified loading for CMP/6
-ROL
+ASL
 BCS GT_GT9
 LDA #<REAL_CONST_ZERO
 LDY #>REAL_CONST_ZERO
@@ -526,7 +526,7 @@ LDA #<CONST_14R
 LDY #>CONST_14R
 JSR CMPFAC
 ; Optimizer rule: Highly simplified loading for CMP/6
-ROL
+ASL
 BCS GT_GT10
 LDA #<REAL_CONST_ZERO
 LDY #>REAL_CONST_ZERO
@@ -552,7 +552,7 @@ LDY #>CONST_14R
 JSR CMPFAC
 ; Optimizer rule: Highly simplified loading for CMP/6
 BEQ LT_LT_EQ11
-ROL
+ASL
 BCC LT_LT11
 LT_LT_EQ11:
 LDA #<REAL_CONST_ZERO
@@ -598,7 +598,7 @@ LDA #<CONST_24
 LDY #>CONST_24
 JSR CMPFAC
 ; Optimizer rule: Highly simplified loading for CMP/6
-ROL
+ASL
 BCS GT_GT12
 LDA #<REAL_CONST_ZERO
 LDY #>REAL_CONST_ZERO
@@ -621,7 +621,7 @@ LDY #>X_REG
 ; CMPFAC with (A/Y)
 JSR CMPFAC
 BEQ LT_LT_EQ13
-ROL
+ASL
 BCC LT_LT13
 LT_LT_EQ13:
 LDA #<REAL_CONST_ZERO

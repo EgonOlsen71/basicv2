@@ -436,7 +436,7 @@ JSR ICMP
 ;
 ;
 ;
-ROL
+ASL
 BCS GT_GT0
 LDA #0
 JMP GT_SKIP0
@@ -705,7 +705,7 @@ JSR ICMP
 ;
 ;
 BEQ LT_LT_EQ3
-ROL
+ASL
 BCC LT_LT3
 LT_LT_EQ3:
 LDA #0
@@ -1201,16 +1201,14 @@ RTS
 ;###################################
 ;###################################
 COMPARE_PTRS_INT
-STA TMP3_ZP
-STY TMP3_ZP+1
 LDY #0
-LDA (TMP3_ZP),Y
+LDA (TMP_REG),Y
 SEC                 ; Prepare for subtraction
 SBC (TMP2_ZP),Y     ; Subtract low bytes (Sets Carry/Borrow flag)
 BNE LOW_DIFF        ; Hot Path: Low bytes differ, skip straight to high byte
 ; Path A: Low bytes are equal
 INY
-LDA (TMP3_ZP),Y
+LDA (TMP_REG),Y
 SBC (TMP2_ZP),Y     ; Subtract high bytes
 BNE EVAL_SIGNED     ; High bytes differ -> proceed to signed math
 ; Values are identical
@@ -1218,7 +1216,7 @@ LDX #0
 BEQ RESTORE_AND_EXIT ; Unconditional branch
 ; Path B: Low bytes are DIFFERENT (The Loop's Hot Path)
 LOW_DIFF    INY                 ; Move to high bytes (Y=1)
-LDA (TMP3_ZP),Y
+LDA (TMP_REG),Y
 SBC (TMP2_ZP),Y     ; Subtract high bytes using the borrow from the low bytes above
 ; Shared Signed Flag Evaluation
 EVAL_SIGNED BVC NO_OVF_INT      ; If Overflow is clear, Negative flag is accurate
@@ -1259,8 +1257,6 @@ LDY #1
 ADC (TMP2_ZP),Y
 STA (TMP2_ZP),Y
 CMPFORXX_INT
-LDA #5
-STA TMP3_ZP
 LDA TMP_REG
 CLC
 ADC #9
@@ -1268,7 +1264,6 @@ STA TMP_REG
 BCC NOPV3_INT
 INC TMP_REG+1
 NOPV3_INT
-LDY TMP_REG+1
 JSR COMPARE_PTRS_INT   ;CMPFAC (INT)
 JMP AFTERCMP
 ;###################################
@@ -1529,7 +1524,6 @@ BNE DO_SUB_INT2      ; Low bytes differ -> proceed to signed math
 LDA TMP_ZP+1
 CMP TMP3_ZP+1
 BNE DO_SUB_INT2      ; High bytes differ -> proceed to signed math
-CLC
 LDA #0              ; Values are perfectly identical
 RTS
 DO_SUB_INT2  ; 2. Perform standard 16-bit subtraction (TMP_ZP - TMP3_ZP)
@@ -1542,11 +1536,9 @@ SBC TMP3_ZP+1    ; Subtract high bytes (sets final N and V flags)
 BVC NO_OVF_INT2      ; If Overflow (V=0), the Negative (N) flag is accurate
 EOR #$80             ; If Overflow (V=1), invert Bit 7 to correct the true sign
 NO_OVF_INT2  BMI IS_LT_INT2       ; If the resulting sign is negative, TMP_ZP < TMP2_ZP
-IS_GT_INT2  CLC
-LDA #$1             ; Otherwise, TMP_ZP > TMP2_ZP
+IS_GT_INT2  LDA #$1             ; Otherwise, TMP_ZP > TMP2_ZP
 RTS
-IS_LT_INT2  CLC
-LDA #$FF              ; Return 1
+IS_LT_INT2  LDA #$FF              ; Return 1
 RTS
 ;###################################
 ;###################################
