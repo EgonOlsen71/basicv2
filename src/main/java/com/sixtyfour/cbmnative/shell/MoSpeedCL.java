@@ -773,7 +773,7 @@ public class MoSpeedCL {
 		System.out.println(
 				"/varopt=true|false - If true, the compiler tries to move integer variables into the zeropage if possible and applicable. Default is false.");
 		System.out.println(
-				"/forcedints=<a,b,i,...> - If set, variables of these names will be forced to be integers. This will also work on variables used as loop counters.");
+				"/forcedints=<a,b,i,...> - If set, variables of these names will be forced to be integers. This will also work on variables used as loop counters. Setting this to 'auto!' will run static analysis in the code to determine variables that can be treated as integers automatically. This isn't 100% reliable though.");
 
 
 
