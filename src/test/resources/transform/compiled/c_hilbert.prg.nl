@@ -396,31 +396,31 @@ JMP LINE_SKIP7
 ;
 LINE_NSKIP7:
 ;
-LDY VAR_O%
-LDA VAR_O%+1
-STY TMP3_ZP
-STA TMP3_ZP+1
 LDY VAR_B%
 LDA VAR_B%+1
-JSR INTADDVAROPT
-JSR INTCONV
-; ADD VARs + STORE simplified
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
+STA TMP4_REG+1
+STY TMP4_REG
+LDY VAR_O%
+LDA VAR_O%+1
+JSR INTADDOPT16X
 STY VAR_O%
 STA VAR_O%+1
+; Optimized code for adding/subtracting ints and store in int (3)
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
 JMP RETURN
 ;
 LINE_SKIP7:
@@ -459,31 +459,31 @@ JSR FASTFSUBMEM
 JSR FACINT
 STY VAR_W%
 STA VAR_W%+1
-LDY VAR_O%
-LDA VAR_O%+1
-STY TMP3_ZP
-STA TMP3_ZP+1
 LDY VAR_B%
 LDA VAR_B%+1
-JSR INTSUBVAROPT
-JSR INTCONV
-; SUB VARs + STORE simplified
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
+STA TMP4_REG+1
+STY TMP4_REG
+LDY VAR_O%
+LDA VAR_O%+1
+JSR INTSUBOPT16X
 STY VAR_O%
 STA VAR_O%+1
+; Optimized code for adding/subtracting ints and store in int (3)
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
 ; Optimizer rule: Store and load/3
 ; integer in Y/A to FAC
 JSR INTFAC
@@ -562,31 +562,31 @@ JSR FASTFADDMEM
 JSR FACINT
 STY VAR_W%
 STA VAR_W%+1
-LDY VAR_O%
-LDA VAR_O%+1
-STY TMP3_ZP
-STA TMP3_ZP+1
 LDY VAR_B%
 LDA VAR_B%+1
-JSR INTSUBVAROPT
-JSR INTCONV
-; SUB VARs + STORE simplified
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
+STA TMP4_REG+1
+STY TMP4_REG
+LDY VAR_O%
+LDA VAR_O%+1
+JSR INTSUBOPT16X
 STY VAR_O%
 STA VAR_O%+1
+; Optimized code for adding/subtracting ints and store in int (3)
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
 ; Optimizer rule: Store and load/3
 ; integer in Y/A to FAC
 JSR INTFAC
@@ -637,31 +637,31 @@ LINE_260:
 ;
 JSR GOSUB
 JSR LINE_11400
-LDY VAR_O%
-LDA VAR_O%+1
-STY TMP3_ZP
-STA TMP3_ZP+1
 LDY VAR_B%
 LDA VAR_B%+1
-JSR INTSUBVAROPT
-JSR INTCONV
-; SUB VARs + STORE simplified
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
+STA TMP4_REG+1
+STY TMP4_REG
+LDY VAR_O%
+LDA VAR_O%+1
+JSR INTSUBOPT16X
 STY VAR_O%
 STA VAR_O%+1
+; Optimized code for adding/subtracting ints and store in int (3)
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
 ; Optimizer rule: Store and load/3
 ; integer in Y/A to FAC
 JSR INTFAC
@@ -736,31 +736,31 @@ STY VAR_W%
 STA VAR_W%+1
 JSR GOSUB
 JSR LINE_11400
-LDY VAR_O%
-LDA VAR_O%+1
-STY TMP3_ZP
-STA TMP3_ZP+1
 LDY VAR_B%
 LDA VAR_B%+1
-JSR INTSUBVAROPT
-JSR INTCONV
-; SUB VARs + STORE simplified
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
+STA TMP4_REG+1
+STY TMP4_REG
+LDY VAR_O%
+LDA VAR_O%+1
+JSR INTSUBOPT16X
 STY VAR_O%
 STA VAR_O%+1
+; Optimized code for adding/subtracting ints and store in int (3)
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
 ; Optimizer rule: Store and load/3
 ; integer in Y/A to FAC
 JSR INTFAC
@@ -844,31 +844,31 @@ JSR FASTFSUBMEM
 JSR FACINT
 STY VAR_W%
 STA VAR_W%+1
-LDY VAR_O%
-LDA VAR_O%+1
-STY TMP3_ZP
-STA TMP3_ZP+1
 LDY VAR_B%
 LDA VAR_B%+1
-JSR INTADDVAROPT
-JSR INTCONV
-; ADD VARs + STORE simplified
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
+STA TMP4_REG+1
+STY TMP4_REG
+LDY VAR_O%
+LDA VAR_O%+1
+JSR INTADDOPT16X
 STY VAR_O%
 STA VAR_O%+1
+; Optimized code for adding/subtracting ints and store in int (3)
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
 JMP RETURN
 ;
 LINE_900:
@@ -2505,6 +2505,37 @@ JSR CHROUT
 JMP RESETROUTE 	;RTS is implicit
 ;###################################
 ;###################################
+INTSUBOPT16X
+INTSUB16X	TAX
+TYA
+SEC
+SBC TMP4_REG
+STA TMP4_REG
+TXA
+SBC TMP4_REG+1
+STA TMP4_REG+1
+LDY TMP4_REG
+RTS
+;###################################
+;###################################
+INTADD16 	TAX
+TYA
+CLC
+ADC TMP4_REG
+STA TMP4_REG
+TXA
+ADC TMP4_REG+1
+STA TMP4_REG+1
+RTS
+;###################################
+;###################################
+INTADDOPT16X
+INTADD16X	JSR INTADD16
+LDY TMP4_REG
+LDA TMP4_REG+1
+RTS
+;###################################
+;###################################
 ARRAYACCESS_INTEGER_SNX
 STA G_REG
 STY G_REG+1
@@ -2676,53 +2707,6 @@ STA INPUTQUEUEP
 RTS
 ;###################################
 ;###################################
-INTSUBVAROPT
-LDX #0			; Mark as "further int opt possible"
-BEQ INTSUBSUB
-INTSUBVAR	LDX #1
-INTSUBSUB	STX INT_FLAG
-LDX #128		; Do the fast way for positive numbers  below 16384...second var
-STX TMP_REG
-BIT TMP_REG
-BEQ INTSUBVARC2
-JMP FLOATINTSUB
-INTSUBVARC2
-LDX #64
-STX TMP_REG
-BIT TMP_REG
-BEQ INTSUBVARC3
-JMP FLOATINTSUB
-INTSUBVARC3
-PHA
-LDA TMP3_ZP+1
-LDX #128		; Do the fast way for everything positive...first var
-STX TMP_REG
-BIT TMP_REG
-BEQ INTINTSUBVAR2
-PLA
-JMP FLOATINTSUB
-INTINTSUBVAR2
-LDX #1
-STX TMP_FLAG
-TYA
-STA TMP_REG
-PLA
-STA TMP_REG+1
-LDA TMP3_ZP
-SEC
-SBC TMP_REG
-TAY
-LDA TMP3_ZP+1
-SBC TMP_REG+1
-STY TMP2_ZP
-STA TMP2_ZP+1
-LDX INT_FLAG
-BNE INTSUBVAREND
-RTS
-INTSUBVAREND
-JMP INTFAC
-;###################################
-;###################################
 INTADDVAROPT
 LDX #0			; Mark as "further int opt possible"
 BEQ INTADDADD
@@ -2769,19 +2753,6 @@ BNE INTADDVAREND
 RTS
 INTADDVAREND
 JMP INTFAC
-;###################################
-;###################################
-;	A=B-C => TMP3_ZP - LDY/LDA
-FLOATINTSUB	JSR INTFAC
-JSR FACXREG
-LDA #0
-STA TMP_FLAG	; flag that the value isn't present in TMP2_ZP
-LDY TMP3_ZP
-LDA TMP3_ZP+1
-JSR INTFAC
-JSR FACARG
-JSR XREGFAC
-JMP FASTFSUBARG
 ;###################################
 ;###################################
 ;	A=B-C => LDY/LDA - TMP3_ZP
@@ -2833,14 +2804,6 @@ BNE INTSUBEND
 RTS
 INTSUBEND
 JMP INTFAC
-;###################################
-;###################################
-INTCONV		LDA TMP_FLAG	; The INT value is either already present in TMP2_ZP...or not...
-BEQ INTFROMFAC
-LDY TMP2_ZP
-LDA TMP2_ZP+1
-RTS
-INTFROMFAC	JMP FACINT
 ;###################################
 ;###################################
 CLEANINPUT	LDY #0				; Processes an input string similar to BASIC's with the only difference that a " at the "wrong" location will be ignored instead of triggering an error

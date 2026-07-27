@@ -362,31 +362,30 @@ LDA VAR_L%+1
 ; Optimizer rule: INT to FAC, FAC to INT/2
 STY VAR_J%
 STA VAR_J%+1
-LDY VAR_F%
-LDA VAR_F%+1
-STY TMP3_ZP
-STA TMP3_ZP+1
 LDY VAR_L%
 LDA VAR_L%+1
-JSR INTADDVAROPT
-JSR INTCONV
-; ADD VARs + STORE simplified
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
+STA TMP4_REG+1
+STY TMP4_REG
+LDY VAR_F%
+LDA VAR_F%+1
+JSR INTADDOPT16X
 STY VAR_G%
 STA VAR_G%+1
+; Optimized code for adding/subtracting ints and store in int (3)
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+LDY VAR_G%
 ; Value already in Y/A
 ;
 ;
@@ -2466,73 +2465,6 @@ LDY A_REG
 RTS
 ;###################################
 ;###################################
-INTADDVAROPT
-LDX #0			; Mark as "further int opt possible"
-BEQ INTADDADD
-INTADDVAR	LDX #1
-INTADDADD	STX INT_FLAG
-LDX #128		; Do the fast way for negative numbers and everything below 16384...first var
-STX TMP_REG		; Note to self: What I call first here, is actually the second variable and what I call
-BIT TMP_REG		; second is the first. Because this is an addition, it doesn't really matter unless people
-BNE INTADDVARC2	; tend to use smaller values more on the right side, which I simply don't know...
-LDX #64
-STX TMP_REG
-BIT TMP_REG
-BEQ INTADDVARC2
-JMP FLOATINTADD
-INTADDVARC2
-PHA
-LDA TMP3_ZP+1
-LDX #128		; Do the fast way for everything below 16384 but positive...second var
-STX TMP_REG		; If var is negative, and var2 isn't, this could always be done, but we are ignoring
-BIT TMP_REG		; this here for now to simplify the check...
-BEQ INTADDVARC3
-PLA
-JMP FLOATINTADD
-INTADDVARC3
-LDX #64
-STX TMP_REG
-BIT TMP_REG
-BEQ INTINTADDVAR2
-PLA
-JMP FLOATINTADD
-INTINTADDVAR2
-LDX #1
-STX TMP_FLAG
-TYA
-CLC
-ADC TMP3_ZP
-TAY
-PLA
-ADC TMP3_ZP+1
-STY TMP2_ZP
-STA TMP2_ZP+1
-LDX INT_FLAG
-BNE INTADDVAREND
-RTS
-INTADDVAREND
-JMP INTFAC
-;###################################
-;###################################
-FLOATINTADD	JSR INTFAC
-JSR FACXREG
-LDA #0
-STA TMP_FLAG	; flag that the value isn't present in TMP2_ZP
-LDY TMP3_ZP
-LDA TMP3_ZP+1
-JSR INTFAC
-JSR XREGARG
-JMP FASTFADDARG
-;###################################
-;###################################
-INTCONV		LDA TMP_FLAG	; The INT value is either already present in TMP2_ZP...or not...
-BEQ INTFROMFAC
-LDY TMP2_ZP
-LDA TMP2_ZP+1
-RTS
-INTFROMFAC	JMP FACINT
-;###################################
-;###################################
 READINIT	LDA DATASP
 STA TMP3_ZP
 LDA DATASP+1
@@ -3019,25 +2951,6 @@ LDA X_REG
 STA FACEXP
 LDA #0
 STA FACOV
-RTS
-;###################################
-;###################################
-XREGARG		LDA X_REG+4
-STA ARGLO
-LDA X_REG+3
-STA ARGMO
-LDA X_REG+2
-STA ARGMOH
-LDA X_REG+1
-STA ARGSGN
-EOR FACSGN
-STA ARISGN
-LDA ARGSGN
-ORA #$80
-STA ARGHO
-LDA X_REG
-STA ARGEXP
-LDA FACEXP
 RTS
 ;###################################
 ;###################################

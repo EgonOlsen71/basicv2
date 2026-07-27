@@ -371,6 +371,33 @@ public class IntOptimizer {
 					}
 				}));
 
+		// int+-int into int(3)
+		intPatterns.add(new IntPattern(true, "Optimized code for adding/subtracting ints and store in int (3)",
+				new String[] { "LDY {*}", "LDA {*}", "STY TMP3_ZP", "STA TMP3_ZP+1", "LDY {*}", "LDA {*}",
+						"JSR {*}", "JSR FACINT", "STY {*}", "STA {*}" },
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						String func2 = cleaned.get(6);
+						String func = cleaned.get(8);
+						if (func.contains("%") && (func2.contains("INTADD") || func2.contains("INTSUB"))) {
+							List<String> rep = new ArrayList<>();
+							rep.add(cleaned.get(4));
+							rep.add(cleaned.get(5));
+							rep.add("STA TMP4_REG+1");
+							rep.add("STY TMP4_REG");
+							rep.add(cleaned.get(0));
+							rep.add(cleaned.get(1));
+							rep.add(func2.replace("VAR", "")+"16X");
+							rep.add(cleaned.get(8));
+							rep.add(cleaned.get(9));
+							return combine(pattern, rep);
+						}
+						pattern.reset();
+						return input;
+					}
+				}));
 
 		/*
 		// Actually slower in my test case...!?

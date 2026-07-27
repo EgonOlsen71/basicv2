@@ -2943,31 +2943,31 @@ JMP LINE_SKIP49
 ;
 LINE_NSKIP49:
 ;
-LDY VAR_A%
-LDA VAR_A%+1
-STY TMP3_ZP
-STA TMP3_ZP+1
 LDY VAR_V%
 LDA VAR_V%+1
-JSR INTSUBVAROPT
-JSR INTCONV
-; SUB VARs + STORE simplified
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
+STA TMP4_REG+1
+STY TMP4_REG
+LDY VAR_A%
+LDA VAR_A%+1
+JSR INTSUBOPT16X
 STY VAR_A%
 STA VAR_A%+1
+; Optimized code for adding/subtracting ints and store in int (3)
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
 JMP LINE_50050
 ;
 LINE_SKIP49:
@@ -3006,31 +3006,31 @@ JMP LINE_SKIP50
 ;
 LINE_NSKIP50:
 ;
-LDY VAR_O%
-LDA VAR_O%+1
-STY TMP3_ZP
-STA TMP3_ZP+1
 LDY VAR_V%
 LDA VAR_V%+1
-JSR INTADDVAROPT
-JSR INTCONV
-; ADD VARs + STORE simplified
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
+STA TMP4_REG+1
+STY TMP4_REG
+LDY VAR_O%
+LDA VAR_O%+1
+JSR INTADDOPT16X
 STY VAR_O%
 STA VAR_O%+1
+; Optimized code for adding/subtracting ints and store in int (3)
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
 ;
 LINE_SKIP50:
 ;
@@ -4936,114 +4936,6 @@ ADC TMP_ZP+1
 RTS
 ;###################################
 ;###################################
-INTSUBVAROPT
-LDX #0			; Mark as "further int opt possible"
-BEQ INTSUBSUB
-INTSUBVAR	LDX #1
-INTSUBSUB	STX INT_FLAG
-LDX #128		; Do the fast way for positive numbers  below 16384...second var
-STX TMP_REG
-BIT TMP_REG
-BEQ INTSUBVARC2
-JMP FLOATINTSUB
-INTSUBVARC2
-LDX #64
-STX TMP_REG
-BIT TMP_REG
-BEQ INTSUBVARC3
-JMP FLOATINTSUB
-INTSUBVARC3
-PHA
-LDA TMP3_ZP+1
-LDX #128		; Do the fast way for everything positive...first var
-STX TMP_REG
-BIT TMP_REG
-BEQ INTINTSUBVAR2
-PLA
-JMP FLOATINTSUB
-INTINTSUBVAR2
-LDX #1
-STX TMP_FLAG
-TYA
-STA TMP_REG
-PLA
-STA TMP_REG+1
-LDA TMP3_ZP
-SEC
-SBC TMP_REG
-TAY
-LDA TMP3_ZP+1
-SBC TMP_REG+1
-STY TMP2_ZP
-STA TMP2_ZP+1
-LDX INT_FLAG
-BNE INTSUBVAREND
-RTS
-INTSUBVAREND
-JMP INTFAC
-;###################################
-;###################################
-INTADDVAROPT
-LDX #0			; Mark as "further int opt possible"
-BEQ INTADDADD
-INTADDVAR	LDX #1
-INTADDADD	STX INT_FLAG
-LDX #128		; Do the fast way for negative numbers and everything below 16384...first var
-STX TMP_REG		; Note to self: What I call first here, is actually the second variable and what I call
-BIT TMP_REG		; second is the first. Because this is an addition, it doesn't really matter unless people
-BNE INTADDVARC2	; tend to use smaller values more on the right side, which I simply don't know...
-LDX #64
-STX TMP_REG
-BIT TMP_REG
-BEQ INTADDVARC2
-JMP FLOATINTADD
-INTADDVARC2
-PHA
-LDA TMP3_ZP+1
-LDX #128		; Do the fast way for everything below 16384 but positive...second var
-STX TMP_REG		; If var is negative, and var2 isn't, this could always be done, but we are ignoring
-BIT TMP_REG		; this here for now to simplify the check...
-BEQ INTADDVARC3
-PLA
-JMP FLOATINTADD
-INTADDVARC3
-LDX #64
-STX TMP_REG
-BIT TMP_REG
-BEQ INTINTADDVAR2
-PLA
-JMP FLOATINTADD
-INTINTADDVAR2
-LDX #1
-STX TMP_FLAG
-TYA
-CLC
-ADC TMP3_ZP
-TAY
-PLA
-ADC TMP3_ZP+1
-STY TMP2_ZP
-STA TMP2_ZP+1
-LDX INT_FLAG
-BNE INTADDVAREND
-RTS
-INTADDVAREND
-JMP INTFAC
-;###################################
-;###################################
-;	A=B-C => TMP3_ZP - LDY/LDA
-FLOATINTSUB	JSR INTFAC
-JSR FACXREG
-LDA #0
-STA TMP_FLAG	; flag that the value isn't present in TMP2_ZP
-LDY TMP3_ZP
-LDA TMP3_ZP+1
-JSR INTFAC
-JSR FACARG
-JSR XREGFAC
-JMP FASTFSUBARG
-;###################################
-;###################################
 ;	A=B-C => LDY/LDA - TMP3_ZP
 FLOATINTSUBSW
 JSR INTFAC
@@ -5124,14 +5016,6 @@ BNE INTSUBEND
 RTS
 INTSUBEND
 JMP INTFAC
-;###################################
-;###################################
-INTCONV		LDA TMP_FLAG	; The INT value is either already present in TMP2_ZP...or not...
-BEQ INTFROMFAC
-LDY TMP2_ZP
-LDA TMP2_ZP+1
-RTS
-INTFROMFAC	JMP FACINT
 ;###################################
 ;###################################
 GETADOLLAR	JSR GETSTR		; Saves memory in the common GET A$ case...
