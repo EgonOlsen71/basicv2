@@ -149,7 +149,7 @@ public class Machine {
 	 */
 	public String translate(String name) {
 		String nname = VarUtils.toUpper(name).trim();
-		if (!isSystemVariable(nname) && !nname.contains("%") && !nname.contains("$")
+		if (!nname.isEmpty() && !isSystemVariable(nname) && !nname.contains("%") && !nname.contains("$")
 				&& (forcedIntegers.contains(nname) || forcedIntegers.contains("ALL!"))
 				&& !nname.contains("_FI_")) {
 			String ret = "_FI_"+nname;
