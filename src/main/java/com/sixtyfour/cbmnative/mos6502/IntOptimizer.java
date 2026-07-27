@@ -208,7 +208,36 @@ public class IntOptimizer {
 						return input;
 					}
 				}));
-		
+
+		// <const>-intvar - Variant 2
+		intPatterns.add(new IntPattern(true, "Optimized code for subtracting INTs (2)",
+				new String[] { "LDY {*}", "LDA {*}", "JSR INTFAC", "LDA #<{CONST0}", "LDY #>{CONST0}",
+						"JSR COPY2_XYA_XREG", "LDA #<X_REG", "LDY #>X_REG", "JSR FASTFSUBMEM" },
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						String consty = cleaned.get(3);
+						consty = consty.substring(consty.indexOf("<") + 1).trim();
+						Number num = const2Value.get(consty);
+						double numd = num.doubleValue();
+						if (numd == (int) numd) {
+							String numHex = getHex(numd);
+							List<String> rep = new ArrayList<>();
+							rep.add(cleaned.get(0));
+							rep.add(cleaned.get(1));
+							rep.add("STY TMP3_ZP");
+							rep.add("STA TMP3_ZP+1");
+							rep.add("LDA #$" + numHex.substring(0, 2));
+							rep.add("LDY #$" + numHex.substring(2));
+							rep.add("JSR INTSUB");
+							return combine(pattern, rep);
+						}
+						pattern.reset();
+						return input;
+					}
+				}));
+
 		// intvar-<const> - Variant 1
 		intPatterns.add(new IntPattern(true, "Optimized code for subtracting INTs (1)",
 				new String[] { "LDA #<{CONST0}", "LDY #>{CONST0}", "JSR COPY2_XYA_YREG", "LDY {*}", "LDA {*}", "JSR INTFAC", "JSR FACXREG", "JSR YREGFAC", "LDA #<X_REG", "LDY #>X_REG", "JSR FASTFSUBMEM" },
@@ -1747,8 +1776,8 @@ public class IntOptimizer {
 					}
 				}));
 
-		if (pass==2) {
-			// faster integer print, only applicable on pass 2, because it interferes with some other optimization in pass 1
+		if (pass==3) {
+			// faster integer print, only applicable on pass 3, because otherwise, it interferes with some other optimizations in pass 1 and 2
 			intPatterns.add(new IntPattern(true, "Fast integer print(1)",
 					new String[]{"STY {MEM0}", "STA {MEM0}", "NOP", "JSR INTFAC", "JSR FACXREG", "JSR INTOUT{*}"},
 					new AbstractCodeModifier() {

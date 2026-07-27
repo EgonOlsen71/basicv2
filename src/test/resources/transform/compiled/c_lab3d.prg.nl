@@ -3895,16 +3895,16 @@ LINE_15030:
 ;
 LDY VAR_IQ%
 LDA VAR_IQ%+1
-JSR INTFAC
-LDA #<CONST_54R
-LDY #>CONST_54R
-JSR COPY2_XYA_XREG
-; Optimizer rule: Omit Y_REG/6
-; Optimizer rule: Y_REG 2 FAC(1)/1
-LDA #<X_REG
-LDY #>X_REG
-; Real in (A/Y) to ARG
-JSR FASTFSUBMEM
+STY TMP3_ZP
+STA TMP3_ZP+1
+LDA #$00
+LDY #$15
+JSR INTSUB
+; Optimized code for subtracting INTs (2)
+;
+;
+;
+;
 ; Optimizer rule: Fast FSUB (MEM)/1
 ; Optimizer rule: Combine load and sub/1
 JSR FACXREG
@@ -4082,16 +4082,16 @@ LINE_16030:
 ;
 LDY VAR_IQ%
 LDA VAR_IQ%+1
-JSR INTFAC
-LDA #<CONST_55R
-LDY #>CONST_55R
-JSR COPY2_XYA_XREG
-; Optimizer rule: Omit Y_REG/6
-; Optimizer rule: Y_REG 2 FAC(1)/1
-LDA #<X_REG
-LDY #>X_REG
-; Real in (A/Y) to ARG
-JSR FASTFSUBMEM
+STY TMP3_ZP
+STA TMP3_ZP+1
+LDA #$00
+LDY #$13
+JSR INTSUB
+; Optimized code for subtracting INTs (2)
+;
+;
+;
+;
 ; Optimizer rule: Fast FSUB (MEM)/1
 ; Optimizer rule: Combine load and sub/1
 JSR FACXREG
@@ -6626,6 +6626,19 @@ JSR XREGFAC
 JMP FASTFSUBARG
 ;###################################
 ;###################################
+;	A=B-C => LDY/LDA - TMP3_ZP
+FLOATINTSUBSW
+JSR INTFAC
+JSR FACXREG
+LDA #0
+STA TMP_FLAG	; flag that the value isn't present in TMP2_ZP
+LDY TMP3_ZP
+LDA TMP3_ZP+1
+JSR INTFAC
+JSR XREGARG
+JMP FASTFSUBARG
+;###################################
+;###################################
 FLOATINTADD	JSR INTFAC
 JSR FACXREG
 LDA #0
@@ -6665,6 +6678,33 @@ LDX INT_FLAG
 BNE INTADDEND
 RTS
 INTADDEND
+JMP INTFAC
+;###################################
+;###################################
+INTSUBOPT	LDX #0			; Mark as "further int opt possible"
+BEQ INTSUBSUB2
+INTSUB		LDX #1
+INTSUBSUB2	STX INT_FLAG
+LDX #128		; Do the fast way for positive numbers
+STX TMP_REG
+BIT TMP_REG
+BEQ INTINTSUB
+JMP FLOATINTSUBSW
+INTINTSUB	LDX #1			; flag that the value is present in TMP2_ZP
+STX TMP_FLAG
+PHA
+TYA
+SEC
+SBC TMP3_ZP
+TAY
+PLA
+SBC TMP3_ZP+1
+STY TMP2_ZP
+STA TMP2_ZP+1
+LDX INT_FLAG
+BNE INTSUBEND
+RTS
+INTSUBEND
 JMP INTFAC
 ;###################################
 ;###################################
@@ -8002,10 +8042,10 @@ CONST_52	.REAL 54299
 
 ; CONST: #21
 
-CONST_54R	.REAL 21.0
+
 ; CONST: #19
 
-CONST_55R	.REAL 19.0
+
 ; CONST: #34
 
 

@@ -68,5 +68,6 @@
 #23: Remove A_REG+1 access
 "Remove A_REG+1 access"	false	false	false	"LDY {CONST0}|LDA {CONST0}|STY A_REG|STA A_REG+1|JSR {*}|JSR SHL"	"{LINE0}|{LINE2}|{LINE4}|{LINE5}"
 
-
+#24: Reverse register loading
+"Reverse register loading"	false	false	false	"LDY {MEM0}|LDA {MEM0}|JSR INTFAC|JSR FACXREG|LDY {*}|STY A_REG|JSR SHL|JSR FACYREG|LDY {MEM1}|LDA {MEM1}|JSR INTFAC|JSR FACXREG|JSR YREGFAC"	"{LINE8}|{LINE9}|{LINE10}|{LINE11}|{LINE0}|{LINE1}|{LINE2}|{LINE4}|{LINE5}|{LINE6}"
 

@@ -773,21 +773,21 @@ LINE_6000:
 ;
 LDY VAR_EP%
 LDA VAR_EP%+1
-JSR INTFAC
-LDA #<CONST_21R
-LDY #>CONST_21R
-JSR COPY2_XYA_XREG
-; Optimizer rule: Omit Y_REG/6
-; Optimizer rule: Y_REG 2 FAC(1)/1
-LDA #<X_REG
-LDY #>X_REG
-; Real in (A/Y) to ARG
-JSR FASTFSUBMEM
-; Optimizer rule: Fast FSUB (MEM)/1
-; Optimizer rule: Combine load and sub/1
-; Optimizer rule: FAC into REG?, REG? into FAC/0
-; FAC to integer in Y/A
-JSR FACINT
+STY TMP3_ZP
+STA TMP3_ZP+1
+LDA #$00
+LDY #$07
+JSR INTSUBOPT
+JSR INTCONV
+; Optimized conversion of ints (2)
+;
+;
+;
+;
+;
+;
+;
+;
 STY VAR_BP%
 STA VAR_BP%+1
 ;
@@ -3368,16 +3368,16 @@ LINE_51050:
 ;
 LDY VAR_V%
 LDA VAR_V%+1
-JSR INTFAC
-LDA #<CONST_59R
-LDY #>CONST_59R
-JSR COPY2_XYA_XREG
-; Optimizer rule: Omit Y_REG/6
-; Optimizer rule: Y_REG 2 FAC(1)/1
-LDA #<X_REG
-LDY #>X_REG
-; Real in (A/Y) to ARG
-JSR FASTFSUBMEM
+STY TMP3_ZP
+STA TMP3_ZP+1
+LDA #$00
+LDY #$ff
+JSR INTSUB
+; Optimized code for subtracting INTs (2)
+;
+;
+;
+;
 ; Optimizer rule: Fast FSUB (MEM)/1
 ; Optimizer rule: Combine load and sub/1
 ; Optimizer rule: FAC into REG?, REG? into FAC/0
@@ -6529,7 +6529,7 @@ CONST_56	.REAL 54272
 
 ; CONST: #255
 
-CONST_59R	.REAL 255.0
+
 ;###############################
 ; ******** DATA ********
 DATAS

@@ -3160,21 +3160,21 @@ STY 54296
 ; Optimizer rule: Remove unneeded LDA calls(1)/2
 LDY VAR__FI_SN%
 LDA VAR__FI_SN%+1
-JSR INTFAC
-LDA #<CONST_38R
-LDY #>CONST_38R
-JSR COPY2_XYA_XREG
-; Optimizer rule: Omit Y_REG/6
-; Optimizer rule: Y_REG 2 FAC(1)/1
-LDA #<X_REG
-LDY #>X_REG
-; Real in (A/Y) to ARG
-JSR FASTFSUBMEM
-; Optimizer rule: Fast FSUB (MEM)/1
-; Optimizer rule: Combine load and sub/1
-; Optimizer rule: FAC into REG?, REG? into FAC/0
-; FAC to integer in Y/A
-JSR FACINT
+STY TMP3_ZP
+STA TMP3_ZP+1
+LDA #$00
+LDY #$0f
+JSR INTSUBOPT
+JSR INTCONV
+; Optimized conversion of ints (2)
+;
+;
+;
+;
+;
+;
+;
+;
 STY VAR__FI_SN%
 STA VAR__FI_SN%+1
 JMP RETURN
@@ -6908,6 +6908,19 @@ INTADDVAREND
 JMP INTFAC
 ;###################################
 ;###################################
+;	A=B-C => LDY/LDA - TMP3_ZP
+FLOATINTSUBSW
+JSR INTFAC
+JSR FACXREG
+LDA #0
+STA TMP_FLAG	; flag that the value isn't present in TMP2_ZP
+LDY TMP3_ZP
+LDA TMP3_ZP+1
+JSR INTFAC
+JSR XREGARG
+JMP FASTFSUBARG
+;###################################
+;###################################
 FLOATINTADD	JSR INTFAC
 JSR FACXREG
 LDA #0
@@ -6917,6 +6930,33 @@ LDA TMP3_ZP+1
 JSR INTFAC
 JSR XREGARG
 JMP FASTFADDARG
+;###################################
+;###################################
+INTSUBOPT	LDX #0			; Mark as "further int opt possible"
+BEQ INTSUBSUB2
+INTSUB		LDX #1
+INTSUBSUB2	STX INT_FLAG
+LDX #128		; Do the fast way for positive numbers
+STX TMP_REG
+BIT TMP_REG
+BEQ INTINTSUB
+JMP FLOATINTSUBSW
+INTINTSUB	LDX #1			; flag that the value is present in TMP2_ZP
+STX TMP_FLAG
+PHA
+TYA
+SEC
+SBC TMP3_ZP
+TAY
+PLA
+SBC TMP3_ZP+1
+STY TMP2_ZP
+STA TMP2_ZP+1
+LDX INT_FLAG
+BNE INTSUBEND
+RTS
+INTSUBEND
+JMP INTFAC
 ;###################################
 ;###################################
 INTCONV		LDA TMP_FLAG	; The INT value is either already present in TMP2_ZP...or not...
@@ -8711,7 +8751,7 @@ CONST_34R	.REAL 40.0
 CONST_37R	.REAL 25.0
 ; CONST: #15
 
-CONST_38R	.REAL 15.0
+
 ; CONST: #1000
 
 CONST_39R	.REAL 1000.0
