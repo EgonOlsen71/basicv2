@@ -267,23 +267,23 @@ LINE_4:
 ;
 LDY VAR_C%
 LDA VAR_C%+1
-STY TMP3_ZP
-STA TMP3_ZP+1
+STA TMP4_REG+1
+STY TMP4_REG
 LDA #$00
 LDY #$c0
-JSR INTSUBOPT
-JSR INTCONV
-; Optimized conversion of ints (2)
-;
-;
-;
-;
-;
-;
-;
-;
+JSR INTSUBOPT16X
 STY VAR_C%
 STA VAR_C%+1
+; Optimized code for adding/subtracting ints and store in int (2)
+;
+;
+;
+;
+;
+;
+;
+;
+;
 LDY #0
 TYA
 ; Optimizer rule: INT to FAC, FAC to INT/2
@@ -301,7 +301,7 @@ LDA VAR_A%+1
 JSR INTADDOPT16X
 STY VAR_B%
 STA VAR_B%+1
-; Optimized code for adding/subtracting ints and store in int
+; Optimized code for adding/subtracting ints and store in int (1)
 ;
 ;
 ;
@@ -685,9 +685,22 @@ STY DATASP+1
 RTS
 ;###################################
 ;###################################
-INTADD16 	CLC
-TAX
+INTSUBOPT16X
+INTSUB16X	TAX
 TYA
+SEC
+SBC TMP4_REG
+STA TMP4_REG
+TXA
+SBC TMP4_REG+1
+STA TMP4_REG+1
+LDY TMP4_REG
+RTS
+;###################################
+;###################################
+INTADD16 	TAX
+TYA
+CLC
 ADC TMP4_REG
 STA TMP4_REG
 TXA
@@ -821,19 +834,6 @@ INTADDVAREND
 JMP INTFAC
 ;###################################
 ;###################################
-;	A=B-C => LDY/LDA - TMP3_ZP
-FLOATINTSUBSW
-JSR INTFAC
-JSR FACXREG
-LDA #0
-STA TMP_FLAG	; flag that the value isn't present in TMP2_ZP
-LDY TMP3_ZP
-LDA TMP3_ZP+1
-JSR INTFAC
-JSR XREGARG
-JMP FASTFSUBARG
-;###################################
-;###################################
 FLOATINTADD	JSR INTFAC
 JSR FACXREG
 LDA #0
@@ -843,33 +843,6 @@ LDA TMP3_ZP+1
 JSR INTFAC
 JSR XREGARG
 JMP FASTFADDARG
-;###################################
-;###################################
-INTSUBOPT	LDX #0			; Mark as "further int opt possible"
-BEQ INTSUBSUB2
-INTSUB		LDX #1
-INTSUBSUB2	STX INT_FLAG
-LDX #128		; Do the fast way for positive numbers
-STX TMP_REG
-BIT TMP_REG
-BEQ INTINTSUB
-JMP FLOATINTSUBSW
-INTINTSUB	LDX #1			; flag that the value is present in TMP2_ZP
-STX TMP_FLAG
-PHA
-TYA
-SEC
-SBC TMP3_ZP
-TAY
-PLA
-SBC TMP3_ZP+1
-STY TMP2_ZP
-STA TMP2_ZP+1
-LDX INT_FLAG
-BNE INTSUBEND
-RTS
-INTSUBEND
-JMP INTFAC
 ;###################################
 ;###################################
 INTCONV		LDA TMP_FLAG	; The INT value is either already present in TMP2_ZP...or not...
@@ -1141,18 +1114,6 @@ STA $0315
 CLI
 RTS
 </IF>
-;###################################
-;###################################
-FASTFSUBMEM
-JSR MEMARG
-FASTFSUBARG
-LDA FACSGN
-EOR #$FF
-STA FACSGN
-EOR ARGSGN
-STA ARISGN
-LDA FACEXP
-JMP FASTFADDARG
 ;###################################
 ;###################################
 FASTFADDMEM

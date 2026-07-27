@@ -4670,9 +4670,9 @@ JSR CHROUT
 JMP RESETROUTE 	;RTS is implicit
 ;###################################
 ;###################################
-INTADD16 	CLC
-TAX
+INTADD16 	TAX
 TYA
+CLC
 ADC TMP4_REG
 STA TMP4_REG
 TXA

@@ -1211,7 +1211,7 @@ LDA VAR_D%+1
 JSR INTADDOPT16X
 STY VAR_D%
 STA VAR_D%+1
-; Optimized code for adding/subtracting ints and store in int
+; Optimized code for adding/subtracting ints and store in int (1)
 ;
 ;
 ;
@@ -1263,7 +1263,7 @@ LDA VAR_D%+1
 JSR INTSUBOPT16X
 STY VAR_D%
 STA VAR_D%+1
-; Optimized code for adding/subtracting ints and store in int
+; Optimized code for adding/subtracting ints and store in int (1)
 ;
 ;
 ;
@@ -8460,9 +8460,9 @@ JMP RESETROUTE 	;RTS is implicit
 ;###################################
 ;###################################
 INTSUBOPT16X
-INTSUB16X	SEC
-TAX
+INTSUB16X	TAX
 TYA
+SEC
 SBC TMP4_REG
 STA TMP4_REG
 TXA
@@ -8472,9 +8472,9 @@ LDY TMP4_REG
 RTS
 ;###################################
 ;###################################
-INTADD16 	CLC
-TAX
+INTADD16 	TAX
 TYA
+CLC
 ADC TMP4_REG
 STA TMP4_REG
 TXA

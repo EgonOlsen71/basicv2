@@ -413,7 +413,7 @@ LDA VAR_G%+1
 JSR INTADDOPT16X
 STY VAR_G%
 STA VAR_G%+1
-; Optimized code for adding/subtracting ints and store in int
+; Optimized code for adding/subtracting ints and store in int (1)
 ;
 ;
 ;
@@ -616,7 +616,7 @@ LDA VAR_I%+1
 JSR INTADDOPT16X
 STY VAR_X%
 STA VAR_X%+1
-; Optimized code for adding/subtracting ints and store in int
+; Optimized code for adding/subtracting ints and store in int (1)
 ;
 ;
 ;
@@ -635,7 +635,7 @@ LDA VAR_J%+1
 JSR INTADDOPT16X
 STY VAR_Y%
 STA VAR_Y%+1
-; Optimized code for adding/subtracting ints and store in int
+; Optimized code for adding/subtracting ints and store in int (1)
 ;
 ;
 ;
@@ -2087,9 +2087,9 @@ TXA
 RTS
 ;###################################
 ;###################################
-INTADD16 	CLC
-TAX
+INTADD16 	TAX
 TYA
+CLC
 ADC TMP4_REG
 STA TMP4_REG
 TXA

@@ -284,7 +284,7 @@ LDA VAR_SL%+1
 JSR INTADDOPT16X
 STY VAR_SL%
 STA VAR_SL%+1
-; Optimized code for adding/subtracting ints and store in int
+; Optimized code for adding/subtracting ints and store in int (1)
 ;
 ;
 ;
@@ -446,7 +446,7 @@ LDA VAR_AD%+1
 JSR INTSUBOPT16X
 STY VAR_AD%
 STA VAR_AD%+1
-; Optimized code for adding/subtracting ints and store in int
+; Optimized code for adding/subtracting ints and store in int (1)
 ;
 ;
 ;
@@ -561,7 +561,7 @@ LDA VAR_AD%+1
 JSR INTADDOPT16X
 STY VAR_AD%
 STA VAR_AD%+1
-; Optimized code for adding/subtracting ints and store in int
+; Optimized code for adding/subtracting ints and store in int (1)
 ;
 ;
 ;
@@ -676,7 +676,7 @@ LDA VAR_AD%+1
 JSR INTSUBOPT16X
 STY VAR_AD%
 STA VAR_AD%+1
-; Optimized code for adding/subtracting ints and store in int
+; Optimized code for adding/subtracting ints and store in int (1)
 ;
 ;
 ;
@@ -857,7 +857,7 @@ LDA VAR_SH%+1
 JSR INTADDOPT16X
 STY VAR_SH%
 STA VAR_SH%+1
-; Optimized code for adding/subtracting ints and store in int
+; Optimized code for adding/subtracting ints and store in int (1)
 ;
 ;
 ;
@@ -2018,9 +2018,9 @@ JMP RESETROUTE
 ;###################################
 ;###################################
 INTSUBOPT16X
-INTSUB16X	SEC
-TAX
+INTSUB16X	TAX
 TYA
+SEC
 SBC TMP4_REG
 STA TMP4_REG
 TXA
@@ -2030,9 +2030,9 @@ LDY TMP4_REG
 RTS
 ;###################################
 ;###################################
-INTADD16 	CLC
-TAX
+INTADD16 	TAX
 TYA
+CLC
 ADC TMP4_REG
 STA TMP4_REG
 TXA

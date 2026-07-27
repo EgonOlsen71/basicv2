@@ -2056,23 +2056,23 @@ STY 54296
 ; Optimizer rule: Remove unneeded LDA calls(1)/2
 LDY VAR__FI_SO%
 LDA VAR__FI_SO%+1
-STY TMP3_ZP
-STA TMP3_ZP+1
+STA TMP4_REG+1
+STY TMP4_REG
 LDA #$00
 LDY #$0f
-JSR INTSUBOPT
-JSR INTCONV
-; Optimized conversion of ints (2)
-;
-;
-;
-;
-;
-;
-;
-;
+JSR INTSUBOPT16X
 STY VAR__FI_SO%
 STA VAR__FI_SO%+1
+; Optimized code for adding/subtracting ints and store in int (2)
+;
+;
+;
+;
+;
+;
+;
+;
+;
 ;
 LINE_6530:
 ;
@@ -2577,7 +2577,7 @@ LDA VAR__FI_IE%+1
 JSR INTADDOPT16X
 STY VAR__FI_IE%
 STA VAR__FI_IE%+1
-; Optimized code for adding/subtracting ints and store in int
+; Optimized code for adding/subtracting ints and store in int (1)
 ;
 ;
 ;
@@ -4342,9 +4342,22 @@ STA A_REG+1
 RTS
 ;###################################
 ;###################################
-INTADD16 	CLC
-TAX
+INTSUBOPT16X
+INTSUB16X	TAX
 TYA
+SEC
+SBC TMP4_REG
+STA TMP4_REG
+TXA
+SBC TMP4_REG+1
+STA TMP4_REG+1
+LDY TMP4_REG
+RTS
+;###################################
+;###################################
+INTADD16 	TAX
+TYA
+CLC
 ADC TMP4_REG
 STA TMP4_REG
 TXA
@@ -4806,54 +4819,6 @@ TAY
 TXA
 ADC TMP_ZP+1
 RTS
-;###################################
-;###################################
-;	A=B-C => LDY/LDA - TMP3_ZP
-FLOATINTSUBSW
-JSR INTFAC
-JSR FACXREG
-LDA #0
-STA TMP_FLAG	; flag that the value isn't present in TMP2_ZP
-LDY TMP3_ZP
-LDA TMP3_ZP+1
-JSR INTFAC
-JSR XREGARG
-JMP FASTFSUBARG
-;###################################
-;###################################
-INTSUBOPT	LDX #0			; Mark as "further int opt possible"
-BEQ INTSUBSUB2
-INTSUB		LDX #1
-INTSUBSUB2	STX INT_FLAG
-LDX #128		; Do the fast way for positive numbers
-STX TMP_REG
-BIT TMP_REG
-BEQ INTINTSUB
-JMP FLOATINTSUBSW
-INTINTSUB	LDX #1			; flag that the value is present in TMP2_ZP
-STX TMP_FLAG
-PHA
-TYA
-SEC
-SBC TMP3_ZP
-TAY
-PLA
-SBC TMP3_ZP+1
-STY TMP2_ZP
-STA TMP2_ZP+1
-LDX INT_FLAG
-BNE INTSUBEND
-RTS
-INTSUBEND
-JMP INTFAC
-;###################################
-;###################################
-INTCONV		LDA TMP_FLAG	; The INT value is either already present in TMP2_ZP...or not...
-BEQ INTFROMFAC
-LDY TMP2_ZP
-LDA TMP2_ZP+1
-RTS
-INTFROMFAC	JMP FACINT
 ;###################################
 ;###################################
 GETADOLLAR	JSR GETSTR		; Saves memory in the common GET A$ case...

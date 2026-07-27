@@ -474,7 +474,7 @@ LDA VAR_EP%+1
 JSR INTADDOPT16X
 STY VAR_EP%
 STA VAR_EP%+1
-; Optimized code for adding/subtracting ints and store in int
+; Optimized code for adding/subtracting ints and store in int (1)
 ;
 ;
 ;
@@ -537,7 +537,7 @@ LDA VAR_EP%+1
 JSR INTSUBOPT16X
 STY VAR_EP%
 STA VAR_EP%+1
-; Optimized code for adding/subtracting ints and store in int
+; Optimized code for adding/subtracting ints and store in int (1)
 ;
 ;
 ;
@@ -602,7 +602,7 @@ LDA VAR_EP%+1
 JSR INTADDOPT16X
 STY VAR_EP%
 STA VAR_EP%+1
-; Optimized code for adding/subtracting ints and store in int
+; Optimized code for adding/subtracting ints and store in int (1)
 ;
 ;
 ;
@@ -665,7 +665,7 @@ LDA VAR_EP%+1
 JSR INTSUBOPT16X
 STY VAR_EP%
 STA VAR_EP%+1
-; Optimized code for adding/subtracting ints and store in int
+; Optimized code for adding/subtracting ints and store in int (1)
 ;
 ;
 ;
@@ -773,23 +773,23 @@ LINE_6000:
 ;
 LDY VAR_EP%
 LDA VAR_EP%+1
-STY TMP3_ZP
-STA TMP3_ZP+1
+STA TMP4_REG+1
+STY TMP4_REG
 LDA #$00
 LDY #$07
-JSR INTSUBOPT
-JSR INTCONV
-; Optimized conversion of ints (2)
-;
-;
-;
-;
-;
-;
-;
-;
+JSR INTSUBOPT16X
 STY VAR_BP%
 STA VAR_BP%+1
+; Optimized code for adding/subtracting ints and store in int (2)
+;
+;
+;
+;
+;
+;
+;
+;
+;
 ;
 LINE_6010:
 ;
@@ -2720,7 +2720,7 @@ LDA VAR_X%+1
 JSR INTADDOPT16X
 STY VAR_X%
 STA VAR_X%+1
-; Optimized code for adding/subtracting ints and store in int
+; Optimized code for adding/subtracting ints and store in int (1)
 ;
 ;
 ;
@@ -2782,7 +2782,7 @@ LDA VAR_Y%+1
 JSR INTADDOPT16X
 STY VAR_Y%
 STA VAR_Y%+1
-; Optimized code for adding/subtracting ints and store in int
+; Optimized code for adding/subtracting ints and store in int (1)
 ;
 ;
 ;
@@ -4421,9 +4421,9 @@ RTS
 ;###################################
 ;###################################
 INTSUBOPT16X
-INTSUB16X	SEC
-TAX
+INTSUB16X	TAX
 TYA
+SEC
 SBC TMP4_REG
 STA TMP4_REG
 TXA
@@ -4433,9 +4433,9 @@ LDY TMP4_REG
 RTS
 ;###################################
 ;###################################
-INTADD16 	CLC
-TAX
+INTADD16 	TAX
 TYA
+CLC
 ADC TMP4_REG
 STA TMP4_REG
 TXA

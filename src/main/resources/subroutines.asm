@@ -1811,9 +1811,9 @@ ARRAYACCESS_INTEGER_INT_SI
 			RTS
 ;###################################
 INTSUBOPT16X
-INTSUB16X	SEC
-			TAX
+INTSUB16X	TAX
 			TYA
+			SEC
       		SBC TMP4_REG
       		STA TMP4_REG
 			TXA
@@ -1822,9 +1822,9 @@ INTSUB16X	SEC
       		LDY TMP4_REG
 			RTS
 ;###################################
-INTADD16 	CLC
-			TAX
+INTADD16 	TAX
 			TYA
+			CLC
 			ADC TMP4_REG
 			STA TMP4_REG
 			TXA

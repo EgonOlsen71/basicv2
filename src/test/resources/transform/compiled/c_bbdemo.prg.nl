@@ -640,7 +640,7 @@ LDA VAR__FI_X1%+1
 JSR INTADDOPT16X
 STY VAR__FI_X1%
 STA VAR__FI_X1%+1
-; Optimized code for adding/subtracting ints and store in int
+; Optimized code for adding/subtracting ints and store in int (1)
 ;
 ;
 ;
@@ -698,7 +698,7 @@ LDA VAR__FI_X1%+1
 JSR INTSUBOPT16X
 STY VAR__FI_X1%
 STA VAR__FI_X1%+1
-; Optimized code for adding/subtracting ints and store in int
+; Optimized code for adding/subtracting ints and store in int (1)
 ;
 ;
 ;
@@ -729,7 +729,7 @@ LDA VAR__FI_X2%+1
 JSR INTADDOPT16X
 STY VAR__FI_X2%
 STA VAR__FI_X2%+1
-; Optimized code for adding/subtracting ints and store in int
+; Optimized code for adding/subtracting ints and store in int (1)
 ;
 ;
 ;
@@ -787,7 +787,7 @@ LDA VAR__FI_X2%+1
 JSR INTSUBOPT16X
 STY VAR__FI_X2%
 STA VAR__FI_X2%+1
-; Optimized code for adding/subtracting ints and store in int
+; Optimized code for adding/subtracting ints and store in int (1)
 ;
 ;
 ;
@@ -818,7 +818,7 @@ LDA VAR__FI_Y1%+1
 JSR INTADDOPT16X
 STY VAR__FI_Y1%
 STA VAR__FI_Y1%+1
-; Optimized code for adding/subtracting ints and store in int
+; Optimized code for adding/subtracting ints and store in int (1)
 ;
 ;
 ;
@@ -876,7 +876,7 @@ LDA VAR__FI_Y1%+1
 JSR INTSUBOPT16X
 STY VAR__FI_Y1%
 STA VAR__FI_Y1%+1
-; Optimized code for adding/subtracting ints and store in int
+; Optimized code for adding/subtracting ints and store in int (1)
 ;
 ;
 ;
@@ -907,7 +907,7 @@ LDA VAR__FI_Y2%+1
 JSR INTADDOPT16X
 STY VAR__FI_Y2%
 STA VAR__FI_Y2%+1
-; Optimized code for adding/subtracting ints and store in int
+; Optimized code for adding/subtracting ints and store in int (1)
 ;
 ;
 ;
@@ -965,7 +965,7 @@ LDA VAR__FI_Y2%+1
 JSR INTSUBOPT16X
 STY VAR__FI_Y2%
 STA VAR__FI_Y2%+1
-; Optimized code for adding/subtracting ints and store in int
+; Optimized code for adding/subtracting ints and store in int (1)
 ;
 ;
 ;
@@ -3160,23 +3160,23 @@ STY 54296
 ; Optimizer rule: Remove unneeded LDA calls(1)/2
 LDY VAR__FI_SN%
 LDA VAR__FI_SN%+1
-STY TMP3_ZP
-STA TMP3_ZP+1
+STA TMP4_REG+1
+STY TMP4_REG
 LDA #$00
 LDY #$0f
-JSR INTSUBOPT
-JSR INTCONV
-; Optimized conversion of ints (2)
-;
-;
-;
-;
-;
-;
-;
-;
+JSR INTSUBOPT16X
 STY VAR__FI_SN%
 STA VAR__FI_SN%+1
+; Optimized code for adding/subtracting ints and store in int (2)
+;
+;
+;
+;
+;
+;
+;
+;
+;
 JMP RETURN
 ;
 LINE_990:
@@ -6219,9 +6219,9 @@ RTS
 ;###################################
 ;###################################
 INTSUBOPT16X
-INTSUB16X	SEC
-TAX
+INTSUB16X	TAX
 TYA
+SEC
 SBC TMP4_REG
 STA TMP4_REG
 TXA
@@ -6231,9 +6231,9 @@ LDY TMP4_REG
 RTS
 ;###################################
 ;###################################
-INTADD16 	CLC
-TAX
+INTADD16 	TAX
 TYA
+CLC
 ADC TMP4_REG
 STA TMP4_REG
 TXA
@@ -6908,19 +6908,6 @@ INTADDVAREND
 JMP INTFAC
 ;###################################
 ;###################################
-;	A=B-C => LDY/LDA - TMP3_ZP
-FLOATINTSUBSW
-JSR INTFAC
-JSR FACXREG
-LDA #0
-STA TMP_FLAG	; flag that the value isn't present in TMP2_ZP
-LDY TMP3_ZP
-LDA TMP3_ZP+1
-JSR INTFAC
-JSR XREGARG
-JMP FASTFSUBARG
-;###################################
-;###################################
 FLOATINTADD	JSR INTFAC
 JSR FACXREG
 LDA #0
@@ -6930,33 +6917,6 @@ LDA TMP3_ZP+1
 JSR INTFAC
 JSR XREGARG
 JMP FASTFADDARG
-;###################################
-;###################################
-INTSUBOPT	LDX #0			; Mark as "further int opt possible"
-BEQ INTSUBSUB2
-INTSUB		LDX #1
-INTSUBSUB2	STX INT_FLAG
-LDX #128		; Do the fast way for positive numbers
-STX TMP_REG
-BIT TMP_REG
-BEQ INTINTSUB
-JMP FLOATINTSUBSW
-INTINTSUB	LDX #1			; flag that the value is present in TMP2_ZP
-STX TMP_FLAG
-PHA
-TYA
-SEC
-SBC TMP3_ZP
-TAY
-PLA
-SBC TMP3_ZP+1
-STY TMP2_ZP
-STA TMP2_ZP+1
-LDX INT_FLAG
-BNE INTSUBEND
-RTS
-INTSUBEND
-JMP INTFAC
 ;###################################
 ;###################################
 INTCONV		LDA TMP_FLAG	; The INT value is either already present in TMP2_ZP...or not...
