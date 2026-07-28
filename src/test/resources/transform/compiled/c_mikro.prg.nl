@@ -10985,7 +10985,20 @@ LDA (TMP3_ZP),Y		; ...unless they are empty, which makes them count as 0
 BEQ RNESTR
 CMP #1				; or a "." or "e", which is 0 as well...so length has to be 1..
 BEQ STRGNUMCHK
+PHA
+INY
+LDA (TMP3_ZP),Y     ; or maybe e3 or something ...
+CMP #69             ; starts with e, then it's fine...this will make "ea" pass as well, but who cares...
+BEQ SKIPRESTSTR
 JMP SYNTAXERROR
+SKIPRESTSTR LDA #0              ; "e..." case
+LDY #0
+JSR INTFAC
+PLA
+TAX
+JSR READADDPTR
+JSR FACYREG
+JMP READNOOV2
 STRGNUMCHK 	INY
 LDA (TMP3_ZP),Y
 CMP #46				; ...and really a "."?
@@ -11038,11 +11051,93 @@ NUMREAD		JSR NEXTDATA
 JMP FACYREG		; ...and return
 ;###################################
 ;###################################
+READSTR		JSR READINIT
+CMP #$2
+BNE DATA2STR		; It's a number and has to be converted
+LDA TMP3_ZP
+STA A_REG
+LDA TMP3_ZP+1
+STA A_REG+1
+LDA (TMP3_ZP),Y
+CLC
+ADC TMP3_ZP
+STA TMP3_ZP
+BCC READNOOV2
+INC TMP3_ZP+1
+READNOOV2	JSR NEXTDATA
+INC DATASP
+BNE READNOOV3
+INC DATASP+1
+READNOOV3	RTS
+;###################################
+;###################################
 NEXTDATA	LDA TMP3_ZP			; Adjust pointer to the next element
 STA DATASP
 LDA TMP3_ZP+1
 STA DATASP+1
 RTS
+;###################################
+;###################################
+DATA2STR	CMP #$1
+BEQ DREAL2STR		; It's a floating point number...
+CMP #$0
+BEQ DATA2STRINT
+CMP #$4
+BCS DSHORTBYTE
+LDA (TMP3_ZP),Y		; It's a byte
+TAY
+JSR BYTEFAC
+LDX #1
+JSR READADDPTR
+JMP DFAC2STR
+DATA2STRINT	LDA (TMP3_ZP),Y		; It's an integer
+STA TMP_REG
+INY
+LDA (TMP3_ZP),Y
+LDY TMP_REG
+JSR INTFAC
+LDX #2
+JSR READADDPTR
+JMP DFAC2STR
+DSHORTBYTE	TAY
+JSR BYTEFAC
+JMP DFAC2STR
+DREAL2STR	LDA TMP3_ZP
+LDY TMP3_ZP+1
+JSR REALFAC
+LDX #5
+JSR READADDPTR
+DFAC2STR	JSR NEXTDATA
+JMP STRINTREAD
+;###################################
+;###################################
+STRINTREAD	LDY #1			; Special INT to STR routine that handles the fact that in case of conversions from data entries, there's no leading blank for positive numbers
+JSR FACSTR
+LDY #0
+STY TMP_ZP+1
+LDA #LOFBUF
+STA TMP_ZP
+DEY
+STRLOOPREAD	INY
+LDA LOFBUFH,Y
+BNE STRLOOPREAD
+STY LOFBUF
+TYA
+TAX			; Length in X
+LDA LOFBUFH
+CMP #$20
+BNE STRREADNP
+INC TMP_ZP	; Starts with blank? Remove it...
+INC TMP_ZP+1
+DEC LOFBUF
+LDA LOFBUF
+STA LOFBUFH  ; Copy the new length over
+DEX			 ; length -1
+STRREADNP	LDA #<A_REG
+LDY #>A_REG
+STA TMP2_ZP
+STY TMP2_ZP+1
+JMP COPYONLY
 ;###################################
 ;###################################
 CLEANINPUT	LDY #0				; Processes an input string similar to BASIC's with the only difference that a " at the "wrong" location will be ignored instead of triggering an error

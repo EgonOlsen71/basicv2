@@ -1783,7 +1783,20 @@ LDA (TMP3_ZP),Y		; ...unless they are empty, which makes them count as 0
 BEQ RNESTR
 CMP #1				; or a "." or "e", which is 0 as well...so length has to be 1..
 BEQ STRGNUMCHK
+PHA
+INY
+LDA (TMP3_ZP),Y     ; or maybe e3 or something ...
+CMP #69             ; starts with e, then it's fine...this will make "ea" pass as well, but who cares...
+BEQ SKIPRESTSTR
 JMP SYNTAXERROR
+SKIPRESTSTR LDA #0              ; "e..." case
+LDY #0
+JSR INTFAC
+PLA
+TAX
+JSR READADDPTR
+JSR FACYREG
+JMP READNOOV2
 STRGNUMCHK 	INY
 LDA (TMP3_ZP),Y
 CMP #46				; ...and really a "."?

@@ -3072,6 +3072,260 @@ JMP QCLOOP
 QCEXIT		RTS
 ;###################################
 ;###################################
+COPYSTRING	STA TMP2_ZP
+STY TMP2_ZP+1
+CPY TMP_ZP+1
+BNE CONTCOPY
+LDA TMP2_ZP
+CMP TMP_ZP
+BNE CONTCOPY
+RTS					; A copy from a variable into the same instance is pointless an will be ignored.
+CONTCOPY	JSR COMPACT			; Do a GC if needed
+LDY #0
+STY TMP_FLAG
+LDA (TMP_ZP),Y
+BNE NOTEMPTYSTR
+LDA #<EMPTYSTR		; The source is empty? Then assign the empty string constant instead
+STA TMP_ZP
+LDA #>EMPTYSTR
+STA TMP_ZP+1
+JMP ISCONST
+NOTEMPTYSTR	TAX					; Store the length of the source in X...this is valid until right to the end, where it's not longer used anyway
+LDA (TMP2_ZP),Y
+STA TMP3_ZP
+INY
+LDA (TMP2_ZP),Y
+STA TMP3_ZP+1
+DEY
+LDA TMP_ZP+1		; Check if the source is a constant (upper bound). If so, don't copy it but just point to it
+CMP #>CONSTANTS_END
+BEQ CHECKLOW1
+BCS INVAR
+JMP CHECKNEXT
+CHECKLOW1	LDA TMP_ZP
+CMP #<CONSTANTS_END
+BCS INVAR
+CHECKNEXT	LDA TMP_ZP+1		; Check if the source is a constant (lower bound). If so, don't copy it but just point to it
+CMP #>CONSTANTS
+BEQ CHECKLOW3
+BCC INVAR
+JMP ISCONST
+CHECKLOW3	LDA TMP_ZP
+CMP #<CONSTANTS
+BCC INVAR			; No, it's not a constant. It's something from lower memory...
+ISCONST		JSR CHECKLASTVAR	; Reclaim formerly used memory if possible
+LDA TMP_ZP
+STA (TMP2_ZP),Y		; Yes, it's a constant...
+INY
+LDA TMP_ZP+1
+STA (TMP2_ZP),Y
+LDA HIGHP			; Reset the memory pointer to the last assigned one. Everything that came later has to be temp. data
+STA STRBUFP
+LDA HIGHP+1
+STA STRBUFP+1
+RTS
+INVAR		INY
+LDA (TMP2_ZP),Y		; Check if the target is currently pointing into the constant pool. If so, don't update that memory by accident
+CMP #>CONSTANTS_END
+BEQ CHECKLOW2
+BCS INVAR2
+JMP PUPDATEPTR
+CHECKLOW2	DEY
+LDA (TMP2_ZP),Y
+CMP #<CONSTANTS_END
+BCS INVAR2
+JMP PUPDATEPTR
+INVAR2		LDY #0			; The target is somewhere in var memory (i.e. not in constant memory)
+LDA (TMP3_ZP),Y
+STA TMP_REG
+TXA
+CMP TMP_REG		; Compare the string-to-copy's length (in A) with the variable's current one (in TMP_REG)
+BEQ UPDATEHP2	; does the new string fit into the old memory location (i.e. is it the same length)?
+; Shorter strings would fit as well, but aren't stored this way or otherwise, the result would
+; be some stray memory chunk that none could identify properly when doing a GC
+PUPDATEPTR	JSR CHECKLASTVAR
+LDY #1			; No? Then new memory has to be used. Update the "highest memory position" in the process
+STY TMP_FLAG	; to regain temp. memory used for non-assigned strings like for printing and such...
+JMP UPDATEPTR	; ...we set a flag here to handle this case later
+UPDATEHP2	LDA HIGHP		; Update the memory pointer to the last assigned position, reclaim some memory this way
+STA STRBUFP
+LDA HIGHP+1
+STA STRBUFP+1
+JMP STRFITS
+COPYONLY	LDY #0
+STY TMP_FLAG
+JMP CHECKMEM
+ALTCOPY		JMP COPYSTRING2
+UPDATEPTR	LDA TMP_ZP+1	; Check if the new string comes after or equals highp, which indicates that it can be
+CMP HIGHP+1		; "copied down". This is another routine, because of...reasons...
+BEQ CHECKXT1
+BCS ALTCOPY
+JMP CHECKMEM
+CHECKXT1	LDA TMP_ZP
+CMP HIGHP
+BCS ALTCOPY
+CHECKMEM
+MEMOK		LDY #0
+LDA STRBUFP		; no, then copy it into string memory later...
+STA (TMP2_ZP),Y	; ...but update the string memory pointer now
+STA TMP3_ZP
+LDA STRBUFP+1
+INY
+STA (TMP2_ZP),Y
+STA TMP3_ZP+1
+TXA
+CLC
+ADC STRBUFP
+PHP
+CLC
+ADC #3
+STA STRBUFP
+BCC NOCS1
+INC STRBUFP+1
+NOCS1		PLP
+BCC STRFITS
+INC STRBUFP+1
+STRFITS		LDY TMP_FLAG	; Check if the pointer to the highest mem addr is used by an actual string
+BEQ NOHPUPDATE	; has to be updated and do that...
+LDA HIGHP+1
+CMP STRBUFP+1
+BCC UPDATEHIGHP
+BEQ CHECKNEXTHP
+JMP NOHPUPDATE
+CHECKNEXTHP	LDA HIGHP
+CMP	STRBUFP
+BCC UPDATEHIGHP
+JMP NOHPUPDATE
+UPDATEHIGHP	LDA STRBUFP
+STA HIGHP
+LDA STRBUFP+1
+STA HIGHP+1		; set new pointer
+JSR REMEMBERLASTVAR
+JSR STOREVARREF
+NOHPUPDATE	LDY #0
+LDA (TMP_ZP),Y	; Set the new length...
+STA (TMP3_ZP),Y
+TAY				; Copy length to Y
+BEQ	EXITCOPY	; Length 0? nothing to copy then...
+LOOP		LDA (TMP_ZP),Y	; Copy the actual string
+STA (TMP3_ZP),Y
+DEY
+BNE LOOP
+EXITCOPY	RTS
+;###################################
+;###################################
+; Special copy routine that handles the case that a string is >highp but might interleave with the temp data that has to be copied into it.
+; Therefor, this routine copies from lower to higher addresses and not vice versa like the simpler one above.
+COPYSTRING2	LDY #0
+LDA (TMP_ZP),Y
+STA TMP_REG
+TAX
+LDA HIGHP
+STA TMP3_ZP
+STA (TMP2_ZP),Y
+LDA HIGHP+1
+STA TMP3_ZP+1
+INY
+STA (TMP2_ZP),Y
+JSR REMEMBERLASTVAR
+; Do a quick test, if a real copy is needed or if the memory addrs are equal anyway?
+; This introduces some overhead but according to my tests, its actually faster this way.
+LDA TMP_ZP
+CMP TMP3_ZP
+BNE DOLOOP
+LDA TMP_ZP+1
+CMP TMP3_ZP+1
+BEQ SKIPCP2
+DOLOOP		DEY
+TXA
+STA (TMP3_ZP),Y
+INY
+ASLOOP		LDA (TMP_ZP),Y
+STA (TMP3_ZP),Y
+INY
+DEX
+BNE	ASLOOP
+SKIPCP2		LDA HIGHP
+CLC
+ADC TMP_REG
+PHP
+CLC
+ADC #3
+STA HIGHP
+STA STRBUFP
+BCC SKIPLOWAS1
+INC HIGHP+1
+SKIPLOWAS1	PLP
+BCC SKIPLOWAS2
+INC HIGHP+1
+SKIPLOWAS2	LDA HIGHP+1
+STA STRBUFP+1
+JSR STOREVARREF
+RTS
+;###################################
+;###################################
+; Checks if this variable is the same one that has been stored last. If so, we can reclaim its memory first.
+CHECKLASTVAR
+LDA TMP2_ZP
+CMP LASTVAR
+BNE NOTSAMEVAR
+LDA TMP2_ZP+1
+CMP LASTVAR+1
+BNE NOTSAMEVAR
+LDA LASTVARP			; The target is the last string that has been added. We can free it's currently used memory then.
+STA HIGHP
+STA STRBUFP
+LDA LASTVARP+1
+STA HIGHP+1
+STA STRBUFP+1
+NOTSAMEVAR	RTS
+;###################################
+;###################################
+; Stores the last variable reference that has been stored in string memory.
+REMEMBERLASTVAR
+LDA TMP2_ZP
+STA LASTVAR
+LDA TMP2_ZP+1
+STA LASTVAR+1
+LDA TMP3_ZP
+STA LASTVARP
+LDA TMP3_ZP+1
+STA LASTVARP+1	; Remember this variable as the last written one
+RTS
+;###################################
+;###################################
+; Appends a reference to the variable at the end of the string in memory for
+; easier GC later...
+STOREVARREF
+TYA
+PHA				; Save Y reg
+LDA TMP_ZP
+PHA
+LDA TMP_ZP+1
+PHA
+LDA HIGHP+1
+STA TMP_ZP+1
+LDA HIGHP
+SEC
+SBC #2
+STA TMP_ZP
+BCS RLVNOOV
+DEC TMP_ZP+1
+RLVNOOV		LDA TMP2_ZP
+LDY #0
+STA (TMP_ZP),Y
+LDA TMP2_ZP+1
+INY
+STA (TMP_ZP),Y	; Store the reference to the variable that uses this chunk of memory at the end of the string
+PLA
+STA TMP_ZP+1
+PLA
+STA TMP_ZP		; ...restore TMP_ZP
+PLA
+TAY				; ...restore Y reg
+RTS
+;###################################
+;###################################
 REROUTE		LDA CMD_NUM		; if CMD mode, enable channel output
 BEQ REROUTECMD
 TAX
@@ -3827,7 +4081,20 @@ LDA (TMP3_ZP),Y		; ...unless they are empty, which makes them count as 0
 BEQ RNESTR
 CMP #1				; or a "." or "e", which is 0 as well...so length has to be 1..
 BEQ STRGNUMCHK
+PHA
+INY
+LDA (TMP3_ZP),Y     ; or maybe e3 or something ...
+CMP #69             ; starts with e, then it's fine...this will make "ea" pass as well, but who cares...
+BEQ SKIPRESTSTR
 JMP SYNTAXERROR
+SKIPRESTSTR LDA #0              ; "e..." case
+LDY #0
+JSR INTFAC
+PLA
+TAX
+JSR READADDPTR
+JSR FACYREG
+JMP READNOOV2
 STRGNUMCHK 	INY
 LDA (TMP3_ZP),Y
 CMP #46				; ...and really a "."?
@@ -3880,11 +4147,93 @@ NUMREAD		JSR NEXTDATA
 JMP FACYREG		; ...and return
 ;###################################
 ;###################################
+READSTR		JSR READINIT
+CMP #$2
+BNE DATA2STR		; It's a number and has to be converted
+LDA TMP3_ZP
+STA A_REG
+LDA TMP3_ZP+1
+STA A_REG+1
+LDA (TMP3_ZP),Y
+CLC
+ADC TMP3_ZP
+STA TMP3_ZP
+BCC READNOOV2
+INC TMP3_ZP+1
+READNOOV2	JSR NEXTDATA
+INC DATASP
+BNE READNOOV3
+INC DATASP+1
+READNOOV3	RTS
+;###################################
+;###################################
 NEXTDATA	LDA TMP3_ZP			; Adjust pointer to the next element
 STA DATASP
 LDA TMP3_ZP+1
 STA DATASP+1
 RTS
+;###################################
+;###################################
+DATA2STR	CMP #$1
+BEQ DREAL2STR		; It's a floating point number...
+CMP #$0
+BEQ DATA2STRINT
+CMP #$4
+BCS DSHORTBYTE
+LDA (TMP3_ZP),Y		; It's a byte
+TAY
+JSR BYTEFAC
+LDX #1
+JSR READADDPTR
+JMP DFAC2STR
+DATA2STRINT	LDA (TMP3_ZP),Y		; It's an integer
+STA TMP_REG
+INY
+LDA (TMP3_ZP),Y
+LDY TMP_REG
+JSR INTFAC
+LDX #2
+JSR READADDPTR
+JMP DFAC2STR
+DSHORTBYTE	TAY
+JSR BYTEFAC
+JMP DFAC2STR
+DREAL2STR	LDA TMP3_ZP
+LDY TMP3_ZP+1
+JSR REALFAC
+LDX #5
+JSR READADDPTR
+DFAC2STR	JSR NEXTDATA
+JMP STRINTREAD
+;###################################
+;###################################
+STRINTREAD	LDY #1			; Special INT to STR routine that handles the fact that in case of conversions from data entries, there's no leading blank for positive numbers
+JSR FACSTR
+LDY #0
+STY TMP_ZP+1
+LDA #LOFBUF
+STA TMP_ZP
+DEY
+STRLOOPREAD	INY
+LDA LOFBUFH,Y
+BNE STRLOOPREAD
+STY LOFBUF
+TYA
+TAX			; Length in X
+LDA LOFBUFH
+CMP #$20
+BNE STRREADNP
+INC TMP_ZP	; Starts with blank? Remove it...
+INC TMP_ZP+1
+DEC LOFBUF
+LDA LOFBUF
+STA LOFBUFH  ; Copy the new length over
+DEX			 ; length -1
+STRREADNP	LDA #<A_REG
+LDY #>A_REG
+STA TMP2_ZP
+STY TMP2_ZP+1
+JMP COPYONLY
 ;###################################
 ;##################################
 REALFACPUSH	STA TMP_ZP
