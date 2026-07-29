@@ -4493,7 +4493,14 @@ ALLPARAMS
 			BCS OPENERR
 			RTS
 OPENERR		STA TMP2_ZP
-			LDA LOGICADDR
+			LDA DEVICENUM
+			CMP #2
+			BNE NORS232
+			LDA TMP2_ZP
+			CMP #240
+			BNE NORS232
+			RTS                 ; I guess, this is no error in case of RS232 device? I just indicates a memory change!
+NORS232		LDA LOGICADDR
 			JSR CLOSECH
 			<IF BOOST>
 			JSR BOOSTON
