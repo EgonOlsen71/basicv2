@@ -4847,6 +4847,18 @@ FACYREG		LDA FACLO
 			STA FACOV
 			RTS
 ;###################################
+WORD2FAC    LDY A_REG
+            LDA A_REG+1
+            BMI HIHGBITSET          ; >= $8000 ?
+            JMP INTFAC              ; $B391, fast path 0..32767
+HIHGBITSET
+            JSR INTFAC              ; now FAC1 is negative signed value
+            LDA #<REAL_65536
+            LDY #>REAL_65536
+            JMP FASTFADDMEM         ; $B867, FAC1 += 65536.0
+
+REAL_65536  .REAL 65536.0
+;###################################
 XXBASINT	LDA ARGLO		;BASINT breaks the content of ARG, so we save and restore it in F_REG
 			STA F_REG+4
 			LDA ARGMO
