@@ -2383,191 +2383,12 @@ public class IntOptimizer {
 					}
 				}));
 
-		intPatterns.add(new IntPattern(true, "Faster low byte/high byte processing(int)",
-				new String[] { "JSR INTFAC", "JSR FACXREG", "LDY {CONST0}", "STY A_REG", "JSR SHL", "JSR PUSHREAL", "LDY {MEM0}",
-						"LDA {MEM0}", "STY {*}", "STA {*}", "{LABEL}", "LDY $FFFF", "LDA #0",
-						"JSR INTFAC", "JSR FACXREG", "JSR POPREAL2X", "JSR FASTFADDARG", "JSR FACINT", "STY {MEM1}", "STA {MEM1}" },
-				new AbstractCodeModifier() {
-					@Override
-					public List<String> modify(IntPattern pattern, List<String> input) {
-						input = super.modify(pattern, input);
-						String consty = cleaned.get(2);
-						consty = consty.substring(consty.indexOf(" ") + 1).trim();
-						Number num = const2Value.get(consty);
-						double numd = num.doubleValue();
-						if (numd == 8) {
-							List<String> rep = new ArrayList<>();
-							rep.add(cleaned.get(3));
-							rep.add(cleaned.get(6));
-							rep.add(cleaned.get(7));
-							rep.add(cleaned.get(8));
-							rep.add(cleaned.get(9));
-							rep.add(cleaned.get(10));
-							rep.add(cleaned.get(11));
-
-							rep.add(cleaned.get(18));
-							rep.add("LDA A_REG");
-							rep.add(cleaned.get(19));
-							return combine(pattern, rep);
-						}
-						pattern.reset();
-						return input;
-					}
-				}));
-
-		intPatterns.add(new IntPattern(true, "Faster low byte/high byte processing(int, float target)",
-				new String[] { "JSR INTFAC", "JSR FACXREG", "LDY {CONST0}", "STY A_REG", "JSR SHL", "JSR PUSHREAL", "LDY {MEM0}",
-						"LDA {MEM0}", "STY {*}", "STA {*}", "{LABEL}", "LDY $FFFF", "LDA #0",
-						"JSR INTFAC", "JSR FACXREG", "JSR POPREAL2X", "JSR FASTFADDARG", "LDX #<{MEM1}", "LDY #>{MEM1}"},
-				new AbstractCodeModifier() {
-					@Override
-					public List<String> modify(IntPattern pattern, List<String> input) {
-						input = super.modify(pattern, input);
-						String consty = cleaned.get(2);
-						consty = consty.substring(consty.indexOf(" ") + 1).trim();
-						Number num = const2Value.get(consty);
-						double numd = num.doubleValue();
-						if (numd == 8) {
-							List<String> rep = new ArrayList<>();
-							rep.add(cleaned.get(3));
-							rep.add(cleaned.get(6));
-							rep.add(cleaned.get(7));
-							rep.add(cleaned.get(8));
-							rep.add(cleaned.get(9));
-							rep.add(cleaned.get(10));
-							rep.add(cleaned.get(11));
-							rep.add("LDA A_REG");
-							rep.add("STY A_REG");
-							rep.add("STA A_REG+1");
-							rep.add("JSR WORD2FAC");
-							rep.add(cleaned.get(17));
-							rep.add(cleaned.get(18));
-							return combine(pattern, rep);
-						}
-						pattern.reset();
-						return input;
-					}
-				}));
-
-		intPatterns.add(new IntPattern(true, "Faster low byte/high byte processing(const)",
-				new String[] { "JSR INTFAC", "JSR FACXREG", "LDY {CONST0}", "STY A_REG", "JSR SHL", "JSR PUSHREAL", "LDY {MEM0}",
-						"LDA #0", "JSR INTFAC", "JSR FACXREG", "JSR POPREAL2X", "JSR FASTFADDARG", "JSR FACINT", "STY {MEM1}", "STA {MEM1}" },
-				new AbstractCodeModifier() {
-					@Override
-					public List<String> modify(IntPattern pattern, List<String> input) {
-						input = super.modify(pattern, input);
-						String consty = cleaned.get(2);
-						consty = consty.substring(consty.indexOf(" ") + 1).trim();
-						Number num = const2Value.get(consty);
-						double numd = num.doubleValue();
-						if (numd == 8) {
-							List<String> rep = new ArrayList<>();
-							rep.add(cleaned.get(3));
-							rep.add(cleaned.get(6));
-							rep.add(cleaned.get(13));
-							rep.add("LDA A_REG");
-							rep.add(cleaned.get(14));
-							return combine(pattern, rep);
-						}
-						pattern.reset();
-						return input;
-					}
-				}));
-
-		intPatterns.add(new IntPattern(true, "Faster low byte/high byte processing(const, float target)",
-				new String[] { "JSR INTFAC", "JSR FACXREG", "LDY {CONST0}", "STY A_REG", "JSR SHL", "JSR PUSHREAL", "LDY {MEM0}",
-						"LDA #0", "JSR INTFAC", "JSR FACXREG", "JSR POPREAL2X", "JSR FASTFADDARG", "LDX #<{MEM1}", "LDY #>{MEM1}" },
-				new AbstractCodeModifier() {
-					@Override
-					public List<String> modify(IntPattern pattern, List<String> input) {
-						input = super.modify(pattern, input);
-						String consty = cleaned.get(2);
-						consty = consty.substring(consty.indexOf(" ") + 1).trim();
-						Number num = const2Value.get(consty);
-						double numd = num.doubleValue();
-						if (numd == 8) {
-							List<String> rep = new ArrayList<>();
-							rep.add("STY A_REG+1");
-							rep.add(cleaned.get(6));
-							rep.add("STY A_REG");
-							rep.add("JSR WORD2FAC");
-							rep.add(cleaned.get(12));
-							rep.add(cleaned.get(13));
-							return combine(pattern, rep);
-						}
-						pattern.reset();
-						return input;
-					}
-				}));
-
-		intPatterns.add(new IntPattern(true, "Faster low byte/high byte processing",
-				new String[] { "JSR INTFAC", "JSR FACXREG", "LDY {CONST0}", "STY A_REG", "JSR SHL", "JSR PUSHREAL", "LDA #<{MEM0}",
-						"LDY #>{MEM0}", "JSR REALFAC", "JSR FACWORD", "STY {*}", "STA {*}", "{LABEL}", "LDY $FFFF", "LDA #0",
-						"JSR INTFAC", "JSR FACXREG", "JSR POPREAL2X", "JSR FASTFADDARG", "JSR FACINT", "STY {MEM1}", "STA {MEM1}" },
-				new AbstractCodeModifier() {
-					@Override
-					public List<String> modify(IntPattern pattern, List<String> input) {
-						input = super.modify(pattern, input);
-						String consty = cleaned.get(2);
-						consty = consty.substring(consty.indexOf(" ") + 1).trim();
-						Number num = const2Value.get(consty);
-						double numd = num.doubleValue();
-						if (numd == 8) {
-							List<String> rep = new ArrayList<>();
-							rep.add(cleaned.get(3));
-							rep.add(cleaned.get(6));
-							rep.add(cleaned.get(7));
-							rep.add(cleaned.get(8));
-							rep.add(cleaned.get(9));
-							rep.add(cleaned.get(10));
-							rep.add(cleaned.get(11));
-							rep.add(cleaned.get(12));
-							rep.add(cleaned.get(13));
-							rep.add(cleaned.get(20));
-							rep.add("LDA A_REG");
-							rep.add(cleaned.get(21));
-							return combine(pattern, rep);
-						}
-						pattern.reset();
-						return input;
-					}
-				}));
-
-		intPatterns.add(new IntPattern(true, "Faster low byte/high byte processing(float target)",
-				new String[] { "JSR INTFAC", "JSR FACXREG", "LDY {CONST0}", "STY A_REG", "JSR SHL", "JSR PUSHREAL", "LDA #<{MEM0}",
-						"LDY #>{MEM0}", "JSR REALFAC", "JSR FACWORD", "STY {*}", "STA {*}", "{LABEL}", "LDY $FFFF", "LDA #0",
-						"JSR INTFAC", "JSR FACXREG", "JSR POPREAL2X", "JSR FASTFADDARG" , "LDX #<{MEM1}", "LDY #>{MEM1}"},
-				new AbstractCodeModifier() {
-					@Override
-					public List<String> modify(IntPattern pattern, List<String> input) {
-						input = super.modify(pattern, input);
-						String consty = cleaned.get(2);
-						consty = consty.substring(consty.indexOf(" ") + 1).trim();
-						Number num = const2Value.get(consty);
-						double numd = num.doubleValue();
-						if (numd == 8) {
-							List<String> rep = new ArrayList<>();
-							rep.add(cleaned.get(3));
-							rep.add(cleaned.get(6));
-							rep.add(cleaned.get(7));
-							rep.add(cleaned.get(8));
-							rep.add(cleaned.get(9));
-							rep.add(cleaned.get(10));
-							rep.add(cleaned.get(11));
-							rep.add(cleaned.get(12));
-							rep.add(cleaned.get(13));
-							rep.add("LDA A_REG");
-							rep.add("STY A_REG");
-							rep.add("STA A_REG+1");
-							rep.add("JSR WORD2FAC");
-							rep.add(cleaned.get(19));
-							rep.add(cleaned.get(20));
-							return combine(pattern, rep);
-						}
-						pattern.reset();
-						return input;
-					}
-				}));
+		addLowHighBytePattern(intPatterns, const2Value, LowHighByteSource.INT, false);
+		addLowHighBytePattern(intPatterns, const2Value, LowHighByteSource.INT, true);
+		addLowHighBytePattern(intPatterns, const2Value, LowHighByteSource.CONST, false);
+		addLowHighBytePattern(intPatterns, const2Value, LowHighByteSource.CONST, true);
+		addLowHighBytePattern(intPatterns, const2Value, LowHighByteSource.MEMORY, false);
+		addLowHighBytePattern(intPatterns, const2Value, LowHighByteSource.MEMORY, true);
 
 		intPatterns.add(new IntPattern(true, "Fast add for POKE(2.1)",
 				new String[] { "JSR ONETOFAC", "LDA #<{MEM0}", "LDY #>{MEM0}", "JSR FASTFADDMEM", "JSR PUSHREAL", "JSR POPREAL",  "JSR FACWORD", "STY {*}", "STA {*}"},
@@ -2641,6 +2462,140 @@ public class IntOptimizer {
 				}));
 
 		return intPatterns;
+	}
+
+	private enum LowHighByteSource {
+		INT,
+		CONST,
+		MEMORY
+	}
+
+	private void addLowHighBytePattern(List<IntPattern> intPatterns, Map<String, Number> const2Value,
+			LowHighByteSource source, boolean floatTarget) {
+		intPatterns.add(new IntPattern(true, getLowHighBytePatternName(source, floatTarget),
+				createLowHighBytePatternParts(source, floatTarget), new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						if (isShiftByEight(const2Value, cleaned)) {
+							return combine(pattern, createLowHighByteReplacement(source, floatTarget, cleaned));
+						}
+						pattern.reset();
+						return input;
+					}
+				}));
+	}
+
+	private String getLowHighBytePatternName(LowHighByteSource source, boolean floatTarget) {
+		if (source == LowHighByteSource.INT) {
+			return floatTarget ? "Faster low byte/high byte processing(int, float target)"
+					: "Faster low byte/high byte processing(int)";
+		}
+		if (source == LowHighByteSource.CONST) {
+			return floatTarget ? "Faster low byte/high byte processing(const, float target)"
+					: "Faster low byte/high byte processing(const)";
+		}
+		return floatTarget ? "Faster low byte/high byte processing(float target)"
+				: "Faster low byte/high byte processing";
+	}
+
+	private String[] createLowHighBytePatternParts(LowHighByteSource source, boolean floatTarget) {
+		List<String> parts = new ArrayList<>(Arrays.asList("JSR INTFAC", "JSR FACXREG", "LDY {CONST0}", "STY A_REG",
+				"JSR SHL", "JSR PUSHREAL"));
+		if (source == LowHighByteSource.INT) {
+			parts.addAll(Arrays.asList("LDY {MEM0}", "LDA {MEM0}", "STY {*}", "STA {*}", "{LABEL}", "LDY $FFFF",
+					"LDA #0", "JSR INTFAC", "JSR FACXREG", "JSR POPREAL2X", "JSR FASTFADDARG"));
+		} else if (source == LowHighByteSource.CONST) {
+			parts.addAll(Arrays.asList("LDY {MEM0}", "LDA #0", "JSR INTFAC", "JSR FACXREG", "JSR POPREAL2X",
+					"JSR FASTFADDARG"));
+		} else {
+			parts.addAll(Arrays.asList("LDA #<{MEM0}", "LDY #>{MEM0}", "JSR REALFAC", "JSR FACWORD", "STY {*}",
+					"STA {*}", "{LABEL}", "LDY $FFFF", "LDA #0", "JSR INTFAC", "JSR FACXREG", "JSR POPREAL2X",
+					"JSR FASTFADDARG"));
+		}
+		if (floatTarget) {
+			parts.add("LDX #<{MEM1}");
+			parts.add("LDY #>{MEM1}");
+		} else {
+			parts.add("JSR FACINT");
+			parts.add("STY {MEM1}");
+			parts.add("STA {MEM1}");
+		}
+		return parts.toArray(new String[0]);
+	}
+
+	private List<String> createLowHighByteReplacement(LowHighByteSource source, boolean floatTarget, List<String> cleaned) {
+		List<String> rep = new ArrayList<>();
+		if (source == LowHighByteSource.INT) {
+			rep.add(cleaned.get(3));
+			rep.add(cleaned.get(6));
+			rep.add(cleaned.get(7));
+			rep.add(cleaned.get(8));
+			rep.add(cleaned.get(9));
+			rep.add(cleaned.get(10));
+			rep.add(cleaned.get(11));
+			if (floatTarget) {
+				rep.add("LDA A_REG");
+				rep.add("STY A_REG");
+				rep.add("STA A_REG+1");
+				rep.add("JSR WORD2FAC");
+				rep.add(cleaned.get(17));
+				rep.add(cleaned.get(18));
+			} else {
+				rep.add(cleaned.get(18));
+				rep.add("LDA A_REG");
+				rep.add(cleaned.get(19));
+			}
+			return rep;
+		}
+
+		if (source == LowHighByteSource.CONST) {
+			if (floatTarget) {
+				rep.add("STY A_REG+1");
+				rep.add(cleaned.get(6));
+				rep.add("STY A_REG");
+				rep.add("JSR WORD2FAC");
+				rep.add(cleaned.get(12));
+				rep.add(cleaned.get(13));
+			} else {
+				rep.add(cleaned.get(3));
+				rep.add(cleaned.get(6));
+				rep.add(cleaned.get(13));
+				rep.add("LDA A_REG");
+				rep.add(cleaned.get(14));
+			}
+			return rep;
+		}
+
+		rep.add(cleaned.get(3));
+		rep.add(cleaned.get(6));
+		rep.add(cleaned.get(7));
+		rep.add(cleaned.get(8));
+		rep.add(cleaned.get(9));
+		rep.add(cleaned.get(10));
+		rep.add(cleaned.get(11));
+		rep.add(cleaned.get(12));
+		rep.add(cleaned.get(13));
+		if (floatTarget) {
+			rep.add("LDA A_REG");
+			rep.add("STY A_REG");
+			rep.add("STA A_REG+1");
+			rep.add("JSR WORD2FAC");
+			rep.add(cleaned.get(19));
+			rep.add(cleaned.get(20));
+		} else {
+			rep.add(cleaned.get(20));
+			rep.add("LDA A_REG");
+			rep.add(cleaned.get(21));
+		}
+		return rep;
+	}
+
+	private boolean isShiftByEight(Map<String, Number> const2Value, List<String> cleaned) {
+		String consty = cleaned.get(2);
+		consty = consty.substring(consty.indexOf(" ") + 1).trim();
+		Number num = const2Value.get(consty);
+		return num != null && num.doubleValue() == 8d;
 	}
 
 	private String getHex(double value) {
