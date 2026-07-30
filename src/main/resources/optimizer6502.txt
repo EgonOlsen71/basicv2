@@ -357,6 +357,12 @@
 #119: ASC to integer variable
 "ASC to integer variable"	false	false	false	"JSR ASC|JSR XREGFAC|JSR FACINT|STY {MEM0}|STA {MEM0}|"	"{LINE0}|LDA #0|LDY TMP2_ZP|{LINE3}|{LINE4}|"
 
+#119.1: ASC to POKE(1)
+"ASC to POKE(1)"	false	false	false	"JSR ASC|LDY #>X_REG|LDA #<X_REG|JSR REALFAC|JSR FACWORD|STY {*}"	"{LINE0}|LDA #0|LDY TMP2_ZP|{LINE5}|"
+
+#119.2: ASC to POKE(2)
+"ASC to POKE(2)"	false	false	false	"JSR ASC|JSR XREGFAC|JSR FACWORD|STY {*}"	"{LINE0}|LDA #0|LDY TMP2_ZP|{LINE3}|"
+
 #120: Simplified string array assignment
 "Simplified string array assignment"	false	false	false	"LDA #<{MEM0}|LDY #>{MEM0}|JSR REALFACPUSH|NOP|LDA #<{MEM1}|LDY #>{MEM1}|STA A_REG|STY A_REG+1|JSR POPREALXREG|"	"{LINE4}|{LINE5}|{LINE6}|{LINE7}|{LINE0}|{LINE1}|JSR COPY2_XYA_XREG|"
 

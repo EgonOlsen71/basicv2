@@ -1,10 +1,6 @@
 package com.sixtyfour.cbmnative.mos6502;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.sixtyfour.Logger;
 import com.sixtyfour.cbmnative.PlatformProvider;
@@ -2354,7 +2350,41 @@ public class IntOptimizer {
 						
 					}
 				}));
-		
+
+
+		intPatterns.add(new IntPattern(true, "Fast ASC conversion",
+				new String[] { "JSR COMPACTMAX", "LDA {CONST0}", "JSR CHRINTB", "LDA {MEM0}", "LDY {MEM0}", "STA A_REG", "STY A_REG+1", "JSR CONCAT", "LDY A_REG", "LDA A_REG+1", "STY B_REG", "STA B_REG+1", "JSR ASC", "LDA #0", "LDY TMP2_ZP"},
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						String consty = cleaned.get(1);
+						consty = consty.substring(consty.indexOf(" ") + 1).trim();
+						Number num = const2Value.get(consty);
+						double numd = num.doubleValue();
+						if (numd == 0) {
+							String label = "jump_"+UUID.randomUUID().toString();
+							List<String> rep = new ArrayList<>();
+							rep.add(cleaned.get(3));
+							rep.add(cleaned.get(4));
+							rep.add("STA TMP_ZP");
+							rep.add("STY TMP_ZP+1");
+							rep.add("LDY #0");
+							rep.add("LDA (TMP_ZP),Y");
+							rep.add("BEQ "+label);
+							rep.add("INY");
+							rep.add("LDA (TMP_ZP),Y");
+							rep.add("TAY");
+							rep.add("LDA #0");
+							rep.add(label+":");
+							return combine(pattern, rep);
+						}
+						pattern.reset();
+						return input;
+
+					}
+				}));
+
 		intPatterns.add(new IntPattern(true, "Fast add for POKE(2.1)",
 				new String[] { "JSR ONETOFAC", "LDA #<{MEM0}", "LDY #>{MEM0}", "JSR FASTFADDMEM", "JSR PUSHREAL", "JSR POPREAL",  "JSR FACWORD", "STY {*}", "STA {*}"},
 				new AbstractCodeModifier() {
