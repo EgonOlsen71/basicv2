@@ -2351,7 +2351,6 @@ public class IntOptimizer {
 					}
 				}));
 
-
 		intPatterns.add(new IntPattern(true, "Fast ASC conversion",
 				new String[] { "JSR COMPACTMAX", "LDA {CONST0}", "JSR CHRINTB", "LDA {MEM0}", "LDY {MEM0}", "STA A_REG", "STY A_REG+1", "JSR CONCAT", "LDY A_REG", "LDA A_REG+1", "STY B_REG", "STA B_REG+1", "JSR ASC", "LDA #0", "LDY TMP2_ZP"},
 				new AbstractCodeModifier() {
@@ -2392,17 +2391,54 @@ public class IntOptimizer {
 		STY A_REG
 		JSR SHL
 		JSR PUSHREAL
-		LDY 43
+		LDY VAR_A%
+		LDA VAR_A%+1
+		STY MOVBSELF10+1
+		STA MOVBSELF10+2
+		MOVBSELF10:
+		LDY $FFFF
 		LDA #0
 		JSR INTFAC
 		JSR FACXREG
 		JSR POPREAL2X
 		JSR FASTFADDARG
 		JSR FACINT
-		STY VAR_D%
-		STA VAR_D%+1
+		STY VAR_E%
+		STA VAR_E%+1
 
 		 */
+
+		intPatterns.add(new IntPattern(true, "Faster low byte/high byte processing(int)",
+				new String[] { "JSR INTFAC", "JSR FACXREG", "LDY {CONST0}", "STY A_REG", "JSR SHL", "JSR PUSHREAL", "LDY {MEM0}",
+						"LDA {MEM0}", "STY {*}", "STA {*}", "{LABEL}", "LDY $FFFF", "LDA #0",
+						"JSR INTFAC", "JSR FACXREG", "JSR POPREAL2X", "JSR FASTFADDARG", "JSR FACINT", "STY {MEM1}", "STA {MEM1}" },
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						String consty = cleaned.get(2);
+						consty = consty.substring(consty.indexOf(" ") + 1).trim();
+						Number num = const2Value.get(consty);
+						double numd = num.doubleValue();
+						if (numd == 8) {
+							List<String> rep = new ArrayList<>();
+							rep.add(cleaned.get(3));
+							rep.add(cleaned.get(6));
+							rep.add(cleaned.get(7));
+							rep.add(cleaned.get(8));
+							rep.add(cleaned.get(9));
+							rep.add(cleaned.get(10));
+							rep.add(cleaned.get(11));
+
+							rep.add(cleaned.get(18));
+							rep.add("LDA A_REG");
+							rep.add(cleaned.get(19));
+							return combine(pattern, rep);
+						}
+						pattern.reset();
+						return input;
+					}
+				}));
 
 		intPatterns.add(new IntPattern(true, "Faster low byte/high byte processing(const)",
 				new String[] { "JSR INTFAC", "JSR FACXREG", "LDY {CONST0}", "STY A_REG", "JSR SHL", "JSR PUSHREAL", "LDY {MEM0}",
