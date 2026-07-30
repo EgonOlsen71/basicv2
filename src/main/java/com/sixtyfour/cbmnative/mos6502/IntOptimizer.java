@@ -2381,7 +2381,39 @@ public class IntOptimizer {
 						}
 						pattern.reset();
 						return input;
+					}
+				}));
 
+		intPatterns.add(new IntPattern(true, "Faster low byte/high byte processing",
+				new String[] { "JSR INTFAC", "JSR FACXREG", "LDY {CONST0}", "STY A_REG", "JSR SHL", "JSR PUSHREAL", "LDA #<{MEM0}",
+						"LDY #>{MEM0}", "JSR REALFAC", "JSR FACWORD", "STY {*}", "STA {*}", "{LABEL}", "LDY $FFFF", "LDA #0",
+						"JSR INTFAC", "JSR FACXREG", "JSR POPREAL2X", "JSR FASTFADDARG", "JSR FACINT", "STY {MEM1}", "STA {MEM1}" },
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						String consty = cleaned.get(2);
+						consty = consty.substring(consty.indexOf(" ") + 1).trim();
+						Number num = const2Value.get(consty);
+						double numd = num.doubleValue();
+						if (numd == 8) {
+							List<String> rep = new ArrayList<>();
+							rep.add(cleaned.get(3));
+							rep.add(cleaned.get(6));
+							rep.add(cleaned.get(7));
+							rep.add(cleaned.get(8));
+							rep.add(cleaned.get(9));
+							rep.add(cleaned.get(10));
+							rep.add(cleaned.get(11));
+							rep.add(cleaned.get(12));
+							rep.add(cleaned.get(13));
+							rep.add(cleaned.get(20));
+							rep.add("LDA A_REG");
+							rep.add(cleaned.get(21));
+							return combine(pattern, rep);
+						}
+						pattern.reset();
+						return input;
 					}
 				}));
 
