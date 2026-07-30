@@ -9,25 +9,25 @@
 135	.$81f	LINE_130:
 138	.$81f	LINE_140:
 140	.$81f	LDX #4
-141	.$821	dcloop235_1:
+141	.$821	dcloop237_1:
 142	.$821	LDA CONST_0,X
 143	.$824	STA VAR_MI,X
 144	.$827	DEX
-145	.$828	BPL dcloop235_1
+145	.$828	BPL dcloop237_1
 148	.$82a	LINE_150:
 150	.$82a	LDX #4
-151	.$82c	dcloop235_2:
+151	.$82c	dcloop237_2:
 152	.$82c	LDA CONST_1,X
 153	.$82f	STA VAR_MX,X
 154	.$832	DEX
-155	.$833	BPL dcloop235_2
+155	.$833	BPL dcloop237_2
 158	.$835	LINE_160:
 160	.$835	LDX #4
-161	.$837	dcloop401_1:
+161	.$837	dcloop405_1:
 162	.$837	LDA CONST_2,X
 163	.$83a	STA VAR_MY,X
 164	.$83d	DEX
-165	.$83e	BPL dcloop401_1
+165	.$83e	BPL dcloop405_1
 168	.$840	LINE_170:
 170	.$840	JSR GOSUB
 171	.$843	JSR LINE_470
@@ -388,18 +388,18 @@
 727	.$af1	LINE_470:
 730	.$af1	LINE_480:
 732	.$af1	LDX #4
-733	.$af3	dcloop2559_1:
+733	.$af3	dcloop2589_1:
 734	.$af3	LDA CONST_13,X
 735	.$af6	STA VAR_X,X
 736	.$af9	DEX
-737	.$afa	BPL dcloop2559_1
+737	.$afa	BPL dcloop2589_1
 740	.$afc	LINE_490:
 742	.$afc	LDX #4
-743	.$afe	dcloop2559_2:
+743	.$afe	dcloop2589_2:
 744	.$afe	LDA CONST_14,X
 745	.$b01	STA VAR_Y,X
 746	.$b04	DEX
-747	.$b05	BPL dcloop2559_2
+747	.$b05	BPL dcloop2589_2
 750	.$b07	LINE_500:
 752	.$b07	LDA #0
 753	.$b09	STA VAR_VY
@@ -409,11 +409,11 @@
 757	.$b15	STA VAR_VY+4
 760	.$b18	LINE_510:
 762	.$b18	LDX #4
-763	.$b1a	dcloop2725_1:
+763	.$b1a	dcloop2757_1:
 764	.$b1a	LDA CONST_15,X
 765	.$b1d	STA VAR_VX,X
 766	.$b20	DEX
-767	.$b21	BPL dcloop2725_1
+767	.$b21	BPL dcloop2757_1
 770	.$b23	LINE_520:
 772	.$b23	LDY #1
 773	.$b25	STY 53269

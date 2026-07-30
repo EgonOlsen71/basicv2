@@ -132,7 +132,7 @@ STY TMP_ZP+1
 ; Optimizer rule: MEM->REG, REG->TMP_ZP/4
 JSR WRITETID
 LDX #4
-dcloop235_1:
+dcloop237_1:
 LDA CONST_1R,X
 STA VAR_W,X
 LDA CONST_2R,X
@@ -140,7 +140,7 @@ STA VAR_P,X
 LDA CONST_3R,X
 STA VAR_A,X
 DEX
-BPL dcloop235_1
+BPL dcloop237_1
 ; Special rule: Aggregation of assignments (3)
 ; Optimizer rule: Direct copy of floats into mem/6
 ;
@@ -249,11 +249,11 @@ LDY #>VAR_A
 ; FAC to (X/Y)
 JSR FACMEM
 LDX #4
-dcloop733_1:
+dcloop741_1:
 LDA CONST_2R,X
 STA VAR_X,X
 DEX
-BPL dcloop733_1
+BPL dcloop741_1
 ; Optimizer rule: Direct copy of floats into mem/6
 ;
 LINE_40:

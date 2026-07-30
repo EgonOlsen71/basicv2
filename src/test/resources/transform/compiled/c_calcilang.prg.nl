@@ -125,13 +125,13 @@ LINE_0:
 ;
 LINE_1:
 LDX #4
-dcloop401_1:
+dcloop405_1:
 LDA CONST_0R,X
 STA VAR_F,X
 LDA CONST_1R,X
 STA VAR_F,X
 DEX
-BPL dcloop401_1
+BPL dcloop405_1
 ; Special rule: Aggregation of assignments (2)
 ; Optimizer rule: Direct copy of floats into mem/6
 ;

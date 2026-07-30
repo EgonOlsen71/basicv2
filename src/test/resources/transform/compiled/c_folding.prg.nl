@@ -169,11 +169,11 @@ LINE_SKIP2:
 LINE_20:
 ;
 LDX #4
-dcloop733_1:
+dcloop741_1:
 LDA CONST_3R,X
 STA VAR_F,X
 DEX
-BPL dcloop733_1
+BPL dcloop741_1
 ; Optimizer rule: Direct copy of floats into mem/6
 ;
 LINE_30:

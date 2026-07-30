@@ -258,11 +258,11 @@ LINE_9:
 LINE_10:
 ;
 LDX #4
-dcloop1065_1:
+dcloop1077_1:
 LDA CONST_7R,X
 STA VAR_X,X
 DEX
-BPL dcloop1065_1
+BPL dcloop1077_1
 ; Optimizer rule: Direct copy of floats into mem/6
 LDA 56334
 AND #254
@@ -510,11 +510,11 @@ BEQ LINE_SKIP3
 LINE_NSKIP3:
 ;
 LDX #4
-dcloop1895_1:
+dcloop1917_1:
 LDA CONST_7R,X
 STA VAR_X,X
 DEX
-BPL dcloop1895_1
+BPL dcloop1917_1
 ; Optimizer rule: Direct copy of floats into mem/6
 ;
 LINE_SKIP3:

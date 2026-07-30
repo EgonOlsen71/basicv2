@@ -302,11 +302,11 @@ LDX #<VAR_TI
 LDY #>VAR_TI
 JSR FACMEM
 LDX #4
-dcloop733_1:
+dcloop741_1:
 LDA VAR_TI,X
 STA VAR_T1,X
 DEX
-BPL dcloop733_1
+BPL dcloop741_1
 ; Optimizer rule: Direct copy of floats into mem/6
 JSR GOSUB
 JSR LINE_50
@@ -324,11 +324,11 @@ LDX #<VAR_TI
 LDY #>VAR_TI
 JSR FACMEM
 LDX #4
-dcloop733_2:
+dcloop741_2:
 LDA VAR_TI,X
 STA VAR_T2,X
 DEX
-BPL dcloop733_2
+BPL dcloop741_2
 ; Optimizer rule: Direct copy of floats into mem/6
 LDA #<VAR_T1
 LDY #>VAR_T1

@@ -240,11 +240,11 @@ JSR LINE_100
 LINE_20:
 ;
 LDX #4
-dcloop567_1:
+dcloop573_1:
 LDA CONST_4R,X
 STA VAR_J,X
 DEX
-BPL dcloop567_1
+BPL dcloop573_1
 ; Optimizer rule: Direct copy of floats into mem/6
 LDA #<VAR_D[]+10
 LDY #>VAR_D[]+10

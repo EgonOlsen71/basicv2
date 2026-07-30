@@ -131,11 +131,11 @@ JSR STROUTBRKWL
 ; Optimizer rule: Memory saving STROUTBRK/1
 ; Optimizer rule: STROUT + LINEBRK/1
 LDX #4
-dcloop567_1:
+dcloop573_1:
 LDA CONST_1R,X
 STA VAR_A,X
 DEX
-BPL dcloop567_1
+BPL dcloop573_1
 ; Optimizer rule: Direct copy of floats into mem/6
 ;
 LINE_20:

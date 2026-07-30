@@ -260,11 +260,11 @@ STA VAR_X+3
 STA VAR_X+4
 ; Optimizer rule: Simplified setting to 0/6
 LDX #4
-dcloop401_1:
+dcloop405_1:
 LDA CONST_6R,X
 STA VAR_S,X
 DEX
-BPL dcloop401_1
+BPL dcloop405_1
 ; Optimizer rule: Direct copy of floats into mem/6
 ;
 LINE_13:
@@ -387,11 +387,11 @@ STY 53272
 LINE_21:
 ;
 LDX #4
-dcloop567_1:
+dcloop573_1:
 LDA CONST_5R,X
 STA VAR_AD,X
 DEX
-BPL dcloop567_1
+BPL dcloop573_1
 ; Optimizer rule: Direct copy of floats into mem/6
 ;
 LINE_22:
@@ -450,11 +450,11 @@ LINE_SKIP13:
 LINE_23:
 ;
 LDX #4
-dcloop899_1:
+dcloop909_1:
 LDA CONST_15R,X
 STA VAR_AD,X
 DEX
-BPL dcloop899_1
+BPL dcloop909_1
 ; Optimizer rule: Direct copy of floats into mem/6
 ;
 LINE_24:
@@ -719,11 +719,11 @@ LINE_43:
 LINE_50:
 ;
 LDX #4
-dcloop1895_1:
+dcloop1917_1:
 LDA CONST_6R,X
 STA VAR_SX,X
 DEX
-BPL dcloop1895_1
+BPL dcloop1917_1
 ; Optimizer rule: Direct copy of floats into mem/6
 ;
 LINE_51:
@@ -774,11 +774,11 @@ LINE_SKIP15:
 LINE_53:
 ;
 LDX #4
-dcloop2061_1:
+dcloop2085_1:
 LDA CONST_20,X
 STA VAR_SX,X
 DEX
-BPL dcloop2061_1
+BPL dcloop2085_1
 ; Optimizer rule: Direct copy of floats into mem/6
 ;
 LINE_54:
@@ -801,11 +801,11 @@ LINE_55:
 LINE_56:
 ;
 LDX #4
-dcloop2061_2:
+dcloop2085_2:
 LDA CONST_6R,X
 STA VAR_SY,X
 DEX
-BPL dcloop2061_2
+BPL dcloop2085_2
 ; Optimizer rule: Direct copy of floats into mem/6
 ;
 LINE_57:
@@ -856,11 +856,11 @@ LINE_SKIP16:
 LINE_59:
 ;
 LDX #4
-dcloop2393_1:
+dcloop2421_1:
 LDA CONST_20,X
 STA VAR_SY,X
 DEX
-BPL dcloop2393_1
+BPL dcloop2421_1
 ; Optimizer rule: Direct copy of floats into mem/6
 ;
 LINE_60:
@@ -883,21 +883,21 @@ LINE_61:
 LINE_62:
 ;
 LDX #4
-dcloop2393_2:
+dcloop2421_2:
 LDA VAR_X1,X
 STA VAR_X,X
 DEX
-BPL dcloop2393_2
+BPL dcloop2421_2
 ; Optimizer rule: Direct copy of floats into mem/6
 ;
 LINE_63:
 ;
 LDX #4
-dcloop2559_1:
+dcloop2589_1:
 LDA VAR_Y1,X
 STA VAR_Y,X
 DEX
-BPL dcloop2559_1
+BPL dcloop2589_1
 ; Optimizer rule: Direct copy of floats into mem/6
 ;
 LINE_64:
@@ -936,11 +936,11 @@ LINE_66:
 LINE_67:
 ;
 LDX #4
-dcloop2725_1:
+dcloop2757_1:
 LDA VAR_DX,X
 STA VAR_E,X
 DEX
-BPL dcloop2725_1
+BPL dcloop2757_1
 ; Optimizer rule: Direct copy of floats into mem/6
 ;
 LINE_68:
@@ -975,12 +975,12 @@ JSR LINE_40
 LINE_71:
 ;
 LDX #4
-dceloop3986_1:
+dceloop4034_1:
 LDA VAR_X2,X
 CMP VAR_X,X
 BNE LINE_SKIP18
 DEX
-BPL dceloop3986_1
+BPL dceloop4034_1
 ; Optimizer rule: Direct compare(=) of floats/7
 LINE_NSKIP18:
 ; Optimizer rule: Simplified equal comparison/6
@@ -1096,11 +1096,11 @@ LINE_78:
 LINE_79:
 ;
 LDX #4
-dcloop3223_1:
+dcloop3261_1:
 LDA VAR_DY,X
 STA VAR_E,X
 DEX
-BPL dcloop3223_1
+BPL dcloop3261_1
 ; Optimizer rule: Direct copy of floats into mem/6
 ;
 LINE_80:
@@ -1135,12 +1135,12 @@ JSR LINE_40
 LINE_83:
 ;
 LDX #4
-dceloop3986_2:
+dceloop4034_2:
 LDA VAR_Y2,X
 CMP VAR_Y,X
 BNE LINE_SKIP20
 DEX
-BPL dceloop3986_2
+BPL dceloop4034_2
 ; Optimizer rule: Direct compare(=) of floats/7
 LINE_NSKIP20:
 ; Optimizer rule: Simplified equal comparison/6

@@ -215,11 +215,11 @@ JSR INTOUTBRK
 LINE_80:
 ;
 LDX #4
-dcloop733_1:
+dcloop741_1:
 LDA CONST_8R,X
 STA VAR_A,X
 DEX
-BPL dcloop733_1
+BPL dcloop741_1
 ; Optimizer rule: Direct copy of floats into mem/6
 ;
 LINE_90:
@@ -281,11 +281,11 @@ JSR INTOUTBRK
 LINE_110:
 ;
 LDX #4
-dcloop1065_1:
+dcloop1077_1:
 LDA CONST_13R,X
 STA VAR_J,X
 DEX
-BPL dcloop1065_1
+BPL dcloop1077_1
 ; Optimizer rule: Direct copy of floats into mem/6
 ;
 LINE_120:

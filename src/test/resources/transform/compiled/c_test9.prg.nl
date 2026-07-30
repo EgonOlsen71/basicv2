@@ -132,11 +132,11 @@ STY TMP_ZP+1
 ; Optimizer rule: MEM->REG, REG->TMP_ZP/4
 JSR WRITETID
 LDX #4
-dcloop235_1:
+dcloop237_1:
 LDA CONST_1,X
 STA VAR_C,X
 DEX
-BPL dcloop235_1
+BPL dcloop237_1
 ; Optimizer rule: Direct copy of floats into mem/6
 ;
 LINE_10:
@@ -200,11 +200,11 @@ JSR SINGLECHROUTBRKMAX
 ; Optimizer rule: Single character output and break/2
 ; Optimizer rule: STROUT + LINEBRK/1
 LDX #4
-dcloop567_1:
+dcloop573_1:
 LDA CONST_8,X
 STA VAR_A,X
 DEX
-BPL dcloop567_1
+BPL dcloop573_1
 ; Optimizer rule: Direct copy of floats into mem/6
 ;
 LINE_20:

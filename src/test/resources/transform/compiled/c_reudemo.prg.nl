@@ -138,11 +138,11 @@ JSR SINGLECHROUTMAX
 LINE_10:
 ;
 LDX #4
-dcloop235_1:
+dcloop237_1:
 LDA CONST_3,X
 STA VAR_RE,X
 DEX
-BPL dcloop235_1
+BPL dcloop237_1
 ; Optimizer rule: Direct copy of floats into mem/6
 ;
 LINE_30:
@@ -549,11 +549,11 @@ FORLOOP1:
 LINE_2020:
 ;
 LDX #4
-dcloop2061_1:
+dcloop2085_1:
 LDA CONST_16R,X
 STA VAR_P,X
 DEX
-BPL dcloop2061_1
+BPL dcloop2085_1
 ; Optimizer rule: Direct copy of floats into mem/6
 LDA #<CONST_17R
 LDY #>CONST_17R

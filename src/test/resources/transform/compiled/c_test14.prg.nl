@@ -177,11 +177,11 @@ RBEQ_0:
 LINE_20:
 ;
 LDX #4
-dcloop567_1:
+dcloop573_1:
 LDA CONST_4R,X
 STA VAR_A,X
 DEX
-BPL dcloop567_1
+BPL dcloop573_1
 ; Optimizer rule: Direct copy of floats into mem/6
 JSR ONETOFAC
 ; Optimizer rule: Faster setting to 1/1

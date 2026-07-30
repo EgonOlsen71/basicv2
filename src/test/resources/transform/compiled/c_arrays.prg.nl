@@ -145,11 +145,11 @@ LDX #<VAR_TI
 LDY #>VAR_TI
 JSR FACMEM
 LDX #4
-dcloop235_1:
+dcloop237_1:
 LDA VAR_TI,X
 STA VAR_T0,X
 DEX
-BPL dcloop235_1
+BPL dcloop237_1
 ; Optimizer rule: Direct copy of floats into mem/6
 ;
 LINE_40:
@@ -334,11 +334,11 @@ LDX #<VAR_TI
 LDY #>VAR_TI
 JSR FACMEM
 LDX #4
-dcloop733_1:
+dcloop741_1:
 LDA VAR_TI,X
 STA VAR_T0,X
 DEX
-BPL dcloop733_1
+BPL dcloop741_1
 ; Optimizer rule: Direct copy of floats into mem/6
 ;
 LINE_100:
@@ -645,11 +645,11 @@ LDX #<VAR_TI
 LDY #>VAR_TI
 JSR FACMEM
 LDX #4
-dcloop1729_1:
+dcloop1749_1:
 LDA VAR_TI,X
 STA VAR_T0,X
 DEX
-BPL dcloop1729_1
+BPL dcloop1749_1
 ; Optimizer rule: Direct copy of floats into mem/6
 ;
 LINE_200:
@@ -963,11 +963,11 @@ LDX #<VAR_TI
 LDY #>VAR_TI
 JSR FACMEM
 LDX #4
-dcloop2559_1:
+dcloop2589_1:
 LDA VAR_TI,X
 STA VAR_T0,X
 DEX
-BPL dcloop2559_1
+BPL dcloop2589_1
 ; Optimizer rule: Direct copy of floats into mem/6
 ;
 LINE_420:

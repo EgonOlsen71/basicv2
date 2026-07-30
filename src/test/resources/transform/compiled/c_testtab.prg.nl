@@ -180,11 +180,11 @@ JSR INTOUTBRKFAST
 LINE_50:
 ;
 LDX #4
-dcloop1065_1:
+dcloop1077_1:
 LDA CONST_4,X
 STA VAR_A,X
 DEX
-BPL dcloop1065_1
+BPL dcloop1077_1
 ; Optimizer rule: Direct copy of floats into mem/6
 LDA #<CONST_5
 LDY #>CONST_5

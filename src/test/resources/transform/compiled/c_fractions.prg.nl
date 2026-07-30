@@ -263,11 +263,11 @@ BEQ LINE_SKIP34
 LINE_NSKIP34:
 ;
 LDX #4
-dcloop401_1:
+dcloop405_1:
 LDA CONST_4R,X
 STA VAR_X,X
 DEX
-BPL dcloop401_1
+BPL dcloop405_1
 ; Optimizer rule: Direct copy of floats into mem/6
 ;
 LINE_SKIP34:
@@ -594,11 +594,11 @@ JMP LINE_SKIP39
 LINE_NSKIP39:
 ;
 LDX #4
-dcloop899_1:
+dcloop909_1:
 LDA CONST_4R,X
 STA VAR_X,X
 DEX
-BPL dcloop899_1
+BPL dcloop909_1
 ; Optimizer rule: Direct copy of floats into mem/6
 LDA #<CONST_18R
 LDY #>CONST_18R
@@ -778,22 +778,22 @@ JMP RETURN
 LINE_1200:
 ;
 LDX #4
-dceloop4816_1:
+dceloop4874_1:
 LDA CONST_20R,X
 CMP VAR_CN,X
 BNE LINE_SKIP41
 DEX
-BPL dceloop4816_1
+BPL dceloop4874_1
 ; Optimizer rule: Direct compare(=) of floats/7
 LINE_NSKIP41:
 ; Optimizer rule: Simplified equal comparison/6
 ;
 LDX #4
-dcloop1231_1:
+dcloop1245_1:
 LDA CONST_4R,X
 STA VAR_X,X
 DEX
-BPL dcloop1231_1
+BPL dcloop1245_1
 ; Optimizer rule: Direct copy of floats into mem/6
 JMP RETURN
 ;
@@ -860,11 +860,11 @@ BEQ LINE_SKIP42
 LINE_NSKIP42:
 ;
 LDX #4
-dcloop1231_2:
+dcloop1245_2:
 LDA CONST_4R,X
 STA VAR_X,X
 DEX
-BPL dcloop1231_2
+BPL dcloop1245_2
 ; Optimizer rule: Direct copy of floats into mem/6
 JMP RETURN
 ;
@@ -1120,11 +1120,11 @@ LINE_1599:
 LINE_1600:
 ;
 LDX #4
-dcloop1563_1:
+dcloop1581_1:
 LDA CONST_18R,X
 STA VAR_I,X
 DEX
-BPL dcloop1563_1
+BPL dcloop1581_1
 ; Optimizer rule: Direct copy of floats into mem/6
 LDA #<VAR_CN
 LDY #>VAR_CN
@@ -1313,11 +1313,11 @@ STY G_REG+1
 JSR ARRAYSTORE_INT_INTEGER
 ; Optimizer rule: Array content is integer (store)/9
 LDX #4
-dcloop1895_1:
+dcloop1917_1:
 LDA CONST_4R,X
 STA VAR_DC,X
 DEX
-BPL dcloop1895_1
+BPL dcloop1917_1
 ; Optimizer rule: Direct copy of floats into mem/6
 JMP RETURN
 ;
@@ -1666,11 +1666,11 @@ JSR FACINT
 STY VAR_N%
 STA VAR_N%+1
 LDX #4
-dcloop2393_1:
+dcloop2421_1:
 LDA CONST_4R,X
 STA VAR_DC,X
 DEX
-BPL dcloop2393_1
+BPL dcloop2421_1
 ; Optimizer rule: Direct copy of floats into mem/6
 JMP RETURN
 ;
@@ -2240,11 +2240,11 @@ LINE_NSKIP53:
 ; Optimizer rule: Simplified equal comparison/6
 ;
 LDX #4
-dcloop3223_1:
+dcloop3261_1:
 LDA CONST_4R,X
 STA VAR_EO,X
 DEX
-BPL dcloop3223_1
+BPL dcloop3261_1
 ; Optimizer rule: Direct copy of floats into mem/6
 JMP LINE_3110
 ;
@@ -2554,11 +2554,11 @@ JMP RETURN
 LINE_4000:
 ;
 LDX #4
-dcloop3721_1:
+dcloop3765_1:
 LDA CONST_4R,X
 STA VAR_SP,X
 DEX
-BPL dcloop3721_1
+BPL dcloop3765_1
 ; Optimizer rule: Direct copy of floats into mem/6
 ;
 LINE_4010:
@@ -2714,11 +2714,11 @@ STY 53280
 LINE_4060:
 ;
 LDX #4
-dcloop3887_1:
+dcloop3933_1:
 LDA CONST_32R,X
 STA VAR_I,X
 DEX
-BPL dcloop3887_1
+BPL dcloop3933_1
 ; Optimizer rule: Direct copy of floats into mem/6
 LDA #<VAR_CN
 LDY #>VAR_CN
@@ -3178,11 +3178,11 @@ JSR ARRAYSTORE_INT_INTEGER_AC
 LINE_5035:
 ;
 LDX #4
-dcloop4551_1:
+dcloop4605_1:
 LDA CONST_18R,X
 STA VAR_I,X
 DEX
-BPL dcloop4551_1
+BPL dcloop4605_1
 ; Optimizer rule: Direct copy of floats into mem/6
 LDA #<CONST_38R
 LDY #>CONST_38R

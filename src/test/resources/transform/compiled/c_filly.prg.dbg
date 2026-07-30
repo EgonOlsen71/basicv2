@@ -440,11 +440,11 @@
 897	.$b94	JSR FACMEM
 899	.$b97	LINE_20010:
 901	.$b97	LDX #4
-902	.$b99	dcloop3057_1:
+902	.$b99	dcloop3093_1:
 903	.$b99	LDA CONST_15R,X
 904	.$b9c	STA VAR_I,X
 905	.$b9f	DEX
-906	.$ba0	BPL dcloop3057_1
+906	.$ba0	BPL dcloop3093_1
 908	.$ba2	LDA #<CONST_16R
 909	.$ba4	LDY #>CONST_16R
 910	.$ba6	JSR REALFACPUSH
@@ -471,11 +471,11 @@
 936	.$bd9	RBEQ_0:
 938	.$bd9	LINE_20020:
 940	.$bd9	LDX #4
-941	.$bdb	dcloop3223_1:
+941	.$bdb	dcloop3261_1:
 942	.$bdb	LDA CONST_19,X
 943	.$bde	STA VAR_I,X
 944	.$be1	DEX
-945	.$be2	BPL dcloop3223_1
+945	.$be2	BPL dcloop3261_1
 947	.$be4	LDA #<CONST_20
 948	.$be6	LDY #>CONST_20
 949	.$be8	JSR REALFACPUSH

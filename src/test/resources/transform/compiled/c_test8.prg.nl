@@ -160,11 +160,11 @@ LDX #<VAR_TI
 LDY #>VAR_TI
 JSR FACMEM
 LDX #4
-dcloop401_1:
+dcloop405_1:
 LDA VAR_TI,X
 STA VAR_S,X
 DEX
-BPL dcloop401_1
+BPL dcloop405_1
 ; Optimizer rule: Direct copy of floats into mem/6
 LDA #0
 STA VAR_I

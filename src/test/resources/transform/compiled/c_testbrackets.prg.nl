@@ -341,11 +341,11 @@ JSR ARRAYSTORE_INT_INTEGER_AC
 LINE_50:
 ;
 LDX #4
-dcloop899_1:
+dcloop909_1:
 LDA CONST_4R,X
 STA VAR_I,X
 DEX
-BPL dcloop899_1
+BPL dcloop909_1
 ; Optimizer rule: Direct copy of floats into mem/6
 LDA #<CONST_11R
 LDY #>CONST_11R
@@ -398,11 +398,11 @@ RBEQ_0:
 LINE_60:
 ;
 LDX #4
-dcloop1065_1:
+dcloop1077_1:
 LDA CONST_4R,X
 STA VAR_I,X
 DEX
-BPL dcloop1065_1
+BPL dcloop1077_1
 ; Optimizer rule: Direct copy of floats into mem/6
 LDA #<CONST_11R
 LDY #>CONST_11R
@@ -469,11 +469,11 @@ STA VAR_P%+1
 ;
 ;
 LDX #4
-dcloop1231_1:
+dcloop1245_1:
 LDA CONST_14R,X
 STA VAR_I,X
 DEX
-BPL dcloop1231_1
+BPL dcloop1245_1
 ; Optimizer rule: Direct copy of floats into mem/6
 LDA #<CONST_15R
 LDY #>CONST_15R
@@ -521,11 +521,11 @@ RBEQ_2:
 LINE_80:
 ;
 LDX #4
-dcloop1397_1:
+dcloop1413_1:
 LDA CONST_14R,X
 STA VAR_I,X
 DEX
-BPL dcloop1397_1
+BPL dcloop1413_1
 ; Optimizer rule: Direct copy of floats into mem/6
 LDA #<CONST_15R
 LDY #>CONST_15R

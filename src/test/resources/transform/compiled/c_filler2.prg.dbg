@@ -98,11 +98,11 @@
 302	.$8c0	LDY #>VAR_TI
 303	.$8c2	JSR FACMEM
 304	.$8c5	LDX #4
-305	.$8c7	dcloop733_1:
+305	.$8c7	dcloop741_1:
 306	.$8c7	LDA VAR_TI,X
 307	.$8ca	STA VAR_T1,X
 308	.$8cd	DEX
-309	.$8ce	BPL dcloop733_1
+309	.$8ce	BPL dcloop741_1
 311	.$8d0	JSR GOSUB
 312	.$8d3	JSR LINE_50
 314	.$8d6	SEI
@@ -117,11 +117,11 @@
 324	.$8e7	LDY #>VAR_TI
 325	.$8e9	JSR FACMEM
 326	.$8ec	LDX #4
-327	.$8ee	dcloop733_2:
+327	.$8ee	dcloop741_2:
 328	.$8ee	LDA VAR_TI,X
 329	.$8f1	STA VAR_T2,X
 330	.$8f4	DEX
-331	.$8f5	BPL dcloop733_2
+331	.$8f5	BPL dcloop741_2
 333	.$8f7	LDA #<VAR_T1
 334	.$8f9	LDY #>VAR_T1
 335	.$8fb	JSR REALFAC

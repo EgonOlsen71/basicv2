@@ -113,11 +113,11 @@
 293	.$8e9	LINE_300:
 296	.$8e9	LINE_310:
 298	.$8e9	LDX #4
-299	.$8eb	dcloop567_1:
+299	.$8eb	dcloop573_1:
 300	.$8eb	LDA CONST_6,X
 301	.$8ee	STA VAR_IS,X
 302	.$8f1	DEX
-303	.$8f2	BPL dcloop567_1
+303	.$8f2	BPL dcloop573_1
 306	.$8f4	LINE_312:
 308	.$8f4	LDA #<VAR_I
 309	.$8f6	LDY #>VAR_I
@@ -184,11 +184,11 @@
 405	.$98b	STA VAR_I2+4
 408	.$98e	LINE_320:
 410	.$98e	LDX #4
-411	.$990	dcloop899_1:
+411	.$990	dcloop909_1:
 412	.$990	LDA CONST_3R,X
 413	.$993	STA VAR_K,X
 414	.$996	DEX
-415	.$997	BPL dcloop899_1
+415	.$997	BPL dcloop909_1
 417	.$999	LDA #<CONST_11
 418	.$99b	LDY #>CONST_11
 419	.$99d	JSR REALFACPUSH
@@ -316,11 +316,11 @@
 618	.$aab	STA VAR_IS+3
 619	.$aae	STA VAR_IS+4
 621	.$ab1	LDX #4
-622	.$ab3	dcloop1563_1:
+622	.$ab3	dcloop1581_1:
 623	.$ab3	LDA CONST_11,X
 624	.$ab6	STA VAR_K,X
 625	.$ab9	DEX
-626	.$aba	BPL dcloop1563_1
+626	.$aba	BPL dcloop1581_1
 629	.$abc	LINE_SKIP4:
 632	.$abc	LINE_390:
 634	.$abc	LDA #<VAR_K
@@ -395,11 +395,11 @@
 759	.$b5d	STA 53270
 771	.$b60	LINE_540:
 773	.$b60	LDX #4
-774	.$b62	dcloop1895_1:
+774	.$b62	dcloop1917_1:
 775	.$b62	LDA CONST_23R,X
 776	.$b65	STA VAR_R,X
 777	.$b68	DEX
-778	.$b69	BPL dcloop1895_1
+778	.$b69	BPL dcloop1917_1
 780	.$b6b	LDA #<CONST_24R
 781	.$b6d	LDY #>CONST_24R
 782	.$b6f	JSR REALFACPUSH
@@ -426,11 +426,11 @@
 808	.$b9f	RBEQ_3:
 810	.$b9f	LINE_550:
 812	.$b9f	LDX #4
-813	.$ba1	dcloop2061_1:
+813	.$ba1	dcloop2085_1:
 814	.$ba1	LDA CONST_24R,X
 815	.$ba4	STA VAR_R,X
 816	.$ba7	DEX
-817	.$ba8	BPL dcloop2061_1
+817	.$ba8	BPL dcloop2085_1
 819	.$baa	LDA #<CONST_26R
 820	.$bac	LDY #>CONST_26R
 821	.$bae	JSR REALFACPUSH
@@ -457,11 +457,11 @@
 847	.$bde	RBEQ_4:
 849	.$bde	LINE_560:
 851	.$bde	LDX #4
-852	.$be0	dcloop2061_2:
+852	.$be0	dcloop2085_2:
 853	.$be0	LDA CONST_28,X
 854	.$be3	STA VAR_R,X
 855	.$be6	DEX
-856	.$be7	BPL dcloop2061_2
+856	.$be7	BPL dcloop2085_2
 858	.$be9	LDA #<CONST_29
 859	.$beb	LDY #>CONST_29
 860	.$bed	JSR REALFACPUSH

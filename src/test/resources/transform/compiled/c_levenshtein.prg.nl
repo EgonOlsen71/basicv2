@@ -299,11 +299,11 @@ RBEQ_0:
 LINE_50:
 ;
 LDX #4
-dcloop733_1:
+dcloop741_1:
 LDA CONST_4R,X
 STA VAR_J,X
 DEX
-BPL dcloop733_1
+BPL dcloop741_1
 ; Optimizer rule: Direct copy of floats into mem/6
 JSR ONETOFAC
 ; Optimizer rule: Faster setting to 1/1
@@ -353,11 +353,11 @@ JSR ARRAYSTORE_REAL
 LINE_70:
 ;
 LDX #4
-dcloop899_1:
+dcloop909_1:
 LDA CONST_4R,X
 STA VAR_I,X
 DEX
-BPL dcloop899_1
+BPL dcloop909_1
 ; Optimizer rule: Direct copy of floats into mem/6
 JSR ONETOFAC
 ; Optimizer rule: Faster setting to 1/1
@@ -387,11 +387,11 @@ FORLOOP2:
 LINE_80:
 ;
 LDX #4
-dcloop1065_1:
+dcloop1077_1:
 LDA CONST_4R,X
 STA VAR_MA,X
 DEX
-BPL dcloop1065_1
+BPL dcloop1077_1
 ; Optimizer rule: Direct copy of floats into mem/6
 JSR COMPACTMAX
 LDA #<VAR_J
@@ -549,11 +549,11 @@ JSR FACMEM
 LINE_120:
 ;
 LDX #4
-dcloop1729_1:
+dcloop1749_1:
 LDA VAR_CI,X
 STA VAR_CT,X
 DEX
-BPL dcloop1729_1
+BPL dcloop1749_1
 ; Optimizer rule: Direct copy of floats into mem/6
 LDA #<VAR_CI
 LDY #>VAR_CI
@@ -578,11 +578,11 @@ BEQ LINE_SKIP4
 LINE_NSKIP4:
 ;
 LDX #4
-dcloop1895_1:
+dcloop1917_1:
 LDA VAR_CD,X
 STA VAR_CT,X
 DEX
-BPL dcloop1895_1
+BPL dcloop1917_1
 ; Optimizer rule: Direct copy of floats into mem/6
 ;
 LINE_SKIP4:
@@ -591,11 +591,11 @@ LINE_SKIP4:
 LINE_130:
 ;
 LDX #4
-dcloop1895_2:
+dcloop1917_2:
 LDA VAR_CR,X
 STA VAR_CJ,X
 DEX
-BPL dcloop1895_2
+BPL dcloop1917_2
 ; Optimizer rule: Direct copy of floats into mem/6
 LDA #<VAR_CR
 LDY #>VAR_CR
@@ -620,11 +620,11 @@ BEQ LINE_SKIP5
 LINE_NSKIP5:
 ;
 LDX #4
-dcloop2061_1:
+dcloop2085_1:
 LDA VAR_CT,X
 STA VAR_CJ,X
 DEX
-BPL dcloop2061_1
+BPL dcloop2085_1
 ; Optimizer rule: Direct copy of floats into mem/6
 ;
 LINE_SKIP5:

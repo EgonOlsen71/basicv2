@@ -155,13 +155,13 @@ STA VAR_C+2
 STA VAR_C+3
 STA VAR_C+4
 LDX #4
-dcloop235_1:
+dcloop237_1:
 LDA CONST_3R,X
 STA VAR_SA,X
 LDA VAR_C,X
 STA VAR_CO,X
 DEX
-BPL dcloop235_1
+BPL dcloop237_1
 ; Special rule: Aggregation of assignments (2)
 ; Optimizer rule: Direct copy of floats into mem/6
 LDA #0
@@ -778,11 +778,11 @@ LDY #>VAR_CO
 ; FAC to (X/Y)
 JSR FACMEM
 LDX #4
-dcloop1397_1:
+dcloop1413_1:
 LDA CONST_2R,X
 STA VAR_BL,X
 DEX
-BPL dcloop1397_1
+BPL dcloop1413_1
 ; Optimizer rule: Direct copy of floats into mem/6
 JMP LINE_1050
 ;
@@ -3981,7 +3981,14 @@ JSR OPENCH
 BCS OPENERR
 RTS
 OPENERR		STA TMP2_ZP
-LDA LOGICADDR
+LDA DEVICENUM
+CMP #2
+BNE NORS232
+LDA TMP2_ZP
+CMP #240
+BNE NORS232
+RTS                 ; I guess, this is no error in case of RS232 device? I just indicates a memory change!
+NORS232		LDA LOGICADDR
 JSR CLOSECH
 <IF BOOST>
 JSR BOOSTON

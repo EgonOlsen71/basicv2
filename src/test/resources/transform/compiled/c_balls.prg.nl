@@ -497,11 +497,11 @@ LINE_120:
 LINE_130:
 ;
 LDX #4
-dcloop1397_1:
+dcloop1413_1:
 LDA CONST_11R,X
 STA VAR_I,X
 DEX
-BPL dcloop1397_1
+BPL dcloop1413_1
 ; Optimizer rule: Direct copy of floats into mem/6
 LDA #<CONST_12R
 LDY #>CONST_12R
@@ -536,11 +536,11 @@ RBEQ_1:
 LINE_140:
 ;
 LDX #4
-dcloop1563_1:
+dcloop1581_1:
 LDA CONST_14,X
 STA VAR_I,X
 DEX
-BPL dcloop1563_1
+BPL dcloop1581_1
 ; Optimizer rule: Direct copy of floats into mem/6
 LDA #<CONST_15
 LDY #>CONST_15
@@ -581,11 +581,11 @@ STY TMP_ZP+1
 ; Optimizer rule: MEM->REG, REG->TMP_ZP/4
 JSR WRITETID
 LDX #4
-dcloop1563_2:
+dcloop1581_2:
 LDA CONST_5R,X
 STA VAR_B,X
 DEX
-BPL dcloop1563_2
+BPL dcloop1581_2
 ; Optimizer rule: Direct copy of floats into mem/6
 LDA #<VAR_N
 LDY #>VAR_N

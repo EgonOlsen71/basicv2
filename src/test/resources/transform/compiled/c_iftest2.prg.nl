@@ -185,12 +185,12 @@ FORLOOP1:
 LINE_20:
 ;
 LDX #4
-dceloop998_1:
+dceloop1010_1:
 LDA CONST_5R,X
 CMP VAR_I,X
 BNE LINE_SKIP3
 DEX
-BPL dceloop998_1
+BPL dceloop1010_1
 ; Optimizer rule: Direct compare(=) of floats/7
 LINE_NSKIP3:
 ; Optimizer rule: Simplified equal comparison/6
@@ -264,12 +264,12 @@ LINE_SKIP4:
 LINE_30:
 ;
 LDX #4
-dcneloop999_1:
+dcneloop1011_1:
 LDA CONST_4R,X
 CMP VAR_I,X
 BNE LINE_NSKIP5
 DEX
-BPL dcneloop999_1
+BPL dcneloop1011_1
 JMP LINE_SKIP5
 ; Optimizer rule: Direct compare(<>) of floats/8
 LINE_NSKIP5:

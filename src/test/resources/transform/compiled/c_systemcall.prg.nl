@@ -178,11 +178,11 @@ STY 783
 LINE_230:
 ;
 LDX #4
-dcloop1729_1:
+dcloop1749_1:
 LDA CONST_4,X
 STA VAR_A,X
 DEX
-BPL dcloop1729_1
+BPL dcloop1749_1
 ; Optimizer rule: Direct copy of floats into mem/6
 LDA #<CONST_5
 LDY #>CONST_5
@@ -203,11 +203,11 @@ STA JUMP_TARGET+1
 JSR INITFOR
 FORLOOP0:
 LDX #4
-dcloop1729_2:
+dcloop1749_2:
 LDA VAR_A,X
 STA VAR_AD,X
 DEX
-BPL dcloop1729_2
+BPL dcloop1749_2
 ; Optimizer rule: Direct copy of floats into mem/6
 LDA #0
 STA A_REG

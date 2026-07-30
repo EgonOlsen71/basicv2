@@ -126,11 +126,11 @@ LINE_0:
 LINE_10:
 ;
 LDX #4
-dcloop235_1:
+dcloop237_1:
 LDA CONST_0R,X
 STA VAR_C,X
 DEX
-BPL dcloop235_1
+BPL dcloop237_1
 ; Optimizer rule: Direct copy of floats into mem/6
 LDA #0
 STA VAR_B
@@ -215,12 +215,12 @@ LINE_SKIP2:
 LINE_25:
 ;
 LDX #4
-dceloop1496_1:
+dceloop1514_1:
 LDA CONST_6R,X
 CMP VAR_I,X
 BNE LINE_SKIP3
 DEX
-BPL dceloop1496_1
+BPL dceloop1514_1
 ; Optimizer rule: Direct compare(=) of floats/7
 LINE_NSKIP3:
 ; Optimizer rule: Simplified equal comparison/6

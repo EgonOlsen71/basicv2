@@ -133,12 +133,12 @@ LDY #>VAR_A
 ; FAC to (X/Y)
 JSR FACMEM
 LDX #4
-dceloop1330_1:
+dceloop1346_1:
 LDA CONST_0,X
 CMP VAR_A,X
 BNE LINE_SKIP1
 DEX
-BPL dceloop1330_1
+BPL dceloop1346_1
 ; Optimizer rule: Direct compare(=) of floats/7
 LINE_NSKIP1:
 ; Optimizer rule: Simplified equal comparison/6

@@ -94,11 +94,11 @@
 259	.$8e5	STA VAR_X+3
 260	.$8e8	STA VAR_X+4
 262	.$8eb	LDX #4
-263	.$8ed	dcloop401_1:
+263	.$8ed	dcloop405_1:
 264	.$8ed	LDA CONST_6R,X
 265	.$8f0	STA VAR_S,X
 266	.$8f3	DEX
-267	.$8f4	BPL dcloop401_1
+267	.$8f4	BPL dcloop405_1
 270	.$8f6	LINE_13:
 272	.$8f6	LDA #<VAR_X
 273	.$8f8	LDY #>VAR_X
@@ -175,11 +175,11 @@
 384	.$990	STY 53272
 387	.$993	LINE_21:
 389	.$993	LDX #4
-390	.$995	dcloop567_1:
+390	.$995	dcloop573_1:
 391	.$995	LDA CONST_5R,X
 392	.$998	STA VAR_AD,X
 393	.$99b	DEX
-394	.$99c	BPL dcloop567_1
+394	.$99c	BPL dcloop573_1
 397	.$99e	LINE_22:
 399	.$99e	LDA #<VAR_AD
 400	.$9a0	LDY #>VAR_AD
@@ -219,11 +219,11 @@
 447	.$9e3	LINE_SKIP13:
 450	.$9e3	LINE_23:
 452	.$9e3	LDX #4
-453	.$9e5	dcloop899_1:
+453	.$9e5	dcloop909_1:
 454	.$9e5	LDA CONST_15R,X
 455	.$9e8	STA VAR_AD,X
 456	.$9eb	DEX
-457	.$9ec	BPL dcloop899_1
+457	.$9ec	BPL dcloop909_1
 460	.$9ee	LINE_24:
 462	.$9ee	LDA #<VAR_AD
 463	.$9f0	LDY #>VAR_AD
@@ -371,11 +371,11 @@
 716	.$b28	LINE_43:
 719	.$b28	LINE_50:
 721	.$b28	LDX #4
-722	.$b2a	dcloop1895_1:
+722	.$b2a	dcloop1917_1:
 723	.$b2a	LDA CONST_6R,X
 724	.$b2d	STA VAR_SX,X
 725	.$b30	DEX
-726	.$b31	BPL dcloop1895_1
+726	.$b31	BPL dcloop1917_1
 729	.$b33	LINE_51:
 731	.$b33	LDA #<VAR_X1
 732	.$b35	LDY #>VAR_X1
@@ -408,11 +408,11 @@
 771	.$b67	LINE_SKIP15:
 774	.$b67	LINE_53:
 776	.$b67	LDX #4
-777	.$b69	dcloop2061_1:
+777	.$b69	dcloop2085_1:
 778	.$b69	LDA CONST_20,X
 779	.$b6c	STA VAR_SX,X
 780	.$b6f	DEX
-781	.$b70	BPL dcloop2061_1
+781	.$b70	BPL dcloop2085_1
 784	.$b72	LINE_54:
 786	.$b72	LDA #<VAR_DX
 787	.$b74	LDY #>VAR_DX
@@ -424,11 +424,11 @@
 798	.$b83	LINE_55:
 801	.$b83	LINE_56:
 803	.$b83	LDX #4
-804	.$b85	dcloop2061_2:
+804	.$b85	dcloop2085_2:
 805	.$b85	LDA CONST_6R,X
 806	.$b88	STA VAR_SY,X
 807	.$b8b	DEX
-808	.$b8c	BPL dcloop2061_2
+808	.$b8c	BPL dcloop2085_2
 811	.$b8e	LINE_57:
 813	.$b8e	LDA #<VAR_Y1
 814	.$b90	LDY #>VAR_Y1
@@ -461,11 +461,11 @@
 853	.$bc2	LINE_SKIP16:
 856	.$bc2	LINE_59:
 858	.$bc2	LDX #4
-859	.$bc4	dcloop2393_1:
+859	.$bc4	dcloop2421_1:
 860	.$bc4	LDA CONST_20,X
 861	.$bc7	STA VAR_SY,X
 862	.$bca	DEX
-863	.$bcb	BPL dcloop2393_1
+863	.$bcb	BPL dcloop2421_1
 866	.$bcd	LINE_60:
 868	.$bcd	LDA #<VAR_DY
 869	.$bcf	LDY #>VAR_DY
@@ -477,18 +477,18 @@
 880	.$bde	LINE_61:
 883	.$bde	LINE_62:
 885	.$bde	LDX #4
-886	.$be0	dcloop2393_2:
+886	.$be0	dcloop2421_2:
 887	.$be0	LDA VAR_X1,X
 888	.$be3	STA VAR_X,X
 889	.$be6	DEX
-890	.$be7	BPL dcloop2393_2
+890	.$be7	BPL dcloop2421_2
 893	.$be9	LINE_63:
 895	.$be9	LDX #4
-896	.$beb	dcloop2559_1:
+896	.$beb	dcloop2589_1:
 897	.$beb	LDA VAR_Y1,X
 898	.$bee	STA VAR_Y,X
 899	.$bf1	DEX
-900	.$bf2	BPL dcloop2559_1
+900	.$bf2	BPL dcloop2589_1
 903	.$bf4	LINE_64:
 906	.$bf4	LINE_65:
 908	.$bf4	LDA #<VAR_DX
@@ -512,11 +512,11 @@
 933	.$c11	LINE_66:
 936	.$c11	LINE_67:
 938	.$c11	LDX #4
-939	.$c13	dcloop2725_1:
+939	.$c13	dcloop2757_1:
 940	.$c13	LDA VAR_DX,X
 941	.$c16	STA VAR_E,X
 942	.$c19	DEX
-943	.$c1a	BPL dcloop2725_1
+943	.$c1a	BPL dcloop2757_1
 946	.$c1c	LINE_68:
 948	.$c1c	LDY #1
 949	.$c1e	LDA #0
@@ -536,12 +536,12 @@
 973	.$c3d	JSR LINE_40
 975	.$c40	LINE_71:
 977	.$c40	LDX #4
-978	.$c42	dceloop3986_1:
+978	.$c42	dceloop4034_1:
 979	.$c42	LDA VAR_X2,X
 980	.$c45	CMP VAR_X,X
 981	.$c48	BNE LINE_SKIP18
 982	.$c4a	DEX
-983	.$c4b	BPL dceloop3986_1
+983	.$c4b	BPL dceloop4034_1
 985	.$c4d	LINE_NSKIP18:
 988	.$c4d	JMP RETURN
 990	.$c50	LINE_SKIP18:
@@ -610,11 +610,11 @@
 1093	.$cc6	LINE_78:
 1096	.$cc6	LINE_79:
 1098	.$cc6	LDX #4
-1099	.$cc8	dcloop3223_1:
+1099	.$cc8	dcloop3261_1:
 1100	.$cc8	LDA VAR_DY,X
 1101	.$ccb	STA VAR_E,X
 1102	.$cce	DEX
-1103	.$ccf	BPL dcloop3223_1
+1103	.$ccf	BPL dcloop3261_1
 1106	.$cd1	LINE_80:
 1108	.$cd1	LDY #1
 1109	.$cd3	LDA #0
@@ -634,12 +634,12 @@
 1133	.$cf2	JSR LINE_40
 1135	.$cf5	LINE_83:
 1137	.$cf5	LDX #4
-1138	.$cf7	dceloop3986_2:
+1138	.$cf7	dceloop4034_2:
 1139	.$cf7	LDA VAR_Y2,X
 1140	.$cfa	CMP VAR_Y,X
 1141	.$cfd	BNE LINE_SKIP20
 1142	.$cff	DEX
-1143	.$d00	BPL dceloop3986_2
+1143	.$d00	BPL dceloop4034_2
 1145	.$d02	LINE_NSKIP20:
 1148	.$d02	JMP RETURN
 1150	.$d05	LINE_SKIP20:

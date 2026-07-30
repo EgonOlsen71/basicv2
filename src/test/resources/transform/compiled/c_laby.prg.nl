@@ -341,11 +341,11 @@ STA VAR_A%+1
 LINE_40:
 ;
 LDX #4
-dcloop733_1:
+dcloop741_1:
 LDA CONST_3R,X
 STA VAR_J,X
 DEX
-BPL dcloop733_1
+BPL dcloop741_1
 ; Optimizer rule: Direct copy of floats into mem/6
 LDA #<CONST_11R
 LDY #>CONST_11R

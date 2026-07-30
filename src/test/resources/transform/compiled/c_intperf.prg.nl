@@ -204,12 +204,12 @@ LINE_SKIP2:
 LINE_25:
 ;
 LDX #4
-dceloop1496_1:
+dceloop1514_1:
 LDA CONST_6R,X
 CMP VAR_I,X
 BNE LINE_SKIP3
 DEX
-BPL dceloop1496_1
+BPL dceloop1514_1
 ; Optimizer rule: Direct compare(=) of floats/7
 LINE_NSKIP3:
 ; Optimizer rule: Simplified equal comparison/6

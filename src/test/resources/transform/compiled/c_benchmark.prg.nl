@@ -129,11 +129,11 @@ LINE_590:
 LINE_650:
 ;
 LDX #4
-dcloop401_1:
+dcloop405_1:
 LDA CONST_0R,X
 STA VAR_I,X
 DEX
-BPL dcloop401_1
+BPL dcloop405_1
 ; Optimizer rule: Direct copy of floats into mem/6
 LDA #<CONST_1R
 LDY #>CONST_1R

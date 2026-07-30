@@ -126,11 +126,11 @@ LINE_0:
 LINE_10:
 ;
 LDX #4
-dcloop235_1:
+dcloop237_1:
 LDA CONST_0,X
 STA VAR_I,X
 DEX
-BPL dcloop235_1
+BPL dcloop237_1
 ; Optimizer rule: Direct copy of floats into mem/6
 LDA #<CONST_1
 LDY #>CONST_1
@@ -180,11 +180,11 @@ LDY 49024
 STY 50025
 ; Optimizer rule: Faster POKE,PEEK/2
 LDX #4
-dcloop401_1:
+dcloop405_1:
 LDA CONST_0,X
 STA VAR_I,X
 DEX
-BPL dcloop401_1
+BPL dcloop405_1
 ; Optimizer rule: Direct copy of floats into mem/6
 LDA #<CONST_1
 LDY #>CONST_1
@@ -250,11 +250,11 @@ RTS
 LINE_1000:
 ;
 LDX #4
-dcloop567_1:
+dcloop573_1:
 LDA CONST_6,X
 STA VAR_X,X
 DEX
-BPL dcloop567_1
+BPL dcloop573_1
 ; Optimizer rule: Direct copy of floats into mem/6
 LDA #<CONST_7
 LDY #>CONST_7

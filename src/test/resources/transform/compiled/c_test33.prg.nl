@@ -155,11 +155,11 @@ INPUTCHECK1:
 LINE_20:
 ;
 LDX #4
-dcloop401_1:
+dcloop405_1:
 LDA CONST_2R,X
 STA VAR_I,X
 DEX
-BPL dcloop401_1
+BPL dcloop405_1
 ; Optimizer rule: Direct copy of floats into mem/6
 LDA VAR_A$
 LDY VAR_A$+1
@@ -227,11 +227,11 @@ JSR LINEBREAK
 LINE_50:
 ;
 LDX #4
-dcloop899_1:
+dcloop909_1:
 LDA CONST_2R,X
 STA VAR_I,X
 DEX
-BPL dcloop899_1
+BPL dcloop909_1
 ; Optimizer rule: Direct copy of floats into mem/6
 LDA VAR_A$
 LDY VAR_A$+1
@@ -299,11 +299,11 @@ JSR LINEBREAK
 LINE_80:
 ;
 LDX #4
-dcloop1397_1:
+dcloop1413_1:
 LDA CONST_2R,X
 STA VAR_I,X
 DEX
-BPL dcloop1397_1
+BPL dcloop1413_1
 ; Optimizer rule: Direct copy of floats into mem/6
 LDA VAR_A$
 LDY VAR_A$+1

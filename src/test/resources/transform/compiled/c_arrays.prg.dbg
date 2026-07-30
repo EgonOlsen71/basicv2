@@ -18,11 +18,11 @@
 145	.$830	LDY #>VAR_TI
 146	.$832	JSR FACMEM
 147	.$835	LDX #4
-148	.$837	dcloop235_1:
+148	.$837	dcloop237_1:
 149	.$837	LDA VAR_TI,X
 150	.$83a	STA VAR_T0,X
 151	.$83d	DEX
-152	.$83e	BPL dcloop235_1
+152	.$83e	BPL dcloop237_1
 155	.$840	LINE_40:
 157	.$840	LDA #0
 158	.$842	STA VAR_X
@@ -159,11 +159,11 @@
 334	.$96a	LDY #>VAR_TI
 335	.$96c	JSR FACMEM
 336	.$96f	LDX #4
-337	.$971	dcloop733_1:
+337	.$971	dcloop741_1:
 338	.$971	LDA VAR_TI,X
 339	.$974	STA VAR_T0,X
 340	.$977	DEX
-341	.$978	BPL dcloop733_1
+341	.$978	BPL dcloop741_1
 344	.$97a	LINE_100:
 346	.$97a	LDY #0
 347	.$97c	TYA
@@ -359,11 +359,11 @@
 645	.$b10	LDY #>VAR_TI
 646	.$b12	JSR FACMEM
 647	.$b15	LDX #4
-648	.$b17	dcloop1729_1:
+648	.$b17	dcloop1749_1:
 649	.$b17	LDA VAR_TI,X
 650	.$b1a	STA VAR_T0,X
 651	.$b1d	DEX
-652	.$b1e	BPL dcloop1729_1
+652	.$b1e	BPL dcloop1749_1
 655	.$b20	LINE_200:
 657	.$b20	LDY #0
 658	.$b22	TYA
@@ -561,11 +561,11 @@
 963	.$cbc	LDY #>VAR_TI
 964	.$cbe	JSR FACMEM
 965	.$cc1	LDX #4
-966	.$cc3	dcloop2559_1:
+966	.$cc3	dcloop2589_1:
 967	.$cc3	LDA VAR_TI,X
 968	.$cc6	STA VAR_T0,X
 969	.$cc9	DEX
-970	.$cca	BPL dcloop2559_1
+970	.$cca	BPL dcloop2589_1
 973	.$ccc	LINE_420:
 975	.$ccc	LDY #0
 976	.$cce	TYA

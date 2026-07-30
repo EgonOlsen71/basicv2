@@ -142,25 +142,25 @@ STY 53280
 ;
 LINE_30:
 LDX #4
-dcloop401_1:
+dcloop405_1:
 LDA CONST_3R,X
 STA VAR_X,X
 LDA CONST_3R,X
 STA VAR_Y,X
 DEX
-BPL dcloop401_1
+BPL dcloop405_1
 ; Special rule: Aggregation of assignments (2)
 ; Optimizer rule: Direct copy of floats into mem/6
 ;
 LINE_40:
 LDX #4
-dcloop567_1:
+dcloop573_1:
 LDA CONST_3R,X
 STA VAR_DX,X
 LDA CONST_3R,X
 STA VAR_DY,X
 DEX
-BPL dcloop567_1
+BPL dcloop573_1
 ; Special rule: Aggregation of assignments (2)
 ; Optimizer rule: Direct copy of floats into mem/6
 ;
@@ -283,11 +283,11 @@ STA $FFFF
 LINE_60:
 ;
 LDX #4
-dcloop1065_1:
+dcloop1077_1:
 LDA CONST_9R,X
 STA VAR_T,X
 DEX
-BPL dcloop1065_1
+BPL dcloop1077_1
 ; Optimizer rule: Direct copy of floats into mem/6
 ;
 LINE_70:

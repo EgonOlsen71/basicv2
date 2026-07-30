@@ -126,21 +126,21 @@ LINE_0:
 LINE_10:
 ;
 LDX #4
-dcloop235_1:
+dcloop237_1:
 LDA CONST_0R,X
 STA VAR_A,X
 DEX
-BPL dcloop235_1
+BPL dcloop237_1
 ; Optimizer rule: Direct copy of floats into mem/6
 ;
 LINE_20:
 ;
 LDX #4
-dcloop401_1:
+dcloop405_1:
 LDA CONST_1R,X
 STA VAR_B,X
 DEX
-BPL dcloop401_1
+BPL dcloop405_1
 ; Optimizer rule: Direct copy of floats into mem/6
 ;
 LINE_30:
@@ -221,11 +221,11 @@ STY 1024
 LINE_50:
 ;
 LDX #4
-dcloop899_1:
+dcloop909_1:
 LDA CONST_7,X
 STA VAR_A,X
 DEX
-BPL dcloop899_1
+BPL dcloop909_1
 ; Optimizer rule: Direct copy of floats into mem/6
 ;
 LINE_60:

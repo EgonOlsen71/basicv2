@@ -653,11 +653,11 @@ STA VAR_N+3
 STA VAR_N+4
 ; Optimizer rule: Simplified setting to 0/6
 LDX #4
-dcloop1729_1:
+dcloop1749_1:
 LDA CONST_6R,X
 STA VAR_K,X
 DEX
-BPL dcloop1729_1
+BPL dcloop1749_1
 ; Optimizer rule: Direct copy of floats into mem/6
 JSR ONETOFAC
 ; Optimizer rule: Faster setting to 1/1
@@ -706,11 +706,11 @@ JMP LINE_5
 LINE_11:
 ;
 LDX #4
-dcloop1895_1:
+dcloop1917_1:
 LDA CONST_6R,X
 STA VAR_D,X
 DEX
-BPL dcloop1895_1
+BPL dcloop1917_1
 ; Optimizer rule: Direct copy of floats into mem/6
 LDA #<VAR_F
 LDY #>VAR_F
@@ -833,11 +833,11 @@ LDY #>CONST_16
 JSR STROUTWL
 ; Optimizer rule: Memory saving STROUT/1
 LDX #4
-dcloop2061_1:
+dcloop2085_1:
 LDA CONST_6R,X
 STA VAR_D,X
 DEX
-BPL dcloop2061_1
+BPL dcloop2085_1
 ; Optimizer rule: Direct copy of floats into mem/6
 LDA #<VAR_F
 LDY #>VAR_F

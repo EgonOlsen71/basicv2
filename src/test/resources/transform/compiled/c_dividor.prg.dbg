@@ -359,11 +359,11 @@
 652	.$af0	STA VAR_N+3
 653	.$af3	STA VAR_N+4
 655	.$af6	LDX #4
-656	.$af8	dcloop1729_1:
+656	.$af8	dcloop1749_1:
 657	.$af8	LDA CONST_6R,X
 658	.$afb	STA VAR_K,X
 659	.$afe	DEX
-660	.$aff	BPL dcloop1729_1
+660	.$aff	BPL dcloop1749_1
 662	.$b01	JSR ONETOFAC
 664	.$b04	LDA #<VAR_M
 665	.$b06	LDY #>VAR_M
@@ -393,11 +393,11 @@
 704	.$b43	JMP LINE_5
 706	.$b46	LINE_11:
 708	.$b46	LDX #4
-709	.$b48	dcloop1895_1:
+709	.$b48	dcloop1917_1:
 710	.$b48	LDA CONST_6R,X
 711	.$b4b	STA VAR_D,X
 712	.$b4e	DEX
-713	.$b4f	BPL dcloop1895_1
+713	.$b4f	BPL dcloop1917_1
 715	.$b51	LDA #<VAR_F
 716	.$b53	LDY #>VAR_F
 717	.$b55	JSR REALFAC
@@ -488,11 +488,11 @@
 832	.$bf9	LDY #>CONST_16
 833	.$bfb	JSR STROUTWL
 835	.$bfe	LDX #4
-836	.$c00	dcloop2061_1:
+836	.$c00	dcloop2085_1:
 837	.$c00	LDA CONST_6R,X
 838	.$c03	STA VAR_D,X
 839	.$c06	DEX
-840	.$c07	BPL dcloop2061_1
+840	.$c07	BPL dcloop2085_1
 842	.$c09	LDA #<VAR_F
 843	.$c0b	LDY #>VAR_F
 844	.$c0d	JSR REALFAC

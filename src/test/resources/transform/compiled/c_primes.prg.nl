@@ -132,11 +132,11 @@ STY TMP_ZP+1
 ; Optimizer rule: MEM->REG, REG->TMP_ZP/4
 JSR WRITETID
 LDX #4
-dcloop235_1:
+dcloop237_1:
 LDA CONST_1R,X
 STA VAR_CP,X
 DEX
-BPL dcloop235_1
+BPL dcloop237_1
 ; Optimizer rule: Direct copy of floats into mem/6
 ;
 LINE_20:
@@ -304,12 +304,12 @@ JSR FACMEM
 LINE_1020:
 ;
 LDX #4
-dceloop2824_1:
+dceloop2858_1:
 LDA CONST_9R,X
 CMP VAR_CP,X
 BNE LINE_SKIP6
 DEX
-BPL dceloop2824_1
+BPL dceloop2858_1
 ; Optimizer rule: Direct compare(=) of floats/7
 LINE_NSKIP6:
 ; Optimizer rule: Simplified equal comparison/6
@@ -349,11 +349,11 @@ STY G_REG+1
 JSR ARRAYSTORE_INT_INTEGER
 ; Optimizer rule: Array content is integer (store)/9
 LDX #4
-dcloop2061_1:
+dcloop2085_1:
 LDA VAR_CP,X
 STA VAR_ML,X
 DEX
-BPL dcloop2061_1
+BPL dcloop2085_1
 ; Optimizer rule: Direct copy of floats into mem/6
 ;
 LINE_1110:
@@ -380,11 +380,11 @@ BEQ LINE_SKIP7
 LINE_NSKIP7:
 ;
 LDX #4
-dcloop2393_1:
+dcloop2421_1:
 LDA VAR_CP,X
 STA VAR_PR,X
 DEX
-BPL dcloop2393_1
+BPL dcloop2421_1
 ; Optimizer rule: Direct copy of floats into mem/6
 JMP RETURN
 ;

@@ -899,11 +899,11 @@ JSR FACMEM
 LINE_20010:
 ;
 LDX #4
-dcloop3057_1:
+dcloop3093_1:
 LDA CONST_15R,X
 STA VAR_I,X
 DEX
-BPL dcloop3057_1
+BPL dcloop3093_1
 ; Optimizer rule: Direct copy of floats into mem/6
 LDA #<CONST_16R
 LDY #>CONST_16R
@@ -938,11 +938,11 @@ RBEQ_0:
 LINE_20020:
 ;
 LDX #4
-dcloop3223_1:
+dcloop3261_1:
 LDA CONST_19,X
 STA VAR_I,X
 DEX
-BPL dcloop3223_1
+BPL dcloop3261_1
 ; Optimizer rule: Direct copy of floats into mem/6
 LDA #<CONST_20
 LDY #>CONST_20

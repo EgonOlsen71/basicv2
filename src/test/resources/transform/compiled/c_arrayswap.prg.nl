@@ -129,11 +129,11 @@ LINE_200:
 LINE_220:
 ;
 LDX #4
-dcloop235_1:
+dcloop237_1:
 LDA CONST_0R,X
 STA VAR_I,X
 DEX
-BPL dcloop235_1
+BPL dcloop237_1
 ; Optimizer rule: Direct copy of floats into mem/6
 LDA #<CONST_1
 LDY #>CONST_1
@@ -184,11 +184,11 @@ RBEQ_0:
 LINE_300:
 ;
 LDX #4
-dcloop401_1:
+dcloop405_1:
 LDA CONST_0R,X
 STA VAR_K,X
 DEX
-BPL dcloop401_1
+BPL dcloop405_1
 ; Optimizer rule: Direct copy of floats into mem/6
 LDA #<CONST_1
 LDY #>CONST_1
@@ -209,11 +209,11 @@ STA JUMP_TARGET+1
 JSR INITFOR
 FORLOOP1:
 LDX #4
-dcloop401_2:
+dcloop405_2:
 LDA VAR_K,X
 STA VAR_T,X
 DEX
-BPL dcloop401_2
+BPL dcloop405_2
 ; Optimizer rule: Direct copy of floats into mem/6
 LDA #<CONST_1
 LDY #>CONST_1

@@ -357,11 +357,11 @@ JSR ARRAYSTORE_STRING
 LINE_300:
 ;
 LDX #4
-dcloop2559_1:
+dcloop2589_1:
 LDA CONST_25,X
 STA VAR_I,X
 DEX
-BPL dcloop2559_1
+BPL dcloop2589_1
 ; Optimizer rule: Direct copy of floats into mem/6
 LDA #<CONST_26
 LDY #>CONST_26

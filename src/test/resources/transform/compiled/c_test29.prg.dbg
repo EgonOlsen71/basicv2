@@ -89,11 +89,11 @@
 238	.$8d3	JSR LINE_100
 240	.$8d6	LINE_20:
 242	.$8d6	LDX #4
-243	.$8d8	dcloop567_1:
+243	.$8d8	dcloop573_1:
 244	.$8d8	LDA CONST_4R,X
 245	.$8db	STA VAR_J,X
 246	.$8de	DEX
-247	.$8df	BPL dcloop567_1
+247	.$8df	BPL dcloop573_1
 249	.$8e1	LDA #<VAR_D[]+10
 250	.$8e3	LDY #>VAR_D[]+10
 251	.$8e5	STA G_REG

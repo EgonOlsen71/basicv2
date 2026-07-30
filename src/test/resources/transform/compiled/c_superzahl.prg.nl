@@ -138,11 +138,11 @@ JSR WRITETID
 LINE_1030:
 ;
 LDX #4
-dcloop235_1:
+dcloop237_1:
 LDA CONST_1R,X
 STA VAR_N,X
 DEX
-BPL dcloop235_1
+BPL dcloop237_1
 ; Optimizer rule: Direct copy of floats into mem/6
 JSR GOSUB
 JSR LINE_1100
@@ -197,11 +197,11 @@ LINE_1090:
 LINE_1100:
 ;
 LDX #4
-dcloop567_1:
+dcloop573_1:
 LDA CONST_3R,X
 STA VAR_I,X
 DEX
-BPL dcloop567_1
+BPL dcloop573_1
 ; Optimizer rule: Direct copy of floats into mem/6
 LDA #<CONST_4
 LDY #>CONST_4
@@ -252,11 +252,11 @@ RBEQ_0:
 LINE_1110:
 ;
 LDX #4
-dcloop733_1:
+dcloop741_1:
 LDA CONST_3R,X
 STA VAR_K,X
 DEX
-BPL dcloop733_1
+BPL dcloop741_1
 ; Optimizer rule: Direct copy of floats into mem/6
 ;
 LINE_1190:
@@ -265,12 +265,12 @@ LINE_1190:
 LINE_1200:
 ;
 LDX #4
-dceloop2326_1:
+dceloop2354_1:
 LDA CONST_4,X
 CMP VAR_K,X
 BNE LINE_SKIP3
 DEX
-BPL dceloop2326_1
+BPL dceloop2354_1
 ; Optimizer rule: Direct compare(=) of floats/7
 LINE_NSKIP3:
 ; Optimizer rule: Simplified equal comparison/6
@@ -283,11 +283,11 @@ LINE_SKIP3:
 LINE_1220:
 ;
 LDX #4
-dcloop899_1:
+dcloop909_1:
 LDA VAR_K,X
 STA VAR_T,X
 DEX
-BPL dcloop899_1
+BPL dcloop909_1
 ; Optimizer rule: Direct copy of floats into mem/6
 ;
 LINE_1230:
@@ -476,11 +476,11 @@ LINE_1290:
 LINE_1300:
 ;
 LDX #4
-dcloop1397_1:
+dcloop1413_1:
 LDA CONST_6R,X
 STA VAR_I,X
 DEX
-BPL dcloop1397_1
+BPL dcloop1413_1
 ; Optimizer rule: Direct copy of floats into mem/6
 LDA #<CONST_4
 LDY #>CONST_4
@@ -593,11 +593,11 @@ STA VAR_Z+3
 STA VAR_Z+4
 ; Optimizer rule: Simplified setting to 0/6
 LDX #4
-dcloop1895_1:
+dcloop1917_1:
 LDA CONST_3R,X
 STA VAR_I2,X
 DEX
-BPL dcloop1895_1
+BPL dcloop1917_1
 ; Optimizer rule: Direct copy of floats into mem/6
 LDA #<VAR_I
 LDY #>VAR_I

@@ -243,13 +243,13 @@ JMP LINE_1000
 ;
 LINE_10000:
 LDX #4
-dcloop567_1:
+dcloop573_1:
 LDA CONST_4R,X
 STA VAR_EN,X
 LDA CONST_5R,X
 STA VAR_SA,X
 DEX
-BPL dcloop567_1
+BPL dcloop573_1
 ; Special rule: Aggregation of assignments (2)
 ; Optimizer rule: Direct copy of floats into mem/6
 JSR COMPACTMAX
@@ -1138,11 +1138,11 @@ LINE_SKIP12:
 LINE_10170:
 ;
 LDX #4
-dcloop2559_1:
+dcloop2589_1:
 LDA VAR_EN,X
 STA VAR_SA,X
 DEX
-BPL dcloop2559_1
+BPL dcloop2589_1
 ; Optimizer rule: Direct copy of floats into mem/6
 JSR ONETOFAC
 ; Optimizer rule: Faster setting to 1/1
@@ -1438,11 +1438,11 @@ JSR FACMEM
 LINE_30010:
 ;
 LDX #4
-dcloop3223_1:
+dcloop3261_1:
 LDA CONST_5R,X
 STA VAR_I,X
 DEX
-BPL dcloop3223_1
+BPL dcloop3261_1
 ; Optimizer rule: Direct copy of floats into mem/6
 LDA VAR_PR$
 LDY VAR_PR$+1

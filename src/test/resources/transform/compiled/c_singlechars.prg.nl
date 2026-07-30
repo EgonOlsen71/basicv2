@@ -189,11 +189,11 @@ JSR SINGLECHROUTMAX
 ; Optimizer rule: Memory saving single char out(1)/2
 ; Optimizer rule: Single character output/2
 LDX #4
-dcloop567_1:
+dcloop573_1:
 LDA CONST_6R,X
 STA VAR_I,X
 DEX
-BPL dcloop567_1
+BPL dcloop573_1
 ; Optimizer rule: Direct copy of floats into mem/6
 LDA #<CONST_7R
 LDY #>CONST_7R
@@ -235,11 +235,11 @@ JSR SINGLECHROUTMAX
 ; Optimizer rule: Memory saving single char out(1)/2
 ; Optimizer rule: Single character output/2
 LDX #4
-dcloop733_1:
+dcloop741_1:
 LDA CONST_9R,X
 STA VAR_I,X
 DEX
-BPL dcloop733_1
+BPL dcloop741_1
 ; Optimizer rule: Direct copy of floats into mem/6
 LDA #<CONST_10R
 LDY #>CONST_10R

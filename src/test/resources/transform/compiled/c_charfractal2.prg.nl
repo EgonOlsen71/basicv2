@@ -195,11 +195,11 @@ LDY #>VAR_I
 ; FAC to (X/Y)
 JSR FACMEM
 LDX #4
-dcloop401_1:
+dcloop405_1:
 LDA CONST_5,X
 STA VAR_R,X
 DEX
-BPL dcloop401_1
+BPL dcloop405_1
 ; Optimizer rule: Direct copy of floats into mem/6
 ;
 LINE_60:
@@ -230,7 +230,7 @@ STA JUMP_TARGET+1
 JSR INITFOR
 FORLOOP1:
 LDX #4
-dcloop567_1:
+dcloop573_1:
 LDA VAR_R,X
 STA VAR_V,X
 LDA VAR_I,X
@@ -238,7 +238,7 @@ STA VAR_U,X
 LDA CONST_7R,X
 STA VAR_N,X
 DEX
-BPL dcloop567_1
+BPL dcloop573_1
 ; Special rule: Aggregation of assignments (3)
 ; Optimizer rule: Direct copy of floats into mem/6
 LDA #<CONST_8R

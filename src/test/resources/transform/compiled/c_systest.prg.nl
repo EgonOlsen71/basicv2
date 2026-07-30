@@ -126,11 +126,11 @@ LINE_0:
 LINE_100:
 ;
 LDX #4
-dcloop235_1:
+dcloop237_1:
 LDA CONST_0,X
 STA VAR_I,X
 DEX
-BPL dcloop235_1
+BPL dcloop237_1
 ; Optimizer rule: Direct copy of floats into mem/6
 LDA #<CONST_1
 LDY #>CONST_1
@@ -218,12 +218,12 @@ LINE_140:
 LINE_150:
 ;
 LDX #4
-dcneloop2493_1:
+dcneloop2523_1:
 LDA CONST_4R,X
 CMP VAR_S,X
 BNE LINE_NSKIP4
 DEX
-BPL dcneloop2493_1
+BPL dcneloop2523_1
 JMP LINE_SKIP4
 ; Optimizer rule: Direct compare(<>) of floats/8
 LINE_NSKIP4:
@@ -250,11 +250,11 @@ JSR SINGLECHROUTMAX
 ; Optimizer rule: Memory saving single char out(1)/2
 ; Optimizer rule: Single character output/2
 LDX #4
-dcloop733_1:
+dcloop741_1:
 LDA CONST_0,X
 STA VAR_S,X
 DEX
-BPL dcloop733_1
+BPL dcloop741_1
 ; Optimizer rule: Direct copy of floats into mem/6
 LDA #0
 STA VAR_C
@@ -322,11 +322,11 @@ LINE_NSKIP5:
 ; Optimizer rule: Simplified equal comparison/6
 ;
 LDX #4
-dcloop1231_1:
+dcloop1245_1:
 LDA CONST_6R,X
 STA VAR_C,X
 DEX
-BPL dcloop1231_1
+BPL dcloop1245_1
 ; Optimizer rule: Direct copy of floats into mem/6
 ;
 LINE_SKIP5:

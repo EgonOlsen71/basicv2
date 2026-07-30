@@ -137,11 +137,11 @@ STY TMP_ZP+1
 ; Optimizer rule: MEM->REG, REG->TMP_ZP/4
 JSR WRITETID
 LDX #4
-dcloop235_1:
+dcloop237_1:
 LDA CONST_2R,X
 STA VAR_B,X
 DEX
-BPL dcloop235_1
+BPL dcloop237_1
 ; Optimizer rule: Direct copy of floats into mem/6
 LDA #<CONST_3R
 LDY #>CONST_3R

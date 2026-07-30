@@ -168,11 +168,11 @@ LINE_SKIP3:
 LINE_7:
 ;
 LDX #4
-dcloop567_1:
+dcloop573_1:
 LDA VAR_K,X
 STA VAR_I,X
 DEX
-BPL dcloop567_1
+BPL dcloop573_1
 ; Optimizer rule: Direct copy of floats into mem/6
 JMP RETURN
 ;
@@ -258,11 +258,11 @@ JMP LINE_5
 LINE_90:
 ;
 LDX #4
-dcloop1397_1:
+dcloop1413_1:
 LDA VAR_I,X
 STA VAR_K,X
 DEX
-BPL dcloop1397_1
+BPL dcloop1413_1
 ; Optimizer rule: Direct copy of floats into mem/6
 LDA #<CONST_4R
 LDY #>CONST_4R

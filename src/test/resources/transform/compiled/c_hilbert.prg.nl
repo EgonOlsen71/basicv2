@@ -918,11 +918,11 @@ STA VAR_I%+1
 LINE_10040:
 ;
 LDX #4
-dcloop1729_1:
+dcloop1749_1:
 LDA CONST_11R,X
 STA VAR_I,X
 DEX
-BPL dcloop1729_1
+BPL dcloop1749_1
 ; Optimizer rule: Direct copy of floats into mem/6
 LDA #<CONST_12R
 LDY #>CONST_12R
@@ -957,11 +957,11 @@ RBEQ_0:
 LINE_10045:
 ;
 LDX #4
-dcloop1895_1:
+dcloop1917_1:
 LDA CONST_13R,X
 STA VAR_I,X
 DEX
-BPL dcloop1895_1
+BPL dcloop1917_1
 ; Optimizer rule: Direct copy of floats into mem/6
 LDA #<CONST_14R
 LDY #>CONST_14R

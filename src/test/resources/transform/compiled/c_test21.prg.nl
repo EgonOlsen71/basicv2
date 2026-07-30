@@ -133,11 +133,11 @@ STA VAR_A+3
 STA VAR_A+4
 ; Optimizer rule: Simplified setting to 0/6
 LDX #4
-dcloop401_1:
+dcloop405_1:
 LDA CONST_1R,X
 STA VAR_I,X
 DEX
-BPL dcloop401_1
+BPL dcloop405_1
 ; Optimizer rule: Direct copy of floats into mem/6
 LDA #<CONST_2R
 LDY #>CONST_2R

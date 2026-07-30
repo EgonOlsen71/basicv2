@@ -126,11 +126,11 @@ LINE_0:
 LINE_10:
 ;
 LDX #4
-dcloop567_1:
+dcloop573_1:
 LDA CONST_0,X
 STA VAR_C,X
 DEX
-BPL dcloop567_1
+BPL dcloop573_1
 ; Optimizer rule: Direct copy of floats into mem/6
 JSR COMPACTMAX
 LDA #<VAR_C
@@ -168,11 +168,11 @@ JSR STROUTBRKWL
 ; Optimizer rule: Memory saving STROUTBRK/1
 ; Optimizer rule: STROUT + LINEBRK/1
 LDX #4
-dcloop733_1:
+dcloop741_1:
 LDA CONST_0,X
 STA VAR_C,X
 DEX
-BPL dcloop733_1
+BPL dcloop741_1
 ; Optimizer rule: Direct copy of floats into mem/6
 JSR END
 RTS

@@ -164,11 +164,11 @@ STA JUMP_TARGET+1
 JSR INITFOR
 FORLOOP0:
 LDX #4
-dcloop401_1:
+dcloop405_1:
 LDA CONST_5R,X
 STA VAR_I,X
 DEX
-BPL dcloop401_1
+BPL dcloop405_1
 ; Optimizer rule: Direct copy of floats into mem/6
 LDA #<CONST_6R
 LDY #>CONST_6R

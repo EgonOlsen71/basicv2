@@ -290,11 +290,11 @@ JSR COPY2_XYA_YREG
 ; Optimizer rule: Quick copy into REG/7
 JSR OPEN
 LDX #4
-dcloop567_1:
+dcloop573_1:
 LDA CONST_11,X
 STA VAR_A,X
 DEX
-BPL dcloop567_1
+BPL dcloop573_1
 ; Optimizer rule: Direct copy of floats into mem/6
 ;
 LINE_15:
@@ -3238,7 +3238,14 @@ JSR OPENCH
 BCS OPENERR
 RTS
 OPENERR		STA TMP2_ZP
-LDA LOGICADDR
+LDA DEVICENUM
+CMP #2
+BNE NORS232
+LDA TMP2_ZP
+CMP #240
+BNE NORS232
+RTS                 ; I guess, this is no error in case of RS232 device? I just indicates a memory change!
+NORS232		LDA LOGICADDR
 JSR CLOSECH
 <IF BOOST>
 JSR BOOSTON

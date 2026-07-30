@@ -417,11 +417,11 @@
 916	.$bdf	STA VAR_I%+1
 918	.$be2	LINE_10040:
 920	.$be2	LDX #4
-921	.$be4	dcloop1729_1:
+921	.$be4	dcloop1749_1:
 922	.$be4	LDA CONST_11R,X
 923	.$be7	STA VAR_I,X
 924	.$bea	DEX
-925	.$beb	BPL dcloop1729_1
+925	.$beb	BPL dcloop1749_1
 927	.$bed	LDA #<CONST_12R
 928	.$bef	LDY #>CONST_12R
 929	.$bf1	JSR REALFACPUSH
@@ -448,11 +448,11 @@
 955	.$c24	RBEQ_0:
 957	.$c24	LINE_10045:
 959	.$c24	LDX #4
-960	.$c26	dcloop1895_1:
+960	.$c26	dcloop1917_1:
 961	.$c26	LDA CONST_13R,X
 962	.$c29	STA VAR_I,X
 963	.$c2c	DEX
-964	.$c2d	BPL dcloop1895_1
+964	.$c2d	BPL dcloop1917_1
 966	.$c2f	LDA #<CONST_14R
 967	.$c31	LDY #>CONST_14R
 968	.$c33	JSR REALFACPUSH

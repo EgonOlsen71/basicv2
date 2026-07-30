@@ -1154,12 +1154,12 @@ JSR FACMEM
 LINE_3010:
 ;
 LDX #4
-dceloop4152_1:
+dceloop4202_1:
 LDA CONST_17R,X
 CMP VAR_J,X
 BNE LINE_SKIP23
 DEX
-BPL dceloop4152_1
+BPL dceloop4202_1
 ; Optimizer rule: Direct compare(=) of floats/7
 LINE_NSKIP23:
 ; Optimizer rule: Simplified equal comparison/6
