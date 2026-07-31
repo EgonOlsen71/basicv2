@@ -2383,6 +2383,10 @@ public class IntOptimizer {
 					}
 				}));
 
+		// If, for some strange reason, the code looks like this: a%=peek(b)+256*<some negative value>, then
+		// this optimization might so bonkers, because it doesn't check for the preconditions once it encounters
+		// the typical lowbyte+256*highbyte structure. But I guess, this never actually happens. If it ever does,
+		// once might introduce another check of some kind or some preprocessing or something...
 		addLowHighBytePattern(intPatterns, const2Value, LowHighByteSource.INT, false);
 		addLowHighBytePattern(intPatterns, const2Value, LowHighByteSource.INT, true);
 		addLowHighBytePattern(intPatterns, const2Value, LowHighByteSource.CONST, false);
