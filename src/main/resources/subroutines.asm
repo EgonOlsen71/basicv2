@@ -2616,6 +2616,25 @@ INTADDPOKE	JSR REALFAC
 			ADC TMP_ZP+1
 			RTS
 ;###################################
+INTADDAREG  TAX
+            TYA
+            CLC
+            ADC A_REG
+            STA A_REG
+            TXA
+            ADC A_REG+1
+            STA A_REG+1
+            RTS
+;###################################
+INTSHLWORD CLC
+           ROL A_REG
+           ROL A_REG+1
+           DEY
+           BNE INTSHLWORD
+           LDA A_REG+1
+           LDY A_REG
+           RTS
+;###################################
 INTSHL		LDA A_REG+1
 			ASL
 			PHP

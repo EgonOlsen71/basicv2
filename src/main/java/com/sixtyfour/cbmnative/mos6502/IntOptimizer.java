@@ -1854,38 +1854,68 @@ public class IntOptimizer {
 					}));
 		}
 
+		// faster array into memory
+		intPatterns.add(new IntPattern(true, "Faster array into memory",
+				new String[]{"LDA #<{MEM0}", "LDY #>{MEM0}", "STA G_REG", "STY G_REG+1", "LDY {MEM1}", "LDA {MEM1}", "JSR ARRAYACCESS_INTEGER_INT",	"LDA #<X_REG","LDY #>X_REG","JSR REALFACPUSH",
+					"LDA #<{MEM2}", "LDY #>{MEM2}", "STA G_REG", "STY G_REG+1", "LDY {MEM3}", "LDA {MEM3}",	"JSR ARRAYACCESS_INTEGER_INT",
+					"LDY {*}", "LDA {*}", "STY A_REG", "STA A_REG+1", "JSR COPY_XREG2YREG", "JSR XREGFAC", "JSR SHL", "JSR FACXREG", "LDY {*}", "STY A_REG", "JSR YREGFAC",
+					"JSR SHL", "LDA #<X_REG", "LDY #>X_REG", "JSR FASTFADDMEM",	"JSR FACXREG", "LDA #<{CONST0}", "LDY #>{CONST0}", "JSR REALFAC", "LDA #<X_REG",
+					"LDY #>X_REG", "JSR FASTFADDMEM", "JSR FACXREG", "JSR POPREAL2X", "JSR FASTFADDARG", "JSR FACWORD"},
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						List<String> rep = new ArrayList<>();
+
+						String consty = cleaned.get(33);
+						consty = consty.substring(consty.indexOf("<") + 1).trim();
+						Number num = const2Value.get(consty);
+						double numd = num.doubleValue();
+						String numHex = getHex(numd);
+						rep.add(cleaned.get(10));
+						rep.add(cleaned.get(11));
+						rep.add(cleaned.get(12));
+						rep.add(cleaned.get(13));
+						rep.add(cleaned.get(14));
+						rep.add(cleaned.get(15));
+						rep.add("JSR ARRAYACCESS_INTEGER_INT_SI");
+						rep.add("STY A_REG");
+						rep.add("STA A_REG+1");
+						rep.add("PHA");
+						rep.add("TYA");
+						rep.add("PHA");
+						rep.add(cleaned.get(17));
+						rep.add("JSR INTSHLWORD");
+						rep.add("STY B_REG");
+						rep.add("STA B_REG+1");
+						rep.add("PLA");
+						rep.add("TAY");
+						rep.add("PLA");
+						rep.add("STY A_REG");
+						rep.add("STA A_REG+1");
+						rep.add(cleaned.get(25));
+						rep.add("JSR INTSHLWORD");
+						rep.add("LDY B_REG");
+						rep.add("LDA B_REG+1");
+						rep.add("JSR INTADDAREG");
+						rep.add("LDY #$"+numHex.substring(2));
+						rep.add("LDA #$"+numHex.substring(0, 2));
+						rep.add("JSR INTADDAREG");
+						rep.add(cleaned.get(0));
+						rep.add(cleaned.get(1));
+						rep.add(cleaned.get(2));
+						rep.add(cleaned.get(3));
+						rep.add(cleaned.get(4));
+						rep.add(cleaned.get(5));
+						rep.add("JSR ARRAYACCESS_INTEGER_INT_SI");
+						rep.add("JSR INTADDAREG");
+						rep.add("LDY A_REG");
+						rep.add("LDA A_REG+1");
+						return combine(pattern, rep);
+					}
+				}));
+
 		// faster POKE of array value
-		/*
-
-		JSR PUSHREAL
-LDA #<VAR_BC%[]
-LDY #>VAR_BC%[]
-STA G_REG
-STY G_REG+1
-LDY VAR_B%
-LDA VAR_B%+1
-JSR ARRAYACCESS_INTEGER_INT
-JSR POPREAL
-JSR FACWORD
-STY MOVBSELF6+1
-STA MOVBSELF6+2
-JSR XREGFAC
-JSR FACWORD
-
-
-
-LDA #<VAR_BC%[]
-LDY #>VAR_BC%[]
-STA G_REG
-STY G_REG+1
-LDY VAR_B%
-LDA VAR_B%+1
-JSR ARRAYACCESS_INTEGER_INT_SI
-STY MOVBSELF6+1
-STA MOVBSELF6+2
-JSR FACWORD
-
-		 */
 		intPatterns.add(new IntPattern(true, "Faster POKE of array value",
 				new String[] { "JSR PUSHREAL", "LDA #<{MEM0}", "LDY #>{MEM0}", "STA G_REG", "STY G_REG+1", "LDY {MEM1}", "LDA {MEM1}", "JSR ARRAYACCESS_INTEGER_INT",
 							"JSR POPREAL", "JSR FACWORD", "STY {*}", "STA {*}", "JSR XREGFAC", "JSR FACWORD"},
