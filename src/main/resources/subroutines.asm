@@ -1793,28 +1793,25 @@ ARRAYACCESS_INTEGER_SI
 			JSR XREGFAC
 			JSR FACINT
 ARRAYACCESS_INTEGER_INT_SI
-			TAX
-			TYA
-			ASL
-			STA TMP2_ZP
-			TXA
-			ROL
-			STA TMP2_ZP+1
-			LDA TMP2_ZP
-			CLC
-			ADC G_REG
-			STA TMP_ZP
-			LDA G_REG+1
-			ADC TMP2_ZP+1
-			STA TMP_ZP+1
-			LDY #1
-			LDA (TMP_ZP),Y
-			TAX
-			DEY
-			LDA (TMP_ZP),Y
-			TAY
-			TXA
-			RTS
+            TAX
+            TYA
+            ASL
+            TAY
+            TXA
+            ROL
+            CLC
+            ADC G_REG+1
+            STA TMP_ZP+1
+            LDA G_REG
+            STA TMP_ZP
+            INY
+            LDA (TMP_ZP),Y
+            TAX
+            DEY
+            LDA (TMP_ZP),Y
+            TAY
+            TXA
+            RTS
 ;###################################
 INTSUBOPT16X
 INTSUB16X	TAX
@@ -2010,31 +2007,23 @@ ARRAYSTORE_INT_INTEGER
 			JSR XREGFAC
 			JSR FACINT
 ARRAYSTORE_INT_INTEGER_AC
-			LDX G_REG
-			STX TMP_ZP
-			LDX G_REG+1
-			STX TMP_ZP+1
 			TAX
-			TYA
-			ASL
-			STA TMP2_ZP
-			TXA
-			ROL
-			STA TMP2_ZP+1
-			LDA TMP_ZP
-			CLC
-			ADC TMP2_ZP
-			STA TMP_ZP
-			LDA TMP_ZP+1
-			ADC TMP2_ZP+1
-			STA TMP_ZP+1
-			LDY #1
-			LDA AS_TMP+1
-			STA (TMP_ZP),Y
-			DEY
-			LDA AS_TMP
-			STA (TMP_ZP),Y
-			RTS
+            TYA
+            ASL
+            TAY
+            TXA
+            ROL
+            CLC
+            ADC G_REG+1
+            STA TMP_ZP+1
+            LDA G_REG
+            STA TMP_ZP
+            LDA AS_TMP
+            STA (TMP_ZP),Y
+            INY
+            LDA AS_TMP+1
+            STA (TMP_ZP),Y
+            RTS
 ;###################################
 ARRAYSTORE_INTEGER
 			JSR XREGFAC
