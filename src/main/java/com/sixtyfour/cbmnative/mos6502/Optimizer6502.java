@@ -324,14 +324,6 @@ public class Optimizer6502 implements Optimizer {
 				"STA G_REG","STY G_REG+1","LDY {MEM1}","LDA {MEM1}","JSR ARRAYSTORE_INTEGER_INT");
 		others.add(tmpPat);
 
-		tmpPat = new Pattern(false, "Fast array INC/DEC(1)", new String[] { "{LINE0}", "{LINE1}", "{LINE2}", "{LINE3}", "{LINE3}", "LDX #0", "JSR ARRAYACCESS_INC_DEX_X"},
-				"LDA #<{MEM0}", "LDY #>{MEM0}", "STA G_REG", "STY G_REG+1", "LDY {MEM1}",
-				"LDA {MEM1}", "JSR ARRAYACCESS_INTEGER_INT_SI", "STY AS_TMP", "STA AS_TMP+1", "LDA AS_TMP",
-				"BNE {*}", "DEC AS_TMP+1", "{LABEL}", "DEC AS_TMP", "LDA #<{MEM0}",
-				"LDY #>{MEM0}", "STA G_REG", "STY G_REG+1", "LDY {MEM1}", "LDA {MEM1}",
-				"JSR ARRAYSTORE_INT_INTEGER_AC");
-		others.add(tmpPat);
-
 		// This is actually done in the normal optimizer run, but this sequence might be
 		// reintroduced by the int-optimizer for...reasons...so we remove it here
 		// again...
