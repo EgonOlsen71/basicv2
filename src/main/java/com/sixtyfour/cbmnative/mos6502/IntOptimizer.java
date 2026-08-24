@@ -367,7 +367,6 @@ public class IntOptimizer {
 					}
 				}));
 
-		if (pass==3) {
 			// int+-int into int(3)
 			intPatterns.add(new IntPattern(true, "Optimized code for adding/subtracting ints and store in int (3)",
 					new String[]{"LDY {*}", "LDA {*}", "STY TMP3_ZP", "STA TMP3_ZP+1", "LDY {*}", "LDA {*}",
@@ -395,7 +394,6 @@ public class IntOptimizer {
 							return input;
 						}
 					}));
-		}
 
 		/*
 		// Actually slower in my test case...!?
