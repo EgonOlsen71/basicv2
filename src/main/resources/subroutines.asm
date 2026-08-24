@@ -1781,6 +1781,12 @@ ARRAYACCESS_STRING_INT
 			STA A_REG+1
 			RTS
 ;###################################
+ARRAYACCESS_INTEGER_INT_SI_AREG
+            JSR ARRAYACCESS_INTEGER_INT_SI
+            STY A_REG
+            STA A_REG+1
+            RTS
+;###################################
 ARRAYACCESS_INTEGER_SI
 			STA G_REG
 			STY G_REG+1

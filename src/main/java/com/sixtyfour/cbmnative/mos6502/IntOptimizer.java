@@ -1854,6 +1854,90 @@ public class IntOptimizer {
 					}));
 		}
 
+		// faster int array compare(1)
+		intPatterns.add(new IntPattern(true, "Faster int array compare(1)",
+				new String[] { "JSR ARRAYACCESS_INTEGER_INT", "LDA {*}", "LDY {*}", "STA TMP_ZP", "STY TMP_ZP+1", "LDY TMP2_ZP", "LDA TMP2_ZP+1", "JSR ICMP" },
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						List<String> rep = new ArrayList<>();
+						rep.add("JSR ARRAYACCESS_INTEGER_INT_SI_AREG");
+						rep.add(cleaned.get(1));
+						rep.add(cleaned.get(2));
+						rep.add(cleaned.get(3));
+						rep.add(cleaned.get(4));
+						rep.add("LDY A_REG");
+						rep.add("LDA A_REG+1");
+						rep.add(cleaned.get(7));
+						return combine(pattern, rep);
+					}
+				}));
+
+		// faster int array compare(2)
+		intPatterns.add(new IntPattern(true, "Faster int array compare(2)",
+				new String[] { "JSR ARRAYACCESS_INTEGER_INT", "LDA X_REG", "BEQ {*}" },
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						List<String> rep = new ArrayList<>();
+						rep.add("JSR ARRAYACCESS_INTEGER_INT_SI");
+						rep.add("STY A_REG");
+						rep.add("ORA A_REG");
+						rep.add(cleaned.get(2));
+						return combine(pattern, rep);
+					}
+				}));
+
+		// improved storage in int array
+		intPatterns.add(new IntPattern(true, "Improved storage in int array",
+				new String[] { "LDY {MEM0}", "LDA {MEM0}" , "JSR INTFAC", "JSR PUSHREAL", "NOP", "LDA #<{MEM1}", "LDY #>{MEM1}", "STA G_REG",	"STY G_REG+1",
+							"LDY {MEM2}", "LDA {MEM2}",	"JSR ARRAYACCESS_INTEGER_INT", "JSR ONETOFAC", "LDA #<X_REG", "LDY #>X_REG", "JSR {*}",	"JSR FACYREG","JSR POPREALXREG",
+							"LDA #<{MEM3}",	"LDY #>{MEM3}",	"STA G_REG", "STY G_REG+1",	"JSR ARRAYSTORE_INTEGER_NX"},
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						if (cleaned.get(15).contains("FAST")) {
+							List<String> rep = new ArrayList<>();
+							String label = "isiia_"+UUID.randomUUID();
+							rep.add(cleaned.get(5));
+							rep.add(cleaned.get(6));
+							rep.add(cleaned.get(7));
+							rep.add(cleaned.get(8));
+							rep.add(cleaned.get(9));
+							rep.add(cleaned.get(10));
+							rep.add("JSR ARRAYACCESS_INTEGER_INT_SI");
+							rep.add("STY AS_TMP");
+							rep.add("STA AS_TMP+1");
+							if (cleaned.get(15).contains("ADD")) {
+								rep.add("INC AS_TMP");
+								rep.add("BNE "+label);
+								rep.add("INC AS_TMP+1");
+								rep.add(label);
+							} else {
+								rep.add("LDA AS_TMP");
+								rep.add("BNE "+label);
+								rep.add("DEC AS_TMP+1");
+								rep.add(label);
+								rep.add("DEC AS_TMP");
+							}
+							rep.add(cleaned.get(18));
+							rep.add(cleaned.get(19));
+							rep.add(cleaned.get(20));
+							rep.add(cleaned.get(21));
+							rep.add(cleaned.get(0));
+							rep.add(cleaned.get(1));
+							rep.add("JSR ARRAYSTORE_INT_INTEGER_AC");
+							return combine(pattern, rep);
+						}
+						pattern.reset();
+						return input;
+					}
+				}));
+
+
 		// faster array into memory
 		intPatterns.add(new IntPattern(true, "Faster array into memory",
 				new String[]{"LDA #<{MEM0}", "LDY #>{MEM0}", "STA G_REG", "STY G_REG+1", "LDY {MEM1}", "LDA {MEM1}", "JSR ARRAYACCESS_INTEGER_INT",	"LDA #<X_REG","LDY #>X_REG","JSR REALFACPUSH",
@@ -2448,7 +2532,7 @@ public class IntOptimizer {
 						Number num = const2Value.get(consty);
 						double numd = num.doubleValue();
 						if (numd == 0) {
-							String label = "jump_"+UUID.randomUUID().toString();
+							String label = "jump_"+UUID.randomUUID();
 							List<String> rep = new ArrayList<>();
 							rep.add(cleaned.get(3));
 							rep.add(cleaned.get(4));
