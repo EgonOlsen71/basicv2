@@ -1850,6 +1850,55 @@ public class IntOptimizer {
 							return input;
 						}
 					}));
+
+			// Fast array INC/DEC(1)
+			intPatterns.add(new IntPattern(true, "Fast array DEC",
+					new String[] { "LDA #<{MEM0}", "LDY #>{MEM0}", "STA G_REG", "STY G_REG+1", "LDY {MEM1}",
+							"LDA {MEM1}", "JSR ARRAYACCESS_INTEGER_INT_SI", "STY AS_TMP", "STA AS_TMP+1", "TYA",
+							"BNE {*}", "DEC AS_TMP+1", "{LABEL}", "DEC AS_TMP", "LDA #<{MEM0}",
+							"LDY #>{MEM0}", "STA G_REG", "STY G_REG+1", "LDY {MEM1}", "LDA {MEM1}",
+							"JSR ARRAYSTORE_INT_INTEGER_AC"},
+					new AbstractCodeModifier() {
+						@Override
+						public List<String> modify(IntPattern pattern, List<String> input) {
+							input = super.modify(pattern, input);
+							List<String> rep = new ArrayList<>();
+							rep.add(cleaned.get(0));
+							rep.add(cleaned.get(1));
+							rep.add(cleaned.get(2));
+							rep.add(cleaned.get(3));
+							rep.add(cleaned.get(4));
+							rep.add(cleaned.get(5));
+							rep.add("LDX #0");
+							rep.add("JSR ARRAYACCESS_INC_DEX_X");
+							return combine(pattern, rep);
+						}
+					}));
+
+			// Fast array INC/DEC(2)
+			intPatterns.add(new IntPattern(true, "Fast array INC",
+					new String[] { "LDA #<{MEM0}", "LDY #>{MEM0}", "STA G_REG", "STY G_REG+1", "LDY {MEM1}",
+							"LDA {MEM1}", "JSR ARRAYACCESS_INTEGER_INT_SI", "STY AS_TMP", "STA AS_TMP+1", "INC AS_TMP",
+							"BNE {*}", "INC AS_TMP+1", "{LABEL}", "LDA #<{MEM0}",
+							"LDY #>{MEM0}", "STA G_REG", "STY G_REG+1", "LDY {MEM1}", "LDA {MEM1}",
+							"JSR ARRAYSTORE_INT_INTEGER_AC"},
+					new AbstractCodeModifier() {
+						@Override
+						public List<String> modify(IntPattern pattern, List<String> input) {
+							input = super.modify(pattern, input);
+							List<String> rep = new ArrayList<>();
+							rep.add(cleaned.get(0));
+							rep.add(cleaned.get(1));
+							rep.add(cleaned.get(2));
+							rep.add(cleaned.get(3));
+							rep.add(cleaned.get(4));
+							rep.add(cleaned.get(5));
+							rep.add("LDX #1");
+							rep.add("JSR ARRAYACCESS_INC_DEX_X");
+							return combine(pattern, rep);
+						}
+					}));
+
 		}
 
 		// faster int array compare(1)
@@ -1899,7 +1948,7 @@ public class IntOptimizer {
 						input = super.modify(pattern, input);
 						if (cleaned.get(15).contains("FAST")) {
 							List<String> rep = new ArrayList<>();
-							String label = "isiia_"+UUID.randomUUID();
+							String label = "ISIIA_"+UUID.randomUUID().toString().replace("-","_");
 							rep.add(cleaned.get(5));
 							rep.add(cleaned.get(6));
 							rep.add(cleaned.get(7));
@@ -1913,12 +1962,12 @@ public class IntOptimizer {
 								rep.add("INC AS_TMP");
 								rep.add("BNE "+label);
 								rep.add("INC AS_TMP+1");
-								rep.add(label);
+								rep.add(label+":");
 							} else {
-								rep.add("LDA AS_TMP");
+								rep.add("TYA");
 								rep.add("BNE "+label);
 								rep.add("DEC AS_TMP+1");
-								rep.add(label);
+								rep.add(label+":");
 								rep.add("DEC AS_TMP");
 							}
 							rep.add(cleaned.get(18));

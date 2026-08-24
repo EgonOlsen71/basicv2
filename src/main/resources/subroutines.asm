@@ -2003,6 +2003,44 @@ ARRAYSTORE_STRING_INT
 			TXA
 			JMP COPYSTRING	; RTS is implicit
 ;###################################
+ARRAYACCESS_INC_DEX_X
+            STX TMP2_ZP
+            TAX
+            TYA
+            ASL
+            TAY
+            TXA
+            ROL
+            CLC
+            ADC G_REG+1
+            STA TMP_ZP+1
+            LDA G_REG
+            STA TMP_ZP
+            LDX TMP2_ZP
+            BEQ AAIDX_DO_DEC
+            LDA (TMP_ZP),Y
+            CLC
+            ADC #1
+            STA (TMP_ZP),Y
+            BCC AAIDX_DONE
+            INY
+            LDA (TMP_ZP),Y
+            ADC #0
+            STA (TMP_ZP),Y
+AAIDX_DONE
+            RTS
+AAIDX_DO_DEC
+            LDA (TMP_ZP),Y
+            SEC
+            SBC #1
+            STA (TMP_ZP),Y
+            BCS AAIDX_DONE
+            INY
+            LDA (TMP_ZP),Y
+            SBC #0
+            STA (TMP_ZP),Y
+            RTS
+;###################################
 ARRAYSTORE_INT_INTEGER
 			JSR XREGFAC
 			JSR FACINT
