@@ -45,7 +45,7 @@ public class IntOptimizer {
 						input = pattern.modify(input);
 					} catch(Throwable e) {
 						Logger.log("Failed to apply: "+pattern.getName());
-						e.printStackTrace();
+						//e.printStackTrace();
 					}
 				}
 			}
@@ -367,33 +367,35 @@ public class IntOptimizer {
 					}
 				}));
 
-		// int+-int into int(3)
-		intPatterns.add(new IntPattern(true, "Optimized code for adding/subtracting ints and store in int (3)",
-				new String[] { "LDY {*}", "LDA {*}", "STY TMP3_ZP", "STA TMP3_ZP+1", "LDY {*}", "LDA {*}",
-						"JSR {*}", "JSR FACINT", "STY {*}", "STA {*}" },
-				new AbstractCodeModifier() {
-					@Override
-					public List<String> modify(IntPattern pattern, List<String> input) {
-						input = super.modify(pattern, input);
-						String func2 = cleaned.get(6);
-						String func = cleaned.get(8);
-						if (func.contains("%") && (func2.contains("INTADD") || func2.contains("INTSUB"))) {
-							List<String> rep = new ArrayList<>();
-							rep.add(cleaned.get(4));
-							rep.add(cleaned.get(5));
-							rep.add("STA TMP4_REG+1");
-							rep.add("STY TMP4_REG");
-							rep.add(cleaned.get(0));
-							rep.add(cleaned.get(1));
-							rep.add(func2.replace("VAR", "")+"16X");
-							rep.add(cleaned.get(8));
-							rep.add(cleaned.get(9));
-							return combine(pattern, rep);
+		if (pass==3) {
+			// int+-int into int(3)
+			intPatterns.add(new IntPattern(true, "Optimized code for adding/subtracting ints and store in int (3)",
+					new String[]{"LDY {*}", "LDA {*}", "STY TMP3_ZP", "STA TMP3_ZP+1", "LDY {*}", "LDA {*}",
+							"JSR {*}", "JSR FACINT", "STY {*}", "STA {*}"},
+					new AbstractCodeModifier() {
+						@Override
+						public List<String> modify(IntPattern pattern, List<String> input) {
+							input = super.modify(pattern, input);
+							String func2 = cleaned.get(6);
+							String func = cleaned.get(8);
+							if (func.contains("%") && (func2.contains("INTADD") || func2.contains("INTSUB"))) {
+								List<String> rep = new ArrayList<>();
+								rep.add(cleaned.get(4));
+								rep.add(cleaned.get(5));
+								rep.add("STA TMP4_REG+1");
+								rep.add("STY TMP4_REG");
+								rep.add(cleaned.get(0));
+								rep.add(cleaned.get(1));
+								rep.add(func2.replace("VAR", "") + "16X");
+								rep.add(cleaned.get(8));
+								rep.add(cleaned.get(9));
+								return combine(pattern, rep);
+							}
+							pattern.reset();
+							return input;
 						}
-						pattern.reset();
-						return input;
-					}
-				}));
+					}));
+		}
 
 		/*
 		// Actually slower in my test case...!?
@@ -1851,6 +1853,60 @@ public class IntOptimizer {
 						}
 					}));
 		}
+
+		// faster POKE of array value
+		/*
+
+		JSR PUSHREAL
+LDA #<VAR_BC%[]
+LDY #>VAR_BC%[]
+STA G_REG
+STY G_REG+1
+LDY VAR_B%
+LDA VAR_B%+1
+JSR ARRAYACCESS_INTEGER_INT
+JSR POPREAL
+JSR FACWORD
+STY MOVBSELF6+1
+STA MOVBSELF6+2
+JSR XREGFAC
+JSR FACWORD
+
+
+
+LDA #<VAR_BC%[]
+LDY #>VAR_BC%[]
+STA G_REG
+STY G_REG+1
+LDY VAR_B%
+LDA VAR_B%+1
+JSR ARRAYACCESS_INTEGER_INT_SI
+STY MOVBSELF6+1
+STA MOVBSELF6+2
+JSR FACWORD
+
+		 */
+		intPatterns.add(new IntPattern(true, "Faster POKE of array value",
+				new String[] { "JSR PUSHREAL", "LDA #<{MEM0}", "LDY #>{MEM0}", "STA G_REG", "STY G_REG+1", "LDY {MEM1}", "LDA {MEM1}", "JSR ARRAYACCESS_INTEGER_INT",
+							"JSR POPREAL", "JSR FACWORD", "STY {*}", "STA {*}", "JSR XREGFAC", "JSR FACWORD"},
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						List<String> rep = new ArrayList<>();
+						rep.add(cleaned.get(13));
+						rep.add(cleaned.get(10));
+						rep.add(cleaned.get(11));
+						rep.add(cleaned.get(1));
+						rep.add(cleaned.get(2));
+						rep.add(cleaned.get(3));
+						rep.add(cleaned.get(4));
+						rep.add(cleaned.get(5));
+						rep.add(cleaned.get(6));
+						rep.add("JSR ARRAYACCESS_INTEGER_INT_SI");
+						return combine(pattern, rep);
+					}
+				}));
 
 		// faster integer print
 		intPatterns.add(new IntPattern(true, "Fast integer print(2)",
