@@ -1937,7 +1937,7 @@ public class IntOptimizer {
 					}
 				}));
 
-		// faster int array compare(3)
+		// faster int compare(3)
 		intPatterns.add(new IntPattern(true, "Faster int compare(3)",
 				new String[] { "LDA {*}", "LDY #$00", "STA TMP_ZP", "STY TMP_ZP+1",
 						"LDY A_REG", "LDA A_REG+1", "JSR ICMP", "{LABEL}",
@@ -1958,6 +1958,31 @@ public class IntOptimizer {
 						return combine(pattern, rep);
 					}
 				}));
+
+		// faster int compare(4)
+		intPatterns.add(new IntPattern(true, "Faster int compare(4)",
+				new String[] { "LDA {*}", "LDY #$00", "STA TMP_ZP", "STY TMP_ZP+1",
+						"LDY A_REG", "LDA A_REG+1", "JSR ICMP", "BEQ {*}",
+						"LDA #0", "JMP {*}", "{LABEL}" },
+				new AbstractCodeModifier() {
+					@Override
+					public List<String> modify(IntPattern pattern, List<String> input) {
+						input = super.modify(pattern, input);
+						String label = "fic_"+UUID.randomUUID();
+						List<String> rep = new ArrayList<>();
+						rep.add("LDA A_REG+1");
+						rep.add("BNE "+label);
+						rep.add("LDA A_REG");
+						rep.add(cleaned.get(0).replace("LDA", "CMP"));
+						rep.add(cleaned.get(7));
+						rep.add(label+":");
+						rep.add(cleaned.get(8));
+						rep.add(cleaned.get(9));
+						rep.add(cleaned.get(10));
+						return combine(pattern, rep);
+					}
+				}));
+
 
 		// improved storage in int array
 		intPatterns.add(new IntPattern(true, "Improved storage in int array",
