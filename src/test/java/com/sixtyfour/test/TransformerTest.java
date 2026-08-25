@@ -1,6 +1,7 @@
 package com.sixtyfour.test;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -39,6 +40,7 @@ public class TransformerTest {
 	private static String path = "compiled/";
 
 	public static void main(String[] args) throws Exception {
+		new File(path).mkdirs();
         testDeffn();
 		// testTransformer3();
 		// testTransformer1();
