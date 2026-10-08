@@ -1833,20 +1833,20 @@ STY G_REG+1
 LDY VAR_A%
 LDA VAR_A%+1
 JSR ARRAYACCESS_INTEGER_INT_SI_AREG
-LDA #$01
-LDY #$00
-STA TMP_ZP
-STY TMP_ZP+1
-LDY A_REG
 LDA A_REG+1
-JSR ICMP
-; Faster int array compare(1)
-; Optimized code for Integer(6)
-;
+BNE fic_96bac587-f6f9-4c1c-aa18-5297975e0f06
+LDA A_REG
+CMP #$01
 BEQ EQ_EQ14
+fic_96bac587-f6f9-4c1c-aa18-5297975e0f06:
 LDA #0
 JMP EQ_SKIP14
 EQ_EQ14:
+; Faster int compare(4)
+;
+;
+;
+;
 LDA #$1
 EQ_SKIP14:
 COMP_SKP22:
@@ -1943,21 +1943,21 @@ STY G_REG+1
 LDY VAR_A%
 LDA VAR_A%+1
 JSR ARRAYACCESS_INTEGER_INT_SI_AREG
-LDA #$02
-LDY #$00
-STA TMP_ZP
-STY TMP_ZP+1
-LDY A_REG
 LDA A_REG+1
-JSR ICMP
-; Faster int array compare(1)
-; Optimized code for Integer(4)
-;
-;
+BNE fic_fdd8ab96-cfba-4afa-a6fe-3af621c28931
+LDA A_REG
+CMP #$02
 BEQ EQ_EQ15
+fic_fdd8ab96-cfba-4afa-a6fe-3af621c28931:
 LDA #0
 JMP EQ_SKIP15
 EQ_EQ15:
+; Faster int compare(4)
+;
+;
+;
+;
+;
 LDA #$1
 EQ_SKIP15:
 COMP_SKP23:
@@ -2056,21 +2056,21 @@ STY G_REG+1
 LDY VAR_A%
 LDA VAR_A%+1
 JSR ARRAYACCESS_INTEGER_INT_SI_AREG
-LDA #$03
-LDY #$00
-STA TMP_ZP
-STY TMP_ZP+1
-LDY A_REG
 LDA A_REG+1
-JSR ICMP
-; Faster int array compare(1)
-; Optimized code for Integer(4)
-;
-;
+BNE fic_af843afd-7462-47e4-a8fe-5218ee541ef4
+LDA A_REG
+CMP #$03
 BEQ EQ_EQ16
+fic_af843afd-7462-47e4-a8fe-5218ee541ef4:
 LDA #0
 JMP EQ_SKIP16
 EQ_EQ16:
+; Faster int compare(4)
+;
+;
+;
+;
+;
 LDA #$1
 EQ_SKIP16:
 COMP_SKP24:
@@ -2167,21 +2167,21 @@ STY G_REG+1
 LDY VAR_A%
 LDA VAR_A%+1
 JSR ARRAYACCESS_INTEGER_INT_SI_AREG
-LDA #$04
-LDY #$00
-STA TMP_ZP
-STY TMP_ZP+1
-LDY A_REG
 LDA A_REG+1
-JSR ICMP
-; Faster int array compare(1)
-; Optimized code for Integer(4)
-;
-;
+BNE fic_4f27d9f6-d96e-4b3e-9797-8b580c8bc377
+LDA A_REG
+CMP #$04
 BEQ EQ_EQ17
+fic_4f27d9f6-d96e-4b3e-9797-8b580c8bc377:
 LDA #0
 JMP EQ_SKIP17
 EQ_EQ17:
+; Faster int compare(4)
+;
+;
+;
+;
+;
 LDA #$1
 EQ_SKIP17:
 COMP_SKP25:

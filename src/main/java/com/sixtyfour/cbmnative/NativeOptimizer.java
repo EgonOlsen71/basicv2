@@ -26,7 +26,7 @@ public class NativeOptimizer {
 		for (int i = 0; i < 12; i++) {
 			pots.add(Integer.valueOf((int) Math.pow(2, i)));
 		}
-		
+
 		patterns.add(new NativePattern(new String[] { "MOV Y*", "PUSH Y", "MOV Y*", "JSR POS", "POP Y" }, new String[] { "JSR POS", "{0}" }));
 		patterns.add(new NativePattern(new String[] { "MOV Y*", "JSR POS" }, new String[] { "JSR POS" }));
 		patterns.add(new NativePattern(new String[] { "PUSH*", "POP*" }, new String[] { "MOV p1,p0" }));
@@ -38,17 +38,21 @@ public class NativeOptimizer {
 		// If this pattern matches, we break and start from the beginning to avoid mixing of patterns.
 		patterns.add(new NativePattern(new String[] { "MOV Y,#*", "MOV X,#-1{INTEGER}", "MUL X,Y" },
 				new String[] { "{0:MOV Y,#>MOV X,#-}" }, true));
-				
-		patterns.add(new NativePattern(new String[] { "MOV Y,*", "MOV X,Y" }, new String[] { "{0:MOV Y,>MOV X,}" }));
+		patterns.add(new NativePattern(new String[] { "MOV Y,*", "MOV X,Y" }, new String[] { "{0:MOV Y,>MOV X,}" })); // Tröt!
+
 		patterns.add(new NativePattern(new String[] { "MOV B,*", "MOV A,B" }, new String[] { "{0:MOV B,>MOV A,}" }));
+
 		patterns.add(new NativePattern(new String[] { "MOV Y*", "PUSH Y", "JSR COMPACT", "MOV A*", "POP X" },
 				new String[] { "{2}", "{3}", "{0:MOV Y,>MOV X,}" }));
+
 		patterns.add(new NativePattern(new String[] { "MOV Y*", "PUSH Y", "JSR COMPACTMAX", "MOV A*", "POP X" },
 				new String[] { "{2}", "{3}", "{0:MOV Y,>MOV X,}" }));
 		patterns.add(new NativePattern(new String[] { "MOV Y*", "PUSH Y", "MOV A*", "POP X" },
 				new String[] { "{2}", "{0:MOV Y,>MOV X,}" }));
 		patterns.add(new NativePattern(new String[] { "PUSH X", "JSR COMPACT", "MOV A*", "POP X" },
 				new String[] { "{1}", "{2}" }));
+
+			//....
 		patterns.add(new NativePattern(new String[] { "PUSH X", "JSR COMPACTMAX", "MOV A*", "POP X" },
 				new String[] { "{1}", "{2}" }));
 		patterns.add(new NativePattern(new String[] { "PUSH X", "MOV A*", "POP X" }, new String[] { "{1}" }));
@@ -56,6 +60,7 @@ public class NativeOptimizer {
 				new String[] { "{1:MOV X,>MOV Y,}", "{2}" }));
 		patterns.add(new NativePattern(new String[] { "MOV Y,X", "MOV X*", "MUL X,Y" },
 				new String[] { "{1:MOV X,>MOV Y,}", "{2}" }));
+
 		patterns.add(new NativePattern(new String[] { "PUSH C", "CHGCTX #1", "MOV B*", "POP C" },
 				new String[] { "{1}", "{2}" }));
 
@@ -72,6 +77,7 @@ public class NativeOptimizer {
 		patterns.add(new NativePattern(new String[] { "MOV Y,Y" }, new String[] {}));
 		patterns.add(
 				new NativePattern(new String[] { "PUSH X", "MOV X,#*", "POP Y" }, new String[] { "MOV Y,X", "{1}" }));
+
 		patterns.add(new NativePattern(new String[] { "PUSH Y", "MOV X,#*", "POP Y" }, new String[] { "{1}" }));
 		patterns.add(new NativePattern(new String[] { "PUSH Y", "MOVB X,*", "POP Y" }, new String[] { "{1}" }));
 		patterns.add(
@@ -89,12 +95,14 @@ public class NativeOptimizer {
 		// The {0} is actually not needed, because it loads a -1 that's never used into
 		// ARG. However, removing it
 		// disables some other optimizations at this stage and we don't want that.
+
 		patterns.add(
 				new NativePattern(new String[] { "MOV X,#-1{INTEGER}", "MUL X,Y" }, new String[] { "NEG X,Y" }));
 		patterns.add(new NativePattern(new String[] { "MOV Y,#-1{INTEGER}", "MUL X,Y" },
 				new String[] { "MOV Y,X", "NEG X,Y" }));
 		patterns.add(new NativePattern(new String[] { "MOV C,X", "PUSH C" }, new String[] { "PUSH X" }));
 		patterns.add(new NativePattern(new String[] { "PUSH C", "MOV Y,#*", "POP C" }, new String[] { "{1}" }));
+
 		patterns.add(new NativePattern(
 				new String[] { "MOV Y*", "MOV X*", "PUSH Y", "MOV G*", "CHGCTX #0", "JSR ARRAYACCESS", "POP Y" },
 				new String[] { "{1}", "{3}", "{4}", "{5}", "{0}" }));
@@ -105,7 +113,7 @@ public class NativeOptimizer {
 
 		// Simplify IF A<>0 THEN to IF A THEN
 		patterns.add(new NativePattern(new String[] {"MOV Y,#0{INTEGER}", "MOV X*", "NEQ X,Y", "CMP X,#0{REAL}", "JNE*", "JMP*"}, new String[] {"{1:MOV X,>MOV Y,}", "CMP Y,#0{REAL}", "{4}", "{5}"}));
-		
+
 		// Some microoptimizations to speed up
 		// https://www.lemon64.com/forum/privmsg.php?folder=inbox&mode=read&p=348822
 
@@ -128,7 +136,9 @@ public class NativeOptimizer {
 		// This "fixes" this, to let the shift optimization do it's magic afterwards.
 		patterns.add(new NativePattern(new String[] {"MOV Y,#*", "MOV X,*","MUL X,Y"}, new String[] {
 			"{1}","{0}","{2}"}));
-		
+
+		// Snip
+
 		// This optimizes the array access for multi-dimensional arrays whose dimensions
 		// are a power of 2, like k%(15,15)
 		// It does this by rearranging the operations, so that the resulting
@@ -138,18 +148,14 @@ public class NativeOptimizer {
 		
 		
 		patterns.add(new NativePattern(new String[] {"MOV Y,#*", "PUSH Y", "CHGCTX #1", "MOV B,*", "CHGCTX #0", "JSR *", "POP Y"}, new String[] {"{3}","{5}","{0}"}));
-		
-		// MID (F$(I),x,y) simplified
-		patterns.add(new NativePattern(new String[] {"MOV C,*", "PUSH C", "MOV C,*", "PUSH C", "MOV X,Y{REAL}", "CHGCTX #1", "MOV G,*", "JSR ARRAYACCESS", "MOV B,A", "POP D", "POP C", "JSR MID"}, 
-				new String[] {"{4}", "{6}", "{7}", "{8}", "{0}", "{2:MOV C,>MOV D,}", "JSR MID"}));
-		
-		
-		
-		patterns.add(new NativePattern(new String[] {"MOV Y,#*", "PUSH Y", "NOP", "MOV X,#*", "MOV G,*", "CHGCTX #0", "JSR ARRAYACCESS", "MOV Y,X", "POP X", "MOV G,*", "JSR ARRAYSTORE"}, 
+
+		patterns.add(new NativePattern(new String[] {"MOV Y,#*", "PUSH Y", "NOP", "MOV X,#*", "MOV G,*", "CHGCTX #0", "JSR ARRAYACCESS", "MOV Y,X", "POP X", "MOV G,*", "JSR ARRAYSTORE"},
 				new String[] {"{2}","{3}","{4}","{5}","{6}","{7}","{0:MOV Y>MOV X}","{9}","{10}"}));
-		
+
 		String[] calls = {"SNEQ", "SEQ", "SGT", "SLT", "SGTEQ", "SLTEQ"};
-		
+
+		// Snap
+
 		for (String call:calls) {
 			patterns.add(new NativePattern(new String[] {"MOV C,*","MOV D,#1{INTEGER}","CHGCTX #1","MOV B,*","JSR MID","POP B","CHGCTX #0","JSR "+call}, new String[] {"{0}","CHGCTX #1","{3}","JSR CHARAT","{5}","{6}","{7}"}));
 		}
@@ -159,7 +165,7 @@ public class NativeOptimizer {
 		for (String op:ops) {
 			patterns.add(new NativePattern(new String[] {"MOV Y,#*", "PUSH Y", "MOV Y,*",op+" X,Y", "POP Y"}, new String[] {"{2}","{3}","{0}"}));
 		}
-		
+
 		// Optimizes special cases of a multiplication by, for example, 40 (and similar muls).
 		// ...this also covers the former special case for arrays like a(16,16), which require a *17...
 		createRulesForMulAndAddSub(pots);

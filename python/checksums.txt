@@ -6,7 +6,7 @@ c_arrays.prg:2a71c4fc894c1cd9e79f7a2ad1dc1762
 c_arrayswap.prg:03e3e65ad999dc8e8262fffd74559eac
 c_ball.prg:56bf5ab0cc649dba1904d19a962e6cb3
 c_balls.prg:b306b45f0fb68d4823fa12897a79e330
-c_balls_opt.prg:f973e2b68872446062800928835b674c
+c_balls_opt.prg:2a4237c05f8becf554384efb0f4e98a0
 c_basicrunner.prg:74a0a733b2f1751ea8a80c61bfe3100b
 c_bbdemo.prg:448b3f1b09d14d23ec5f0d4f116d0b9b
 c_beer_transform.prg:d64b72bf0b405c91f45d5f34031f6711
@@ -76,7 +76,7 @@ c_lines.prg:c35f0c9c7350a4b52fb954b5bccc8f4f
 c_logictest.prg:df1919c2a2a84d6f5f31e248e04b45ec
 c_mandelbrot.prg:26ac9d9f02f839005e22d1a5094ca41c
 c_mazegen.prg:7e0b0cd48f796a81e24c033f71e03bd7
-c_mazei.prg:ec9fcceddd0e68fc3b3f0267503f3ad3
+c_mazei.prg:f0547f46f6d49257c491922a724e90f6
 c_menu.prg:9e4bd7eb4a029d2edb84a8ef292917c1
 c_mikro.prg:a52f46713c28ff56b871d285ff8a6354
 c_nema32test1.prg:293e50d50d24c8cac47b29856672e434
