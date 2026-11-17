@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import com.sixtyfour.Assembler;
@@ -520,8 +521,8 @@ public class MoSpeedCL {
 	
 	private static void writeJavascript(String targetFile, List<String> ncode) {
 		Transformer trsn = new PlatformJs().getTransformer();
-		try (PrintWriter pw = new PrintWriter(targetFile);
-				PrintWriter cpw = new PrintWriter(targetFile.replace(".js", ".html"))) {
+		try (PrintWriter pw = new PrintWriter(targetFile, StandardCharsets.UTF_8.name());
+				PrintWriter cpw = new PrintWriter(targetFile.replace(".js", ".html"), StandardCharsets.UTF_8.name())) {
 			System.out.println("Writing target files: " + targetFile);
 			for (String line : ncode) {
 				pw.println(line);

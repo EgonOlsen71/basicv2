@@ -8,10 +8,30 @@
              src: url('CommodoreServer.ttf') format('truetype'); }
 			 
 .con {
-	font-family:petscii;
+	display:inline-block;
+	position:relative;
+	font-family:petscii, monospace;
+	font-size:min(1rem, 2.3vw);
 	line-height: 1.0;
-	min-width: 700px;
-}			 
+	width:40ch;
+	height:25em;
+	white-space:nowrap;
+	overflow:hidden;
+}
+.con.cursor-active::after {
+	content:"";
+	position:absolute;
+	left:var(--cursor-left);
+	top:var(--cursor-top);
+	width:1ch;
+	height:1em;
+	background-color:var(--cursor-color);
+	animation:cursor-blink 1s step-end infinite;
+	pointer-events:none;
+}
+@keyframes cursor-blink {
+	50% { opacity:0; }
+}
 </style>
 <script id='_compiledCode' src='{*}' type='text/javascript'></script>
 <script id='_console' src='console.js' type='text/javascript'></script>
@@ -36,11 +56,20 @@ window.onload=function() {
 	var clientCon=new CbmConsoleClient(document.getElementById("con"));
 	var worker=executeAsync(document.getElementById('_compiledCode').src, function(e) {
 		if (Array.isArray(e.data)) {
-			clientCon.render(e.data[0], e.data[1], e.data[2]);
+			clientCon.render(e.data[0], e.data[1], e.data[2], e.data[3], e.data[4], e.data[5]);
 		}		
 	}, document.getElementById('con'));
 	var el=document.getElementById('con');
+	el.onkeydown = function(event) {
+		if (event.key=="Backspace" || event.key=="Enter") {
+			worker.postMessage([true, event.key, event.which || event.keyCode]);
+			event.preventDefault();
+		}
+	};
 	el.onkeypress = function(event) {
+		if (event.key=="Backspace" || event.key=="Enter") {
+			return;
+		}
 		worker.postMessage([true, event.key, event.which]);
 		event.preventDefault();
 	};

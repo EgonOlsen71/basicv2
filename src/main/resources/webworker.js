@@ -9,7 +9,12 @@ if (self) {
 			instance.registerKey(e.data);
 	  } else {
 		  instance=new Compiled();
-		  if(e.data=="run") {
+		  var mode=e.data;
+		  if (mode && typeof mode=="object" && !Array.isArray(mode)) {
+			  instance.disk.loadLocalFiles(mode.files);
+			  mode=mode.mode;
+		  }
+		  if(mode=="run") {
 			  instance.execute(true);
 		  } else {
 			  var comp=instance;
@@ -24,12 +29,30 @@ if (self) {
 
 function executeAsync(srcFile, func, cons) {
 	var worker=new Worker(srcFile);
-	worker.addEventListener('message', func, false);
-	if (cons) {
-		worker.postMessage("console");
-	} else {
-		worker.postMessage("run");
+	// Seed the worker's synchronous disk cache from the page's persistent storage.
+	var storageKey="basicv2:files:"+new URL(srcFile, location.href).pathname;
+	var savedFiles={};
+	try {
+		savedFiles=JSON.parse(localStorage.getItem(storageKey) || "{}");
+		if (!savedFiles || typeof savedFiles!="object" || Array.isArray(savedFiles)) {
+			savedFiles={};
+		}
+	} catch (e) {
+		console.warn("Browser storage unavailable; saved files will not survive a reload", e);
 	}
+	worker.addEventListener('message', function(e) {
+		if (e.data && e.data.type==="disk-save") {
+			savedFiles[e.data.name]=e.data.content;
+			try {
+				localStorage.setItem(storageKey, JSON.stringify(savedFiles));
+			} catch (err) {
+				console.warn("Unable to persist saved file "+e.data.name, err);
+			}
+		} else {
+			func(e);
+		}
+	}, false);
+	worker.postMessage({mode:cons ? "console" : "run", files:savedFiles});
 	return worker;
 }
 
@@ -175,8 +198,16 @@ function CbmConsole() {
 					_selfy.reverseMode = false;
 					break;
 				case 20:
-					_selfy.x--;
-					_selfy.clearAtCursor(pos);
+					if (_selfy.x>0 || _selfy.y>0) {
+						if (_selfy.x==0) {
+							_selfy.y--;
+							_selfy.x=_selfy.width;
+						}
+						_selfy.x--;
+						var previous=_selfy.x+_selfy.width*_selfy.y;
+						_selfy.memory[1024+previous]=_selfy.getPokeValue(32);
+						_selfy.memory[55296+previous]=_selfy.fontColor;
+					}
 					break;
 				case 148:
 					_selfy.shiftRight(pos);
@@ -220,7 +251,20 @@ function CbmConsole() {
 		_selfy.x++;
 	}
 	
+	this.updateScreen = function() {
+		_selfy.memory=_selfy.compiledCode.getMemory();
+		if (_selfy.memory) {
+			_selfy.memory[211]=_selfy.x;
+			_selfy.memory[214]=_selfy.y;
+			_selfy.vidMem=_selfy.memory.slice(1024, 2024);
+			_selfy.colMem=_selfy.memory.slice(55296, 56296);
+			_selfy.bgColor=_selfy.memory[53281];
+			_self.postMessage([_selfy.vidMem, _selfy.colMem, _selfy.bgColor, _selfy.x, _selfy.y, _selfy.memory[646]]);
+		}
+	}
+
 	this.inject = function(compiledCode, conElem) {
+		compiledCode.consoleMode=true;
 		_selfy.memory = compiledCode.getMemory();
 		compiledCode.superOut=compiledCode.out;
 		_selfy.con=conElem;
@@ -229,15 +273,18 @@ function CbmConsole() {
 		_selfy.fillMap();
 		_selfy.charset=_selfy.createCharsetMapping();
 		_selfy.compiledCode=compiledCode;
-		
-		compiledCode.convert = function(c) {
-			if (c >= 'a' && c <= 'z') {
-				c = String.fromCharCode(c.charCodeAt(0) - 32);
-			} else if (c >= 'A' && c <= 'Z') {
-				c = String.fromCharCode(c.charCodeAt(0) + 32);
+		var originalSyscall=compiledCode.SYSCALL;
+		compiledCode.SYSCALL=function(addr) {
+			if (addr==="$fff0();" || addr===65520) {
+				var memory=this.getMemory();
+				// PLOT reads column from Y (782) and row from X (781).
+				_selfy.x=Math.max(0,Math.min(_selfy.width-1, memory[782] || 0));
+				_selfy.y=Math.max(0,Math.min(_selfy.height-1, memory[781] || 0));
+				_selfy.updateScreen();
+			} else {
+				originalSyscall.call(this, addr);
 			}
-			return c;
-		}
+		};
 		
 		compiledCode.out = function(val) {
 			_selfy.memory = compiledCode.getMemory();
@@ -264,7 +311,10 @@ function CbmConsole() {
 						continue;
 					}	
 				}
-				if (_selfy.isChar(c)) {
+				if (c=='\t') {
+					// PRINT commas advance to the next ten-column print zone.
+					_selfy.x=(Math.floor(_selfy.x/10)+1)*10;
+				} else if (_selfy.isChar(c)) {
 					_selfy.processControlCode(c.charCodeAt(0), pos, false);
 				} else {
 					if (_selfy.isBreak(c)) {
@@ -291,12 +341,7 @@ function CbmConsole() {
 				} 
 			}
 			
-			if (_selfy.memory) {
-				_selfy.vidMem = _selfy.memory.slice(1024, 2024);
-				_selfy.colMem = _selfy.memory.slice(55296, 56296);
-				_selfy.bgColor = _selfy.memory[53281];
-			}
-			_self.postMessage([_selfy.vidMem, _selfy.colMem, _selfy.bgColor]);
+			_selfy.updateScreen();
 		};
 		
 		compiledCode.get = function() {
@@ -307,7 +352,7 @@ function CbmConsole() {
 			this.timeOut=20;
 			this.keyPressed=null;
 			this._memory[198]=0;
-			return key.substring(0,1);
+			return this.convertKeyboard(key.substring(0,1));
 		};
 	}
 	
@@ -320,10 +365,17 @@ function CbmConsole() {
 	}
 	
 	this.getConvertedChar = function(c) {
-		if (c >= 'a' && c <= 'z') {
+		if (_selfy.compiledCode.flipCasing) {
+			// Flipped programs use the opposite font's letter cells.
+			if (c >= 'a' && c <= 'z') {
+				c = c.charCodeAt(0) - 32;
+			} else if (c >= 'A' && c <= 'Z') {
+				c = c.charCodeAt(0) - 64;
+			} else {
+				c = c.charCodeAt(0);
+			}
+		} else if (c >= 'a' && c <= 'z') {
 			c = c.charCodeAt(0) - 96;
-		//} else if (c >= 'A' && c <= 'Z') {
-		//	c = c.charCodeAt(0) + 32;
 		} else {
 			c=c.charCodeAt(0);
 		}

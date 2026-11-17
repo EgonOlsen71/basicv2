@@ -22,9 +22,17 @@ function CbmConsoleClient(elem) {
 		return c;
 	}	
 	
-	this.render = function(vidMem, colMem, bgColor) {
+	this.render = function(vidMem, colMem, bgColor, cursorX, cursorY, cursorColor) {
 		var html="";
 		elem.style.backgroundColor=_self.colors[bgColor];
+		if (Number.isInteger(cursorX) && Number.isInteger(cursorY)) {
+			elem.style.setProperty('--cursor-left', cursorX+'ch');
+			elem.style.setProperty('--cursor-top', cursorY+'em');
+			elem.style.setProperty('--cursor-color', _self.colors[cursorColor & 15]);
+			elem.classList.add('cursor-active');
+		} else {
+			elem.classList.remove('cursor-active');
+		}
 		lastColor=null;
 		for (var i=0; i<_self.width*_self.height; i++) {
 			html=html+_self.getHtml(i, vidMem[i], colMem[i]);

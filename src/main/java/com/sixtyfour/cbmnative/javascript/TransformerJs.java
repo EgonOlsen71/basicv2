@@ -58,6 +58,7 @@ public class TransformerJs implements Transformer {
 
 		res.add("this.outputter=function(txt) {console.log(txt);}");
 		res.add("if (output) {this.outputter=output;}");
+		res.add("this.flipCasing=" + config.isFlipCasing() + ";");
 
 		res.add("this.INIT = function() {");
 		res.add("this.X_REG=0.0;");
@@ -93,9 +94,15 @@ public class TransformerJs implements Transformer {
 		Map<String, String> name2label = new HashMap<String, String>();
 
 		GeneratorContext context = new GeneratorContext(config, machine);
+		int inputCnt = 0;
 		for (String line : code) {
 			String cmd = line;
 			String orgLine = line;
+			if (line.equals("JSR INPUTSTR") || line.equals("JSR INPUTNUMBER")) {
+				// A worker can pause at INPUT and resume without repeating earlier instructions.
+				GeneratorListJs.getGenerator("INPUTWAIT:").generateCode(context, "INPUTWAIT" + inputCnt++ + ":", mnems,
+						subs, name2label);
+			}
 
 			int sp = line.indexOf(" ");
 			if (sp != -1) {

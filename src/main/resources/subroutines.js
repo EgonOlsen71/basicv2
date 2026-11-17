@@ -7,6 +7,11 @@ this.funcName = "PROGRAMSTART";
 this.batchSize=500;
 this.tmpy=0;
 this.disk=new Disk(this);
+this.consoleMode=false;
+this._waitingForInput=false;
+this._consoleInput="";
+this._consoleInputReady=null;
+this._inputWait={};
 
 function File() {
 	this.name;
@@ -17,14 +22,27 @@ function FilePointer() {
 	this.channel=0;
 	this.file=null;
 	this.position=0;
+	this.mode="r";
 	this.disk=null;
 	this.master=null;
+
+	this.write = function(text) {
+		if (this.mode!="w") {
+			this.disk.flagError();
+			return;
+		}
+		this.file.content.push.apply(this.file.content, String(text).split(''));
+	}
 	
 	this.readString = function() {
 		return this.readLine();
 	}
 	
 	this.readLine = function() {
+		if (this.file.missing) {
+			this.disk.status=128;
+			return "";
+		}
 		var ret="";
 		var content=this.file.content;
 		for (var i=this.position; i<content.length; i++) {
@@ -55,6 +73,25 @@ function Disk(master) {
 	this.openFiles=new Array();
 	this.status=0;
 	this.master=master;
+
+	this.storageKey = function() {
+		var script=typeof document!="undefined" && document.getElementById('_compiledCode');
+		return "basicv2:files:"+(script ? new URL(script.src, location.href).pathname : location.pathname);
+	}
+
+	this.loadLocalFiles = function(files) {
+		if (!files || typeof files!="object") {
+			return;
+		}
+		for (var name in files) {
+			if (Object.prototype.hasOwnProperty.call(files, name) && typeof files[name]=="string") {
+				var file=new File();
+				file.name=name.toLowerCase();
+				file.content=files[name].split('');
+				this.files.push(file);
+			}
+		}
+	}
 	
 	this.init = function() {
 		this.status=0;
@@ -81,17 +118,22 @@ function Disk(master) {
 	
 	this.open = function(channel, device, subAddr, name) {
 		this.close(channel);
-		
+		this.init();
+		// DOS command channels are not files to fetch from the server.
+		if (subAddr==15 || /^[a-z]:/i.test(name)) {
+			console.log("disk command ignored: "+name);
+			return;
+		}
+
 		name=name.toLowerCase();
 		var parts=name.split(",");
 		var type="s";
 		var mode="r";
 		if (parts.length>1) {
 			name=parts[0];
-			if (parts.length==1) {
-				mode=parts[1];
-			}
 			if (parts.length==2) {
+				mode=parts[1];
+			} else {
 				mode=parts[2];
 				type=parts[1];
 			}
@@ -122,6 +164,7 @@ function Disk(master) {
 			found.name=name;
 			
 			if (mode=="r") {
+				var disk=this;
 				var xhr = new XMLHttpRequest();
 				console.log("grabbing file "+name);
 				xhr.open('GET', name, false);
@@ -134,13 +177,17 @@ function Disk(master) {
 				    }
 				    else {
 				    	console.log("file "+name+" not found");
-				        found.content=new Array();
+				        found.missing=true;
+				        // ST has no file-not-found bit; 128 is a non-EOF I/O error.
+				        disk.status=128;
 				    }
 				};
 				xhr.send();
 			}
 			
-			this.files.push(found);
+			if (!found.missing) {
+				this.files.push(found);
+			}
 		}
 		
 		if (mode=="w") {
@@ -153,20 +200,57 @@ function Disk(master) {
 		pointer.file=found;
 		pointer.channel=channel;
 		pointer.position=0;
+		pointer.mode=mode;
 		pointer.disk=this;
 		pointer.master=this.master;
 		this.openFiles.push(pointer);
 	}
 	
+	this.persist = function(file) {
+		var content=file.content.join('');
+		if (typeof importScripts=="function") {
+			self.postMessage({type:"disk-save", name:file.name, content:content});
+		} else if (typeof location!="undefined") {
+			try {
+				if (typeof localStorage=="undefined") {
+					return;
+				}
+				var key=this.storageKey();
+				var saved=JSON.parse(localStorage.getItem(key) || "{}");
+				if (!saved || typeof saved!="object" || Array.isArray(saved)) {
+					saved={};
+				}
+				saved[file.name]=content;
+				localStorage.setItem(key, JSON.stringify(saved));
+			} catch (e) {
+				console.warn("Unable to persist saved file "+file.name, e);
+				this.flagError();
+			}
+		}
+	}
+
 	this.close = function(channel) {
 		this.init();
 		for (var i=0; i<this.openFiles.length; i++) {
 			var file=this.openFiles[i];
 			if (file.channel==channel) {
+				if (file.mode=="w") {
+					this.persist(file.file);
+				}
 				console.log("closed channel "+channel+"/"+file.file.name);
 				this.openFiles.splice(i, 1);
 				break;
 			}
+		}
+	}
+
+	if (typeof importScripts!="function" && typeof location!="undefined") {
+		try {
+			if (typeof localStorage!="undefined") {
+				this.loadLocalFiles(JSON.parse(localStorage.getItem(this.storageKey()) || "{}"));
+			}
+		} catch (e) {
+			console.warn("Unable to load locally saved files", e);
 		}
 	}
 }
@@ -176,6 +260,33 @@ this.getMemory = function() {
 }
 
 this.registerKey= function(key) {
+	if (this.consoleMode && this._waitingForInput) {
+		if (!key[0]) {
+			return;
+		}
+		var pressed=key[1];
+		if (pressed=="Enter" || pressed=="Return" || pressed=="\r" || pressed=="\n") {
+			this._consoleInputReady=this._consoleInput;
+			this._consoleInput="";
+			this._waitingForInput=false;
+			this.keyPressed=null;
+			this._memory[198]=0;
+			this.out("\n");
+			var ctx=this;
+			self.setTimeout(function() {
+				ctx.executeThreaded();
+			}, 0);
+		} else if (pressed=="Backspace" || pressed=="Delete" || pressed=="\b") {
+			if (this._consoleInput.length>0) {
+				this._consoleInput=this._consoleInput.slice(0, -1);
+				this.out("\x14");
+			}
+		} else if (pressed && pressed.length==1) {
+			this._consoleInput+=pressed;
+			this.out(this.convertKeyboard(pressed));
+		}
+		return;
+	}
 	var k=key[1];
 	var ctx=this;
 	if (k.length>1) {
@@ -216,8 +327,8 @@ this.executeThreaded = function() {
 				this.reinit();
 			}
 			this.executeLine(true);
-		} while(this.running && cnt++<this.batchSize);
-		if (this.running) {
+		} while(this.running && !this._waitingForInput && cnt++<this.batchSize);
+		if (this.running && !this._waitingForInput) {
 			var ctx=this;
 			self.setTimeout(function() {
 				ctx.executeThreaded();
@@ -235,7 +346,16 @@ this.reinit = function() {
 }
 
 this.executeLine = function(threaded) {
-	var nextLine = this[this.funcName]();
+	var nextLine;
+	try {
+		nextLine = this[this.funcName]();
+	} catch (e) {
+		if (e !== this._inputWait) {
+			throw e;
+		}
+		this._waitingForInput=true;
+		return;
+	}
 	if (nextLine != null) {
 		this.lineNumber = nextLine;
 		if (this.lineNumber == "($JUMP)") {
@@ -264,6 +384,9 @@ this.START = function() {
 		this._memory.fill(0);
 	}
 	this._memory[646]=14;
+	if (this.consoleMode) {
+		this._memory[1]=55;
+	}
 }
 
 this.RUN = function() {
@@ -493,8 +616,12 @@ this.TAB = function() {
 
 this.SPC = function() {
 	var tb=Math.floor(this.Y_REG);
+	var spaces="";
 	for (var i=0;i<tb; i++) {
-		this._line+=" ";
+		spaces+=" ";
+	}
+	if (spaces) {
+		this.out(spaces);
 	}
 }
 
@@ -616,7 +743,9 @@ this.STROUT = function() {
 }
 
 this.QMARKOUT1 = function() {
-	this.out("?");
+	if (this._memory[19]!=1) {
+		this.out("?");
+	}
 }
 
 this.CRSRRIGHT = function() {
@@ -624,7 +753,9 @@ this.CRSRRIGHT = function() {
 }
 
 this.QMARKOUT2 = function() {
-	this.out("??");
+	if (this._memory[19]!=1) {
+		this.out("??");
+	}
 }
 
 this.REALOUT = function() {
@@ -734,23 +865,19 @@ this.SYSCALL = function(addr) {
 }
 
 this.STROUTCHANNEL = function() {
-	console.log("[PRINT# not supported for JS, redirected to normal PRINT]");
-	this.STROUT();
+	this.disk.get(this.C_REG).write(this.A_REG);
 }
 
 this.REALOUTCHANNEL = function() {
-	console.log("[PRINT# not supported for JS, redirected to normal PRINT]");
-	this.REALOUT();
+	this.disk.get(this.C_REG).write(this.X_REG);
 }
 
 this.LINEBREAKCHANNEL = function() {
-	console.log("[PRINT# not supported for JS, redirected to normal PRINT]");
-	this.LINEBREAK();
+	this.disk.get(this.C_REG).write("\n");
 }
 
 this.INTOUTCHANNEL = function() {
-	console.log("[PRINT# not supported for JS, redirected to normal PRINT]");
-	this.INTOUT();
+	this.disk.get(this.C_REG).write(this.X_REG);
 }
 
 this.LOCKCHANNEL = function() {
@@ -763,6 +890,12 @@ this.UNLOCKCHANNEL = function() {
 
 this.INPUTNUMBERCHANNEL = function() {
 	var fp=this.disk.get(this.C_REG);
+	if (fp.file.missing) {
+		this.Y_REG=0;
+		this.X_REG=0;
+		this.disk.status=128;
+		return;
+	}
 	var inp=fp.readString();
 	if (this.isNumeric(inp)) {
 		this.Y_REG=parseFloat(inp);
@@ -837,25 +970,40 @@ this.USR = function() {
 
 // Here start the input/output code, that might be adopted to fit ones needs...
 
+this.convertKeyboard = function(text) {
+	if (!this.flipCasing) {
+		return text;
+	}
+	return text.replace(/[a-zA-Z]/g, function(c) {
+		return String.fromCharCode(c.charCodeAt(0) ^ 32);
+	});
+}
+
 this.input = function() {
 	if (this._inputQueue.length>0) {
 		return this._inputQueue.pop();
 	}
-	if (typeof prompt === 'function') {
-		var inp=prompt(this._line);
-		this._line="";
-		if (inp) {
-			var parts=inp.split(",");
-			parts.reverse();
-			this._inputQueue.push.apply(this._inputQueue, parts);
-			return this._inputQueue.pop();
-		} else {
-			return "";
+	var inp;
+	if (this.consoleMode) {
+		if (this._consoleInputReady===null) {
+			throw this._inputWait;
 		}
+		inp=this.convertKeyboard(this._consoleInputReady);
+		this._consoleInputReady=null;
+	} else if (typeof prompt === 'function') {
+		inp=prompt(this._line);
+		this._line="";
 	} else {
 		console.log("INPUT skipped, no prompt function in this context...");
 		return "";
 	}
+	if (inp) {
+		var parts=inp.split(",");
+		parts.reverse();
+		this._inputQueue.push.apply(this._inputQueue, parts);
+		return this._inputQueue.pop();
+	}
+	return "";
 }
 
 // GET relies on INPUT here, because due to the single threaded nature of 
