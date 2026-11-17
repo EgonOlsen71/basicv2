@@ -35,7 +35,7 @@ function FilePointer() {
 	}
 	
 	this.readString = function() {
-		return this.readLine();
+		return this.readLine().trimStart();
 	}
 	
 	this.readLine = function() {
@@ -571,7 +571,7 @@ this.ARRAYSTORE_STRING = function() {
 }
 
 this.STR = function() {
-	this.A_REG=this.Y_REG.toString(10);
+	this.A_REG=(this.Y_REG>=0 ? " " : "")+this.Y_REG.toString(10);
 }
 
 this.VAL = function() {
