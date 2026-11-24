@@ -78,7 +78,7 @@ function CbmConsole() {
 		if (Number.isInteger(ch)) {
 			ch=String.fromCharCode(ch);
 		}
-		return _selfy.charset.charCodeAt(_selfy.getConvertedChar(ch)+(_selfy.graphicsMode?0:256));		
+		return _selfy.getConvertedChar(ch)&255;
 	}
 	
 	this.clearScreen = function() {
@@ -256,7 +256,11 @@ function CbmConsole() {
 		if (_selfy.memory) {
 			_selfy.memory[211]=_selfy.x;
 			_selfy.memory[214]=_selfy.y;
-			_selfy.vidMem=_selfy.memory.slice(1024, 2024);
+			// Select the glyph bank for every cell without changing screen memory.
+			var bank=_selfy.graphicsMode?0:256;
+			_selfy.vidMem=_selfy.memory.slice(1024, 2024).map(function(code) {
+				return _selfy.charset.charCodeAt(bank+(code&255));
+			});
 			_selfy.colMem=_selfy.memory.slice(55296, 56296);
 			_selfy.bgColor=_selfy.memory[53281];
 			_self.postMessage([_selfy.vidMem, _selfy.colMem, _selfy.bgColor, _selfy.x, _selfy.y, _selfy.memory[646]]);

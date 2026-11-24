@@ -52,10 +52,10 @@ public class ControlCodes {
 			add(134, "f3");
 			add(135, "f5");
 			add(136, "f7");
-			add(8, "ctrl-h");
-			add(9, "ctrl-i");
-			add(14, "ctrl+n", "ctrl-n");
-			add(142, "ctrl+/", "ctrl-/");
+			add(8, "ctrl-h", "dish");
+			add(9, "ctrl-i", "ensh");
+			add(14, "ctrl+n", "ctrl-n", "swlc");
+			add(142, "ctrl+/", "ctrl-/", "swuc");
 			add(165, "ctrl-g");
 			add(137, "f2", "shift-f1", "sh-f1");
 			add(138, "f4", "shift-f3", "sh-f3");

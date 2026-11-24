@@ -16,6 +16,7 @@ import com.sixtyfour.cbmnative.Transformer;
 import com.sixtyfour.cbmnative.javascript.generators.GeneratorListJs;
 import com.sixtyfour.cbmnative.mos6502.AbstractTransformer;
 import com.sixtyfour.cbmnative.mos6502.util.Converter;
+import com.sixtyfour.parser.assembly.ControlCodes;
 import com.sixtyfour.config.CompilerConfig;
 import com.sixtyfour.config.MemoryConfig;
 import com.sixtyfour.elements.Type;
@@ -33,6 +34,23 @@ import com.sixtyfour.util.VarUtils;
  *
  */
 public class TransformerJs implements Transformer {
+
+	private static String encodeControlCodes(String text) {
+		StringBuilder result = new StringBuilder();
+		int start = 0;
+		int end;
+		while ((end = text.indexOf('}', start)) != -1) {
+			int open = text.lastIndexOf('{', end);
+			int code = open >= start ? ControlCodes.getCode(text.substring(open, end + 1)) : -1;
+			if (code >= 0) {
+				result.append(text, start, open).append(String.format("\\x%02x", code));
+			} else {
+				result.append(text, start, end + 1);
+			}
+			start = end + 1;
+		}
+		return result.append(text, start, text.length()).toString();
+	}
 
 	@Override
 	public List<String> transform(CompilerConfig config, MemoryConfig memConfig, Machine machine,
@@ -247,7 +265,7 @@ public class TransformerJs implements Transformer {
 							if (config.isConvertStringToLower() || config.isFlipCasing()) {
 								name = Converter.convertCase(name, !config.isFlipCasing());
 							}
-							consts.add("this." + label + "=\"" + name + "\";");
+							consts.add("this." + label + "=\"" + encodeControlCodes(name) + "\";");
 						}
 					}
 				} else {

@@ -6,8 +6,8 @@ import java.nio.file.Paths;
 import java.util.*;
 
 /**
- * BasicLoopAnalyzer parses a C64 BASIC V2 program in ASCII/text format
- * and conservatively determines if variables are 100% safe to be treated as integers.
+ * IntPromotionAnalyzer parses a C64 BASIC V2 program in ASCII/text format
+ * and conservatively determines, if variables are 100% safe to be treated as integers.
  * This is a static analysis. It might fail ...
  *
  * @author EgonOlsen
